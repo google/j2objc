@@ -49,9 +49,6 @@ import javax.annotation.Nullable;
  * "http://code.google.com/p/guava-libraries/wiki/ImmutableCollectionsExplained">
  * immutable collections</a>.
  *
- * J2ObjC Modifications:
- * - Commented out readObject().
- *
  * @author Jared Levy
  * @since 2.0 (imported from Google Collections Library)
  */
@@ -152,7 +149,7 @@ public class ImmutableListMultimap<K, V>
    *           .putAll("many", 1, 2, 3, 4, 5)
    *           .build();}</pre>
    *
-   * Builder instances can be reused; it is safe to call {@link #build} multiple
+   * <p>Builder instances can be reused; it is safe to call {@link #build} multiple
    * times to build multiple multimaps in series. Each multimap contains the
    * key-value mappings in the previously created multimaps.
    *
@@ -348,7 +345,7 @@ public class ImmutableListMultimap<K, V>
     Serialization.writeMultimap(this, stream);
   }
 
-  /*@GwtIncompatible("java.io.ObjectInputStream")
+  @GwtIncompatible("java.io.ObjectInputStream")
   private void readObject(ObjectInputStream stream)
       throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
@@ -385,7 +382,7 @@ public class ImmutableListMultimap<K, V>
 
     FieldSettersHolder.MAP_FIELD_SETTER.set(this, tmpMap);
     FieldSettersHolder.SIZE_FIELD_SETTER.set(this, tmpSize);
-  }*/
+  }
 
   @GwtIncompatible("Not needed in emulated source")
   private static final long serialVersionUID = 0;

@@ -16,7 +16,6 @@
 
 package com.google.common.collect;
 
-import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 
 /**
@@ -32,21 +31,17 @@ import com.google.common.annotations.GwtCompatible;
  *     return element;
  *   }}</pre>
  *
- * In order to be effective, constraints should be deterministic; that is,
+ * <p>In order to be effective, constraints should be deterministic; that is,
  * they should not depend on state that can change (such as external state,
  * random variables, and time) and should only depend on the value of the
  * passed-in element. A non-deterministic constraint cannot reliably enforce
  * that all the collection's elements meet the constraint, since the constraint
  * is only enforced when elements are added.
  *
- * @see Constraints
- * @see MapConstraint
  * @author Mike Bostock
- * @since 3.0
  */
-@Beta
 @GwtCompatible
-public interface Constraint<E> {
+interface Constraint<E> {
   /**
    * Throws a suitable {@code RuntimeException} if the specified element is
    * illegal. Typically this is either a {@link NullPointerException}, an

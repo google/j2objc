@@ -16,8 +16,11 @@
 
 package com.google.common.util.concurrent;
 
+import static com.google.common.util.concurrent.MoreExecutors.directExecutor;
+
 import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
+import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 import com.google.j2objc.annotations.WeakOuter;
 
@@ -28,6 +31,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,9 +46,9 @@ import javax.annotation.concurrent.GuardedBy;
  * <p>This class uses the {@link ScheduledExecutorService} returned from {@link #executor} to run
  * the {@link #startUp} and {@link #shutDown} methods and also uses that service to schedule the 
  * {@link #runOneIteration} that will be executed periodically as specified by its 
- * {@link Scheduler}. When this service is asked to stop via {@link #stop} or {@link #stopAndWait}, 
- * it will cancel the periodic task (but not interrupt it) and wait for it to stop before running 
- * the {@link #shutDown} method.  
+ * {@link Scheduler}. When this service is asked to stop via {@link #stopAsync} it will cancel the 
+ * periodic task (but not interrupt it) and wait for it to stop before running the 
+ * {@link #shutDown} method.  
  * 
  * <p>Subclasses are guaranteed that the life cycle methods ({@link #runOneIteration}, {@link 
  * #startUp} and {@link #shutDown}) will never run concurrently. Notably, if any execution of {@link
@@ -55,7 +59,7 @@ import javax.annotation.concurrent.GuardedBy;
  * 
  * <h3>Usage Example</h3>
  * 
- * Here is a sketch of a service which crawls a website and uses the scheduling capabilities to 
+ * <p>Here is a sketch of a service which crawls a website and uses the scheduling capabilities to 
  * rate limit itself. <pre> {@code
  * class CrawlingService extends AbstractScheduledService {
  *   private Set<Uri> visited;
@@ -82,7 +86,7 @@ import javax.annotation.concurrent.GuardedBy;
  *   }
  * }}</pre>
  * 
- * This class uses the life cycle methods to read in a list of starting URIs and save the set of 
+ * <p>This class uses the life cycle methods to read in a list of starting URIs and save the set of 
  * outstanding URIs when shutting down.  Also, it takes advantage of the scheduling functionality to
  * rate limit the number of queries we perform.
  * 
@@ -188,7 +192,11 @@ public abstract class AbstractScheduledService implements Service {
     private final Runnable task = new ServiceDelegateTask();
     
     @Override protected final void doStart() {
-      executorService = executor();
+      executorService = MoreExecutors.renamingDecorator(executor(), new Supplier<String>() {
+        @Override public String get() {
+          return serviceName() + " " + state();
+        }
+      });
       executorService.execute(new Runnable() {
         @Override public void run() {
           lock.lock();
@@ -281,11 +289,10 @@ public abstract class AbstractScheduledService implements Service {
    * {@linkplain Service.State#TERMINATED fails}.
    */
   protected ScheduledExecutorService executor() {
-    final String serviceName = serviceName();
     final ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(
         new ThreadFactory() {
           @Override public Thread newThread(Runnable runnable) {
-            return MoreExecutors.newThread(serviceName, runnable);
+            return MoreExecutors.newThread(serviceName(), runnable);
           }
         });
     // Add a listener to shutdown the executor after the service is stopped.  This ensures that the
@@ -294,15 +301,13 @@ public abstract class AbstractScheduledService implements Service {
     // is called within doStart() so we know that the service cannot terminate or fail concurrently
     // with adding this listener so it is impossible to miss an event that we are interested in.
     addListener(new Listener() {
-      @Override public void starting() {}
-      @Override public void running() {}
-      @Override public void stopping(State from) {}
       @Override public void terminated(State from) {
         executor.shutdown();
       }
       @Override public void failed(State from, Throwable failure) {
         executor.shutdown();
-      }}, MoreExecutors.sameThreadExecutor());
+      }
+    }, directExecutor());
     return executor;
   }
 
@@ -320,16 +325,6 @@ public abstract class AbstractScheduledService implements Service {
     return serviceName() + " [" + state() + "]";
   }
 
-  // We override instead of using ForwardingService so that these can be final.
-
-  @Override public final ListenableFuture<State> start() {
-    return delegate.start();
-  }
-
-  @Override public final State startAndWait() {
-    return delegate.startAndWait();
-  }
-
   @Override public final boolean isRunning() {
     return delegate.isRunning();
   }
@@ -338,14 +333,6 @@ public abstract class AbstractScheduledService implements Service {
     return delegate.state();
   }
 
-  @Override public final ListenableFuture<State> stop() {
-    return delegate.stop();
-  }
-
-  @Override public final State stopAndWait() {
-    return delegate.stopAndWait();
-  }
-  
   /**
    * @since 13.0
    */
@@ -358,6 +345,50 @@ public abstract class AbstractScheduledService implements Service {
    */
   @Override public final Throwable failureCause() {
     return delegate.failureCause();
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final Service startAsync() {
+    delegate.startAsync();
+    return this;
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final Service stopAsync() {
+    delegate.stopAsync();
+    return this;
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final void awaitRunning() {
+    delegate.awaitRunning();
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final void awaitRunning(long timeout, TimeUnit unit) throws TimeoutException {
+    delegate.awaitRunning(timeout, unit);
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final void awaitTerminated() {
+    delegate.awaitTerminated();
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final void awaitTerminated(long timeout, TimeUnit unit) throws TimeoutException {
+    delegate.awaitTerminated(timeout, unit);
   }
   
   /**

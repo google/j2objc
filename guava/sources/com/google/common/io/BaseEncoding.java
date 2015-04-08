@@ -53,34 +53,31 @@ import javax.annotation.Nullable;
  * A binary encoding scheme for reversibly translating between byte sequences and printable ASCII
  * strings. This class includes several constants for encoding schemes specified by <a
  * href="http://tools.ietf.org/html/rfc4648">RFC 4648</a>. For example, the expression:
+ *
  * <pre>   {@code
+ *   BaseEncoding.base32().encode("foo".getBytes(Charsets.US_ASCII))}</pre>
  *
- *   BaseEncoding.base32().encode("foo".getBytes(Charsets.US_ASCII))
- * }</pre>
- * returns the string {@code "MZXW6==="}, and <pre>   {@code
+ * <p>returns the string {@code "MZXW6==="}, and <pre>   {@code
+ *  byte[] decoded = BaseEncoding.base32().decode("MZXW6===");}</pre>
  *
- *  byte[] decoded = BaseEncoding.base32().decode("MZXW6===");
- * }</pre>
- *
- * ...returns the ASCII bytes of the string {@code "foo"}.
+ * <p>...returns the ASCII bytes of the string {@code "foo"}.
  *
  * <p>By default, {@code BaseEncoding}'s behavior is relatively strict and in accordance with
  * RFC 4648.  Decoding rejects characters in the wrong case, though padding is optional.
  * To modify encoding and decoding behavior, use configuration methods to obtain a new encoding
- * with modified behavior: <pre>   {@code
+ * with modified behavior:
  *
- *  BaseEncoding.base16().lowerCase().decode("deadbeef");
- * }</pre>
+ * <pre>   {@code
+ *  BaseEncoding.base16().lowerCase().decode("deadbeef");}</pre>
  *
  * <p>Warning: BaseEncoding instances are immutable.  Invoking a configuration method has no effect
  * on the receiving instance; you must store and use the new encoding instance it returns, instead.
- * <pre>   {@code
  *
+ * <pre>   {@code
  *   // Do NOT do this
  *   BaseEncoding hex = BaseEncoding.base16();
  *   hex.lowerCase(); // does nothing!
- *   return hex.decode("deadbeef"); // throws an IllegalArgumentException
- * }</pre>
+ *   return hex.decode("deadbeef"); // throws an IllegalArgumentException}</pre>
  *
  * <p>It is guaranteed that {@code encoding.decode(encoding.encode(x))} is always equal to
  * {@code x}, but the reverse does not necessarily hold.
@@ -139,6 +136,22 @@ public abstract class BaseEncoding {
   BaseEncoding() {}
 
   /**
+   * Exception indicating invalid base-encoded input encountered while decoding.
+   *
+   * @author Louis Wasserman
+   * @since 15.0
+   */
+  public static final class DecodingException extends IOException {
+    DecodingException(String message) {
+      super(message);
+    }
+
+    DecodingException(Throwable cause) {
+      super(cause);
+    }
+  }
+
+  /**
    * Encodes the specified byte array, and returns the encoded {@code String}.
    */
   public String encode(byte[] bytes) {
@@ -176,22 +189,6 @@ public abstract class BaseEncoding {
   }
 
   /**
-   * Returns an {@code OutputSupplier} that supplies streams that encode bytes using this encoding
-   * into writers from the specified {@code OutputSupplier}.
-   */
-  @GwtIncompatible("Writer,OutputStream")
-  public final OutputSupplier<OutputStream> encodingStream(
-      final OutputSupplier<? extends Writer> writerSupplier) {
-    checkNotNull(writerSupplier);
-    return new OutputSupplier<OutputStream>() {
-      @Override
-      public OutputStream getOutput() throws IOException {
-        return encodingStream(writerSupplier.getOutput());
-      }
-    };
-  }
-
-  /**
    * Returns a {@code ByteSink} that writes base-encoded bytes to the specified {@code CharSink}.
    */
   @GwtIncompatible("ByteSink,CharSink")
@@ -225,6 +222,21 @@ public abstract class BaseEncoding {
    *         encoding.
    */
   public final byte[] decode(CharSequence chars) {
+    try {
+      return decodeChecked(chars);
+    } catch (DecodingException badInput) {
+      throw new IllegalArgumentException(badInput);
+    }
+  }
+
+  /**
+   * Decodes the specified character sequence, and returns the resulting {@code byte[]}.
+   * This is the inverse operation to {@link #encode(byte[])}.
+   *
+   * @throws DecodingException if the input is not a valid encoded string according to this
+   *         encoding.
+   */
+  final byte[] decodeChecked(CharSequence chars) throws DecodingException {
     chars = padding().trimTrailingFrom(chars);
     ByteInput decodedInput = decodingStream(asCharInput(chars));
     byte[] tmp = new byte[maxDecodedSize(chars.length())];
@@ -233,35 +245,22 @@ public abstract class BaseEncoding {
       for (int i = decodedInput.read(); i != -1; i = decodedInput.read()) {
         tmp[index++] = (byte) i;
       }
-    } catch (IOException badInput) {
-      throw new IllegalArgumentException(badInput);
+    } catch (DecodingException badInput) {
+      throw badInput;
+    } catch (IOException impossible) {
+      throw new AssertionError(impossible);
     }
     return extract(tmp, index);
   }
 
   /**
    * Returns an {@code InputStream} that decodes base-encoded input from the specified
-   * {@code Reader}.
+   * {@code Reader}.  The returned stream throws a {@link DecodingException} upon decoding-specific
+   * errors.
    */
   @GwtIncompatible("Reader,InputStream")
   public final InputStream decodingStream(Reader reader) {
     return asInputStream(decodingStream(asCharInput(reader)));
-  }
-
-  /**
-   * Returns an {@code InputSupplier} that supplies input streams that decode base-encoded input
-   * from readers from the specified supplier.
-   */
-  @GwtIncompatible("Reader,InputStream")
-  public final InputSupplier<InputStream> decodingStream(
-      final InputSupplier<? extends Reader> readerSupplier) {
-    checkNotNull(readerSupplier);
-    return new InputSupplier<InputStream>() {
-      @Override
-      public InputStream getInput() throws IOException {
-        return decodingStream(readerSupplier.getInput());
-      }
-    };
   }
 
   /**
@@ -501,7 +500,7 @@ public abstract class BaseEncoding {
 
     int decode(char ch) throws IOException {
       if (ch > Ascii.MAX || decodabet[ch] == -1) {
-        throw new IOException("Unrecognized character: " + ch);
+        throw new DecodingException("Unrecognized character: " + ch);
       }
       return decodabet[ch];
     }
@@ -572,7 +571,7 @@ public abstract class BaseEncoding {
       this(new Alphabet(name, alphabetChars.toCharArray()), paddingChar);
     }
 
-    StandardBaseEncoding(Alphabet alphabet, Character paddingChar) {
+    StandardBaseEncoding(Alphabet alphabet, @Nullable Character paddingChar) {
       this.alphabet = checkNotNull(alphabet);
       checkArgument(paddingChar == null || !alphabet.matches(paddingChar),
           "Padding character %s was already in alphabet", paddingChar);
@@ -656,7 +655,7 @@ public abstract class BaseEncoding {
             int readChar = reader.read();
             if (readChar == -1) {
               if (!hitPadding && !alphabet.isValidPaddingStartPosition(readChars)) {
-                throw new IOException("Invalid input length " + readChars);
+                throw new DecodingException("Invalid input length " + readChars);
               }
               return -1;
             }
@@ -665,11 +664,11 @@ public abstract class BaseEncoding {
             if (paddingMatcher.matches(ch)) {
               if (!hitPadding
                   && (readChars == 1 || !alphabet.isValidPaddingStartPosition(readChars - 1))) {
-                throw new IOException("Padding cannot start at index " + readChars);
+                throw new DecodingException("Padding cannot start at index " + readChars);
               }
               hitPadding = true;
             } else if (hitPadding) {
-              throw new IOException(
+              throw new DecodingException(
                   "Expected padding character but found '" + ch + "' at index " + readChars);
             } else {
               bitBuffer <<= alphabet.bitsPerChar;

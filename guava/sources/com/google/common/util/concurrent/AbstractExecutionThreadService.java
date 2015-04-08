@@ -17,9 +17,12 @@
 package com.google.common.util.concurrent;
 
 import com.google.common.annotations.Beta;
+import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 
 import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -40,7 +43,12 @@ public abstract class AbstractExecutionThreadService implements Service {
   /* use AbstractService for state management */
   private final Service delegate = new AbstractService() {
     @Override protected final void doStart() {
-      executor().execute(new Runnable() {
+      Executor executor = MoreExecutors.renamingDecorator(executor(), new Supplier<String>() {
+        @Override public String get() {
+          return serviceName();
+        }
+      });
+      executor.execute(new Runnable() {
         @Override
         public void run() {
           try {
@@ -144,30 +152,12 @@ public abstract class AbstractExecutionThreadService implements Service {
     return serviceName() + " [" + state() + "]";
   }
 
-  // We override instead of using ForwardingService so that these can be final.
-
-  @Override public final ListenableFuture<State> start() {
-    return delegate.start();
-  }
-
-  @Override public final State startAndWait() {
-    return delegate.startAndWait();
-  }
-
   @Override public final boolean isRunning() {
     return delegate.isRunning();
   }
 
   @Override public final State state() {
     return delegate.state();
-  }
-
-  @Override public final ListenableFuture<State> stop() {
-    return delegate.stop();
-  }
-
-  @Override public final State stopAndWait() {
-    return delegate.stopAndWait();
   }
 
   /**
@@ -182,6 +172,50 @@ public abstract class AbstractExecutionThreadService implements Service {
    */
   @Override public final Throwable failureCause() {
     return delegate.failureCause();
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final Service startAsync() {
+    delegate.startAsync();
+    return this;
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final Service stopAsync() {
+    delegate.stopAsync();
+    return this;
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final void awaitRunning() {
+    delegate.awaitRunning();
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final void awaitRunning(long timeout, TimeUnit unit) throws TimeoutException {
+    delegate.awaitRunning(timeout, unit);
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final void awaitTerminated() {
+    delegate.awaitTerminated();
+  }
+  
+  /**
+   * @since 15.0
+   */
+  @Override public final void awaitTerminated(long timeout, TimeUnit unit) throws TimeoutException {
+    delegate.awaitTerminated(timeout, unit);
   }
   
   /**

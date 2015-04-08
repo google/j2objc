@@ -100,11 +100,11 @@ public final class HostSpecifier {
     final InternetDomainName domain = InternetDomainName.from(host);
 
     if (domain.hasPublicSuffix()) {
-      return new HostSpecifier(domain.name());
+      return new HostSpecifier(domain.toString());
     }
 
-    throw new IllegalArgumentException("Domain name does not have a recognized public suffix: "
-        + host);
+    throw new IllegalArgumentException(
+        "Domain name does not have a recognized public suffix: " + host);
   }
 
   /**
@@ -115,7 +115,8 @@ public final class HostSpecifier {
    *
    * @throws ParseException if the specifier is not valid.
    */
-  public static HostSpecifier from(String specifier) throws ParseException {
+  public static HostSpecifier from(String specifier)
+      throws ParseException {
     try {
       return fromValid(specifier);
     } catch (IllegalArgumentException e) {
@@ -123,7 +124,8 @@ public final class HostSpecifier {
       // fromValid(), we implement this method in terms of that one rather
       // than the reverse.
 
-      ParseException parseException = new ParseException("Invalid host specifier: " + specifier, 0);
+      ParseException parseException =
+          new ParseException("Invalid host specifier: " + specifier, 0);
       parseException.initCause(e);
       throw parseException;
     }
@@ -169,7 +171,6 @@ public final class HostSpecifier {
    * an IPv6 address without brackets, brackets are added so that the
    * result will be usable in the host part of a URI.
    */
-
   @Override
   public String toString() {
     return canonicalForm;

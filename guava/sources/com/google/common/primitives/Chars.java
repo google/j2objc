@@ -78,7 +78,10 @@ public final class Chars {
    */
   public static char checkedCast(long value) {
     char result = (char) value;
-    checkArgument(result == value, "Out of range: %s", value);
+    if (result != value) {
+      // don't use checkArgument here, to avoid boxing
+      throw new IllegalArgumentException("Out of range: " + value);
+    }
     return result;
   }
 
@@ -103,6 +106,9 @@ public final class Chars {
   /**
    * Compares the two specified {@code char} values. The sign of the value
    * returned is the same as that of {@code ((Character) a).compareTo(b)}.
+   *
+   * <p><b>Note for Java 7 and later:</b> this method should be treated as
+   * deprecated; use the equivalent {@link Character#compare} method instead.
    *
    * @param a the first {@code char} to compare
    * @param b the second {@code char} to compare

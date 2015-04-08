@@ -29,7 +29,7 @@ import java.util.Set;
  * A sorted set of contiguous values in a given {@link DiscreteDomain}.
  *
  * <p><b>Warning:</b> Be extremely careful what you do with conceptually large instances (such as
- * {@code ContiguousSet.create(Range.greaterThan(0), DiscreteDomains.integers()}). Certain
+ * {@code ContiguousSet.create(Range.greaterThan(0), DiscreteDomain.integers()}). Certain
  * operations on such a set can be performed efficiently, but others (such as {@link Set#hashCode}
  * or {@link Collections#frequency}) can cause major performance problems.
  *
@@ -168,5 +168,17 @@ public abstract class ContiguousSet<C extends Comparable> extends ImmutableSorte
   /** Returns a short-hand representation of the contents such as {@code "[1..100]"}. */
   @Override public String toString() {
     return range().toString();
+  }
+
+  /**
+   * Not supported. {@code ContiguousSet} instances are constructed with {@link #create}. This
+   * method exists only to hide {@link ImmutableSet#builder} from consumers of {@code
+   * ContiguousSet}.
+   *
+   * @throws UnsupportedOperationException always
+   * @deprecated Use {@link #create}.
+   */
+  @Deprecated public static <E> ImmutableSortedSet.Builder<E> builder() {
+    throw new UnsupportedOperationException();
   }
 }

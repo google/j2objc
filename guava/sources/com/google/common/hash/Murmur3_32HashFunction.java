@@ -34,6 +34,8 @@ import com.google.common.primitives.Longs;
 import java.io.Serializable;
 import java.nio.ByteBuffer;
 
+import javax.annotation.Nullable;
+
 /**
  * See http://smhasher.googlecode.com/svn/trunk/MurmurHash3.cpp
  * MurmurHash3_x86_32
@@ -65,6 +67,20 @@ final class Murmur3_32HashFunction extends AbstractStreamingHashFunction impleme
     return "Hashing.murmur3_32(" + seed + ")";
   }
 
+  @Override
+  public boolean equals(@Nullable Object object) {
+    if (object instanceof Murmur3_32HashFunction) {
+      Murmur3_32HashFunction other = (Murmur3_32HashFunction) object;
+      return seed == other.seed;
+    }
+    return false;
+  }
+
+  @Override
+  public int hashCode() {
+    return getClass().hashCode() ^ seed;
+  }
+
   @Override public HashCode hashInt(int input) {
     int k1 = mixK1(input);
     int h1 = mixH1(seed, k1);
@@ -86,7 +102,7 @@ final class Murmur3_32HashFunction extends AbstractStreamingHashFunction impleme
   }
 
   // TODO(user): Maybe implement #hashBytes instead?
-  @Override public HashCode hashString(CharSequence input) {
+  @Override public HashCode hashUnencodedChars(CharSequence input) {
     int h1 = seed;
 
     // step through the CharSequence 2 chars at a time
@@ -128,7 +144,7 @@ final class Murmur3_32HashFunction extends AbstractStreamingHashFunction impleme
     h1 ^= h1 >>> 13;
     h1 *= 0xc2b2ae35;
     h1 ^= h1 >>> 16;
-    return HashCodes.fromInt(h1);
+    return HashCode.fromInt(h1);
   }
 
   private static final class Murmur3_32Hasher extends AbstractStreamingHasher {

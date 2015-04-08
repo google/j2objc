@@ -24,6 +24,7 @@ import static com.google.common.base.Preconditions.checkPositionIndexes;
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.base.Converter;
 
 import java.io.Serializable;
 import java.util.AbstractList;
@@ -85,7 +86,10 @@ public final class Ints {
    */
   public static int checkedCast(long value) {
     int result = (int) value;
-    checkArgument(result == value, "Out of range: %s", value);
+    if (result != value) {
+      // don't use checkArgument here, to avoid boxing
+      throw new IllegalArgumentException("Out of range: " + value);
+    }
     return result;
   }
 
@@ -110,6 +114,9 @@ public final class Ints {
   /**
    * Compares the two specified {@code int} values. The sign of the value
    * returned is the same as that of {@code ((Integer) a).compareTo(b)}.
+   *
+   * <p><b>Note for Java 7 and later:</b> this method should be treated as
+   * deprecated; use the equivalent {@link Integer#compare} method instead.
    *
    * @param a the first {@code int} to compare
    * @param b the second {@code int} to compare
@@ -326,6 +333,42 @@ public final class Ints {
   @GwtIncompatible("doesn't work")
   public static int fromBytes(byte b1, byte b2, byte b3, byte b4) {
     return b1 << 24 | (b2 & 0xFF) << 16 | (b3 & 0xFF) << 8 | (b4 & 0xFF);
+  }
+
+  private static final class IntConverter
+      extends Converter<String, Integer> implements Serializable {
+    static final IntConverter INSTANCE = new IntConverter();
+
+    @Override
+    protected Integer doForward(String value) {
+      return Integer.decode(value);
+    }
+
+    @Override
+    protected String doBackward(Integer value) {
+      return value.toString();
+    }
+
+    @Override
+    public String toString() {
+      return "Ints.stringConverter()";
+    }
+
+    private Object readResolve() {
+      return INSTANCE;
+    }
+    private static final long serialVersionUID = 1;
+  }
+
+  /**
+   * Returns a serializable converter object that converts between strings and
+   * integers using {@link Integer#decode} and {@link Integer#toString()}.
+   *
+   * @since 16.0
+   */
+  @Beta
+  public static Converter<String, Integer> stringConverter() {
+    return IntConverter.INSTANCE;
   }
 
   /**
@@ -593,6 +636,23 @@ public final class Ints {
     private static final long serialVersionUID = 0;
   }
 
+  private static final byte[] asciiDigits = new byte[128];
+
+  static {
+    Arrays.fill(asciiDigits, (byte) -1);
+    for (int i = 0; i <= 9; i++) {
+      asciiDigits['0' + i] = (byte) i;
+    }
+    for (int i = 0; i <= 26; i++) {
+      asciiDigits['A' + i] = (byte) (10 + i);
+      asciiDigits['a' + i] = (byte) (10 + i);
+    }
+  }
+
+  private static int digit(char c) {
+    return (c < 128) ? asciiDigits[c] : -1;
+  }
+
   /**
    * Parses the specified string as a signed decimal integer value. The ASCII
    * character {@code '-'} (<code>'&#92;u002D'</code>) is recognized as the
@@ -600,6 +660,8 @@ public final class Ints {
    *
    * <p>Unlike {@link Integer#parseInt(String)}, this method returns
    * {@code null} instead of throwing an exception if parsing fails.
+   * Additionally, this method only accepts ASCII digits, and returns
+   * {@code null} if non-ASCII digits are present in the string.
    *
    * <p>Note that strings prefixed with ASCII {@code '+'} are rejected, even
    * under JDK 7, despite the change to {@link Integer#parseInt(String)} for
@@ -613,8 +675,72 @@ public final class Ints {
    */
   @Beta
   @CheckForNull
-  @GwtIncompatible("TODO")
   public static Integer tryParse(String string) {
-    return AndroidInteger.tryParse(string, 10);
+    return tryParse(string, 10);
+  }
+
+  /**
+   * Parses the specified string as a signed integer value using the specified
+   * radix. The ASCII character {@code '-'} (<code>'&#92;u002D'</code>) is
+   * recognized as the minus sign.
+   *
+   * <p>Unlike {@link Integer#parseInt(String, int)}, this method returns
+   * {@code null} instead of throwing an exception if parsing fails.
+   * Additionally, this method only accepts ASCII digits, and returns
+   * {@code null} if non-ASCII digits are present in the string.
+   *
+   * <p>Note that strings prefixed with ASCII {@code '+'} are rejected, even
+   * under JDK 7, despite the change to {@link Integer#parseInt(String, int)}
+   * for that version.
+   *
+   * @param string the string representation of an integer value
+   * @param radix the radix to use when parsing
+   * @return the integer value represented by {@code string} using
+   *     {@code radix}, or {@code null} if {@code string} has a length of zero
+   *     or cannot be parsed as an integer value
+   * @throws IllegalArgumentException if {@code radix < Character.MIN_RADIX} or
+   *     {@code radix > Character.MAX_RADIX}
+   */
+  @CheckForNull static Integer tryParse(
+      String string, int radix) {
+    if (checkNotNull(string).isEmpty()) {
+      return null;
+    }
+    if (radix < Character.MIN_RADIX || radix > Character.MAX_RADIX) {
+      throw new IllegalArgumentException(
+          "radix must be between MIN_RADIX and MAX_RADIX but was " + radix);
+    }
+    boolean negative = string.charAt(0) == '-';
+    int index = negative ? 1 : 0;
+    if (index == string.length()) {
+      return null;
+    }
+    int digit = digit(string.charAt(index++));
+    if (digit < 0 || digit >= radix) {
+      return null;
+    }
+    int accum = -digit;
+
+    int cap = Integer.MIN_VALUE / radix;
+
+    while (index < string.length()) {
+      digit = digit(string.charAt(index++));
+      if (digit < 0 || digit >= radix || accum < cap) {
+        return null;
+      }
+      accum *= radix;
+      if (accum < Integer.MIN_VALUE + digit) {
+        return null;
+      }
+      accum -= digit;
+    }
+
+    if (negative) {
+      return accum;
+    } else if (accum == Integer.MIN_VALUE) {
+      return null;
+    } else {
+      return -accum;
+    }
   }
 }

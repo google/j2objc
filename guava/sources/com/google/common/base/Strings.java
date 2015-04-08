@@ -54,7 +54,8 @@ public final class Strings {
    * @return {@code string} itself if it is nonempty; {@code null} if it is
    *     empty or null
    */
-  public static @Nullable String emptyToNull(@Nullable String string) {
+  @Nullable
+  public static String emptyToNull(@Nullable String string) {
     return isNullOrEmpty(string) ? null : string;
   }
 
@@ -163,8 +164,8 @@ public final class Strings {
     final long longSize = (long) len * (long) count;
     final int size = (int) longSize;
     if (size != longSize) {
-      throw new ArrayIndexOutOfBoundsException("Required array size too large: "
-          + String.valueOf(longSize));
+      throw new ArrayIndexOutOfBoundsException(
+          "Required array size too large: " + longSize);
     }
 
     final char[] array = new char[size];

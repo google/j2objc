@@ -144,15 +144,16 @@ final class MessageDigestHashFunction extends AbstractStreamingHashFunction
     }
 
     private void checkNotDone() {
-      checkState(!done, "Cannot use Hasher after calling #hash() on it");
+      checkState(!done, "Cannot re-use a Hasher after calling hash() on it");
     }
 
     @Override
     public HashCode hash() {
+      checkNotDone();
       done = true;
       return (bytes == digest.getDigestLength())
-          ? HashCodes.fromBytesNoCopy(digest.digest())
-          : HashCodes.fromBytesNoCopy(Arrays.copyOf(digest.digest(), bytes));
+          ? HashCode.fromBytesNoCopy(digest.digest())
+          : HashCode.fromBytesNoCopy(Arrays.copyOf(digest.digest(), bytes));
     }
   }
 }

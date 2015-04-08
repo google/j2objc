@@ -16,11 +16,12 @@
 
 package com.google.common.collect;
 
+import static com.google.common.base.Preconditions.checkArgument;
+
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.SortedMap;
 
@@ -91,6 +92,21 @@ public abstract class ForwardingSortedMap<K, V> extends ForwardingMap<K, V>
     return delegate().tailMap(fromKey);
   }
 
+  /**
+   * A sensible implementation of {@link SortedMap#keySet} in terms of the methods of
+   * {@code ForwardingSortedMap}. In many cases, you may wish to override
+   * {@link ForwardingSortedMap#keySet} to forward to this implementation or a subclass thereof.
+   *
+   * @since 15.0
+   */
+  @Beta
+  protected class StandardKeySet extends Maps.SortedKeySet<K, V> {
+    /** Constructor for use by subclasses. */
+    public StandardKeySet() {
+      super(ForwardingSortedMap.this);
+    }
+  }
+
   // unsafe, but worst case is a CCE is thrown, which callers will be expecting
   @SuppressWarnings("unchecked")
   private int unsafeCompare(Object k1, Object k2) {
@@ -127,37 +143,6 @@ public abstract class ForwardingSortedMap<K, V> extends ForwardingMap<K, V>
   }
 
   /**
-   * A sensible definition of {@link #remove} in terms of the {@code
-   * iterator()} of the {@code entrySet()} of {@link #tailMap}. If you override
-   * {@link #tailMap}, you may wish to override {@link #remove} to forward
-   * to this implementation.
-   *
-   * @since 7.0
-   */
-  @Override @Beta protected V standardRemove(@Nullable Object key) {
-    try {
-      // any CCE will be caught
-      @SuppressWarnings("unchecked")
-      SortedMap<Object, V> self = (SortedMap<Object, V>) this;
-      Iterator<Entry<Object, V>> entryIterator =
-          self.tailMap(key).entrySet().iterator();
-      if (entryIterator.hasNext()) {
-        Entry<Object, V> ceilingEntry = entryIterator.next();
-        if (unsafeCompare(ceilingEntry.getKey(), key) == 0) {
-          V value = ceilingEntry.getValue();
-          entryIterator.remove();
-          return value;
-        }
-      }
-    } catch (ClassCastException e) {
-      return null;
-    } catch (NullPointerException e) {
-      return null;
-    }
-    return null;
-  }
-
-  /**
    * A sensible default implementation of {@link #subMap(Object, Object)} in
    * terms of {@link #headMap(Object)} and {@link #tailMap(Object)}. In some
    * situations, you may wish to override {@link #subMap(Object, Object)} to
@@ -166,6 +151,7 @@ public abstract class ForwardingSortedMap<K, V> extends ForwardingMap<K, V>
    * @since 7.0
    */
   @Beta protected SortedMap<K, V> standardSubMap(K fromKey, K toKey) {
+    checkArgument(unsafeCompare(fromKey, toKey) <= 0, "fromKey must be <= toKey");
     return tailMap(fromKey).headMap(toKey);
   }
 }

@@ -21,9 +21,11 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
+import com.google.common.util.concurrent.ForwardingListenableFuture.SimpleForwardingListenableFuture;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
@@ -32,7 +34,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -259,13 +263,15 @@ public final class MoreExecutors {
    *
    * @since 10.0 (<a href="http://code.google.com/p/guava-libraries/wiki/Compatibility"
    *        >mostly source-compatible</a> since 3.0)
+   * @deprecated Use {@link #directExecutor()} if you only require an {@link Executor} and
+   *     {@link #newDirectExecutorService()} if you need a {@link ListeningExecutorService}.
    */
-  public static ListeningExecutorService sameThreadExecutor() {
-    return new SameThreadExecutorService();
+  @Deprecated public static ListeningExecutorService sameThreadExecutor() {
+    return new DirectExecutorService();
   }
 
   // See sameThreadExecutor javadoc for behavioral notes.
-  private static class SameThreadExecutorService
+  private static class DirectExecutorService
       extends AbstractListeningExecutorService {
     /**
      * Lock used whenever accessing the state variables
@@ -389,6 +395,70 @@ public final class MoreExecutors {
   }
 
   /**
+   * Creates an executor service that runs each task in the thread
+   * that invokes {@code execute/submit}, as in {@link CallerRunsPolicy}  This
+   * applies both to individually submitted tasks and to collections of tasks
+   * submitted via {@code invokeAll} or {@code invokeAny}.  In the latter case,
+   * tasks will run serially on the calling thread.  Tasks are run to
+   * completion before a {@code Future} is returned to the caller (unless the
+   * executor has been shutdown).
+   *
+   * <p>Although all tasks are immediately executed in the thread that
+   * submitted the task, this {@code ExecutorService} imposes a small
+   * locking overhead on each task submission in order to implement shutdown
+   * and termination behavior.
+   *
+   * <p>The implementation deviates from the {@code ExecutorService}
+   * specification with regards to the {@code shutdownNow} method.  First,
+   * "best-effort" with regards to canceling running tasks is implemented
+   * as "no-effort".  No interrupts or other attempts are made to stop
+   * threads executing tasks.  Second, the returned list will always be empty,
+   * as any submitted task is considered to have started execution.
+   * This applies also to tasks given to {@code invokeAll} or {@code invokeAny}
+   * which are pending serial execution, even the subset of the tasks that
+   * have not yet started execution.  It is unclear from the
+   * {@code ExecutorService} specification if these should be included, and
+   * it's much easier to implement the interpretation that they not be.
+   * Finally, a call to {@code shutdown} or {@code shutdownNow} may result
+   * in concurrent calls to {@code invokeAll/invokeAny} throwing
+   * RejectedExecutionException, although a subset of the tasks may already
+   * have been executed.
+   *
+   * @since 18.0 (present as MoreExecutors.sameThreadExecutor() since 10.0)
+   */
+  public static ListeningExecutorService newDirectExecutorService() {
+    return new DirectExecutorService();
+  }
+
+  /**
+   * Returns an {@link Executor} that runs each task in the thread that invokes
+   * {@link Executor#execute execute}, as in {@link CallerRunsPolicy}.
+   *
+   * <p>This instance is equivalent to: <pre>   {@code
+   *   final class DirectExecutor implements Executor {
+   *     public void execute(Runnable r) {
+   *       r.run();
+   *     }
+   *   }}</pre>
+   *
+   * <p>This should be preferred to {@link #newDirectExecutorService()} because the implementing the
+   * {@link ExecutorService} subinterface necessitates significant performance overhead.
+   *
+   * @since 18.0
+   */
+  public static Executor directExecutor() {
+    return DirectExecutor.INSTANCE;
+  }
+
+  /** See {@link #directExecutor} for behavioral notes. */
+  private enum DirectExecutor implements Executor {
+    INSTANCE;
+    @Override public void execute(Runnable command) {
+      command.run();
+    }
+  }
+
+  /**
    * Creates an {@link ExecutorService} whose {@code submit} and {@code
    * invokeAll} methods submit {@link ListenableFutureTask} instances to the
    * given delegate executor. Those methods, as well as {@code execute} and
@@ -422,11 +492,11 @@ public final class MoreExecutors {
    * {@code invokeAny}, are implemented in terms of calls to {@code
    * delegate.execute}. All other methods are forwarded unchanged to the
    * delegate. This implies that the returned {@code
-   * SchedulingListeningExecutorService} never calls the delegate's {@code
+   * ListeningScheduledExecutorService} never calls the delegate's {@code
    * submit}, {@code invokeAll}, and {@code invokeAny} methods, so any special
    * handling of tasks must be implemented in the delegate's {@code execute}
    * method or by wrapping the returned {@code
-   * SchedulingListeningExecutorService}.
+   * ListeningScheduledExecutorService}.
    *
    * <p>If the delegate executor was already an instance of {@code
    * ListeningScheduledExecutorService}, it is returned untouched, and the rest
@@ -443,7 +513,7 @@ public final class MoreExecutors {
 
   private static class ListeningDecorator
       extends AbstractListeningExecutorService {
-    final ExecutorService delegate;
+    private final ExecutorService delegate;
 
     ListeningDecorator(ExecutorService delegate) {
       this.delegate = checkNotNull(delegate);
@@ -492,28 +562,95 @@ public final class MoreExecutors {
     }
 
     @Override
-    public ScheduledFuture<?> schedule(
+    public ListenableScheduledFuture<?> schedule(
         Runnable command, long delay, TimeUnit unit) {
-      return delegate.schedule(command, delay, unit);
+      ListenableFutureTask<Void> task =
+          ListenableFutureTask.create(command, null);
+      ScheduledFuture<?> scheduled = delegate.schedule(task, delay, unit);
+      return new ListenableScheduledTask<Void>(task, scheduled);
     }
 
     @Override
-    public <V> ScheduledFuture<V> schedule(
+    public <V> ListenableScheduledFuture<V> schedule(
         Callable<V> callable, long delay, TimeUnit unit) {
-      return delegate.schedule(callable, delay, unit);
+      ListenableFutureTask<V> task = ListenableFutureTask.create(callable);
+      ScheduledFuture<?> scheduled = delegate.schedule(task, delay, unit);
+      return new ListenableScheduledTask<V>(task, scheduled);
     }
 
     @Override
-    public ScheduledFuture<?> scheduleAtFixedRate(
+    public ListenableScheduledFuture<?> scheduleAtFixedRate(
         Runnable command, long initialDelay, long period, TimeUnit unit) {
-      return delegate.scheduleAtFixedRate(command, initialDelay, period, unit);
+      NeverSuccessfulListenableFutureTask task =
+          new NeverSuccessfulListenableFutureTask(command);
+      ScheduledFuture<?> scheduled =
+          delegate.scheduleAtFixedRate(task, initialDelay, period, unit);
+      return new ListenableScheduledTask<Void>(task, scheduled);
     }
 
     @Override
-    public ScheduledFuture<?> scheduleWithFixedDelay(
+    public ListenableScheduledFuture<?> scheduleWithFixedDelay(
         Runnable command, long initialDelay, long delay, TimeUnit unit) {
-      return delegate.scheduleWithFixedDelay(
-          command, initialDelay, delay, unit);
+      NeverSuccessfulListenableFutureTask task =
+          new NeverSuccessfulListenableFutureTask(command);
+      ScheduledFuture<?> scheduled =
+          delegate.scheduleWithFixedDelay(task, initialDelay, delay, unit);
+      return new ListenableScheduledTask<Void>(task, scheduled);
+    }
+
+    private static final class ListenableScheduledTask<V>
+        extends SimpleForwardingListenableFuture<V>
+        implements ListenableScheduledFuture<V> {
+
+      private final ScheduledFuture<?> scheduledDelegate;
+
+      public ListenableScheduledTask(
+          ListenableFuture<V> listenableDelegate,
+          ScheduledFuture<?> scheduledDelegate) {
+        super(listenableDelegate);
+        this.scheduledDelegate = scheduledDelegate;
+      }
+
+      @Override
+      public boolean cancel(boolean mayInterruptIfRunning) {
+        boolean cancelled = super.cancel(mayInterruptIfRunning);
+        if (cancelled) {
+          // Unless it is cancelled, the delegate may continue being scheduled
+          scheduledDelegate.cancel(mayInterruptIfRunning);
+
+          // TODO(user): Cancel "this" if "scheduledDelegate" is cancelled.
+        }
+        return cancelled;
+      }
+
+      @Override
+      public long getDelay(TimeUnit unit) {
+        return scheduledDelegate.getDelay(unit);
+      }
+
+      @Override
+      public int compareTo(Delayed other) {
+        return scheduledDelegate.compareTo(other);
+      }
+    }
+
+    private static final class NeverSuccessfulListenableFutureTask
+        extends AbstractFuture<Void>
+        implements Runnable {
+      private final Runnable delegate;
+
+      public NeverSuccessfulListenableFutureTask(Runnable delegate) {
+        this.delegate = checkNotNull(delegate);
+      }
+
+      @Override public void run() {
+        try {
+          delegate.run();
+        } catch (Throwable t) {
+          setException(t);
+          throw Throwables.propagate(t);
+        }
+      }
     }
   }
 
@@ -613,7 +750,7 @@ public final class MoreExecutors {
       @Override public void run() {
         queue.add(future);
       }
-    }, MoreExecutors.sameThreadExecutor());
+    }, directExecutor());
     return future;
   }
 
@@ -683,5 +820,143 @@ public final class MoreExecutors {
       // OK if we can't set the name in this environment.
     }
     return result;
+  }
+
+  // TODO(user): provide overloads for ListeningExecutorService? ListeningScheduledExecutorService?
+  // TODO(user): provide overloads that take constant strings? Function<Runnable, String>s to
+  // calculate names?
+
+  /**
+   * Creates an {@link Executor} that renames the {@link Thread threads} that its tasks run in.
+   *
+   * <p>The names are retrieved from the {@code nameSupplier} on the thread that is being renamed
+   * right before each task is run.  The renaming is best effort, if a {@link SecurityManager}
+   * prevents the renaming then it will be skipped but the tasks will still execute.
+   *
+   *
+   * @param executor The executor to decorate
+   * @param nameSupplier The source of names for each task
+   */
+  static Executor renamingDecorator(final Executor executor, final Supplier<String> nameSupplier) {
+    checkNotNull(executor);
+    checkNotNull(nameSupplier);
+    if (isAppEngine()) {
+      // AppEngine doesn't support thread renaming, so don't even try
+      return executor;
+    }
+    return new Executor() {
+      @Override public void execute(Runnable command) {
+        executor.execute(Callables.threadRenaming(command, nameSupplier));
+      }
+    };
+  }
+
+  /**
+   * Creates an {@link ExecutorService} that renames the {@link Thread threads} that its tasks run
+   * in.
+   *
+   * <p>The names are retrieved from the {@code nameSupplier} on the thread that is being renamed
+   * right before each task is run.  The renaming is best effort, if a {@link SecurityManager}
+   * prevents the renaming then it will be skipped but the tasks will still execute.
+   *
+   *
+   * @param service The executor to decorate
+   * @param nameSupplier The source of names for each task
+   */
+  static ExecutorService renamingDecorator(final ExecutorService service,
+      final Supplier<String> nameSupplier) {
+    checkNotNull(service);
+    checkNotNull(nameSupplier);
+    if (isAppEngine()) {
+      // AppEngine doesn't support thread renaming, so don't even try.
+      return service;
+    }
+    return new WrappingExecutorService(service) {
+      @Override protected <T> Callable<T> wrapTask(Callable<T> callable) {
+        return Callables.threadRenaming(callable, nameSupplier);
+      }
+      @Override protected Runnable wrapTask(Runnable command) {
+        return Callables.threadRenaming(command, nameSupplier);
+      }
+    };
+  }
+
+  /**
+   * Creates a {@link ScheduledExecutorService} that renames the {@link Thread threads} that its
+   * tasks run in.
+   *
+   * <p>The names are retrieved from the {@code nameSupplier} on the thread that is being renamed
+   * right before each task is run.  The renaming is best effort, if a {@link SecurityManager}
+   * prevents the renaming then it will be skipped but the tasks will still execute.
+   *
+   *
+   * @param service The executor to decorate
+   * @param nameSupplier The source of names for each task
+   */
+  static ScheduledExecutorService renamingDecorator(final ScheduledExecutorService service,
+      final Supplier<String> nameSupplier) {
+    checkNotNull(service);
+    checkNotNull(nameSupplier);
+    if (isAppEngine()) {
+      // AppEngine doesn't support thread renaming, so don't even try.
+      return service;
+    }
+    return new WrappingScheduledExecutorService(service) {
+      @Override protected <T> Callable<T> wrapTask(Callable<T> callable) {
+        return Callables.threadRenaming(callable, nameSupplier);
+      }
+      @Override protected Runnable wrapTask(Runnable command) {
+        return Callables.threadRenaming(command, nameSupplier);
+      }
+    };
+  }
+
+  /**
+   * Shuts down the given executor gradually, first disabling new submissions and later cancelling
+   * existing tasks.
+   *
+   * <p>The method takes the following steps:
+   * <ol>
+   *  <li>calls {@link ExecutorService#shutdown()}, disabling acceptance of new submitted tasks.
+   *  <li>waits for half of the specified timeout.
+   *  <li>if the timeout expires, it calls {@link ExecutorService#shutdownNow()}, cancelling
+   *  pending tasks and interrupting running tasks.
+   *  <li>waits for the other half of the specified timeout.
+   * </ol>
+   *
+   * <p>If, at any step of the process, the given executor is terminated or the calling thread is
+   * interrupted, the method calls {@link ExecutorService#shutdownNow()}, cancelling
+   * pending tasks and interrupting running tasks.
+   *
+   * @param service the {@code ExecutorService} to shut down
+   * @param timeout the maximum time to wait for the {@code ExecutorService} to terminate
+   * @param unit the time unit of the timeout argument
+   * @return {@code true} if the pool was terminated successfully, {@code false} if the
+   *     {@code ExecutorService} could not terminate <b>or</b> the thread running this method
+   *     is interrupted while waiting for the {@code ExecutorService} to terminate
+   * @since 17.0
+   */
+  @Beta
+  public static boolean shutdownAndAwaitTermination(
+      ExecutorService service, long timeout, TimeUnit unit) {
+    checkNotNull(unit);
+    // Disable new tasks from being submitted
+    service.shutdown();
+    try {
+      long halfTimeoutNanos = TimeUnit.NANOSECONDS.convert(timeout, unit) / 2;
+      // Wait for half the duration of the timeout for existing tasks to terminate
+      if (!service.awaitTermination(halfTimeoutNanos, TimeUnit.NANOSECONDS)) {
+        // Cancel currently executing tasks
+        service.shutdownNow();
+        // Wait the other half of the timeout for tasks to respond to being cancelled
+        service.awaitTermination(halfTimeoutNanos, TimeUnit.NANOSECONDS);
+      }
+    } catch (InterruptedException ie) {
+      // Preserve interrupt status
+      Thread.currentThread().interrupt();
+      // (Re-)Cancel if current thread also interrupted
+      service.shutdownNow();
+    }
+    return service.isTerminated();
   }
 }

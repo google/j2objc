@@ -6,18 +6,18 @@
 
 /*
  * Source:
- * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/src/jsr166e/LongAdder.java?revision=1.8
+ * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/src/jsr166e/LongAdder.java?revision=1.17
  */
 
 package com.google.common.cache;
 
 import com.google.common.annotations.GwtCompatible;
 
-import java.util.concurrent.atomic.AtomicLong;
 import java.io.IOException;
-import java.io.Serializable;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * One or more variables that together maintain an initially zero
@@ -27,7 +27,7 @@ import java.io.ObjectOutputStream;
  * #longValue}) returns the current total combined across the
  * variables maintaining the sum.
  *
- * <p> This class is usually preferable to {@link AtomicLong} when
+ * <p>This class is usually preferable to {@link AtomicLong} when
  * multiple threads update a common sum that is used for purposes such
  * as collecting statistics, not for fine-grained synchronization
  * control.  Under low update contention, the two classes have similar
@@ -36,12 +36,12 @@ import java.io.ObjectOutputStream;
  * consumption.
  *
  * <p>This class extends {@link Number}, but does <em>not</em> define
- * methods such as {@code hashCode} and {@code compareTo} because
- * instances are expected to be mutated, and so are not useful as
- * collection keys.
+ * methods such as {@code equals}, {@code hashCode} and {@code
+ * compareTo} because instances are expected to be mutated, and so are
+ * not useful as collection keys.
  *
  * <p><em>jsr166e note: This class is targeted to be placed in
- * java.util.concurrent.atomic<em>
+ * java.util.concurrent.atomic.</em>
  *
  * @since 1.8
  * @author Doug Lea
@@ -67,12 +67,12 @@ final class LongAdder extends Striped64 implements Serializable, LongAddable {
      * @param x the value to add
      */
     public void add(long x) {
-        Cell[] as; long b, v; HashCode hc; Cell a; int n;
+        Cell[] as; long b, v; int[] hc; Cell a; int n;
         if ((as = cells) != null || !casBase(b = base, b + x)) {
             boolean uncontended = true;
-            int h = (hc = threadHashCode.get()).code;
-            if (as == null || (n = as.length) < 1 ||
-                (a = as[(n - 1) & h]) == null ||
+            if ((hc = threadHashCode.get()) == null ||
+                as == null || (n = as.length) < 1 ||
+                (a = as[(n - 1) & hc[0]]) == null ||
                 !(uncontended = a.cas(v = a.value, v + x)))
                 retryUpdate(x, hc, uncontended);
         }
@@ -94,7 +94,7 @@ final class LongAdder extends Striped64 implements Serializable, LongAddable {
 
     /**
      * Returns the current sum.  The returned value is <em>NOT</em> an
-     * atomic snapshot: Invocation in the absence of concurrent
+     * atomic snapshot; invocation in the absence of concurrent
      * updates returns an accurate result, but concurrent updates that
      * occur while the sum is being calculated might not be
      * incorporated.
@@ -194,14 +194,13 @@ final class LongAdder extends Striped64 implements Serializable, LongAddable {
         return (double)sum();
     }
 
-    private void writeObject(ObjectOutputStream s)
-        throws java.io.IOException {
+    private void writeObject(ObjectOutputStream s) throws IOException {
         s.defaultWriteObject();
         s.writeLong(sum());
     }
 
     private void readObject(ObjectInputStream s)
-        throws IOException, ClassNotFoundException {
+            throws IOException, ClassNotFoundException {
         s.defaultReadObject();
         busy = 0;
         cells = null;

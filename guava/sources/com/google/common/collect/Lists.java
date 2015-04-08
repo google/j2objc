@@ -22,6 +22,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndex;
 import static com.google.common.base.Preconditions.checkPositionIndexes;
 import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.CollectPreconditions.checkNonnegative;
+import static com.google.common.collect.CollectPreconditions.checkRemove;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
@@ -29,9 +31,11 @@ import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
+import com.google.common.math.IntMath;
 import com.google.common.primitives.Ints;
 
 import java.io.Serializable;
+import java.math.RoundingMode;
 import java.util.AbstractList;
 import java.util.AbstractSequentialList;
 import java.util.ArrayList;
@@ -68,12 +72,16 @@ public final class Lists {
   // ArrayList
 
   /**
-   * Creates a <i>mutable</i>, empty {@code ArrayList} instance.
+   * Creates a <i>mutable</i>, empty {@code ArrayList} instance (for Java 6 and
+   * earlier).
    *
    * <p><b>Note:</b> if mutability is not required, use {@link
    * ImmutableList#of()} instead.
    *
-   * @return a new, empty {@code ArrayList}
+   * <p><b>Note for Java 7 and later:</b> this method is now unnecessary and
+   * should be treated as deprecated. Instead, use the {@code ArrayList}
+   * {@linkplain ArrayList#ArrayList() constructor} directly, taking advantage
+   * of the new <a href="http://goo.gl/iz2Wi">"diamond" syntax</a>.
    */
   @GwtCompatible(serializable = true)
   public static <E> ArrayList<E> newArrayList() {
@@ -84,12 +92,18 @@ public final class Lists {
    * Creates a <i>mutable</i> {@code ArrayList} instance containing the given
    * elements.
    *
-   * <p><b>Note:</b> if mutability is not required and the elements are
-   * non-null, use an overload of {@link ImmutableList#of()} (for varargs) or
-   * {@link ImmutableList#copyOf(Object[])} (for an array) instead.
+   * <p><b>Note:</b> essentially the only reason to use this method is when you
+   * will need to add or remove elements later. Otherwise, for non-null elements
+   * use {@link ImmutableList#of()} (for varargs) or {@link
+   * ImmutableList#copyOf(Object[])} (for an array) instead. If any elements
+   * might be null, or you need support for {@link List#set(int, Object)}, use
+   * {@link Arrays#asList}.
    *
-   * @param elements the elements that the list should contain, in order
-   * @return a new {@code ArrayList} containing those elements
+   * <p>Note that even when you do need the ability to add or remove, this method
+   * provides only a tiny bit of syntactic sugar for {@code newArrayList(}{@link
+   * Arrays#asList asList}{@code (...))}, or for creating an empty list then
+   * calling {@link Collections#addAll}. This method is not actually very useful
+   * and will likely be deprecated in the future.
    */
   @GwtCompatible(serializable = true)
   public static <E> ArrayList<E> newArrayList(E... elements) {
@@ -102,7 +116,7 @@ public final class Lists {
   }
 
   @VisibleForTesting static int computeArrayListCapacity(int arraySize) {
-    checkArgument(arraySize >= 0);
+    checkNonnegative(arraySize, "arraySize");
 
     // TODO(kevinb): Figure out the right behavior, and document it
     return Ints.saturatedCast(5L + arraySize + (arraySize / 10));
@@ -110,13 +124,18 @@ public final class Lists {
 
   /**
    * Creates a <i>mutable</i> {@code ArrayList} instance containing the given
-   * elements.
+   * elements; a very thin shortcut for creating an empty list then calling
+   * {@link Iterables#addAll}.
    *
    * <p><b>Note:</b> if mutability is not required and the elements are
-   * non-null, use {@link ImmutableList#copyOf(Iterator)} instead.
+   * non-null, use {@link ImmutableList#copyOf(Iterable)} instead. (Or, change
+   * {@code elements} to be a {@link FluentIterable} and call
+   * {@code elements.toList()}.)
    *
-   * @param elements the elements that the list should contain, in order
-   * @return a new {@code ArrayList} containing those elements
+   * <p><b>Note for Java 7 and later:</b> if {@code elements} is a {@link
+   * Collection}, you don't need this method. Use the {@code ArrayList}
+   * {@linkplain ArrayList#ArrayList(Collection) constructor} directly, taking
+   * advantage of the new <a href="http://goo.gl/iz2Wi">"diamond" syntax</a>.
    */
   @GwtCompatible(serializable = true)
   public static <E> ArrayList<E> newArrayList(Iterable<? extends E> elements) {
@@ -129,36 +148,29 @@ public final class Lists {
 
   /**
    * Creates a <i>mutable</i> {@code ArrayList} instance containing the given
-   * elements.
+   * elements; a very thin shortcut for creating an empty list and then calling
+   * {@link Iterators#addAll}.
    *
    * <p><b>Note:</b> if mutability is not required and the elements are
    * non-null, use {@link ImmutableList#copyOf(Iterator)} instead.
-   *
-   * @param elements the elements that the list should contain, in order
-   * @return a new {@code ArrayList} containing those elements
    */
   @GwtCompatible(serializable = true)
   public static <E> ArrayList<E> newArrayList(Iterator<? extends E> elements) {
-    checkNotNull(elements); // for GWT
     ArrayList<E> list = newArrayList();
-    while (elements.hasNext()) {
-      list.add(elements.next());
-    }
+    Iterators.addAll(list, elements);
     return list;
   }
 
   /**
-   * Creates an {@code ArrayList} instance backed by an array of the
-   * <i>exact</i> size specified; equivalent to
-   * {@link ArrayList#ArrayList(int)}.
+   * Creates an {@code ArrayList} instance backed by an array with the specified
+   * initial size; simply delegates to {@link ArrayList#ArrayList(int)}.
    *
-   * <p><b>Note:</b> if you know the exact size your list will be, consider
-   * using a fixed-size list ({@link Arrays#asList(Object[])}) or an {@link
-   * ImmutableList} instead of a growable {@link ArrayList}.
-   *
-   * <p><b>Note:</b> If you have only an <i>estimate</i> of the eventual size of
-   * the list, consider padding this estimate by a suitable amount, or simply
-   * use {@link #newArrayListWithExpectedSize(int)} instead.
+   * <p><b>Note for Java 7 and later:</b> this method is now unnecessary and
+   * should be treated as deprecated. Instead, use {@code new }{@link
+   * ArrayList#ArrayList(int) ArrayList}{@code <>(int)} directly, taking
+   * advantage of the new <a href="http://goo.gl/iz2Wi">"diamond" syntax</a>.
+   * (Unlike here, there is no risk of overload ambiguity, since the {@code
+   * ArrayList} constructors very wisely did not accept varargs.)
    *
    * @param initialArraySize the exact size of the initial backing array for
    *     the returned array list ({@code ArrayList} documentation calls this
@@ -170,18 +182,19 @@ public final class Lists {
   @GwtCompatible(serializable = true)
   public static <E> ArrayList<E> newArrayListWithCapacity(
       int initialArraySize) {
-    checkArgument(initialArraySize >= 0);  // for GWT.
+    checkNonnegative(initialArraySize, "initialArraySize"); // for GWT.
     return new ArrayList<E>(initialArraySize);
   }
 
   /**
-   * Creates an {@code ArrayList} instance sized appropriately to hold an
-   * <i>estimated</i> number of elements without resizing. A small amount of
-   * padding is added in case the estimate is low.
+   * Creates an {@code ArrayList} instance to hold {@code estimatedSize}
+   * elements, <i>plus</i> an unspecified amount of padding; you almost
+   * certainly mean to call {@link #newArrayListWithCapacity} (see that method
+   * for further advice on usage).
    *
-   * <p><b>Note:</b> If you know the <i>exact</i> number of elements the list
-   * will hold, or prefer to calculate your own amount of padding, refer to
-   * {@link #newArrayListWithCapacity(int)}.
+   * <p><b>Note:</b> This method will soon be deprecated. Even in the rare case
+   * that you do want some amount of padding, it's best if you choose your
+   * desired amount explicitly.
    *
    * @param estimatedSize an estimate of the eventual {@link List#size()} of
    *     the new list
@@ -198,12 +211,21 @@ public final class Lists {
   // LinkedList
 
   /**
-   * Creates an empty {@code LinkedList} instance.
+   * Creates a <i>mutable</i>, empty {@code LinkedList} instance (for Java 6 and
+   * earlier).
    *
-   * <p><b>Note:</b> if you need an immutable empty {@link List}, use
-   * {@link ImmutableList#of()} instead.
+   * <p><b>Note:</b> if you won't be adding any elements to the list, use {@link
+   * ImmutableList#of()} instead.
    *
-   * @return a new, empty {@code LinkedList}
+   * <p><b>Performance note:</b> {@link ArrayList} and {@link
+   * java.util.ArrayDeque} consistently outperform {@code LinkedList} except in
+   * certain rare and specific situations. Unless you have spent a lot of time
+   * benchmarking your specific needs, use one of those instead.
+   *
+   * <p><b>Note for Java 7 and later:</b> this method is now unnecessary and
+   * should be treated as deprecated. Instead, use the {@code LinkedList}
+   * {@linkplain LinkedList#LinkedList() constructor} directly, taking advantage
+   * of the new <a href="http://goo.gl/iz2Wi">"diamond" syntax</a>.
    */
   @GwtCompatible(serializable = true)
   public static <E> LinkedList<E> newLinkedList() {
@@ -211,18 +233,30 @@ public final class Lists {
   }
 
   /**
-   * Creates a {@code LinkedList} instance containing the given elements.
+   * Creates a <i>mutable</i> {@code LinkedList} instance containing the given
+   * elements; a very thin shortcut for creating an empty list then calling
+   * {@link Iterables#addAll}.
    *
-   * @param elements the elements that the list should contain, in order
-   * @return a new {@code LinkedList} containing those elements
+   * <p><b>Note:</b> if mutability is not required and the elements are
+   * non-null, use {@link ImmutableList#copyOf(Iterable)} instead. (Or, change
+   * {@code elements} to be a {@link FluentIterable} and call
+   * {@code elements.toList()}.)
+   *
+   * <p><b>Performance note:</b> {@link ArrayList} and {@link
+   * java.util.ArrayDeque} consistently outperform {@code LinkedList} except in
+   * certain rare and specific situations. Unless you have spent a lot of time
+   * benchmarking your specific needs, use one of those instead.
+   *
+   * <p><b>Note for Java 7 and later:</b> if {@code elements} is a {@link
+   * Collection}, you don't need this method. Use the {@code LinkedList}
+   * {@linkplain LinkedList#LinkedList(Collection) constructor} directly, taking
+   * advantage of the new <a href="http://goo.gl/iz2Wi">"diamond" syntax</a>.
    */
   @GwtCompatible(serializable = true)
   public static <E> LinkedList<E> newLinkedList(
       Iterable<? extends E> elements) {
     LinkedList<E> list = newLinkedList();
-    for (E element : elements) {
-      list.add(element);
-    }
+    Iterables.addAll(list, elements);
     return list;
   }
 
@@ -361,7 +395,7 @@ public final class Lists {
    *       ImmutableList.of(1, 2),
    *       ImmutableList.of("A", "B", "C")))}</pre>
    *
-   * returns a list containing six lists in the following order:
+   * <p>returns a list containing six lists in the following order:
    *
    * <ul>
    * <li>{@code ImmutableList.of(1, "A")}
@@ -372,7 +406,7 @@ public final class Lists {
    * <li>{@code ImmutableList.of(2, "C")}
    * </ul>
    *
-   * The result is guaranteed to be in the "traditional", lexicographical
+   * <p>The result is guaranteed to be in the "traditional", lexicographical
    * order for Cartesian products that you would get from nesting for loops:
    * <pre>   {@code
    *
@@ -384,7 +418,7 @@ public final class Lists {
    *     }
    *   }}</pre>
    *
-   * Note that if any input list is empty, the Cartesian product will also be
+   * <p>Note that if any input list is empty, the Cartesian product will also be
    * empty. If no lists at all are provided (an empty list), the resulting
    * Cartesian product has one element, an empty list (counter-intuitive, but
    * mathematically consistent).
@@ -406,9 +440,8 @@ public final class Lists {
    *     be greater than {@link Integer#MAX_VALUE}
    * @throws NullPointerException if {@code lists}, any one of the {@code lists},
    *     or any element of a provided list is null
-   */
-  static <B> List<List<B>> cartesianProduct(
-      List<? extends List<? extends B>> lists) {
+   */ static <B> List<List<B>>
+      cartesianProduct(List<? extends List<? extends B>> lists) {
     return CartesianList.create(lists);
   }
 
@@ -422,7 +455,7 @@ public final class Lists {
    *       ImmutableList.of(1, 2),
    *       ImmutableList.of("A", "B", "C")))}</pre>
    *
-   * returns a list containing six lists in the following order:
+   * <p>returns a list containing six lists in the following order:
    *
    * <ul>
    * <li>{@code ImmutableList.of(1, "A")}
@@ -433,7 +466,7 @@ public final class Lists {
    * <li>{@code ImmutableList.of(2, "C")}
    * </ul>
    *
-   * The result is guaranteed to be in the "traditional", lexicographical
+   * <p>The result is guaranteed to be in the "traditional", lexicographical
    * order for Cartesian products that you would get from nesting for loops:
    * <pre>   {@code
    *
@@ -445,7 +478,7 @@ public final class Lists {
    *     }
    *   }}</pre>
    *
-   * Note that if any input list is empty, the Cartesian product will also be
+   * <p>Note that if any input list is empty, the Cartesian product will also be
    * empty. If no lists at all are provided (an empty list), the resulting
    * Cartesian product has one element, an empty list (counter-intuitive, but
    * mathematically consistent).
@@ -467,8 +500,8 @@ public final class Lists {
    *     be greater than {@link Integer#MAX_VALUE}
    * @throws NullPointerException if {@code lists}, any one of the
    *     {@code lists}, or any element of a provided list is null
-   */
-  static <B> List<List<B>> cartesianProduct(List<? extends B>... lists) {
+   */ static <B> List<List<B>>
+      cartesianProduct(List<? extends B>... lists) {
     return cartesianProduct(Arrays.asList(lists));
   }
 
@@ -574,6 +607,17 @@ public final class Lists {
     @Override public T get(int index) {
       return function.apply(fromList.get(index));
     }
+    @Override public Iterator<T> iterator() {
+      return listIterator();
+    }
+    @Override public ListIterator<T> listIterator(int index) {
+      return new TransformedListIterator<F, T>(fromList.listIterator(index)) {
+        @Override
+        T transform(F from) {
+          return function.apply(from);
+        }
+      };
+    }
     @Override public boolean isEmpty() {
       return fromList.isEmpty();
     }
@@ -622,20 +666,14 @@ public final class Lists {
     }
 
     @Override public List<T> get(int index) {
-      int listSize = size();
-      checkElementIndex(index, listSize);
+      checkElementIndex(index, size());
       int start = index * size;
       int end = Math.min(start + size, list.size());
       return list.subList(start, end);
     }
 
     @Override public int size() {
-      // TODO(user): refactor to common.math.IntMath.divide
-      int result = list.size() / size;
-      if (result * size != list.size()) {
-        result++;
-      }
-      return result;
+      return IntMath.divide(list.size(), size, RoundingMode.CEILING);
     }
 
     @Override public boolean isEmpty() {
@@ -698,40 +736,6 @@ public final class Lists {
     @Override public int size() {
       return string.length();
     }
-
-    @Override public boolean equals(@Nullable Object obj) {
-      if (!(obj instanceof List)) {
-        return false;
-      }
-      List<?> list = (List<?>) obj;
-      int n = string.length();
-      if (n != list.size()) {
-        return false;
-      }
-      Iterator<?> iterator = list.iterator();
-      for (int i = 0; i < n; i++) {
-        Object elem = iterator.next();
-        if (!(elem instanceof Character)
-            || ((Character) elem).charValue() != string.charAt(i)) {
-          return false;
-        }
-      }
-      return true;
-    }
-
-    int hash = 0;
-
-    @Override public int hashCode() {
-      int h = hash;
-      if (h == 0) {
-        h = 1;
-        for (int i = 0; i < string.length(); i++) {
-          h = h * 31 + string.charAt(i);
-        }
-        hash = h;
-      }
-      return h;
-    }
   }
 
   /**
@@ -762,69 +766,8 @@ public final class Lists {
       return sequence.charAt(index);
     }
 
-    @Override public boolean contains(@Nullable Object o) {
-      return indexOf(o) >= 0;
-    }
-
-    @Override public int indexOf(@Nullable Object o) {
-      if (o instanceof Character) {
-        char c = (Character) o;
-        for (int i = 0; i < sequence.length(); i++) {
-          if (sequence.charAt(i) == c) {
-            return i;
-          }
-        }
-      }
-      return -1;
-    }
-
-    @Override public int lastIndexOf(@Nullable Object o) {
-      if (o instanceof Character) {
-        char c = ((Character) o).charValue();
-        for (int i = sequence.length() - 1; i >= 0; i--) {
-          if (sequence.charAt(i) == c) {
-            return i;
-          }
-        }
-      }
-      return -1;
-    }
-
     @Override public int size() {
       return sequence.length();
-    }
-
-    @Override public List<Character> subList(int fromIndex, int toIndex) {
-      checkPositionIndexes(fromIndex, toIndex, size()); // for GWT
-      return charactersOf(sequence.subSequence(fromIndex, toIndex));
-    }
-
-    @Override public int hashCode() {
-      int hash = 1;
-      for (int i = 0; i < sequence.length(); i++) {
-        hash = hash * 31 + sequence.charAt(i);
-      }
-      return hash;
-    }
-
-    @Override public boolean equals(@Nullable Object o) {
-      if (!(o instanceof List)) {
-        return false;
-      }
-      List<?> list = (List<?>) o;
-      int n = sequence.length();
-      if (n != list.size()) {
-        return false;
-      }
-      Iterator<?> iterator = list.iterator();
-      for (int i = 0; i < n; i++) {
-        Object elem = iterator.next();
-        if (!(elem instanceof Character)
-            || ((Character) elem).charValue() != sequence.charAt(i)) {
-          return false;
-        }
-      }
-      return true;
     }
   }
 
@@ -841,7 +784,9 @@ public final class Lists {
    * @since 7.0
    */
   public static <T> List<T> reverse(List<T> list) {
-    if (list instanceof ReverseList) {
+    if (list instanceof ImmutableList) {
+      return ((ImmutableList<T>) list).reverse();
+    } else if (list instanceof ReverseList) {
       return ((ReverseList<T>) list).getForwardList();
     } else if (list instanceof RandomAccess) {
       return new RandomAccessReverseList<T>(list);
@@ -897,36 +842,14 @@ public final class Lists {
       return forwardList.get(reverseIndex(index));
     }
 
-    @Override public boolean isEmpty() {
-      return forwardList.isEmpty();
-    }
-
     @Override public int size() {
       return forwardList.size();
-    }
-
-    @Override public boolean contains(@Nullable Object o) {
-      return forwardList.contains(o);
-    }
-
-    @Override public boolean containsAll(Collection<?> c) {
-      return forwardList.containsAll(c);
     }
 
     @Override public List<T> subList(int fromIndex, int toIndex) {
       checkPositionIndexes(fromIndex, toIndex, size());
       return reverse(forwardList.subList(
           reversePosition(toIndex), reversePosition(fromIndex)));
-    }
-
-    @Override public int indexOf(@Nullable Object o) {
-      int index = forwardList.lastIndexOf(o);
-      return (index >= 0) ? reverseIndex(index) : -1;
-    }
-
-    @Override public int lastIndexOf(@Nullable Object o) {
-      int index = forwardList.indexOf(o);
-      return (index >= 0) ? reverseIndex(index) : -1;
     }
 
     @Override public Iterator<T> iterator() {
@@ -938,13 +861,12 @@ public final class Lists {
       final ListIterator<T> forwardIterator = forwardList.listIterator(start);
       return new ListIterator<T>() {
 
-        boolean canRemove;
-        boolean canSet;
+        boolean canRemoveOrSet;
 
         @Override public void add(T e) {
           forwardIterator.add(e);
           forwardIterator.previous();
-          canSet = canRemove = false;
+          canRemoveOrSet = false;
         }
 
         @Override public boolean hasNext() {
@@ -959,7 +881,7 @@ public final class Lists {
           if (!hasNext()) {
             throw new NoSuchElementException();
           }
-          canSet = canRemove = true;
+          canRemoveOrSet = true;
           return forwardIterator.previous();
         }
 
@@ -971,7 +893,7 @@ public final class Lists {
           if (!hasPrevious()) {
             throw new NoSuchElementException();
           }
-          canSet = canRemove = true;
+          canRemoveOrSet = true;
           return forwardIterator.next();
         }
 
@@ -980,13 +902,13 @@ public final class Lists {
         }
 
         @Override public void remove() {
-          checkState(canRemove);
+          checkRemove(canRemoveOrSet);
           forwardIterator.remove();
-          canRemove = canSet = false;
+          canRemoveOrSet = false;
         }
 
         @Override public void set(T e) {
-          checkState(canSet);
+          checkState(canRemoveOrSet);
           forwardIterator.set(e);
         }
       };
@@ -1004,6 +926,7 @@ public final class Lists {
    * An implementation of {@link List#hashCode()}.
    */
   static int hashCodeImpl(List<?> list) {
+    // TODO(user): worth optimizing for RandomAccess?
     int hashCode = 1;
     for (Object o : list) {
       hashCode = 31 * hashCode + (o == null ? 0 : o.hashCode());
@@ -1048,7 +971,7 @@ public final class Lists {
   /**
    * An implementation of {@link List#indexOf(Object)}.
    */
-  static int indexOfImpl(List<?> list, @Nullable Object element){
+  static int indexOfImpl(List<?> list, @Nullable Object element) {
     ListIterator<?> listIterator = list.listIterator();
     while (listIterator.hasNext()) {
       if (Objects.equal(element, listIterator.next())) {
@@ -1061,7 +984,7 @@ public final class Lists {
   /**
    * An implementation of {@link List#lastIndexOf(Object)}.
    */
-  static int lastIndexOfImpl(List<?> list, @Nullable Object element){
+  static int lastIndexOfImpl(List<?> list, @Nullable Object element) {
     ListIterator<?> listIterator = list.listIterator(list.size());
     while (listIterator.hasPrevious()) {
       if (Objects.equal(element, listIterator.previous())) {

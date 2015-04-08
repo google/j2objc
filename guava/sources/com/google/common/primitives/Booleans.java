@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkElementIndex;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkPositionIndexes;
 
+import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 
 import java.io.Serializable;
@@ -63,6 +64,9 @@ public final class Booleans {
    * Compares the two specified {@code boolean} values in the standard way
    * ({@code false} is considered less than {@code true}). The sign of the
    * value returned is the same as that of {@code ((Boolean) a).compareTo(b)}.
+   *
+   * <p><b>Note for Java 7 and later:</b> this method should be treated as
+   * deprecated; use the equivalent {@link Boolean#compare} method instead.
    *
    * @param a the first {@code boolean} to compare
    * @param b the second {@code boolean} to compare
@@ -467,5 +471,21 @@ public final class Booleans {
     }
 
     private static final long serialVersionUID = 0;
+  }
+
+  /**
+   * Returns the number of {@code values} that are {@code true}.
+   *
+   * @since 16.0
+   */
+  @Beta
+  public static int countTrue(boolean... values) {
+    int count = 0;
+    for (boolean value : values) {
+      if (value) {
+        count++;
+      }
+    }
+    return count;
   }
 }

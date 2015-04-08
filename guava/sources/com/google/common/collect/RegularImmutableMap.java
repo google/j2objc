@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 The Guava Authors
+* Copyright (C) 2008 The Guava Authors
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,13 +16,13 @@
 
 package com.google.common.collect;
 
-import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.collect.CollectPreconditions.checkEntryNotNull;
 
 import com.google.common.annotations.GwtCompatible;
+import com.google.common.collect.ImmutableMapEntry.TerminalEntry;
 import com.google.j2objc.annotations.WeakOuter;
 
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 
 /**
  * Implementation of {@link ImmutableMap} with two or more entries.
@@ -35,40 +35,101 @@ import javax.annotation.concurrent.Immutable;
 final class RegularImmutableMap<K, V> extends ImmutableMap<K, V> {
 
   // entries in insertion order
-  private final transient LinkedEntry<K, V>[] entries;
+  private final transient ImmutableMapEntry<K, V>[] entries;
   // array of linked lists of entries
-  private final transient LinkedEntry<K, V>[] table;
+  private final transient ImmutableMapEntry<K, V>[] table;
   // 'and' with an int to get a table index
   private final transient int mask;
-
-  // TODO(gak): investigate avoiding the creation of ImmutableEntries since we
-  // re-copy them anyway.
-  RegularImmutableMap(Entry<?, ?>... immutableEntries) {
-    int size = immutableEntries.length;
+  
+  RegularImmutableMap(TerminalEntry<?, ?>... theEntries) {
+    this(theEntries.length, theEntries);
+  }
+  
+  /**
+   * Constructor for RegularImmutableMap that takes as input an array of {@code TerminalEntry}
+   * entries.  Assumes that these entries have already been checked for null.
+   * 
+   * <p>This allows reuse of the entry objects from the array in the actual implementation.
+   */
+  RegularImmutableMap(int size, TerminalEntry<?, ?>[] theEntries) {
     entries = createEntryArray(size);
-
     int tableSize = Hashing.closedTableSize(size, MAX_LOAD_FACTOR);
     table = createEntryArray(tableSize);
     mask = tableSize - 1;
-
     for (int entryIndex = 0; entryIndex < size; entryIndex++) {
-      // each of our 6 callers carefully put only Entry<K, V>s into the array!
       @SuppressWarnings("unchecked")
-      Entry<K, V> entry = (Entry<K, V>) immutableEntries[entryIndex];
+      TerminalEntry<K, V> entry = (TerminalEntry<K, V>) theEntries[entryIndex];
       K key = entry.getKey();
-      int keyHashCode = key.hashCode();
-      int tableIndex = Hashing.smear(keyHashCode) & mask;
-      @Nullable LinkedEntry<K, V> existing = table[tableIndex];
+      int tableIndex = Hashing.smear(key.hashCode()) & mask;
+      @Nullable ImmutableMapEntry<K, V> existing = table[tableIndex];
       // prepend, not append, so the entries can be immutable
-      LinkedEntry<K, V> linkedEntry =
-          newLinkedEntry(key, entry.getValue(), existing);
-      table[tableIndex] = linkedEntry;
-      entries[entryIndex] = linkedEntry;
-      while (existing != null) {
-        checkArgument(!key.equals(existing.getKey()), "duplicate key: %s", key);
-        existing = existing.next();
-      }
+      ImmutableMapEntry<K, V> newEntry = (existing == null)
+          ? entry
+          : new NonTerminalMapEntry<K, V>(entry, existing);
+      table[tableIndex] = newEntry;
+      entries[entryIndex] = newEntry;
+      checkNoConflictInBucket(key, newEntry, existing);
     }
+  }
+  
+  /**
+   * Constructor for RegularImmutableMap that makes no assumptions about the input entries.
+   */
+  RegularImmutableMap(Entry<?, ?>[] theEntries) {
+    int size = theEntries.length;
+    entries = createEntryArray(size);
+    int tableSize = Hashing.closedTableSize(size, MAX_LOAD_FACTOR);
+    table = createEntryArray(tableSize);
+    mask = tableSize - 1;
+    for (int entryIndex = 0; entryIndex < size; entryIndex++) {
+      @SuppressWarnings("unchecked") // all our callers carefully put in only Entry<K, V>s
+      Entry<K, V> entry = (Entry<K, V>) theEntries[entryIndex];
+      K key = entry.getKey();
+      V value = entry.getValue();
+      checkEntryNotNull(key, value);
+      int tableIndex = Hashing.smear(key.hashCode()) & mask;
+      @Nullable ImmutableMapEntry<K, V> existing = table[tableIndex];
+      // prepend, not append, so the entries can be immutable
+      ImmutableMapEntry<K, V> newEntry = (existing == null)
+          ? new TerminalEntry<K, V>(key, value)
+          : new NonTerminalMapEntry<K, V>(key, value, existing);
+      table[tableIndex] = newEntry;
+      entries[entryIndex] = newEntry;
+      checkNoConflictInBucket(key, newEntry, existing);
+    }
+  }
+
+  private void checkNoConflictInBucket(
+      K key, ImmutableMapEntry<K, V> entry, ImmutableMapEntry<K, V> bucketHead) {
+    for (; bucketHead != null; bucketHead = bucketHead.getNextInKeyBucket()) {
+      checkNoConflict(!key.equals(bucketHead.getKey()), "key", entry, bucketHead);
+    }
+  }
+  
+  private static final class NonTerminalMapEntry<K, V> extends ImmutableMapEntry<K, V> {
+    private final ImmutableMapEntry<K, V> nextInKeyBucket;
+
+    NonTerminalMapEntry(K key, V value, ImmutableMapEntry<K, V> nextInKeyBucket) {
+      super(key, value);
+      this.nextInKeyBucket = nextInKeyBucket;
+    }
+
+    NonTerminalMapEntry(ImmutableMapEntry<K, V> contents, ImmutableMapEntry<K, V> nextInKeyBucket) {
+      super(contents);
+      this.nextInKeyBucket = nextInKeyBucket;
+    }
+
+    @Override
+    ImmutableMapEntry<K, V> getNextInKeyBucket() {
+      return nextInKeyBucket;
+    }
+
+    @Override
+    @Nullable
+    ImmutableMapEntry<K, V> getNextInValueBucket() {
+      return null;
+    }
+    
   }
 
   /**
@@ -79,59 +140,13 @@ final class RegularImmutableMap<K, V> extends ImmutableMap<K, V> {
   private static final double MAX_LOAD_FACTOR = 1.2;
 
   /**
-   * Creates a {@link LinkedEntry} array to hold parameterized entries. The
-   * result must never be upcast back to LinkedEntry[] (or Object[], etc.), or
+   * Creates an {@code ImmutableMapEntry} array to hold parameterized entries. The
+   * result must never be upcast back to ImmutableMapEntry[] (or Object[], etc.), or
    * allowed to escape the class.
    */
   @SuppressWarnings("unchecked") // Safe as long as the javadocs are followed
-  private LinkedEntry<K, V>[] createEntryArray(int size) {
-    return new LinkedEntry[size];
-  }
-
-  private static <K, V> LinkedEntry<K, V> newLinkedEntry(K key, V value,
-      @Nullable LinkedEntry<K, V> next) {
-    return (next == null)
-        ? new TerminalEntry<K, V>(key, value)
-        : new NonTerminalEntry<K, V>(key, value, next);
-  }
-
-  private interface LinkedEntry<K, V> extends Entry<K, V> {
-    /** Returns the next entry in the list or {@code null} if none exists. */
-    @Nullable LinkedEntry<K, V> next();
-  }
-
-  /** {@code LinkedEntry} implementation that has a next value. */
-  @Immutable
-  @SuppressWarnings("serial") // this class is never serialized
-  private static final class NonTerminalEntry<K, V>
-      extends ImmutableEntry<K, V> implements LinkedEntry<K, V> {
-    final LinkedEntry<K, V> next;
-
-    NonTerminalEntry(K key, V value, LinkedEntry<K, V> next) {
-      super(key, value);
-      this.next = next;
-    }
-
-    @Override public LinkedEntry<K, V> next() {
-      return next;
-    }
-  }
-
-  /**
-   * {@code LinkedEntry} implementation that serves as the last entry in the
-   * list.  I.e. no next entry
-   */
-  @Immutable
-  @SuppressWarnings("serial") // this class is never serialized
-  private static final class TerminalEntry<K, V> extends ImmutableEntry<K, V>
-      implements LinkedEntry<K, V> {
-    TerminalEntry(K key, V value) {
-      super(key, value);
-    }
-
-    @Nullable @Override public LinkedEntry<K, V> next() {
-      return null;
-    }
+  private ImmutableMapEntry<K, V>[] createEntryArray(int size) {
+    return new ImmutableMapEntry[size];
   }
 
   @Override public V get(@Nullable Object key) {
@@ -139,9 +154,9 @@ final class RegularImmutableMap<K, V> extends ImmutableMap<K, V> {
       return null;
     }
     int index = Hashing.smear(key.hashCode()) & mask;
-    for (LinkedEntry<K, V> entry = table[index];
+    for (ImmutableMapEntry<K, V> entry = table[index];
         entry != null;
-        entry = entry.next()) {
+        entry = entry.getNextInKeyBucket()) {
       K candidateKey = entry.getKey();
 
       /*

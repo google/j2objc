@@ -22,19 +22,19 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 /**
- * A set comprising zero or more {@linkplain Range#isEmpty nonempty}, 
+ * A set comprising zero or more {@linkplain Range#isEmpty nonempty},
  * {@linkplain Range#isConnected(Range) disconnected} ranges of type {@code C}.
- * 
+ *
  * <p>Implementations that choose to support the {@link #add(Range)} operation are required to
  * ignore empty ranges and coalesce connected ranges.  For example:  <pre>   {@code
  *
  *   RangeSet<Integer> rangeSet = TreeRangeSet.create();
  *   rangeSet.add(Range.closed(1, 10)); // {[1, 10]}
- *   rangeSet.add(Range.closedOpen(11, 15)); // {[1, 10], [11, 15)} 
- *   rangeSet.add(Range.open(15, 20)); // disconnected range; {[1, 10], [11, 20)}
+ *   rangeSet.add(Range.closedOpen(11, 15)); // disconnected range; {[1, 10], [11, 15)}
+ *   rangeSet.add(Range.closedOpen(15, 20)); // connected range; {[1, 10], [11, 20)}
  *   rangeSet.add(Range.openClosed(0, 0)); // empty range; {[1, 10], [11, 20)}
  *   rangeSet.remove(Range.open(5, 10)); // splits [1, 10]; {[1, 5], [10, 10], [11, 20)}}</pre>
- *   
+ *
  * <p>Note that the behavior of {@link Range#isEmpty()} and {@link Range#isConnected(Range)} may
  * not be as expected on discrete ranges.  See the Javadoc of those methods for details.
  *
@@ -198,7 +198,7 @@ public interface RangeSet<C extends Comparable> {
 
   /**
    * Returns a readable string representation of this range set. For example, if this
-   * {@code RangeSet} consisted of {@code Ranges.closed(1, 3)} and {@code Ranges.greaterThan(4)},
+   * {@code RangeSet} consisted of {@code Range.closed(1, 3)} and {@code Range.greaterThan(4)},
    * this might return {@code " [1‥3](4‥+∞)}"}.
    */
   @Override

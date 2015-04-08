@@ -16,8 +16,6 @@
 
 package com.google.common.collect;
 
-import com.google.common.annotations.GwtCompatible;
-
 /**
  * "Overrides" the {@link ImmutableSet} static methods that lack
  * {@link ImmutableSortedSet} equivalents with deprecated, exception-throwing
@@ -28,13 +26,12 @@ import com.google.common.annotations.GwtCompatible;
  *   Set<Object> sorted = ImmutableSortedSet.copyOf(objects);
  *   // BAD CODE! The returned set is actually an unsorted ImmutableSet!}</pre>
  *
- * While we could put the overrides in {@link ImmutableSortedSet} itself, it
+ * <p>While we could put the overrides in {@link ImmutableSortedSet} itself, it
  * seems clearer to separate these "do not call" methods from those intended for
  * normal use.
  *
  * @author Chris Povirk
  */
-@GwtCompatible
 abstract class ImmutableSortedSetFauxverideShim<E> extends ImmutableSet<E> {
   /**
    * Not supported. Use {@link ImmutableSortedSet#naturalOrder}, which offers

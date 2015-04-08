@@ -15,7 +15,7 @@
 package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.CollectPreconditions.checkRemove;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Equivalence;
@@ -65,11 +65,6 @@ import javax.annotation.concurrent.GuardedBy;
  *
  * <p>This implementation is heavily derived from revision 1.96 of <a
  * href="http://tinyurl.com/ConcurrentHashMap">ConcurrentHashMap.java</a>.
- *
- * J2ObjC Modifications:
- * - Commented out writeReplace().
- * - Commented out class AbstractSerializationProxy.
- * - Commented out class SerializationProxy.
  *
  * @author Bob Lee
  * @author Charles Fry
@@ -503,13 +498,13 @@ class MapMakerInternalMap<K, V>
      * @param original the entry to copy
      * @param newNext entry in the same bucket
      */
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     <K, V> ReferenceEntry<K, V> copyEntry(
         Segment<K, V> segment, ReferenceEntry<K, V> original, ReferenceEntry<K, V> newNext) {
       return newEntry(segment, original.getKey(), original.getHash(), newNext);
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     <K, V> void copyExpirableEntry(ReferenceEntry<K, V> original, ReferenceEntry<K, V> newEntry) {
       // TODO(fry): when we link values instead of entries this method can go
       // away, as can connectExpirables, nullifyExpirable.
@@ -521,7 +516,7 @@ class MapMakerInternalMap<K, V>
       nullifyExpirable(original);
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     <K, V> void copyEvictableEntry(ReferenceEntry<K, V> original, ReferenceEntry<K, V> newEntry) {
       // TODO(fry): when we link values instead of entries this method can go
       // away, as can connectEvictables, nullifyEvictable.
@@ -1035,7 +1030,7 @@ class MapMakerInternalMap<K, V>
       this.time = time;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextExpirable = nullEntry();
 
     @Override
@@ -1048,7 +1043,7 @@ class MapMakerInternalMap<K, V>
       this.nextExpirable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousExpirable = nullEntry();
 
     @Override
@@ -1070,7 +1065,7 @@ class MapMakerInternalMap<K, V>
 
     // The code below is exactly the same for each evictable entry type.
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextEvictable = nullEntry();
 
     @Override
@@ -1083,7 +1078,7 @@ class MapMakerInternalMap<K, V>
       this.nextEvictable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousEvictable = nullEntry();
 
     @Override
@@ -1117,7 +1112,7 @@ class MapMakerInternalMap<K, V>
       this.time = time;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextExpirable = nullEntry();
 
     @Override
@@ -1130,7 +1125,7 @@ class MapMakerInternalMap<K, V>
       this.nextExpirable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousExpirable = nullEntry();
 
     @Override
@@ -1145,7 +1140,7 @@ class MapMakerInternalMap<K, V>
 
     // The code below is exactly the same for each evictable entry type.
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextEvictable = nullEntry();
 
     @Override
@@ -1158,7 +1153,7 @@ class MapMakerInternalMap<K, V>
       this.nextEvictable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousEvictable = nullEntry();
 
     @Override
@@ -1290,7 +1285,7 @@ class MapMakerInternalMap<K, V>
       this.time = time;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextExpirable = nullEntry();
 
     @Override
@@ -1303,7 +1298,7 @@ class MapMakerInternalMap<K, V>
       this.nextExpirable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousExpirable = nullEntry();
 
     @Override
@@ -1326,7 +1321,7 @@ class MapMakerInternalMap<K, V>
 
     // The code below is exactly the same for each evictable entry type.
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextEvictable = nullEntry();
 
     @Override
@@ -1339,7 +1334,7 @@ class MapMakerInternalMap<K, V>
       this.nextEvictable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousEvictable = nullEntry();
 
     @Override
@@ -1374,7 +1369,7 @@ class MapMakerInternalMap<K, V>
       this.time = time;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextExpirable = nullEntry();
 
     @Override
@@ -1387,7 +1382,7 @@ class MapMakerInternalMap<K, V>
       this.nextExpirable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousExpirable = nullEntry();
 
     @Override
@@ -1402,7 +1397,7 @@ class MapMakerInternalMap<K, V>
 
     // The code below is exactly the same for each evictable entry type.
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextEvictable = nullEntry();
 
     @Override
@@ -1415,7 +1410,7 @@ class MapMakerInternalMap<K, V>
       this.nextEvictable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousEvictable = nullEntry();
 
     @Override
@@ -1548,7 +1543,7 @@ class MapMakerInternalMap<K, V>
       this.time = time;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextExpirable = nullEntry();
 
     @Override
@@ -1561,7 +1556,7 @@ class MapMakerInternalMap<K, V>
       this.nextExpirable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousExpirable = nullEntry();
 
     @Override
@@ -1584,7 +1579,7 @@ class MapMakerInternalMap<K, V>
 
     // The code below is exactly the same for each evictable entry type.
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextEvictable = nullEntry();
 
     @Override
@@ -1597,7 +1592,7 @@ class MapMakerInternalMap<K, V>
       this.nextEvictable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousEvictable = nullEntry();
 
     @Override
@@ -1632,7 +1627,7 @@ class MapMakerInternalMap<K, V>
       this.time = time;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextExpirable = nullEntry();
 
     @Override
@@ -1645,7 +1640,7 @@ class MapMakerInternalMap<K, V>
       this.nextExpirable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousExpirable = nullEntry();
 
     @Override
@@ -1660,7 +1655,7 @@ class MapMakerInternalMap<K, V>
 
     // The code below is exactly the same for each evictable entry type.
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> nextEvictable = nullEntry();
 
     @Override
@@ -1673,7 +1668,7 @@ class MapMakerInternalMap<K, V>
       this.nextEvictable = next;
     }
 
-    @GuardedBy("Segment.this")
+    // Guarded By Segment.this
     ReferenceEntry<K, V> previousEvictable = nullEntry();
 
     @Override
@@ -1828,7 +1823,7 @@ class MapMakerInternalMap<K, V>
   /**
    * This method is a convenience for testing. Code should call {@link Segment#newEntry} directly.
    */
-  @GuardedBy("Segment.this")
+  // Guarded By Segment.this
   @VisibleForTesting
   ReferenceEntry<K, V> newEntry(K key, int hash, @Nullable ReferenceEntry<K, V> next) {
     return segmentFor(hash).newEntry(key, hash, next);
@@ -1837,7 +1832,7 @@ class MapMakerInternalMap<K, V>
   /**
    * This method is a convenience for testing. Code should call {@link Segment#copyEntry} directly.
    */
-  @GuardedBy("Segment.this")
+  // Guarded By Segment.this
   @VisibleForTesting
   ReferenceEntry<K, V> copyEntry(ReferenceEntry<K, V> original, ReferenceEntry<K, V> newNext) {
     int hash = original.getHash();
@@ -1847,7 +1842,7 @@ class MapMakerInternalMap<K, V>
   /**
    * This method is a convenience for testing. Code should call {@link Segment#setValue} instead.
    */
-  @GuardedBy("Segment.this")
+  // Guarded By Segment.this
   @VisibleForTesting
   ValueReference<K, V> newValueReference(ReferenceEntry<K, V> entry, V value) {
     int hash = entry.getHash();
@@ -1931,13 +1926,13 @@ class MapMakerInternalMap<K, V>
     return now - entry.getExpirationTime() > 0;
   }
 
-  @GuardedBy("Segment.this")
+  // Guarded By Segment.this
   static <K, V> void connectExpirables(ReferenceEntry<K, V> previous, ReferenceEntry<K, V> next) {
     previous.setNextExpirable(next);
     next.setPreviousExpirable(previous);
   }
 
-  @GuardedBy("Segment.this")
+  // Guarded By Segment.this
   static <K, V> void nullifyExpirable(ReferenceEntry<K, V> nulled) {
     ReferenceEntry<K, V> nullEntry = nullEntry();
     nulled.setNextExpirable(nullEntry);
@@ -1963,13 +1958,13 @@ class MapMakerInternalMap<K, V>
   }
 
   /** Links the evitables together. */
-  @GuardedBy("Segment.this")
+  // Guarded By Segment.this
   static <K, V> void connectEvictables(ReferenceEntry<K, V> previous, ReferenceEntry<K, V> next) {
     previous.setNextEvictable(next);
     next.setPreviousEvictable(previous);
   }
 
-  @GuardedBy("Segment.this")
+  // Guarded By Segment.this
   static <K, V> void nullifyEvictable(ReferenceEntry<K, V> nulled) {
     ReferenceEntry<K, V> nullEntry = nullEntry();
     nulled.setNextEvictable(nullEntry);
@@ -2041,7 +2036,7 @@ class MapMakerInternalMap<K, V>
 
     /**
      * The table is expanded when its size exceeds this threshold. (The value of this field is
-     * always {@code (int)(capacity * 0.75)}.)
+     * always {@code (int) (capacity * 0.75)}.)
      */
     int threshold;
 
@@ -3610,6 +3605,7 @@ class MapMakerInternalMap<K, V>
       advance();
     }
 
+    @Override
     public abstract E next();
 
     final void advance() {
@@ -3683,6 +3679,7 @@ class MapMakerInternalMap<K, V>
       }
     }
 
+    @Override
     public boolean hasNext() {
       return nextExternal != null;
     }
@@ -3696,8 +3693,9 @@ class MapMakerInternalMap<K, V>
       return lastReturned;
     }
 
+    @Override
     public void remove() {
-      checkState(lastReturned != null);
+      checkRemove(lastReturned != null);
       MapMakerInternalMap.this.remove(lastReturned.getKey());
       lastReturned = null;
     }
@@ -3808,7 +3806,6 @@ class MapMakerInternalMap<K, V>
     }
   }
 
-  @WeakOuter
   final class Values extends AbstractCollection<V> {
 
     @Override
@@ -3890,17 +3887,17 @@ class MapMakerInternalMap<K, V>
 
   private static final long serialVersionUID = 5;
 
-  /*Object writeReplace() {
+  Object writeReplace() {
     return new SerializationProxy<K, V>(keyStrength, valueStrength, keyEquivalence,
         valueEquivalence, expireAfterWriteNanos, expireAfterAccessNanos, maximumSize,
         concurrencyLevel, removalListener, this);
-  }*/
+  }
 
   /**
    * The actual object that gets serialized. Unfortunately, readResolve() doesn't get called when a
    * circular dependency is present, so the proxy must be able to behave as the map itself.
    */
-  /*abstract static class AbstractSerializationProxy<K, V>
+  abstract static class AbstractSerializationProxy<K, V>
       extends ForwardingConcurrentMap<K, V> implements Serializable {
     private static final long serialVersionUID = 3;
 
@@ -3980,13 +3977,13 @@ class MapMakerInternalMap<K, V>
         delegate.put(key, value);
       }
     }
-  }*/
+  }
 
   /**
    * The actual object that gets serialized. Unfortunately, readResolve() doesn't get called when a
    * circular dependency is present, so the proxy must be able to behave as the map itself.
    */
-  /*private static final class SerializationProxy<K, V> extends AbstractSerializationProxy<K, V> {
+  private static final class SerializationProxy<K, V> extends AbstractSerializationProxy<K, V> {
     private static final long serialVersionUID = 3;
 
     SerializationProxy(Strength keyStrength, Strength valueStrength,
@@ -4013,5 +4010,5 @@ class MapMakerInternalMap<K, V>
     private Object readResolve() {
       return delegate;
     }
-  }*/
+  }
 }
