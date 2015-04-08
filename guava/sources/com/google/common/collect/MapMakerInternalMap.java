@@ -3806,6 +3806,7 @@ class MapMakerInternalMap<K, V>
     }
   }
 
+  @WeakOuter
   final class Values extends AbstractCollection<V> {
 
     @Override

@@ -3,6 +3,7 @@ TYPE java.lang.Runnable
 
 # *** REAL CYCLES ***
 # Inverses
+FIELD com.google.common.base.Converter.reverse
 FIELD com.google.common.collect.AbstractBiMap.inverse
 FIELD com.google.common.collect.ImmutableListMultimap.inverse
 FIELD com.google.common.collect.ImmutableSetMultimap.inverse
@@ -33,3 +34,11 @@ NAMESPACE com.google.common.cache
 NAMESPACE com.google.common.hash
 NAMESPACE com.google.common.io
 NAMESPACE com.google.common.net
+
+# TODO(kstanger): investigate these Guava 18.0 cycles:
+FIELD com.google.common.collect.ConcurrentHashMultiset.countMap
+FIELD com.google.common.collect.TreeTraverser.PreOrderIterator.stack
+FIELD com.google.common.collect.TreeTraverser.PostOrderIterator.stack
+FIELD com.google.common.collect.TreeTraverser.PostOrderNode.childIterator
+FIELD com.google.common.util.concurrent.Futures.WrappedCombiner.outputFuture
+FIELD com.google.common.util.concurrent.AbstractScheduledService.ServiceDelegate.executorService

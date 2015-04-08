@@ -684,7 +684,8 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
 
   @Override
   Set<K> createKeySet() {
-    return new Sets.ImprovedAbstractSet<K>() {
+    @WeakOuter
+    class LinkedListMultimapKeySet extends Sets.ImprovedAbstractSet<K> {
       @Override public int size() {
         return keyToKeyList.size();
       }
@@ -698,7 +699,8 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
       public boolean remove(Object o) { // for performance
         return !LinkedListMultimap.this.removeAll(o).isEmpty();
       }
-    };
+    }
+    return new LinkedListMultimapKeySet();
   }
 
   /**
@@ -766,7 +768,8 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
 
   @Override
   List<Entry<K, V>> createEntries() {
-    return new AbstractSequentialList<Entry<K, V>>() {
+    @WeakOuter
+    class Entries extends AbstractSequentialList<Entry<K, V>> {
       @Override public int size() {
         return size;
       }
@@ -774,7 +777,8 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
       @Override public ListIterator<Entry<K, V>> listIterator(int index) {
         return new NodeIterator(index);
       }
-    };
+    }
+    return new Entries();
   }
 
   @Override

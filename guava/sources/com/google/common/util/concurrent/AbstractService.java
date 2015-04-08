@@ -30,6 +30,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.util.concurrent.ListenerCallQueue.Callback;
 import com.google.common.util.concurrent.Monitor.Guard;
 import com.google.common.util.concurrent.Service.State; // javadoc needs this
+import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,29 +97,49 @@ public abstract class AbstractService implements Service {
 
   private final Monitor monitor = new Monitor();
 
-  private final Guard isStartable = new Guard(monitor) {
+  @WeakOuter
+  private class StartableGuard extends Guard {
+    StartableGuard(Monitor monitor) {
+      super(monitor);
+    }
     @Override public boolean isSatisfied() {
       return state() == NEW;
     }
   };
+  private final Guard isStartable = new StartableGuard(monitor);
 
-  private final Guard isStoppable = new Guard(monitor) {
+  @WeakOuter
+  private class StoppableGuard extends Guard {
+    StoppableGuard(Monitor monitor) {
+      super(monitor);
+    }
     @Override public boolean isSatisfied() {
       return state().compareTo(RUNNING) <= 0;
     }
   };
+  private final Guard isStoppable = new StoppableGuard(monitor);
 
-  private final Guard hasReachedRunning = new Guard(monitor) {
+  @WeakOuter
+  private class RunningGuard extends Guard {
+    RunningGuard(Monitor monitor) {
+      super(monitor);
+    }
     @Override public boolean isSatisfied() {
       return state().compareTo(RUNNING) >= 0;
     }
-  };
+  }
+  private final Guard hasReachedRunning = new RunningGuard(monitor);
 
-  private final Guard isStopped = new Guard(monitor) {
+  @WeakOuter
+  private class StoppedGuard extends Guard {
+    StoppedGuard(Monitor monitor) {
+      super(monitor);
+    }
     @Override public boolean isSatisfied() {
       return state().isTerminal();
     }
   };
+  private final Guard isStopped = new StoppedGuard(monitor);
 
   /**
    * The listeners to notify during a state transition.

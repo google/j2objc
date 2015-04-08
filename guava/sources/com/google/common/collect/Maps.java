@@ -1924,7 +1924,8 @@ public final class Maps {
 
     @Override
     protected Set<Entry<K, V2>> createEntrySet() {
-      return new EntrySet<K, V2>() {
+      @WeakOuter
+      class TransformedEntriesMapEntrySet extends EntrySet<K, V2> {
         @Override Map<K, V2> map() {
           return TransformedEntriesMap.this;
         }
@@ -1933,7 +1934,8 @@ public final class Maps {
           return Iterators.transform(fromMap.entrySet().iterator(),
               Maps.<K, V1, V2>asEntryToEntryFunction(transformer));
         }
-      };
+      }
+      return new TransformedEntriesMapEntrySet();
     }
   }
 
@@ -2615,7 +2617,7 @@ public final class Maps {
   }
 
   private static final class FilteredMapValues<K, V> extends Maps.Values<K, V> {
-    Map<K, V> unfiltered;
+    @Weak Map<K, V> unfiltered;
     Predicate<? super Entry<K, V>> predicate;
 
     FilteredMapValues(Map<K, V> filteredMap, Map<K, V> unfiltered,
@@ -2700,6 +2702,7 @@ public final class Maps {
       return new EntrySet();
     }
 
+    @WeakOuter
     private class EntrySet extends ForwardingSet<Entry<K, V>> {
       @Override protected Set<Entry<K, V>> delegate() {
         return filteredEntrySet;
@@ -2731,6 +2734,7 @@ public final class Maps {
       return new KeySet();
     }
 
+    @WeakOuter
     class KeySet extends Maps.KeySet<K, V> {
       KeySet() {
         super(FilteredEntryMap.this);
@@ -2803,6 +2807,7 @@ public final class Maps {
       return new SortedKeySet();
     }
 
+    @WeakOuter
     class SortedKeySet extends KeySet implements SortedSet<K> {
       @Override
       public Comparator<? super K> comparator() {
@@ -2910,7 +2915,12 @@ public final class Maps {
 
     @Override
     public NavigableSet<K> navigableKeySet() {
-      return new Maps.NavigableKeySet<K, V>(this) {
+      @WeakOuter
+      class FilteredNavigableKeySet extends Maps.NavigableKeySet<K, V> {
+        FilteredNavigableKeySet() {
+          super(FilteredEntryNavigableMap.this);
+        }
+
         @Override
         public boolean removeAll(Collection<?> c) {
           return Iterators.removeIf(unfiltered.entrySet().iterator(),
@@ -2922,7 +2932,8 @@ public final class Maps {
           return Iterators.removeIf(unfiltered.entrySet().iterator(), Predicates.<Entry<K, V>>and(
               entryPredicate, Maps.<K>keyPredicateOnEntries(not(in(c)))));
         }
-      };
+      }
+      return new FilteredNavigableKeySet();
     }
 
     @Override
@@ -3483,7 +3494,7 @@ public final class Maps {
   }
 
   static class KeySet<K, V> extends Sets.ImprovedAbstractSet<K> {
-    final Map<K, V> map;
+    @Weak final Map<K, V> map;
 
     KeySet(Map<K, V> map) {
       this.map = checkNotNull(map);
@@ -3574,6 +3585,7 @@ public final class Maps {
   }
 
   @GwtIncompatible("NavigableMap")
+  @WeakOuter
   static class NavigableKeySet<K, V> extends SortedKeySet<K, V> implements NavigableSet<K> {
     NavigableKeySet(NavigableMap<K, V> map) {
       super(map);
@@ -3660,7 +3672,7 @@ public final class Maps {
   }
 
   static class Values<K, V> extends AbstractCollection<V> {
-    final Map<K, V> map;
+    @Weak final Map<K, V> map;
 
     Values(Map<K, V> map) {
       this.map = checkNotNull(map);

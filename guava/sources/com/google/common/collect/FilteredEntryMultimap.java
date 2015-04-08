@@ -218,7 +218,12 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
     
     @Override
     Set<K> createKeySet() {
-      return new Maps.KeySet<K, Collection<V>>(this) {
+      @WeakOuter
+      class KeySet extends Maps.KeySet<K, Collection<V>> {
+        KeySet(Map<K, Collection<V>> map) {
+          super(map);
+        }
+
         @Override
         public boolean removeAll(Collection<?> c) {
           return removeEntriesIf(Maps.<K>keyPredicateOnEntries(in(c)));
@@ -233,12 +238,14 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
         public boolean remove(@Nullable Object o) {
           return AsMap.this.remove(o) != null;
         }
-      };
+      }
+      return new KeySet(this);
     }
 
     @Override
     Set<Entry<K, Collection<V>>> createEntrySet() {
-      return new Maps.EntrySet<K, Collection<V>>() {
+      @WeakOuter
+      class AsMapEntrySet extends Maps.EntrySet<K, Collection<V>> {
         @Override
         Map<K, Collection<V>> map() {
           return AsMap.this;
@@ -280,12 +287,17 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
         public int size() {
           return Iterators.size(iterator());
         }
-      };
+      }
+      return new AsMapEntrySet();
     }
     
     @Override
     Collection<Collection<V>> createValues() {
-      return new Maps.Values<K, Collection<V>>(AsMap.this) {
+      @WeakOuter
+      class Values extends Maps.Values<K, Collection<V>> {
+        Values(Map<K, Collection<V>> map) {
+          super(map);
+        }
         @Override
         public boolean remove(@Nullable Object o) {
           if (o instanceof Collection) {
@@ -319,7 +331,8 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
         public boolean retainAll(Collection<?> c) {
           return removeEntriesIf(Maps.<Collection<V>>valuePredicateOnEntries(not(in(c))));
         }
-      };
+      }
+      return new Values(AsMap.this);
     }
   }
   
