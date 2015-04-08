@@ -18,15 +18,16 @@ package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.CollectPreconditions.checkRemove;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import com.google.common.base.Predicate;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,6 +37,7 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.RandomAccess;
 import java.util.Set;
+import java.util.SortedSet;
 
 import javax.annotation.Nullable;
 
@@ -114,7 +116,8 @@ public final class Iterables {
    * Returns {@code true} if {@code iterable} contains any object for which {@code equals(element)}
    * is true.
    */
-  public static boolean contains(Iterable<?> iterable, @Nullable Object element) {
+  public static boolean contains(Iterable<?> iterable, @Nullable Object element)
+  {
     if (iterable instanceof Collection) {
       Collection<?> collection = (Collection<?>) iterable;
       return Collections2.safeContains(collection, element);
@@ -231,23 +234,6 @@ public final class Iterables {
   }
 
   /**
-   * Removes and returns the first matching element, or returns {@code null} if there is none.
-   */
-  @Nullable
-  static <T> T removeFirstMatching(Iterable<T> removeFrom, Predicate<? super T> predicate) {
-    checkNotNull(predicate);
-    Iterator<T> iterator = removeFrom.iterator();
-    while (iterator.hasNext()) {
-      T next = iterator.next();
-      if (predicate.apply(next)) {
-        iterator.remove();
-        return next;
-      }
-    }
-    return null;
-  }
-
-  /**
    * Determines whether two iterables contain equal elements in the same order.
    * More specifically, this method returns {@code true} if {@code iterable1}
    * and {@code iterable2} contain the same number of elements and every element
@@ -267,12 +253,8 @@ public final class Iterables {
   }
 
   /**
-   * Returns a string representation of {@code iterable}, with the format {@code
-   * [e1, e2, ..., en]} (that is, identical to {@link java.util.Arrays
-   * Arrays}{@code .toString(Iterables.toArray(iterable))}). Note that for
-   * <i>most</i> implementations of {@link Collection}, {@code
-   * collection.toString()} also gives the same result, but that behavior is not
-   * generally guaranteed.
+   * Returns a string representation of {@code iterable}, with the format
+   * {@code [e1, e2, ..., en]}.
    */
   public static String toString(Iterable<?> iterable) {
     return Iterators.toString(iterable.iterator());
@@ -351,7 +333,7 @@ public final class Iterables {
       Collection<? extends T> c = Collections2.cast(elementsToAdd);
       return addTo.addAll(c);
     }
-    return Iterators.addAll(addTo, checkNotNull(elementsToAdd).iterator());
+    return Iterators.addAll(addTo, elementsToAdd.iterator());
   }
 
   /**
@@ -364,7 +346,8 @@ public final class Iterables {
   public static int frequency(Iterable<?> iterable, @Nullable Object element) {
     if ((iterable instanceof Multiset)) {
       return ((Multiset<?>) iterable).count(element);
-    } else if ((iterable instanceof Set)) {
+    }
+    if ((iterable instanceof Set)) {
       return ((Set<?>) iterable).contains(element) ? 1 : 0;
     }
     return Iterators.frequency(iterable.iterator(), element);
@@ -430,9 +413,12 @@ public final class Iterables {
    * <p>The returned iterable's iterator supports {@code remove()} when the
    * corresponding input iterator supports it.
    */
+  @SuppressWarnings("unchecked")
   public static <T> Iterable<T> concat(
       Iterable<? extends T> a, Iterable<? extends T> b) {
-    return concat(ImmutableList.of(a, b));
+    checkNotNull(a);
+    checkNotNull(b);
+    return concat(Arrays.asList(a, b));
   }
 
   /**
@@ -444,9 +430,13 @@ public final class Iterables {
    * <p>The returned iterable's iterator supports {@code remove()} when the
    * corresponding input iterator supports it.
    */
+  @SuppressWarnings("unchecked")
   public static <T> Iterable<T> concat(Iterable<? extends T> a,
       Iterable<? extends T> b, Iterable<? extends T> c) {
-    return concat(ImmutableList.of(a, b, c));
+    checkNotNull(a);
+    checkNotNull(b);
+    checkNotNull(c);
+    return concat(Arrays.asList(a, b, c));
   }
 
   /**
@@ -459,10 +449,15 @@ public final class Iterables {
    * <p>The returned iterable's iterator supports {@code remove()} when the
    * corresponding input iterator supports it.
    */
+  @SuppressWarnings("unchecked")
   public static <T> Iterable<T> concat(Iterable<? extends T> a,
       Iterable<? extends T> b, Iterable<? extends T> c,
       Iterable<? extends T> d) {
-    return concat(ImmutableList.of(a, b, c, d));
+    checkNotNull(a);
+    checkNotNull(b);
+    checkNotNull(c);
+    checkNotNull(d);
+    return concat(Arrays.asList(a, b, c, d));
   }
 
   /**
@@ -503,13 +498,18 @@ public final class Iterables {
   /**
    * Returns an iterator over the iterators of the given iterables.
    */
-  private static <T> Iterator<Iterator<? extends T>> iterators(
+  private static <T> UnmodifiableIterator<Iterator<? extends T>> iterators(
       Iterable<? extends Iterable<? extends T>> iterables) {
-    return new TransformedIterator<Iterable<? extends T>, Iterator<? extends T>>(
-        iterables.iterator()) {
+    final Iterator<? extends Iterable<? extends T>> iterableIterator =
+        iterables.iterator();
+    return new UnmodifiableIterator<Iterator<? extends T>>() {
       @Override
-      Iterator<? extends T> transform(Iterable<? extends T> from) {
-        return from.iterator();
+      public boolean hasNext() {
+        return iterableIterator.hasNext();
+      }
+      @Override
+      public Iterator<? extends T> next() {
+        return iterableIterator.next().iterator();
       }
     };
   }
@@ -725,9 +725,26 @@ public final class Iterables {
    */
   public static <T> T get(Iterable<T> iterable, int position) {
     checkNotNull(iterable);
-    return (iterable instanceof List)
-        ? ((List<T>) iterable).get(position)
-        : Iterators.get(iterable.iterator(), position);
+    if (iterable instanceof List) {
+      return ((List<T>) iterable).get(position);
+    }
+
+    if (iterable instanceof Collection) {
+      // Can check both ends
+      Collection<T> collection = (Collection<T>) iterable;
+      Preconditions.checkElementIndex(position, collection.size());
+    } else {
+      // Can only check the lower end
+      checkNonnegativeIndex(position);
+    }
+    return Iterators.get(iterable.iterator(), position);
+  }
+
+  private static void checkNonnegativeIndex(int position) {
+    if (position < 0) {
+      throw new IndexOutOfBoundsException(
+          "position cannot be negative: " + position);
+    }
   }
 
   /**
@@ -746,14 +763,12 @@ public final class Iterables {
   @Nullable
   public static <T> T get(Iterable<? extends T> iterable, int position, @Nullable T defaultValue) {
     checkNotNull(iterable);
-    Iterators.checkNonnegative(position);
-    if (iterable instanceof List) {
-      List<? extends T> list = Lists.cast(iterable);
-      return (position < list.size()) ? list.get(position) : defaultValue;
-    } else {
-      Iterator<? extends T> iterator = iterable.iterator();
-      Iterators.advance(iterator, position);
-      return Iterators.getNext(iterator, defaultValue);
+    checkNonnegativeIndex(position);
+
+    try {
+      return get(iterable, position);
+    } catch (IndexOutOfBoundsException e) {
+      return defaultValue;
     }
   }
 
@@ -791,6 +806,16 @@ public final class Iterables {
       return getLastInNonemptyList(list);
     }
 
+    /*
+     * TODO(kevinb): consider whether this "optimization" is worthwhile. Users
+     * with SortedSets tend to know they are SortedSets and probably would not
+     * call this method.
+     */
+    if (iterable instanceof SortedSet) {
+      SortedSet<T> sortedSet = (SortedSet<T>) iterable;
+      return sortedSet.last();
+    }
+
     return Iterators.getLast(iterable.iterator());
   }
 
@@ -805,12 +830,25 @@ public final class Iterables {
   @Nullable
   public static <T> T getLast(Iterable<? extends T> iterable, @Nullable T defaultValue) {
     if (iterable instanceof Collection) {
-      Collection<? extends T> c = Collections2.cast(iterable);
-      if (c.isEmpty()) {
+      Collection<? extends T> collection = Collections2.cast(iterable);
+      if (collection.isEmpty()) {
         return defaultValue;
-      } else if (iterable instanceof List) {
-        return getLastInNonemptyList(Lists.cast(iterable));
       }
+    }
+
+    if (iterable instanceof List) {
+      List<? extends T> list = Lists.cast(iterable);
+      return getLastInNonemptyList(list);
+    }
+
+    /*
+     * TODO(kevinb): consider whether this "optimization" is worthwhile. Users
+     * with SortedSets tend to know they are SortedSets and probably would not
+     * call this method.
+     */
+    if (iterable instanceof SortedSet) {
+      SortedSet<? extends T> sortedSet = Sets.cast(iterable);
+      return sortedSet.last();
     }
 
     return Iterators.getLast(iterable.iterator(), defaultValue);
@@ -851,8 +889,9 @@ public final class Iterables {
         @Override
         public Iterator<T> iterator() {
           // TODO(kevinb): Support a concurrently modified collection?
-          int toSkip = Math.min(list.size(), numberToSkip);
-          return list.subList(toSkip, list.size()).iterator();
+          return (numberToSkip >= list.size())
+              ? Iterators.<T>emptyIterator()
+              : list.subList(numberToSkip, list.size()).iterator();
         }
       };
     }
@@ -879,14 +918,22 @@ public final class Iterables {
 
           @Override
           public T next() {
-            T result = iterator.next();
-            atStart = false; // not called if next() fails
-            return result;
+            if (!hasNext()) {
+              throw new NoSuchElementException();
+            }
+
+            try {
+              return iterator.next();
+            } finally {
+              atStart = false;
+            }
           }
 
           @Override
           public void remove() {
-            checkRemove(!atStart);
+            if (atStart) {
+              throw new IllegalStateException();
+            }
             iterator.remove();
           }
         };
@@ -897,12 +944,12 @@ public final class Iterables {
   /**
    * Creates an iterable with the first {@code limitSize} elements of the given
    * iterable. If the original iterable does not contain that many elements, the
-   * returned iterable will have the same behavior as the original iterable. The
+   * returned iterator will have the same behavior as the original iterable. The
    * returned iterable's iterator supports {@code remove()} if the original
    * iterator does.
    *
    * @param iterable the iterable to limit
-   * @param limitSize the maximum number of elements in the returned iterable
+   * @param limitSize the maximum number of elements in the returned iterator
    * @throws IllegalArgumentException if {@code limitSize} is negative
    * @since 3.0
    */
@@ -944,11 +991,6 @@ public final class Iterables {
         public Iterator<T> iterator() {
           return new ConsumingQueueIterator<T>((Queue<T>) iterable);
         }
-
-        @Override
-        public String toString() {
-          return "Iterables.consumingIterable(...)";
-        }
       };
     }
 
@@ -958,11 +1000,6 @@ public final class Iterables {
       @Override
       public Iterator<T> iterator() {
         return Iterators.consumingIterator(iterable.iterator());
-      }
-
-      @Override
-      public String toString() {
-        return "Iterables.consumingIterable(...)";
       }
     };
   }

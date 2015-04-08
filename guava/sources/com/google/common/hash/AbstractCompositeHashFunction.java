@@ -122,9 +122,9 @@ abstract class AbstractCompositeHashFunction extends AbstractStreamingHashFuncti
         return this;
       }
 
-      @Override public Hasher putUnencodedChars(CharSequence chars) {
+      @Override public Hasher putString(CharSequence chars) {
         for (Hasher hasher : hashers) {
-          hasher.putUnencodedChars(chars);
+          hasher.putString(chars);
         }
         return this;
       }

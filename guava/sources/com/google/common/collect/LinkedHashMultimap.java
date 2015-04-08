@@ -16,13 +16,13 @@
 
 package com.google.common.collect;
 
-import static com.google.common.collect.CollectPreconditions.checkNonnegative;
-import static com.google.common.collect.CollectPreconditions.checkRemove;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Objects;
+import com.google.j2objc.annotations.WeakOuter;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -150,16 +150,18 @@ public final class LinkedHashMultimap<K, V> extends AbstractSetMultimap<K, V> {
 
   /**
    * LinkedHashMultimap entries are in no less than three coexisting linked lists:
-   * a bucket in the hash table for a Set<V> associated with a key, the linked list
+   * a row in the hash table for a Set<V> associated with a key, the linked list
    * of insertion-ordered entries in that Set<V>, and the linked list of entries
    * in the LinkedHashMultimap as a whole.
    */
   @VisibleForTesting
-  static final class ValueEntry<K, V> extends ImmutableEntry<K, V>
+  static final class ValueEntry<K, V> extends AbstractMapEntry<K, V>
       implements ValueSetLink<K, V> {
-    final int smearedValueHash;
+    final K key;
+    final V value;
+    final int valueHash;
 
-    @Nullable ValueEntry<K, V> nextInValueBucket;
+    @Nullable ValueEntry<K, V> nextInValueSetHashRow;
 
     ValueSetLink<K, V> predecessorInValueSet;
     ValueSetLink<K, V> successorInValueSet;
@@ -167,15 +169,22 @@ public final class LinkedHashMultimap<K, V> extends AbstractSetMultimap<K, V> {
     ValueEntry<K, V> predecessorInMultimap;
     ValueEntry<K, V> successorInMultimap;
 
-    ValueEntry(@Nullable K key, @Nullable V value, int smearedValueHash,
-        @Nullable ValueEntry<K, V> nextInValueBucket) {
-      super(key, value);
-      this.smearedValueHash = smearedValueHash;
-      this.nextInValueBucket = nextInValueBucket;
+    ValueEntry(@Nullable K key, @Nullable V value, int valueHash,
+        @Nullable ValueEntry<K, V> nextInValueSetHashRow) {
+      this.key = key;
+      this.value = value;
+      this.valueHash = valueHash;
+      this.nextInValueSetHashRow = nextInValueSetHashRow;
     }
-    
-    boolean matchesValue(@Nullable Object v, int smearedVHash) {
-      return smearedValueHash == smearedVHash && Objects.equal(getValue(), v);
+
+    @Override
+    public K getKey() {
+      return key;
+    }
+
+    @Override
+    public V getValue() {
+      return value;
     }
 
     @Override
@@ -224,7 +233,9 @@ public final class LinkedHashMultimap<K, V> extends AbstractSetMultimap<K, V> {
 
   private LinkedHashMultimap(int keyCapacity, int valueSetCapacity) {
     super(new LinkedHashMap<K, Collection<V>>(keyCapacity));
-    checkNonnegative(valueSetCapacity, "expectedValuesPerKey");
+
+    checkArgument(valueSetCapacity >= 0,
+        "expectedValuesPerKey must be >= 0 but was %s", valueSetCapacity);
 
     this.valueSetCapacity = valueSetCapacity;
     this.multimapHeaderEntry = new ValueEntry<K, V>(null, null, 0, null);
@@ -300,6 +311,7 @@ public final class LinkedHashMultimap<K, V> extends AbstractSetMultimap<K, V> {
   }
 
   @VisibleForTesting
+  @WeakOuter
   final class ValueSet extends Sets.ImprovedAbstractSet<V> implements ValueSetLink<K, V> {
     /*
      * We currently use a fixed load factor of 1.0, a bit higher than normal to reduce memory
@@ -326,10 +338,6 @@ public final class LinkedHashMultimap<K, V> extends AbstractSetMultimap<K, V> {
       @SuppressWarnings("unchecked")
       ValueEntry<K, V>[] hashTable = new ValueEntry[tableSize];
       this.hashTable = hashTable;
-    }
-    
-    private int mask() {
-      return hashTable.length - 1;
     }
 
     @Override
@@ -386,9 +394,27 @@ public final class LinkedHashMultimap<K, V> extends AbstractSetMultimap<K, V> {
         @Override
         public void remove() {
           checkForComodification();
-          checkRemove(toRemove != null);
-          ValueSet.this.remove(toRemove.getValue());
-          expectedModCount = modCount;
+          Iterators.checkRemove(toRemove != null);
+          Object o = toRemove.getValue();
+          int hash = (o == null) ? 0 : o.hashCode();
+          int row = Hashing.smear(hash) & (hashTable.length - 1);
+          ValueEntry<K, V> prev = null;
+          for (ValueEntry<K, V> entry = hashTable[row]; entry != null;
+               prev = entry, entry = entry.nextInValueSetHashRow) {
+            if (entry == toRemove) {
+              if (prev == null) {
+                // first entry in row
+                hashTable[row] = entry.nextInValueSetHashRow;
+              } else {
+                prev.nextInValueSetHashRow = entry.nextInValueSetHashRow;
+              }
+              deleteFromValueSet(toRemove);
+              deleteFromMultimap(toRemove);
+              size--;
+              expectedModCount = ++modCount;
+              break;
+            }
+          }
           toRemove = null;
         }
       };
@@ -401,10 +427,12 @@ public final class LinkedHashMultimap<K, V> extends AbstractSetMultimap<K, V> {
 
     @Override
     public boolean contains(@Nullable Object o) {
-      int smearedHash = Hashing.smearedHash(o);
-      for (ValueEntry<K, V> entry = hashTable[smearedHash & mask()]; entry != null;
-          entry = entry.nextInValueBucket) {
-        if (entry.matchesValue(o, smearedHash)) {
+      int hash = (o == null) ? 0 : o.hashCode();
+      int row = Hashing.smear(hash) & (hashTable.length - 1);
+
+      for (ValueEntry<K, V> entry = hashTable[row]; entry != null;
+          entry = entry.nextInValueSetHashRow) {
+        if (hash == entry.valueHash && Objects.equal(o, entry.getValue())) {
           return true;
         }
       }
@@ -413,22 +441,23 @@ public final class LinkedHashMultimap<K, V> extends AbstractSetMultimap<K, V> {
 
     @Override
     public boolean add(@Nullable V value) {
-      int smearedHash = Hashing.smearedHash(value);
-      int bucket = smearedHash & mask();
-      ValueEntry<K, V> rowHead = hashTable[bucket];
+      int hash = (value == null) ? 0 : value.hashCode();
+      int row = Hashing.smear(hash) & (hashTable.length - 1);
+
+      ValueEntry<K, V> rowHead = hashTable[row];
       for (ValueEntry<K, V> entry = rowHead; entry != null;
-          entry = entry.nextInValueBucket) {
-        if (entry.matchesValue(value, smearedHash)) {
+          entry = entry.nextInValueSetHashRow) {
+        if (hash == entry.valueHash && Objects.equal(value, entry.getValue())) {
           return false;
         }
       }
 
-      ValueEntry<K, V> newEntry = new ValueEntry<K, V>(key, value, smearedHash, rowHead);
+      ValueEntry<K, V> newEntry = new ValueEntry<K, V>(key, value, hash, rowHead);
       succeedsInValueSet(lastEntry, newEntry);
       succeedsInValueSet(newEntry, this);
       succeedsInMultimap(multimapHeaderEntry.getPredecessorInMultimap(), newEntry);
       succeedsInMultimap(newEntry, multimapHeaderEntry);
-      hashTable[bucket] = newEntry;
+      hashTable[row] = newEntry;
       size++;
       modCount++;
       rehashIfNecessary();
@@ -444,26 +473,27 @@ public final class LinkedHashMultimap<K, V> extends AbstractSetMultimap<K, V> {
         for (ValueSetLink<K, V> entry = firstEntry;
             entry != this; entry = entry.getSuccessorInValueSet()) {
           ValueEntry<K, V> valueEntry = (ValueEntry<K, V>) entry;
-          int bucket = valueEntry.smearedValueHash & mask;
-          valueEntry.nextInValueBucket = hashTable[bucket];
-          hashTable[bucket] = valueEntry;
+          int row = Hashing.smear(valueEntry.valueHash) & mask;
+          valueEntry.nextInValueSetHashRow = hashTable[row];
+          hashTable[row] = valueEntry;
         }
       }
     }
 
     @Override
     public boolean remove(@Nullable Object o) {
-      int smearedHash = Hashing.smearedHash(o);
-      int bucket = smearedHash & mask();
+      int hash = (o == null) ? 0 : o.hashCode();
+      int row = Hashing.smear(hash) & (hashTable.length - 1);
+
       ValueEntry<K, V> prev = null;
-      for (ValueEntry<K, V> entry = hashTable[bucket]; entry != null;
-           prev = entry, entry = entry.nextInValueBucket) {
-        if (entry.matchesValue(o, smearedHash)) {
+      for (ValueEntry<K, V> entry = hashTable[row]; entry != null;
+           prev = entry, entry = entry.nextInValueSetHashRow) {
+        if (hash == entry.valueHash && Objects.equal(o, entry.getValue())) {
           if (prev == null) {
-            // first entry in the bucket
-            hashTable[bucket] = entry.nextInValueBucket;
+            // first entry in the row
+            hashTable[row] = entry.nextInValueSetHashRow;
           } else {
-            prev.nextInValueBucket = entry.nextInValueBucket;
+            prev.nextInValueSetHashRow = entry.nextInValueSetHashRow;
           }
           deleteFromValueSet(entry);
           deleteFromMultimap(entry);
@@ -513,16 +543,11 @@ public final class LinkedHashMultimap<K, V> extends AbstractSetMultimap<K, V> {
 
       @Override
       public void remove() {
-        checkRemove(toRemove != null);
+        Iterators.checkRemove(toRemove != null);
         LinkedHashMultimap.this.remove(toRemove.getKey(), toRemove.getValue());
         toRemove = null;
       }
     };
-  }
-  
-  @Override
-  Iterator<V> valueIterator() {
-    return Maps.valueIterator(entryIterator());
   }
 
   @Override

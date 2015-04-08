@@ -74,8 +74,9 @@ public abstract class Optional<T> implements Serializable {
   /**
    * Returns an {@code Optional} instance with no contained reference.
    */
+  @SuppressWarnings("unchecked")
   public static <T> Optional<T> absent() {
-    return Absent.withType();
+    return (Optional<T>) Absent.INSTANCE;
   }
 
   /**
@@ -128,7 +129,7 @@ public abstract class Optional<T> implements Serializable {
    *   Optional<? extends Number> first = numbers.first();
    *   Number value = first.or(0.5); // error}</pre>
    *
-   * <p>As a workaround, it is always safe to cast an {@code Optional<? extends T>} to {@code
+   * As a workaround, it is always safe to cast an {@code Optional<? extends T>} to {@code
    * Optional<T>}. Casting either of the above example {@code Optional} instances to {@code
    * Optional<Number>} (where {@code Number} is the desired output type) solves the problem:
    * <pre>   {@code

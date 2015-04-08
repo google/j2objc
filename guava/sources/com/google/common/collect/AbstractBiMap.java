@@ -18,7 +18,6 @@ package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.CollectPreconditions.checkRemove;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
@@ -325,7 +324,7 @@ abstract class AbstractBiMap<K, V> extends ForwardingMap<K, V>
         }
 
         @Override public void remove() {
-          checkRemove(entry != null);
+          checkState(entry != null);
           V value = entry.getValue();
           iterator.remove();
           removeFromInverseMap(value);

@@ -55,7 +55,6 @@ import javax.annotation.CheckReturnValue;
 @Beta // Possibly change from chars to code points; decide constants vs. methods
 @GwtCompatible(emulated = true)
 public abstract class CharMatcher implements Predicate<Character> {
-
   // Constants
   /**
    * Determines whether a character is a breaking whitespace (that is, a whitespace which can be
@@ -145,15 +144,13 @@ public abstract class CharMatcher implements Predicate<Character> {
   /**
    * Determines whether a character is a digit according to
    * <a href="http://unicode.org/cldr/utility/list-unicodeset.jsp?a=%5Cp%7Bdigit%7D">Unicode</a>.
-   * If you only care to match ASCII digits, you can use {@code inRange('0', '9')}.
    */
   public static final CharMatcher DIGIT = new RangesMatcher(
       "CharMatcher.DIGIT", ZEROES.toCharArray(), NINES.toCharArray());
 
   /**
-   * Determines whether a character is a digit according to {@linkplain Character#isDigit(char)
-   * Java's definition}. If you only care to match ASCII digits, you can use {@code
-   * inRange('0', '9')}.
+   * Determines whether a character is a digit according to {@link Character#isDigit(char) Java's
+   * definition}. If you only care to match ASCII digits, you can use {@code inRange('0', '9')}.
    */
   public static final CharMatcher JAVA_DIGIT = new CharMatcher("CharMatcher.JAVA_DIGIT") {
     @Override public boolean matches(char c) {
@@ -162,8 +159,8 @@ public abstract class CharMatcher implements Predicate<Character> {
   };
 
   /**
-   * Determines whether a character is a letter according to {@linkplain Character#isLetter(char)
-   * Java's definition}. If you only care to match letters of the Latin alphabet, you can use {@code
+   * Determines whether a character is a letter according to {@link Character#isLetter(char) Java's
+   * definition}. If you only care to match letters of the Latin alphabet, you can use {@code
    * inRange('a', 'z').or(inRange('A', 'Z'))}.
    */
   public static final CharMatcher JAVA_LETTER = new CharMatcher("CharMatcher.JAVA_LETTER") {
@@ -173,7 +170,7 @@ public abstract class CharMatcher implements Predicate<Character> {
   };
 
   /**
-   * Determines whether a character is a letter or digit according to {@linkplain
+   * Determines whether a character is a letter or digit according to {@link
    * Character#isLetterOrDigit(char) Java's definition}.
    */
   public static final CharMatcher JAVA_LETTER_OR_DIGIT =
@@ -184,8 +181,8 @@ public abstract class CharMatcher implements Predicate<Character> {
   };
 
   /**
-   * Determines whether a character is upper case according to {@linkplain
-   * Character#isUpperCase(char) Java's definition}.
+   * Determines whether a character is upper case according to {@link Character#isUpperCase(char)
+   * Java's definition}.
    */
   public static final CharMatcher JAVA_UPPER_CASE =
       new CharMatcher("CharMatcher.JAVA_UPPER_CASE") {
@@ -195,8 +192,8 @@ public abstract class CharMatcher implements Predicate<Character> {
   };
 
   /**
-   * Determines whether a character is lower case according to {@linkplain
-   * Character#isLowerCase(char) Java's definition}.
+   * Determines whether a character is lower case according to {@link Character#isLowerCase(char)
+   * Java's definition}.
    */
   public static final CharMatcher JAVA_LOWER_CASE =
       new CharMatcher("CharMatcher.JAVA_LOWER_CASE") {
@@ -220,17 +217,17 @@ public abstract class CharMatcher implements Predicate<Character> {
    * PRIVATE_USE according to ICU4J.
    */
   public static final CharMatcher INVISIBLE = new RangesMatcher("CharMatcher.INVISIBLE", (
-      "\u0000\u007f\u00ad\u0600\u061c\u06dd\u070f\u1680\u180e\u2000\u2028\u205f\u2066\u2067\u2068"
-      + "\u2069\u206a\u3000\ud800\ufeff\ufff9\ufffa").toCharArray(), (
-      "\u0020\u00a0\u00ad\u0604\u061c\u06dd\u070f\u1680\u180e\u200f\u202f\u2064\u2066\u2067\u2068"
-      + "\u2069\u206f\u3000\uf8ff\ufeff\ufff9\ufffb").toCharArray());
+      "\u0000\u007f\u00ad\u0600\u06dd\u070f\u1680\u180e\u2000\u2028\u205f\u206a\u3000\ud800\ufeff"
+      + "\ufff9\ufffa").toCharArray(), (
+      "\u0020\u00a0\u00ad\u0604\u06dd\u070f\u1680\u180e\u200f\u202f\u2064\u206f\u3000\uf8ff\ufeff"
+      + "\ufff9\ufffb").toCharArray());
 
   private static String showCharacter(char c) {
     String hex = "0123456789ABCDEF";
     char[] tmp = {'\\', 'u', '\0', '\0', '\0', '\0'};
     for (int i = 0; i < 4; i++) {
       tmp[5 - i] = hex.charAt(c & 0xF);
-      c >>= 4;
+      c = (char) (c >> 4);
     }
     return String.copyValueOf(tmp);
 
@@ -448,7 +445,7 @@ public abstract class CharMatcher implements Predicate<Character> {
    * <p>To negate another {@code CharMatcher}, use {@link #negate()}.
    */
   public static CharMatcher isNot(final char match) {
-    String description = "CharMatcher.isNot('" + showCharacter(match) + "')";
+    String description = "CharMatcher.isNot(" + Integer.toHexString(match) + ")";
     return new FastMatcher(description) {
       @Override public boolean matches(char c) {
         return c != match;
@@ -798,12 +795,8 @@ public abstract class CharMatcher implements Predicate<Character> {
       // TODO(user): is it worth it to worry about the last character of large matchers?
       table.flip(Character.MIN_VALUE, Character.MAX_VALUE + 1);
       int negatedCharacters = DISTINCT_CHARS - totalCharacters;
-      String suffix = ".negate()";
-      String negatedDescription = description.endsWith(suffix)
-          ? description.substring(0, description.length() - suffix.length())
-          : description + suffix;
       return new NegatedFastMatcher(toString(),
-          precomputedPositive(negatedCharacters, table, negatedDescription));
+          precomputedPositive(negatedCharacters, table, description + ".negate()"));
     }
   }
 
@@ -874,11 +867,9 @@ public abstract class CharMatcher implements Predicate<Character> {
     }
   }
 
-  @GwtIncompatible("SmallCharMatcher")
   private static boolean isSmall(int totalCharacters, int tableLength) {
     return totalCharacters <= SmallCharMatcher.MAX_SIZE
-        && tableLength > (totalCharacters * 4 * Character.SIZE);
-        // err on the side of BitSetMatcher
+        && tableLength > (totalCharacters * Character.SIZE);
   }
 
   @GwtIncompatible("java.util.BitSet")
@@ -1330,13 +1321,13 @@ public abstract class CharMatcher implements Predicate<Character> {
     return builder.toString();
   }
 
+  // Predicate interface
+
   /**
-   * @deprecated Provided only to satisfy the {@link Predicate} interface; use {@link #matches}
-   *     instead.
+   * Equivalent to {@link #matches}; provided only to satisfy the {@link Predicate} interface. When
+   * using a reference of type {@code CharMatcher}, invoke {@link #matches} directly instead.
    */
-  @Deprecated
-  @Override
-  public boolean apply(Character character) {
+  @Override public boolean apply(Character character) {
     return matches(character);
   }
 
@@ -1349,13 +1340,35 @@ public abstract class CharMatcher implements Predicate<Character> {
     return description;
   }
 
-  static final String WHITESPACE_TABLE = ""
-      + "\u2002\u3000\r\u0085\u200A\u2005\u2000\u3000"
-      + "\u2029\u000B\u3000\u2008\u2003\u205F\u3000\u1680"
-      + "\u0009\u0020\u2006\u2001\u202F\u00A0\u000C\u2009"
-      + "\u3000\u2004\u3000\u3000\u2028\n\u2007\u3000";
-  static final int WHITESPACE_MULTIPLIER = 1682554634;
-  static final int WHITESPACE_SHIFT = Integer.numberOfLeadingZeros(WHITESPACE_TABLE.length() - 1);
+  /**
+   * A special-case CharMatcher for Unicode whitespace characters that is extremely
+   * efficient both in space required and in time to check for matches.
+   *
+   * Implementation details.
+   * It turns out that all current (early 2012) Unicode characters are unique modulo 79:
+   * so we can construct a lookup table of exactly 79 entries, and just check the character code
+   * mod 79, and see if that character is in the table.
+   *
+   * There is a 1 at the beginning of the table so that the null character is not listed
+   * as whitespace.
+   *
+   * Other things we tried that did not prove to be beneficial, mostly due to speed concerns:
+   *
+   *   * Binary search into the sorted list of characters, i.e., what
+   *     CharMatcher.anyOf() does</li>
+   *   * Perfect hash function into a table of size 26 (using an offset table and a special
+   *     Jenkins hash function)</li>
+   *   * Perfect-ish hash function that required two lookups into a single table of size 26.</li>
+   *   * Using a power-of-2 sized hash table (size 64) with linear probing.</li>
+   *
+   * --Christopher Swenson, February 2012.
+   */
+  private static final String WHITESPACE_TABLE = "\u0001\u0000\u00a0\u0000\u0000\u0000\u0000\u0000"
+      + "\u0000\u0009\n\u000b\u000c\r\u0000\u0000\u2028\u2029\u0000\u0000\u0000\u0000\u0000\u202f"
+      + "\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0020\u0000\u0000\u0000\u0000\u0000"
+      + "\u0000\u0000\u0000\u0000\u0000\u3000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000"
+      + "\u0000\u0000\u0085\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a"
+      + "\u0000\u0000\u0000\u0000\u0000\u205f\u1680\u0000\u0000\u180e\u0000\u0000\u0000";
 
   /**
    * Determines whether a character is whitespace according to the latest Unicode standard, as
@@ -1368,18 +1381,10 @@ public abstract class CharMatcher implements Predicate<Character> {
    * <p><b>Note:</b> as the Unicode definition evolves, we will modify this constant to keep it up
    * to date.
    */
-  public static final CharMatcher WHITESPACE = new FastMatcher("WHITESPACE") {
-    @Override
-    public boolean matches(char c) {
-      return WHITESPACE_TABLE.charAt((WHITESPACE_MULTIPLIER * c) >>> WHITESPACE_SHIFT) == c;
-    }
+  public static final CharMatcher WHITESPACE = new FastMatcher("CharMatcher.WHITESPACE") {
 
-    @GwtIncompatible("java.util.BitSet")
-    @Override
-    void setBits(BitSet table) {
-      for (int i = 0; i < WHITESPACE_TABLE.length(); i++) {
-        table.set(WHITESPACE_TABLE.charAt(i));
-      }
+    @Override public boolean matches(char c) {
+      return WHITESPACE_TABLE.charAt(c % 79) == c;
     }
   };
 }

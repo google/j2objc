@@ -62,11 +62,6 @@ final class EmptyImmutableBiMap extends ImmutableBiMap<Object, Object> {
   }
 
   @Override
-  public ImmutableSetMultimap<Object, Object> asMultimap() {
-    return ImmutableSetMultimap.of();
-  }
-
-  @Override
   public ImmutableSet<Object> keySet() {
     return ImmutableSet.of();
   }

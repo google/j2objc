@@ -63,17 +63,6 @@ public final class LongMath {
   }
 
   /**
-   * Returns 1 if {@code x < y} as unsigned longs, and 0 otherwise.  Assumes that x - y fits into a
-   * signed long.  The implementation is branch-free, and benchmarks suggest it is measurably
-   * faster than the straightforward ternary expression.
-   */
-  @VisibleForTesting
-  static int lessThanBranchFree(long x, long y) {
-    // Returns the sign bit of x - y.
-    return (int) (~~(x - y) >>> (Long.SIZE - 1));
-  }
-
-  /**
    * Returns the base-2 logarithm of {@code x}, rounded according to the specified rounding mode.
    *
    * @throws IllegalArgumentException if {@code x <= 0}
@@ -104,7 +93,7 @@ public final class LongMath {
         long cmp = MAX_POWER_OF_SQRT2_UNSIGNED >>> leadingZeros;
         // floor(2^(logFloor + 0.5))
         int logFloor = (Long.SIZE - 1) - leadingZeros;
-        return logFloor + lessThanBranchFree(cmp, x);
+        return (x <= cmp) ? logFloor : logFloor + 1;
 
       default:
         throw new AssertionError("impossible");
@@ -126,6 +115,9 @@ public final class LongMath {
   // TODO(kevinb): remove after this warning is disabled globally
   public static int log10(long x, RoundingMode mode) {
     checkPositive("x", x);
+    if (fitsInInt(x)) {
+      return IntMath.log10((int) x, mode);
+    }
     int logFloor = log10Floor(x);
     long floorPow = powersOf10[logFloor];
     switch (mode) {
@@ -137,12 +129,12 @@ public final class LongMath {
         return logFloor;
       case CEILING:
       case UP:
-        return logFloor + lessThanBranchFree(floorPow, x);
+        return (x == floorPow) ? logFloor : logFloor + 1;
       case HALF_DOWN:
       case HALF_UP:
       case HALF_EVEN:
         // sqrt(10) is irrational, so log10(x)-logFloor is never exactly 0.5
-        return logFloor + lessThanBranchFree(halfPowersOf10[logFloor], x);
+        return (x <= halfPowersOf10[logFloor]) ? logFloor : logFloor + 1;
       default:
         throw new AssertionError();
     }
@@ -158,11 +150,14 @@ public final class LongMath {
      * is 6, then 64 <= x < 128, so floor(log10(x)) is either 1 or 2.
      */
     int y = maxLog10ForLeadingZeros[Long.numberOfLeadingZeros(x)];
+    // y is the higher of the two possible values of floor(log10(x))
+
+    long sgn = (x - powersOf10[y]) >>> (Long.SIZE - 1);
     /*
-     * y is the higher of the two possible values of floor(log10(x)). If x < 10^y, then we want the
-     * lower of the two possible values, or y - 1, otherwise, we want y.
+     * sgn is the sign bit of x - 10^y; it is 1 if x < 10^y, and 0 otherwise. If x < 10^y, then we
+     * want the lower of the two possible values, or y - 1, otherwise, we want y.
      */
-    return y - lessThanBranchFree(x, powersOf10[y]);
+    return y - (int) sgn;
   }
 
   // maxLog10ForLeadingZeros[i] == floor(log10(2^(Long.SIZE - i)))
@@ -277,62 +272,85 @@ public final class LongMath {
     if (fitsInInt(x)) {
       return IntMath.sqrt((int) x, mode);
     }
-    /*
-     * Let k be the true value of floor(sqrt(x)), so that
-     *
-     *            k * k <= x          <  (k + 1) * (k + 1)
-     * (double) (k * k) <= (double) x <= (double) ((k + 1) * (k + 1))
-     *          since casting to double is nondecreasing.
-     *          Note that the right-hand inequality is no longer strict.
-     * Math.sqrt(k * k) <= Math.sqrt(x) <= Math.sqrt((k + 1) * (k + 1))
-     *          since Math.sqrt is monotonic.
-     * (long) Math.sqrt(k * k) <= (long) Math.sqrt(x) <= (long) Math.sqrt((k + 1) * (k + 1))
-     *          since casting to long is monotonic
-     * k <= (long) Math.sqrt(x) <= k + 1
-     *          since (long) Math.sqrt(k * k) == k, as checked exhaustively in
-     *          {@link LongMathTest#testSqrtOfPerfectSquareAsDoubleIsPerfect}
-     */
-    long guess = (long) Math.sqrt(x);
-    // Note: guess is always <= FLOOR_SQRT_MAX_LONG.
-    long guessSquared = guess * guess;
-    // Note (2013-2-26): benchmarks indicate that, inscrutably enough, using if statements is
-    // faster here than using lessThanBranchFree.
+    long sqrtFloor = sqrtFloor(x);
     switch (mode) {
       case UNNECESSARY:
-        checkRoundingUnnecessary(guessSquared == x);
-        return guess;
+        checkRoundingUnnecessary(sqrtFloor * sqrtFloor == x); // fall through
       case FLOOR:
       case DOWN:
-        if (x < guessSquared) {
-          return guess - 1;
-        }
-        return guess;
+        return sqrtFloor;
       case CEILING:
       case UP:
-        if (x > guessSquared) {
-          return guess + 1;
-        }
-        return guess;
+        return (sqrtFloor * sqrtFloor == x) ? sqrtFloor : sqrtFloor + 1;
       case HALF_DOWN:
       case HALF_UP:
       case HALF_EVEN:
-        long sqrtFloor = guess - ((x < guessSquared) ? 1 : 0);
         long halfSquare = sqrtFloor * sqrtFloor + sqrtFloor;
         /*
          * We wish to test whether or not x <= (sqrtFloor + 0.5)^2 = halfSquare + 0.25. Since both
          * x and halfSquare are integers, this is equivalent to testing whether or not x <=
          * halfSquare. (We have to deal with overflow, though.)
-         *
-         * If we treat halfSquare as an unsigned long, we know that
-         *            sqrtFloor^2 <= x < (sqrtFloor + 1)^2
-         * halfSquare - sqrtFloor <= x < halfSquare + sqrtFloor + 1
-         * so |x - halfSquare| <= sqrtFloor.  Therefore, it's safe to treat x - halfSquare as a
-         * signed long, so lessThanBranchFree is safe for use.
          */
-        return sqrtFloor + lessThanBranchFree(halfSquare, x);
+        return (halfSquare >= x | halfSquare < 0) ? sqrtFloor : sqrtFloor + 1;
       default:
         throw new AssertionError();
     }
+  }
+
+  @GwtIncompatible("TODO")
+  private static long sqrtFloor(long x) {
+    long guess = (long) Math.sqrt(x);
+    /*
+     * Lemma: For all a, b, if |a - b| <= 1, then |floor(a) - floor(b)| <= 1.
+     * 
+     * Proof: 
+     *           -1 <=        a - b        <= 1
+     *        b - 1 <=          a          <= b + 1
+     * floor(b - 1) <=       floor(a)      <= floor(b + 1)
+     * floor(b) - 1 <=       floor(a)      <= floor(b) + 1
+     *           -1 <= floor(a) - floor(b) <= 1
+     * 
+     * Theorem: |floor(sqrt(x)) - guess| <= 1.
+     * 
+     * Proof:  By the lemma, it suffices to show that |sqrt(x) - Math.sqrt(x)| <= 1.
+     * We consider two cases: x <= 2^53 and x > 2^53.
+     * 
+     * If x <= 2^53, then x is exactly representable as a double, so the only error is in rounding
+     * sqrt(x) to a double, which introduces at most 2^-52 relative error.  Since sqrt(x) < 2^27,
+     * the absolute error is at most 2^(27-52) = 2^-25 < 1.
+     * 
+     * Otherwise, x > 2^53.  The rounding error introduced by casting x to a double is at most
+     * 2^63 * 2^-52 = 2^11.  Noting that sqrt(x) > 2^26,
+     * 
+     * sqrt(x) - 0.5 =  sqrt((sqrt(x) - 0.5)^2)
+     *               =  sqrt(x - sqrt(x) + 0.25)
+     *               <  sqrt(x - 2^26 + 0.25)
+     *               <  sqrt(x - 2^11)
+     *               <= sqrt((double) x)
+     * sqrt(x) + 0.5 =  sqrt((sqrt(x) + 0.5)^2)
+     *               =  sqrt(x + sqrt(x) + 0.25)
+     *               >  sqrt(x + 2^26 + 0.25)
+     *               >  sqrt(x + 2^11)
+     *               >= sqrt((double) x)     
+     * sqrt(x) - 0.5 < sqrt((double) x) < sqrt(x) + 0.5
+     * 
+     * Math.sqrt((double) x) is obtained by rounding sqrt((double) x) to a double, increasing the
+     * error by at most 2^-52 * sqrt(x) <= 2^(32 - 52) <= 2^-20, so clearly
+     * 
+     * sqrt(x) - 0.5 - 2^-20 <= Math.sqrt((double) x) <= sqrt(x) + 0.5 + 2^-20 
+     * 
+     * Therefore, |sqrt(x) - Math.sqrt((double) x)| <= 1, so
+     *            |floor(sqrt(x)) - (long) Math.sqrt((double) x)| <= 1
+     *            as desired.
+     */
+    long guessSquared = guess * guess;
+    if (x - guessSquared >= guess + guess + 1) {
+      // The condition is equivalent to x >= (guess + 1) * (guess + 1), but doesn't overflow.
+      guess++;
+    } else if (x < guessSquared) {
+      guess--;
+    }
+    return guess;
   }
 
   /**
@@ -398,8 +416,8 @@ public final class LongMath {
   }
 
   /**
-   * Returns {@code x mod m}, a non-negative value less than {@code m}.
-   * This differs from {@code x % m}, which might be negative.
+   * Returns {@code x mod m}. This differs from {@code x % m} in that it always returns a
+   * non-negative result.
    *
    * <p>For example:
    *
@@ -412,8 +430,6 @@ public final class LongMath {
    * mod(8, 4) == 0}</pre>
    *
    * @throws ArithmeticException if {@code m <= 0}
-   * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.17.3">
-   *      Remainder Operator</a>
    */
   @GwtIncompatible("TODO")
   public static int mod(long x, int m) {
@@ -422,8 +438,8 @@ public final class LongMath {
   }
 
   /**
-   * Returns {@code x mod m}, a non-negative value less than {@code m}.
-   * This differs from {@code x % m}, which might be negative.
+   * Returns {@code x mod m}. This differs from {@code x % m} in that it always returns a
+   * non-negative result.
    *
    * <p>For example:
    *
@@ -436,13 +452,11 @@ public final class LongMath {
    * mod(8, 4) == 0}</pre>
    *
    * @throws ArithmeticException if {@code m <= 0}
-   * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.17.3">
-   *      Remainder Operator</a>
    */
   @GwtIncompatible("TODO")
   public static long mod(long x, long m) {
     if (m <= 0) {
-      throw new ArithmeticException("Modulus must be positive");
+      throw new ArithmeticException("Modulus " + m + " must be > 0");
     }
     long result = x % m;
     return (result >= 0) ? result : result + m;
@@ -600,6 +614,7 @@ public final class LongMath {
     }
   }
 
+  @GwtIncompatible("TODO")
   @VisibleForTesting static final long FLOOR_SQRT_MAX_LONG = 3037000499L;
 
   /**
@@ -672,14 +687,14 @@ public final class LongMath {
           return result;
         } else {
           int nBits = LongMath.log2(n, RoundingMode.CEILING);
-
+          
           long result = 1;
           long numerator = n--;
           long denominator = 1;
-
+          
           int numeratorBits = nBits;
           // This is an upper bound on log2(numerator, ceiling).
-
+          
           /*
            * We want to do this in long math for speed, but want to avoid overflow. We adapt the
            * technique previously used by BigIntegerMath: maintain separate numerator and
@@ -704,7 +719,7 @@ public final class LongMath {
         }
     }
   }
-
+  
   /**
    * Returns (x * numerator / denominator), which is assumed to come out to an integral value.
    */
@@ -740,6 +755,7 @@ public final class LongMath {
   // These values were generated by using checkedMultiply to see when the simple multiply/divide
   // algorithm would lead to an overflow.
 
+  @GwtIncompatible("TODO")
   static boolean fitsInInt(long x) {
     return (int) x == x;
   }

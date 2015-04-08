@@ -18,8 +18,6 @@ package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.CollectPreconditions.checkNonnegative;
-import static com.google.common.collect.CollectPreconditions.checkRemove;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
@@ -220,7 +218,7 @@ public final class Multisets {
     ImmutableEntry(@Nullable E element, int count) {
       this.element = element;
       this.count = count;
-      checkNonnegative(count, "count");
+      checkArgument(count >= 0);
     }
 
     @Override
@@ -285,11 +283,6 @@ public final class Multisets {
     }
 
     @Override
-    public UnmodifiableIterator<E> iterator() {
-      return Iterators.filter(unfiltered.iterator(), predicate);
-    }
-
-    @Override
     Set<E> createElementSet() {
       return Sets.filter(unfiltered.elementSet(), predicate);
     }
@@ -315,6 +308,11 @@ public final class Multisets {
     }
 
     @Override
+    public boolean contains(@Nullable Object element) {
+      return count(element) > 0;
+    }
+
+    @Override
     public int count(@Nullable Object element) {
       int count = unfiltered.count(element);
       if (count > 0) {
@@ -334,12 +332,22 @@ public final class Multisets {
 
     @Override
     public int remove(@Nullable Object element, int occurrences) {
-      checkNonnegative(occurrences, "occurrences");
+      Multisets.checkNonnegative(occurrences, "occurrences");
       if (occurrences == 0) {
         return count(element);
       } else {
         return contains(element) ? unfiltered.remove(element, occurrences) : 0;
       }
+    }
+
+    @Override
+    public boolean removeAll(Collection<?> c) {
+      return elementSet().removeAll(c);
+    }
+
+    @Override
+    public boolean retainAll(Collection<?> c) {
+      return elementSet().retainAll(c);
     }
 
     @Override
@@ -409,7 +417,6 @@ public final class Multisets {
             = multiset1.entrySet().iterator();
         final Iterator<? extends Entry<? extends E>> iterator2
             = multiset2.entrySet().iterator();
-        // TODO(user): consider making the entries live views
         return new AbstractIterator<Entry<E>>() {
           @Override
           protected Entry<E> computeNext() {
@@ -473,7 +480,6 @@ public final class Multisets {
       @Override
       Iterator<Entry<E>> entryIterator() {
         final Iterator<Entry<E>> iterator1 = multiset1.entrySet().iterator();
-        // TODO(user): consider making the entries live views
         return new AbstractIterator<Entry<E>>() {
           @Override
           protected Entry<E> computeNext() {
@@ -502,7 +508,7 @@ public final class Multisets {
    * In the returned multiset, the count of each element is the <i>sum</i> of
    * its counts in the two backing multisets. The iteration order of the
    * returned multiset matches that of the element set of {@code multiset1}
-   * followed by the members of the element set of {@code multiset2} that
+   * followed by the members of the element set of {@code multiset2} that that
    * are not contained in {@code multiset1}, with repeated occurrences of the
    * same element appearing consecutively.
    *
@@ -518,7 +524,6 @@ public final class Multisets {
     checkNotNull(multiset1);
     checkNotNull(multiset2);
 
-    // TODO(user): consider making the entries live views
     return new AbstractMultiset<E>() {
       @Override
       public boolean contains(@Nullable Object element) {
@@ -600,7 +605,6 @@ public final class Multisets {
     checkNotNull(multiset1);
     checkNotNull(multiset2);
 
-    // TODO(user): consider making the entries live views
     return new AbstractMultiset<E>() {
       @Override
       public int count(@Nullable Object element) {
@@ -715,7 +719,7 @@ public final class Multisets {
    * {@link Multiset#removeAll removeAll}{@code (occurrencesToRemove)}, which
    * removes all occurrences of elements that appear in
    * {@code occurrencesToRemove}. However, this operation <i>is</i> equivalent
-   * to, albeit sometimes more efficient than, the following: <pre>   {@code
+   * to, albeit more efficient than, the following: <pre>   {@code
    *
    *   for (E e : occurrencesToRemove) {
    *     multisetToModify.remove(e);
@@ -723,32 +727,15 @@ public final class Multisets {
    *
    * @return {@code true} if {@code multisetToModify} was changed as a result of
    *         this operation
-   * @since 18.0 (present in 10.0 with a requirement that the second parameter
-   *     be a {@code Multiset})
+   * @since 10.0
    */
   public static boolean removeOccurrences(
-      Multiset<?> multisetToModify, Iterable<?> occurrencesToRemove) {
-    if (occurrencesToRemove instanceof Multiset) {
-      return removeOccurrencesImpl(
-          multisetToModify, (Multiset<?>) occurrencesToRemove);
-    } else {
-      return removeOccurrencesImpl(multisetToModify, occurrencesToRemove);
-    }
-  }
-
-  private static boolean removeOccurrencesImpl(
-      Multiset<?> multisetToModify, Iterable<?> occurrencesToRemove) {
-    checkNotNull(multisetToModify);
-    checkNotNull(occurrencesToRemove);
-    boolean changed = false;
-    for (Object o : occurrencesToRemove) {
-      changed |= multisetToModify.remove(o);
-    }
-    return changed;
+      Multiset<?> multisetToModify, Multiset<?> occurrencesToRemove) {
+    return removeOccurrencesImpl(multisetToModify, occurrencesToRemove);
   }
 
   /**
-   * Delegate that cares about the element types in multisetToModify.
+   * Delegate that cares about the element types in occurrencesToRemove.
    */
   private static <E> boolean removeOccurrencesImpl(
       Multiset<E> multisetToModify, Multiset<?> occurrencesToRemove) {
@@ -1048,7 +1035,7 @@ public final class Multisets {
 
     @Override
     public void remove() {
-      checkRemove(canRemove);
+      Iterators.checkRemove(canRemove);
       if (totalCount == 1) {
         entryIterator.remove();
       } else {
@@ -1068,6 +1055,10 @@ public final class Multisets {
       size += entry.getCount();
     }
     return Ints.saturatedCast(size);
+  }
+
+  static void checkNonnegative(int count, String name) {
+    checkArgument(count >= 0, "%s cannot be negative: %s", name, count);
   }
 
   /**
@@ -1093,7 +1084,7 @@ public final class Multisets {
   @Beta
   public static <E> ImmutableMultiset<E> copyHighestCountFirst(Multiset<E> multiset) {
     List<Entry<E>> sortedEntries =
-        Multisets.DECREASING_COUNT_ORDERING.immutableSortedCopy(multiset.entrySet());
+        Multisets.DECREASING_COUNT_ORDERING.sortedCopy(multiset.entrySet());
     return ImmutableMultiset.copyFromEntries(sortedEntries);
   }
 }

@@ -55,8 +55,24 @@ final class DescendingImmutableSortedMultiset<E> extends ImmutableSortedMultiset
   }
 
   @Override
-  Entry<E> getEntry(int index) {
-    return forward.entrySet().asList().reverse().get(index);
+  ImmutableSet<Entry<E>> createEntrySet() {
+    final ImmutableSet<Entry<E>> forwardEntrySet = forward.entrySet();
+    return new EntrySet() {
+      @Override
+      public int size() {
+        return forwardEntrySet.size();
+      }
+
+      @Override
+      public UnmodifiableIterator<Entry<E>> iterator() {
+        return asList().iterator();
+      }
+
+      @Override
+      ImmutableList<Entry<E>> createAsList() {
+        return forwardEntrySet.asList().reverse();
+      }
+    };
   }
 
   @Override

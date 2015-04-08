@@ -1,15 +1,17 @@
 /*
  * Copyright (C) 2012 The Guava Authors
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License. You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software distributed under the License
- * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
- * or implied. See the License for the specific language governing permissions and limitations under
- * the License.
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package com.google.common.collect;
@@ -19,6 +21,8 @@ import static com.google.common.base.Preconditions.checkPositionIndex;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -36,23 +40,17 @@ import javax.annotation.Nullable;
  * @author Louis Wasserman
  */
 @GwtCompatible
-class FilteredKeyMultimap<K, V> extends AbstractMultimap<K, V> implements FilteredMultimap<K, V> {
-  final Multimap<K, V> unfiltered;
+class FilteredKeyMultimap<K, V> extends FilteredMultimap<K, V> {
   final Predicate<? super K> keyPredicate;
 
   FilteredKeyMultimap(Multimap<K, V> unfiltered, Predicate<? super K> keyPredicate) {
-    this.unfiltered = checkNotNull(unfiltered);
+    super(unfiltered);
     this.keyPredicate = checkNotNull(keyPredicate);
   }
 
   @Override
-  public Multimap<K, V> unfiltered() {
-    return unfiltered;
-  }
-
-  @Override
-  public Predicate<? super Entry<K, V>> entryPredicate() {
-    return Maps.keyPredicateOnEntries(keyPredicate);
+  Predicate<? super Entry<K, V>> entryPredicate() {
+    return Predicates.compose(keyPredicate, Maps.<K>keyFunction());
   }
 
   @Override
@@ -107,7 +105,7 @@ class FilteredKeyMultimap<K, V> extends AbstractMultimap<K, V> implements Filter
       return new AddRejectingList<K, V>(key);
     }
   }
-
+  
   static class AddRejectingSet<K, V> extends ForwardingSet<V> {
     final K key;
 
@@ -172,45 +170,60 @@ class FilteredKeyMultimap<K, V> extends AbstractMultimap<K, V> implements Filter
 
   @Override
   Iterator<Entry<K, V>> entryIterator() {
-    throw new AssertionError("should never be called");
+    return Iterators.filter(
+        unfiltered.entries().iterator(), Predicates.compose(keyPredicate, Maps.<K>keyFunction()));
   }
 
   @Override
   Collection<Entry<K, V>> createEntries() {
-    return new Entries();
-  }
-
-  class Entries extends ForwardingCollection<Entry<K, V>> {
-    @Override
-    protected Collection<Entry<K, V>> delegate() {
-      return Collections2.filter(unfiltered.entries(), entryPredicate());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public boolean remove(@Nullable Object o) {
-      if (o instanceof Entry) {
-        Entry<?, ?> entry = (Entry<?, ?>) o;
-        if (unfiltered.containsKey(entry.getKey())
-            // if this holds, then we know entry.getKey() is a K
-            && keyPredicate.apply((K) entry.getKey())) {
-          return unfiltered.remove(entry.getKey(), entry.getValue());
-        }
+    @WeakOuter
+    class FilteredKeyMultimapEntries extends Multimaps.Entries<K, V> {
+      @Override
+      Multimap<K, V> multimap() {
+        return FilteredKeyMultimap.this;
       }
-      return false;
+
+      @Override
+      public Iterator<Entry<K, V>> iterator() {
+        return entryIterator();
+      }
+      
+      @Override
+      @SuppressWarnings("unchecked")
+      public boolean remove(@Nullable Object o) {
+        if (o instanceof Entry) {
+          Entry<?, ?> entry = (Entry<?, ?>) o;
+          if (unfiltered.containsEntry(entry.getKey(), entry.getValue())
+              && keyPredicate.apply((K) entry.getKey())) {
+            return unfiltered.remove(entry.getKey(), entry.getValue());
+          }
+        }
+        return false;
+      }
+      
+      @Override
+      public boolean removeAll(Collection<?> c) {
+        Predicate<Entry<K, ?>> combinedPredicate = Predicates.and(
+            Predicates.compose(keyPredicate, Maps.<K>keyFunction()), Predicates.in(c));
+        return Iterators.removeIf(unfiltered.entries().iterator(), combinedPredicate);
+      }
+      
+      @Override
+      public boolean retainAll(Collection<?> c) {
+        Predicate<Entry<K, ?>> combinedPredicate = Predicates.and(
+            Predicates.compose(keyPredicate, Maps.<K>keyFunction()), 
+            Predicates.not(Predicates.in(c)));
+        return Iterators.removeIf(unfiltered.entries().iterator(), combinedPredicate);
+      }
     }
-  }
-  
-  @Override
-  Collection<V> createValues() {
-    return new FilteredMultimapValues<K, V>(this);
+    return new FilteredKeyMultimapEntries();
   }
 
   @Override
   Map<K, Collection<V>> createAsMap() {
     return Maps.filterKeys(unfiltered.asMap(), keyPredicate);
   }
-
+  
   @Override
   Multiset<K> createKeys() {
     return Multisets.filter(unfiltered.keys(), keyPredicate);

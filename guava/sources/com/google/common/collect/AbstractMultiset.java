@@ -167,10 +167,7 @@ abstract class AbstractMultiset<E> extends AbstractCollection<E>
 
   @Override public Set<Entry<E>> entrySet() {
     Set<Entry<E>> result = entrySet;
-    if (result == null) {
-      entrySet = result = createEntrySet();
-    }
-    return result;
+    return (result == null) ? entrySet = createEntrySet() : result;
   }
 
   @WeakOuter

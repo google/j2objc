@@ -16,8 +16,6 @@
 
 package com.google.common.collect;
 
-import static com.google.common.collect.CollectPreconditions.checkEntryNotNull;
-
 import com.google.common.annotations.GwtCompatible;
 
 import javax.annotation.Nullable;
@@ -36,7 +34,6 @@ final class SingletonImmutableBiMap<K, V> extends ImmutableBiMap<K, V> {
   final transient V singleValue;
 
   SingletonImmutableBiMap(K singleKey, V singleValue) {
-    checkEntryNotNull(singleKey, singleValue);
     this.singleKey = singleKey;
     this.singleValue = singleValue;
   }
@@ -48,7 +45,7 @@ final class SingletonImmutableBiMap<K, V> extends ImmutableBiMap<K, V> {
     this.inverse = inverse;
   }
 
-  SingletonImmutableBiMap(Entry<? extends K, ? extends V> entry) {
+  SingletonImmutableBiMap(Entry<K, V> entry) {
     this(entry.getKey(), entry.getValue());
   }
 

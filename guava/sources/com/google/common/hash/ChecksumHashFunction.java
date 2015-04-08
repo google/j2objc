@@ -85,9 +85,9 @@ final class ChecksumHashFunction extends AbstractStreamingHashFunction implement
          * cast won't lose any information and is necessary to return a HashCode of the correct
          * size.
          */
-        return HashCode.fromInt((int) value);
+        return HashCodes.fromInt((int) value);
       } else {
-        return HashCode.fromLong(value);
+        return HashCodes.fromLong(value);
       }
     }
   }

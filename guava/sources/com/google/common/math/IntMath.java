@@ -64,18 +64,6 @@ public final class IntMath {
   }
 
   /**
-   * Returns 1 if {@code x < y} as unsigned integers, and 0 otherwise. Assumes that x - y fits into
-   * a signed int. The implementation is branch-free, and benchmarks suggest it is measurably (if
-   * narrowly) faster than the straightforward ternary expression.
-   */
-  @VisibleForTesting
-  static int lessThanBranchFree(int x, int y) {
-    // The double negation is optimized away by normal Java, but is necessary for GWT
-    // to make sure bit twiddling works as expected.
-    return ~~(x - y) >>> (Integer.SIZE - 1);
-  }
-
-  /**
    * Returns the base-2 logarithm of {@code x}, rounded according to the specified rounding mode.
    *
    * @throws IllegalArgumentException if {@code x <= 0}
@@ -106,7 +94,7 @@ public final class IntMath {
         int cmp = MAX_POWER_OF_SQRT2_UNSIGNED >>> leadingZeros;
           // floor(2^(logFloor + 0.5))
         int logFloor = (Integer.SIZE - 1) - leadingZeros;
-        return logFloor + lessThanBranchFree(cmp, x);
+        return (x <= cmp) ? logFloor : logFloor + 1;
 
       default:
         throw new AssertionError();
@@ -138,12 +126,12 @@ public final class IntMath {
         return logFloor;
       case CEILING:
       case UP:
-        return logFloor + lessThanBranchFree(floorPow, x);
+        return (x == floorPow) ? logFloor : logFloor + 1;
       case HALF_DOWN:
       case HALF_UP:
       case HALF_EVEN:
         // sqrt(10) is irrational, so log10(x) - logFloor is never exactly 0.5
-        return logFloor + lessThanBranchFree(halfPowersOf10[logFloor], x);
+        return (x <= halfPowersOf10[logFloor]) ? logFloor : logFloor + 1;
       default:
         throw new AssertionError();
     }
@@ -158,11 +146,14 @@ public final class IntMath {
      * is 6, then 64 <= x < 128, so floor(log10(x)) is either 1 or 2.
      */
     int y = maxLog10ForLeadingZeros[Integer.numberOfLeadingZeros(x)];
+    // y is the higher of the two possible values of floor(log10(x))
+
+    int sgn = (x - powersOf10[y]) >>> (Integer.SIZE - 1);
     /*
-     * y is the higher of the two possible values of floor(log10(x)). If x < 10^y, then we want the
-     * lower of the two possible values, or y - 1, otherwise, we want y.
+     * sgn is the sign bit of x - 10^y; it is 1 if x < 10^y, and 0 otherwise. If x < 10^y, then we
+     * want the lower of the two possible values, or y - 1, otherwise, we want y.
      */
-    return y - lessThanBranchFree(x, powersOf10[y]);
+    return y - sgn;
   }
 
   // maxLog10ForLeadingZeros[i] == floor(log10(2^(Long.SIZE - i)))
@@ -239,23 +230,17 @@ public final class IntMath {
         return sqrtFloor;
       case CEILING:
       case UP:
-        return sqrtFloor + lessThanBranchFree(sqrtFloor * sqrtFloor, x);
+        return (sqrtFloor * sqrtFloor == x) ? sqrtFloor : sqrtFloor + 1;
       case HALF_DOWN:
       case HALF_UP:
       case HALF_EVEN:
         int halfSquare = sqrtFloor * sqrtFloor + sqrtFloor;
         /*
-         * We wish to test whether or not x <= (sqrtFloor + 0.5)^2 = halfSquare + 0.25. Since both
-         * x and halfSquare are integers, this is equivalent to testing whether or not x <=
-         * halfSquare. (We have to deal with overflow, though.)
-         *
-         * If we treat halfSquare as an unsigned int, we know that
-         *            sqrtFloor^2 <= x < (sqrtFloor + 1)^2
-         * halfSquare - sqrtFloor <= x < halfSquare + sqrtFloor + 1
-         * so |x - halfSquare| <= sqrtFloor.  Therefore, it's safe to treat x - halfSquare as a
-         * signed int, so lessThanBranchFree is safe for use.
+         * We wish to test whether or not x <= (sqrtFloor + 0.5)^2 = halfSquare + 0.25.
+         * Since both x and halfSquare are integers, this is equivalent to testing whether or not
+         * x <= halfSquare.  (We have to deal with overflow, though.)
          */
-        return sqrtFloor + lessThanBranchFree(halfSquare, x);
+        return (x <= halfSquare | halfSquare < 0) ? sqrtFloor : sqrtFloor + 1;
       default:
         throw new AssertionError();
     }
@@ -332,8 +317,8 @@ public final class IntMath {
   }
 
   /**
-   * Returns {@code x mod m}, a non-negative value less than {@code m}.
-   * This differs from {@code x % m}, which might be negative.
+   * Returns {@code x mod m}. This differs from {@code x % m} in that it always returns a
+   * non-negative result.
    *
    * <p>For example:<pre> {@code
    *
@@ -344,8 +329,6 @@ public final class IntMath {
    * mod(8, 4) == 0}</pre>
    *
    * @throws ArithmeticException if {@code m <= 0}
-   * @see <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-15.html#jls-15.17.3">
-   *      Remainder Operator</a>
    */
   public static int mod(int x, int m) {
     if (m <= 0) {

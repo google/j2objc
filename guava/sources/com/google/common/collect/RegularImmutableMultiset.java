@@ -17,13 +17,14 @@
 package com.google.common.collect;
 
 import com.google.common.annotations.GwtCompatible;
+import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.Map;
 
 import javax.annotation.Nullable;
 
 /**
- * Implementation of {@link ImmutableMultiset} with zero or more elements.
+ * Implementation of {@link ImmutableMultiset} with one or more elements.
  *
  * @author Jared Levy
  * @author Louis Wasserman
@@ -66,10 +67,42 @@ class RegularImmutableMultiset<E> extends ImmutableMultiset<E> {
     return map.keySet();
   }
 
+  private static <E> Entry<E> entryFromMapEntry(Map.Entry<E, Integer> entry) {
+    return Multisets.immutableEntry(entry.getKey(), entry.getValue());
+  }
+
   @Override
-  Entry<E> getEntry(int index) {
-    Map.Entry<E, Integer> mapEntry = map.entrySet().asList().get(index);
-    return Multisets.immutableEntry(mapEntry.getKey(), mapEntry.getValue());
+  ImmutableSet<Entry<E>> createEntrySet() {
+    return new EntrySet();
+  }
+
+  @WeakOuter
+  private class EntrySet extends ImmutableMultiset<E>.EntrySet {
+    @Override
+    public int size() {
+      return map.size();
+    }
+
+    @Override
+    public UnmodifiableIterator<Entry<E>> iterator() {
+      return asList().iterator();
+    }
+
+    @Override
+    ImmutableList<Entry<E>> createAsList() {
+      final ImmutableList<Map.Entry<E, Integer>> entryList = map.entrySet().asList();
+      return new ImmutableAsList<Entry<E>>() {
+        @Override
+        public Entry<E> get(int index) {
+          return entryFromMapEntry(entryList.get(index));
+        }
+
+        @Override
+        ImmutableCollection<Entry<E>> delegateCollection() {
+          return EntrySet.this;
+        }
+      };
+    }
   }
 
   @Override

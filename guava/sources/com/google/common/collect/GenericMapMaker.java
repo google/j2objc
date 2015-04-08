@@ -21,7 +21,7 @@ import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.base.Equivalence;
 import com.google.common.base.Function;
-import com.google.common.base.MoreObjects;
+import com.google.common.base.Objects;
 import com.google.common.collect.MapMaker.RemovalListener;
 import com.google.common.collect.MapMaker.RemovalNotification;
 
@@ -36,18 +36,10 @@ import java.util.concurrent.TimeUnit;
  * @param <V0> the base type for all value types of maps built by this map maker
  * @author Kevin Bourrillion
  * @since 7.0
- * @deprecated This class existed only to support the generic paramterization necessary for the
- *     caching functionality in {@code MapMaker}. That functionality has been moved to {@link
- *     com.google.common.cache.CacheBuilder}, which is a properly generified class and thus needs no
- *     "Generic" equivalent; simple use {@code CacheBuilder} naturally. For general migration
- *     instructions, see the <a
- *     href="http://code.google.com/p/guava-libraries/wiki/MapMakerMigration">MapMaker Migration
- *     Guide</a>.
  */
 @Beta
-@Deprecated
 @GwtCompatible(emulated = true)
-abstract class GenericMapMaker<K0, V0> {
+public abstract class GenericMapMaker<K0, V0> {
   @GwtIncompatible("To be supported")
   enum NullListener implements RemovalListener<Object, Object> {
     INSTANCE;
@@ -98,14 +90,7 @@ abstract class GenericMapMaker<K0, V0> {
 
   /**
    * See {@link MapMaker#softValues}.
-   *
-   * @deprecated Caching functionality in {@code MapMaker} has been moved to {@link
-   *     com.google.common.cache.CacheBuilder}, with {@link #softValues} being replaced by {@link
-   *     com.google.common.cache.CacheBuilder#softValues}. Note that {@code CacheBuilder} is simply
-   *     an enhanced API for an implementation which was branched from {@code MapMaker}. <b>This
-   *     method is scheduled for removal in March 2015.</b>
    */
-  @Deprecated
   @GwtIncompatible("java.lang.ref.SoftReference")
   public abstract GenericMapMaker<K0, V0> softValues();
 
@@ -128,7 +113,7 @@ abstract class GenericMapMaker<K0, V0> {
   @SuppressWarnings("unchecked") // safe covariant cast
   @GwtIncompatible("To be supported")
   <K extends K0, V extends V0> RemovalListener<K, V> getRemovalListener() {
-    return (RemovalListener<K, V>) MoreObjects.firstNonNull(removalListener, NullListener.INSTANCE);
+    return (RemovalListener<K, V>) Objects.firstNonNull(removalListener, NullListener.INSTANCE);
   }
 
   /**
@@ -146,6 +131,6 @@ abstract class GenericMapMaker<K0, V0> {
    * See {@link MapMaker#makeComputingMap}.
    */
   @Deprecated
-  abstract <K extends K0, V extends V0> ConcurrentMap<K, V> makeComputingMap(
+  public abstract <K extends K0, V extends V0> ConcurrentMap<K, V> makeComputingMap(
       Function<? super K, ? extends V> computingFunction);
 }

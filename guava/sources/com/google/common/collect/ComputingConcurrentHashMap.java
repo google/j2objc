@@ -36,6 +36,10 @@ import javax.annotation.concurrent.GuardedBy;
 /**
  * Adds computing functionality to {@link MapMakerInternalMap}.
  *
+ * J2ObjC Modifications:
+ * - Commented out writeReplace().
+ * - Commented out class ComputingSerializationProxy.
+ *
  * @author Bob Lee
  * @author Charles Fry
  */
@@ -377,14 +381,14 @@ class ComputingConcurrentHashMap<K, V> extends MapMakerInternalMap<K, V> {
 
   private static final long serialVersionUID = 4;
 
-  @Override
+  /*@Override
   Object writeReplace() {
     return new ComputingSerializationProxy<K, V>(keyStrength, valueStrength, keyEquivalence,
         valueEquivalence, expireAfterWriteNanos, expireAfterAccessNanos, maximumSize,
         concurrencyLevel, removalListener, this, computingFunction);
-  }
+  }*/
 
-  static final class ComputingSerializationProxy<K, V> extends AbstractSerializationProxy<K, V> {
+  /*static final class ComputingSerializationProxy<K, V> extends AbstractSerializationProxy<K, V> {
 
     final Function<? super K, ? extends V> computingFunction;
 
@@ -416,5 +420,5 @@ class ComputingConcurrentHashMap<K, V> extends MapMakerInternalMap<K, V> {
     }
 
     private static final long serialVersionUID = 4;
-  }
+  }*/
 }

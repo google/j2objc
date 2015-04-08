@@ -16,6 +16,8 @@
 
 package com.google.common.collect;
 
+import com.google.common.annotations.GwtCompatible;
+
 /**
  * "Overrides" the {@link ImmutableMap} static methods that lack
  * {@link ImmutableSortedMap} equivalents with deprecated, exception-throwing
@@ -23,6 +25,7 @@ package com.google.common.collect;
  *
  * @author Chris Povirk
  */
+@GwtCompatible
 abstract class ImmutableSortedMapFauxverideShim<K, V>
     extends ImmutableMap<K, V> {
   /**

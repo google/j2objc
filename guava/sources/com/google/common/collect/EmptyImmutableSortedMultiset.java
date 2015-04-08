@@ -50,6 +50,11 @@ final class EmptyImmutableSortedMultiset<E> extends ImmutableSortedMultiset<E> {
   }
 
   @Override
+  public boolean contains(@Nullable Object object) {
+    return false;
+  }
+
+  @Override
   public boolean containsAll(Collection<?> targets) {
     return targets.isEmpty();
   }
@@ -65,7 +70,12 @@ final class EmptyImmutableSortedMultiset<E> extends ImmutableSortedMultiset<E> {
   }
 
   @Override
-  Entry<E> getEntry(int index) {
+  public ImmutableSet<Entry<E>> entrySet() {
+    return ImmutableSet.of();
+  }
+
+  @Override
+  ImmutableSet<Entry<E>> createEntrySet() {
     throw new AssertionError("should never be called");
   }
 
@@ -98,13 +108,28 @@ final class EmptyImmutableSortedMultiset<E> extends ImmutableSortedMultiset<E> {
   }
 
   @Override
+  public int hashCode() {
+    return 0;
+  }
+
+  @Override
+  public String toString() {
+    return "[]";
+  }
+
+  @Override
   boolean isPartialView() {
     return false;
   }
 
   @Override
-  int copyIntoArray(Object[] dst, int offset) {
-    return offset;
+  public Object[] toArray() {
+    return ObjectArrays.EMPTY_ARRAY;
+  }
+
+  @Override
+  public <T> T[] toArray(T[] other) {
+    return asList().toArray(other);
   }
 
   @Override

@@ -36,7 +36,7 @@ import java.util.concurrent.TimeUnit;
  *     return DEFAULT_VALUE;
  *   }
  * </pre>
- * <p>Please see {@code SimpleTimeLimiterTest} for more usage examples.
+ * Please see {@code SimpleTimeLimiterTest} for more usage examples.
  *
  * @author Kevin Bourrillion
  * @since 1.0

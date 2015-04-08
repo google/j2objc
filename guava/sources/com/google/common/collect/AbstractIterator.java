@@ -53,7 +53,7 @@ import java.util.NoSuchElementException;
  *     };
  *   }}</pre>
  *
- * <p>This class supports iterators that include null elements.
+ * This class supports iterators that include null elements.
  *
  * @author Kevin Bourrillion
  * @since 2.0 (imported from Google Collections Library)
@@ -154,9 +154,7 @@ public abstract class AbstractIterator<T> extends UnmodifiableIterator<T> {
       throw new NoSuchElementException();
     }
     state = State.NOT_READY;
-    T result = next;
-    next = null;
-    return result;
+    return next;
   }
 
   /**

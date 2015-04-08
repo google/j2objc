@@ -75,10 +75,8 @@ public interface ListMultimap<K, V> extends Multimap<K, V> {
   /**
    * {@inheritDoc}
    *
-   * <p><b>Note:</b> The returned map's values are guaranteed to be of type
-   * {@link List}. To obtain this map with the more specific generic type
-   * {@code Map<K, List<V>>}, call {@link Multimaps#asMap(ListMultimap)}
-   * instead.
+   * <p>Though the method signature doesn't say so explicitly, the returned map
+   * has {@link List} values.
    */
   @Override
   Map<K, Collection<V>> asMap();

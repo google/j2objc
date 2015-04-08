@@ -57,12 +57,7 @@ public interface ListeningExecutorService extends ExecutorService {
   /**
    * {@inheritDoc}
    *
-   * <p>All elements in the returned list must be {@link ListenableFuture} instances. The easiest
-   * way to obtain a {@code List<ListenableFuture<T>>} from this method is an unchecked (but safe)
-   * cast:<pre>
-   *   {@code @SuppressWarnings("unchecked") // guaranteed by invokeAll contract}
-   *   {@code List<ListenableFuture<T>> futures = (List) executor.invokeAll(tasks);}
-   * </pre>
+   * <p>All elements in the returned list must be {@link ListenableFuture} instances.
    *
    * @return A list of {@code ListenableFuture} instances representing the tasks, in the same
    *         sequential order as produced by the iterator for the given task list, each of which has
@@ -77,12 +72,7 @@ public interface ListeningExecutorService extends ExecutorService {
   /**
    * {@inheritDoc}
    *
-   * <p>All elements in the returned list must be {@link ListenableFuture} instances. The easiest
-   * way to obtain a {@code List<ListenableFuture<T>>} from this method is an unchecked (but safe)
-   * cast:<pre>
-   *   {@code @SuppressWarnings("unchecked") // guaranteed by invokeAll contract}
-   *   {@code List<ListenableFuture<T>> futures = (List) executor.invokeAll(tasks, timeout, unit);}
-   * </pre>
+   * <p>All elements in the returned list must be {@link ListenableFuture} instances.
    *
    * @return a list of {@code ListenableFuture} instances representing the tasks, in the same
    *         sequential order as produced by the iterator for the given task list. If the operation
