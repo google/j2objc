@@ -323,6 +323,7 @@ public class NameTable {
   public static String getName(IBinding binding) {
     assert binding != null;
     assert !(binding instanceof IMethodBinding);
+    assert !(binding instanceof ITypeBinding);
     binding = getBindingDeclaration(binding);
     String newName = instance.renamings.get(binding);
     if (newName != null) {
@@ -808,16 +809,8 @@ public class NameTable {
   private static String getFullNameInner(ITypeBinding binding) {
     binding = Types.mapType(binding.getErasure());  // Make sure type variables aren't included.
     ITypeBinding outerBinding = binding.getDeclaringClass();
-    if (binding.isLocal() && !binding.isAnonymous()) {
-      String binaryName = binding.getBinaryName();
-      int innerClassIndex = binaryName.lastIndexOf(binding.getName());
-      while (innerClassIndex > 0 && binaryName.charAt(innerClassIndex - 1) != '$') {
-        --innerClassIndex;
-      }
-      return getFullNameInner(outerBinding) + '_' + binaryName.substring(innerClassIndex);
-    }
     if (outerBinding != null) {
-      String baseName = getFullNameInner(outerBinding) + '_' + getName(binding);
+      String baseName = getFullNameInner(outerBinding) + '_' + getTypeSubName(binding);
       return (outerBinding.isEnum() && binding.isAnonymous()) ? baseName : baseName;
     }
     String name = binding.getQualifiedName();
@@ -837,6 +830,21 @@ public class NameTable {
     IPackageBinding pkg = binding.getPackage();
     String pkgName = pkg != null ? getPrefix(pkg) : "";
     return pkgName + binding.getName();
+  }
+
+  private static String getTypeSubName(ITypeBinding binding) {
+    if (binding.isAnonymous()) {
+      String binaryName = binding.getBinaryName();
+      return binaryName.substring(binaryName.lastIndexOf("$"));
+    } else if (binding.isLocal()) {
+      String binaryName = binding.getBinaryName();
+      int innerClassIndex = binaryName.lastIndexOf(binding.getName());
+      while (innerClassIndex > 0 && binaryName.charAt(innerClassIndex - 1) != '$') {
+        --innerClassIndex;
+      }
+      return binaryName.substring(innerClassIndex);
+    }
+    return binding.getName();
   }
 
   private static boolean isReservedName(String name) {

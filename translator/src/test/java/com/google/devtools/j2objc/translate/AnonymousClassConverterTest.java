@@ -90,7 +90,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertEquals(2, types.size());
 
     TypeDeclaration type = types.get(1);
-    assertEquals("$1", type.getName().getIdentifier());
+    assertEquals("Test$1", type.getTypeBinding().getBinaryName());
   }
 
   /**

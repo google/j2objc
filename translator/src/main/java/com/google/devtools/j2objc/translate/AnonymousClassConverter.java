@@ -16,15 +16,12 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
-import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -37,14 +34,11 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.lang.reflect.Modifier;
-import java.util.Stack;
 
 /**
  * Converts anonymous classes into inner classes.  This includes creating
@@ -56,17 +50,6 @@ import java.util.Stack;
  * @author Tom Ball
  */
 public class AnonymousClassConverter extends TreeVisitor {
-
-  @Override
-  public boolean visit(CompilationUnit node) {
-    preProcessUnit(node);
-    return true;
-  }
-
-  @VisibleForTesting
-  void preProcessUnit(CompilationUnit node) {
-    node.accept(new AnonymousClassRenamer());
-  }
 
   /**
    * Convert the anonymous class into an inner class.  Fields are added for
@@ -194,70 +177,5 @@ public class AnonymousClassConverter extends TreeVisitor {
       }
     }
     throw new AssertionError("could not find constructor");
-  }
-
-  /**
-   * Rename anonymous classes to class file-like $n names, where n is the
-   * index of the number of anonymous classes for the parent type.  A stack
-   * is used to ensure that anonymous classes defined inside of other
-   * anonymous classes are numbered correctly.
-   */
-  static class AnonymousClassRenamer extends TreeVisitor {
-
-    private static class Frame {
-      int classCount = 0;
-    }
-    final Stack<Frame> classIndex = new Stack<Frame>();
-
-    @Override
-    public boolean visit(TypeDeclaration node) {
-      return processType();
-    }
-
-    @Override
-    public boolean visit(EnumDeclaration node) {
-      return processType();
-    }
-
-    private boolean processType() {
-      classIndex.push(new Frame());
-      return true;
-    }
-
-    @Override
-    public boolean visit(AnonymousClassDeclaration node) {
-      Frame parentFrame = classIndex.peek();
-
-      String className = "$" + ++parentFrame.classCount;
-      ITypeBinding innerType = renameClass(className, node.getTypeBinding());
-      node.setTypeBinding(innerType);
-      NameTable.rename(node.getTypeBinding(), className);
-
-      classIndex.push(new Frame());
-      return true;
-    }
-
-    private ITypeBinding renameClass(String name, ITypeBinding oldBinding) {
-      ITypeBinding outerType = Types.getRenamedBinding(oldBinding.getDeclaringClass());
-      NameTable.rename(oldBinding, name);
-      ITypeBinding newBinding = Types.renameTypeBinding(name, outerType, oldBinding);
-      assert newBinding.getName().equals(name);
-      return newBinding;
-    }
-
-    @Override
-    public void endVisit(TypeDeclaration node) {
-      classIndex.pop();
-    }
-
-    @Override
-    public void endVisit(EnumDeclaration node) {
-      classIndex.pop();
-    }
-
-    @Override
-    public void endVisit(AnonymousClassDeclaration node) {
-      classIndex.pop();
-    }
   }
 }

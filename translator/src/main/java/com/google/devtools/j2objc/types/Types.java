@@ -37,7 +37,6 @@ import java.util.Map;
 public class Types {
   private final AST ast;
   private final Map<ITypeBinding, ITypeBinding> typeMap = Maps.newHashMap();
-  private final Map<ITypeBinding, ITypeBinding> renamedTypeMap = Maps.newHashMap();
   private final Map<ITypeBinding, ITypeBinding> primitiveToWrapperTypes =
       new HashMap<ITypeBinding, ITypeBinding>();
   private final Map<ITypeBinding, ITypeBinding> wrapperToPrimitiveTypes =
@@ -278,19 +277,6 @@ public class Types {
   public static IOSTypeBinding resolveArrayType(ITypeBinding binding) {
     IOSTypeBinding arrayBinding = instance.arrayBindingMap.get(binding);
     return arrayBinding != null ? arrayBinding : instance.IOSObjectArray;
-  }
-
-  public static ITypeBinding renameTypeBinding(String newName, ITypeBinding newDeclaringClass,
-      ITypeBinding originalBinding) {
-    ITypeBinding renamedBinding =
-        RenamedTypeBinding.rename(newName, newDeclaringClass, originalBinding);
-    instance.renamedTypeMap.put(originalBinding, renamedBinding);
-    return renamedBinding;
-  }
-
-  public static ITypeBinding getRenamedBinding(ITypeBinding original) {
-    return original != null && instance.renamedTypeMap.containsKey(original)
-        ? instance.renamedTypeMap.get(original) : original;
   }
 
   public static boolean isVoidType(ITypeBinding type) {

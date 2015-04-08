@@ -62,7 +62,6 @@ import com.google.devtools.j2objc.translate.VariableRenamerTest;
 import com.google.devtools.j2objc.types.BindingMapBuilderTest;
 import com.google.devtools.j2objc.types.HeaderImportCollectorTest;
 import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
-import com.google.devtools.j2objc.types.RenamedTypeBindingTest;
 import com.google.devtools.j2objc.util.BindingUtilTest;
 import com.google.devtools.j2objc.util.DeadCodeMapTest;
 import com.google.devtools.j2objc.util.ErrorUtilTest;
@@ -122,7 +121,6 @@ public class SmallTests {
     PrimitiveArrayTest.class,
     PrivateDeclarationResolverTest.class,
     ProGuardUsageParserTest.class,
-    RenamedTypeBindingTest.class,
     RewriterTest.class,
     SignatureGeneratorTest.class,
     StatementGeneratorTest.class,
