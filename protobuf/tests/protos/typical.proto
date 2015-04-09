@@ -1,0 +1,100 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto2";
+
+package protos;
+
+option java_multiple_files = true;
+
+message TypicalData {
+  optional int32 my_int = 1;
+  optional bytes my_bytes = 2;
+
+  enum EnumType {
+    VALUE1 = 1;
+    VALUE2 = 2;
+    VALUE3 = 3;
+    VALUE4 = 4;
+    VALUE9 = 9;
+  }
+  optional EnumType my_enum_type = 3;
+
+  repeated int32 repeated_int32 = 4;
+  repeated bool repeated_bool = 5;
+  repeated float repeated_float = 6;
+  repeated double repeated_double = 7;
+  repeated string repeated_string = 8;
+  repeated bytes repeated_bytes = 9;
+  repeated EnumType repeated_enum = 10;
+
+  optional TypicalDataMessage my_message = 11;
+
+  optional bool my_bool = 12;
+  optional float my_float = 13;
+  optional double my_double = 14;
+  optional string my_string = 15;
+  optional uint32 my_uint = 16;
+  optional int64 my_long = 17;
+  optional uint64 my_ulong = 18;
+
+  repeated int64 repeated_int64 = 19;
+  repeated uint32 repeated_uint32 = 20;
+  repeated uint64 repeated_uint64 = 21;
+
+  repeated TypicalDataMessage repeated_message = 22;
+
+  extensions 1000 to max;
+}
+
+message TypicalDataSet {
+  repeated TypicalData repeated_typical_data = 1;
+}
+
+message TypicalDataMessage {
+  optional int32 my_message_int = 1;
+}
+
+extend TypicalData {
+  optional TypicalDataMessage my_extension = 1000;
+  optional int32 my_primitive_extension = 1001;
+  repeated int32 my_repeated_primitive_extension = 1002;
+  repeated TypicalDataMessage my_repeated_extension = 1003;
+  optional TypicalData.EnumType my_enum_extension = 1004;
+  optional bytes my_bytes_extension = 1005;
+  optional bool my_bool_extension = 1006;
+  optional MsgWithDefaults my_extension_with_defaults = 1007;
+}
+
+message MsgWithDefaults {
+  optional int32 my_int32 = 1 [default = 13];
+  optional bool my_bool = 2 [default = true];
+  optional string my_string = 3 [default = "foo"];
+  optional TypicalData.EnumType my_enum = 4 [default = VALUE4];
+}
+
+message MsgWithRequiredFields {
+  required int32 required_int32 = 1;
+}
+
+message MsgWithSpecialFieldNames {
+  optional int32 id = 1;
+  optional double and_eq = 2;
+  optional string zone = 3;
+  repeated int32 self = 4;
+}
+
+message MsgWithNestedExtensions {
+  extend TypicalData {
+    optional int32 int_ext = 2000;
+  }
+}

@@ -1,0 +1,517 @@
+// Protocol Buffers - Google's data interchange format
+// Copyright 2008 Google Inc.  All rights reserved.
+// https://developers.google.com/protocol-buffers/
+//
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are
+// met:
+//
+//     * Redistributions of source code must retain the above copyright
+// notice, this list of conditions and the following disclaimer.
+//     * Redistributions in binary form must reproduce the above
+// copyright notice, this list of conditions and the following disclaimer
+// in the documentation and/or other materials provided with the
+// distribution.
+//     * Neither the name of Google Inc. nor the names of its
+// contributors may be used to endorse or promote products derived from
+// this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+// "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+// LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+// A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+// OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+// SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+// LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+// DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+// THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+// (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+// Author: kstanger@google.com (Keith Stanger)
+//  Based on original Protocol Buffers design by
+//  Sanjay Ghemawat, Jeff Dean, and others.
+
+#include <google/protobuf/compiler/j2objc/j2objc_file.h>
+
+#include <google/protobuf/compiler/code_generator.h>
+#include <google/protobuf/io/printer.h>
+#include <google/protobuf/io/zero_copy_stream.h>
+#include <google/protobuf/descriptor.pb.h>
+#include <google/protobuf/compiler/j2objc/j2objc_enum.h>
+#include <google/protobuf/compiler/j2objc/j2objc_extension.h>
+#include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
+#include <google/protobuf/compiler/j2objc/j2objc_message.h>
+
+namespace google {
+namespace protobuf {
+namespace compiler {
+namespace j2objc {
+
+namespace {
+
+void AddHeaderImports(set<string> &imports) {
+  imports.insert("J2ObjC_header.h");
+  imports.insert("com/google/protobuf/GeneratedMessage.h");
+  imports.insert("com/google/protobuf/ProtocolMessageEnum.h");
+  imports.insert("java/lang/Enum.h");
+}
+
+void AddSourceImports(set<string> &imports) {
+  imports.insert("J2ObjC_source.h");
+  imports.insert("com/google/protobuf/RepeatedField.h");
+  imports.insert("com/google/protobuf/Descriptors_PackagePrivate.h");
+  imports.insert("java/lang/IllegalArgumentException.h");
+}
+
+void PrintSourcePreamble(io::Printer *printer) {
+  printer->Print("\n"
+      "#pragma GCC diagnostic ignored \"-Wprotocol\"\n"
+      "#pragma clang diagnostic ignored \"-Wprotocol\"\n"
+      "#pragma GCC diagnostic ignored \"-Wincomplete-implementation\"\n"
+      "#pragma clang diagnostic ignored \"-Wincomplete-implementation\"\n");
+}
+
+void PrintImports(const set<string> &imports, io::Printer *printer) {
+  if (!imports.empty()) {
+    printer->Print("\n");
+  }
+  for (set<string>::const_iterator it = imports.begin(); it != imports.end();
+       it++) {
+    printer->Print("#import \"$header$\"\n", "header", *it);
+  }
+}
+
+void PrintForwardDeclarations(const set<string> &declarations,
+                              io::Printer *printer) {
+  if (!declarations.empty()) {
+    printer->Print("\n");
+  }
+  for (set<string>::const_iterator it = declarations.begin();
+       it != declarations.end(); it++) {
+    printer->Print("$declaration$;\n", "declaration", *it);
+  }
+}
+
+}  // namespace
+
+FileGenerator::FileGenerator(const FileDescriptor *file)
+  : file_(file),
+    classname_(FileClassName(file)) {
+  if (UseStaticOutputFile()) {
+    output_dir_ = FileParentDir(file);
+  } else {
+    output_dir_ = JavaPackageToDir(FileJavaPackage(file));
+  }
+}
+
+FileGenerator::~FileGenerator() {}
+
+bool FileGenerator::Validate(string* error) {
+  // Check that no class name matches the file's class name.  This is a common
+  // problem that leads to Java compile errors that can be hard to understand.
+  // It's especially bad when using the java_multiple_files, since we would
+  // end up overwriting the outer class with one of the inner ones.
+
+  bool found_conflict = false;
+  for (int i = 0; i < file_->enum_type_count() && !found_conflict; i++) {
+    if (file_->enum_type(i)->name() == classname_) {
+      found_conflict = true;
+    }
+  }
+  for (int i = 0; i < file_->message_type_count() && !found_conflict; i++) {
+    if (file_->message_type(i)->name() == classname_) {
+      found_conflict = true;
+    }
+  }
+  for (int i = 0; i < file_->service_count() && !found_conflict; i++) {
+    if (file_->service(i)->name() == classname_) {
+      found_conflict = true;
+    }
+  }
+
+  if (found_conflict) {
+    error->assign(file_->name());
+    error->append(
+      ": Cannot generate Java output because the file's outer class name, \"");
+    error->append(classname_);
+    error->append(
+      "\", matches the name of one of the types declared inside it.  "
+      "Please either rename the type or use the java_outer_classname "
+      "option to specify a different outer class name for the .proto file.");
+    return false;
+  }
+
+  return true;
+}
+
+void FileGenerator::GenerateBoilerplate(io::Printer* printer) {
+  printer->Print(
+      "// Generated by the protocol buffer compiler.  DO NOT EDIT!\n"
+      "// source: $filename$\n",
+      "filename", file_->name());
+}
+
+void FileGenerator::GenerateHeaderBoilerplate(io::Printer* printer) {
+  GenerateBoilerplate(printer);
+}
+
+void FileGenerator::GenerateSourceBoilerplate(io::Printer* printer) {
+  GenerateBoilerplate(printer);
+}
+
+void FileGenerator::GenerateHeader(GeneratorContext* context,
+                                   vector<string>* file_list) {
+  string filename = GetFileName(".h");
+  file_list->push_back(filename);
+
+  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  io::Printer printer(output.get(), '$');
+
+  GenerateHeaderBoilerplate(&printer);
+
+  set<string> headers;
+  AddHeaderImports(headers);
+  PrintImports(headers, &printer);
+
+  set<string> declarations;
+  if (!GenerateMultipleFiles()) {
+    for (int i = 0; i < file_->message_type_count(); i++) {
+      MessageGenerator generator(file_->message_type(i));
+      generator.CollectForwardDeclarations(declarations);
+      generator.CollectMessageOrBuilderForwardDeclarations(declarations);
+    }
+  }
+  declarations.insert("@class ComGoogleProtobufExtensionRegistry");
+  PrintForwardDeclarations(declarations, &printer);
+
+  // need to write out all enums first
+  if (!GenerateMultipleFiles()) {
+    for (int i = 0; i < file_->enum_type_count(); i++) {
+      EnumGenerator(file_->enum_type(i)).GenerateHeader(&printer);
+    }
+    for (int i = 0; i < file_->message_type_count(); i++) {
+      MessageGenerator(file_->message_type(i)).GenerateEnumHeader(&printer);
+    }
+  }
+
+  printer.Print("\n"
+      "@interface $classname$ : NSObject\n"
+      "\n"
+      "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
+          "(ComGoogleProtobufExtensionRegistry *)extensionRegistry;\n"
+      "\n"
+      "@end\n\n"
+      "FOUNDATION_EXPORT void $classname$_registerAllExtensionsWith"
+          "ComGoogleProtobufExtensionRegistry_("
+          "ComGoogleProtobufExtensionRegistry *extensionRegistry);\n",
+      "classname", ClassName(file_));
+
+  if (file_->extension_count() > 0) {
+    printer.Print("\n"
+        "J2OBJC_STATIC_INIT($classname$)\n",
+        "classname", ClassName(file_));
+  } else {
+    printer.Print("\n"
+        "J2OBJC_EMPTY_STATIC_INIT($classname$)\n",
+        "classname", ClassName(file_));
+  }
+
+  printer.Print("\n"
+      "J2OBJC_TYPE_LITERAL_HEADER($classname$)\n",
+      "classname", ClassName(file_));
+
+  for (int i = 0; i < file_->extension_count(); i++) {
+    ExtensionGenerator(file_->extension(i)).GenerateMembersHeader(&printer);
+  }
+
+  if (!GenerateMultipleFiles()) {
+    for (int i = 0; i < file_->message_type_count(); i++) {
+      MessageGenerator generator(file_->message_type(i));
+      generator.GenerateMessageOrBuilder(&printer);
+      generator.GenerateMessageHeader(&printer);
+    }
+  }
+}
+
+void FileGenerator::GenerateSource(GeneratorContext* context,
+                                   vector<string>* file_list) {
+  string filename = GetFileName(".m");
+  file_list->push_back(filename);
+
+  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  io::Printer printer(output.get(), '$');
+
+  GenerateSourceBoilerplate(&printer);
+
+  set<string> headers;
+  AddSourceImports(headers);
+  headers.insert(GetFileName(".h"));
+  headers.insert("com/google/protobuf/ExtensionRegistry.h");
+  for (int i = 0; i < file_->message_type_count(); i++) {
+    if (GenerateMultipleFiles()) {
+      headers.insert(GetHeader(file_->message_type(i)));
+    } else {
+      MessageGenerator(file_->message_type(i)).CollectSourceImports(headers);
+    }
+  }
+  for (int i = 0; i < file_->extension_count(); i++) {
+    ExtensionGenerator(file_->extension(i)).CollectSourceImports(headers);
+  }
+  PrintImports(headers, &printer);
+  PrintSourcePreamble(&printer);
+
+  if (file_->extension_count() > 0) {
+    printer.Print(
+        "\nJ2OBJC_INITIALIZED_DEFN($classname$)\n",
+        "classname", ClassName(file_));
+  }
+  for (int i = 0; i < file_->extension_count(); i++) {
+    ExtensionGenerator(file_->extension(i)).GenerateSourceDefinition(&printer);
+  }
+
+  printer.Print("\n"
+      "@implementation $classname$\n"
+      "\n"
+      "+ (void)registerAllExtensionsWithComGoogleProtobufExtensionRegistry:"
+      "(ComGoogleProtobufExtensionRegistry *)extensionRegistry {\n"
+      "  $classname$_registerAllExtensionsWithComGoogleProtobuf"
+          "ExtensionRegistry_(extensionRegistry);\n"
+      "}\n",
+      "classname", ClassName(file_));
+
+  if (file_->extension_count() > 0) {
+    printer.Print("\n"
+        "+ (void)initialize {\n"
+        "  if (self == [$classname$ class]) {\n"
+        "    static CGPFieldData extensionFields[] = {\n",
+        "classname", ClassName(file_));
+    printer.Indent();
+    printer.Indent();
+    printer.Indent();
+    for (int i = 0; i < file_->extension_count(); i++) {
+      ExtensionGenerator(file_->extension(i)).GenerateFieldData(&printer);
+    }
+    printer.Outdent();
+    printer.Print("};\n");
+    for (int i = 0; i < file_->extension_count(); i++) {
+      ExtensionGenerator(file_->extension(i))
+          .GenerateSourceInitializer(&printer);
+    }
+    printer.Print(
+        "J2OBJC_SET_INITIALIZED($classname$)\n", "classname", ClassName(file_));
+    printer.Outdent();
+    printer.Outdent();
+    printer.Print("  }\n}\n");
+  }
+
+  printer.Print("\n"
+      "@end\n"
+      "\n"
+      "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$)\n"
+      "\n"
+      "void $classname$_registerAllExtensionsWith"
+          "ComGoogleProtobufExtensionRegistry_("
+          "ComGoogleProtobufExtensionRegistry *extensionRegistry) {\n",
+      "classname", ClassName(file_));
+  printer.Indent();
+  for (int i = 0; i < file_->extension_count(); i++) {
+    ExtensionGenerator(file_->extension(i)).GenerateRegistrationCode(&printer);
+  }
+  for (int i = 0; i < file_->message_type_count(); i++) {
+    MessageGenerator(file_->message_type(i))
+        .GenerateExtensionRegistrationCode(&printer);
+  }
+  printer.Outdent();
+  printer.Print("}\n");
+
+  if (!GenerateMultipleFiles()) {
+    for (int i = 0; i < file_->enum_type_count(); i++) {
+      EnumGenerator(file_->enum_type(i)).GenerateSource(&printer);
+    }
+    for (int i = 0; i < file_->message_type_count(); i++) {
+      MessageGenerator(file_->message_type(i)).GenerateSource(&printer);
+    }
+  }
+}
+
+string FileGenerator::GetFileName(string suffix) {
+  if (UseStaticOutputFile()) {
+    return StaticOutputFileName(file_, suffix);
+  } else {
+    return output_dir_ + classname_ + suffix;
+  }
+};
+
+void FileGenerator::Generate(GeneratorContext* context,
+                             vector<string>* file_list) {
+  GenerateHeader(context, file_list);
+  GenerateSource(context, file_list);
+  printMapping(file_);
+}
+
+void FileGenerator::GenerateEnumHeader(GeneratorContext* context,
+                                       vector<string>* file_list,
+                                       const EnumDescriptor* descriptor) {
+  string filename = output_dir_ + descriptor->name() + ".h";
+  file_list->push_back(filename);
+  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  io::Printer printer(output.get(), '$');
+
+  GenerateBoilerplate(&printer);
+  set<string> headers;
+  AddHeaderImports(headers);
+  PrintImports(headers, &printer);
+
+  EnumGenerator generator(descriptor);
+  generator.GenerateHeader(&printer);
+}
+
+void FileGenerator::GenerateEnumSource(GeneratorContext* context,
+                                       vector<string>* file_list,
+                                       const EnumDescriptor* descriptor) {
+  string filename = output_dir_ + descriptor->name() + ".m";
+  file_list->push_back(filename);
+  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  io::Printer printer(output.get(), '$');
+
+  GenerateBoilerplate(&printer);
+
+  set<string> headers;
+  headers.insert(output_dir_ + descriptor->name() + ".h");
+  AddSourceImports(headers);
+  PrintImports(headers, &printer);
+
+  EnumGenerator generator(descriptor);
+  generator.GenerateSource(&printer);
+}
+
+void FileGenerator::GenerateMessageHeader(GeneratorContext* context,
+                                          vector<string>* file_list,
+                                          const Descriptor* descriptor) {
+  string filename = output_dir_ + descriptor->name() + ".h";
+  file_list->push_back(filename);
+  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  io::Printer printer(output.get(), '$');
+
+  GenerateBoilerplate(&printer);
+  set<string> headers;
+  headers.insert(output_dir_ + descriptor->name() + "OrBuilder.h");
+  AddHeaderImports(headers);
+  PrintImports(headers, &printer);
+
+  MessageGenerator generator(descriptor);
+  set<string> declarations;
+  generator.CollectForwardDeclarations(declarations);
+  PrintForwardDeclarations(declarations, &printer);
+  generator.GenerateHeader(&printer);
+}
+
+void FileGenerator::GenerateMessageSource(GeneratorContext* context,
+                                          vector<string>* file_list,
+                                          const Descriptor* descriptor) {
+  string filename = output_dir_ + descriptor->name() + ".m";
+  file_list->push_back(filename);
+  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  io::Printer printer(output.get(), '$');
+
+  GenerateBoilerplate(&printer);
+
+  MessageGenerator generator(descriptor);
+  set<string> headers;
+  headers.insert(output_dir_ + descriptor->name() + ".h");
+  generator.CollectSourceImports(headers);
+  AddSourceImports(headers);
+  PrintImports(headers, &printer);
+  PrintSourcePreamble(&printer);
+  generator.GenerateSource(&printer);
+}
+
+void FileGenerator::GenerateMessageOrBuilder(GeneratorContext* context,
+                                             vector<string>* file_list,
+                                             const Descriptor* descriptor) {
+  string filename = output_dir_ + descriptor->name() + "OrBuilder.h";
+  file_list->push_back(filename);
+  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  io::Printer printer(output.get(), '$');
+
+  GenerateBoilerplate(&printer);
+  MessageGenerator generator(descriptor);
+
+  set<string> headers;
+  generator.CollectMessageOrBuilderImports(headers);
+  PrintImports(headers, &printer);
+
+  set<string> declarations;
+  generator.CollectMessageOrBuilderForwardDeclarations(declarations);
+  PrintForwardDeclarations(declarations, &printer);
+  generator.GenerateMessageOrBuilder(&printer);
+}
+
+void FileGenerator::GenerateSiblings(GeneratorContext* context,
+                                     vector<string>* file_list) {
+  if (GenerateMultipleFiles()) {
+    for (int i = 0; i < file_->enum_type_count(); i++) {
+      GenerateEnumHeader(context, file_list, file_->enum_type(i));
+      GenerateEnumSource(context, file_list, file_->enum_type(i));
+    }
+    for (int i = 0; i < file_->message_type_count(); i++) {
+      GenerateMessageHeader(context, file_list, file_->message_type(i));
+      GenerateMessageSource(context, file_list, file_->message_type(i));
+      GenerateMessageOrBuilder(context, file_list, file_->message_type(i));
+    }
+  }
+}
+
+bool FileGenerator::GenerateMultipleFiles() {
+  return file_->options().java_multiple_files() && !UseStaticOutputFile();
+}
+
+void PrintProperty(io::Printer* printer, const string& key, const string& value) {
+  printer->Print("$key$=$value$\n", "key", key, "value", value);
+}
+
+void FileGenerator::GenerateHeaderMappings(GeneratorContext* context) {
+  string headerFile = StaticOutputFileName(file_, ".h");
+  scoped_ptr<io::ZeroCopyOutputStream> output(
+      context->Open(FileDirMappingOutputName(file_)));
+  io::Printer printer(output.get(), '$');
+
+  for (int i = 0; i < file_->enum_type_count(); i++) {
+    PrintProperty(&printer, JavaClassName(file_->enum_type(i)), headerFile);
+  }
+
+  for (int i = 0; i < file_->message_type_count(); i++) {
+    string messageClassName = JavaClassName(file_->message_type(i));
+    PrintProperty(&printer, messageClassName, headerFile);
+    PrintProperty(&printer, messageClassName + "OrBuilder", headerFile);
+  }
+
+  PrintProperty(&printer, JavaClassName(file_), headerFile);
+}
+
+void PrintClassMappings(const Descriptor* descriptor, io::Printer* printer) {
+  PrintProperty(printer, JavaClassName(descriptor), ClassName(descriptor));
+  for (int i = 0; i < descriptor->nested_type_count(); i++) {
+    PrintClassMappings(descriptor->nested_type(i), printer);
+  }
+}
+
+void FileGenerator::GenerateClassMappings(GeneratorContext* context) {
+  string filename = MappedInputName(file_) + ".clsmap.properties";
+  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  io::Printer printer(output.get(), '$');
+  PrintProperty(&printer, JavaClassName(file_), ClassName(file_));
+  for (int i = 0; i < file_->enum_type_count(); i++) {
+    PrintProperty(&printer, JavaClassName(file_->enum_type(i)),
+                  TypeName(file_->enum_type(i)));
+  }
+  for (int i = 0; i < file_->message_type_count(); i++) {
+    PrintClassMappings(file_->message_type(i), &printer);
+  }
+}
+
+}  // namespace j2objc
+}  // namespace compiler
+}  // namespace protobuf
+}  // namespace google

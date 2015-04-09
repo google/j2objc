@@ -1,0 +1,47 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto2";
+
+package protos;
+
+option java_multiple_files = true;
+
+message StringMsg {
+  optional string empty_f = 1;
+  optional string ascii_f = 2;
+  optional string non_ascii_f = 3;
+  optional bytes bytes_f = 4;
+  optional string default_string_f = 5 [default = "abc"];
+  optional bytes default_bytes_f = 6 [default = "def"];
+
+  repeated string empty_r = 21;
+  repeated string ascii_r = 22;
+  repeated string non_ascii_r = 23;
+  repeated bytes bytes_r = 24;
+
+  extensions 1000 to max;
+}
+
+extend StringMsg {
+  optional string empty_fe = 1001;
+  optional string ascii_fe = 1002;
+  optional string non_ascii_fe = 1003;
+  optional bytes bytes_fe = 1004;
+  optional string default_string_fe = 1005 [default = "ghi"];
+  optional bytes default_bytes_fe = 1006 [default = "jkl"];
+
+  repeated string empty_re = 1021;
+  repeated string ascii_re = 1022;
+  repeated string non_ascii_re = 1023;
+  repeated bytes bytes_re = 1024;
+}

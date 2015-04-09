@@ -82,6 +82,15 @@ mockito_java: java_deps_dist junit_java
 mockito_manifest:
 	@$(MAKE) -C $(J2OBJC_ROOT)/testing/mockito java_sources_manifest
 
+protobuf_compiler_dist:
+	@$(MAKE) -C $(J2OBJC_ROOT)/protobuf/compiler dist
+
+protobuf_runtime_java: protobuf_compiler_dist
+	@$(MAKE) -C $(J2OBJC_ROOT)/protobuf/runtime java
+
+protobuf_runtime_dist: jre_emul_dist protobuf_compiler_dist
+	@$(MAKE) -C $(J2OBJC_ROOT)/protobuf/runtime dist
+
 
 else
 
@@ -104,5 +113,8 @@ cycle_finder_dist:
 mockito_dist:
 mockito_java:
 mockito_manifest:
+protobuf_compiler_dist:
+protobuf_runtime_java:
+protobuf_runtime_dist:
 
 endif

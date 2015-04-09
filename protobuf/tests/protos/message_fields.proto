@@ -1,0 +1,76 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto2";
+
+package protos;
+
+option java_multiple_files = true;
+
+message MessageSet {
+  option message_set_wire_format = true;
+  extensions 4 to max;
+}
+
+message MessageData {
+
+  message SubMsg {
+    message InnerMsg {
+      optional int32 int_f = 1;
+    }
+
+    optional int32 int_f = 1;
+    optional uint32 uint_f = 2;
+  }
+
+  extend MessageSet {
+    optional SubMsg msg_ext = 1000;
+  }
+
+  optional SubMsg msg_f = 1;
+  optional SubMsg.InnerMsg inner_msg_f = 2;
+  optional MessageData recursive_msg_f = 3;
+  optional group GroupF = 4 {
+    optional int32 int_f = 1;
+    optional uint32 uint_f = 2;
+  }
+  optional MessageSet msg_set_f = 5;
+
+  repeated SubMsg msg_r = 21;
+  repeated SubMsg.InnerMsg inner_msg_r = 22;
+  repeated MessageData recursive_msg_r = 23;
+  repeated group GroupR = 24 {
+    optional int32 int_f = 1;
+    optional uint32 uint_f = 2;
+  }
+  repeated MessageSet msg_set_r = 25;
+
+  extensions 1000 to max;
+}
+
+extend MessageData {
+  optional MessageData.SubMsg msg_fe = 1001;
+  optional MessageData.SubMsg.InnerMsg inner_msg_fe = 1002;
+  optional MessageData recursive_msg_fe = 1003;
+  optional group GroupFe = 1004 {
+    optional int32 int_f = 1;
+    optional uint32 uint_f = 2;
+  }
+
+  repeated MessageData.SubMsg msg_re = 1021;
+  repeated MessageData.SubMsg.InnerMsg inner_msg_re = 1022;
+  repeated MessageData recursive_msg_re = 1023;
+  repeated group GroupRe = 1024 {
+    optional int32 int_f = 1;
+    optional uint32 uint_f = 2;
+  }
+}

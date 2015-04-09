@@ -1,0 +1,65 @@
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+syntax = "proto2";
+
+package protos;
+
+option java_multiple_files = true;
+
+enum Color {
+  RED = 7;
+  BLUE = 3;
+  GREEN = 1234;
+  YELLOW = -1;
+}
+
+message EnumMsg {
+  enum Shape {
+    CIRCLE = 1;
+    SQUARE = 2;
+    TRIANGLE = 3;
+    HEXAGON = 4;
+  }
+
+  message InnerMsg {
+    enum Utensil {
+      SPOON = 1;
+      FORK = 2;
+      KNIFE = 3;
+    }
+  }
+
+  optional Shape enum_f = 1;
+  optional Color outer_enum_f = 2;
+  optional InnerMsg.Utensil inner_enum_f = 3;
+
+  repeated Shape enum_r = 21;
+  repeated Color outer_enum_r = 22;
+  repeated InnerMsg.Utensil inner_enum_r = 23;
+
+  repeated Shape enum_p = 41 [packed=true];
+
+  extensions 1000 to max;
+}
+
+extend EnumMsg {
+  optional EnumMsg.Shape enum_fe = 1001;
+  optional Color outer_enum_fe = 1002;
+  optional EnumMsg.InnerMsg.Utensil inner_enum_fe = 1003;
+
+  repeated EnumMsg.Shape enum_re = 1021;
+  repeated Color outer_enum_re = 1022;
+  repeated EnumMsg.InnerMsg.Utensil inner_enum_re = 1023;
+
+  repeated EnumMsg.Shape enum_pe = 1041 [packed=true];
+}
