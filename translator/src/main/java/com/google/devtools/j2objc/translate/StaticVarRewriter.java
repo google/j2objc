@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
@@ -56,6 +57,7 @@ public class StaticVarRewriter extends TreeVisitor {
   @Override
   public boolean visit(Assignment node) {
     Expression lhs = node.getLeftHandSide();
+    handleFieldAccess(node, lhs);
     IVariableBinding lhsVar = TreeUtil.getVariableBinding(lhs);
     if (lhsVar != null && useAccessor(node, lhsVar)) {
       boolean isPrimitive = lhsVar.getType().isPrimitive();
@@ -68,6 +70,49 @@ public class StaticVarRewriter extends TreeVisitor {
         lhs.replaceWith(newGetterInvocation(lhsVar, true));
       }
     }
+    return true;
+  }
+
+  /**
+   * Reterns whether the expression of a FieldAccess node has any side effects.
+   * If false, the expression can be removed from the tree.
+   * @param expr The expression of a FieldAccess node for a static variable.
+   */
+  private boolean fieldAccessExpressionHasSideEffect(Expression expr) {
+    switch (expr.getKind()) {
+      case QUALIFIED_NAME:
+      case SIMPLE_NAME:
+      case THIS_EXPRESSION:
+        return false;
+      default:
+        return true;
+    }
+  }
+
+  private void handleFieldAccess(Expression node, Expression maybeFieldAccess) {
+    if (!(maybeFieldAccess instanceof FieldAccess)) {
+      return;
+    }
+    FieldAccess fieldAccess = (FieldAccess) maybeFieldAccess;
+    if (!BindingUtil.isStatic(fieldAccess.getVariableBinding())) {
+      return;
+    }
+    Expression expr = fieldAccess.getExpression();
+    Name name = fieldAccess.getName();
+    if (fieldAccessExpressionHasSideEffect(expr)) {
+      CommaExpression commaExpr = new CommaExpression(TreeUtil.remove(expr));
+      node.replaceWith(commaExpr);
+      commaExpr.getExpressions().add(node);
+      fieldAccess.replaceWith(TreeUtil.remove(name));
+      expr.accept(this);
+    } else {
+      fieldAccess.replaceWith(TreeUtil.remove(name));
+    }
+  }
+
+  @Override
+  public boolean visit(FieldAccess node) {
+    handleFieldAccess(node, node);
     return true;
   }
 
@@ -105,6 +150,7 @@ public class StaticVarRewriter extends TreeVisitor {
 
   @Override
   public boolean visit(PostfixExpression node) {
+    handleFieldAccess(node, node.getOperand());
     IVariableBinding operandVar = TreeUtil.getVariableBinding(node.getOperand());
     PostfixExpression.Operator op = node.getOperator();
     boolean isIncOrDec = op == PostfixExpression.Operator.INCREMENT
@@ -118,6 +164,7 @@ public class StaticVarRewriter extends TreeVisitor {
 
   @Override
   public boolean visit(PrefixExpression node) {
+    handleFieldAccess(node, node.getOperand());
     IVariableBinding operandVar = TreeUtil.getVariableBinding(node.getOperand());
     PrefixExpression.Operator op = node.getOperator();
     boolean isIncOrDec = op == PrefixExpression.Operator.INCREMENT

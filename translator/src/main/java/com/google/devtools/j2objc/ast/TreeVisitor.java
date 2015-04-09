@@ -143,6 +143,12 @@ public class TreeVisitor {
 
   public void endVisit(ClassInstanceCreation node) {}
 
+  public boolean visit(CommaExpression node) {
+    return true;
+  }
+
+  public void endVisit(CommaExpression node) {}
+
   public boolean visit(CompilationUnit node) {
     return true;
   }

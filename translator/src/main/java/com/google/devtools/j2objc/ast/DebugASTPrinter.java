@@ -223,7 +223,7 @@ public class DebugASTPrinter extends TreeVisitor {
     node.getType().accept(this);
     sb.print("(");
     for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext(); ) {
-      Expression e = (Expression) it.next();
+      Expression e = it.next();
       e.accept(this);
       if (it.hasNext()) {
         sb.print(',');
@@ -233,6 +233,20 @@ public class DebugASTPrinter extends TreeVisitor {
     if (node.getAnonymousClassDeclaration() != null) {
       node.getAnonymousClassDeclaration().accept(this);
     }
+    return false;
+  }
+
+  @Override
+  public boolean visit(CommaExpression node) {
+    sb.print('(');
+    for (Iterator<Expression> it = node.getExpressions().iterator(); it.hasNext(); ) {
+      Expression e = it.next();
+      e.accept(this);
+      if (it.hasNext()) {
+        sb.print(", ");
+      }
+    }
+    sb.print(')');
     return false;
   }
 

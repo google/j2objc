@@ -185,7 +185,10 @@ public class NilCheckResolver extends TreeVisitor {
 
   @Override
   public void endVisit(FieldAccess node) {
-    addNilCheck(node.getExpression());
+    // Static fields lookups don't dereference the object expression.
+    if (!BindingUtil.isStatic(node.getVariableBinding())) {
+      addNilCheck(node.getExpression());
+    }
   }
 
   @Override

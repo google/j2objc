@@ -41,4 +41,16 @@ public class StaticVarRewriterTest extends GenerationTest {
         "class Test { void test() { A.o = new Object(); } }", "Test", "Test.m");
     assertTranslation(translation, "A_setAndConsume_o_(new_NSObject_init());");
   }
+
+  public void testFieldAccessRewriting() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static int i = 5; static Test getTest() { return null; } "
+        + " static void test() { Test t = new Test(); int a = t.i; int b = getTest().i; "
+        + " int c = getTest().i++; int d = getTest().i = 6; } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "jint a = Test_i_;",
+        "jint b = (Test_getTest(), Test_i_);",
+        "jint c = (Test_getTest(), Test_i_++);",
+        "jint d = (Test_getTest(), Test_i_ = 6);");
+  }
 }

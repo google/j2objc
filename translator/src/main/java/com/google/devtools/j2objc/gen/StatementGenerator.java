@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.CharacterLiteral;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
@@ -357,6 +358,20 @@ public class StatementGenerator extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(CommaExpression node) {
+    buffer.append('(');
+    for (Iterator<Expression> it = node.getExpressions().iterator(); it.hasNext(); ) {
+      Expression e = it.next();
+      e.accept(this);
+      if (it.hasNext()) {
+        buffer.append(", ");
+      }
+    }
+    buffer.append(')');
+    return false;
+  }
+
+  @Override
   public boolean visit(ConditionalExpression node) {
     boolean castNeeded = false;
     ITypeBinding thenType = node.getThenExpression().getTypeBinding();
@@ -458,12 +473,8 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(FieldAccess node) {
-    Expression expr = node.getExpression();
-    // self->static_var is invalid Objective-C.
-    if (!(expr instanceof ThisExpression && BindingUtil.isStatic(node.getVariableBinding()))) {
-      expr.accept(this);
-      buffer.append("->");
-    }
+    node.getExpression().accept(this);
+    buffer.append("->");
     node.getName().accept(this);
     return false;
   }
