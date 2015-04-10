@@ -25,7 +25,6 @@ PROTOS = \
   empty_file.proto \
   enum_fields.proto \
   funny_names.proto \
-  java_version_one.proto \
   message_fields.proto \
   package_prefix.proto \
   prefix_option.proto \
@@ -34,6 +33,7 @@ PROTOS = \
   size_test.proto \
   string_fields.proto \
   typical.proto
+
 
 TESTS_TO_RUN = $(JAVA_TESTS:%.java=%)
 

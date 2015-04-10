@@ -47,7 +47,6 @@ import protos.TypicalData;
 import protos.TypicalDataMessage;
 import protos.TypicalDataOrBuilder;
 import protos.TypicalDataSet;
-import protos.proto2api.Dummy;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -853,10 +852,6 @@ public class CompatibilityTest extends ProtobufTest {
     FieldDescriptor intField = descriptor.findFieldByNumber(1);
     assertEquals(1, allFields.get(intField));
     assertEquals(3, allFields.get(Typical.myPrimitiveExtension.getDescriptor()));
-  }
-
-  public void testJavaApiVersionOne() throws Exception {
-    Dummy dummy = Dummy.newBuilder().build();
   }
 
   public void testFunnyNames() throws Exception {
