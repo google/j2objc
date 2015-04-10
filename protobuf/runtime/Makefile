@@ -41,9 +41,13 @@ DIST_JAR = $(DIST_JAR_DIR)/protobuf_runtime.jar
 
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
+
+ifneq "$(findstring clean,$(MAKECMDGOALS))" "clean"
 ifndef PROTOBUF_ROOT_DIR
 $(error PROTOBUF_ROOT_DIR not defined)
 endif
+endif
+
 PROTO_PATH = $(PROTOBUF_ROOT_DIR)/src
 PROTOBUF_JAVA_DIR = $(PROTOBUF_ROOT_DIR)/java/src/main/java
 DESCRIPTOR_PROTO = $(PROTO_PATH)/google/protobuf/descriptor.proto
