@@ -85,6 +85,12 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_Builder)
 - (int)getExtensionCountWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension;
 
+// Support older API that accepts Extension instead of ExtensionLite
+- (BOOL)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(int)index;
+- (int)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder)
@@ -111,6 +117,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
 
 - (id)clearExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension;
+
+// Support older API that accepts Extension instead of ExtensionLite
+- (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value;
+- (id)addExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value;
+- (id)clearExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
 
 @end
 

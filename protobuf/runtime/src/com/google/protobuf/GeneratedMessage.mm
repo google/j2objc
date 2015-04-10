@@ -2879,6 +2879,23 @@ J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_Extendabl
   return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
 }
 
+// Support older API that accepts Extension instead of ExtensionLite
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return GetSingularExtension(&extensionMap_, extension);
+}
+
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(int)index {
+  return GetRepeatedExtension(&extensionMap_, extension, index);
+}
+
+- (int)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return GetExtensionCount(extension, &extensionMap_);
+}
+
+- (BOOL)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
+}
+
 - (id<JavaUtilMap>)getAllFields {
   return GetAllFieldsExtendable(self, &extensionMap_);
 }
@@ -2937,6 +2954,35 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
     (ComGoogleProtobufExtensionLite *)extension {
   extensionMap_.erase(extension->fieldDescriptor_);
   return self;
+}
+
+// Support older API that accepts Extension instead of ExtensionLite
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return GetSingularExtension(&extensionMap_, extension);
+}
+
+- (id)getExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withInt:(int)index {
+  return GetRepeatedExtension(&extensionMap_, extension, index);
+}
+
+- (int)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return GetExtensionCount(extension, &extensionMap_);
+}
+
+- (BOOL)hasExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return extensionMap_.find(extension->fieldDescriptor_) != extensionMap_.end();
+}
+
+- (id)setExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value {
+  return [self setExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
+}
+
+- (id)addExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension withId:(id)value {
+  return [self addExtensionWithComGoogleProtobufExtensionLite:extension withId:value];
+}
+
+- (id)clearExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension {
+  return [self clearExtensionWithComGoogleProtobufExtensionLite:extension];
 }
 
 - (id<JavaUtilMap>)getAllFields {
