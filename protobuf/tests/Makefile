@@ -27,7 +27,6 @@ PROTOS = \
   funny_names.proto \
   message_fields.proto \
   package_prefix.proto \
-  prefix_option.proto \
   primitives.proto \
   single_file.proto \
   size_test.proto \

@@ -31,7 +31,6 @@ import com.google.protobuf.ProtocolMessageEnum;
 import abc_def.gHiJkL.Foo2bar;
 import abc_def.gHiJkL.Foo_bar;
 import abc_def.gHiJkL.fooBar;
-import foo.bar.baz.PrefixDummy2;
 
 import junit.framework.TestCase;
 
@@ -862,7 +861,6 @@ public class CompatibilityTest extends ProtobufTest {
 
   public void testPackagePrefix() throws Exception {
     PrefixDummy dummy = PrefixDummy.newBuilder().build();
-    PrefixDummy2 dummy2 = PrefixDummy2.newBuilder().build();
   }
 
   public void testToStringOnMessage() throws Exception {
