@@ -31,12 +31,6 @@ import sys
 def GetPackage(data):
   package = data.package
 
-  # For compatibility with googlemac/Tools/Protos/compile_protos.py
-  # replace our internal "proto2" package name with the open source name
-  # "google.protobuf".
-  match = re.match(r'proto2(.*)', package)
-  if match:
-    package = 'google.protobuf' + match.group(1)
 
   if data.java_package:
     package = data.java_package
