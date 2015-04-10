@@ -19,7 +19,6 @@ import com.google.protobuf.Descriptors.EnumDescriptor;
 import com.google.protobuf.Descriptors.EnumValueDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.Descriptors.FieldDescriptor.Type;
-import com.google.protobuf.ExtensionLite;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.ExtensionRegistryLite;
 import com.google.protobuf.GeneratedMessage;
@@ -31,8 +30,6 @@ import com.google.protobuf.ProtocolMessageEnum;
 import abc_def.gHiJkL.Foo2bar;
 import abc_def.gHiJkL.Foo_bar;
 import abc_def.gHiJkL.fooBar;
-
-import junit.framework.TestCase;
 
 import protos.EmptyFile;
 import protos.MsgWithDefaults;
@@ -217,15 +214,6 @@ public class CompatibilityTest extends ProtobufTest {
     assertTrue(builder.hasExtension(Typical.myPrimitiveExtension));
     builder.clearExtension(Typical.myPrimitiveExtension);
     assertFalse(builder.hasExtension(Typical.myPrimitiveExtension));
-  }
-
-  public void testReferenceExtensionLite() throws Exception {
-    TypicalData.Builder builder = TypicalData.newBuilder();
-    ExtensionLite<TypicalData, Integer> extensionLite = Typical.myPrimitiveExtension;
-    builder.setExtension(extensionLite, 11);
-    assertTrue(builder.hasExtension(extensionLite));
-    builder.clearExtension(extensionLite);
-    assertFalse(builder.hasExtension(extensionLite));
   }
 
   public void testClearRepeatedField() throws Exception {
