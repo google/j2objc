@@ -28,34 +28,14 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-//  Hand written counterpart for com.google.protobuf.ExtensionRegistryLite.
+//  Created by Keith Stanger on Apr. 10, 2015.
+//
+//  Hand written counterpart for com.google.protobuf.GeneratedMessage and
+//  friends.
 
-#import "JreEmulation.h"
+#import "com/google/protobuf/ExtensionLite.h"
 
-@class ComGoogleProtobufDescriptors_Descriptor;
-@class ComGoogleProtobufDescriptors_FieldDescriptor;
-@class ComGoogleProtobufExtension;
-@class ComGoogleProtobufExtensionRegistryLite;
-
-typedef ComGoogleProtobufExtensionRegistryLite CGPExtensionRegistryLite;
-
-@interface ComGoogleProtobufExtensionRegistryLite : NSObject
-
-- (ComGoogleProtobufExtensionRegistryLite *)getUnmodifiable;
-
+@interface ComGoogleProtobufExtension : CGPExtensionLite
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufExtensionRegistryLite)
-
-CF_EXTERN_C_BEGIN
-
-ComGoogleProtobufExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_newInstance();
-
-void CGPExtensionRegistryAdd(
-    CGPExtensionRegistryLite *registry, ComGoogleProtobufExtension *extension);
-
-ComGoogleProtobufDescriptors_FieldDescriptor *CGPExtensionRegistryFind(
-    CGPExtensionRegistryLite *registry, ComGoogleProtobufDescriptors_Descriptor *descriptor,
-    int fieldNumber);
-
-CF_EXTERN_C_END
+typedef ComGoogleProtobufExtension CGPExtension;

@@ -35,7 +35,7 @@
 
 #import "JreEmulation.h"
 
-#import "com/google/protobuf/ExtensionLite.h"
+#import "com/google/protobuf/Extension.h"
 #import "com/google/protobuf/Message.h"
 #import "com/google/protobuf/MessageOrBuilder.h"
 #import "com/google/protobuf/common.h"
@@ -118,7 +118,7 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_ExtendableBuilder)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableBuilder)
 
-@interface ComGoogleProtobufGeneratedMessage_GeneratedExtension : CGPExtensionLite
+@interface ComGoogleProtobufGeneratedMessage_GeneratedExtension : CGPExtension
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_GeneratedExtension)

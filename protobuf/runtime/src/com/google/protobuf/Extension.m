@@ -28,34 +28,7 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-//  Hand written counterpart for com.google.protobuf.ExtensionRegistryLite.
+#import "com/google/protobuf/Extension.h"
 
-#import "JreEmulation.h"
-
-@class ComGoogleProtobufDescriptors_Descriptor;
-@class ComGoogleProtobufDescriptors_FieldDescriptor;
-@class ComGoogleProtobufExtension;
-@class ComGoogleProtobufExtensionRegistryLite;
-
-typedef ComGoogleProtobufExtensionRegistryLite CGPExtensionRegistryLite;
-
-@interface ComGoogleProtobufExtensionRegistryLite : NSObject
-
-- (ComGoogleProtobufExtensionRegistryLite *)getUnmodifiable;
-
+@implementation ComGoogleProtobufExtension
 @end
-
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufExtensionRegistryLite)
-
-CF_EXTERN_C_BEGIN
-
-ComGoogleProtobufExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_newInstance();
-
-void CGPExtensionRegistryAdd(
-    CGPExtensionRegistryLite *registry, ComGoogleProtobufExtension *extension);
-
-ComGoogleProtobufDescriptors_FieldDescriptor *CGPExtensionRegistryFind(
-    CGPExtensionRegistryLite *registry, ComGoogleProtobufDescriptors_Descriptor *descriptor,
-    int fieldNumber);
-
-CF_EXTERN_C_END

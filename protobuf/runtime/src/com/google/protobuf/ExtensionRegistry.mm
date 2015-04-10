@@ -31,7 +31,7 @@
 #import "com/google/protobuf/ExtensionRegistry.h"
 
 #import "com/google/protobuf/Descriptors_PackagePrivate.h"
-#import "com/google/protobuf/GeneratedMessage.h"
+#import "com/google/protobuf/Extension.h"
 
 J2OBJC_INITIALIZED_DEFN(ComGoogleProtobufExtensionRegistry)
 
@@ -47,8 +47,7 @@ static CGPExtensionRegistry *CGPExtensionRegistry_EMPTY_;
   return CGPExtensionRegistry_EMPTY_;
 }
 
-- (void)addWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-    (CGPGeneratedExtension *)extension {
+- (void)addWithComGoogleProtobufExtension:(CGPExtension *)extension {
   CGPExtensionRegistryAdd(self, extension);
 }
 

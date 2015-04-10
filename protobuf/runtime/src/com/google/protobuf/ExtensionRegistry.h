@@ -35,6 +35,7 @@
 
 @class ComGoogleProtobufDescriptors_Descriptor;
 @class ComGoogleProtobufDescriptors_FieldDescriptor;
+@class ComGoogleProtobufExtension;
 @class ComGoogleProtobufExtensionRegistry;
 @class ComGoogleProtobufExtensionRegistry_ExtensionInfo;
 @class ComGoogleProtobufGeneratedMessage_GeneratedExtension;
@@ -49,8 +50,7 @@ typedef ComGoogleProtobufExtensionRegistry_ExtensionInfo CGPExtensionInfo;
 
 + (ComGoogleProtobufExtensionRegistry *)getEmptyRegistry;
 
-- (void)addWithComGoogleProtobufGeneratedMessage_GeneratedExtension:
-    (ComGoogleProtobufGeneratedMessage_GeneratedExtension *)extension;
+- (void)addWithComGoogleProtobufExtension:(ComGoogleProtobufExtension *)extension;
 
 - (ComGoogleProtobufExtensionRegistry_ExtensionInfo *)
     findExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor:

@@ -26,6 +26,7 @@ SRCS = \
   com/google/protobuf/CodedInputStream.mm \
   com/google/protobuf/CodedOutputStream.mm \
   com/google/protobuf/Descriptors.m \
+  com/google/protobuf/Extension.m \
   com/google/protobuf/ExtensionLite.m \
   com/google/protobuf/ExtensionRegistry.mm \
   com/google/protobuf/ExtensionRegistryLite.mm \
