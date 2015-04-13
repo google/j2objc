@@ -49,15 +49,6 @@ public class VariableRenamerTest extends GenerationTest {
     assertTranslation(translation, "int size_Subsubclass_;");
   }
 
-  public void testOverriddenNameTranslation() throws IOException {
-    String translation = translateSourceFile(
-        "public class Example { int size; int size() { return size; }} "
-        + "class Subclass extends Example { int size; int size() { return size; }}",
-        "Example", "Example.h");
-    assertTranslation(translation, "int size__;");
-    assertTranslation(translation, "int size_Subclass_;");
-  }
-
   public void testOverriddenGenericClass() throws IOException {
     addSourceFile("class A { int foo; }", "A.java");
     addSourceFile("class C extends B<Object> { static int I; }", "C.java");

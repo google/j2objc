@@ -270,7 +270,7 @@ public class Deflater {
         case Z_OK:
           break;
         case Z_STREAM_END:
-          self->finished__ = YES;
+          self->finished_ = YES;
           break;
         case Z_BUF_ERROR:
           // zlib reports this "if no progress is possible (for example avail_in or avail_out was

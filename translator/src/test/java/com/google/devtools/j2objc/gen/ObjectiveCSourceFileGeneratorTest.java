@@ -131,8 +131,8 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
   public void testStaticReaderAddedWhenSameMethodNameExists() throws IOException {
     String translation = translateSourceFile(
         "class Test { static int foo; void foo(String s) {}}", "Test", "Test.h");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, foo__, jint)");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_REF_GETTER(Test, foo__, jint)");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, foo_, jint)");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_REF_GETTER(Test, foo_, jint)");
     assertTranslation(translation, "- (void)fooWithNSString:(NSString *)s;");
   }
 

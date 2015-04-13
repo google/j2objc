@@ -444,7 +444,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
         if (entry_ == nil) {
           self->entryForNullKey_ = [self constructorNewRetainedEntryWithId:nil withId:value
               withInt:0 withJavaUtilHashMap_HashMapEntry:nil];
-          self->size__++;
+          self->size_++;
         } else {
           JavaUtilHashMap_HashMapEntry_set_value_(entry_, value);
         }
@@ -462,7 +462,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
       }
       tab->buffer_[index] = [self constructorNewRetainedEntryWithId:key withId:value withInt:hash_
           withJavaUtilHashMap_HashMapEntry:first];
-      self->size__++;
+      self->size_++;
     ]-*/;
 
     /**
@@ -546,7 +546,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
         return;
       }
       IOSObjectArray *newTable = JavaUtilHashMap_makeTableWithInt_(self, newCapacity);
-      if (self->size__ != 0) {
+      if (self->size_ != 0) {
         jint newMask = newCapacity - 1;
         for (jint i = 0; i < oldCapacity; i++) {
           for (JavaUtilHashMap_HashMapEntry *e = oldTable->buffer_[i]; e != nil; ) {
@@ -593,7 +593,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
       }
       jint newCapacity = oldCapacity * 2;
       IOSObjectArray *newTable = JavaUtilHashMap_makeTableWithInt_(self, newCapacity);
-      if (self->size__ == 0) {
+      if (self->size_ == 0) {
         return newTable;
       }
       for (jint j = 0; j < oldCapacity; j++) {
@@ -642,7 +642,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
         }
         JavaUtilHashMap_set_entryForNullKey_(self, nil);
         modCount_++;
-        size__--;
+        size_--;
         [self postRemoveWithJavaUtilHashMap_HashMapEntry:e];
         return e->value_;
       }
@@ -660,7 +660,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
           e->next_ = nil;  // Balance the missing retain on e.next above.
           [e autorelease];  // Balance the missing release on e above.
           modCount_++;
-          size__--;
+          size_--;
           [self postRemoveWithJavaUtilHashMap_HashMapEntry:e];
           return e->value_;
         }
@@ -881,7 +881,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
         }
         JavaUtilHashMap_set_entryForNullKey_(self, nil);
         self->modCount_++;
-        self->size__--;
+        self->size_--;
         [self postRemoveWithJavaUtilHashMap_HashMapEntry:e];
         return YES;
       }
@@ -902,7 +902,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
           e->next_ = nil;  // Balance the missing retain on e.next above.
           [e autorelease];  // Balance the missing release on e above.
           self->modCount_++;
-          self->size__--;
+          self->size_--;
           [self postRemoveWithJavaUtilHashMap_HashMapEntry:e];
           return YES;
         }

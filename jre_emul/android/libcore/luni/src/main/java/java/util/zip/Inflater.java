@@ -298,10 +298,10 @@ public class Inflater {
         case Z_OK:
           break;
         case Z_NEED_DICT:
-          self->needsDictionary__ = YES;
+          self->needsDictionary_ = YES;
           break;
         case Z_STREAM_END:
-          self->finished__ = YES;
+          self->finished_ = YES;
           break;
         case Z_STREAM_ERROR:
           return 0;

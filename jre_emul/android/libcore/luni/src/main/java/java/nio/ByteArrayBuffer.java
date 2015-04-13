@@ -123,10 +123,10 @@ final class ByteArrayBuffer extends ByteBuffer {
     nil_chk(dst); \
     jint byteCount = [self checkGetBoundsWithInt:sizeof(TYPE) withInt:(jint)dst->size_ \
         withInt:dstOffset withInt:count]; \
-    char *src = (char *)(backingArray_->buffer_ + arrayOffset_ + position__); \
+    char *src = (char *)(backingArray_->buffer_ + arrayOffset_ + position_); \
     unsafeBulkCopy((char *)(dst->buffer_ + dstOffset), src, byteCount, sizeof(TYPE), \
-        order__->needsSwap_); \
-    position__ += byteCount;
+        order_->needsSwap_); \
+    position_ += byteCount;
   ]-*/
 
   final native void get(char[] dst, int dstOffset, int count) /*-[
@@ -280,10 +280,10 @@ final class ByteArrayBuffer extends ByteBuffer {
     nil_chk(src); \
     jint byteCount = [self checkPutBoundsWithInt:sizeof(TYPE) withInt:(jint)src->size_ \
         withInt:srcOffset withInt:count]; \
-    char *dst = (char *)(backingArray_->buffer_ + arrayOffset_ + position__); \
+    char *dst = (char *)(backingArray_->buffer_ + arrayOffset_ + position_); \
     unsafeBulkCopy(dst, (char *)(src->buffer_ + srcOffset), byteCount, sizeof(TYPE), \
-        order__->needsSwap_); \
-    position__ += byteCount; \
+        order_->needsSwap_); \
+    position_ += byteCount; \
   ]-*/
 
   final native void put(char[] src, int srcOffset, int count) /*-[

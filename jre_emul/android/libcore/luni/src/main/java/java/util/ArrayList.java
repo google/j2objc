@@ -673,7 +673,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
         state->mutationsPtr = (unsigned long *) &modCount_;
         state->itemsPtr = (__unsafe_unretained id *) (void *) array_->buffer_;
         state->state = 1;
-        return size__;
+        return size_;
       } else {
         return 0;
       }

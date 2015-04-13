@@ -649,8 +649,8 @@ public class Thread implements Runnable {
    */
   public static native boolean interrupted() /*-[
     JavaLangThread *currentThread = JavaLangThread_currentThread();
-    BOOL result = currentThread->interrupted__;
-    currentThread->interrupted__ = NO;
+    BOOL result = currentThread->interrupted_;
+    currentThread->interrupted_ = NO;
     return result;
   ]-*/;
 

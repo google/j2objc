@@ -61,14 +61,6 @@ public class VariableRenamer extends TreeVisitor {
           fieldName += "_" + type.getName();
           NameTable.rename(field, fieldName);
         }
-        // Note: this check is no longer needed since we don't generate
-        // properties from fields anymore.
-        for (IMethodBinding method : type.getDeclaredMethods()) {
-          if (method.getName().equals(fieldName)) {
-            NameTable.rename(field, fieldName + "_");
-            break;
-          }
-        }
       }
     }
     for (IVariableBinding field : type.getDeclaredFields()) {
