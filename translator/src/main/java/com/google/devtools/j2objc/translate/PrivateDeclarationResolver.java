@@ -119,11 +119,7 @@ public class PrivateDeclarationResolver extends TreeVisitor {
   }
 
   private boolean isPrivateType(ITypeBinding type) {
-    if (type == null || !Options.hidePrivateMembers()) {
-      return false;
-    }
-    return isPrivateType(type.getDeclaringClass()) || BindingUtil.isPrivate(type) || type.isLocal()
-        || type.isAnonymous();
+    return Options.hidePrivateMembers() && BindingUtil.isPrivateInnerType(type);
   }
 
   @Override

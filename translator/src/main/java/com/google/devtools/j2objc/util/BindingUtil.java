@@ -92,6 +92,21 @@ public final class BindingUtil {
   }
 
   /**
+   * Tests if this type is private to it's source file. A public type declared
+   * within a private type is considered private.
+   */
+  public static boolean isPrivateInnerType(ITypeBinding type) {
+    if (isPrivate(type) || type.isLocal() || type.isAnonymous()) {
+      return true;
+    }
+    ITypeBinding declaringClass = type.getDeclaringClass();
+    if (declaringClass != null) {
+      return isPrivateInnerType(declaringClass);
+    }
+    return false;
+  }
+
+  /**
    * Determines if a type can access fields and methods from an outer class.
    */
   public static boolean hasOuterContext(ITypeBinding type) {

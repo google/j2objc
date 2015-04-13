@@ -259,14 +259,14 @@ public class Functionizer extends TreeVisitor {
       if (binding.isConstructor() && !BindingUtil.isAbstract(declaringClass)) {
         declarationList.add(makeAllocatingConstructor(node));
       }
-      boolean keepMethod = !BindingUtil.isStatic(binding) || !Options.removeClassMethods();
-      if (keepMethod || TranslationUtil.needsReflection(declaringClass)) {
+      // Static methods are only needed as an API for hand-written code, or for
+      // reflection. So we can reduce the visibility of private static methods
+      // or remove them if reflection is stripped.
+      boolean keepMethod = !BindingUtil.isStatic(binding) || !Options.hidePrivateMembers()
+          || !(BindingUtil.isPrivateInnerType(declaringClass) || BindingUtil.isPrivate(binding))
+          || TranslationUtil.needsReflection(declaringClass);
+      if (keepMethod) {
         setFunctionCaller(node, function);
-        if (!keepMethod) {
-          // We're only keeping the method for reflection, so we can keep it out
-          // of the declaration.
-          node.addModifiers(BindingUtil.ACC_SYNTHETIC);
-        }
       } else {
         node.remove();
       }
