@@ -849,14 +849,6 @@ static const char* GetFieldName(NSString *name, IOSClass *clazz) {
   return [name cStringUsingEncoding:[NSString defaultCStringEncoding]];
 }
 
-static JavaLangReflectField *FieldFromIvar(IOSClass *iosClass, Ivar ivar) {
-  JavaClassMetadata *metadata = [iosClass getMetadata];
-  JavaFieldMetadata *fieldMetadata = [metadata findFieldMetadata:ivar_getName(ivar)];
-  return [JavaLangReflectField fieldWithIvar:ivar
-                                   withClass:iosClass
-                                withMetadata:fieldMetadata];
-}
-
 // Adds all the fields for a specified class to a specified dictionary.
 static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields, BOOL publicOnly) {
   JavaClassMetadata *metadata = [iosClass getMetadata];
@@ -880,7 +872,9 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields, 
     unsigned int count;
     Ivar *ivars = class_copyIvarList(iosClass.objcClass, &count);
     for (unsigned int i = 0; i < count; i++) {
-      JavaLangReflectField *field = FieldFromIvar(iosClass, ivars[i]);
+      JavaLangReflectField *field = [JavaLangReflectField fieldWithIvar:ivars[i]
+                                                              withClass:iosClass
+                                                           withMetadata:nil];
       NSString *name = [field getName];
       if (![fields valueForKey:name]) { // Don't add shadowed fields.
         [fields setObject:field forKey:name];
@@ -924,7 +918,7 @@ Ivar FindIvar(IOSClass *cls, NSString *name) {
     } else {
       Ivar ivar = FindIvar(self, name);
       if (ivar) {
-        return FieldFromIvar(self, ivar);
+        return [JavaLangReflectField fieldWithIvar:ivar withClass:self withMetadata:nil];
       }
     }
   }
@@ -946,7 +940,7 @@ JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
     } else {
       Ivar ivar = FindIvar(iosClass, name);
       if (ivar) {
-        return FieldFromIvar(iosClass, ivar);
+        return [JavaLangReflectField fieldWithIvar:ivar withClass:iosClass withMetadata:nil];
       }
     }
     for (IOSClass *p in [iosClass getInterfacesInternal]) {
