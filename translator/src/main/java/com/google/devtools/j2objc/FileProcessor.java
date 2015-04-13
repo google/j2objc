@@ -160,9 +160,6 @@ abstract class FileProcessor {
   protected void processCompilationUnit(
       GenerationUnit genUnit, CompilationUnit unit, InputFile file) {
     try {
-      Types.initialize(unit);
-      NameTable.initialize();
-
       String source = FileUtil.readFile(file);
       com.google.devtools.j2objc.ast.CompilationUnit translatedUnit
           = TreeConverter.convertCompilationUnit(unit, file, source);

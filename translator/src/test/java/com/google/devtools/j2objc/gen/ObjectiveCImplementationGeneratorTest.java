@@ -867,7 +867,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     batchCompiler.compile(compileArgs.toArray(new String[0]));
     List<String> oldClassPathEntries = new ArrayList<String>(Options.getClassPathEntries());
     Options.getClassPathEntries().add(tempDir.getAbsolutePath() + "/src/");
-    NameTable.initialize();
+    NameTable.newInstance().setInstance();
     try {
       String translation = translateSourceFile("package foo.bar.mumble;\n"
           + "public class Test {}",
@@ -880,6 +880,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     } finally {
       Options.getClassPathEntries().clear();
       Options.getClassPathEntries().addAll(oldClassPathEntries);
+      NameTable.cleanup();
     }
   }
 

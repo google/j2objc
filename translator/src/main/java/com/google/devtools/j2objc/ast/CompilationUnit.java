@@ -49,7 +49,7 @@ public class CompilationUnit extends TreeNode {
       org.eclipse.jdt.core.dom.CompilationUnit jdtNode, InputFile inputFile,
       String mainTypeName, String source) {
     super(jdtNode);
-    this.nameTable = NameTable.newNameTable();
+    this.nameTable = NameTable.newInstance();
     this.typesService = Types.newTypes(jdtNode);
     setGenerationContext();
     this.inputFile = Preconditions.checkNotNull(inputFile);

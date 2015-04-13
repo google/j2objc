@@ -59,7 +59,7 @@ public class NameTable {
 
   private static NameTable instance;
   private final Map<IBinding, String> renamings = Maps.newHashMap();
-  private final PathClassLoader classLoader;
+  private PathClassLoader classLoader;
 
   public static final String INIT_NAME = "init";
   public static final String ALLOC_METHOD = "alloc";
@@ -275,35 +275,47 @@ public class NameTable {
   };
 
   private NameTable(
-      Map<String, String> prefixMap, Map<String, String> rawMethodMappings,
-      PathClassLoader classLoader) {
+      Map<String, String> prefixMap, Map<String, String> rawMethodMappings) {
     this.prefixMap = prefixMap;
     this.methodMappings =
         Maps.newHashMap(Maps.transformValues(rawMethodMappings, EXTRACT_SELECTOR_FUNC));
-    this.classLoader = classLoader;
   }
 
   /**
    * Create a new NameTable according to the current options, and returns it.
+   * This NameTable is not yet the global instance--you must set that with {@link #setInstance()}.
    */
-  public static NameTable newNameTable() {
-    List<String> paths = Options.getBootClasspath();
-    paths.addAll(Options.getClassPathEntries());
-    return new NameTable(
-        Options.getPackagePrefixes(), Options.getMethodMappings(), new PathClassLoader(paths));
+  public static NameTable newInstance() {
+    return new NameTable(Options.getPackagePrefixes(), Options.getMethodMappings());
   }
 
   /**
-   * Creates a new NameTable, and sets it as the current instance.
+   * Handles reopening the ClassLoader. It appears only way to get
+   * a URLClassLoader to dispose of resources is to close it, and since we might have 1000s
+   * of NameTables in ram, it becomes important to dispose unused resources.
+   * Once closed, the ClassLoader becomes unusable, so we need to make a new one.
+  */
+  private void reinit() {
+    List<String> paths = Options.getBootClasspath();
+    paths.addAll(Options.getClassPathEntries());
+    classLoader = new PathClassLoader(paths);
+  }
+
+  /**
+   * Sets this NameTable as the global instance.
    */
-  public static void initialize() {
-    instance = newNameTable();
-  }
-
   public void setInstance() {
-    instance = this;
+    if (instance != this) {
+      cleanup();
+      instance = this;
+      reinit();
+    }
   }
 
+  /**
+   * Cleans up the resources used by the current NameTable. The NameTable instance remains usable,
+   * and can be re-set as the global NameTable with {@link #setInstance()}.
+   */
   public static void cleanup() {
     try {
       if (instance != null) {
