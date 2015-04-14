@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
@@ -55,7 +54,6 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.NameTable;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.RetainedLocalRef;
 
@@ -80,12 +78,6 @@ public class Rewriter extends TreeVisitor {
 
   private Map<IVariableBinding, IVariableBinding> localRefs = Maps.newHashMap();
 
-  /**
-   * The list of Objective-C type qualifier keywords.
-   */
-  private static final List<String> typeQualifierKeywords = Lists.newArrayList("in", "out",
-      "inout", "oneway", "bycopy", "byref");
-
   @Override
   public boolean visit(MethodDeclaration node) {
     IMethodBinding binding = node.getMethodBinding();
@@ -96,17 +88,6 @@ public class Rewriter extends TreeVisitor {
             "Ignoring AutoreleasePool annotation on method with retainable return type");
       } else if (node.getBody() != null) {
         node.getBody().setHasAutoreleasePool(true);
-      }
-    }
-
-    List<SingleVariableDeclaration> params = node.getParameters();
-    for (int i = 0; i < params.size(); i++) {
-      // Change the names of any parameters that are type qualifier keywords.
-      SingleVariableDeclaration param = params.get(i);
-      String name = param.getName().getIdentifier();
-      if (typeQualifierKeywords.contains(name)) {
-        IVariableBinding varBinding = param.getVariableBinding();
-        NameTable.rename(varBinding, name + "Arg");
       }
     }
 

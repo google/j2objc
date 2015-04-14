@@ -87,7 +87,7 @@ public class NameTable {
    * The list of predefined types, common primitive typedefs, constants and
    * variables.
    */
-  public static final List<String> reservedNames = Lists.newArrayList(
+  public static final Set<String> reservedNames = Sets.newHashSet(
       // types
       "id", "bool", "BOOL", "SEL", "IMP", "unichar",
 
@@ -241,6 +241,10 @@ public class NameTable {
       // Foundation methods with conflicting return types
       "scale");
 
+  private static final Set<String> badParameterNames = Sets.newHashSet(
+      // Objective-C type qualifier keywords.
+      "in", "out", "inout", "oneway", "bycopy", "byref");
+
   /**
    * List of NSObject message names.  Java methods with one of these names are
    * renamed to avoid unintentional overriding.  Message names with trailing
@@ -343,8 +347,13 @@ public class NameTable {
     }
     String name = binding.getName();
     if (binding instanceof IVariableBinding) {
-      if (isReservedName(name) && !((IVariableBinding) binding).isEnumConstant()) {
-        name += "_";
+      IVariableBinding var = (IVariableBinding) binding;
+      if (!var.isEnumConstant()) {
+        if (isReservedName(name)) {
+          name += "_";
+        } else if (var.isParameter() && badParameterNames.contains(name)) {
+          name += "Arg";
+        }
       }
     }
     return name.equals(SELF_NAME) ? "self" : name;
