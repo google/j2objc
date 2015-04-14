@@ -207,7 +207,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         }
         IVariableBinding var = params.get(i).getVariableBinding();
         String typeName = NameTable.getSpecificObjCType(var.getType());
-        sb.append(String.format("%s:(%s)%s", selParts[i], typeName, NameTable.getName(var)));
+        sb.append(String.format(
+            "%s:(%s)%s", selParts[i], typeName, NameTable.getVariableName(var)));
       }
     }
 
@@ -224,7 +225,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       IVariableBinding var = iter.next().getVariableBinding();
       String paramType = NameTable.getSpecificObjCType(var.getType());
       paramType += (paramType.endsWith("*") ? "" : " ");
-      sb.append(paramType + NameTable.getName(var));
+      sb.append(paramType + NameTable.getVariableName(var));
       if (iter.hasNext()) {
         sb.append(", ");
       }

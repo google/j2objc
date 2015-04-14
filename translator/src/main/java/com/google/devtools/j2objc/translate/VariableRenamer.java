@@ -26,7 +26,6 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -59,7 +58,7 @@ public class VariableRenamer extends TreeVisitor {
         String fieldName = field.getName();
         if (!BindingUtil.isStatic(field) && superFieldNames.contains(fieldName)) {
           fieldName += "_" + type.getName();
-          NameTable.rename(field, fieldName);
+          NameTable.setVariableName(field, fieldName);
         }
       }
     }
@@ -75,7 +74,7 @@ public class VariableRenamer extends TreeVisitor {
     collectAndRenameFields(type, fields);
     Set<String> fullFieldNames = Sets.newHashSet();
     for (IVariableBinding field : fields) {
-      fullFieldNames.add(NameTable.javaFieldToObjC(NameTable.getName(field)));
+      fullFieldNames.add(NameTable.javaFieldToObjC(NameTable.getVariableName(field)));
     }
     fieldNameStack.add(fullFieldNames);
   }
@@ -100,7 +99,7 @@ public class VariableRenamer extends TreeVisitor {
       assert fieldNameStack.size() > 0;
       Set<String> fieldNames = fieldNameStack.get(fieldNameStack.size() - 1);
       if (fieldNames.contains(varName)) {
-        NameTable.rename(var, varName + "Arg");
+        NameTable.setVariableName(var, varName + "Arg");
       }
     }
   }

@@ -72,7 +72,7 @@ public class EnumRewriter extends TreeVisitor {
           addEnumConstructorParams(constant.getMethodBinding().getMethodDeclaration());
       ClassInstanceCreation creation = new ClassInstanceCreation(binding);
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
-      String name = NameTable.getName(constant.getName().getBinding());
+      String name = NameTable.getVariableName(constant.getVariableBinding());
       creation.getArguments().add(new StringLiteral(name));
       creation.getArguments().add(new NumberLiteral(i++));
       creation.setHasRetainedResult(true);

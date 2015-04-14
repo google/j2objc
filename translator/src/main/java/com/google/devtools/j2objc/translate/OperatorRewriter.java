@@ -145,7 +145,7 @@ public class OperatorRewriter extends TreeVisitor {
       value = retainedValue;
     }
     String setterName = String.format(setterFormat, NameTable.getFullName(declaringType),
-        NameTable.javaFieldToObjC(NameTable.getName(var)));
+        NameTable.javaFieldToObjC(NameTable.getVariableName(var)));
     FunctionInvocation invocation = new FunctionInvocation(
         setterName, varType, varType, declaringType);
     invocation.getArguments().add(TreeUtil.remove(instance));

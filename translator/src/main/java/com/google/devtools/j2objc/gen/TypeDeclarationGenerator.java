@@ -248,7 +248,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         if (needsAsterisk) {
           print('*');
         }
-        String name = NameTable.getName(f.getName().getBinding());
+        String name = NameTable.getVariableName(f.getVariableBinding());
         print(NameTable.javaFieldToObjC(name));
         if (it.hasNext()) {
           print(", ");
@@ -331,7 +331,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         if (BindingUtil.isWeakReference(var.getVariableBinding())) {
           continue;
         }
-        String fieldName = NameTable.javaFieldToObjC(NameTable.getName(var.getName().getBinding()));
+        String fieldName = NameTable.javaFieldToObjC(
+            NameTable.getVariableName(var.getVariableBinding()));
         if (!newlinePrinted) {
           newlinePrinted = true;
           newline();

@@ -790,9 +790,9 @@ public class StatementGenerator extends TreeVisitor {
       } else if (BindingUtil.isStatic(var)) {
         buffer.append(NameTable.getStaticVarQualifiedName(var));
       } else if (var.isField()) {
-        buffer.append(NameTable.javaFieldToObjC(NameTable.getName(var)));
+        buffer.append(NameTable.javaFieldToObjC(NameTable.getVariableName(var)));
       } else {
-        buffer.append(NameTable.getName(var));
+        buffer.append(NameTable.getVariableName(var));
       }
       return false;
     }
@@ -900,7 +900,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(SuperFieldAccess node) {
-    buffer.append(NameTable.javaFieldToObjC(NameTable.getName(node.getName().getBinding())));
+    buffer.append(NameTable.javaFieldToObjC(NameTable.getVariableName(node.getVariableBinding())));
     return false;
   }
 

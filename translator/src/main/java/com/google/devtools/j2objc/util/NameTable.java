@@ -32,7 +32,6 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -58,7 +57,7 @@ import java.util.regex.Pattern;
 public class NameTable {
 
   private static NameTable instance;
-  private final Map<IBinding, String> renamings = Maps.newHashMap();
+  private final Map<IVariableBinding, String> variableNames = Maps.newHashMap();
   private PathClassLoader classLoader;
 
   public static final String INIT_NAME = "init";
@@ -331,29 +330,28 @@ public class NameTable {
     instance = null;
   }
 
-  /**
-   * Returns a bound name that may have been renamed by a translation phase.
-   *
-   * @return the new name, or the old name if no renaming exists
-   */
-  public static String getName(IBinding binding) {
-    assert binding != null;
-    assert !(binding instanceof IMethodBinding);
-    assert !(binding instanceof ITypeBinding);
-    binding = getBindingDeclaration(binding);
-    String newName = instance.renamings.get(binding);
-    if (newName != null) {
-      return newName;
+  public static void setVariableName(IVariableBinding var, String name) {
+    var = var.getVariableDeclaration();
+    String previousName = instance.variableNames.get(var);
+    if (previousName != null && !previousName.equals(name)) {
+      logger.fine(String.format("Changing previous rename for variable: %s. Was: %s, now: %s",
+          var.toString(), previousName, name));
     }
-    String name = binding.getName();
-    if (binding instanceof IVariableBinding) {
-      IVariableBinding var = (IVariableBinding) binding;
-      if (!var.isEnumConstant()) {
-        if (isReservedName(name)) {
-          name += "_";
-        } else if (var.isParameter() && badParameterNames.contains(name)) {
-          name += "Arg";
-        }
+    instance.variableNames.put(var, name);
+  }
+
+  public static String getVariableName(IVariableBinding var) {
+    var = var.getVariableDeclaration();
+    String name = instance.variableNames.get(var);
+    if (name != null) {
+      return name;
+    }
+    name = var.getName();
+    if (!var.isEnumConstant()) {
+      if (isReservedName(name)) {
+        name += "_";
+      } else if (var.isParameter() && badParameterNames.contains(name)) {
+        name += "Arg";
       }
     }
     return name.equals(SELF_NAME) ? "self" : name;
@@ -371,37 +369,6 @@ public class NameTable {
    */
   public static String getAnnotationPropertyName(IMethodBinding binding) {
     return getMethodName(binding);
-  }
-
-  private static IBinding getBindingDeclaration(IBinding binding) {
-    if (binding instanceof IVariableBinding) {
-      return ((IVariableBinding) binding).getVariableDeclaration();
-    }
-    if (binding instanceof IMethodBinding) {
-      return ((IMethodBinding) binding).getMethodDeclaration();
-    }
-    if (binding instanceof ITypeBinding) {
-      return ((ITypeBinding) binding).getTypeDeclaration();
-    }
-    return binding;
-  }
-
-  public static boolean isRenamed(IBinding binding) {
-    return instance.renamings.containsKey(binding);
-  }
-
-  /**
-   * Adds a name to the renamings map, used by getName().
-   */
-  public static void rename(IBinding oldName, String newName) {
-    assert !(oldName instanceof IMethodBinding);
-    oldName = getBindingDeclaration(oldName);
-    String previousName = instance.renamings.get(oldName);
-    if (previousName != null && !previousName.equals(newName)) {
-      logger.fine(String.format("Changing previous rename: %s => %s, now: %s => %s",
-          oldName.toString(), previousName, oldName, newName));
-    }
-    instance.renamings.put(oldName, newName);
   }
 
   /**
@@ -888,11 +855,12 @@ public class NameTable {
 
   public static String getStaticVarQualifiedName(IVariableBinding var) {
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
-    return getFullName(declaringType) + "_" + getName(var) + (var.isEnumConstant() ? "" : "_");
+    return getFullName(declaringType) + "_" + getVariableName(var)
+        + (var.isEnumConstant() ? "" : "_");
   }
 
   public static String getStaticVarName(IVariableBinding var) {
-    return getName(var) + (var.isEnumConstant() ? "" : "_");
+    return getVariableName(var) + (var.isEnumConstant() ? "" : "_");
   }
 
   public static String getPrimitiveConstantName(IVariableBinding constant) {
