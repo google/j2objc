@@ -15,6 +15,7 @@
 # Author: Keith Stanger
 
 JAVA_DEPS_JAR_DIR = $(J2OBJC_ROOT)/java_deps/$(BUILD_DIR_NAME)
+JUNIT_JAR = j2objc_junit.jar
 
 ECLIPSE_JARS = \
     org.eclipse.core.contenttype-3.4.200.v20130326-1255.jar \
@@ -36,9 +37,9 @@ JSR305_SOURCE_JAR = jsr305-3.0.0.jar
 JAVAX_INJECT_JAR = javax.inject-1.jar
 JAVAX_INJECT_SOURCE_JAR = javax.inject-1-sources.jar
 
-JUNIT_JAR = junit-4.10.jar
-JUNIT_SOURCE_JAR = junit-4.10-sources.jar
-HAMCREST_JAR = hamcrest-core-1.1.jar
+JUNIT_ROOT_JAR = junit-4.11.jar
+JUNIT_SOURCE_JAR = junit-4.11-sources.jar
+HAMCREST_JAR = hamcrest-core-1.3.jar
 
 MOCKITO_JAR = mockito-core-1.9.5.jar
 MOCKITO_SOURCE_JAR = mockito-core-1.9.5-sources.jar

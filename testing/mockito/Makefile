@@ -140,7 +140,6 @@ EXTRACTED_JAVA_SOURCES = \
     org/mockito/internal/matchers/InstanceOf.java \
     org/mockito/internal/matchers/LessOrEqual.java \
     org/mockito/internal/matchers/LessThan.java \
-    org/mockito/internal/matchers/LocalizedMatcher.java \
     org/mockito/internal/matchers/MatcherDecorator.java \
     org/mockito/internal/matchers/MatchersPrinter.java \
     org/mockito/internal/matchers/Matches.java \
@@ -279,6 +278,7 @@ SUPERSOURCE_JAVA_SOURCES = \
     org/mockito/internal/creation/ios/InvocationHandlerAdapter.java \
     org/mockito/internal/creation/ios/IosMockMaker.java \
     org/mockito/internal/creation/jmock/ClassImposterizer.java \
+    org/mockito/internal/matchers/LocalizedMatcher.java \
     org/mockito/internal/stubbing/answers/ThrowsExceptionClass.java
 
 EXTRACTED_JAVA = $(EXTRACTED_JAVA_SOURCES:%=$(EXTRACTED_JAVA_SRC_DIR)/%)

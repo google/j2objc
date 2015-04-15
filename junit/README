@@ -3,9 +3,6 @@ use, create an executable with one or more test classes, linking with the
 "-l junit" flag. Tests are executed by running the binary with one or
 more test and/or test suite class names:
 
-$ j2objc -classpath [j2objc-dist]/lib/junit.jar FooTest.java BarTest.java
+$ j2objc -classpath [j2objc-dist]/lib/junit*.jar FooTest.java BarTest.java
 $ j2objc -o tests FooTest.m BarTest.m -l junit
-$ ./tests FooTest BarTest
-
-This project uses unmodified sources from junit.org, along with a native
-runner class to catch and report segfaults.
+$ ./tests org.junit.runner.JUnitCore FooTest BarTest

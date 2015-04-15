@@ -41,7 +41,8 @@ JAVA_SOURCES = $(JAVA_TESTS) $(OTHER_JAVA_SOURCES)
 OBJS_DIR = $(BUILD_DIR)/objs
 
 CLASSPATH_LIST = \
-  $(DIST_JAR_DIR)/j2objc_junit.jar \
+  $(DIST_JAR_DIR)/$(JUNIT_JAR) \
+  $(DIST_JAR_DIR)/$(HAMCREST_JAR) \
   $(DIST_JAR_DIR)/j2objc_annotations.jar \
   $(DIST_JAR_DIR)/protobuf_runtime.jar
 CLASSPATH = $(subst $(eval) ,:,$(strip $(CLASSPATH_LIST)))

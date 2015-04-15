@@ -1,0 +1,4 @@
+# TODO(tball): resolve these
+TYPE junit.framework.JUnit4TestAdapter
+
+FIELD org.junit.runners.ParentRunner.fScheduler
