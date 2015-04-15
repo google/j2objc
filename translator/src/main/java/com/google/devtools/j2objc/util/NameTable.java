@@ -58,7 +58,6 @@ public class NameTable {
 
   private static NameTable instance;
   private final Map<IVariableBinding, String> variableNames = Maps.newHashMap();
-  private PathClassLoader classLoader;
 
   public static final String INIT_NAME = "init";
   public static final String ALLOC_METHOD = "alloc";
@@ -293,25 +292,12 @@ public class NameTable {
   }
 
   /**
-   * Handles reopening the ClassLoader. It appears only way to get
-   * a URLClassLoader to dispose of resources is to close it, and since we might have 1000s
-   * of NameTables in ram, it becomes important to dispose unused resources.
-   * Once closed, the ClassLoader becomes unusable, so we need to make a new one.
-  */
-  private void reinit() {
-    List<String> paths = Options.getBootClasspath();
-    paths.addAll(Options.getClassPathEntries());
-    classLoader = new PathClassLoader(paths);
-  }
-
-  /**
    * Sets this NameTable as the global instance.
    */
   public void setInstance() {
     if (instance != this) {
       cleanup();
       instance = this;
-      reinit();
     }
   }
 
@@ -320,13 +306,6 @@ public class NameTable {
    * and can be re-set as the global NameTable with {@link #setInstance()}.
    */
   public static void cleanup() {
-    try {
-      if (instance != null) {
-        instance.classLoader.close();
-      }
-    } catch (IOException e) {
-      // Ignore, any open files will be closed on exit.
-    }
     instance = null;
   }
 
@@ -946,8 +925,11 @@ public class NameTable {
    * Check if there is a package-info class with a prefix annotation.
    */
   private static String getPrefixFromPackageInfoClass(String packageName) {
+    List<String> paths = Options.getBootClasspath();
+    paths.addAll(Options.getClassPathEntries());
+    PathClassLoader classLoader = new PathClassLoader(paths);
     try {
-      Class<?> clazz = instance.classLoader.loadClass(packageName + ".package-info");
+      Class<?> clazz = classLoader.loadClass(packageName + ".package-info");
       ObjectiveCName objectiveCName = clazz.getAnnotation(ObjectiveCName.class);
       if (objectiveCName != null) {
         return objectiveCName.value();
@@ -956,6 +938,12 @@ public class NameTable {
       // Class does not exist -- ignore exception.
     } catch (SecurityException e) {
       // Failed fetching a package-info class from a secure package -- ignore exception.
+    } finally {
+      try {
+        classLoader.close();
+      } catch (IOException e) {
+        // Ignore, any open files will be closed on exit.
+      }
     }
     return null;
   }
