@@ -35,7 +35,6 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -82,13 +81,13 @@ public class HeaderImportCollector extends TreeVisitor {
   }
 
   public void collect(TreeNode node) {
-    collect(Collections.singletonList(node));
+    TreeUtil.getCompilationUnit(node).setGenerationContext();
+    run(node);
   }
 
   public void collect(List<? extends TreeNode> nodes) {
     for (TreeNode node : nodes) {
-      TreeUtil.getCompilationUnit(node).setGenerationContext();
-      run(node);
+      collect(node);
     }
   }
 
@@ -107,15 +106,15 @@ public class HeaderImportCollector extends TreeVisitor {
   }
 
   private void addForwardDecl(ITypeBinding type) {
-    forwardDecls.addAll(Sets.difference(Import.getImports(type), declaredTypes));
+    forwardDecls.addAll(Sets.difference(Import.getImports(type, nameTable), declaredTypes));
   }
 
   private void addSuperType(ITypeBinding type) {
-    Import.addImports(type, superTypes);
+    Import.addImports(type, superTypes, nameTable);
   }
 
   private void addDeclaredType(ITypeBinding type) {
-    Import.addImports(type, declaredTypes);
+    Import.addImports(type, declaredTypes, nameTable);
   }
 
   @Override

@@ -14,19 +14,25 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.util.NameTable;
+
 /**
  * Base visitor class for the J2ObjC tree.
  */
 public class TreeVisitor {
 
+  protected NameTable nameTable = null;
+
   /**
    * Executes this visitor on a specified node.  This entry point should
-   * be used instead of visit(), so exception can be caught and reported.
+   * be used instead of visit(), so that certain state can be initialized.
    *
    * @param node the top-level node to visit.
    */
   public void run(TreeNode node) {
+    nameTable = TreeUtil.getCompilationUnit(node).getNameTable();
     node.accept(this);
+    nameTable = null;
   }
 
   public boolean preVisit(TreeNode node) {

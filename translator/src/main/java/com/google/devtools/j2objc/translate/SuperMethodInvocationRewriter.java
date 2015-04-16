@@ -52,17 +52,18 @@ import java.util.Set;
  */
 public class SuperMethodInvocationRewriter extends TreeVisitor {
 
-  private final CompilationUnit unit;
-  private final Set<SuperMethodBindingPair> superMethods = Sets.newLinkedHashSet();
-  private final Map<ITypeBinding, AbstractTypeDeclaration> typeMap = Maps.newHashMap();
+  private Set<SuperMethodBindingPair> superMethods;
+  private Map<ITypeBinding, AbstractTypeDeclaration> typeMap;
 
-  public SuperMethodInvocationRewriter(CompilationUnit unit) {
-    this.unit = unit;
+  @Override
+  public boolean visit(CompilationUnit unit) {
+    superMethods = Sets.newLinkedHashSet();
+    typeMap = Maps.newHashMap();
+    return true;
   }
 
-  public void run() {
-    super.run(unit);
-
+  @Override
+  public void endVisit(CompilationUnit unit) {
     for (SuperMethodBindingPair superMethod : superMethods) {
       String funcName = getSuperFunctionName(superMethod);
       String signature = getSuperFunctionSignature(superMethod.method);
@@ -74,11 +75,11 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
       // Look up the implementations in the static initialization.
       AbstractTypeDeclaration typeNode = typeMap.get(superMethod.type.getTypeDeclaration());
       assert typeNode != null : "Type is expected to be in this compilation unit";
-      String superclassName = NameTable.getFullName(superMethod.type.getSuperclass());
+      String superclassName = nameTable.getFullName(superMethod.type.getSuperclass());
       typeNode.getClassInitStatements().add(0, new NativeStatement(String.format(
           "%s = (%s)[%s instanceMethodForSelector:@selector(%s)];",
           funcName, String.format(signature, ""), superclassName,
-          NameTable.getMethodSelector(superMethod.method))));
+          nameTable.getMethodSelector(superMethod.method))));
     }
   }
 
@@ -99,9 +100,9 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
     return "id";
   }
 
-  private static String getSuperFunctionName(SuperMethodBindingPair superMethod) {
-    return String.format("%s_super$_%s", NameTable.getFullName(superMethod.type),
-                         NameTable.getFunctionName(superMethod.method));
+  private String getSuperFunctionName(SuperMethodBindingPair superMethod) {
+    return String.format("%s_super$_%s", nameTable.getFullName(superMethod.type),
+                         nameTable.getFunctionName(superMethod.method));
   }
 
   @Override
@@ -123,7 +124,7 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
         getSuperFunctionName(superMethod), exprType, exprType, qualifierType);
     List<Expression> args = invocation.getArguments();
     args.add(TreeUtil.remove(qualifier));
-    String selectorExpr = String.format("@selector(%s)", NameTable.getMethodSelector(method));
+    String selectorExpr = String.format("@selector(%s)", nameTable.getMethodSelector(method));
     args.add(new NativeExpression(selectorExpr, Types.resolveIOSType("id")));
     TreeUtil.copyList(node.getArguments(), args);
     node.replaceWith(invocation);

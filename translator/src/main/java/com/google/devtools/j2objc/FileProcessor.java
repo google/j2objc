@@ -20,8 +20,8 @@ import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TimeTracker;
@@ -47,6 +47,7 @@ abstract class FileProcessor {
   private static final Logger logger = Logger.getLogger(FileProcessor.class.getName());
 
   private final JdtParser parser;
+  private final NameTable.Factory nameTableFactory = NameTable.newFactory();
 
   private final List<GenerationUnit> batchUnits = new ArrayList<GenerationUnit>();
   private int batchSourceCount = 0;
@@ -161,8 +162,9 @@ abstract class FileProcessor {
       GenerationUnit genUnit, CompilationUnit unit, InputFile file) {
     try {
       String source = FileUtil.readFile(file);
+      NameTable nameTable = nameTableFactory.newNameTable();
       com.google.devtools.j2objc.ast.CompilationUnit translatedUnit
-          = TreeConverter.convertCompilationUnit(unit, file, source);
+          = TreeConverter.convertCompilationUnit(unit, file, source, nameTable);
       genUnit.addCompilationUnit(translatedUnit);
 
       if (isFullyParsed(genUnit)) {
@@ -183,7 +185,6 @@ abstract class FileProcessor {
       genUnit.error(e.getMessage());
     } finally {
       Types.cleanup();
-      NameTable.cleanup();
     }
   }
 

@@ -47,9 +47,9 @@ public class CompilationUnit extends TreeNode {
 
   public CompilationUnit(
       org.eclipse.jdt.core.dom.CompilationUnit jdtNode, InputFile inputFile,
-      String mainTypeName, String source) {
+      String mainTypeName, String source, NameTable nameTable) {
     super(jdtNode);
-    this.nameTable = NameTable.newInstance();
+    this.nameTable = nameTable;
     this.typesService = Types.newTypes(jdtNode);
     setGenerationContext();
     this.inputFile = Preconditions.checkNotNull(inputFile);
@@ -90,7 +90,6 @@ public class CompilationUnit extends TreeNode {
    */
   public void setGenerationContext() {
     typesService.setInstance();
-    nameTable.setInstance();
   }
 
   public CompilationUnit(CompilationUnit other) {
@@ -123,6 +122,10 @@ public class CompilationUnit extends TreeNode {
 
   public String getSource() {
     return source;
+  }
+
+  public NameTable getNameTable() {
+    return nameTable;
   }
 
   public boolean hasIncompleteProtocol() {

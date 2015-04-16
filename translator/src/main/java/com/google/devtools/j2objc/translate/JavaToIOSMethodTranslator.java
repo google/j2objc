@@ -42,7 +42,6 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -94,8 +93,8 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     // Check if @ObjectiveCName is used but is mismatched with an overriden method.
     String name = NameTable.getMethodNameFromAnnotation(method);
     if (name != null) {
-      String selector = NameTable.selectorForMethodName(method, name);
-      String actualSelector = NameTable.getMethodSelector(method);
+      String selector = nameTable.selectorForMethodName(method, name);
+      String actualSelector = nameTable.getMethodSelector(method);
       if (!selector.equals(actualSelector)) {
         ErrorUtil.warning("ObjectiveCName(" + selector
             + "): Renamed method overrides a method with a different name.");

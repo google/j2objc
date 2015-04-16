@@ -83,14 +83,14 @@ public class Import implements Comparable<Import> {
       "sun.misc",
   });
 
-  private Import(ITypeBinding type) {
+  private Import(ITypeBinding type, NameTable nameTable) {
     this.type = type;
-    this.typeName = NameTable.getFullName(type);
+    this.typeName = nameTable.getFullName(type);
     ITypeBinding mainType = type;
     while (!mainType.isTopLevel()) {
       mainType = mainType.getDeclaringClass();
     }
-    this.mainTypeName = NameTable.getFullName(mainType);
+    this.mainTypeName = nameTable.getFullName(mainType);
     this.importFileName = getImportFileName(mainType) + ".h";
   }
 
@@ -182,23 +182,24 @@ public class Import implements Comparable<Import> {
     return typeName;
   }
 
-  public static Set<Import> getImports(ITypeBinding binding) {
+  public static Set<Import> getImports(ITypeBinding binding, NameTable nameTable) {
     Set<Import> result = Sets.newLinkedHashSet();
-    addImports(binding, result);
+    addImports(binding, result, nameTable);
     return result;
   }
 
-  public static void addImports(ITypeBinding binding, Collection<Import> imports) {
+  public static void addImports(
+      ITypeBinding binding, Collection<Import> imports, NameTable nameTable) {
     if (binding == null || binding.isPrimitive()) {
       return;
     }
     if (binding instanceof PointerTypeBinding) {
-      addImports(((PointerTypeBinding) binding).getPointeeType(), imports);
+      addImports(((PointerTypeBinding) binding).getPointeeType(), imports, nameTable);
       return;
     }
     if (binding.isTypeVariable()) {
       for (ITypeBinding bound : binding.getTypeBounds()) {
-        addImports(bound, imports);
+        addImports(bound, imports, nameTable);
       }
       return;
     }
@@ -206,6 +207,6 @@ public class Import implements Comparable<Import> {
     if (FOUNDATION_TYPES.contains(binding.getName())) {
       return;
     }
-    imports.add(new Import(binding));
+    imports.add(new Import(binding, nameTable));
   }
 }

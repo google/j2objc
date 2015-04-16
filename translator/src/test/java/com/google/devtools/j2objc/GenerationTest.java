@@ -145,7 +145,8 @@ public abstract class GenerationTest extends TestCase {
     String fullSourcePath = Options.useSourceDirectories() ? "" : tempDir.getPath() + '/';
     fullSourcePath += typePath + ".java";
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(
-        unit, new RegularInputFile(fullSourcePath, typePath + ".java"), source);
+        unit, new RegularInputFile(fullSourcePath, typePath + ".java"), source,
+        NameTable.newFactory().newNameTable());
     TranslationProcessor.applyMutations(newUnit, deadCodeMap, TimeTracker.noop());
     return newUnit;
   }
@@ -323,7 +324,7 @@ public abstract class GenerationTest extends TestCase {
   protected String translateCombinedFiles(String outputPath, String extension, String... sources)
       throws IOException {
     GenerationBatch batch = new GenerationBatch();
-    for (String sourceFile: sources) {
+    for (String sourceFile : sources) {
       batch.addSource(new RegularInputFile(tempDir + "/" + sourceFile, sourceFile), outputPath);
     }
     parser.setEnableDocComments(Options.docCommentsEnabled());
@@ -346,7 +347,7 @@ public abstract class GenerationTest extends TestCase {
     }
   }
 
-  protected Map<String,String> writeAndReloadHeaderMappings() throws IOException {
+  protected Map<String, String> writeAndReloadHeaderMappings() throws IOException {
     File outputHeaderMappingFile = new File(tempDir.getPath() + "/mappings.j2objc");
     outputHeaderMappingFile.deleteOnExit();
     Options.setOutputHeaderMappingFile(outputHeaderMappingFile);

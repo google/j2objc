@@ -310,7 +310,7 @@ class TranslationProcessor extends FileProcessor {
 
     // After: OuterReferenceFixer, Functionizer - Those passes edit the
     //   qualifier on SuperMethodInvocation nodes.
-    new SuperMethodInvocationRewriter(unit).run();
+    new SuperMethodInvocationRewriter().run(unit);
     ticker.tick("SuperMethodInvocationRewriter");
 
     new StaticVarRewriter().run(unit);

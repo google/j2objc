@@ -119,7 +119,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
             needsNewline = false;
             newline();
           }
-          printf("#define %s ", NameTable.getPrimitiveConstantName(field));
+          printf("#define %s ", nameTable.getPrimitiveConstantName(field));
           Object value = field.getConstantValue();
           assert value != null;
           println(LiteralGenerator.generate(value));
@@ -170,7 +170,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (superclass == null) {
       return null;
     }
-    return NameTable.getFullName(superclass);
+    return nameTable.getFullName(superclass);
   }
 
   private List<String> getInterfaceNames() {
@@ -179,7 +179,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
     List<String> names = Lists.newArrayList();
     for (ITypeBinding intrface : typeBinding.getInterfaces()) {
-      names.add(NameTable.getFullName(intrface));
+      names.add(nameTable.getFullName(intrface));
     }
     if (typeBinding.isEnum()) {
       names.remove("NSCopying");
@@ -233,7 +233,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         // included by a file compiled with ARC.
         print("__weak ");
       }
-      String objcType = NameTable.getSpecificObjCType(varType);
+      String objcType = nameTable.getSpecificObjCType(varType);
       boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
       if (needsAsterisk && objcType.endsWith(" *")) {
         // Strip pointer from type, as it will be added when appending fragment.
@@ -248,7 +248,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         if (needsAsterisk) {
           print('*');
         }
-        String name = NameTable.getVariableName(f.getVariableBinding());
+        String name = nameTable.getVariableName(f.getVariableBinding());
         print(NameTable.javaFieldToObjC(name));
         if (it.hasNext()) {
           print(", ");
@@ -310,7 +310,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           typeName.endsWith("Enum") ? typeName.substring(0, typeName.length() - 4) : typeName;
       printf("\nFOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
       for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
-        String varName = NameTable.getStaticVarName(constant.getVariableBinding());
+        String varName = nameTable.getStaticVarName(constant.getVariableBinding());
         String valueName = constant.getName().getIdentifier();
         printf("\n#define %s_%s %s_values_[%s_%s]\n",
             typeName, varName, typeName, bareTypeName, valueName);
@@ -326,13 +326,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       if (type.isPrimitive()) {
         continue;
       }
-      String typeStr = NameTable.getObjCType(type);
+      String typeStr = nameTable.getObjCType(type);
       for (VariableDeclarationFragment var : field.getFragments()) {
         if (BindingUtil.isWeakReference(var.getVariableBinding())) {
           continue;
         }
         String fieldName = NameTable.javaFieldToObjC(
-            NameTable.getVariableName(var.getVariableBinding()));
+            nameTable.getVariableName(var.getVariableBinding()));
         if (!newlinePrinted) {
           newlinePrinted = true;
           newline();
@@ -355,9 +355,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private void printStaticFieldFullDeclaration(VariableDeclarationFragment fragment) {
     IVariableBinding var = fragment.getVariableBinding();
-    String objcType = NameTable.getObjCType(var.getType());
+    String objcType = nameTable.getObjCType(var.getType());
     String typeWithSpace = objcType + (objcType.endsWith("*") ? "" : " ");
-    String name = NameTable.getStaticVarName(var);
+    String name = nameTable.getStaticVarName(var);
     boolean isFinal = Modifier.isFinal(var.getModifiers());
     boolean isPrimitive = var.getType().isPrimitive();
     newline();
@@ -404,7 +404,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private void printUnprefixedAlias() {
     String pkg = typeBinding.getPackage().getName();
-    if (NameTable.hasPrefix(pkg) && typeBinding.isTopLevel()) {
+    if (nameTable.hasPrefix(pkg) && typeBinding.isTopLevel()) {
       String unprefixedName = NameTable.camelCaseQualifiedName(typeBinding.getQualifiedName());
       if (typeBinding.isEnum()) {
         unprefixedName += "Enum";
@@ -431,7 +431,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     for (AnnotationTypeMemberDeclaration member : members) {
       ITypeBinding type = member.getType().getTypeBinding();
       print("@property (readonly) ");
-      String typeString = NameTable.getSpecificObjCType(type);
+      String typeString = nameTable.getSpecificObjCType(type);
       String propertyName = NameTable.getAnnotationPropertyName(member.getMethodBinding());
       println(String.format("%s%s%s;", typeString, typeString.endsWith("*") ? "" : " ",
           propertyName));
@@ -446,7 +446,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     for (AnnotationTypeMemberDeclaration member : members) {
       printIndent();
       ITypeBinding type = member.getMethodBinding().getReturnType();
-      print(NameTable.getObjCType(type));
+      print(nameTable.getObjCType(type));
       if (type.isPrimitive() || type.isInterface()) {
         print(' ');
       }
@@ -471,7 +471,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           printedNewline = true;
         }
         ITypeBinding type = member.getType().getTypeBinding();
-        String typeString = NameTable.getSpecificObjCType(type);
+        String typeString = nameTable.getSpecificObjCType(type);
         String propertyName =
             NameTable.getAnnotationPropertyName(member.getMethodBinding());
         printf("+ (%s)%sDefault;\n", typeString, propertyName);
@@ -484,7 +484,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     newline();
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
     print(getMethodSignature(m));
-    String methodName = NameTable.getMethodSelector(m.getMethodBinding());
+    String methodName = nameTable.getMethodSelector(m.getMethodBinding());
     if (!m.isConstructor() && !BindingUtil.isSynthetic(m.getModifiers())
         && needsObjcMethodFamilyNoneAttribute(methodName)) {
       // Getting around a clang warning.

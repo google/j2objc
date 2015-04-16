@@ -46,6 +46,7 @@ public class MetadataGenerator {
   private final StringBuilder builder;
   private final AbstractTypeDeclaration typeNode;
   private final ITypeBinding type;
+  private final NameTable nameTable;
   private boolean generated = false;
   private int methodMetadataCount = 0;
   private int fieldMetadataCount = 0;
@@ -57,6 +58,7 @@ public class MetadataGenerator {
     this.builder = new StringBuilder();
     this.typeNode = Preconditions.checkNotNull(typeNode);
     this.type = typeNode.getTypeBinding();
+    this.nameTable = TreeUtil.getCompilationUnit(typeNode).getNameTable();
   }
 
   public String getMetadataSource() {
@@ -72,7 +74,7 @@ public class MetadataGenerator {
   }
 
   private void generateMetadata() {
-    String fullName = NameTable.getFullName(type);
+    String fullName = nameTable.getFullName(type);
     println("\n+ (const J2ObjcClassInfo *)__metadata {");
     generateMethodsMetadata();
     generateFieldsMetadata();
@@ -128,8 +130,8 @@ public class MetadataGenerator {
 
     String structName = "enclosing_method";
     printf("  static const J2ObjCEnclosingMethodInfo %s = { ", structName);
-    printf("\"%s\", ", NameTable.getFullName(enclosingMethod.getDeclaringClass()));
-    printf("\"%s\" };\n", NameTable.getMethodSelector(enclosingMethod));
+    printf("\"%s\", ", nameTable.getFullName(enclosingMethod.getDeclaringClass()));
+    printf("\"%s\" };\n", nameTable.getMethodSelector(enclosingMethod));
     return structName;
   }
 
@@ -190,7 +192,7 @@ public class MetadataGenerator {
 
   private void generateFieldsMetadata() {
     List<String> fieldMetadata = Lists.newArrayList();
-    String typeName = NameTable.getFullName(type);
+    String typeName = nameTable.getFullName(type);
     if (typeNode instanceof EnumDeclaration) {
       for (EnumConstantDeclaration decl : ((EnumDeclaration) typeNode).getEnumConstants()) {
         fieldMetadata.add(
@@ -213,8 +215,8 @@ public class MetadataGenerator {
   private String generateFieldMetadata(IVariableBinding var, SimpleName name, String typeName) {
     int modifiers = getFieldModifiers(var);
     String javaName = name.getIdentifier();
-    String objcName = var.isEnumConstant() ? NameTable.getVariableName(var)
-        : NameTable.javaFieldToObjC(NameTable.getVariableName(var));
+    String objcName = var.isEnumConstant() ? nameTable.getVariableName(var)
+        : nameTable.javaFieldToObjC(nameTable.getVariableName(var));
     if (objcName.equals(javaName + '_')) {
       // Don't print Java name if it matches the default pattern, to conserve space.
       javaName = null;
@@ -224,7 +226,7 @@ public class MetadataGenerator {
     if (BindingUtil.isStatic(var)) {
       if (BindingUtil.isPrimitiveConstant(var)) {
         constantValue = String.format(".constantValue.%s = %s",
-            getRawValueField(var), NameTable.getPrimitiveConstantName(var));
+            getRawValueField(var), nameTable.getPrimitiveConstantName(var));
       } else {
         staticRef = String.format("&%s_%s", typeName, objcName);
       }
@@ -257,7 +259,7 @@ public class MetadataGenerator {
     }
     String methodName = method instanceof GeneratedMethodBinding
         ? ((GeneratedMethodBinding) method).getJavaName() : method.getName();
-    String selector = NameTable.getMethodSelector(method);
+    String selector = nameTable.getMethodSelector(method);
     if (selector.equals(methodName)) {
       methodName = null;  // Reduce redundant data.
     }

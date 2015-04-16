@@ -45,42 +45,47 @@ public class NameTableTest extends GenerationTest {
   public void testGetFullNameWithPrefix() {
     String source = "package foo.bar; public class SomeClass {}";
     CompilationUnit unit = translateType("SomeClass", source);
+    NameTable nameTable = unit.getNameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
-    NameTable.mapPackageToPrefix("foo.bar", "FB");
-    assertEquals("FBSomeClass", NameTable.getFullName(decl.getTypeBinding()));
+    nameTable.mapPackageToPrefix("foo.bar", "FB");
+    assertEquals("FBSomeClass", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify inner class name with prefix.
   public void testGetFullNameWithInnerClassAndPrefix() {
     String source = "package foo.bar; public class SomeClass { static class Inner {}}";
     CompilationUnit unit = translateType("SomeClass", source);
+    NameTable nameTable = unit.getNameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
-    NameTable.mapPackageToPrefix("foo.bar", "FB");
-    assertEquals("FBSomeClass_Inner", NameTable.getFullName(decl.getTypeBinding()));
+    nameTable.mapPackageToPrefix("foo.bar", "FB");
+    assertEquals("FBSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify class name without package is unchanged.
   public void testGetFullNameNoPackage() {
     String source = "public class SomeClass {}";
     CompilationUnit unit = translateType("SomeClass", source);
+    NameTable nameTable = unit.getNameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
-    assertEquals("SomeClass", NameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("SomeClass", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify class name with package is camel-cased.
   public void testGetFullNameWithPackage() {
     String source = "package foo.bar; public class SomeClass {}";
     CompilationUnit unit = translateType("SomeClass", source);
+    NameTable nameTable = unit.getNameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(0);
-    assertEquals("FooBarSomeClass", NameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify inner class name with package is camel-cased.
   public void testGetFullNameWithInnerClass() {
     String source = "package foo.bar; public class SomeClass { static class Inner {}}";
     CompilationUnit unit = translateType("SomeClass", source);
+    NameTable nameTable = unit.getNameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
-    assertEquals("FooBarSomeClass_Inner", NameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify the name of an inner class of an enum.
@@ -88,12 +93,13 @@ public class NameTableTest extends GenerationTest {
     String source = "package foo.bar; "
         + "public enum SomeClass { A; static class Inner {} static enum Inner2 { B; }}";
     CompilationUnit unit = translateType("SomeClass", source);
+    NameTable nameTable = unit.getNameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
     // Outer type should not have "Enum" added to name.
-    assertEquals("FooBarSomeClass_Inner", NameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
     // Inner enum should have "Enum" added to name.
     decl = unit.getTypes().get(2);
-    assertEquals("FooBarSomeClass_Inner2Enum", NameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_Inner2Enum", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify local class name.
@@ -103,15 +109,17 @@ public class NameTableTest extends GenerationTest {
         // This matches JVM naming, once '$' is substituted for the '_' characters.
         + "{ class Foo {}} { class Foo {}}}}";
     CompilationUnit unit = translateType("SomeClass", source);
+    NameTable nameTable = unit.getNameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
-    assertEquals("FooBarSomeClass_1Foo", NameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_1Foo", nameTable.getFullName(decl.getTypeBinding()));
     decl = unit.getTypes().get(2);
-    assertEquals("FooBarSomeClass_2Foo", NameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_2Foo", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   public void testTypeVariableWithTypeVariableBounds() {
     String source = "class A<T> { <E extends T> void foo(E e) {} }";
     CompilationUnit unit = translateType("A", source);
+    NameTable nameTable = unit.getNameTable();
     final IMethodBinding[] methodBinding = new IMethodBinding[1];
     unit.accept(new TreeVisitor() {
       @Override public void endVisit(MethodDeclaration node) {
@@ -123,7 +131,7 @@ public class NameTableTest extends GenerationTest {
     });
     assertNotNull(methodBinding[0]);
     ITypeBinding paramType = methodBinding[0].getParameterTypes()[0];
-    assertEquals("id", NameTable.getSpecificObjCType(paramType));
+    assertEquals("id", nameTable.getSpecificObjCType(paramType));
   }
 
   public void testPrimitiveArrayParameterName() throws IOException {

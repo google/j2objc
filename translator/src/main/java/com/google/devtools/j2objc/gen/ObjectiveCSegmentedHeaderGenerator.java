@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
@@ -81,8 +82,9 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
         localImports.add(imp);
       }
     }
+    NameTable nameTable = TreeUtil.getCompilationUnit(type).getNameTable();
     if (!localImports.isEmpty()) {
-      printf("#if %s_INCLUDE\n", NameTable.getFullName(type.getTypeBinding()));
+      printf("#if %s_INCLUDE\n", nameTable.getFullName(type.getTypeBinding()));
       for (Import imp : localImports) {
         printf("#define %s_INCLUDE 1\n", imp.getTypeName());
       }
@@ -99,8 +101,9 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
   @Override
   public void generateType(AbstractTypeDeclaration node) {
+    NameTable nameTable = TreeUtil.getCompilationUnit(node).getNameTable();
     String mainGuardName = getGenerationUnit().getName();
-    String typeName = NameTable.getFullName(node.getTypeBinding());
+    String typeName = nameTable.getFullName(node.getTypeBinding());
     newline();
     printf("#if !defined (_%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, mainGuardName,
            typeName);

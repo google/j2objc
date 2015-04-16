@@ -152,7 +152,7 @@ public class CastResolver extends TreeVisitor {
     if (exprType.isPrimitive() || Types.isVoidType(exprType)) {
       return false;
     }
-    String typeName = NameTable.getSpecificObjCType(exprType);
+    String typeName = nameTable.getSpecificObjCType(exprType);
     if (typeName.equals(NameTable.ID_TYPE)) {
       return false;
     }
@@ -200,8 +200,7 @@ public class CastResolver extends TreeVisitor {
     }
   }
 
-  private static ITypeBinding getDeclaredReturnType(
-      IMethodBinding method, ITypeBinding receiverType) {
+  private ITypeBinding getDeclaredReturnType(IMethodBinding method, ITypeBinding receiverType) {
     IMethodBinding actualDeclaration =
         getFirstDeclaration(getObjCMethodSignature(method), receiverType);
     if (actualDeclaration == null) {
@@ -218,7 +217,7 @@ public class CastResolver extends TreeVisitor {
    * Finds the declaration for a given method and receiver in the same way that
    * the ObjC compiler will search for a declaration.
    */
-  private static IMethodBinding getFirstDeclaration(String methodSig, ITypeBinding type) {
+  private IMethodBinding getFirstDeclaration(String methodSig, ITypeBinding type) {
     if (type == null) {
       return null;
     }
@@ -240,11 +239,11 @@ public class CastResolver extends TreeVisitor {
     return null;
   }
 
-  private static String getObjCMethodSignature(IMethodBinding method) {
+  private String getObjCMethodSignature(IMethodBinding method) {
     StringBuilder sb = new StringBuilder(method.getName());
     boolean first = true;
     for (ITypeBinding paramType : method.getParameterTypes()) {
-      String keyword = NameTable.parameterKeyword(paramType);
+      String keyword = nameTable.parameterKeyword(paramType);
       if (first) {
         first = false;
         keyword = NameTable.capitalize(keyword);
@@ -264,7 +263,7 @@ public class CastResolver extends TreeVisitor {
       return false;
     }
 
-    String methodName = NameTable.getMethodSelector(methodBinding);
+    String methodName = nameTable.getMethodSelector(methodBinding);
     if (methodName.equals("hash")
         && methodBinding.getReturnType().isEqualTo(Types.resolveJavaType("int"))) {
       return true;

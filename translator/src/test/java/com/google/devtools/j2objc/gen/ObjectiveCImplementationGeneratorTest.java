@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.Options.MemoryManagementOption;
-import com.google.devtools.j2objc.util.NameTable;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -867,7 +866,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     batchCompiler.compile(compileArgs.toArray(new String[0]));
     List<String> oldClassPathEntries = new ArrayList<String>(Options.getClassPathEntries());
     Options.getClassPathEntries().add(tempDir.getAbsolutePath() + "/src/");
-    NameTable.newInstance().setInstance();
     try {
       String translation = translateSourceFile("package foo.bar.mumble;\n"
           + "public class Test {}",
@@ -880,7 +878,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     } finally {
       Options.getClassPathEntries().clear();
       Options.getClassPathEntries().addAll(oldClassPathEntries);
-      NameTable.cleanup();
     }
   }
 

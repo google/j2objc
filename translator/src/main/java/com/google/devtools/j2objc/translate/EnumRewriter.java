@@ -35,7 +35,6 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -72,7 +71,7 @@ public class EnumRewriter extends TreeVisitor {
           addEnumConstructorParams(constant.getMethodBinding().getMethodDeclaration());
       ClassInstanceCreation creation = new ClassInstanceCreation(binding);
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
-      String name = NameTable.getVariableName(constant.getVariableBinding());
+      String name = nameTable.getVariableName(constant.getVariableBinding());
       creation.getArguments().add(new StringLiteral(name));
       creation.getArguments().add(new NumberLiteral(i++));
       creation.setHasRetainedResult(true);
@@ -130,8 +129,8 @@ public class EnumRewriter extends TreeVisitor {
     node.getArguments().add(new SimpleName(ordinalVar));
   }
 
-  private static void addExtraNativeDecls(EnumDeclaration node) {
-    String typeName = NameTable.getFullName(node.getTypeBinding());
+  private void addExtraNativeDecls(EnumDeclaration node) {
+    String typeName = nameTable.getFullName(node.getTypeBinding());
     int numConstants = node.getEnumConstants().size();
 
     String header = String.format(

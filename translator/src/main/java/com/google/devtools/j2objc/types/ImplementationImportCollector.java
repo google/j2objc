@@ -63,7 +63,6 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -78,13 +77,13 @@ public class ImplementationImportCollector extends TreeVisitor {
   private Set<Import> imports = Sets.newLinkedHashSet();
 
   public void collect(TreeNode node) {
-    collect(Collections.singletonList(node));
+    TreeUtil.getCompilationUnit(node).setGenerationContext();
+    run(node);
   }
 
   public void collect(Iterable<? extends TreeNode> nodes) {
     for (TreeNode node : nodes) {
-      TreeUtil.getCompilationUnit(node).setGenerationContext();
-      run(node);
+      collect(node);
     }
   }
 
@@ -103,7 +102,7 @@ public class ImplementationImportCollector extends TreeVisitor {
   }
 
   private void addImports(ITypeBinding type) {
-    Import.addImports(type, imports);
+    Import.addImports(type, imports, nameTable);
   }
 
   @Override

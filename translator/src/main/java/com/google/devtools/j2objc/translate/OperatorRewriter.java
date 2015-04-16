@@ -134,7 +134,7 @@ public class OperatorRewriter extends TreeVisitor {
     return invocation;
   }
 
-  private static FunctionInvocation newFieldSetterInvocation(
+  private FunctionInvocation newFieldSetterInvocation(
       IVariableBinding var, Expression instance, Expression value) {
     ITypeBinding varType = var.getType();
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
@@ -144,8 +144,8 @@ public class OperatorRewriter extends TreeVisitor {
       setterFormat = "%s_setAndConsume_%s";
       value = retainedValue;
     }
-    String setterName = String.format(setterFormat, NameTable.getFullName(declaringType),
-        NameTable.javaFieldToObjC(NameTable.getVariableName(var)));
+    String setterName = String.format(setterFormat, nameTable.getFullName(declaringType),
+        NameTable.javaFieldToObjC(nameTable.getVariableName(var)));
     FunctionInvocation invocation = new FunctionInvocation(
         setterName, varType, varType, declaringType);
     invocation.getArguments().add(TreeUtil.remove(instance));

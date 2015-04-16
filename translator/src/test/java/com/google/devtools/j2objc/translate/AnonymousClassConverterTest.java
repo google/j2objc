@@ -234,9 +234,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var in r1.run() isn't mistakenly made a field in r1.
     CompilationUnit unit = translateType("Test", source);
+    NameTable nameTable = unit.getNameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(1);
-    assertEquals("Test_$1", NameTable.getFullName(r1.getTypeBinding()));
+    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
       if (var.getName().getIdentifier().equals("val$i")) {
         fail("found field that shouldn't be declared");
@@ -245,7 +246,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Method var in r1.run() becomes a field in r2.
     AbstractTypeDeclaration r2 = types.get(2);
-    assertEquals("Test_$1_$1", NameTable.getFullName(r2.getTypeBinding()));
+    assertEquals("Test_$1_$1", nameTable.getFullName(r2.getTypeBinding()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r2)) {
       if (var.getName().getIdentifier().equals("val$i")) {
@@ -273,9 +274,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var in r1.run() isn't mistakenly made a field in r1.
     CompilationUnit unit = translateType("Test", source);
+    NameTable nameTable = unit.getNameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(1);
-    assertEquals("Test_$1", NameTable.getFullName(r1.getTypeBinding()));
+    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
       if (var.getName().getIdentifier().equals("val$i")) {
@@ -303,9 +305,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var in r1.run() isn't mistakenly made a field in r1.
     CompilationUnit unit = translateType("Test", source);
+    NameTable nameTable = unit.getNameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(2);
-    assertEquals("Test_$1", NameTable.getFullName(r1.getTypeBinding()));
+    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
       if (var.getName().getIdentifier().equals("val$i")) {

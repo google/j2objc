@@ -93,8 +93,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
           needsNewline = false;
           newline();
         }
-        String name = NameTable.getStaticVarQualifiedName(binding);
-        String objcType = NameTable.getObjCType(binding.getType());
+        String name = nameTable.getStaticVarQualifiedName(binding);
+        String objcType = nameTable.getObjCType(binding.getType());
         objcType += objcType.endsWith("*") ? "" : " ";
         if (initializer != null) {
           printf("%s%s = %s;\n", objcType, name, generateExpression(initializer));
@@ -230,7 +230,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       Expression deflt = member.getDefault();
       if (deflt != null) {
         ITypeBinding type = member.getType().getTypeBinding();
-        String typeString = NameTable.getSpecificObjCType(type);
+        String typeString = nameTable.getSpecificObjCType(type);
         String propertyName = NameTable.getAnnotationPropertyName(member.getMethodBinding());
         printf("\n+ (%s)%sDefault {\n", typeString, propertyName);
         printf("  return %s;\n", generateExpression(deflt));

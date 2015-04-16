@@ -105,7 +105,7 @@ public class CycleFinder {
           ErrorUtil.error("Error reading file " + file.getPath() + ": " + e.getMessage());
         }
         Types.initialize(jdtUnit);
-        CompilationUnit unit = TreeConverter.convertCompilationUnit(jdtUnit, file, source);
+        CompilationUnit unit = TreeConverter.convertCompilationUnit(jdtUnit, file, source, null);
         typeCollector.visitAST(unit);
         OuterReferenceResolver.resolve(unit);
       }

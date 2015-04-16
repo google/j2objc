@@ -32,7 +32,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -178,14 +177,14 @@ public class StaticVarRewriter extends TreeVisitor {
 
   private Expression newGetterInvocation(IVariableBinding var, boolean assignable) {
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
-    String varName = NameTable.getStaticVarName(var);
+    String varName = nameTable.getStaticVarName(var);
     String getterName = "get";
     ITypeBinding returnType = var.getType();
     if (assignable) {
       getterName += "Ref";
       returnType = Types.getPointerType(returnType);
     }
-    getterName = NameTable.getFullName(declaringType) + "_" + getterName + "_" + varName;
+    getterName = nameTable.getFullName(declaringType) + "_" + getterName + "_" + varName;
     Expression invocation = new FunctionInvocation(
         getterName, returnType, returnType, declaringType);
     if (assignable) {
@@ -206,7 +205,7 @@ public class StaticVarRewriter extends TreeVisitor {
       }
     }
     String funcName = String.format(
-        funcFormat, NameTable.getFullName(declaringType), NameTable.getStaticVarName(var));
+        funcFormat, nameTable.getFullName(declaringType), nameTable.getStaticVarName(var));
     FunctionInvocation invocation = new FunctionInvocation(
         funcName, varType, varType, declaringType);
     invocation.getArguments().add(value);

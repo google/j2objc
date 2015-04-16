@@ -23,7 +23,6 @@ import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
-import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.PathClassLoader;
 import com.google.devtools.j2objc.util.ProGuardUsageParser;
 
@@ -188,7 +187,6 @@ public class J2ObjC {
       }
       translationProcessor.postProcess();
     } finally {
-      NameTable.cleanup();
       Types.cleanup();
       if (preProcessorTempDir != null) {
         FileUtil.deleteTempDir(preProcessorTempDir);

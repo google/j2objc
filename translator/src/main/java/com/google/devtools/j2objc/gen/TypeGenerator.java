@@ -26,6 +26,7 @@ import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -50,6 +51,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   // Convenient fields for use by subclasses.
   protected final AbstractTypeDeclaration typeNode;
   protected final ITypeBinding typeBinding;
+  protected final NameTable nameTable;
   protected final String typeName;
   protected final boolean typeNeedsReflection;
 
@@ -59,7 +61,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     super(builder);
     typeNode = node;
     typeBinding = node.getTypeBinding();
-    typeName = NameTable.getFullName(typeBinding);
+    nameTable = TreeUtil.getCompilationUnit(node).getNameTable();
+    typeName = nameTable.getFullName(typeBinding);
     typeNeedsReflection = TranslationUtil.needsReflection(typeBinding);
     declarations = filterDeclarations(node.getBodyDeclarations());
   }
@@ -181,8 +184,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     StringBuilder sb = new StringBuilder();
     IMethodBinding binding = m.getMethodBinding();
     char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
-    String returnType = NameTable.getObjCType(binding.getReturnType());
-    String selector = NameTable.getMethodSelector(binding);
+    String returnType = nameTable.getObjCType(binding.getReturnType());
+    String selector = nameTable.getMethodSelector(binding);
     if (m.isConstructor()) {
       returnType = "instancetype";
     } else if (selector.equals("hash")) {
@@ -206,9 +209,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
           sb.append(pad(baseLength - selParts[i].length()));
         }
         IVariableBinding var = params.get(i).getVariableBinding();
-        String typeName = NameTable.getSpecificObjCType(var.getType());
+        String typeName = nameTable.getSpecificObjCType(var.getType());
         sb.append(String.format(
-            "%s:(%s)%s", selParts[i], typeName, NameTable.getVariableName(var)));
+            "%s:(%s)%s", selParts[i], typeName, nameTable.getVariableName(var)));
       }
     }
 
@@ -217,15 +220,15 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   protected String getFunctionSignature(FunctionDeclaration function) {
     StringBuilder sb = new StringBuilder();
-    String returnType = NameTable.getObjCType(function.getReturnType().getTypeBinding());
+    String returnType = nameTable.getObjCType(function.getReturnType().getTypeBinding());
     returnType += returnType.endsWith("*") ? "" : " ";
     sb.append(returnType).append(function.getName()).append('(');
     for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
          iter.hasNext(); ) {
       IVariableBinding var = iter.next().getVariableBinding();
-      String paramType = NameTable.getSpecificObjCType(var.getType());
+      String paramType = nameTable.getSpecificObjCType(var.getType());
       paramType += (paramType.endsWith("*") ? "" : " ");
-      sb.append(paramType + NameTable.getVariableName(var));
+      sb.append(paramType + nameTable.getVariableName(var));
       if (iter.hasNext()) {
         sb.append(", ");
       }
@@ -252,7 +255,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       String name = NameTable.getAnnotationPropertyName(member);
       sb.append(NameTable.capitalize(name));
       sb.append(":(");
-      sb.append(NameTable.getSpecificObjCType(member.getReturnType()));
+      sb.append(nameTable.getSpecificObjCType(member.getReturnType()));
       sb.append(')');
       sb.append(name);
       sb.append("__");
