@@ -381,13 +381,15 @@ public class JUnitTestRunner {
 
     private int numTests = 0;
     private int numFailures = 0;
+    private final int numUnexpected = 0; // Never changes, but required in output.
 
     private Failure testFailure;
     private double testStartTime;
 
     @Override
     public void testRunFinished(Result result) throws Exception {
-      out.printf("Executed %d tests, with %d failures\n", numTests, numFailures);
+      out.printf("Executed %d tests, with %d failures (%d unexpected)\n", numTests, numFailures,
+          numUnexpected);
     }
 
     @Override
