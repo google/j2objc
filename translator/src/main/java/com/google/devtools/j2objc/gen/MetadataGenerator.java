@@ -216,7 +216,7 @@ public class MetadataGenerator {
     int modifiers = getFieldModifiers(var);
     String javaName = name.getIdentifier();
     String objcName = var.isEnumConstant() ? nameTable.getVariableName(var)
-        : nameTable.javaFieldToObjC(nameTable.getVariableName(var));
+        : NameTable.javaFieldToObjC(nameTable.getVariableName(var));
     if (objcName.equals(javaName + '_')) {
       // Don't print Java name if it matches the default pattern, to conserve space.
       javaName = null;

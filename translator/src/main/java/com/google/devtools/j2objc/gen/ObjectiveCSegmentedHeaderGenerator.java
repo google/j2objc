@@ -82,8 +82,8 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
         localImports.add(imp);
       }
     }
-    NameTable nameTable = TreeUtil.getCompilationUnit(type).getNameTable();
     if (!localImports.isEmpty()) {
+      NameTable nameTable = TreeUtil.getCompilationUnit(type).getNameTable();
       printf("#if %s_INCLUDE\n", nameTable.getFullName(type.getTypeBinding()));
       for (Import imp : localImports) {
         printf("#define %s_INCLUDE 1\n", imp.getTypeName());
