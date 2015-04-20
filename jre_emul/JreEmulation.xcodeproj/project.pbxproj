@@ -710,6 +710,496 @@
 		064914341AC47ED000E98733 /* NSCopying+JavaCloneable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSCopying+JavaCloneable.h"; sourceTree = "<group>"; };
 		064914351AC47ED000E98733 /* NSCopying+JavaCloneable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSCopying+JavaCloneable.m"; sourceTree = "<group>"; };
 		064914361AC47ED000E98733 /* J2ObjC_header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_header.h; sourceTree = "<group>"; };
+		0649A5D61AE076CC00DE2494 /* ObjectiveCName.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ObjectiveCName.h; path = build_result/Classes/com/google/j2objc/annotations/ObjectiveCName.h; sourceTree = "<group>"; };
+		0649A5D71AE076CC00DE2494 /* ObjectiveCName.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ObjectiveCName.m; path = build_result/Classes/com/google/j2objc/annotations/ObjectiveCName.m; sourceTree = "<group>"; };
+		0649A5D81AE076CC00DE2494 /* IosCertificateFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosCertificateFactory.h; path = build_result/Classes/com/google/j2objc/security/cert/IosCertificateFactory.h; sourceTree = "<group>"; };
+		0649A5D91AE076CC00DE2494 /* IosCertificateFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosCertificateFactory.m; path = build_result/Classes/com/google/j2objc/security/cert/IosCertificateFactory.m; sourceTree = "<group>"; };
+		0649A5DA1AE076CC00DE2494 /* IosX509Certificate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosX509Certificate.h; path = build_result/Classes/com/google/j2objc/security/cert/IosX509Certificate.h; sourceTree = "<group>"; };
+		0649A5DB1AE076CC00DE2494 /* IosX509Certificate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosX509Certificate.m; path = build_result/Classes/com/google/j2objc/security/cert/IosX509Certificate.m; sourceTree = "<group>"; };
+		0649A5DC1AE076CC00DE2494 /* IosRSAKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosRSAKey.h; path = build_result/Classes/com/google/j2objc/security/IosRSAKey.h; sourceTree = "<group>"; };
+		0649A5DD1AE076CC00DE2494 /* IosRSAKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosRSAKey.m; path = build_result/Classes/com/google/j2objc/security/IosRSAKey.m; sourceTree = "<group>"; };
+		0649A5DE1AE076CC00DE2494 /* IosRSAKeyFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosRSAKeyFactory.h; path = build_result/Classes/com/google/j2objc/security/IosRSAKeyFactory.h; sourceTree = "<group>"; };
+		0649A5DF1AE076CC00DE2494 /* IosRSAKeyFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosRSAKeyFactory.m; path = build_result/Classes/com/google/j2objc/security/IosRSAKeyFactory.m; sourceTree = "<group>"; };
+		0649A5E01AE076CC00DE2494 /* IosRSAKeyPairGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosRSAKeyPairGenerator.h; path = build_result/Classes/com/google/j2objc/security/IosRSAKeyPairGenerator.h; sourceTree = "<group>"; };
+		0649A5E11AE076CC00DE2494 /* IosRSAKeyPairGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosRSAKeyPairGenerator.m; path = build_result/Classes/com/google/j2objc/security/IosRSAKeyPairGenerator.m; sourceTree = "<group>"; };
+		0649A5E21AE0773400DE2494 /* IOError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IOError.h; path = build_result/Classes/java/io/IOError.h; sourceTree = "<group>"; };
+		0649A5E31AE0773400DE2494 /* IOError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IOError.m; path = build_result/Classes/java/io/IOError.m; sourceTree = "<group>"; };
+		0649A5E41AE0773400DE2494 /* IllegalAccessError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IllegalAccessError.h; path = build_result/Classes/java/lang/IllegalAccessError.h; sourceTree = "<group>"; };
+		0649A5E51AE0773400DE2494 /* IllegalAccessError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IllegalAccessError.m; path = build_result/Classes/java/lang/IllegalAccessError.m; sourceTree = "<group>"; };
+		0649A5E61AE0773400DE2494 /* NoClassDefFoundError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoClassDefFoundError.h; path = build_result/Classes/java/lang/NoClassDefFoundError.h; sourceTree = "<group>"; };
+		0649A5E71AE0773500DE2494 /* NoClassDefFoundError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoClassDefFoundError.m; path = build_result/Classes/java/lang/NoClassDefFoundError.m; sourceTree = "<group>"; };
+		0649A5E81AE0773500DE2494 /* StackOverflowError.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StackOverflowError.h; path = build_result/Classes/java/lang/StackOverflowError.h; sourceTree = "<group>"; };
+		0649A5E91AE0773500DE2494 /* StackOverflowError.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StackOverflowError.m; path = build_result/Classes/java/lang/StackOverflowError.m; sourceTree = "<group>"; };
+		0649A5EA1AE0778600DE2494 /* CookieManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CookieManager.h; path = build_result/Classes/java/net/CookieManager.h; sourceTree = "<group>"; };
+		0649A5EB1AE0778600DE2494 /* CookieManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CookieManager.m; path = build_result/Classes/java/net/CookieManager.m; sourceTree = "<group>"; };
+		0649A5EC1AE0778600DE2494 /* CookiePolicy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CookiePolicy.h; path = build_result/Classes/java/net/CookiePolicy.h; sourceTree = "<group>"; };
+		0649A5ED1AE0778600DE2494 /* CookiePolicy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CookiePolicy.m; path = build_result/Classes/java/net/CookiePolicy.m; sourceTree = "<group>"; };
+		0649A5EE1AE0778600DE2494 /* CookieStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CookieStore.h; path = build_result/Classes/java/net/CookieStore.h; sourceTree = "<group>"; };
+		0649A5EF1AE0778600DE2494 /* CookieStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CookieStore.m; path = build_result/Classes/java/net/CookieStore.m; sourceTree = "<group>"; };
+		0649A5F01AE0778600DE2494 /* CookieStoreImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = CookieStoreImpl.h; path = build_result/Classes/java/net/CookieStoreImpl.h; sourceTree = "<group>"; };
+		0649A5F11AE0778600DE2494 /* CookieStoreImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = CookieStoreImpl.m; path = build_result/Classes/java/net/CookieStoreImpl.m; sourceTree = "<group>"; };
+		0649A5F21AE0778600DE2494 /* NoRouteToHostException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoRouteToHostException.h; path = build_result/Classes/java/net/NoRouteToHostException.h; sourceTree = "<group>"; };
+		0649A5F31AE0778600DE2494 /* NoRouteToHostException.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NoRouteToHostException.m; path = build_result/Classes/java/net/NoRouteToHostException.m; sourceTree = "<group>"; };
+		0649A5F41AE0778600DE2494 /* SecureCacheResponse.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SecureCacheResponse.h; path = build_result/Classes/java/net/SecureCacheResponse.h; sourceTree = "<group>"; };
+		0649A5F51AE0778600DE2494 /* SecureCacheResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SecureCacheResponse.m; path = build_result/Classes/java/net/SecureCacheResponse.m; sourceTree = "<group>"; };
+		0649A5F61AE0778600DE2494 /* URLClassLoader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URLClassLoader.h; path = build_result/Classes/java/net/URLClassLoader.h; sourceTree = "<group>"; };
+		0649A5F71AE0778600DE2494 /* URLClassLoader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URLClassLoader.m; path = build_result/Classes/java/net/URLClassLoader.m; sourceTree = "<group>"; };
+		0649A5F81AE0778600DE2494 /* URLConnection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URLConnection.h; path = build_result/Classes/java/net/URLConnection.h; sourceTree = "<group>"; };
+		0649A5F91AE0778600DE2494 /* URLConnection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URLConnection.m; path = build_result/Classes/java/net/URLConnection.m; sourceTree = "<group>"; };
+		0649A5FA1AE0778600DE2494 /* URLDecoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URLDecoder.h; path = build_result/Classes/java/net/URLDecoder.h; sourceTree = "<group>"; };
+		0649A5FB1AE0778600DE2494 /* URLDecoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URLDecoder.m; path = build_result/Classes/java/net/URLDecoder.m; sourceTree = "<group>"; };
+		0649A5FC1AE0778600DE2494 /* Channels.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Channels.h; path = build_result/Classes/java/nio/channels/Channels.h; sourceTree = "<group>"; };
+		0649A5FD1AE0778600DE2494 /* Channels.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Channels.m; path = build_result/Classes/java/nio/channels/Channels.m; sourceTree = "<group>"; };
+		0649A5FE1AE0778600DE2494 /* DatagramChannelImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DatagramChannelImpl.h; path = build_result/Classes/java/nio/DatagramChannelImpl.h; sourceTree = "<group>"; };
+		0649A5FF1AE0778600DE2494 /* DatagramChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatagramChannelImpl.m; path = build_result/Classes/java/nio/DatagramChannelImpl.m; sourceTree = "<group>"; };
+		0649A6001AE0778600DE2494 /* DirectByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DirectByteBuffer.h; path = build_result/Classes/java/nio/DirectByteBuffer.h; sourceTree = "<group>"; };
+		0649A6011AE0778600DE2494 /* DirectByteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DirectByteBuffer.m; path = build_result/Classes/java/nio/DirectByteBuffer.m; sourceTree = "<group>"; };
+		0649A6021AE0778600DE2494 /* FileChannelImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileChannelImpl.h; path = build_result/Classes/java/nio/FileChannelImpl.h; sourceTree = "<group>"; };
+		0649A6031AE0778600DE2494 /* FileChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileChannelImpl.m; path = build_result/Classes/java/nio/FileChannelImpl.m; sourceTree = "<group>"; };
+		0649A6041AE0778600DE2494 /* FileDescriptorChannel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FileDescriptorChannel.h; path = build_result/Classes/java/nio/FileDescriptorChannel.h; sourceTree = "<group>"; };
+		0649A6051AE0778600DE2494 /* FileDescriptorChannel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FileDescriptorChannel.m; path = build_result/Classes/java/nio/FileDescriptorChannel.m; sourceTree = "<group>"; };
+		0649A6061AE0778600DE2494 /* IoVec.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IoVec.h; path = build_result/Classes/java/nio/IoVec.h; sourceTree = "<group>"; };
+		0649A6071AE0778600DE2494 /* IoVec.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IoVec.m; path = build_result/Classes/java/nio/IoVec.m; sourceTree = "<group>"; };
+		0649A6081AE0778600DE2494 /* MappedByteBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MappedByteBuffer.h; path = build_result/Classes/java/nio/MappedByteBuffer.h; sourceTree = "<group>"; };
+		0649A6091AE0778600DE2494 /* MappedByteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MappedByteBuffer.m; path = build_result/Classes/java/nio/MappedByteBuffer.m; sourceTree = "<group>"; };
+		0649A60A1AE0778600DE2494 /* MemoryBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MemoryBlock.h; path = build_result/Classes/java/nio/MemoryBlock.h; sourceTree = "<group>"; };
+		0649A60B1AE0778700DE2494 /* MemoryBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MemoryBlock.m; path = build_result/Classes/java/nio/MemoryBlock.m; sourceTree = "<group>"; };
+		0649A60C1AE0778700DE2494 /* NIOAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NIOAccess.h; path = build_result/Classes/java/nio/NIOAccess.h; sourceTree = "<group>"; };
+		0649A60D1AE0778700DE2494 /* NIOAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NIOAccess.m; path = build_result/Classes/java/nio/NIOAccess.m; sourceTree = "<group>"; };
+		0649A60E1AE0778700DE2494 /* NioUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NioUtils.h; path = build_result/Classes/java/nio/NioUtils.h; sourceTree = "<group>"; };
+		0649A60F1AE0778700DE2494 /* NioUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NioUtils.m; path = build_result/Classes/java/nio/NioUtils.m; sourceTree = "<group>"; };
+		0649A6101AE0778700DE2494 /* PipeImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PipeImpl.h; path = build_result/Classes/java/nio/PipeImpl.h; sourceTree = "<group>"; };
+		0649A6111AE0778700DE2494 /* PipeImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PipeImpl.m; path = build_result/Classes/java/nio/PipeImpl.m; sourceTree = "<group>"; };
+		0649A6121AE0778700DE2494 /* SelectionKeyImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectionKeyImpl.h; path = build_result/Classes/java/nio/SelectionKeyImpl.h; sourceTree = "<group>"; };
+		0649A6131AE0778700DE2494 /* SelectionKeyImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelectionKeyImpl.m; path = build_result/Classes/java/nio/SelectionKeyImpl.m; sourceTree = "<group>"; };
+		0649A6141AE0778700DE2494 /* SelectorImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectorImpl.h; path = build_result/Classes/java/nio/SelectorImpl.h; sourceTree = "<group>"; };
+		0649A6151AE0778700DE2494 /* SelectorImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelectorImpl.m; path = build_result/Classes/java/nio/SelectorImpl.m; sourceTree = "<group>"; };
+		0649A6161AE0778700DE2494 /* SelectorProviderImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SelectorProviderImpl.h; path = build_result/Classes/java/nio/SelectorProviderImpl.h; sourceTree = "<group>"; };
+		0649A6171AE0778700DE2494 /* SelectorProviderImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SelectorProviderImpl.m; path = build_result/Classes/java/nio/SelectorProviderImpl.m; sourceTree = "<group>"; };
+		0649A6181AE0778700DE2494 /* ServerSocketChannelImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ServerSocketChannelImpl.h; path = build_result/Classes/java/nio/ServerSocketChannelImpl.h; sourceTree = "<group>"; };
+		0649A6191AE0778700DE2494 /* ServerSocketChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ServerSocketChannelImpl.m; path = build_result/Classes/java/nio/ServerSocketChannelImpl.m; sourceTree = "<group>"; };
+		0649A61A1AE0778700DE2494 /* SocketChannelImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SocketChannelImpl.h; path = build_result/Classes/java/nio/SocketChannelImpl.h; sourceTree = "<group>"; };
+		0649A61B1AE0778700DE2494 /* SocketChannelImpl.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SocketChannelImpl.m; path = build_result/Classes/java/nio/SocketChannelImpl.m; sourceTree = "<group>"; };
+		0649A61C1AE077D200DE2494 /* AlgorithmParameterGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AlgorithmParameterGenerator.h; path = build_result/Classes/java/security/AlgorithmParameterGenerator.h; sourceTree = "<group>"; };
+		0649A61D1AE077D300DE2494 /* AlgorithmParameterGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AlgorithmParameterGenerator.m; path = build_result/Classes/java/security/AlgorithmParameterGenerator.m; sourceTree = "<group>"; };
+		0649A61E1AE077D300DE2494 /* AlgorithmParameterGeneratorSpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AlgorithmParameterGeneratorSpi.h; path = build_result/Classes/java/security/AlgorithmParameterGeneratorSpi.h; sourceTree = "<group>"; };
+		0649A61F1AE077D300DE2494 /* AlgorithmParameterGeneratorSpi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AlgorithmParameterGeneratorSpi.m; path = build_result/Classes/java/security/AlgorithmParameterGeneratorSpi.m; sourceTree = "<group>"; };
+		0649A6201AE077D300DE2494 /* AlgorithmParameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AlgorithmParameters.h; path = build_result/Classes/java/security/AlgorithmParameters.h; sourceTree = "<group>"; };
+		0649A6211AE077D300DE2494 /* AlgorithmParameters.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AlgorithmParameters.m; path = build_result/Classes/java/security/AlgorithmParameters.m; sourceTree = "<group>"; };
+		0649A6221AE077D300DE2494 /* AlgorithmParametersSpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AlgorithmParametersSpi.h; path = build_result/Classes/java/security/AlgorithmParametersSpi.h; sourceTree = "<group>"; };
+		0649A6231AE077D300DE2494 /* AlgorithmParametersSpi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AlgorithmParametersSpi.m; path = build_result/Classes/java/security/AlgorithmParametersSpi.m; sourceTree = "<group>"; };
+		0649A6241AE077D300DE2494 /* CertPathParameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CertPathParameters.h; path = build_result/Classes/java/security/cert/CertPathParameters.h; sourceTree = "<group>"; };
+		0649A6251AE077D300DE2494 /* CertPathParameters.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CertPathParameters.m; path = build_result/Classes/java/security/cert/CertPathParameters.m; sourceTree = "<group>"; };
+		0649A6261AE077D300DE2494 /* ECKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ECKey.h; path = build_result/Classes/java/security/interfaces/ECKey.h; sourceTree = "<group>"; };
+		0649A6271AE077D300DE2494 /* ECKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ECKey.m; path = build_result/Classes/java/security/interfaces/ECKey.m; sourceTree = "<group>"; };
+		0649A6281AE077D300DE2494 /* ECPrivateKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ECPrivateKey.h; path = build_result/Classes/java/security/interfaces/ECPrivateKey.h; sourceTree = "<group>"; };
+		0649A6291AE077D300DE2494 /* ECPrivateKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ECPrivateKey.m; path = build_result/Classes/java/security/interfaces/ECPrivateKey.m; sourceTree = "<group>"; };
+		0649A62A1AE077D300DE2494 /* ECPublicKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ECPublicKey.h; path = build_result/Classes/java/security/interfaces/ECPublicKey.h; sourceTree = "<group>"; };
+		0649A62B1AE077D300DE2494 /* ECPublicKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ECPublicKey.m; path = build_result/Classes/java/security/interfaces/ECPublicKey.m; sourceTree = "<group>"; };
+		0649A62C1AE077D300DE2494 /* RSAKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSAKey.h; path = build_result/Classes/java/security/interfaces/RSAKey.h; sourceTree = "<group>"; };
+		0649A62D1AE077D300DE2494 /* RSAKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RSAKey.m; path = build_result/Classes/java/security/interfaces/RSAKey.m; sourceTree = "<group>"; };
+		0649A62E1AE077D300DE2494 /* RSAMultiPrimePrivateCrtKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSAMultiPrimePrivateCrtKey.h; path = build_result/Classes/java/security/interfaces/RSAMultiPrimePrivateCrtKey.h; sourceTree = "<group>"; };
+		0649A62F1AE077D300DE2494 /* RSAMultiPrimePrivateCrtKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RSAMultiPrimePrivateCrtKey.m; path = build_result/Classes/java/security/interfaces/RSAMultiPrimePrivateCrtKey.m; sourceTree = "<group>"; };
+		0649A6301AE077D300DE2494 /* RSAPrivateCrtKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSAPrivateCrtKey.h; path = build_result/Classes/java/security/interfaces/RSAPrivateCrtKey.h; sourceTree = "<group>"; };
+		0649A6311AE077D300DE2494 /* RSAPrivateCrtKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RSAPrivateCrtKey.m; path = build_result/Classes/java/security/interfaces/RSAPrivateCrtKey.m; sourceTree = "<group>"; };
+		0649A6321AE077D300DE2494 /* RSAPrivateKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSAPrivateKey.h; path = build_result/Classes/java/security/interfaces/RSAPrivateKey.h; sourceTree = "<group>"; };
+		0649A6331AE077D300DE2494 /* RSAPrivateKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RSAPrivateKey.m; path = build_result/Classes/java/security/interfaces/RSAPrivateKey.m; sourceTree = "<group>"; };
+		0649A6341AE077D300DE2494 /* RSAPublicKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSAPublicKey.h; path = build_result/Classes/java/security/interfaces/RSAPublicKey.h; sourceTree = "<group>"; };
+		0649A6351AE077D300DE2494 /* RSAPublicKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RSAPublicKey.m; path = build_result/Classes/java/security/interfaces/RSAPublicKey.m; sourceTree = "<group>"; };
+		0649A6361AE077D300DE2494 /* InvalidAlgorithmParameterException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InvalidAlgorithmParameterException.h; path = build_result/Classes/java/security/InvalidAlgorithmParameterException.h; sourceTree = "<group>"; };
+		0649A6371AE077D300DE2494 /* InvalidAlgorithmParameterException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = InvalidAlgorithmParameterException.m; path = build_result/Classes/java/security/InvalidAlgorithmParameterException.m; sourceTree = "<group>"; };
+		0649A6381AE077D300DE2494 /* KeyFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyFactory.h; path = build_result/Classes/java/security/KeyFactory.h; sourceTree = "<group>"; };
+		0649A6391AE077D300DE2494 /* KeyFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyFactory.m; path = build_result/Classes/java/security/KeyFactory.m; sourceTree = "<group>"; };
+		0649A63A1AE077D300DE2494 /* KeyFactorySpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyFactorySpi.h; path = build_result/Classes/java/security/KeyFactorySpi.h; sourceTree = "<group>"; };
+		0649A63B1AE077D300DE2494 /* KeyFactorySpi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyFactorySpi.m; path = build_result/Classes/java/security/KeyFactorySpi.m; sourceTree = "<group>"; };
+		0649A63C1AE077D300DE2494 /* KeyPair.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyPair.h; path = build_result/Classes/java/security/KeyPair.h; sourceTree = "<group>"; };
+		0649A63D1AE077D300DE2494 /* KeyPair.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyPair.m; path = build_result/Classes/java/security/KeyPair.m; sourceTree = "<group>"; };
+		0649A63E1AE077D400DE2494 /* KeyPairGenerator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyPairGenerator.h; path = build_result/Classes/java/security/KeyPairGenerator.h; sourceTree = "<group>"; };
+		0649A63F1AE077D400DE2494 /* KeyPairGenerator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyPairGenerator.m; path = build_result/Classes/java/security/KeyPairGenerator.m; sourceTree = "<group>"; };
+		0649A6401AE077D400DE2494 /* KeyPairGeneratorSpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyPairGeneratorSpi.h; path = build_result/Classes/java/security/KeyPairGeneratorSpi.h; sourceTree = "<group>"; };
+		0649A6411AE077D400DE2494 /* KeyPairGeneratorSpi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyPairGeneratorSpi.m; path = build_result/Classes/java/security/KeyPairGeneratorSpi.m; sourceTree = "<group>"; };
+		0649A6421AE077D400DE2494 /* KeyStore.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyStore.h; path = build_result/Classes/java/security/KeyStore.h; sourceTree = "<group>"; };
+		0649A6431AE077D400DE2494 /* KeyStore.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyStore.m; path = build_result/Classes/java/security/KeyStore.m; sourceTree = "<group>"; };
+		0649A6441AE077D400DE2494 /* KeyStoreException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyStoreException.h; path = build_result/Classes/java/security/KeyStoreException.h; sourceTree = "<group>"; };
+		0649A6451AE077D400DE2494 /* KeyStoreException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyStoreException.m; path = build_result/Classes/java/security/KeyStoreException.m; sourceTree = "<group>"; };
+		0649A6461AE077D400DE2494 /* KeyStoreSpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyStoreSpi.h; path = build_result/Classes/java/security/KeyStoreSpi.h; sourceTree = "<group>"; };
+		0649A6471AE077D400DE2494 /* KeyStoreSpi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyStoreSpi.m; path = build_result/Classes/java/security/KeyStoreSpi.m; sourceTree = "<group>"; };
+		0649A6481AE077D400DE2494 /* PrivateKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrivateKey.h; path = build_result/Classes/java/security/PrivateKey.h; sourceTree = "<group>"; };
+		0649A6491AE077D400DE2494 /* PrivateKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PrivateKey.m; path = build_result/Classes/java/security/PrivateKey.m; sourceTree = "<group>"; };
+		0649A64A1AE077D400DE2494 /* ProviderException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProviderException.h; path = build_result/Classes/java/security/ProviderException.h; sourceTree = "<group>"; };
+		0649A64B1AE077D400DE2494 /* ProviderException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ProviderException.m; path = build_result/Classes/java/security/ProviderException.m; sourceTree = "<group>"; };
+		0649A64C1AE077D400DE2494 /* Signature.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Signature.h; path = build_result/Classes/java/security/Signature.h; sourceTree = "<group>"; };
+		0649A64D1AE077D400DE2494 /* Signature.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Signature.m; path = build_result/Classes/java/security/Signature.m; sourceTree = "<group>"; };
+		0649A64E1AE077D400DE2494 /* SignatureSpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SignatureSpi.h; path = build_result/Classes/java/security/SignatureSpi.h; sourceTree = "<group>"; };
+		0649A64F1AE077D400DE2494 /* SignatureSpi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SignatureSpi.m; path = build_result/Classes/java/security/SignatureSpi.m; sourceTree = "<group>"; };
+		0649A6501AE077D400DE2494 /* UnrecoverableEntryException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnrecoverableEntryException.h; path = build_result/Classes/java/security/UnrecoverableEntryException.h; sourceTree = "<group>"; };
+		0649A6511AE077D400DE2494 /* UnrecoverableEntryException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UnrecoverableEntryException.m; path = build_result/Classes/java/security/UnrecoverableEntryException.m; sourceTree = "<group>"; };
+		0649A6521AE077D400DE2494 /* UnrecoverableKeyException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnrecoverableKeyException.h; path = build_result/Classes/java/security/UnrecoverableKeyException.h; sourceTree = "<group>"; };
+		0649A6531AE077D400DE2494 /* UnrecoverableKeyException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UnrecoverableKeyException.m; path = build_result/Classes/java/security/UnrecoverableKeyException.m; sourceTree = "<group>"; };
+		0649A6541AE077E800DE2494 /* AlgorithmParameterSpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AlgorithmParameterSpec.h; path = build_result/Classes/java/security/spec/AlgorithmParameterSpec.h; sourceTree = "<group>"; };
+		0649A6551AE077E800DE2494 /* AlgorithmParameterSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AlgorithmParameterSpec.m; path = build_result/Classes/java/security/spec/AlgorithmParameterSpec.m; sourceTree = "<group>"; };
+		0649A6561AE077E800DE2494 /* ECField.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ECField.h; path = build_result/Classes/java/security/spec/ECField.h; sourceTree = "<group>"; };
+		0649A6571AE077E800DE2494 /* ECField.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ECField.m; path = build_result/Classes/java/security/spec/ECField.m; sourceTree = "<group>"; };
+		0649A6581AE077E800DE2494 /* ECFieldF2m.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ECFieldF2m.h; path = build_result/Classes/java/security/spec/ECFieldF2m.h; sourceTree = "<group>"; };
+		0649A6591AE077E800DE2494 /* ECFieldF2m.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ECFieldF2m.m; path = build_result/Classes/java/security/spec/ECFieldF2m.m; sourceTree = "<group>"; };
+		0649A65A1AE077E800DE2494 /* ECFieldFp.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ECFieldFp.h; path = build_result/Classes/java/security/spec/ECFieldFp.h; sourceTree = "<group>"; };
+		0649A65B1AE077E800DE2494 /* ECFieldFp.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ECFieldFp.m; path = build_result/Classes/java/security/spec/ECFieldFp.m; sourceTree = "<group>"; };
+		0649A65C1AE077E800DE2494 /* ECGenParameterSpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ECGenParameterSpec.h; path = build_result/Classes/java/security/spec/ECGenParameterSpec.h; sourceTree = "<group>"; };
+		0649A65D1AE077E800DE2494 /* ECGenParameterSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ECGenParameterSpec.m; path = build_result/Classes/java/security/spec/ECGenParameterSpec.m; sourceTree = "<group>"; };
+		0649A65E1AE077E800DE2494 /* ECParameterSpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ECParameterSpec.h; path = build_result/Classes/java/security/spec/ECParameterSpec.h; sourceTree = "<group>"; };
+		0649A65F1AE077E800DE2494 /* ECParameterSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ECParameterSpec.m; path = build_result/Classes/java/security/spec/ECParameterSpec.m; sourceTree = "<group>"; };
+		0649A6601AE077E800DE2494 /* ECPoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ECPoint.h; path = build_result/Classes/java/security/spec/ECPoint.h; sourceTree = "<group>"; };
+		0649A6611AE077E800DE2494 /* ECPoint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ECPoint.m; path = build_result/Classes/java/security/spec/ECPoint.m; sourceTree = "<group>"; };
+		0649A6621AE077E800DE2494 /* ECPrivateKeySpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ECPrivateKeySpec.h; path = build_result/Classes/java/security/spec/ECPrivateKeySpec.h; sourceTree = "<group>"; };
+		0649A6631AE077E800DE2494 /* ECPrivateKeySpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ECPrivateKeySpec.m; path = build_result/Classes/java/security/spec/ECPrivateKeySpec.m; sourceTree = "<group>"; };
+		0649A6641AE077E800DE2494 /* ECPublicKeySpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ECPublicKeySpec.h; path = build_result/Classes/java/security/spec/ECPublicKeySpec.h; sourceTree = "<group>"; };
+		0649A6651AE077E800DE2494 /* ECPublicKeySpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ECPublicKeySpec.m; path = build_result/Classes/java/security/spec/ECPublicKeySpec.m; sourceTree = "<group>"; };
+		0649A6661AE077E800DE2494 /* EllipticCurve.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EllipticCurve.h; path = build_result/Classes/java/security/spec/EllipticCurve.h; sourceTree = "<group>"; };
+		0649A6671AE077E800DE2494 /* EllipticCurve.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = EllipticCurve.m; path = build_result/Classes/java/security/spec/EllipticCurve.m; sourceTree = "<group>"; };
+		0649A6681AE077E800DE2494 /* EncodedKeySpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EncodedKeySpec.h; path = build_result/Classes/java/security/spec/EncodedKeySpec.h; sourceTree = "<group>"; };
+		0649A6691AE077E800DE2494 /* EncodedKeySpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = EncodedKeySpec.m; path = build_result/Classes/java/security/spec/EncodedKeySpec.m; sourceTree = "<group>"; };
+		0649A66A1AE077E800DE2494 /* InvalidKeySpecException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InvalidKeySpecException.h; path = build_result/Classes/java/security/spec/InvalidKeySpecException.h; sourceTree = "<group>"; };
+		0649A66B1AE077E800DE2494 /* InvalidKeySpecException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = InvalidKeySpecException.m; path = build_result/Classes/java/security/spec/InvalidKeySpecException.m; sourceTree = "<group>"; };
+		0649A66C1AE077E800DE2494 /* InvalidParameterSpecException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = InvalidParameterSpecException.h; path = build_result/Classes/java/security/spec/InvalidParameterSpecException.h; sourceTree = "<group>"; };
+		0649A66D1AE077E900DE2494 /* InvalidParameterSpecException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = InvalidParameterSpecException.m; path = build_result/Classes/java/security/spec/InvalidParameterSpecException.m; sourceTree = "<group>"; };
+		0649A66E1AE077E900DE2494 /* KeySpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeySpec.h; path = build_result/Classes/java/security/spec/KeySpec.h; sourceTree = "<group>"; };
+		0649A66F1AE077E900DE2494 /* KeySpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeySpec.m; path = build_result/Classes/java/security/spec/KeySpec.m; sourceTree = "<group>"; };
+		0649A6701AE077E900DE2494 /* MGF1ParameterSpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = MGF1ParameterSpec.h; path = build_result/Classes/java/security/spec/MGF1ParameterSpec.h; sourceTree = "<group>"; };
+		0649A6711AE077E900DE2494 /* MGF1ParameterSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MGF1ParameterSpec.m; path = build_result/Classes/java/security/spec/MGF1ParameterSpec.m; sourceTree = "<group>"; };
+		0649A6721AE077E900DE2494 /* PKCS8EncodedKeySpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PKCS8EncodedKeySpec.h; path = build_result/Classes/java/security/spec/PKCS8EncodedKeySpec.h; sourceTree = "<group>"; };
+		0649A6731AE077E900DE2494 /* PKCS8EncodedKeySpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PKCS8EncodedKeySpec.m; path = build_result/Classes/java/security/spec/PKCS8EncodedKeySpec.m; sourceTree = "<group>"; };
+		0649A6741AE077E900DE2494 /* PSSParameterSpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PSSParameterSpec.h; path = build_result/Classes/java/security/spec/PSSParameterSpec.h; sourceTree = "<group>"; };
+		0649A6751AE077E900DE2494 /* PSSParameterSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PSSParameterSpec.m; path = build_result/Classes/java/security/spec/PSSParameterSpec.m; sourceTree = "<group>"; };
+		0649A6761AE077E900DE2494 /* RSAKeyGenParameterSpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSAKeyGenParameterSpec.h; path = build_result/Classes/java/security/spec/RSAKeyGenParameterSpec.h; sourceTree = "<group>"; };
+		0649A6771AE077E900DE2494 /* RSAKeyGenParameterSpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RSAKeyGenParameterSpec.m; path = build_result/Classes/java/security/spec/RSAKeyGenParameterSpec.m; sourceTree = "<group>"; };
+		0649A6781AE077E900DE2494 /* RSAMultiPrimePrivateCrtKeySpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSAMultiPrimePrivateCrtKeySpec.h; path = build_result/Classes/java/security/spec/RSAMultiPrimePrivateCrtKeySpec.h; sourceTree = "<group>"; };
+		0649A6791AE077E900DE2494 /* RSAMultiPrimePrivateCrtKeySpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RSAMultiPrimePrivateCrtKeySpec.m; path = build_result/Classes/java/security/spec/RSAMultiPrimePrivateCrtKeySpec.m; sourceTree = "<group>"; };
+		0649A67A1AE077E900DE2494 /* RSAOtherPrimeInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSAOtherPrimeInfo.h; path = build_result/Classes/java/security/spec/RSAOtherPrimeInfo.h; sourceTree = "<group>"; };
+		0649A67B1AE077E900DE2494 /* RSAOtherPrimeInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RSAOtherPrimeInfo.m; path = build_result/Classes/java/security/spec/RSAOtherPrimeInfo.m; sourceTree = "<group>"; };
+		0649A67C1AE077E900DE2494 /* RSAPrivateCrtKeySpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSAPrivateCrtKeySpec.h; path = build_result/Classes/java/security/spec/RSAPrivateCrtKeySpec.h; sourceTree = "<group>"; };
+		0649A67D1AE077E900DE2494 /* RSAPrivateCrtKeySpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RSAPrivateCrtKeySpec.m; path = build_result/Classes/java/security/spec/RSAPrivateCrtKeySpec.m; sourceTree = "<group>"; };
+		0649A67E1AE077E900DE2494 /* RSAPrivateKeySpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSAPrivateKeySpec.h; path = build_result/Classes/java/security/spec/RSAPrivateKeySpec.h; sourceTree = "<group>"; };
+		0649A67F1AE077E900DE2494 /* RSAPrivateKeySpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RSAPrivateKeySpec.m; path = build_result/Classes/java/security/spec/RSAPrivateKeySpec.m; sourceTree = "<group>"; };
+		0649A6801AE077E900DE2494 /* RSAPublicKeySpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RSAPublicKeySpec.h; path = build_result/Classes/java/security/spec/RSAPublicKeySpec.h; sourceTree = "<group>"; };
+		0649A6811AE077E900DE2494 /* RSAPublicKeySpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RSAPublicKeySpec.m; path = build_result/Classes/java/security/spec/RSAPublicKeySpec.m; sourceTree = "<group>"; };
+		0649A6821AE077E900DE2494 /* X509EncodedKeySpec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = X509EncodedKeySpec.h; path = build_result/Classes/java/security/spec/X509EncodedKeySpec.h; sourceTree = "<group>"; };
+		0649A6831AE077E900DE2494 /* X509EncodedKeySpec.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = X509EncodedKeySpec.m; path = build_result/Classes/java/security/spec/X509EncodedKeySpec.m; sourceTree = "<group>"; };
+		0649A6841AE0780400DE2494 /* Array.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Array.h; path = build_result/Classes/java/sql/Array.h; sourceTree = "<group>"; };
+		0649A6851AE0780400DE2494 /* Array.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Array.m; path = build_result/Classes/java/sql/Array.m; sourceTree = "<group>"; };
+		0649A6861AE0780400DE2494 /* BatchUpdateException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BatchUpdateException.h; path = build_result/Classes/java/sql/BatchUpdateException.h; sourceTree = "<group>"; };
+		0649A6871AE0780400DE2494 /* BatchUpdateException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BatchUpdateException.m; path = build_result/Classes/java/sql/BatchUpdateException.m; sourceTree = "<group>"; };
+		0649A6881AE0780400DE2494 /* Blob.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Blob.h; path = build_result/Classes/java/sql/Blob.h; sourceTree = "<group>"; };
+		0649A6891AE0780400DE2494 /* Blob.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Blob.m; path = build_result/Classes/java/sql/Blob.m; sourceTree = "<group>"; };
+		0649A68A1AE0780400DE2494 /* CallableStatement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CallableStatement.h; path = build_result/Classes/java/sql/CallableStatement.h; sourceTree = "<group>"; };
+		0649A68B1AE0780400DE2494 /* CallableStatement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CallableStatement.m; path = build_result/Classes/java/sql/CallableStatement.m; sourceTree = "<group>"; };
+		0649A68C1AE0780400DE2494 /* ClientInfoStatus.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ClientInfoStatus.h; path = build_result/Classes/java/sql/ClientInfoStatus.h; sourceTree = "<group>"; };
+		0649A68D1AE0780400DE2494 /* ClientInfoStatus.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ClientInfoStatus.m; path = build_result/Classes/java/sql/ClientInfoStatus.m; sourceTree = "<group>"; };
+		0649A68E1AE0780400DE2494 /* Clob.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Clob.h; path = build_result/Classes/java/sql/Clob.h; sourceTree = "<group>"; };
+		0649A68F1AE0780500DE2494 /* Clob.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Clob.m; path = build_result/Classes/java/sql/Clob.m; sourceTree = "<group>"; };
+		0649A6901AE0780500DE2494 /* Connection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Connection.h; path = build_result/Classes/java/sql/Connection.h; sourceTree = "<group>"; };
+		0649A6911AE0780500DE2494 /* Connection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Connection.m; path = build_result/Classes/java/sql/Connection.m; sourceTree = "<group>"; };
+		0649A6921AE0780500DE2494 /* DatabaseMetaData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DatabaseMetaData.h; path = build_result/Classes/java/sql/DatabaseMetaData.h; sourceTree = "<group>"; };
+		0649A6931AE0780500DE2494 /* DatabaseMetaData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DatabaseMetaData.m; path = build_result/Classes/java/sql/DatabaseMetaData.m; sourceTree = "<group>"; };
+		0649A6941AE0780500DE2494 /* DataTruncation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DataTruncation.h; path = build_result/Classes/java/sql/DataTruncation.h; sourceTree = "<group>"; };
+		0649A6951AE0780500DE2494 /* DataTruncation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DataTruncation.m; path = build_result/Classes/java/sql/DataTruncation.m; sourceTree = "<group>"; };
+		0649A6961AE0780500DE2494 /* Driver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Driver.h; path = build_result/Classes/java/sql/Driver.h; sourceTree = "<group>"; };
+		0649A6971AE0780500DE2494 /* Driver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Driver.m; path = build_result/Classes/java/sql/Driver.m; sourceTree = "<group>"; };
+		0649A6981AE0780500DE2494 /* DriverManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DriverManager.h; path = build_result/Classes/java/sql/DriverManager.h; sourceTree = "<group>"; };
+		0649A6991AE0780500DE2494 /* DriverManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DriverManager.m; path = build_result/Classes/java/sql/DriverManager.m; sourceTree = "<group>"; };
+		0649A69A1AE0780500DE2494 /* DriverPropertyInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DriverPropertyInfo.h; path = build_result/Classes/java/sql/DriverPropertyInfo.h; sourceTree = "<group>"; };
+		0649A69B1AE0780500DE2494 /* DriverPropertyInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DriverPropertyInfo.m; path = build_result/Classes/java/sql/DriverPropertyInfo.m; sourceTree = "<group>"; };
+		0649A69C1AE0780500DE2494 /* NClob.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NClob.h; path = build_result/Classes/java/sql/NClob.h; sourceTree = "<group>"; };
+		0649A69D1AE0780500DE2494 /* NClob.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NClob.m; path = build_result/Classes/java/sql/NClob.m; sourceTree = "<group>"; };
+		0649A69E1AE0780500DE2494 /* ParameterMetaData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ParameterMetaData.h; path = build_result/Classes/java/sql/ParameterMetaData.h; sourceTree = "<group>"; };
+		0649A69F1AE0780500DE2494 /* ParameterMetaData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ParameterMetaData.m; path = build_result/Classes/java/sql/ParameterMetaData.m; sourceTree = "<group>"; };
+		0649A6A01AE0780500DE2494 /* PreparedStatement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PreparedStatement.h; path = build_result/Classes/java/sql/PreparedStatement.h; sourceTree = "<group>"; };
+		0649A6A11AE0780500DE2494 /* PreparedStatement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PreparedStatement.m; path = build_result/Classes/java/sql/PreparedStatement.m; sourceTree = "<group>"; };
+		0649A6A21AE0780500DE2494 /* Ref.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Ref.h; path = build_result/Classes/java/sql/Ref.h; sourceTree = "<group>"; };
+		0649A6A31AE0780500DE2494 /* Ref.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Ref.m; path = build_result/Classes/java/sql/Ref.m; sourceTree = "<group>"; };
+		0649A6A41AE0780500DE2494 /* ResultSet.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResultSet.h; path = build_result/Classes/java/sql/ResultSet.h; sourceTree = "<group>"; };
+		0649A6A51AE0780500DE2494 /* ResultSet.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ResultSet.m; path = build_result/Classes/java/sql/ResultSet.m; sourceTree = "<group>"; };
+		0649A6A61AE0780500DE2494 /* ResultSetMetaData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResultSetMetaData.h; path = build_result/Classes/java/sql/ResultSetMetaData.h; sourceTree = "<group>"; };
+		0649A6A71AE0780500DE2494 /* ResultSetMetaData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ResultSetMetaData.m; path = build_result/Classes/java/sql/ResultSetMetaData.m; sourceTree = "<group>"; };
+		0649A6A81AE0780500DE2494 /* RowId.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RowId.h; path = build_result/Classes/java/sql/RowId.h; sourceTree = "<group>"; };
+		0649A6A91AE0780500DE2494 /* RowId.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RowId.m; path = build_result/Classes/java/sql/RowId.m; sourceTree = "<group>"; };
+		0649A6AA1AE0780500DE2494 /* RowIdLifetime.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RowIdLifetime.h; path = build_result/Classes/java/sql/RowIdLifetime.h; sourceTree = "<group>"; };
+		0649A6AB1AE0780500DE2494 /* RowIdLifetime.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RowIdLifetime.m; path = build_result/Classes/java/sql/RowIdLifetime.m; sourceTree = "<group>"; };
+		0649A6AC1AE0780500DE2494 /* Savepoint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Savepoint.h; path = build_result/Classes/java/sql/Savepoint.h; sourceTree = "<group>"; };
+		0649A6AD1AE0780600DE2494 /* Savepoint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Savepoint.m; path = build_result/Classes/java/sql/Savepoint.m; sourceTree = "<group>"; };
+		0649A6AE1AE0780600DE2494 /* SQLClientInfoException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLClientInfoException.h; path = build_result/Classes/java/sql/SQLClientInfoException.h; sourceTree = "<group>"; };
+		0649A6AF1AE0780600DE2494 /* SQLClientInfoException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLClientInfoException.m; path = build_result/Classes/java/sql/SQLClientInfoException.m; sourceTree = "<group>"; };
+		0649A6B01AE0780600DE2494 /* SQLData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLData.h; path = build_result/Classes/java/sql/SQLData.h; sourceTree = "<group>"; };
+		0649A6B11AE0780600DE2494 /* SQLData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLData.m; path = build_result/Classes/java/sql/SQLData.m; sourceTree = "<group>"; };
+		0649A6B21AE0780600DE2494 /* SQLDataException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLDataException.h; path = build_result/Classes/java/sql/SQLDataException.h; sourceTree = "<group>"; };
+		0649A6B31AE0780600DE2494 /* SQLDataException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLDataException.m; path = build_result/Classes/java/sql/SQLDataException.m; sourceTree = "<group>"; };
+		0649A6B41AE0780600DE2494 /* SQLException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLException.h; path = build_result/Classes/java/sql/SQLException.h; sourceTree = "<group>"; };
+		0649A6B51AE0780600DE2494 /* SQLException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLException.m; path = build_result/Classes/java/sql/SQLException.m; sourceTree = "<group>"; };
+		0649A6B61AE0780600DE2494 /* SQLFeatureNotSupportedException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLFeatureNotSupportedException.h; path = build_result/Classes/java/sql/SQLFeatureNotSupportedException.h; sourceTree = "<group>"; };
+		0649A6B71AE0780600DE2494 /* SQLFeatureNotSupportedException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLFeatureNotSupportedException.m; path = build_result/Classes/java/sql/SQLFeatureNotSupportedException.m; sourceTree = "<group>"; };
+		0649A6B81AE0780600DE2494 /* SQLInput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLInput.h; path = build_result/Classes/java/sql/SQLInput.h; sourceTree = "<group>"; };
+		0649A6B91AE0780600DE2494 /* SQLInput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLInput.m; path = build_result/Classes/java/sql/SQLInput.m; sourceTree = "<group>"; };
+		0649A6BA1AE0780600DE2494 /* SQLIntegrityConstraintViolationException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLIntegrityConstraintViolationException.h; path = build_result/Classes/java/sql/SQLIntegrityConstraintViolationException.h; sourceTree = "<group>"; };
+		0649A6BB1AE0780600DE2494 /* SQLIntegrityConstraintViolationException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLIntegrityConstraintViolationException.m; path = build_result/Classes/java/sql/SQLIntegrityConstraintViolationException.m; sourceTree = "<group>"; };
+		0649A6BC1AE0780600DE2494 /* SQLInvalidAuthorizationSpecException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLInvalidAuthorizationSpecException.h; path = build_result/Classes/java/sql/SQLInvalidAuthorizationSpecException.h; sourceTree = "<group>"; };
+		0649A6BD1AE0780600DE2494 /* SQLInvalidAuthorizationSpecException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLInvalidAuthorizationSpecException.m; path = build_result/Classes/java/sql/SQLInvalidAuthorizationSpecException.m; sourceTree = "<group>"; };
+		0649A6BE1AE0780600DE2494 /* SQLNonTransientConnectionException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLNonTransientConnectionException.h; path = build_result/Classes/java/sql/SQLNonTransientConnectionException.h; sourceTree = "<group>"; };
+		0649A6BF1AE0780600DE2494 /* SQLNonTransientConnectionException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLNonTransientConnectionException.m; path = build_result/Classes/java/sql/SQLNonTransientConnectionException.m; sourceTree = "<group>"; };
+		0649A6C01AE0780600DE2494 /* SQLNonTransientException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLNonTransientException.h; path = build_result/Classes/java/sql/SQLNonTransientException.h; sourceTree = "<group>"; };
+		0649A6C11AE0780600DE2494 /* SQLNonTransientException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLNonTransientException.m; path = build_result/Classes/java/sql/SQLNonTransientException.m; sourceTree = "<group>"; };
+		0649A6C21AE0780600DE2494 /* SQLOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLOutput.h; path = build_result/Classes/java/sql/SQLOutput.h; sourceTree = "<group>"; };
+		0649A6C31AE0780600DE2494 /* SQLOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLOutput.m; path = build_result/Classes/java/sql/SQLOutput.m; sourceTree = "<group>"; };
+		0649A6C41AE0780600DE2494 /* SQLPermission.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLPermission.h; path = build_result/Classes/java/sql/SQLPermission.h; sourceTree = "<group>"; };
+		0649A6C51AE0780600DE2494 /* SQLPermission.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLPermission.m; path = build_result/Classes/java/sql/SQLPermission.m; sourceTree = "<group>"; };
+		0649A6C61AE0780600DE2494 /* SQLRecoverableException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLRecoverableException.h; path = build_result/Classes/java/sql/SQLRecoverableException.h; sourceTree = "<group>"; };
+		0649A6C71AE0780600DE2494 /* SQLRecoverableException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLRecoverableException.m; path = build_result/Classes/java/sql/SQLRecoverableException.m; sourceTree = "<group>"; };
+		0649A6C81AE0780600DE2494 /* SQLSyntaxErrorException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLSyntaxErrorException.h; path = build_result/Classes/java/sql/SQLSyntaxErrorException.h; sourceTree = "<group>"; };
+		0649A6C91AE0780600DE2494 /* SQLSyntaxErrorException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLSyntaxErrorException.m; path = build_result/Classes/java/sql/SQLSyntaxErrorException.m; sourceTree = "<group>"; };
+		0649A6CA1AE0780600DE2494 /* SQLTimeoutException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLTimeoutException.h; path = build_result/Classes/java/sql/SQLTimeoutException.h; sourceTree = "<group>"; };
+		0649A6CB1AE0780600DE2494 /* SQLTimeoutException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLTimeoutException.m; path = build_result/Classes/java/sql/SQLTimeoutException.m; sourceTree = "<group>"; };
+		0649A6CC1AE0780700DE2494 /* SQLTransactionRollbackException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLTransactionRollbackException.h; path = build_result/Classes/java/sql/SQLTransactionRollbackException.h; sourceTree = "<group>"; };
+		0649A6CD1AE0780700DE2494 /* SQLTransactionRollbackException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLTransactionRollbackException.m; path = build_result/Classes/java/sql/SQLTransactionRollbackException.m; sourceTree = "<group>"; };
+		0649A6CE1AE0780700DE2494 /* SQLTransientConnectionException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLTransientConnectionException.h; path = build_result/Classes/java/sql/SQLTransientConnectionException.h; sourceTree = "<group>"; };
+		0649A6CF1AE0780700DE2494 /* SQLTransientConnectionException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLTransientConnectionException.m; path = build_result/Classes/java/sql/SQLTransientConnectionException.m; sourceTree = "<group>"; };
+		0649A6D01AE0780700DE2494 /* SQLTransientException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLTransientException.h; path = build_result/Classes/java/sql/SQLTransientException.h; sourceTree = "<group>"; };
+		0649A6D11AE0780700DE2494 /* SQLTransientException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLTransientException.m; path = build_result/Classes/java/sql/SQLTransientException.m; sourceTree = "<group>"; };
+		0649A6D21AE0780700DE2494 /* SQLWarning.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLWarning.h; path = build_result/Classes/java/sql/SQLWarning.h; sourceTree = "<group>"; };
+		0649A6D31AE0780700DE2494 /* SQLWarning.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLWarning.m; path = build_result/Classes/java/sql/SQLWarning.m; sourceTree = "<group>"; };
+		0649A6D41AE0780700DE2494 /* SQLXML.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLXML.h; path = build_result/Classes/java/sql/SQLXML.h; sourceTree = "<group>"; };
+		0649A6D51AE0780700DE2494 /* SQLXML.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SQLXML.m; path = build_result/Classes/java/sql/SQLXML.m; sourceTree = "<group>"; };
+		0649A6D61AE0780700DE2494 /* Statement.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Statement.h; path = build_result/Classes/java/sql/Statement.h; sourceTree = "<group>"; };
+		0649A6D71AE0780700DE2494 /* Statement.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Statement.m; path = build_result/Classes/java/sql/Statement.m; sourceTree = "<group>"; };
+		0649A6D81AE0780700DE2494 /* Struct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Struct.h; path = build_result/Classes/java/sql/Struct.h; sourceTree = "<group>"; };
+		0649A6D91AE0780700DE2494 /* Struct.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Struct.m; path = build_result/Classes/java/sql/Struct.m; sourceTree = "<group>"; };
+		0649A6DA1AE0780700DE2494 /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Types.h; path = build_result/Classes/java/sql/Types.h; sourceTree = "<group>"; };
+		0649A6DB1AE0780700DE2494 /* Types.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Types.m; path = build_result/Classes/java/sql/Types.m; sourceTree = "<group>"; };
+		0649A6DC1AE0780700DE2494 /* Wrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Wrapper.h; path = build_result/Classes/java/sql/Wrapper.h; sourceTree = "<group>"; };
+		0649A6DD1AE0780700DE2494 /* Wrapper.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Wrapper.m; path = build_result/Classes/java/sql/Wrapper.m; sourceTree = "<group>"; };
+		0649A6DE1AE078D700DE2494 /* Normalizer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Normalizer.h; path = build_result/Classes/java/text/Normalizer.h; sourceTree = "<group>"; };
+		0649A6DF1AE078D700DE2494 /* Normalizer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Normalizer.m; path = build_result/Classes/java/text/Normalizer.m; sourceTree = "<group>"; };
+		0649A6E01AE078D700DE2494 /* HashMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HashMap.h; path = build_result/Classes/java/util/HashMap.h; sourceTree = "<group>"; };
+		0649A6E11AE078D700DE2494 /* HashMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HashMap.m; path = build_result/Classes/java/util/HashMap.m; sourceTree = "<group>"; };
+		0649A6E21AE078D800DE2494 /* LinkedHashMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LinkedHashMap.h; path = build_result/Classes/java/util/LinkedHashMap.h; sourceTree = "<group>"; };
+		0649A6E31AE078D800DE2494 /* LinkedHashMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LinkedHashMap.m; path = build_result/Classes/java/util/LinkedHashMap.m; sourceTree = "<group>"; };
+		0649A6E41AE078D800DE2494 /* Scanner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Scanner.h; path = build_result/Classes/java/util/Scanner.h; sourceTree = "<group>"; };
+		0649A6E51AE078D800DE2494 /* Scanner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Scanner.m; path = build_result/Classes/java/util/Scanner.m; sourceTree = "<group>"; };
+		0649A6E61AE0796400DE2494 /* Generated.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Generated.h; path = build_result/Classes/javax/annotation/Generated.h; sourceTree = "<group>"; };
+		0649A6E71AE0796400DE2494 /* Generated.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Generated.m; path = build_result/Classes/javax/annotation/Generated.m; sourceTree = "<group>"; };
+		0649A6E81AE0796400DE2494 /* PostConstruct.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PostConstruct.h; path = build_result/Classes/javax/annotation/PostConstruct.h; sourceTree = "<group>"; };
+		0649A6E91AE0796400DE2494 /* PostConstruct.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PostConstruct.m; path = build_result/Classes/javax/annotation/PostConstruct.m; sourceTree = "<group>"; };
+		0649A6EA1AE0796400DE2494 /* PreDestroy.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PreDestroy.h; path = build_result/Classes/javax/annotation/PreDestroy.h; sourceTree = "<group>"; };
+		0649A6EB1AE0796400DE2494 /* PreDestroy.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PreDestroy.m; path = build_result/Classes/javax/annotation/PreDestroy.m; sourceTree = "<group>"; };
+		0649A6EC1AE0796400DE2494 /* Resources.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resources.h; path = build_result/Classes/javax/annotation/Resources.h; sourceTree = "<group>"; };
+		0649A6ED1AE0796400DE2494 /* Resources.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Resources.m; path = build_result/Classes/javax/annotation/Resources.m; sourceTree = "<group>"; };
+		0649A6EE1AE0796400DE2494 /* SecretKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SecretKey.h; path = build_result/Classes/javax/crypto/SecretKey.h; sourceTree = "<group>"; };
+		0649A6EF1AE0796400DE2494 /* SecretKey.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SecretKey.m; path = build_result/Classes/javax/crypto/SecretKey.m; sourceTree = "<group>"; };
+		0649A6F01AE0796400DE2494 /* Modifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Modifier.h; path = build_result/Classes/javax/lang/model/element/Modifier.h; sourceTree = "<group>"; };
+		0649A6F11AE0796400DE2494 /* Modifier.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Modifier.m; path = build_result/Classes/javax/lang/model/element/Modifier.m; sourceTree = "<group>"; };
+		0649A6F21AE0796400DE2494 /* DefaultServerSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DefaultServerSocketFactory.h; path = build_result/Classes/javax/net/DefaultServerSocketFactory.h; sourceTree = "<group>"; };
+		0649A6F31AE0796400DE2494 /* DefaultServerSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DefaultServerSocketFactory.m; path = build_result/Classes/javax/net/DefaultServerSocketFactory.m; sourceTree = "<group>"; };
+		0649A6F41AE0796400DE2494 /* DefaultSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DefaultSocketFactory.h; path = build_result/Classes/javax/net/DefaultSocketFactory.h; sourceTree = "<group>"; };
+		0649A6F51AE0796400DE2494 /* DefaultSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DefaultSocketFactory.m; path = build_result/Classes/javax/net/DefaultSocketFactory.m; sourceTree = "<group>"; };
+		0649A6F61AE0796400DE2494 /* ServerSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ServerSocketFactory.h; path = build_result/Classes/javax/net/ServerSocketFactory.h; sourceTree = "<group>"; };
+		0649A6F71AE0796400DE2494 /* ServerSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ServerSocketFactory.m; path = build_result/Classes/javax/net/ServerSocketFactory.m; sourceTree = "<group>"; };
+		0649A6F81AE0796400DE2494 /* SocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SocketFactory.h; path = build_result/Classes/javax/net/SocketFactory.h; sourceTree = "<group>"; };
+		0649A6F91AE0796400DE2494 /* SocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SocketFactory.m; path = build_result/Classes/javax/net/SocketFactory.m; sourceTree = "<group>"; };
+		0649A6FA1AE0796500DE2494 /* ssl */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ssl; path = build_result/Classes/javax/net/ssl; sourceTree = "<group>"; };
+		0649A6FB1AE0796500DE2494 /* DefaultSSLServerSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DefaultSSLServerSocketFactory.h; path = build_result/Classes/javax/net/ssl/DefaultSSLServerSocketFactory.h; sourceTree = "<group>"; };
+		0649A6FC1AE0796500DE2494 /* DefaultSSLServerSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DefaultSSLServerSocketFactory.m; path = build_result/Classes/javax/net/ssl/DefaultSSLServerSocketFactory.m; sourceTree = "<group>"; };
+		0649A6FD1AE0796500DE2494 /* DefaultSSLSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DefaultSSLSocketFactory.h; path = build_result/Classes/javax/net/ssl/DefaultSSLSocketFactory.h; sourceTree = "<group>"; };
+		0649A6FE1AE0796500DE2494 /* DefaultSSLSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DefaultSSLSocketFactory.m; path = build_result/Classes/javax/net/ssl/DefaultSSLSocketFactory.m; sourceTree = "<group>"; };
+		0649A6FF1AE0796500DE2494 /* HandshakeCompletedEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HandshakeCompletedEvent.h; path = build_result/Classes/javax/net/ssl/HandshakeCompletedEvent.h; sourceTree = "<group>"; };
+		0649A7001AE0796500DE2494 /* HandshakeCompletedEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HandshakeCompletedEvent.m; path = build_result/Classes/javax/net/ssl/HandshakeCompletedEvent.m; sourceTree = "<group>"; };
+		0649A7011AE0796500DE2494 /* HandshakeCompletedListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HandshakeCompletedListener.h; path = build_result/Classes/javax/net/ssl/HandshakeCompletedListener.h; sourceTree = "<group>"; };
+		0649A7021AE0796500DE2494 /* HandshakeCompletedListener.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HandshakeCompletedListener.m; path = build_result/Classes/javax/net/ssl/HandshakeCompletedListener.m; sourceTree = "<group>"; };
+		0649A7031AE0796500DE2494 /* HostnameVerifier.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HostnameVerifier.h; path = build_result/Classes/javax/net/ssl/HostnameVerifier.h; sourceTree = "<group>"; };
+		0649A7041AE0796500DE2494 /* HostnameVerifier.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HostnameVerifier.m; path = build_result/Classes/javax/net/ssl/HostnameVerifier.m; sourceTree = "<group>"; };
+		0649A7051AE0796500DE2494 /* HttpsURLConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = HttpsURLConnection.h; path = build_result/Classes/javax/net/ssl/HttpsURLConnection.h; sourceTree = "<group>"; };
+		0649A7061AE0796500DE2494 /* HttpsURLConnection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = HttpsURLConnection.m; path = build_result/Classes/javax/net/ssl/HttpsURLConnection.m; sourceTree = "<group>"; };
+		0649A7071AE0796500DE2494 /* KeyManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyManager.h; path = build_result/Classes/javax/net/ssl/KeyManager.h; sourceTree = "<group>"; };
+		0649A7081AE0796500DE2494 /* KeyManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyManager.m; path = build_result/Classes/javax/net/ssl/KeyManager.m; sourceTree = "<group>"; };
+		0649A7091AE0796500DE2494 /* KeyManagerFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyManagerFactory.h; path = build_result/Classes/javax/net/ssl/KeyManagerFactory.h; sourceTree = "<group>"; };
+		0649A70A1AE0796500DE2494 /* KeyManagerFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyManagerFactory.m; path = build_result/Classes/javax/net/ssl/KeyManagerFactory.m; sourceTree = "<group>"; };
+		0649A70B1AE0796500DE2494 /* KeyManagerFactorySpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = KeyManagerFactorySpi.h; path = build_result/Classes/javax/net/ssl/KeyManagerFactorySpi.h; sourceTree = "<group>"; };
+		0649A70C1AE0796500DE2494 /* KeyManagerFactorySpi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = KeyManagerFactorySpi.m; path = build_result/Classes/javax/net/ssl/KeyManagerFactorySpi.m; sourceTree = "<group>"; };
+		0649A70D1AE0796500DE2494 /* ManagerFactoryParameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ManagerFactoryParameters.h; path = build_result/Classes/javax/net/ssl/ManagerFactoryParameters.h; sourceTree = "<group>"; };
+		0649A70E1AE0796500DE2494 /* ManagerFactoryParameters.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ManagerFactoryParameters.m; path = build_result/Classes/javax/net/ssl/ManagerFactoryParameters.m; sourceTree = "<group>"; };
+		0649A70F1AE0796500DE2494 /* SSLContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLContext.h; path = build_result/Classes/javax/net/ssl/SSLContext.h; sourceTree = "<group>"; };
+		0649A7101AE0796500DE2494 /* SSLContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLContext.m; path = build_result/Classes/javax/net/ssl/SSLContext.m; sourceTree = "<group>"; };
+		0649A7111AE0796500DE2494 /* SSLContextSpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLContextSpi.h; path = build_result/Classes/javax/net/ssl/SSLContextSpi.h; sourceTree = "<group>"; };
+		0649A7121AE0796500DE2494 /* SSLContextSpi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLContextSpi.m; path = build_result/Classes/javax/net/ssl/SSLContextSpi.m; sourceTree = "<group>"; };
+		0649A7131AE0796500DE2494 /* SSLEngine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLEngine.h; path = build_result/Classes/javax/net/ssl/SSLEngine.h; sourceTree = "<group>"; };
+		0649A7141AE0796500DE2494 /* SSLEngine.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLEngine.m; path = build_result/Classes/javax/net/ssl/SSLEngine.m; sourceTree = "<group>"; };
+		0649A7151AE0796500DE2494 /* SSLEngineResult.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLEngineResult.h; path = build_result/Classes/javax/net/ssl/SSLEngineResult.h; sourceTree = "<group>"; };
+		0649A7161AE0796600DE2494 /* SSLEngineResult.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLEngineResult.m; path = build_result/Classes/javax/net/ssl/SSLEngineResult.m; sourceTree = "<group>"; };
+		0649A7171AE0796600DE2494 /* SSLException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLException.h; path = build_result/Classes/javax/net/ssl/SSLException.h; sourceTree = "<group>"; };
+		0649A7181AE0796600DE2494 /* SSLException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLException.m; path = build_result/Classes/javax/net/ssl/SSLException.m; sourceTree = "<group>"; };
+		0649A7191AE0796600DE2494 /* SSLHandshakeException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLHandshakeException.h; path = build_result/Classes/javax/net/ssl/SSLHandshakeException.h; sourceTree = "<group>"; };
+		0649A71A1AE0796600DE2494 /* SSLHandshakeException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLHandshakeException.m; path = build_result/Classes/javax/net/ssl/SSLHandshakeException.m; sourceTree = "<group>"; };
+		0649A71B1AE0796600DE2494 /* SSLParameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLParameters.h; path = build_result/Classes/javax/net/ssl/SSLParameters.h; sourceTree = "<group>"; };
+		0649A71C1AE0796600DE2494 /* SSLParameters.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLParameters.m; path = build_result/Classes/javax/net/ssl/SSLParameters.m; sourceTree = "<group>"; };
+		0649A71D1AE0796600DE2494 /* SSLPeerUnverifiedException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLPeerUnverifiedException.h; path = build_result/Classes/javax/net/ssl/SSLPeerUnverifiedException.h; sourceTree = "<group>"; };
+		0649A71E1AE0796600DE2494 /* SSLPeerUnverifiedException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLPeerUnverifiedException.m; path = build_result/Classes/javax/net/ssl/SSLPeerUnverifiedException.m; sourceTree = "<group>"; };
+		0649A71F1AE0796600DE2494 /* SSLProtocolException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLProtocolException.h; path = build_result/Classes/javax/net/ssl/SSLProtocolException.h; sourceTree = "<group>"; };
+		0649A7201AE0796600DE2494 /* SSLProtocolException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLProtocolException.m; path = build_result/Classes/javax/net/ssl/SSLProtocolException.m; sourceTree = "<group>"; };
+		0649A7211AE0796600DE2494 /* SSLServerSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLServerSocket.h; path = build_result/Classes/javax/net/ssl/SSLServerSocket.h; sourceTree = "<group>"; };
+		0649A7221AE0796600DE2494 /* SSLServerSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLServerSocket.m; path = build_result/Classes/javax/net/ssl/SSLServerSocket.m; sourceTree = "<group>"; };
+		0649A7231AE0796600DE2494 /* SSLServerSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLServerSocketFactory.h; path = build_result/Classes/javax/net/ssl/SSLServerSocketFactory.h; sourceTree = "<group>"; };
+		0649A7241AE0796600DE2494 /* SSLServerSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLServerSocketFactory.m; path = build_result/Classes/javax/net/ssl/SSLServerSocketFactory.m; sourceTree = "<group>"; };
+		0649A7251AE0796600DE2494 /* SSLSession.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLSession.h; path = build_result/Classes/javax/net/ssl/SSLSession.h; sourceTree = "<group>"; };
+		0649A7261AE0796600DE2494 /* SSLSession.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLSession.m; path = build_result/Classes/javax/net/ssl/SSLSession.m; sourceTree = "<group>"; };
+		0649A7271AE0796600DE2494 /* SSLSessionBindingEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLSessionBindingEvent.h; path = build_result/Classes/javax/net/ssl/SSLSessionBindingEvent.h; sourceTree = "<group>"; };
+		0649A7281AE0796600DE2494 /* SSLSessionBindingEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLSessionBindingEvent.m; path = build_result/Classes/javax/net/ssl/SSLSessionBindingEvent.m; sourceTree = "<group>"; };
+		0649A7291AE0796600DE2494 /* SSLSessionBindingListener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLSessionBindingListener.h; path = build_result/Classes/javax/net/ssl/SSLSessionBindingListener.h; sourceTree = "<group>"; };
+		0649A72A1AE0796600DE2494 /* SSLSessionBindingListener.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLSessionBindingListener.m; path = build_result/Classes/javax/net/ssl/SSLSessionBindingListener.m; sourceTree = "<group>"; };
+		0649A72B1AE0796600DE2494 /* SSLSessionContext.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLSessionContext.h; path = build_result/Classes/javax/net/ssl/SSLSessionContext.h; sourceTree = "<group>"; };
+		0649A72C1AE0796600DE2494 /* SSLSessionContext.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLSessionContext.m; path = build_result/Classes/javax/net/ssl/SSLSessionContext.m; sourceTree = "<group>"; };
+		0649A72D1AE0796600DE2494 /* SSLSocket.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLSocket.h; path = build_result/Classes/javax/net/ssl/SSLSocket.h; sourceTree = "<group>"; };
+		0649A72E1AE0796600DE2494 /* SSLSocket.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLSocket.m; path = build_result/Classes/javax/net/ssl/SSLSocket.m; sourceTree = "<group>"; };
+		0649A72F1AE0796600DE2494 /* SSLSocketFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SSLSocketFactory.h; path = build_result/Classes/javax/net/ssl/SSLSocketFactory.h; sourceTree = "<group>"; };
+		0649A7301AE0796600DE2494 /* SSLSocketFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SSLSocketFactory.m; path = build_result/Classes/javax/net/ssl/SSLSocketFactory.m; sourceTree = "<group>"; };
+		0649A7311AE0796600DE2494 /* TrustManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TrustManager.h; path = build_result/Classes/javax/net/ssl/TrustManager.h; sourceTree = "<group>"; };
+		0649A7321AE0796700DE2494 /* TrustManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TrustManager.m; path = build_result/Classes/javax/net/ssl/TrustManager.m; sourceTree = "<group>"; };
+		0649A7331AE0796700DE2494 /* TrustManagerFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TrustManagerFactory.h; path = build_result/Classes/javax/net/ssl/TrustManagerFactory.h; sourceTree = "<group>"; };
+		0649A7341AE0796700DE2494 /* TrustManagerFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TrustManagerFactory.m; path = build_result/Classes/javax/net/ssl/TrustManagerFactory.m; sourceTree = "<group>"; };
+		0649A7351AE0796700DE2494 /* TrustManagerFactorySpi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TrustManagerFactorySpi.h; path = build_result/Classes/javax/net/ssl/TrustManagerFactorySpi.h; sourceTree = "<group>"; };
+		0649A7361AE0796700DE2494 /* TrustManagerFactorySpi.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TrustManagerFactorySpi.m; path = build_result/Classes/javax/net/ssl/TrustManagerFactorySpi.m; sourceTree = "<group>"; };
+		0649A7371AE0796700DE2494 /* Callback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Callback.h; path = build_result/Classes/javax/security/auth/callback/Callback.h; sourceTree = "<group>"; };
+		0649A7381AE0796700DE2494 /* Callback.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Callback.m; path = build_result/Classes/javax/security/auth/callback/Callback.m; sourceTree = "<group>"; };
+		0649A7391AE0796700DE2494 /* CallbackHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CallbackHandler.h; path = build_result/Classes/javax/security/auth/callback/CallbackHandler.h; sourceTree = "<group>"; };
+		0649A73A1AE0796700DE2494 /* CallbackHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CallbackHandler.m; path = build_result/Classes/javax/security/auth/callback/CallbackHandler.m; sourceTree = "<group>"; };
+		0649A73B1AE0796700DE2494 /* PasswordCallback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PasswordCallback.h; path = build_result/Classes/javax/security/auth/callback/PasswordCallback.h; sourceTree = "<group>"; };
+		0649A73C1AE0796700DE2494 /* PasswordCallback.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PasswordCallback.m; path = build_result/Classes/javax/security/auth/callback/PasswordCallback.m; sourceTree = "<group>"; };
+		0649A73D1AE0796700DE2494 /* UnsupportedCallbackException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UnsupportedCallbackException.h; path = build_result/Classes/javax/security/auth/callback/UnsupportedCallbackException.h; sourceTree = "<group>"; };
+		0649A73E1AE0796700DE2494 /* UnsupportedCallbackException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UnsupportedCallbackException.m; path = build_result/Classes/javax/security/auth/callback/UnsupportedCallbackException.m; sourceTree = "<group>"; };
+		0649A73F1AE0796700DE2494 /* Destroyable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Destroyable.h; path = build_result/Classes/javax/security/auth/Destroyable.h; sourceTree = "<group>"; };
+		0649A7401AE0796700DE2494 /* Destroyable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Destroyable.m; path = build_result/Classes/javax/security/auth/Destroyable.m; sourceTree = "<group>"; };
+		0649A7411AE0796700DE2494 /* DestroyFailedException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DestroyFailedException.h; path = build_result/Classes/javax/security/auth/DestroyFailedException.h; sourceTree = "<group>"; };
+		0649A7421AE0796700DE2494 /* DestroyFailedException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DestroyFailedException.m; path = build_result/Classes/javax/security/auth/DestroyFailedException.m; sourceTree = "<group>"; };
+		0649A7431AE0799100DE2494 /* GenericArrayTypeImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericArrayTypeImpl.h; path = build_result/Classes/libcore/reflect/GenericArrayTypeImpl.h; sourceTree = "<group>"; };
+		0649A7441AE0799100DE2494 /* GenericArrayTypeImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GenericArrayTypeImpl.m; path = build_result/Classes/libcore/reflect/GenericArrayTypeImpl.m; sourceTree = "<group>"; };
+		0649A7451AE0799100DE2494 /* GenericSignatureParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = GenericSignatureParser.h; path = build_result/Classes/libcore/reflect/GenericSignatureParser.h; sourceTree = "<group>"; };
+		0649A7461AE0799100DE2494 /* GenericSignatureParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = GenericSignatureParser.m; path = build_result/Classes/libcore/reflect/GenericSignatureParser.m; sourceTree = "<group>"; };
+		0649A7471AE0799100DE2494 /* ListOfTypes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ListOfTypes.h; path = build_result/Classes/libcore/reflect/ListOfTypes.h; sourceTree = "<group>"; };
+		0649A7481AE0799100DE2494 /* ListOfTypes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ListOfTypes.m; path = build_result/Classes/libcore/reflect/ListOfTypes.m; sourceTree = "<group>"; };
+		0649A7491AE0799100DE2494 /* ListOfVariables.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ListOfVariables.h; path = build_result/Classes/libcore/reflect/ListOfVariables.h; sourceTree = "<group>"; };
+		0649A74A1AE0799100DE2494 /* ListOfVariables.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ListOfVariables.m; path = build_result/Classes/libcore/reflect/ListOfVariables.m; sourceTree = "<group>"; };
+		0649A74B1AE0799100DE2494 /* ParameterizedTypeImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ParameterizedTypeImpl.h; path = build_result/Classes/libcore/reflect/ParameterizedTypeImpl.h; sourceTree = "<group>"; };
+		0649A74C1AE0799100DE2494 /* ParameterizedTypeImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ParameterizedTypeImpl.m; path = build_result/Classes/libcore/reflect/ParameterizedTypeImpl.m; sourceTree = "<group>"; };
+		0649A74D1AE0799100DE2494 /* Types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Types.h; path = build_result/Classes/libcore/reflect/Types.h; sourceTree = "<group>"; };
+		0649A74E1AE0799100DE2494 /* Types.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Types.m; path = build_result/Classes/libcore/reflect/Types.m; sourceTree = "<group>"; };
+		0649A74F1AE0799100DE2494 /* TypeVariableImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TypeVariableImpl.h; path = build_result/Classes/libcore/reflect/TypeVariableImpl.h; sourceTree = "<group>"; };
+		0649A7501AE0799100DE2494 /* TypeVariableImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TypeVariableImpl.m; path = build_result/Classes/libcore/reflect/TypeVariableImpl.m; sourceTree = "<group>"; };
+		0649A7511AE0799100DE2494 /* WildcardTypeImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = WildcardTypeImpl.h; path = build_result/Classes/libcore/reflect/WildcardTypeImpl.h; sourceTree = "<group>"; };
+		0649A7521AE0799100DE2494 /* WildcardTypeImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = WildcardTypeImpl.m; path = build_result/Classes/libcore/reflect/WildcardTypeImpl.m; sourceTree = "<group>"; };
+		0649A7531AE079CD00DE2494 /* ASN1Integer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ASN1Integer.h; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Integer.h; sourceTree = "<group>"; };
+		0649A7541AE079CD00DE2494 /* ASN1Integer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ASN1Integer.m; path = build_result/Classes/org/apache/harmony/security/asn1/ASN1Integer.m; sourceTree = "<group>"; };
+		0649A7551AE079CD00DE2494 /* PrivateKeyImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PrivateKeyImpl.h; path = build_result/Classes/org/apache/harmony/security/PrivateKeyImpl.h; sourceTree = "<group>"; };
+		0649A7561AE079CD00DE2494 /* PrivateKeyImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PrivateKeyImpl.m; path = build_result/Classes/org/apache/harmony/security/PrivateKeyImpl.m; sourceTree = "<group>"; };
+		0649A7571AE079CD00DE2494 /* PublicKeyImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = PublicKeyImpl.h; path = build_result/Classes/org/apache/harmony/security/PublicKeyImpl.h; sourceTree = "<group>"; };
+		0649A7581AE079CD00DE2494 /* PublicKeyImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = PublicKeyImpl.m; path = build_result/Classes/org/apache/harmony/security/PublicKeyImpl.m; sourceTree = "<group>"; };
+		0649A7591AE07A4100DE2494 /* JSON.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSON.h; path = build_result/Classes/org/json/JSON.h; sourceTree = "<group>"; };
+		0649A75A1AE07A4100DE2494 /* JSON.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JSON.m; path = build_result/Classes/org/json/JSON.m; sourceTree = "<group>"; };
+		0649A75B1AE07A4100DE2494 /* JSONArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSONArray.h; path = build_result/Classes/org/json/JSONArray.h; sourceTree = "<group>"; };
+		0649A75C1AE07A4100DE2494 /* JSONArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JSONArray.m; path = build_result/Classes/org/json/JSONArray.m; sourceTree = "<group>"; };
+		0649A75D1AE07A4100DE2494 /* JSONException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSONException.h; path = build_result/Classes/org/json/JSONException.h; sourceTree = "<group>"; };
+		0649A75E1AE07A4100DE2494 /* JSONException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JSONException.m; path = build_result/Classes/org/json/JSONException.m; sourceTree = "<group>"; };
+		0649A75F1AE07A4100DE2494 /* JSONObject.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSONObject.h; path = build_result/Classes/org/json/JSONObject.h; sourceTree = "<group>"; };
+		0649A7601AE07A4100DE2494 /* JSONObject.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JSONObject.m; path = build_result/Classes/org/json/JSONObject.m; sourceTree = "<group>"; };
+		0649A7611AE07A4100DE2494 /* JSONStringer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSONStringer.h; path = build_result/Classes/org/json/JSONStringer.h; sourceTree = "<group>"; };
+		0649A7621AE07A4100DE2494 /* JSONStringer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JSONStringer.m; path = build_result/Classes/org/json/JSONStringer.m; sourceTree = "<group>"; };
+		0649A7631AE07A4100DE2494 /* JSONTokener.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = JSONTokener.h; path = build_result/Classes/org/json/JSONTokener.h; sourceTree = "<group>"; };
+		0649A7641AE07A4100DE2494 /* JSONTokener.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = JSONTokener.m; path = build_result/Classes/org/json/JSONTokener.m; sourceTree = "<group>"; };
+		0649A7651AE07A4100DE2494 /* Attr.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Attr.h; path = build_result/Classes/org/w3c/dom/Attr.h; sourceTree = "<group>"; };
+		0649A7661AE07A4100DE2494 /* Attr.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Attr.m; path = build_result/Classes/org/w3c/dom/Attr.m; sourceTree = "<group>"; };
+		0649A7671AE07A4100DE2494 /* CDATASection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CDATASection.h; path = build_result/Classes/org/w3c/dom/CDATASection.h; sourceTree = "<group>"; };
+		0649A7681AE07A4100DE2494 /* CDATASection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CDATASection.m; path = build_result/Classes/org/w3c/dom/CDATASection.m; sourceTree = "<group>"; };
+		0649A7691AE07A4100DE2494 /* CharacterData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharacterData.h; path = build_result/Classes/org/w3c/dom/CharacterData.h; sourceTree = "<group>"; };
+		0649A76A1AE07A4100DE2494 /* CharacterData.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharacterData.m; path = build_result/Classes/org/w3c/dom/CharacterData.m; sourceTree = "<group>"; };
+		0649A76B1AE07A4100DE2494 /* Comment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Comment.h; path = build_result/Classes/org/w3c/dom/Comment.h; sourceTree = "<group>"; };
+		0649A76C1AE07A4200DE2494 /* Comment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Comment.m; path = build_result/Classes/org/w3c/dom/Comment.m; sourceTree = "<group>"; };
+		0649A76D1AE07A4200DE2494 /* Document.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Document.h; path = build_result/Classes/org/w3c/dom/Document.h; sourceTree = "<group>"; };
+		0649A76E1AE07A4200DE2494 /* Document.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Document.m; path = build_result/Classes/org/w3c/dom/Document.m; sourceTree = "<group>"; };
+		0649A76F1AE07A4200DE2494 /* DocumentFragment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DocumentFragment.h; path = build_result/Classes/org/w3c/dom/DocumentFragment.h; sourceTree = "<group>"; };
+		0649A7701AE07A4200DE2494 /* DocumentFragment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DocumentFragment.m; path = build_result/Classes/org/w3c/dom/DocumentFragment.m; sourceTree = "<group>"; };
+		0649A7711AE07A4200DE2494 /* DocumentType.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DocumentType.h; path = build_result/Classes/org/w3c/dom/DocumentType.h; sourceTree = "<group>"; };
+		0649A7721AE07A4200DE2494 /* DocumentType.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DocumentType.m; path = build_result/Classes/org/w3c/dom/DocumentType.m; sourceTree = "<group>"; };
+		0649A7731AE07A4200DE2494 /* DOMConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DOMConfiguration.h; path = build_result/Classes/org/w3c/dom/DOMConfiguration.h; sourceTree = "<group>"; };
+		0649A7741AE07A4200DE2494 /* DOMConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DOMConfiguration.m; path = build_result/Classes/org/w3c/dom/DOMConfiguration.m; sourceTree = "<group>"; };
+		0649A7751AE07A4200DE2494 /* DOMError.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DOMError.h; path = build_result/Classes/org/w3c/dom/DOMError.h; sourceTree = "<group>"; };
+		0649A7761AE07A4200DE2494 /* DOMError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DOMError.m; path = build_result/Classes/org/w3c/dom/DOMError.m; sourceTree = "<group>"; };
+		0649A7771AE07A4200DE2494 /* DOMErrorHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DOMErrorHandler.h; path = build_result/Classes/org/w3c/dom/DOMErrorHandler.h; sourceTree = "<group>"; };
+		0649A7781AE07A4200DE2494 /* DOMErrorHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DOMErrorHandler.m; path = build_result/Classes/org/w3c/dom/DOMErrorHandler.m; sourceTree = "<group>"; };
+		0649A7791AE07A4200DE2494 /* DOMException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DOMException.h; path = build_result/Classes/org/w3c/dom/DOMException.h; sourceTree = "<group>"; };
+		0649A77A1AE07A4200DE2494 /* DOMException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DOMException.m; path = build_result/Classes/org/w3c/dom/DOMException.m; sourceTree = "<group>"; };
+		0649A77B1AE07A4200DE2494 /* DOMImplementation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DOMImplementation.h; path = build_result/Classes/org/w3c/dom/DOMImplementation.h; sourceTree = "<group>"; };
+		0649A77C1AE07A4200DE2494 /* DOMImplementation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DOMImplementation.m; path = build_result/Classes/org/w3c/dom/DOMImplementation.m; sourceTree = "<group>"; };
+		0649A77D1AE07A4200DE2494 /* DOMImplementationList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DOMImplementationList.h; path = build_result/Classes/org/w3c/dom/DOMImplementationList.h; sourceTree = "<group>"; };
+		0649A77E1AE07A4200DE2494 /* DOMImplementationList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DOMImplementationList.m; path = build_result/Classes/org/w3c/dom/DOMImplementationList.m; sourceTree = "<group>"; };
+		0649A77F1AE07A4200DE2494 /* DOMImplementationSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DOMImplementationSource.h; path = build_result/Classes/org/w3c/dom/DOMImplementationSource.h; sourceTree = "<group>"; };
+		0649A7801AE07A4200DE2494 /* DOMImplementationSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DOMImplementationSource.m; path = build_result/Classes/org/w3c/dom/DOMImplementationSource.m; sourceTree = "<group>"; };
+		0649A7811AE07A4200DE2494 /* DOMLocator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DOMLocator.h; path = build_result/Classes/org/w3c/dom/DOMLocator.h; sourceTree = "<group>"; };
+		0649A7821AE07A4200DE2494 /* DOMLocator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DOMLocator.m; path = build_result/Classes/org/w3c/dom/DOMLocator.m; sourceTree = "<group>"; };
+		0649A7831AE07A4200DE2494 /* DOMStringList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DOMStringList.h; path = build_result/Classes/org/w3c/dom/DOMStringList.h; sourceTree = "<group>"; };
+		0649A7841AE07A4200DE2494 /* DOMStringList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DOMStringList.m; path = build_result/Classes/org/w3c/dom/DOMStringList.m; sourceTree = "<group>"; };
+		0649A7851AE07A4200DE2494 /* Element.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Element.h; path = build_result/Classes/org/w3c/dom/Element.h; sourceTree = "<group>"; };
+		0649A7861AE07A4300DE2494 /* Element.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Element.m; path = build_result/Classes/org/w3c/dom/Element.m; sourceTree = "<group>"; };
+		0649A7871AE07A4300DE2494 /* Entity.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Entity.h; path = build_result/Classes/org/w3c/dom/Entity.h; sourceTree = "<group>"; };
+		0649A7881AE07A4300DE2494 /* Entity.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Entity.m; path = build_result/Classes/org/w3c/dom/Entity.m; sourceTree = "<group>"; };
+		0649A7891AE07A4300DE2494 /* EntityReference.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = EntityReference.h; path = build_result/Classes/org/w3c/dom/EntityReference.h; sourceTree = "<group>"; };
+		0649A78A1AE07A4300DE2494 /* EntityReference.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = EntityReference.m; path = build_result/Classes/org/w3c/dom/EntityReference.m; sourceTree = "<group>"; };
+		0649A78B1AE07A4300DE2494 /* DOMImplementationLS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = DOMImplementationLS.h; path = build_result/Classes/org/w3c/dom/ls/DOMImplementationLS.h; sourceTree = "<group>"; };
+		0649A78C1AE07A4300DE2494 /* DOMImplementationLS.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DOMImplementationLS.m; path = build_result/Classes/org/w3c/dom/ls/DOMImplementationLS.m; sourceTree = "<group>"; };
+		0649A78D1AE07A4300DE2494 /* LSException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSException.h; path = build_result/Classes/org/w3c/dom/ls/LSException.h; sourceTree = "<group>"; };
+		0649A78E1AE07A4300DE2494 /* LSException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LSException.m; path = build_result/Classes/org/w3c/dom/ls/LSException.m; sourceTree = "<group>"; };
+		0649A78F1AE07A4300DE2494 /* LSInput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LSInput.m; path = build_result/Classes/org/w3c/dom/ls/LSInput.m; sourceTree = "<group>"; };
+		0649A7901AE07A4300DE2494 /* LSOutput.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSOutput.h; path = build_result/Classes/org/w3c/dom/ls/LSOutput.h; sourceTree = "<group>"; };
+		0649A7911AE07A4300DE2494 /* LSOutput.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LSOutput.m; path = build_result/Classes/org/w3c/dom/ls/LSOutput.m; sourceTree = "<group>"; };
+		0649A7921AE07A4300DE2494 /* LSParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSParser.h; path = build_result/Classes/org/w3c/dom/ls/LSParser.h; sourceTree = "<group>"; };
+		0649A7931AE07A4300DE2494 /* LSParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LSParser.m; path = build_result/Classes/org/w3c/dom/ls/LSParser.m; sourceTree = "<group>"; };
+		0649A7941AE07A4300DE2494 /* LSParserFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSParserFilter.h; path = build_result/Classes/org/w3c/dom/ls/LSParserFilter.h; sourceTree = "<group>"; };
+		0649A7951AE07A4300DE2494 /* LSParserFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LSParserFilter.m; path = build_result/Classes/org/w3c/dom/ls/LSParserFilter.m; sourceTree = "<group>"; };
+		0649A7961AE07A4300DE2494 /* LSResourceResolver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LSResourceResolver.m; path = build_result/Classes/org/w3c/dom/ls/LSResourceResolver.m; sourceTree = "<group>"; };
+		0649A7971AE07A4300DE2494 /* LSSerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSSerializer.h; path = build_result/Classes/org/w3c/dom/ls/LSSerializer.h; sourceTree = "<group>"; };
+		0649A7981AE07A4300DE2494 /* LSSerializer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LSSerializer.m; path = build_result/Classes/org/w3c/dom/ls/LSSerializer.m; sourceTree = "<group>"; };
+		0649A7991AE07A4300DE2494 /* LSSerializerFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = LSSerializerFilter.h; path = build_result/Classes/org/w3c/dom/ls/LSSerializerFilter.h; sourceTree = "<group>"; };
+		0649A79A1AE07A4300DE2494 /* LSSerializerFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LSSerializerFilter.m; path = build_result/Classes/org/w3c/dom/ls/LSSerializerFilter.m; sourceTree = "<group>"; };
+		0649A79B1AE07A4300DE2494 /* NamedNodeMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NamedNodeMap.h; path = build_result/Classes/org/w3c/dom/NamedNodeMap.h; sourceTree = "<group>"; };
+		0649A79C1AE07A4300DE2494 /* NamedNodeMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NamedNodeMap.m; path = build_result/Classes/org/w3c/dom/NamedNodeMap.m; sourceTree = "<group>"; };
+		0649A79D1AE07A4300DE2494 /* NameList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NameList.h; path = build_result/Classes/org/w3c/dom/NameList.h; sourceTree = "<group>"; };
+		0649A79E1AE07A4300DE2494 /* NameList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NameList.m; path = build_result/Classes/org/w3c/dom/NameList.m; sourceTree = "<group>"; };
+		0649A79F1AE07A4300DE2494 /* Node.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Node.h; path = build_result/Classes/org/w3c/dom/Node.h; sourceTree = "<group>"; };
+		0649A7A01AE07A4400DE2494 /* Node.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Node.m; path = build_result/Classes/org/w3c/dom/Node.m; sourceTree = "<group>"; };
+		0649A7A11AE07A4400DE2494 /* NodeList.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeList.h; path = build_result/Classes/org/w3c/dom/NodeList.h; sourceTree = "<group>"; };
+		0649A7A21AE07A4400DE2494 /* NodeList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NodeList.m; path = build_result/Classes/org/w3c/dom/NodeList.m; sourceTree = "<group>"; };
+		0649A7A31AE07A4400DE2494 /* Notation.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Notation.h; path = build_result/Classes/org/w3c/dom/Notation.h; sourceTree = "<group>"; };
+		0649A7A41AE07A4400DE2494 /* Notation.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Notation.m; path = build_result/Classes/org/w3c/dom/Notation.m; sourceTree = "<group>"; };
+		0649A7A51AE07A4400DE2494 /* ProcessingInstruction.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ProcessingInstruction.h; path = build_result/Classes/org/w3c/dom/ProcessingInstruction.h; sourceTree = "<group>"; };
+		0649A7A61AE07A4400DE2494 /* ProcessingInstruction.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ProcessingInstruction.m; path = build_result/Classes/org/w3c/dom/ProcessingInstruction.m; sourceTree = "<group>"; };
+		0649A7A71AE07A4400DE2494 /* Text.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Text.h; path = build_result/Classes/org/w3c/dom/Text.h; sourceTree = "<group>"; };
+		0649A7A81AE07A4400DE2494 /* Text.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Text.m; path = build_result/Classes/org/w3c/dom/Text.m; sourceTree = "<group>"; };
+		0649A7A91AE07A4400DE2494 /* NodeFilter.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeFilter.h; path = build_result/Classes/org/w3c/dom/traversal/NodeFilter.h; sourceTree = "<group>"; };
+		0649A7AA1AE07A4400DE2494 /* NodeFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NodeFilter.m; path = build_result/Classes/org/w3c/dom/traversal/NodeFilter.m; sourceTree = "<group>"; };
+		0649A7AB1AE07A4400DE2494 /* NodeIterator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = NodeIterator.h; path = build_result/Classes/org/w3c/dom/traversal/NodeIterator.h; sourceTree = "<group>"; };
+		0649A7AC1AE07A4400DE2494 /* NodeIterator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = NodeIterator.m; path = build_result/Classes/org/w3c/dom/traversal/NodeIterator.m; sourceTree = "<group>"; };
+		0649A7AD1AE07A4400DE2494 /* TypeInfo.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TypeInfo.m; path = build_result/Classes/org/w3c/dom/TypeInfo.m; sourceTree = "<group>"; };
+		0649A7AE1AE07A4400DE2494 /* UserDataHandler.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UserDataHandler.h; path = build_result/Classes/org/w3c/dom/UserDataHandler.h; sourceTree = "<group>"; };
+		0649A7AF1AE07A4400DE2494 /* UserDataHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = UserDataHandler.m; path = build_result/Classes/org/w3c/dom/UserDataHandler.m; sourceTree = "<group>"; };
+		0649A7B01AE07A4400DE2494 /* AttributeList.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AttributeList.m; path = build_result/Classes/org/xml/sax/AttributeList.m; sourceTree = "<group>"; };
+		0649A7B11AE07A4400DE2494 /* Attributes.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Attributes.m; path = build_result/Classes/org/xml/sax/Attributes.m; sourceTree = "<group>"; };
+		0649A7B21AE07A4400DE2494 /* ContentHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ContentHandler.m; path = build_result/Classes/org/xml/sax/ContentHandler.m; sourceTree = "<group>"; };
+		0649A7B31AE07A4400DE2494 /* DocumentHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DocumentHandler.m; path = build_result/Classes/org/xml/sax/DocumentHandler.m; sourceTree = "<group>"; };
+		0649A7B41AE07A4400DE2494 /* DTDHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DTDHandler.m; path = build_result/Classes/org/xml/sax/DTDHandler.m; sourceTree = "<group>"; };
+		0649A7B51AE07A4400DE2494 /* EntityResolver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = EntityResolver.m; path = build_result/Classes/org/xml/sax/EntityResolver.m; sourceTree = "<group>"; };
+		0649A7B61AE07A4400DE2494 /* ErrorHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ErrorHandler.m; path = build_result/Classes/org/xml/sax/ErrorHandler.m; sourceTree = "<group>"; };
+		0649A7B71AE07A4400DE2494 /* Attributes2.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Attributes2.m; path = build_result/Classes/org/xml/sax/ext/Attributes2.m; sourceTree = "<group>"; };
+		0649A7B81AE07A4400DE2494 /* DeclHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DeclHandler.m; path = build_result/Classes/org/xml/sax/ext/DeclHandler.m; sourceTree = "<group>"; };
+		0649A7B91AE07A4400DE2494 /* EntityResolver2.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = EntityResolver2.m; path = build_result/Classes/org/xml/sax/ext/EntityResolver2.m; sourceTree = "<group>"; };
+		0649A7BA1AE07A4500DE2494 /* LexicalHandler.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LexicalHandler.m; path = build_result/Classes/org/xml/sax/ext/LexicalHandler.m; sourceTree = "<group>"; };
+		0649A7BB1AE07A4500DE2494 /* Locator2.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Locator2.m; path = build_result/Classes/org/xml/sax/ext/Locator2.m; sourceTree = "<group>"; };
+		0649A7BC1AE07A4500DE2494 /* Parser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Parser.m; path = build_result/Classes/org/xml/sax/Parser.m; sourceTree = "<group>"; };
+		0649A7BD1AE07A4500DE2494 /* XMLFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = XMLFilter.m; path = build_result/Classes/org/xml/sax/XMLFilter.m; sourceTree = "<group>"; };
+		0649A7BE1AE07A4500DE2494 /* XMLReader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = XMLReader.m; path = build_result/Classes/org/xml/sax/XMLReader.m; sourceTree = "<group>"; };
+		0649A7BF1AE07A4500DE2494 /* XmlSerializer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = XmlSerializer.m; path = build_result/Classes/org/xmlpull/v1/XmlSerializer.m; sourceTree = "<group>"; };
 		064FB746172705F400DC0D51 /* URI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URI.h; path = build_result/Classes/java/net/URI.h; sourceTree = "<group>"; };
 		064FB747172705F400DC0D51 /* URI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URI.m; path = build_result/Classes/java/net/URI.m; sourceTree = "<group>"; };
 		064FB74A172705F400DC0D51 /* URISyntaxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URISyntaxException.h; path = build_result/Classes/java/net/URISyntaxException.h; sourceTree = "<group>"; };
@@ -3602,6 +4092,16 @@
 				06C73DA619180C6E001D3CC8 /* AddressCache.m */,
 				06F2915B18972E6800676F1D /* Adler32.h */,
 				06F2915C18972E6800676F1D /* Adler32.m */,
+				0649A61C1AE077D200DE2494 /* AlgorithmParameterGenerator.h */,
+				0649A61D1AE077D300DE2494 /* AlgorithmParameterGenerator.m */,
+				0649A61E1AE077D300DE2494 /* AlgorithmParameterGeneratorSpi.h */,
+				0649A61F1AE077D300DE2494 /* AlgorithmParameterGeneratorSpi.m */,
+				0649A6201AE077D300DE2494 /* AlgorithmParameters.h */,
+				0649A6211AE077D300DE2494 /* AlgorithmParameters.m */,
+				0649A6541AE077E800DE2494 /* AlgorithmParameterSpec.h */,
+				0649A6551AE077E800DE2494 /* AlgorithmParameterSpec.m */,
+				0649A6221AE077D300DE2494 /* AlgorithmParametersSpi.h */,
+				0649A6231AE077D300DE2494 /* AlgorithmParametersSpi.m */,
 				06ED3D9017D165500014750E /* AllPermission.h */,
 				06ED3D9117D165500014750E /* AllPermission.m */,
 				06ED3D9217D165500014750E /* AllPermissionCollection.h */,
@@ -3624,7 +4124,9 @@
 				06F2903218972CCF00676F1D /* Appendable.m */,
 				06721B301559CC0300645E1B /* ArithmeticException.h */,
 				067219CD1559C87100645E1B /* ArithmeticException.m */,
+				0649A6841AE0780400DE2494 /* Array.h */,
 				0697F60315D190580027A7E4 /* Array.h */,
+				0649A6851AE0780400DE2494 /* Array.m */,
 				0697F60415D190580027A7E4 /* Array.m */,
 				06F290BF18972DF800676F1D /* ArrayBlockingQueue.h */,
 				06F290C018972DF800676F1D /* ArrayBlockingQueue.m */,
@@ -3656,6 +4158,8 @@
 				06C73F1919180DB7001D3CC8 /* ASN1Exception.m */,
 				06C73F1A19180DB7001D3CC8 /* ASN1Explicit.h */,
 				06C73F1B19180DB7001D3CC8 /* ASN1Explicit.m */,
+				0649A7531AE079CD00DE2494 /* ASN1Integer.h */,
+				0649A7541AE079CD00DE2494 /* ASN1Integer.m */,
 				06C73F1C19180DB7001D3CC8 /* ASN1Oid.h */,
 				06C73F1D19180DB7001D3CC8 /* ASN1Oid.m */,
 				06C73F1E19180DB7001D3CC8 /* ASN1Primitive.h */,
@@ -3710,15 +4214,20 @@
 				06F2913118972E1700676F1D /* AtomicReferenceFieldUpdater.m */,
 				06F2913218972E1700676F1D /* AtomicStampedReference.h */,
 				06F2913318972E1700676F1D /* AtomicStampedReference.m */,
+				0649A7651AE07A4100DE2494 /* Attr.h */,
+				0649A7661AE07A4100DE2494 /* Attr.m */,
 				06ED3DBE17D165DE0014750E /* AttributedCharacterIterator.h */,
 				06ED3DBF17D165DE0014750E /* AttributedCharacterIterator.m */,
 				06ED3DC017D165DE0014750E /* AttributedString.h */,
 				06ED3DC117D165DE0014750E /* AttributedString.m */,
 				064FB7C0172707F200DC0D51 /* AttributeList.h */,
+				0649A7B01AE07A4400DE2494 /* AttributeList.m */,
 				064FB7D41727081D00DC0D51 /* AttributeListImpl.h */,
 				064FB7D51727081D00DC0D51 /* AttributeListImpl.m */,
 				064FB7C1172707F200DC0D51 /* Attributes.h */,
+				0649A7B11AE07A4400DE2494 /* Attributes.m */,
 				064FB7AA172707D700DC0D51 /* Attributes2.h */,
+				0649A7B71AE07A4400DE2494 /* Attributes2.m */,
 				064FB7AB172707D700DC0D51 /* Attributes2Impl.h */,
 				064FB7AC172707D700DC0D51 /* Attributes2Impl.m */,
 				064FB7D61727081D00DC0D51 /* AttributesImpl.h */,
@@ -3745,6 +4254,8 @@
 				06DDF48616E83FF800A08BE0 /* BasicLruCache.m */,
 				06ED3D9417D165510014750E /* BasicPermission.h */,
 				06ED3D9517D165510014750E /* BasicPermission.m */,
+				0649A6861AE0780400DE2494 /* BatchUpdateException.h */,
+				0649A6871AE0780400DE2494 /* BatchUpdateException.m */,
 				06C73F3419180DB8001D3CC8 /* BerInputStream.h */,
 				06C73F3519180DB8001D3CC8 /* BerInputStream.m */,
 				06C73F3619180DB8001D3CC8 /* BerOutputStream.h */,
@@ -3761,6 +4272,8 @@
 				06721A311559C91600645E1B /* BitSet.m */,
 				06C73F3819180DB8001D3CC8 /* BitString.h */,
 				06C73F3919180DB8001D3CC8 /* BitString.m */,
+				0649A6881AE0780400DE2494 /* Blob.h */,
+				0649A6891AE0780400DE2494 /* Blob.m */,
 				06C73D9B19180C31001D3CC8 /* BlockGuard.h */,
 				06C73D9C19180C31001D3CC8 /* BlockGuard.m */,
 				06F290C118972DF800676F1D /* BlockingDeque.h */,
@@ -3821,10 +4334,18 @@
 				06DD333316A1406A00AD7ACE /* Calendar.m */,
 				06F290C718972DF800676F1D /* Callable.h */,
 				06F290C818972DF800676F1D /* Callable.m */,
+				0649A68A1AE0780400DE2494 /* CallableStatement.h */,
+				0649A68B1AE0780400DE2494 /* CallableStatement.m */,
+				0649A7371AE0796700DE2494 /* Callback.h */,
+				0649A7381AE0796700DE2494 /* Callback.m */,
+				0649A7391AE0796700DE2494 /* CallbackHandler.h */,
+				0649A73A1AE0796700DE2494 /* CallbackHandler.m */,
 				06F290C918972DF800676F1D /* CancellationException.h */,
 				06F290CA18972DF800676F1D /* CancellationException.m */,
 				06C73E5719180CC8001D3CC8 /* CancelledKeyException.h */,
 				06C73E5819180CC8001D3CC8 /* CancelledKeyException.m */,
+				0649A7671AE07A4100DE2494 /* CDATASection.h */,
+				0649A7681AE07A4100DE2494 /* CDATASection.m */,
 				06C73ECE19180D3F001D3CC8 /* Certificate.h */,
 				06C73EA419180CF9001D3CC8 /* Certificate.h */,
 				06C73ECF19180D3F001D3CC8 /* Certificate.m */,
@@ -3853,12 +4374,18 @@
 				06C73EB319180CF9001D3CC8 /* CertificateParsingException.m */,
 				06C73EB419180CF9001D3CC8 /* CertPath.h */,
 				06C73EB519180CF9001D3CC8 /* CertPath.m */,
+				0649A6241AE077D300DE2494 /* CertPathParameters.h */,
+				0649A6251AE077D300DE2494 /* CertPathParameters.m */,
 				06C73E5919180CC8001D3CC8 /* Channel.h */,
 				06C73E5A19180CC8001D3CC8 /* Channel.m */,
+				0649A5FC1AE0778600DE2494 /* Channels.h */,
+				0649A5FD1AE0778600DE2494 /* Channels.m */,
 				06721B361559CC0300645E1B /* Character.h */,
 				067219D31559C87100645E1B /* Character.m */,
 				06AA054817E110D00017C34A /* CharacterCodingException.h */,
 				06AA054917E110D00017C34A /* CharacterCodingException.m */,
+				0649A7691AE07A4100DE2494 /* CharacterData.h */,
+				0649A76A1AE07A4100DE2494 /* CharacterData.m */,
 				06ED3DC217D165DE0014750E /* CharacterIterator.h */,
 				06ED3DC317D165DE0014750E /* CharacterIterator.m */,
 				06DD32A316A13FA000AD7ACE /* CharArrayBuffer.h */,
@@ -3897,6 +4424,10 @@
 				06ED3D6317D164AF0014750E /* ClassLoader.m */,
 				06721B381559CC0300645E1B /* ClassNotFoundException.h */,
 				067219D51559C87100645E1B /* ClassNotFoundException.m */,
+				0649A68C1AE0780400DE2494 /* ClientInfoStatus.h */,
+				0649A68D1AE0780400DE2494 /* ClientInfoStatus.m */,
+				0649A68E1AE0780400DE2494 /* Clob.h */,
+				0649A68F1AE0780500DE2494 /* Clob.m */,
 				06721B391559CC0300645E1B /* CloneNotSupportedException.h */,
 				067219D61559C87100645E1B /* CloneNotSupportedException.m */,
 				06721A831559CB2500645E1B /* Closeable.h */,
@@ -3925,6 +4456,8 @@
 				06F2908118972DA200676F1D /* Collection.m */,
 				06721ACF1559CB4200645E1B /* Collections.h */,
 				06721A321559C91600645E1B /* Collections.m */,
+				0649A76B1AE07A4100DE2494 /* Comment.h */,
+				0649A76C1AE07A4200DE2494 /* Comment.m */,
 				0699FF8218D7851500278029 /* ComparableTimSort.h */,
 				0699FF8318D7851500278029 /* ComparableTimSort.m */,
 				06721AD01559CB4200645E1B /* Comparator.h */,
@@ -3951,6 +4484,8 @@
 				06F2913D18972E2E00676F1D /* Condition.m */,
 				06C73DAF19180C8A001D3CC8 /* ConnectException.h */,
 				06C73DB019180C8A001D3CC8 /* ConnectException.m */,
+				0649A6901AE0780500DE2494 /* Connection.h */,
+				0649A6911AE0780500DE2494 /* Connection.m */,
 				06C73E6119180CC8001D3CC8 /* ConnectionPendingException.h */,
 				06C73E6219180CC8001D3CC8 /* ConnectionPendingException.m */,
 				06F2914918972E5100676F1D /* ConsoleHandler.h */,
@@ -3959,6 +4494,7 @@
 				06C73D7819180C0C001D3CC8 /* ContainerHelpers.m */,
 				06C73DB119180C8A001D3CC8 /* ContentHandler.h */,
 				064FB7C2172707F200DC0D51 /* ContentHandler.h */,
+				0649A7B21AE07A4400DE2494 /* ContentHandler.m */,
 				06C73DB219180C8A001D3CC8 /* ContentHandler.m */,
 				06C73DB319180C8A001D3CC8 /* ContentHandlerFactory.h */,
 				06C73DB419180C8A001D3CC8 /* ContentHandlerFactory.m */,
@@ -3966,6 +4502,14 @@
 				067855CA169F37710042431C /* Conversion.m */,
 				06C73DB519180C8A001D3CC8 /* CookieHandler.h */,
 				06C73DB619180C8A001D3CC8 /* CookieHandler.m */,
+				0649A5EA1AE0778600DE2494 /* CookieManager.h */,
+				0649A5EB1AE0778600DE2494 /* CookieManager.m */,
+				0649A5EC1AE0778600DE2494 /* CookiePolicy.h */,
+				0649A5ED1AE0778600DE2494 /* CookiePolicy.m */,
+				0649A5EE1AE0778600DE2494 /* CookieStore.h */,
+				0649A5EF1AE0778600DE2494 /* CookieStore.m */,
+				0649A5F01AE0778600DE2494 /* CookieStoreImpl.h */,
+				0649A5F11AE0778600DE2494 /* CookieStoreImpl.m */,
 				06F290D718972DF900676F1D /* CopyOnWriteArrayList.h */,
 				06F290D818972DF900676F1D /* CopyOnWriteArrayList.m */,
 				06F290D918972DF900676F1D /* CopyOnWriteArraySet.h */,
@@ -3982,10 +4526,14 @@
 				06DD333516A1406A00AD7ACE /* Currency.m */,
 				06F290DD18972DF900676F1D /* CyclicBarrier.h */,
 				06F290DE18972DF900676F1D /* CyclicBarrier.m */,
+				0649A6921AE0780500DE2494 /* DatabaseMetaData.h */,
+				0649A6931AE0780500DE2494 /* DatabaseMetaData.m */,
 				06F2916518972E6800676F1D /* DataFormatException.h */,
 				06F2916618972E6800676F1D /* DataFormatException.m */,
 				06C73E6319180CC8001D3CC8 /* DatagramChannel.h */,
 				06C73E6419180CC8001D3CC8 /* DatagramChannel.m */,
+				0649A5FE1AE0778600DE2494 /* DatagramChannelImpl.h */,
+				0649A5FF1AE0778600DE2494 /* DatagramChannelImpl.m */,
 				06C73DB719180C8A001D3CC8 /* DatagramPacket.h */,
 				06C73DB819180C8A001D3CC8 /* DatagramPacket.m */,
 				06C73DB919180C8A001D3CC8 /* DatagramSocket.h */,
@@ -4002,6 +4550,8 @@
 				06F28FF618972C9300676F1D /* DataOutput.m */,
 				06ED3D4F17D1645A0014750E /* DataOutputStream.h */,
 				06ED3D5017D1645A0014750E /* DataOutputStream.m */,
+				0649A6941AE0780500DE2494 /* DataTruncation.h */,
+				0649A6951AE0780500DE2494 /* DataTruncation.m */,
 				06ED3DB617D165670014750E /* Date.h */,
 				06721AE31559CB9200645E1B /* Date.h */,
 				06ED3DB717D165670014750E /* Date.m */,
@@ -4015,12 +4565,21 @@
 				06ED3DCE17D165DE0014750E /* DecimalFormatSymbols.h */,
 				06ED3DCF17D165DE0014750E /* DecimalFormatSymbols.m */,
 				064FB7AD172707D700DC0D51 /* DeclHandler.h */,
+				0649A7B81AE07A4400DE2494 /* DeclHandler.m */,
 				06C73DBF19180C8A001D3CC8 /* DefaultFileNameMap.h */,
 				06C73DC019180C8A001D3CC8 /* DefaultFileNameMap.m */,
 				064FB7D81727081D00DC0D51 /* DefaultHandler.h */,
 				064FB7D91727081D00DC0D51 /* DefaultHandler.m */,
 				064FB7AE172707D700DC0D51 /* DefaultHandler2.h */,
 				064FB7AF172707D700DC0D51 /* DefaultHandler2.m */,
+				0649A6F21AE0796400DE2494 /* DefaultServerSocketFactory.h */,
+				0649A6F31AE0796400DE2494 /* DefaultServerSocketFactory.m */,
+				0649A6F41AE0796400DE2494 /* DefaultSocketFactory.h */,
+				0649A6F51AE0796400DE2494 /* DefaultSocketFactory.m */,
+				0649A6FB1AE0796500DE2494 /* DefaultSSLServerSocketFactory.h */,
+				0649A6FC1AE0796500DE2494 /* DefaultSSLServerSocketFactory.m */,
+				0649A6FD1AE0796500DE2494 /* DefaultSSLSocketFactory.h */,
+				0649A6FE1AE0796500DE2494 /* DefaultSSLSocketFactory.m */,
 				0699FF8C18D7851500278029 /* Deflater.h */,
 				0699FF8D18D7851500278029 /* Deflater.m */,
 				0699FF8E18D7851500278029 /* DeflaterInputStream.h */,
@@ -4041,40 +4600,106 @@
 				06C73F3B19180DB8001D3CC8 /* DerInputStream.m */,
 				06C73F3C19180DB8001D3CC8 /* DerOutputStream.h */,
 				06C73F3D19180DB8001D3CC8 /* DerOutputStream.m */,
+				0649A73F1AE0796700DE2494 /* Destroyable.h */,
+				0649A7401AE0796700DE2494 /* Destroyable.m */,
+				0649A7411AE0796700DE2494 /* DestroyFailedException.h */,
+				0649A7421AE0796700DE2494 /* DestroyFailedException.m */,
 				06721AE41559CB9200645E1B /* Dictionary.h */,
 				06721A4B1559C99E00645E1B /* Dictionary.m */,
 				06F2906718972D4C00676F1D /* DigestException.h */,
 				06F2906818972D4C00676F1D /* DigestException.m */,
+				0649A6001AE0778600DE2494 /* DirectByteBuffer.h */,
+				0649A6011AE0778600DE2494 /* DirectByteBuffer.m */,
 				06C73F5019180DE8001D3CC8 /* DirectoryString.h */,
 				06C73F5119180DE8001D3CC8 /* DirectoryString.m */,
 				067855CB169F37710042431C /* Division.h */,
 				067855CC169F37710042431C /* Division.m */,
 				06C73F5419180DE8001D3CC8 /* DNParser.h */,
 				06C73F5519180DE8001D3CC8 /* DNParser.m */,
+				0649A76D1AE07A4200DE2494 /* Document.h */,
+				0649A76E1AE07A4200DE2494 /* Document.m */,
 				06F2904F18972CE800676F1D /* Documented.h */,
 				06F2905018972CE800676F1D /* Documented.m */,
+				0649A76F1AE07A4200DE2494 /* DocumentFragment.h */,
+				0649A7701AE07A4200DE2494 /* DocumentFragment.m */,
 				064FB7C3172707F200DC0D51 /* DocumentHandler.h */,
+				0649A7B31AE07A4400DE2494 /* DocumentHandler.m */,
+				0649A7711AE07A4200DE2494 /* DocumentType.h */,
+				0649A7721AE07A4200DE2494 /* DocumentType.m */,
 				06ED3D9817D165510014750E /* DomainCombiner.h */,
 				06ED3D9917D165510014750E /* DomainCombiner.m */,
+				0649A7731AE07A4200DE2494 /* DOMConfiguration.h */,
+				0649A7741AE07A4200DE2494 /* DOMConfiguration.m */,
+				0649A7751AE07A4200DE2494 /* DOMError.h */,
+				0649A7761AE07A4200DE2494 /* DOMError.m */,
+				0649A7771AE07A4200DE2494 /* DOMErrorHandler.h */,
+				0649A7781AE07A4200DE2494 /* DOMErrorHandler.m */,
+				0649A7791AE07A4200DE2494 /* DOMException.h */,
+				0649A77A1AE07A4200DE2494 /* DOMException.m */,
+				0649A77B1AE07A4200DE2494 /* DOMImplementation.h */,
+				0649A77C1AE07A4200DE2494 /* DOMImplementation.m */,
+				0649A77D1AE07A4200DE2494 /* DOMImplementationList.h */,
+				0649A77E1AE07A4200DE2494 /* DOMImplementationList.m */,
+				0649A78B1AE07A4300DE2494 /* DOMImplementationLS.h */,
+				0649A78C1AE07A4300DE2494 /* DOMImplementationLS.m */,
+				0649A77F1AE07A4200DE2494 /* DOMImplementationSource.h */,
+				0649A7801AE07A4200DE2494 /* DOMImplementationSource.m */,
+				0649A7811AE07A4200DE2494 /* DOMLocator.h */,
+				0649A7821AE07A4200DE2494 /* DOMLocator.m */,
+				0649A7831AE07A4200DE2494 /* DOMStringList.h */,
+				0649A7841AE07A4200DE2494 /* DOMStringList.m */,
 				06721B3A1559CC0300645E1B /* Double.h */,
 				067219D71559C87100645E1B /* Double.m */,
 				06DD32A916A13FA000AD7ACE /* DoubleArrayBuffer.h */,
 				06DD32AA16A13FA000AD7ACE /* DoubleArrayBuffer.m */,
 				06DD32AB16A13FA000AD7ACE /* DoubleBuffer.h */,
 				06DD32AC16A13FA000AD7ACE /* DoubleBuffer.m */,
+				0649A6961AE0780500DE2494 /* Driver.h */,
 				06ED3E1017D1674B0014750E /* Driver.h */,
+				0649A6971AE0780500DE2494 /* Driver.m */,
 				06ED3E1117D1674B0014750E /* Driver.m */,
+				0649A6981AE0780500DE2494 /* DriverManager.h */,
+				0649A6991AE0780500DE2494 /* DriverManager.m */,
+				0649A69A1AE0780500DE2494 /* DriverPropertyInfo.h */,
+				0649A69B1AE0780500DE2494 /* DriverPropertyInfo.m */,
 				064FB7C4172707F200DC0D51 /* DTDHandler.h */,
+				0649A7B41AE07A4400DE2494 /* DTDHandler.m */,
 				0699FF8418D7851500278029 /* DualPivotQuicksort.h */,
 				0699FF8518D7851500278029 /* DualPivotQuicksort.m */,
 				06F2908418972DA200676F1D /* DuplicateFormatFlagsException.h */,
 				06F2908518972DA200676F1D /* DuplicateFormatFlagsException.m */,
+				0649A6561AE077E800DE2494 /* ECField.h */,
+				0649A6571AE077E800DE2494 /* ECField.m */,
+				0649A6581AE077E800DE2494 /* ECFieldF2m.h */,
+				0649A6591AE077E800DE2494 /* ECFieldF2m.m */,
+				0649A65A1AE077E800DE2494 /* ECFieldFp.h */,
+				0649A65B1AE077E800DE2494 /* ECFieldFp.m */,
+				0649A65C1AE077E800DE2494 /* ECGenParameterSpec.h */,
+				0649A65D1AE077E800DE2494 /* ECGenParameterSpec.m */,
+				0649A6261AE077D300DE2494 /* ECKey.h */,
+				0649A6271AE077D300DE2494 /* ECKey.m */,
+				0649A65E1AE077E800DE2494 /* ECParameterSpec.h */,
+				0649A65F1AE077E800DE2494 /* ECParameterSpec.m */,
+				0649A6601AE077E800DE2494 /* ECPoint.h */,
+				0649A6611AE077E800DE2494 /* ECPoint.m */,
+				0649A6281AE077D300DE2494 /* ECPrivateKey.h */,
+				0649A6291AE077D300DE2494 /* ECPrivateKey.m */,
+				0649A6621AE077E800DE2494 /* ECPrivateKeySpec.h */,
+				0649A6631AE077E800DE2494 /* ECPrivateKeySpec.m */,
+				0649A62A1AE077D300DE2494 /* ECPublicKey.h */,
+				0649A62B1AE077D300DE2494 /* ECPublicKey.m */,
+				0649A6641AE077E800DE2494 /* ECPublicKeySpec.h */,
+				0649A6651AE077E800DE2494 /* ECPublicKeySpec.m */,
 				06C73D4F19180BD8001D3CC8 /* Editable.h */,
 				06C73D5019180BD8001D3CC8 /* Editable.m */,
+				0649A7851AE07A4200DE2494 /* Element.h */,
+				0649A7861AE07A4300DE2494 /* Element.m */,
 				067855CD169F37710042431C /* Elementary.h */,
 				067855CE169F37710042431C /* Elementary.m */,
 				06F2905118972CE800676F1D /* ElementType.h */,
 				06F2905218972CE800676F1D /* ElementType.m */,
+				0649A6661AE077E800DE2494 /* EllipticCurve.h */,
+				0649A6671AE077E800DE2494 /* EllipticCurve.m */,
 				06ED3DFA17D166C00014750E /* EmptyArray.h */,
 				06ED3DFB17D166C00014750E /* EmptyArray.m */,
 				06721AE51559CB9200645E1B /* EmptyStackException.h */,
@@ -4085,10 +4710,18 @@
 				06F28FFA18972C9300676F1D /* EmulatedFieldsForDumping.m */,
 				06F28FFB18972C9300676F1D /* EmulatedFieldsForLoading.h */,
 				06F28FFC18972C9300676F1D /* EmulatedFieldsForLoading.m */,
+				0649A6681AE077E800DE2494 /* EncodedKeySpec.h */,
+				0649A6691AE077E800DE2494 /* EncodedKeySpec.m */,
 				06C73F4219180DE7001D3CC8 /* Engine.h */,
 				06C73F4319180DE7001D3CC8 /* Engine.m */,
+				0649A7871AE07A4300DE2494 /* Entity.h */,
+				0649A7881AE07A4300DE2494 /* Entity.m */,
+				0649A7891AE07A4300DE2494 /* EntityReference.h */,
+				0649A78A1AE07A4300DE2494 /* EntityReference.m */,
 				064FB7C5172707F200DC0D51 /* EntityResolver.h */,
+				0649A7B51AE07A4400DE2494 /* EntityResolver.m */,
 				064FB7B0172707D700DC0D51 /* EntityResolver2.h */,
+				0649A7B91AE07A4400DE2494 /* EntityResolver2.m */,
 				06721B3B1559CC0300645E1B /* Enum.h */,
 				067219D81559C87100645E1B /* Enum.m */,
 				06721AE61559CB9200645E1B /* Enumeration.h */,
@@ -4104,6 +4737,7 @@
 				06721B3C1559CC0300645E1B /* Error.h */,
 				067219D91559C87100645E1B /* Error.m */,
 				064FB7C6172707F200DC0D51 /* ErrorHandler.h */,
+				0649A7B61AE07A4400DE2494 /* ErrorHandler.m */,
 				06F2914B18972E5100676F1D /* ErrorManager.h */,
 				06F2914C18972E5100676F1D /* ErrorManager.m */,
 				068677CE166C342C005A5AD7 /* EventListener.h */,
@@ -4140,8 +4774,12 @@
 				067219951559C7FC00645E1B /* File.m */,
 				06C73E6519180CC8001D3CC8 /* FileChannel.h */,
 				06C73E6619180CC8001D3CC8 /* FileChannel.m */,
+				0649A6021AE0778600DE2494 /* FileChannelImpl.h */,
+				0649A6031AE0778600DE2494 /* FileChannelImpl.m */,
 				06721A851559CB2500645E1B /* FileDescriptor.h */,
 				067219961559C7FC00645E1B /* FileDescriptor.m */,
+				0649A6041AE0778600DE2494 /* FileDescriptorChannel.h */,
+				0649A6051AE0778600DE2494 /* FileDescriptorChannel.m */,
 				06721A861559CB2500645E1B /* FileFilter.h */,
 				06F28FFF18972C9300676F1D /* FileFilter.m */,
 				06C73F0619180D90001D3CC8 /* FileHandler.h */,
@@ -4218,12 +4856,18 @@
 				06C73E6C19180CC9001D3CC8 /* GatheringByteChannel.m */,
 				06ED3D9A17D165510014750E /* GeneralSecurityException.h */,
 				06ED3D9B17D165510014750E /* GeneralSecurityException.m */,
+				0649A6E61AE0796400DE2494 /* Generated.h */,
+				0649A6E71AE0796400DE2494 /* Generated.m */,
 				06ED3D7417D164DC0014750E /* GenericArrayType.h */,
 				06ED3D7517D164DC0014750E /* GenericArrayType.m */,
+				0649A7431AE0799100DE2494 /* GenericArrayTypeImpl.h */,
+				0649A7441AE0799100DE2494 /* GenericArrayTypeImpl.m */,
 				0697F60515D190580027A7E4 /* GenericDeclaration.h */,
 				0697F60615D190580027A7E4 /* GenericDeclaration.m */,
 				06ED3D7617D164DC0014750E /* GenericSignatureFormatError.h */,
 				06ED3D7717D164DC0014750E /* GenericSignatureFormatError.m */,
+				0649A7451AE0799100DE2494 /* GenericSignatureParser.h */,
+				0649A7461AE0799100DE2494 /* GenericSignatureParser.m */,
 				06C73D5119180BD8001D3CC8 /* GetChars.h */,
 				06C73D5219180BD8001D3CC8 /* GetChars.m */,
 				06DD333816A1406A00AD7ACE /* Grego.h */,
@@ -4242,6 +4886,12 @@
 				06721A541559C99E00645E1B /* Handler.m */,
 				064FB78E1727079100DC0D51 /* HandlerBase.h */,
 				064FB78F1727079100DC0D51 /* HandlerBase.m */,
+				0649A6FF1AE0796500DE2494 /* HandshakeCompletedEvent.h */,
+				0649A7001AE0796500DE2494 /* HandshakeCompletedEvent.m */,
+				0649A7011AE0796500DE2494 /* HandshakeCompletedListener.h */,
+				0649A7021AE0796500DE2494 /* HandshakeCompletedListener.m */,
+				0649A6E01AE078D700DE2494 /* HashMap.h */,
+				0649A6E11AE078D700DE2494 /* HashMap.m */,
 				06721AE71559CB9200645E1B /* HashSet.h */,
 				06721A4D1559C99E00645E1B /* HashSet.m */,
 				06721AE81559CB9200645E1B /* Hashtable.h */,
@@ -4250,12 +4900,16 @@
 				06C73EE319180D6D001D3CC8 /* HeapBufferIterator.m */,
 				06F2903418972CCF00676F1D /* HexStringParser.h */,
 				06F2903518972CCF00676F1D /* HexStringParser.m */,
+				0649A7031AE0796500DE2494 /* HostnameVerifier.h */,
+				0649A7041AE0796500DE2494 /* HostnameVerifier.m */,
 				06C73DC319180C8A001D3CC8 /* HttpCookie.h */,
 				06C73DC419180C8A001D3CC8 /* HttpCookie.m */,
 				06C73F0019180D90001D3CC8 /* HttpDate.h */,
 				06C73F0119180D90001D3CC8 /* HttpDate.m */,
 				06C73DC519180C8A001D3CC8 /* HttpRetryException.h */,
 				06C73DC619180C8A001D3CC8 /* HttpRetryException.m */,
+				0649A7051AE0796500DE2494 /* HttpsURLConnection.h */,
+				0649A7061AE0796500DE2494 /* HttpsURLConnection.m */,
 				06C73DC719180C8A001D3CC8 /* HttpURLConnection.h */,
 				06C73DC819180C8A001D3CC8 /* HttpURLConnection.m */,
 				06DD333C16A1406A00AD7ACE /* HugeEnumSet.h */,
@@ -4264,6 +4918,8 @@
 				06ED3DE317D1666A0014750E /* ICU.m */,
 				06721AE91559CB9200645E1B /* IdentityHashMap.h */,
 				06721A4F1559C99E00645E1B /* IdentityHashMap.m */,
+				0649A5E41AE0773400DE2494 /* IllegalAccessError.h */,
+				0649A5E51AE0773400DE2494 /* IllegalAccessError.m */,
 				06721B401559CC0300645E1B /* IllegalAccessException.h */,
 				067219DD1559C87100645E1B /* IllegalAccessException.m */,
 				06721B411559CC0300645E1B /* IllegalArgumentException.h */,
@@ -4350,16 +5006,22 @@
 				067219A01559C7FC00645E1B /* InterruptedIOException.m */,
 				06C73E7119180CC9001D3CC8 /* InterruptibleChannel.h */,
 				06C73E7219180CC9001D3CC8 /* InterruptibleChannel.m */,
+				0649A6361AE077D300DE2494 /* InvalidAlgorithmParameterException.h */,
+				0649A6371AE077D300DE2494 /* InvalidAlgorithmParameterException.m */,
 				06F2900218972C9300676F1D /* InvalidClassException.h */,
 				06F2900318972C9300676F1D /* InvalidClassException.m */,
 				06C73EBE19180CF9001D3CC8 /* InvalidKeyException.h */,
 				06C73EBF19180CF9001D3CC8 /* InvalidKeyException.m */,
+				0649A66A1AE077E800DE2494 /* InvalidKeySpecException.h */,
+				0649A66B1AE077E800DE2494 /* InvalidKeySpecException.m */,
 				06DD32B716A13FA000AD7ACE /* InvalidMarkException.h */,
 				06DD32B816A13FA000AD7ACE /* InvalidMarkException.m */,
 				06721A931559CB2500645E1B /* InvalidObjectException.h */,
 				067219A11559C7FC00645E1B /* InvalidObjectException.m */,
 				06F2906A18972D4C00676F1D /* InvalidParameterException.h */,
 				06F2906B18972D4C00676F1D /* InvalidParameterException.m */,
+				0649A66C1AE077E800DE2494 /* InvalidParameterSpecException.h */,
+				0649A66D1AE077E900DE2494 /* InvalidParameterSpecException.m */,
 				064FB754172706E100DC0D51 /* InvalidPropertiesFormatException.h */,
 				064FB755172706E100DC0D51 /* InvalidPropertiesFormatException.m */,
 				06F2905D18972CFE00676F1D /* InvocationHandler.h */,
@@ -4368,8 +5030,12 @@
 				06721B531559CC0300645E1B /* InvocationTargetException.m */,
 				06C73EE419180D6D001D3CC8 /* IoBridge.h */,
 				06C73EE519180D6D001D3CC8 /* IoBridge.m */,
+				0649A5E21AE0773400DE2494 /* IOError.h */,
+				0649A5E31AE0773400DE2494 /* IOError.m */,
 				06721A941559CB2500645E1B /* IOException.h */,
 				067219A21559C7FC00645E1B /* IOException.m */,
+				0649A5D81AE076CC00DE2494 /* IosCertificateFactory.h */,
+				0649A5D91AE076CC00DE2494 /* IosCertificateFactory.m */,
 				06AA055A17E110D00017C34A /* IOSCharset.h */,
 				06AA055B17E110D00017C34A /* IOSCharset.m */,
 				06AA055C17E110D00017C34A /* IOSCharsetDecoder.h */,
@@ -4388,22 +5054,68 @@
 				0699FF8718D7851500278029 /* IOSLogHandler.m */,
 				06F28FE118972C2300676F1D /* IosMD5MessageDigest.h */,
 				06F28FE218972C2300676F1D /* IosMD5MessageDigest.m */,
+				0649A5DC1AE076CC00DE2494 /* IosRSAKey.h */,
+				0649A5DD1AE076CC00DE2494 /* IosRSAKey.m */,
+				0649A5DE1AE076CC00DE2494 /* IosRSAKeyFactory.h */,
+				0649A5DF1AE076CC00DE2494 /* IosRSAKeyFactory.m */,
+				0649A5E01AE076CC00DE2494 /* IosRSAKeyPairGenerator.h */,
+				0649A5E11AE076CC00DE2494 /* IosRSAKeyPairGenerator.m */,
 				06F28FE318972C2300676F1D /* IosSecureRandomImpl.h */,
 				06F28FE418972C2300676F1D /* IosSecureRandomImpl.m */,
 				06F28FE518972C2300676F1D /* IosSecurityProvider.h */,
 				06F28FE618972C2300676F1D /* IosSecurityProvider.m */,
 				06F28FE718972C2300676F1D /* IosSHAMessageDigest.h */,
 				06F28FE818972C2300676F1D /* IosSHAMessageDigest.m */,
+				0649A5DA1AE076CC00DE2494 /* IosX509Certificate.h */,
+				0649A5DB1AE076CC00DE2494 /* IosX509Certificate.m */,
 				06ED3DEC17D1669D0014750E /* IoUtils.h */,
 				06ED3DED17D1669D0014750E /* IoUtils.m */,
+				0649A6061AE0778600DE2494 /* IoVec.h */,
+				0649A6071AE0778600DE2494 /* IoVec.m */,
 				06721AEB1559CB9200645E1B /* Iterator.h */,
 				06F2909F18972DA300676F1D /* Iterator.m */,
+				0649A7591AE07A4100DE2494 /* JSON.h */,
+				0649A75A1AE07A4100DE2494 /* JSON.m */,
+				0649A75B1AE07A4100DE2494 /* JSONArray.h */,
+				0649A75C1AE07A4100DE2494 /* JSONArray.m */,
+				0649A75D1AE07A4100DE2494 /* JSONException.h */,
+				0649A75E1AE07A4100DE2494 /* JSONException.m */,
+				0649A75F1AE07A4100DE2494 /* JSONObject.h */,
+				0649A7601AE07A4100DE2494 /* JSONObject.m */,
+				0649A7611AE07A4100DE2494 /* JSONStringer.h */,
+				0649A7621AE07A4100DE2494 /* JSONStringer.m */,
+				0649A7631AE07A4100DE2494 /* JSONTokener.h */,
+				0649A7641AE07A4100DE2494 /* JSONTokener.m */,
 				06C73EC019180CF9001D3CC8 /* Key.h */,
 				06C73EC119180CF9001D3CC8 /* Key.m */,
 				06C73EC219180CF9001D3CC8 /* KeyException.h */,
 				06C73EC319180CFA001D3CC8 /* KeyException.m */,
+				0649A6381AE077D300DE2494 /* KeyFactory.h */,
+				0649A6391AE077D300DE2494 /* KeyFactory.m */,
+				0649A63A1AE077D300DE2494 /* KeyFactorySpi.h */,
+				0649A63B1AE077D300DE2494 /* KeyFactorySpi.m */,
 				06C73EC419180CFA001D3CC8 /* KeyManagementException.h */,
 				06C73EC519180CFA001D3CC8 /* KeyManagementException.m */,
+				0649A7071AE0796500DE2494 /* KeyManager.h */,
+				0649A7081AE0796500DE2494 /* KeyManager.m */,
+				0649A7091AE0796500DE2494 /* KeyManagerFactory.h */,
+				0649A70A1AE0796500DE2494 /* KeyManagerFactory.m */,
+				0649A70B1AE0796500DE2494 /* KeyManagerFactorySpi.h */,
+				0649A70C1AE0796500DE2494 /* KeyManagerFactorySpi.m */,
+				0649A63C1AE077D300DE2494 /* KeyPair.h */,
+				0649A63D1AE077D300DE2494 /* KeyPair.m */,
+				0649A63E1AE077D400DE2494 /* KeyPairGenerator.h */,
+				0649A63F1AE077D400DE2494 /* KeyPairGenerator.m */,
+				0649A6401AE077D400DE2494 /* KeyPairGeneratorSpi.h */,
+				0649A6411AE077D400DE2494 /* KeyPairGeneratorSpi.m */,
+				0649A66E1AE077E900DE2494 /* KeySpec.h */,
+				0649A66F1AE077E900DE2494 /* KeySpec.m */,
+				0649A6421AE077D400DE2494 /* KeyStore.h */,
+				0649A6431AE077D400DE2494 /* KeyStore.m */,
+				0649A6441AE077D400DE2494 /* KeyStoreException.h */,
+				0649A6451AE077D400DE2494 /* KeyStoreException.m */,
+				0649A6461AE077D400DE2494 /* KeyStoreSpi.h */,
+				0649A6471AE077D400DE2494 /* KeyStoreSpi.m */,
 				06ED3E0417D167000014750E /* KXmlParser.h */,
 				06ED3E0517D167000014750E /* KXmlParser.m */,
 				06ED3E0617D167000014750E /* KXmlSerializer.h */,
@@ -4413,6 +5125,7 @@
 				06721AF21559CB9200645E1B /* Level.h */,
 				06721A551559C99E00645E1B /* Level.m */,
 				064FB7B1172707D700DC0D51 /* LexicalHandler.h */,
+				0649A7BA1AE07A4500DE2494 /* LexicalHandler.m */,
 				06ED3DEE17D1669D0014750E /* Libcore.h */,
 				06ED3DEF17D1669D0014750E /* Libcore.m */,
 				06C73DA119180C6E001D3CC8 /* LineNumberInputStream.h */,
@@ -4425,6 +5138,8 @@
 				06F290F718972DF900676F1D /* LinkedBlockingDeque.m */,
 				06F290F818972DF900676F1D /* LinkedBlockingQueue.h */,
 				06F290F918972DF900676F1D /* LinkedBlockingQueue.m */,
+				0649A6E21AE078D800DE2494 /* LinkedHashMap.h */,
+				0649A6E31AE078D800DE2494 /* LinkedHashMap.m */,
 				06DD333E16A1406A00AD7ACE /* LinkedHashSet.h */,
 				06DD333F16A1406A00AD7ACE /* LinkedHashSet.m */,
 				06721AEC1559CB9200645E1B /* LinkedList.h */,
@@ -4435,6 +5150,10 @@
 				06F290A018972DA300676F1D /* List.m */,
 				06721AEE1559CB9200645E1B /* ListIterator.h */,
 				06F2914818972E5100676F1D /* ListIterator.m */,
+				0649A7471AE0799100DE2494 /* ListOfTypes.h */,
+				0649A7481AE0799100DE2494 /* ListOfTypes.m */,
+				0649A7491AE0799100DE2494 /* ListOfVariables.h */,
+				0649A74A1AE0799100DE2494 /* ListOfVariables.m */,
 				06AA056817E111190017C34A /* ListResourceBundle.h */,
 				06AA056917E111190017C34A /* ListResourceBundle.m */,
 				06C73D8D19180C0C001D3CC8 /* Lists.h */,
@@ -4446,6 +5165,7 @@
 				064FB7921727079100DC0D51 /* Locator.h */,
 				064FB7931727079100DC0D51 /* Locator.m */,
 				064FB7B2172707D700DC0D51 /* Locator2.h */,
+				0649A7BB1AE07A4500DE2494 /* Locator2.m */,
 				064FB7B3172707D700DC0D51 /* Locator2Impl.h */,
 				064FB7B4172707D700DC0D51 /* Locator2Impl.m */,
 				064FB7DA1727081D00DC0D51 /* LocatorImpl.h */,
@@ -4476,20 +5196,38 @@
 				06DD32BC16A13FA000AD7ACE /* LongBuffer.m */,
 				06C73D7B19180C0C001D3CC8 /* LruCache.h */,
 				06C73D7C19180C0C001D3CC8 /* LruCache.m */,
+				0649A78D1AE07A4300DE2494 /* LSException.h */,
+				0649A78E1AE07A4300DE2494 /* LSException.m */,
 				06ED3E0817D1671A0014750E /* LSInput.h */,
+				0649A78F1AE07A4300DE2494 /* LSInput.m */,
+				0649A7901AE07A4300DE2494 /* LSOutput.h */,
+				0649A7911AE07A4300DE2494 /* LSOutput.m */,
+				0649A7921AE07A4300DE2494 /* LSParser.h */,
+				0649A7931AE07A4300DE2494 /* LSParser.m */,
+				0649A7941AE07A4300DE2494 /* LSParserFilter.h */,
+				0649A7951AE07A4300DE2494 /* LSParserFilter.m */,
 				064FB8021727086700DC0D51 /* LSResourceResolver.h */,
+				0649A7961AE07A4300DE2494 /* LSResourceResolver.m */,
+				0649A7971AE07A4300DE2494 /* LSSerializer.h */,
+				0649A7981AE07A4300DE2494 /* LSSerializer.m */,
+				0649A7991AE07A4300DE2494 /* LSSerializerFilter.h */,
+				0649A79A1AE07A4300DE2494 /* LSSerializerFilter.m */,
 				06AA056017E110D00017C34A /* MalformedInputException.h */,
 				06AA056117E110D00017C34A /* MalformedInputException.m */,
 				06ED3D7817D164DC0014750E /* MalformedParameterizedTypeException.h */,
 				06ED3D7917D164DC0014750E /* MalformedParameterizedTypeException.m */,
 				06ED3D8217D164FE0014750E /* MalformedURLException.h */,
 				06ED3D8317D164FE0014750E /* MalformedURLException.m */,
+				0649A70D1AE0796500DE2494 /* ManagerFactoryParameters.h */,
+				0649A70E1AE0796500DE2494 /* ManagerFactoryParameters.m */,
 				06721AF71559CB9200645E1B /* Map.h */,
 				06F290A118972DA300676F1D /* Map.m */,
 				06C73D7D19180C0C001D3CC8 /* MapCollections.h */,
 				06C73D7E19180C0C001D3CC8 /* MapCollections.m */,
 				06721AF81559CB9200645E1B /* MapEntry.h */,
 				06721A5A1559C99E00645E1B /* MapEntry.m */,
+				0649A6081AE0778600DE2494 /* MappedByteBuffer.h */,
+				0649A6091AE0778600DE2494 /* MappedByteBuffer.m */,
 				06C73D8F19180C0C001D3CC8 /* Maps.h */,
 				06C73D9019180C0C001D3CC8 /* Maps.m */,
 				068677E2166C345F005A5AD7 /* Matcher.h */,
@@ -4508,6 +5246,8 @@
 				06ED3D7B17D164DC0014750E /* Member.m */,
 				06C73EE619180D6D001D3CC8 /* Memory.h */,
 				06C73EE719180D6D001D3CC8 /* Memory.m */,
+				0649A60A1AE0778600DE2494 /* MemoryBlock.h */,
+				0649A60B1AE0778700DE2494 /* MemoryBlock.m */,
 				06F2915318972E5100676F1D /* MemoryHandler.h */,
 				06F2915418972E5100676F1D /* MemoryHandler.m */,
 				06F2906C18972D4C00676F1D /* MessageDigest.h */,
@@ -4516,6 +5256,8 @@
 				06F2906F18972D4C00676F1D /* MessageDigestSpi.m */,
 				06F2907F18972D5D00676F1D /* MessageFormat.h */,
 				06F2908018972D5D00676F1D /* MessageFormat.m */,
+				0649A6701AE077E900DE2494 /* MGF1ParameterSpec.h */,
+				0649A6711AE077E900DE2494 /* MGF1ParameterSpec.m */,
 				06C73F0219180D90001D3CC8 /* MimeUtils.h */,
 				06C73F0319180D90001D3CC8 /* MimeUtils.m */,
 				06DD334016A1406A00AD7ACE /* MiniEnumSet.h */,
@@ -4528,7 +5270,9 @@
 				06ED3DDD17D166080014750E /* MissingResourceException.m */,
 				06F2906518972D2500676F1D /* ModifiedUtf8.h */,
 				06F2906618972D2500676F1D /* ModifiedUtf8.m */,
+				0649A6F01AE0796400DE2494 /* Modifier.h */,
 				06721B541559CC0300645E1B /* Modifier.h */,
+				0649A6F11AE0796400DE2494 /* Modifier.m */,
 				06721B551559CC0300645E1B /* Modifier.m */,
 				06C73DD519180C99001D3CC8 /* MulticastSocket.h */,
 				06C73DD619180C99001D3CC8 /* MulticastSocket.m */,
@@ -4540,6 +5284,10 @@
 				06C73F0D19180D90001D3CC8 /* MutableLong.m */,
 				06C73F5219180DE8001D3CC8 /* Name.h */,
 				06C73F5319180DE8001D3CC8 /* Name.m */,
+				0649A79B1AE07A4300DE2494 /* NamedNodeMap.h */,
+				0649A79C1AE07A4300DE2494 /* NamedNodeMap.m */,
+				0649A79D1AE07A4300DE2494 /* NameList.h */,
+				0649A79E1AE07A4300DE2494 /* NameList.m */,
 				064FB7DC1727081D00DC0D51 /* NamespaceSupport.h */,
 				064FB7DD1727081D00DC0D51 /* NamespaceSupport.m */,
 				06ED3DE417D1666A0014750E /* NativeDecimalFormat.h */,
@@ -4548,6 +5296,8 @@
 				068677D3166C342C005A5AD7 /* NavigableMap.m */,
 				068677D4166C342C005A5AD7 /* NavigableSet.h */,
 				068677D5166C342C005A5AD7 /* NavigableSet.m */,
+				0649A69C1AE0780500DE2494 /* NClob.h */,
+				0649A69D1AE0780500DE2494 /* NClob.m */,
 				06721B4D1559CC0300645E1B /* NegativeArraySizeException.h */,
 				067219E91559C87100645E1B /* NegativeArraySizeException.m */,
 				06C73E7319180CC9001D3CC8 /* NetworkChannel.h */,
@@ -4556,14 +5306,32 @@
 				06C73DD819180C99001D3CC8 /* NetworkInterface.m */,
 				064FB7DE1727081D00DC0D51 /* NewInstance.h */,
 				064FB7DF1727081D00DC0D51 /* NewInstance.m */,
+				0649A60C1AE0778700DE2494 /* NIOAccess.h */,
+				0649A60D1AE0778700DE2494 /* NIOAccess.m */,
+				0649A60E1AE0778700DE2494 /* NioUtils.h */,
+				0649A60F1AE0778700DE2494 /* NioUtils.m */,
+				0649A5E61AE0773400DE2494 /* NoClassDefFoundError.h */,
+				0649A5E71AE0773500DE2494 /* NoClassDefFoundError.m */,
 				06C73E7519180CC9001D3CC8 /* NoConnectionPendingException.h */,
 				06C73E7619180CC9001D3CC8 /* NoConnectionPendingException.m */,
 				06C73D5719180BD9001D3CC8 /* NoCopySpan.h */,
 				06C73D5819180BD9001D3CC8 /* NoCopySpan.m */,
+				0649A79F1AE07A4300DE2494 /* Node.h */,
+				0649A7A01AE07A4400DE2494 /* Node.m */,
+				0649A7A91AE07A4400DE2494 /* NodeFilter.h */,
+				0649A7AA1AE07A4400DE2494 /* NodeFilter.m */,
+				0649A7AB1AE07A4400DE2494 /* NodeIterator.h */,
+				0649A7AC1AE07A4400DE2494 /* NodeIterator.m */,
+				0649A7A11AE07A4400DE2494 /* NodeList.h */,
+				0649A7A21AE07A4400DE2494 /* NodeList.m */,
 				06C73E7719180CC9001D3CC8 /* NonReadableChannelException.h */,
 				06C73E7819180CC9001D3CC8 /* NonReadableChannelException.m */,
 				06C73E7919180CC9001D3CC8 /* NonWritableChannelException.h */,
 				06C73E7A19180CC9001D3CC8 /* NonWritableChannelException.m */,
+				0649A6DE1AE078D700DE2494 /* Normalizer.h */,
+				0649A6DF1AE078D700DE2494 /* Normalizer.m */,
+				0649A5F21AE0778600DE2494 /* NoRouteToHostException.h */,
+				0649A5F31AE0778600DE2494 /* NoRouteToHostException.m */,
 				06F2907018972D4C00676F1D /* NoSuchAlgorithmException.h */,
 				06F2907118972D4C00676F1D /* NoSuchAlgorithmException.m */,
 				06721AF91559CB9200645E1B /* NoSuchElementException.h */,
@@ -4580,6 +5348,8 @@
 				06ED3DA017D165510014750E /* NoSuchProviderException.m */,
 				06F2900618972C9300676F1D /* NotActiveException.h */,
 				06F2900718972C9300676F1D /* NotActiveException.m */,
+				0649A7A31AE07A4400DE2494 /* Notation.h */,
+				0649A7A41AE07A4400DE2494 /* Notation.m */,
 				06ED3D5717D1645A0014750E /* NotSerializableException.h */,
 				06ED3D5817D1645A0014750E /* NotSerializableException.m */,
 				06C73E7B19180CC9001D3CC8 /* NotYetBoundException.h */,
@@ -4602,6 +5372,8 @@
 				06F2900B18972C9300676F1D /* ObjectInputStream.m */,
 				06F2900C18972C9300676F1D /* ObjectInputValidation.h */,
 				06F2900D18972C9300676F1D /* ObjectInputValidation.m */,
+				0649A5D61AE076CC00DE2494 /* ObjectiveCName.h */,
+				0649A5D71AE076CC00DE2494 /* ObjectiveCName.m */,
 				06F2900E18972C9300676F1D /* ObjectOutput.h */,
 				06F2900F18972C9300676F1D /* ObjectOutput.m */,
 				06F2901018972C9300676F1D /* ObjectOutputStream.h */,
@@ -4644,11 +5416,16 @@
 				06C73D8019180C0C001D3CC8 /* Pair.m */,
 				06ED3D7C17D164DC0014750E /* ParameterizedType.h */,
 				06ED3D7D17D164DC0014750E /* ParameterizedType.m */,
+				0649A74B1AE0799100DE2494 /* ParameterizedTypeImpl.h */,
+				0649A74C1AE0799100DE2494 /* ParameterizedTypeImpl.m */,
+				0649A69E1AE0780500DE2494 /* ParameterMetaData.h */,
+				0649A69F1AE0780500DE2494 /* ParameterMetaData.m */,
 				06DD332816A13FBB00AD7ACE /* ParseException.h */,
 				06DD332916A13FBB00AD7ACE /* ParseException.m */,
 				06ED3DD817D165DE0014750E /* ParsePosition.h */,
 				06ED3DD917D165DE0014750E /* ParsePosition.m */,
 				064FB7C7172707F200DC0D51 /* Parser.h */,
+				0649A7BC1AE07A4500DE2494 /* Parser.m */,
 				064FB7E01727081D00DC0D51 /* ParserAdapter.h */,
 				064FB7E11727081D00DC0D51 /* ParserAdapter.m */,
 				064FB7661727071800DC0D51 /* ParserConfigurationException.h */,
@@ -4657,6 +5434,8 @@
 				064FB7E31727081D00DC0D51 /* ParserFactory.m */,
 				06C73DD919180C99001D3CC8 /* PasswordAuthentication.h */,
 				06C73DDA19180C99001D3CC8 /* PasswordAuthentication.m */,
+				0649A73B1AE0796700DE2494 /* PasswordCallback.h */,
+				0649A73C1AE0796700DE2494 /* PasswordCallback.m */,
 				068677E8166C345F005A5AD7 /* Pattern.h */,
 				068677E9166C345F005A5AD7 /* Pattern.m */,
 				06C6B7FB159BCBD1004B800C /* PatternSyntaxException.h */,
@@ -4683,6 +5462,10 @@
 				06F2901F18972C9400676F1D /* PipedReader.m */,
 				06F2902018972C9400676F1D /* PipedWriter.h */,
 				06F2902118972C9400676F1D /* PipedWriter.m */,
+				0649A6101AE0778700DE2494 /* PipeImpl.h */,
+				0649A6111AE0778700DE2494 /* PipeImpl.m */,
+				0649A6721AE077E900DE2494 /* PKCS8EncodedKeySpec.h */,
+				0649A6731AE077E900DE2494 /* PKCS8EncodedKeySpec.m */,
 				06C73DDB19180C99001D3CC8 /* PlainDatagramSocketImpl.h */,
 				06C73DDC19180C99001D3CC8 /* PlainDatagramSocketImpl.m */,
 				06C73DDD19180C99001D3CC8 /* PlainServerSocketImpl.h */,
@@ -4695,6 +5478,12 @@
 				06C73DE219180C99001D3CC8 /* PortUnreachableException.m */,
 				06ED3DF417D1669D0014750E /* Posix.h */,
 				06ED3DF517D1669D0014750E /* Posix.m */,
+				0649A6E81AE0796400DE2494 /* PostConstruct.h */,
+				0649A6E91AE0796400DE2494 /* PostConstruct.m */,
+				0649A6EA1AE0796400DE2494 /* PreDestroy.h */,
+				0649A6EB1AE0796400DE2494 /* PreDestroy.m */,
+				0649A6A01AE0780500DE2494 /* PreparedStatement.h */,
+				0649A6A11AE0780500DE2494 /* PreparedStatement.m */,
 				067855D5169F37710042431C /* Primality.h */,
 				067855D6169F37710042431C /* Primality.m */,
 				06ED3DA917D165510014750E /* Principal.h */,
@@ -4709,12 +5498,18 @@
 				06F290FF18972DF900676F1D /* PriorityBlockingQueue.m */,
 				06721AFA1559CB9200645E1B /* PriorityQueue.h */,
 				06721A5C1559C99E00645E1B /* PriorityQueue.m */,
+				0649A6481AE077D400DE2494 /* PrivateKey.h */,
+				0649A6491AE077D400DE2494 /* PrivateKey.m */,
+				0649A7551AE079CD00DE2494 /* PrivateKeyImpl.h */,
+				0649A7561AE079CD00DE2494 /* PrivateKeyImpl.m */,
 				06ED3DAB17D165510014750E /* PrivilegedAction.h */,
 				06F2907418972D4C00676F1D /* PrivilegedAction.m */,
 				06ED3DAC17D165510014750E /* PrivilegedActionException.h */,
 				06ED3DAD17D165510014750E /* PrivilegedActionException.m */,
 				06ED3DAE17D165510014750E /* PrivilegedExceptionAction.h */,
 				06ED3DAF17D165510014750E /* PrivilegedExceptionAction.m */,
+				0649A7A51AE07A4400DE2494 /* ProcessingInstruction.h */,
+				0649A7A61AE07A4400DE2494 /* ProcessingInstruction.m */,
 				06721AFB1559CB9200645E1B /* Properties.h */,
 				06721A5D1559C99E00645E1B /* Properties.m */,
 				06F28FEB18972C3500676F1D /* PropertyChangeEvent.h */,
@@ -4735,6 +5530,8 @@
 				06C73DE419180C99001D3CC8 /* ProtocolException.m */,
 				06F2907518972D4C00676F1D /* Provider.h */,
 				06F2907618972D4C00676F1D /* Provider.m */,
+				0649A64A1AE077D400DE2494 /* ProviderException.h */,
+				0649A64B1AE077D400DE2494 /* ProviderException.m */,
 				06C73DE519180C99001D3CC8 /* Proxy.h */,
 				06F2905F18972CFE00676F1D /* Proxy.h */,
 				06C73DE619180C99001D3CC8 /* Proxy.m */,
@@ -4743,8 +5540,12 @@
 				06C73DE819180C99001D3CC8 /* ProxySelector.m */,
 				06C73DE919180C99001D3CC8 /* ProxySelectorImpl.h */,
 				06C73DEA19180C99001D3CC8 /* ProxySelectorImpl.m */,
+				0649A6741AE077E900DE2494 /* PSSParameterSpec.h */,
+				0649A6751AE077E900DE2494 /* PSSParameterSpec.m */,
 				06C73EC619180CFA001D3CC8 /* PublicKey.h */,
 				06C73EC719180CFA001D3CC8 /* PublicKey.m */,
+				0649A7571AE079CD00DE2494 /* PublicKeyImpl.h */,
+				0649A7581AE079CD00DE2494 /* PublicKeyImpl.m */,
 				06ED3D5917D1645A0014750E /* PushbackInputStream.h */,
 				06ED3D5A17D1645A0014750E /* PushbackInputStream.m */,
 				06ED3D5B17D1645A0014750E /* PushbackReader.h */,
@@ -4777,6 +5578,8 @@
 				06F2914518972E2E00676F1D /* ReentrantLock.m */,
 				06F2914618972E2E00676F1D /* ReentrantReadWriteLock.h */,
 				06F2914718972E2E00676F1D /* ReentrantReadWriteLock.m */,
+				0649A6A21AE0780500DE2494 /* Ref.h */,
+				0649A6A31AE0780500DE2494 /* Ref.m */,
 				06D7BDEB17DE685C00329964 /* Reference.h */,
 				06D7BDEC17DE685C00329964 /* Reference.m */,
 				06D7BDED17DE685C00329964 /* ReferenceQueue.h */,
@@ -4791,10 +5594,16 @@
 				06F2910718972DFA00676F1D /* RejectedExecutionHandler.m */,
 				06AA056C17E111190017C34A /* ResourceBundle.h */,
 				06AA056D17E111190017C34A /* ResourceBundle.m */,
+				0649A6EC1AE0796400DE2494 /* Resources.h */,
+				0649A6ED1AE0796400DE2494 /* Resources.m */,
 				06C73DEB19180C99001D3CC8 /* ResponseCache.h */,
 				06C73DEC19180C99001D3CC8 /* ResponseCache.m */,
 				064FB7761727072B00DC0D51 /* Result.h */,
 				064FB7771727072B00DC0D51 /* Result.m */,
+				0649A6A41AE0780500DE2494 /* ResultSet.h */,
+				0649A6A51AE0780500DE2494 /* ResultSet.m */,
+				0649A6A61AE0780500DE2494 /* ResultSetMetaData.h */,
+				0649A6A71AE0780500DE2494 /* ResultSetMetaData.m */,
 				06F2905718972CE800676F1D /* Retention.h */,
 				06F2905818972CE800676F1D /* Retention.m */,
 				06F2905918972CE800676F1D /* RetentionPolicy.h */,
@@ -4805,6 +5614,32 @@
 				06C73D7219180BD9001D3CC8 /* Rfc822Tokenizer.m */,
 				067855D7169F37710042431C /* RoundingMode.h */,
 				067855D8169F37710042431C /* RoundingMode.m */,
+				0649A6A81AE0780500DE2494 /* RowId.h */,
+				0649A6A91AE0780500DE2494 /* RowId.m */,
+				0649A6AA1AE0780500DE2494 /* RowIdLifetime.h */,
+				0649A6AB1AE0780500DE2494 /* RowIdLifetime.m */,
+				0649A62C1AE077D300DE2494 /* RSAKey.h */,
+				0649A62D1AE077D300DE2494 /* RSAKey.m */,
+				0649A6761AE077E900DE2494 /* RSAKeyGenParameterSpec.h */,
+				0649A6771AE077E900DE2494 /* RSAKeyGenParameterSpec.m */,
+				0649A62E1AE077D300DE2494 /* RSAMultiPrimePrivateCrtKey.h */,
+				0649A62F1AE077D300DE2494 /* RSAMultiPrimePrivateCrtKey.m */,
+				0649A6781AE077E900DE2494 /* RSAMultiPrimePrivateCrtKeySpec.h */,
+				0649A6791AE077E900DE2494 /* RSAMultiPrimePrivateCrtKeySpec.m */,
+				0649A67A1AE077E900DE2494 /* RSAOtherPrimeInfo.h */,
+				0649A67B1AE077E900DE2494 /* RSAOtherPrimeInfo.m */,
+				0649A6301AE077D300DE2494 /* RSAPrivateCrtKey.h */,
+				0649A6311AE077D300DE2494 /* RSAPrivateCrtKey.m */,
+				0649A67C1AE077E900DE2494 /* RSAPrivateCrtKeySpec.h */,
+				0649A67D1AE077E900DE2494 /* RSAPrivateCrtKeySpec.m */,
+				0649A6321AE077D300DE2494 /* RSAPrivateKey.h */,
+				0649A6331AE077D300DE2494 /* RSAPrivateKey.m */,
+				0649A67E1AE077E900DE2494 /* RSAPrivateKeySpec.h */,
+				0649A67F1AE077E900DE2494 /* RSAPrivateKeySpec.m */,
+				0649A6341AE077D300DE2494 /* RSAPublicKey.h */,
+				0649A6351AE077D300DE2494 /* RSAPublicKey.m */,
+				0649A6801AE077E900DE2494 /* RSAPublicKeySpec.h */,
+				0649A6811AE077E900DE2494 /* RSAPublicKeySpec.m */,
 				06721B561559CC0300645E1B /* Runnable.h */,
 				06F2904118972CD000676F1D /* Runnable.m */,
 				06F2910818972DFA00676F1D /* RunnableFuture.h */,
@@ -4819,6 +5654,8 @@
 				06F2904518972CD000676F1D /* RuntimePermission.m */,
 				06ED3D6C17D164AF0014750E /* SafeVarargs.h */,
 				06ED3D6D17D164AF0014750E /* SafeVarargs.m */,
+				0649A6AC1AE0780500DE2494 /* Savepoint.h */,
+				0649A6AD1AE0780600DE2494 /* Savepoint.m */,
 				064FB7941727079100DC0D51 /* SAXException.h */,
 				064FB7951727079100DC0D51 /* SAXException.m */,
 				064FB7961727079100DC0D51 /* SAXNotRecognizedException.h */,
@@ -4835,6 +5672,8 @@
 				06ED3E0117D166ED0014750E /* SAXParserFactoryImpl.m */,
 				06ED3E0217D166ED0014750E /* SAXParserImpl.h */,
 				06ED3E0317D166ED0014750E /* SAXParserImpl.m */,
+				0649A6E41AE078D800DE2494 /* Scanner.h */,
+				0649A6E51AE078D800DE2494 /* Scanner.m */,
 				06C73E8519180CC9001D3CC8 /* ScatteringByteChannel.h */,
 				06C73E8619180CC9001D3CC8 /* ScatteringByteChannel.m */,
 				06F2910C18972DFA00676F1D /* ScheduledExecutorService.h */,
@@ -4847,6 +5686,10 @@
 				064FB77F1727074100DC0D51 /* Schema.m */,
 				06C73D9919180C0C001D3CC8 /* ScopedLocalRef.h */,
 				06C73D9A19180C0C001D3CC8 /* ScopedLocalRef.m */,
+				0649A6EE1AE0796400DE2494 /* SecretKey.h */,
+				0649A6EF1AE0796400DE2494 /* SecretKey.m */,
+				0649A5F41AE0778600DE2494 /* SecureCacheResponse.h */,
+				0649A5F51AE0778600DE2494 /* SecureCacheResponse.m */,
 				06ED3DB217D165510014750E /* SecureClassLoader.h */,
 				06ED3DB317D165510014750E /* SecureClassLoader.m */,
 				06F2907718972D4C00676F1D /* SecureRandom.h */,
@@ -4871,10 +5714,16 @@
 				06C73D5A19180BD9001D3CC8 /* Selection.m */,
 				06C73E8B19180CC9001D3CC8 /* SelectionKey.h */,
 				06C73E8C19180CC9001D3CC8 /* SelectionKey.m */,
+				0649A6121AE0778700DE2494 /* SelectionKeyImpl.h */,
+				0649A6131AE0778700DE2494 /* SelectionKeyImpl.m */,
 				06C73E8D19180CC9001D3CC8 /* Selector.h */,
 				06C73E8E19180CC9001D3CC8 /* Selector.m */,
+				0649A6141AE0778700DE2494 /* SelectorImpl.h */,
+				0649A6151AE0778700DE2494 /* SelectorImpl.m */,
 				06C73EA219180CD8001D3CC8 /* SelectorProvider.h */,
 				06C73EA319180CD8001D3CC8 /* SelectorProvider.m */,
+				0649A6161AE0778700DE2494 /* SelectorProviderImpl.h */,
+				0649A6171AE0778700DE2494 /* SelectorProviderImpl.m */,
 				06F2911218972DFA00676F1D /* Semaphore.h */,
 				06F2911318972DFA00676F1D /* Semaphore.m */,
 				06F2902418972C9400676F1D /* SequenceInputStream.h */,
@@ -4887,6 +5736,10 @@
 				06C73DEE19180C99001D3CC8 /* ServerSocket.m */,
 				06C73E8F19180CC9001D3CC8 /* ServerSocketChannel.h */,
 				06C73E9019180CC9001D3CC8 /* ServerSocketChannel.m */,
+				0649A6181AE0778700DE2494 /* ServerSocketChannelImpl.h */,
+				0649A6191AE0778700DE2494 /* ServerSocketChannelImpl.m */,
+				0649A6F61AE0796400DE2494 /* ServerSocketFactory.h */,
+				0649A6F71AE0796400DE2494 /* ServerSocketFactory.m */,
 				06F290AE18972DA300676F1D /* ServiceConfigurationError.h */,
 				06F290AF18972DA300676F1D /* ServiceConfigurationError.m */,
 				06F290B018972DA300676F1D /* ServiceLoader.h */,
@@ -4903,8 +5756,12 @@
 				06DD32DC16A13FA000AD7ACE /* ShortArrayBuffer.m */,
 				06DD32DD16A13FA000AD7ACE /* ShortBuffer.h */,
 				06DD32DE16A13FA000AD7ACE /* ShortBuffer.m */,
+				0649A64C1AE077D400DE2494 /* Signature.h */,
+				0649A64D1AE077D400DE2494 /* Signature.m */,
 				06C73EC819180CFA001D3CC8 /* SignatureException.h */,
 				06C73EC919180CFA001D3CC8 /* SignatureException.m */,
+				0649A64E1AE077D400DE2494 /* SignatureSpi.h */,
+				0649A64F1AE077D400DE2494 /* SignatureSpi.m */,
 				06ED3DDA17D165DE0014750E /* SimpleDateFormat.h */,
 				06ED3DDB17D165DE0014750E /* SimpleDateFormat.m */,
 				06F2915518972E5100676F1D /* SimpleFormatter.h */,
@@ -4925,8 +5782,12 @@
 				06C73DF219180C99001D3CC8 /* SocketAddress.m */,
 				06C73E9119180CC9001D3CC8 /* SocketChannel.h */,
 				06C73E9219180CC9001D3CC8 /* SocketChannel.m */,
+				0649A61A1AE0778700DE2494 /* SocketChannelImpl.h */,
+				0649A61B1AE0778700DE2494 /* SocketChannelImpl.m */,
 				06C73DF319180C99001D3CC8 /* SocketException.h */,
 				06C73DF419180C99001D3CC8 /* SocketException.m */,
+				0649A6F81AE0796400DE2494 /* SocketFactory.h */,
+				0649A6F91AE0796400DE2494 /* SocketFactory.m */,
 				06C73DF519180C99001D3CC8 /* SocketImpl.h */,
 				06C73DF619180C99001D3CC8 /* SocketImpl.m */,
 				06C73DF719180C99001D3CC8 /* SocketImplFactory.h */,
@@ -4978,14 +5839,93 @@
 				06C73E9319180CC9001D3CC8 /* spi */,
 				068677EA166C345F005A5AD7 /* Splitter.h */,
 				068677EB166C345F005A5AD7 /* Splitter.m */,
+				0649A6AE1AE0780600DE2494 /* SQLClientInfoException.h */,
+				0649A6AF1AE0780600DE2494 /* SQLClientInfoException.m */,
+				0649A6B01AE0780600DE2494 /* SQLData.h */,
+				0649A6B11AE0780600DE2494 /* SQLData.m */,
+				0649A6B21AE0780600DE2494 /* SQLDataException.h */,
+				0649A6B31AE0780600DE2494 /* SQLDataException.m */,
+				0649A6B41AE0780600DE2494 /* SQLException.h */,
+				0649A6B51AE0780600DE2494 /* SQLException.m */,
+				0649A6B61AE0780600DE2494 /* SQLFeatureNotSupportedException.h */,
+				0649A6B71AE0780600DE2494 /* SQLFeatureNotSupportedException.m */,
+				0649A6B81AE0780600DE2494 /* SQLInput.h */,
+				0649A6B91AE0780600DE2494 /* SQLInput.m */,
+				0649A6BA1AE0780600DE2494 /* SQLIntegrityConstraintViolationException.h */,
+				0649A6BB1AE0780600DE2494 /* SQLIntegrityConstraintViolationException.m */,
+				0649A6BC1AE0780600DE2494 /* SQLInvalidAuthorizationSpecException.h */,
+				0649A6BD1AE0780600DE2494 /* SQLInvalidAuthorizationSpecException.m */,
+				0649A6BE1AE0780600DE2494 /* SQLNonTransientConnectionException.h */,
+				0649A6BF1AE0780600DE2494 /* SQLNonTransientConnectionException.m */,
+				0649A6C01AE0780600DE2494 /* SQLNonTransientException.h */,
+				0649A6C11AE0780600DE2494 /* SQLNonTransientException.m */,
+				0649A6C21AE0780600DE2494 /* SQLOutput.h */,
+				0649A6C31AE0780600DE2494 /* SQLOutput.m */,
+				0649A6C41AE0780600DE2494 /* SQLPermission.h */,
+				0649A6C51AE0780600DE2494 /* SQLPermission.m */,
+				0649A6C61AE0780600DE2494 /* SQLRecoverableException.h */,
+				0649A6C71AE0780600DE2494 /* SQLRecoverableException.m */,
+				0649A6C81AE0780600DE2494 /* SQLSyntaxErrorException.h */,
+				0649A6C91AE0780600DE2494 /* SQLSyntaxErrorException.m */,
+				0649A6CA1AE0780600DE2494 /* SQLTimeoutException.h */,
+				0649A6CB1AE0780600DE2494 /* SQLTimeoutException.m */,
+				0649A6CC1AE0780700DE2494 /* SQLTransactionRollbackException.h */,
+				0649A6CD1AE0780700DE2494 /* SQLTransactionRollbackException.m */,
+				0649A6CE1AE0780700DE2494 /* SQLTransientConnectionException.h */,
+				0649A6CF1AE0780700DE2494 /* SQLTransientConnectionException.m */,
+				0649A6D01AE0780700DE2494 /* SQLTransientException.h */,
+				0649A6D11AE0780700DE2494 /* SQLTransientException.m */,
+				0649A6D21AE0780700DE2494 /* SQLWarning.h */,
+				0649A6D31AE0780700DE2494 /* SQLWarning.m */,
+				0649A6D41AE0780700DE2494 /* SQLXML.h */,
+				0649A6D51AE0780700DE2494 /* SQLXML.m */,
+				0649A6FA1AE0796500DE2494 /* ssl */,
+				0649A70F1AE0796500DE2494 /* SSLContext.h */,
+				0649A7101AE0796500DE2494 /* SSLContext.m */,
+				0649A7111AE0796500DE2494 /* SSLContextSpi.h */,
+				0649A7121AE0796500DE2494 /* SSLContextSpi.m */,
+				0649A7131AE0796500DE2494 /* SSLEngine.h */,
+				0649A7141AE0796500DE2494 /* SSLEngine.m */,
+				0649A7151AE0796500DE2494 /* SSLEngineResult.h */,
+				0649A7161AE0796600DE2494 /* SSLEngineResult.m */,
+				0649A7171AE0796600DE2494 /* SSLException.h */,
+				0649A7181AE0796600DE2494 /* SSLException.m */,
+				0649A7191AE0796600DE2494 /* SSLHandshakeException.h */,
+				0649A71A1AE0796600DE2494 /* SSLHandshakeException.m */,
+				0649A71B1AE0796600DE2494 /* SSLParameters.h */,
+				0649A71C1AE0796600DE2494 /* SSLParameters.m */,
+				0649A71D1AE0796600DE2494 /* SSLPeerUnverifiedException.h */,
+				0649A71E1AE0796600DE2494 /* SSLPeerUnverifiedException.m */,
+				0649A71F1AE0796600DE2494 /* SSLProtocolException.h */,
+				0649A7201AE0796600DE2494 /* SSLProtocolException.m */,
+				0649A7211AE0796600DE2494 /* SSLServerSocket.h */,
+				0649A7221AE0796600DE2494 /* SSLServerSocket.m */,
+				0649A7231AE0796600DE2494 /* SSLServerSocketFactory.h */,
+				0649A7241AE0796600DE2494 /* SSLServerSocketFactory.m */,
+				0649A7251AE0796600DE2494 /* SSLSession.h */,
+				0649A7261AE0796600DE2494 /* SSLSession.m */,
+				0649A7271AE0796600DE2494 /* SSLSessionBindingEvent.h */,
+				0649A7281AE0796600DE2494 /* SSLSessionBindingEvent.m */,
+				0649A7291AE0796600DE2494 /* SSLSessionBindingListener.h */,
+				0649A72A1AE0796600DE2494 /* SSLSessionBindingListener.m */,
+				0649A72B1AE0796600DE2494 /* SSLSessionContext.h */,
+				0649A72C1AE0796600DE2494 /* SSLSessionContext.m */,
+				0649A72D1AE0796600DE2494 /* SSLSocket.h */,
+				0649A72E1AE0796600DE2494 /* SSLSocket.m */,
+				0649A72F1AE0796600DE2494 /* SSLSocketFactory.h */,
+				0649A7301AE0796600DE2494 /* SSLSocketFactory.m */,
 				06721B021559CB9200645E1B /* Stack.h */,
 				06721A5F1559C99E00645E1B /* Stack.m */,
+				0649A5E81AE0773500DE2494 /* StackOverflowError.h */,
+				0649A5E91AE0773500DE2494 /* StackOverflowError.m */,
 				06721B591559CC0300645E1B /* StackTraceElement.h */,
 				067219EF1559C87100645E1B /* StackTraceElement.m */,
 				06AA056217E110D00017C34A /* StandardCharsets.h */,
 				06AA056317E110D00017C34A /* StandardCharsets.m */,
 				06C73E0519180C9A001D3CC8 /* StandardSocketOptions.h */,
 				06C73E0619180C9A001D3CC8 /* StandardSocketOptions.m */,
+				0649A6D61AE0780700DE2494 /* Statement.h */,
+				0649A6D71AE0780700DE2494 /* Statement.m */,
 				06F2902A18972C9400676F1D /* StreamCorruptedException.h */,
 				06F2902B18972C9400676F1D /* StreamCorruptedException.m */,
 				06F2915718972E5100676F1D /* StreamHandler.h */,
@@ -5014,6 +5954,8 @@
 				06F2904718972CD000676F1D /* StringToReal.m */,
 				06721A9D1559CB2500645E1B /* StringWriter.h */,
 				067219AA1559C7FC00645E1B /* StringWriter.m */,
+				0649A6D81AE0780700DE2494 /* Struct.h */,
+				0649A6D91AE0780700DE2494 /* Struct.m */,
 				06C73EEC19180D6D001D3CC8 /* StructAddrinfo.h */,
 				06C73EED19180D6D001D3CC8 /* StructAddrinfo.m */,
 				06C73EEE19180D6D001D3CC8 /* StructFlock.h */,
@@ -5048,6 +5990,8 @@
 				06C73D4419180BBD001D3CC8 /* SystemClock.m */,
 				06F2905B18972CE800676F1D /* Target.h */,
 				06F2905C18972CE800676F1D /* Target.m */,
+				0649A7A71AE07A4400DE2494 /* Text.h */,
+				0649A7A81AE07A4400DE2494 /* Text.m */,
 				06C73D6B19180BD9001D3CC8 /* TextUtils.h */,
 				06C73D6C19180BD9001D3CC8 /* TextUtils.m */,
 				06C73D6D19180BD9001D3CC8 /* TextWatcher.h */,
@@ -5094,15 +6038,28 @@
 				06721A601559C99E00645E1B /* TreeMap.m */,
 				06721B041559CB9200645E1B /* TreeSet.h */,
 				06721A611559C99E00645E1B /* TreeSet.m */,
+				0649A7311AE0796600DE2494 /* TrustManager.h */,
+				0649A7321AE0796700DE2494 /* TrustManager.m */,
+				0649A7331AE0796700DE2494 /* TrustManagerFactory.h */,
+				0649A7341AE0796700DE2494 /* TrustManagerFactory.m */,
+				0649A7351AE0796700DE2494 /* TrustManagerFactorySpi.h */,
+				0649A7361AE0796700DE2494 /* TrustManagerFactorySpi.m */,
 				0697F60715D190580027A7E4 /* Type.h */,
 				0697F60815D190580027A7E4 /* Type.m */,
 				064FB8001727085500DC0D51 /* TypeInfo.h */,
+				0649A7AD1AE07A4400DE2494 /* TypeInfo.m */,
 				064FB7801727074100DC0D51 /* TypeInfoProvider.h */,
 				064FB7811727074100DC0D51 /* TypeInfoProvider.m */,
 				06616211180F2A1900887D7D /* TypeNotPresentException.h */,
 				06616212180F2A1900887D7D /* TypeNotPresentException.m */,
+				0649A74D1AE0799100DE2494 /* Types.h */,
+				0649A6DA1AE0780700DE2494 /* Types.h */,
+				0649A74E1AE0799100DE2494 /* Types.m */,
+				0649A6DB1AE0780700DE2494 /* Types.m */,
 				0697F60915D190580027A7E4 /* TypeVariable.h */,
 				0697F60A15D190580027A7E4 /* TypeVariable.m */,
+				0649A74F1AE0799100DE2494 /* TypeVariableImpl.h */,
+				0649A7501AE0799100DE2494 /* TypeVariableImpl.m */,
 				06ED3D7E17D164DC0014750E /* UndeclaredThrowableException.h */,
 				06ED3D7F17D164DC0014750E /* UndeclaredThrowableException.m */,
 				06F290B718972DA300676F1D /* UnknownFormatConversionException.h */,
@@ -5115,6 +6072,10 @@
 				06C73E0A19180C9A001D3CC8 /* UnknownServiceException.m */,
 				06AA056417E110D00017C34A /* UnmappableCharacterException.h */,
 				06AA056517E110D00017C34A /* UnmappableCharacterException.m */,
+				0649A6501AE077D400DE2494 /* UnrecoverableEntryException.h */,
+				0649A6511AE077D400DE2494 /* UnrecoverableEntryException.m */,
+				0649A6521AE077D400DE2494 /* UnrecoverableKeyException.h */,
+				0649A6531AE077D400DE2494 /* UnrecoverableKeyException.m */,
 				06C73E9419180CC9001D3CC8 /* UnresolvedAddressException.h */,
 				06C73E9519180CC9001D3CC8 /* UnresolvedAddressException.m */,
 				06F2917918972E8200676F1D /* Unsafe.h */,
@@ -5123,6 +6084,8 @@
 				0699FF8B18D7851500278029 /* UnsafeArrayList.m */,
 				06C73E9619180CCA001D3CC8 /* UnsupportedAddressTypeException.h */,
 				06C73E9719180CCA001D3CC8 /* UnsupportedAddressTypeException.m */,
+				0649A73D1AE0796700DE2494 /* UnsupportedCallbackException.h */,
+				0649A73E1AE0796700DE2494 /* UnsupportedCallbackException.m */,
 				06AA056617E110D00017C34A /* UnsupportedCharsetException.h */,
 				06AA056717E110D00017C34A /* UnsupportedCharsetException.m */,
 				06721A9E1559CB2500645E1B /* UnsupportedEncodingException.h */,
@@ -5137,6 +6100,12 @@
 				064FB74B172705F400DC0D51 /* URISyntaxException.m */,
 				06ED3D8417D164FE0014750E /* URL.h */,
 				06ED3D8517D164FE0014750E /* URL.m */,
+				0649A5F61AE0778600DE2494 /* URLClassLoader.h */,
+				0649A5F71AE0778600DE2494 /* URLClassLoader.m */,
+				0649A5F81AE0778600DE2494 /* URLConnection.h */,
+				0649A5F91AE0778600DE2494 /* URLConnection.m */,
+				0649A5FA1AE0778600DE2494 /* URLDecoder.h */,
+				0649A5FB1AE0778600DE2494 /* URLDecoder.m */,
 				06F2906318972D1600676F1D /* URLEncoder.h */,
 				06F2906418972D1600676F1D /* URLEncoder.m */,
 				06ED3D8617D164FE0014750E /* URLStreamHandler.h */,
@@ -5145,6 +6114,8 @@
 				06ED3D8917D164FE0014750E /* URLStreamHandlerFactory.m */,
 				06ED3DF617D166AF0014750E /* UrlUtils.h */,
 				06ED3DF717D166AF0014750E /* UrlUtils.m */,
+				0649A7AE1AE07A4400DE2494 /* UserDataHandler.h */,
+				0649A7AF1AE07A4400DE2494 /* UserDataHandler.m */,
 				06ED3D5D17D1645A0014750E /* UTFDataFormatException.h */,
 				06ED3D5E17D1645A0014750E /* UTFDataFormatException.m */,
 				06F290BB18972DA300676F1D /* UUID.h */,
@@ -5165,6 +6136,10 @@
 				06D7BDF217DE685C00329964 /* WeakReference.m */,
 				06ED3D8017D164DC0014750E /* WildcardType.h */,
 				06ED3D8117D164DC0014750E /* WildcardType.m */,
+				0649A7511AE0799100DE2494 /* WildcardTypeImpl.h */,
+				0649A7521AE0799100DE2494 /* WildcardTypeImpl.m */,
+				0649A6DC1AE0780700DE2494 /* Wrapper.h */,
+				0649A6DD1AE0780700DE2494 /* Wrapper.m */,
 				06C73E9819180CCA001D3CC8 /* WritableByteChannel.h */,
 				06C73E9919180CCA001D3CC8 /* WritableByteChannel.m */,
 				06F2902E18972C9400676F1D /* WriteAbortedException.h */,
@@ -5177,11 +6152,14 @@
 				06C73EBA19180CF9001D3CC8 /* X509Certificate.h */,
 				06C73ED919180D3F001D3CC8 /* X509Certificate.m */,
 				06C73EBB19180CF9001D3CC8 /* X509Certificate.m */,
+				0649A6821AE077E900DE2494 /* X509EncodedKeySpec.h */,
+				0649A6831AE077E900DE2494 /* X509EncodedKeySpec.m */,
 				06C73EBC19180CF9001D3CC8 /* X509Extension.h */,
 				06C73EBD19180CF9001D3CC8 /* X509Extension.m */,
 				064FB75E172706F600DC0D51 /* XMLConstants.h */,
 				064FB75F172706F600DC0D51 /* XMLConstants.m */,
 				064FB7C8172707F200DC0D51 /* XMLFilter.h */,
+				0649A7BD1AE07A4500DE2494 /* XMLFilter.m */,
 				064FB7E41727081D00DC0D51 /* XMLFilterImpl.h */,
 				064FB7E51727081D00DC0D51 /* XMLFilterImpl.m */,
 				06F2915918972E5100676F1D /* XMLFormatter.h */,
@@ -5193,11 +6171,13 @@
 				06ED3E0D17D1673A0014750E /* XmlPullParserFactory.h */,
 				06ED3E0E17D1673A0014750E /* XmlPullParserFactory.m */,
 				064FB7C9172707F200DC0D51 /* XMLReader.h */,
+				0649A7BE1AE07A4500DE2494 /* XMLReader.m */,
 				064FB7E61727081D00DC0D51 /* XMLReaderAdapter.h */,
 				064FB7E71727081D00DC0D51 /* XMLReaderAdapter.m */,
 				064FB7E81727081D00DC0D51 /* XMLReaderFactory.h */,
 				064FB7E91727081D00DC0D51 /* XMLReaderFactory.m */,
 				06ED3E0F17D1673A0014750E /* XmlSerializer.h */,
+				0649A7BF1AE07A4500DE2494 /* XmlSerializer.m */,
 				06F2916F18972E6800676F1D /* ZipConstants.h */,
 				06F2917018972E6800676F1D /* ZipConstants.m */,
 				06F2917118972E6800676F1D /* ZipEntry.h */,
@@ -6701,8 +7681,6 @@
 				06574ABE1A8EB61D000A3616 /* EnumTest.harmony.ser */,
 				06E4E842197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */,
 				06E4E872197F276D005DDE69 /* logging.config */,
-				06E4E83B197F25B2005DDE69 /* MD5.check */,
-				06E4E83C197F25B2005DDE69 /* MD5.data */,
 				06574AC61A8EB812000A3616 /* PatternSyntaxExceptionTest.golden.ser */,
 				06574ACA1A8EB8E2000A3616 /* recipt.xml */,
 				06E4E867197F273E005DDE69 /* res_en_US.properties */,
@@ -6725,7 +7703,6 @@
 				06E4E861197F2705005DDE69 /* testFieldsDefaulted.ser */,
 				06E4E862197F2705005DDE69 /* testFieldsDeprecated.ser */,
 				06E4E83B197F25B2005DDE69 /* MD5.check */,
-				06E4E837197F253D005DDE69 /* testfile-utf8.txt */,
 				06E4E83C197F25B2005DDE69 /* MD5.data */,
 				06574AD01A8EB91E000A3616 /* wrong.xml */,
 				06E4E83D197F25B2005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */,
@@ -6776,7 +7753,7 @@
 /* Begin PBXLegacyTarget section */
 		067219231559BF3600645E1B /* j2objc build */ = {
 			isa = PBXLegacyTarget;
-			buildArgumentsString = "-c \"if [ x$ACTION == xclean ]; then make clean; else make -j4 dist; fi\"";
+			buildArgumentsString = "-c \"export PATH=$PATH:/usr/local/bin:/opt/local/bin; if [ x$ACTION == xclean ]; then make clean; else make -j4 dist; fi\"";
 			buildConfigurationList = 067219241559BF3600645E1B /* Build configuration list for PBXLegacyTarget "j2objc build" */;
 			buildPhases = (
 			);
@@ -6873,7 +7850,7 @@
 		0661937C155848D70004DAFE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0430;
+				LastUpgradeCheck = 0630;
 				TargetAttributes = {
 					06459FB01A4220AF00F5ED23 = {
 						CreatedOnToolsVersion = 6.1;
@@ -7586,6 +8563,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				ONLY_ACTIVE_ARCH = YES;
 				PUBLIC_HEADERS_FOLDER_PATH = Headers;
 				SDKROOT = iphoneos;
 				STRIP_STYLE = "non-global";
@@ -7668,8 +8646,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					armv6,
-					armv7,
+					macosx,
+					iphone,
+					iphone64,
+					iphonev7s,
+					simulator,
 				);
 				DEBUGGING_SYMBOLS = YES;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -7682,6 +8663,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = "";
+				VALID_ARCHS = "macosx iphone iphone64 iphonev7s simulator";
 			};
 			name = Debug;
 		};
@@ -7689,8 +8671,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					armv6,
-					armv7,
+					macosx,
+					iphone,
+					iphone64,
+					iphonev7s,
+					simulator,
 				);
 				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				COPY_PHASE_STRIP = "";
@@ -7702,6 +8687,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = "";
+				VALID_ARCHS = "macosx iphone iphone64 iphonev7s simulator";
 			};
 			name = Release;
 		};
@@ -7709,8 +8695,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					armv6,
-					armv7,
+					macosx,
+					iphone,
+					iphone64,
+					iphonev7s,
+					simulator,
 				);
 				DEBUGGING_SYMBOLS = YES;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -7723,6 +8712,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "j2objc translate tests";
 				SDKROOT = "";
+				VALID_ARCHS = "macosx iphone iphone64 iphonev7s simulator";
 			};
 			name = Debug;
 		};
@@ -7730,8 +8720,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = (
-					armv6,
-					armv7,
+					macosx,
+					iphone,
+					iphone64,
+					iphonev7s,
+					simulator,
 				);
 				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				COPY_PHASE_STRIP = "";
@@ -7743,6 +8736,7 @@
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "j2objc translate tests";
 				SDKROOT = "";
+				VALID_ARCHS = "macosx iphone iphone64 iphonev7s simulator";
 			};
 			name = Release;
 		};
