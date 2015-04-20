@@ -397,7 +397,7 @@ class TranslationProcessor extends FileProcessor {
     imports.addAll(hdrCollector.getSuperTypes());
     imports.addAll(implCollector.getImports());
     for (Import imp : imports) {
-      maybeAddToClosure(imp.getType());
+      maybeAddToClosure(imp.getMainType());
     }
   }
 
@@ -414,37 +414,17 @@ class TranslationProcessor extends FileProcessor {
     assert !Options.shouldPreProcess();
     seenFiles.add(sourceName);
 
-    // Check if source file exists.
-    String originalTypeName = typeName;
+    // Check if class exists on classpath.
+    if (findClassFile(typeName)) {
+      logger.finest("no source for " + typeName + ", class found");
+      return;
+    }
+
     InputFile inputFile = null;
     try {
       inputFile = FileUtil.findOnSourcePath(sourceName);
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
-    }
-    while (inputFile == null && !sourceName.isEmpty()) {
-      // Check if class exists on classpath.
-      // We iteratively slice parts off the typeName until it's exhausted.
-      if (findClassFile(typeName)) {
-        logger.finest("no source for " + typeName + ", class found");
-        return;
-      }
-      int iDot = typeName.lastIndexOf('.');
-      if (iDot == -1) {
-        // No more parts to slice.
-        ErrorUtil.warning("could not find source path for " + originalTypeName);
-        return;
-      }
-      typeName = typeName.substring(0, iDot);
-      sourceName = typeName.replace('.', File.separatorChar) + ".java";
-      if (seenFiles.contains(sourceName)) {
-        return;
-      }
-      try {
-        inputFile = FileUtil.findOnSourcePath(sourceName);
-      } catch (IOException e) {
-        ErrorUtil.warning(e.getMessage());
-      }
     }
 
     // Check if the source file is older than the generated header file.
@@ -458,7 +438,7 @@ class TranslationProcessor extends FileProcessor {
 
   private boolean findClassFile(String typeName) {
     // Zip/jar files always use forward slashes.
-    String path = typeName.replace('.', '/') + ".class";
+    String path = typeName.replace('.', File.separatorChar) + ".class";
     InputFile f = null;
     try {
       f = FileUtil.findOnClassPath(path);

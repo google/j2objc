@@ -40,6 +40,7 @@ public class Import implements Comparable<Import> {
 
   private final ITypeBinding type;
   private final String typeName;
+  private final ITypeBinding mainType;
   private final String mainTypeName;
   private final String importFileName;
 
@@ -90,6 +91,7 @@ public class Import implements Comparable<Import> {
     while (!mainType.isTopLevel()) {
       mainType = mainType.getDeclaringClass();
     }
+    this.mainType = mainType;
     this.mainTypeName = nameTable.getFullName(mainType);
     this.importFileName = getImportFileName(mainType) + ".h";
   }
@@ -100,6 +102,10 @@ public class Import implements Comparable<Import> {
 
   public String getTypeName() {
     return typeName;
+  }
+
+  public ITypeBinding getMainType() {
+    return mainType;
   }
 
   public String getMainTypeName() {
