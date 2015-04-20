@@ -30,7 +30,6 @@ import java.util.zip.ZipEntry;
 public class JarredInputFile implements InputFile {
   private final String jarPath;
   private final String internalPath;
-  private final String specifiedPath;
 
   /**
    * Create a new JarredSourceFile. The file's unit name will be the same as
@@ -38,9 +37,8 @@ public class JarredInputFile implements InputFile {
    * @param jarPath a filesystem path to the containing .jar
    * @param internalPath the file's path within the jar
    */
-  public JarredInputFile(String specifiedPath, String jarPath, String internalPath) {
+  public JarredInputFile(String jarPath, String internalPath) {
     assert !jarPath.endsWith(".java");
-    this.specifiedPath = specifiedPath;
     this.jarPath = jarPath;
     this.internalPath = internalPath;
   }
@@ -71,11 +69,6 @@ public class JarredInputFile implements InputFile {
   @Override
   public String getUnitName() {
     return internalPath;
-  }
-
-  @Override
-  public String getSpecifiedPath() {
-    return specifiedPath;
   }
 
   @Override

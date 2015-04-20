@@ -33,7 +33,7 @@ public class FileUtilTest extends GenerationTest {
   public void testReadJarSource() throws IOException {
     File file = new File(getResourceAsFile("example.jar"));
     JarredInputFile jarEntry = new JarredInputFile(
-        null, file.getPath(), "com/google/test/package-info.java");
+        file.getPath(), "com/google/test/package-info.java");
     String source = FileUtil.readFile(jarEntry);
     assertTrue(source.contains("package com.google.test;"));
   }
@@ -42,7 +42,7 @@ public class FileUtilTest extends GenerationTest {
   public void testJarSourceExists() throws IOException {
     File file = new File(getResourceAsFile("example.jar"));
     JarredInputFile jarEntry = new JarredInputFile(
-        null, file.getPath(), "com/google/test/package-info.java");
+        file.getPath(), "com/google/test/package-info.java");
     assertTrue(jarEntry.exists());
   }
 }

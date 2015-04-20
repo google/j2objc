@@ -52,6 +52,7 @@ J2OBJC_SH_DIST = $(DIST_DIR)/j2objc
 JAVA_SOURCES = \
 	AnnotationPreProcessor.java \
 	FileProcessor.java \
+	GenerationBatch.java \
 	J2ObjC.java \
 	Options.java \
 	Plugin.java \

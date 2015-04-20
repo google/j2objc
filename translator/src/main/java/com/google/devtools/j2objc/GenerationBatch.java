@@ -15,14 +15,15 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
-import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import java.io.File;
@@ -51,10 +52,6 @@ public class GenerationBatch {
   private static final Logger logger = Logger.getLogger(GenerationBatch.class.getName());
 
   private final List<GenerationUnit> units = new ArrayList<GenerationUnit>();
-
-  // Map: Output path -> GenerationUnit. Linked to preserve order, which isn't necessary but is nice
-  private final HashMap<String, GenerationUnit> unitMap
-      = new LinkedHashMap<String, GenerationUnit>();
 
   public GenerationBatch() {
   }
@@ -160,6 +157,7 @@ public class GenerationBatch {
       return;
     }
     try {
+      List<InputFile> inputFiles = Lists.newArrayList();
       ZipFile zfile = new ZipFile(f);
       try {
         Enumeration<? extends ZipEntry> enumerator = zfile.entries();
@@ -167,12 +165,18 @@ public class GenerationBatch {
           ZipEntry entry = enumerator.nextElement();
           String internalPath = entry.getName();
           if (internalPath.endsWith(".java")) {
-            InputFile inputFile = new JarredInputFile(filename, filename, internalPath);
-            addSource(inputFile);
+            inputFiles.add(new JarredInputFile(filename, internalPath));
           }
         }
       } finally {
         zfile.close();  // Also closes input stream.
+      }
+      if (Options.combineSourceJars()) {
+        addCombinedJar(filename, inputFiles);
+      } else {
+        for (InputFile file : inputFiles) {
+          addSource(file);
+        }
       }
     } catch (ZipException e) { // Also catches JarExceptions
       logger.fine(e.getMessage());
@@ -182,13 +186,18 @@ public class GenerationBatch {
     }
   }
 
-  private GenerationUnit createGenerationUnit(String sourceName, String outputPath) {
-    GenerationUnit unit = new GenerationUnit(sourceName);
+  private void addCombinedJar(String filename, List<InputFile> inputFiles) {
+    String outputPath = filename;
+    if (outputPath.lastIndexOf("/") < outputPath.lastIndexOf(".")) {
+      outputPath = outputPath.substring(0, outputPath.lastIndexOf("."));
+    }
+    GenerationUnit unit = new GenerationUnit(filename);
     unit.setOutputPath(outputPath);
-    GenerationUnit prev = unitMap.put(outputPath, unit);
-    assert prev == null;
+    unit.setName(NameTable.camelCasePath(outputPath));
+    for (InputFile file : inputFiles) {
+      unit.addInputFile(file);
+    }
     units.add(unit);
-    return unit;
   }
 
   /**
@@ -196,53 +205,18 @@ public class GenerationBatch {
    * creating GenerationUnits and inferring unit names/output paths as necessary.
    */
   protected void addSource(InputFile file) {
-    GenerationUnit unit;
-
-    if (Options.combineSourceJars() && !file.getSpecifiedPath().endsWith(".java")) {
-      String outputPath = file.getSpecifiedPath();
-      // Truncate file extension if it exists
-      if (outputPath.lastIndexOf("/") < outputPath.lastIndexOf(".")) {
-        outputPath = outputPath.substring(0, outputPath.lastIndexOf("."));
-      }
-      unit = unitMap.get(outputPath);
-      if (unit == null) {
-        unit = createGenerationUnit(file.getSpecifiedPath(), outputPath);
-        unit.setName(NameTable.camelCasePath(outputPath));
-      }
-    } else if (Options.useSourceDirectories()) {
+    GenerationUnit unit = new GenerationUnit(file.getPath());
+    unit.addInputFile(file);
+    if (Options.useSourceDirectories()) {
       String outputPath = file.getUnitName();
       outputPath = outputPath.substring(0, outputPath.lastIndexOf(".java"));
-      if (unitMap.containsKey(outputPath)) {
-        // The idiomatic behavior while compiling Java files is
-        // to proceed if there are colliding input files.
-        ErrorUtil.warning("Duplicate input file: "
-            + file.getUnitName() + " duplicated on path " + file.getPath());
-        return;
-      }
-      unit = createGenerationUnit(file.getPath(), outputPath);
-    } else {
-      // GenerationUnit with singleton file and not-yet-known name and output path.
-      unit = new GenerationUnit(file.getPath());
-      units.add(unit);
+      unit.setOutputPath(outputPath);
     }
-
-    unit.addInputFile(file);
+    units.add(unit);
   }
 
-  /**
-   * Testing method. Add a source forcing some output path.
-   * Sets the 'sourcefile' to the given output path plus ".testfile".
-   * In normal operation, addSource consults {@link Options} and determines the correct
-   * output path.
-   */
   @VisibleForTesting
-  void addSource(InputFile file, String outputPath) {
-    GenerationUnit unit = unitMap.get(outputPath);
-    if (unit == null) {
-      unit = createGenerationUnit(outputPath + ".testfile", outputPath);
-      // Get a nice looking name for testing purposes
-      unit.setName(NameTable.camelCasePath(outputPath));
-    }
-    unit.addInputFile(file);
+  void addGenerationUnit(GenerationUnit unit) {
+    units.add(unit);
   }
 }

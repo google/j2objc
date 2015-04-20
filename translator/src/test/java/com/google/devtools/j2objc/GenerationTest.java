@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.gen.StatementGenerator;
 import com.google.devtools.j2objc.util.DeadCodeMap;
@@ -323,10 +324,14 @@ public abstract class GenerationTest extends TestCase {
 
   protected String translateCombinedFiles(String outputPath, String extension, String... sources)
       throws IOException {
-    GenerationBatch batch = new GenerationBatch();
+    GenerationUnit unit = new GenerationUnit(outputPath + ".testfile");
+    unit.setOutputPath(outputPath);
+    unit.setName(NameTable.camelCasePath(outputPath));
     for (String sourceFile : sources) {
-      batch.addSource(new RegularInputFile(tempDir + "/" + sourceFile, sourceFile), outputPath);
+      unit.addInputFile(new RegularInputFile(tempDir + "/" + sourceFile, sourceFile));
     }
+    GenerationBatch batch = new GenerationBatch();
+    batch.addGenerationUnit(unit);
     parser.setEnableDocComments(Options.docCommentsEnabled());
     new HeaderMappingPreProcessor(parser).processBatch(batch);
     new TranslationProcessor(parser, DeadCodeMap.builder().build()).processBatch(batch);

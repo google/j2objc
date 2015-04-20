@@ -62,12 +62,6 @@ public class RegularInputFile implements InputFile {
   }
 
   @Override
-  public String getSpecifiedPath() {
-    // Right now, the unit path is assumed to be the specified path.
-    return unitPath;
-  }
-
-  @Override
   public long lastModified() {
     return new File(path).lastModified();
   }

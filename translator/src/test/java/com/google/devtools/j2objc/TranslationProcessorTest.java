@@ -61,10 +61,8 @@ public class TranslationProcessorTest extends GenerationTest {
 
     TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
     GenerationBatch batch = new GenerationBatch();
-    batch.addSource(new JarredInputFile(
-        "mypkg/Foo.java", getTempDir() + "/test.jar", "mypkg/Foo.java"));
-    batch.addSource(new JarredInputFile(
-        "mypkg/Foo.java", getTempDir() + "/test.jar", "mypkg/Bar.java"));
+    batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Foo.java"));
+    batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Bar.java"));
     processor.processBatch(batch);
 
     assertEquals(0, ErrorUtil.errorCount());

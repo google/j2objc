@@ -68,7 +68,7 @@ public class FileUtil {
         }
       } else {
         // Assume it's a jar file
-        JarredInputFile jarFile = new JarredInputFile(filename, pathEntry, filename);
+        JarredInputFile jarFile = new JarredInputFile(pathEntry, filename);
         if (jarFile.exists()) {
           return jarFile;
         }

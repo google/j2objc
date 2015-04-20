@@ -52,12 +52,5 @@ public interface InputFile {
    */
   String getUnitName();
 
-  /**
-   * If J2ObjC had to look up this file from some user-specified path, this is that path.
-   * Useful for debugging and for
-   * {@link com.google.devtools.j2objc.Options.OutputStyleOption#SOURCE_COMBINED}.
-   */
-  String getSpecifiedPath();
-
   long lastModified();
 }
