@@ -340,10 +340,6 @@ class TranslationProcessor extends FileProcessor {
     new PrivateDeclarationResolver().run(unit);
     ticker.tick("PrivateDeclarationResolver");
 
-    for (Plugin plugin : Options.getPlugins()) {
-      plugin.processUnit(unit);
-    }
-
     // Make sure we still have a valid AST.
     unit.validate();
 
@@ -376,10 +372,6 @@ class TranslationProcessor extends FileProcessor {
   }
 
   public void postProcess() {
-    for (Plugin plugin : Options.getPlugins()) {
-      plugin.endProcessing(Options.getOutputDirectory());
-    }
-
     printHeaderMappings();
 
     if (logger.isLoggable(Level.INFO)) {

@@ -32,7 +32,6 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
@@ -54,9 +53,6 @@ public class Options {
 
   private static List<String> sourcePathEntries = Lists.newArrayList(".");
   private static List<String> classPathEntries = Lists.newArrayList(".");
-  private static List<String> pluginPathEntries = Lists.newArrayList();
-  private static String pluginOptionString = "";
-  private static List<Plugin> plugins = new ArrayList<Plugin>();
   private static File outputDirectory = new File(".");
   private static OutputStyleOption outputStyle = OutputStyleOption.PACKAGE;
   private static String implementationSuffix = ".m";
@@ -191,16 +187,6 @@ public class Options {
           usage("-sourcepath requires an argument");
         }
         sourcePathEntries.addAll(getPathArgument(args[nArg]));
-      } else if (arg.equals("-pluginpath")) {
-        if (++nArg == args.length) {
-          usage("-pluginpath requires an argument");
-        }
-        pluginPathEntries = getPathArgument(args[nArg]);
-      } else if (arg.equals("-pluginoptions")) {
-        if (++nArg == args.length){
-          usage("-pluginoptions requires an argument");
-        }
-        pluginOptionString = args[nArg];
       } else if (arg.equals("-d")) {
         if (++nArg == args.length) {
           usage("-d requires an argument");
@@ -487,18 +473,6 @@ public class Options {
 
   public static List<String> getClassPathEntries() {
     return classPathEntries;
-  }
-
-  public static String[] getPluginPathEntries() {
-    return pluginPathEntries.toArray(new String[pluginPathEntries.size()]);
-  }
-
-  public static String getPluginOptionString() {
-    return pluginOptionString;
-  }
-
-  public static List<Plugin> getPlugins() {
-    return plugins;
   }
 
   public static File getOutputDirectory() {
