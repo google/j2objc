@@ -63,6 +63,11 @@
                   <classifier>sources</classifier>
                 </artifactItem>
                 <artifactItem>
+                  <groupId>org.hamcrest</groupId>
+                  <artifactId>hamcrest-core</artifactId>
+                  <classifier>sources</classifier>
+                </artifactItem>
+                <artifactItem>
                   <groupId>org.mockito</groupId>
                   <artifactId>mockito-core</artifactId>
                   <classifier>sources</classifier>

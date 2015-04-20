@@ -40,6 +40,7 @@ JAVAX_INJECT_SOURCE_JAR = javax.inject-1-sources.jar
 JUNIT_ROOT_JAR = junit-4.11.jar
 JUNIT_SOURCE_JAR = junit-4.11-sources.jar
 HAMCREST_JAR = hamcrest-core-1.3.jar
+HAMCREST_SOURCE_JAR = hamcrest-core-1.3-sources.jar
 
 MOCKITO_JAR = mockito-core-1.9.5.jar
 MOCKITO_SOURCE_JAR = mockito-core-1.9.5-sources.jar
