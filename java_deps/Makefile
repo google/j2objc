@@ -37,7 +37,7 @@ $(BUILD_DIR)/.maven_generate: | $(BUILD_DIR)
 	mvn -q generate-resources dependency:sources
 	@touch $@
 
-$(DIST_JAR_DIR)/$(JUNIT_JAR): $(BUILD_DIR)/$(JUNIT_ROOT_JAR)
+$(BUILD_DIR)/$(JUNIT_JAR): $(BUILD_DIR)/$(JUNIT_ROOT_JAR)
 	@cp -f $< $@
 
 $(BUILD_DIR)/$(JUNIT_ROOT_JAR): $(BUILD_DIR)/.maven_generate
