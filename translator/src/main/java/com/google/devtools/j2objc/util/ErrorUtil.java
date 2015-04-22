@@ -15,10 +15,9 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeNode;
-
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.CompilationUnit;
+import com.google.devtools.j2objc.ast.TreeUtil;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -36,7 +35,6 @@ public class ErrorUtil {
   private static int errorCount = 0;
   private static int warningCount = 0;
   private static int functionizedMethodCount = 0;
-  private static String currentFileName = null;
   private static PrintStream errorStream = System.err;
   private static List<String> errorMessages = Lists.newArrayList();
   private static List<String> warningMessages = Lists.newArrayList();
@@ -52,13 +50,8 @@ public class ErrorUtil {
   public static void reset() {
     errorCount = 0;
     warningCount = 0;
-    currentFileName = null;
     errorMessages = Lists.newArrayList();
     warningMessages = Lists.newArrayList();
-  }
-
-  public static void setCurrentFileName(String name) {
-    currentFileName = name;
   }
 
   public static int errorCount() {
@@ -124,30 +117,20 @@ public class ErrorUtil {
   /**
    * Report an error with a specific AST node.
    */
-  public static void error(ASTNode node, String message) {
-    int line = getNodeLine(node);
-    error(String.format("%s:%s: %s", currentFileName, line, message));
-  }
-
   public static void error(TreeNode node, String message) {
-    error(String.format("%s:%s: %s", currentFileName, node.getLineNumber(), message));
+    error(formatMessage(node, message));
   }
 
   /**
    * Report a warning with a specific AST node.
    */
-  public static void warning(ASTNode node, String message) {
-    int line = getNodeLine(node);
-    warning(String.format("%s:%s: %s", currentFileName, line, message));
-  }
-
   public static void warning(TreeNode node, String message) {
-    warning(String.format("%s:%s: %s", currentFileName, node.getLineNumber(), message));
+    warning(formatMessage(node, message));
   }
 
-  private static int getNodeLine(ASTNode node) {
-    CompilationUnit unit = (CompilationUnit) node.getRoot();
-    return unit.getLineNumber(node.getStartPosition());
+  private static String formatMessage(TreeNode node, String message) {
+    CompilationUnit unit = TreeUtil.getCompilationUnit(node);
+    return String.format("%s:%s: %s", unit.getInputFile().getPath(), node.getLineNumber(), message);
   }
 
   public static void functionizedMethod() {

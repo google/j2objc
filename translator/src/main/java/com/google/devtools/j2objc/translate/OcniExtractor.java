@@ -226,9 +226,7 @@ public class OcniExtractor extends TreeVisitor {
         start = text.indexOf("/*-{");
         end = text.lastIndexOf("}-*/");
         if (start != -1 && end > start) {
-          String message = String.format("JSNI comment found: %s:%d",
-              unit.getInputFile().getPath(), unit.getLineNumber(offset));
-          ErrorUtil.warning(message);
+          ErrorUtil.warning(node, "JSNI comment found");
         }
       }
       return null;

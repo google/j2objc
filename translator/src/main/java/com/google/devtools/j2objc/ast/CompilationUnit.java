@@ -68,11 +68,15 @@ public class CompilationUnit extends TreeNode {
     }
     for (Object comment : jdtNode.getCommentList()) {
       // Comments are not normally parented in the JDT AST. Javadoc nodes are
-      // normally parented by the BodyDeclaration they apply do, so here we only
+      // normally parented by the BodyDeclaration they apply to, so here we only
       // keep the unparented comments to avoid duplicate comment nodes.
       ASTNode commentParent = ((ASTNode) comment).getParent();
       if (commentParent == null || commentParent == jdtNode) {
-        comments.add((Comment) TreeConverter.convert(comment));
+        Comment newComment = (Comment) TreeConverter.convert(comment);
+        // Since the comment is unparented, it's constructor is unable to get
+        // the root CompilationUnit to determine the line number.
+        newComment.setLineNumber(jdtNode.getLineNumber(newComment.getStartPosition()));
+        comments.add(newComment);
       }
     }
     for (Object type : jdtNode.types()) {

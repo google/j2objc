@@ -111,7 +111,6 @@ abstract class FileProcessor {
       JdtParser.Handler handler = new JdtParser.Handler() {
         @Override
         public void handleParsedUnit(InputFile inputFile, CompilationUnit unit) {
-          ErrorUtil.setCurrentFileName(inputFile.getPath());
           processCompilationUnit(unitMap.get(inputFile), unit, inputFile);
         }
       };
@@ -131,8 +130,6 @@ abstract class FileProcessor {
 
   protected void processSource(InputFile file, GenerationUnit generationUnit) {
     logger.finest("parsing " + file);
-
-    ErrorUtil.setCurrentFileName(file.getPath());
 
     String source;
     try {
