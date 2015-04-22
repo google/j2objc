@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.SourceBuilder;
@@ -162,7 +161,7 @@ public abstract class GenerationTest extends TestCase {
   protected org.eclipse.jdt.core.dom.CompilationUnit compileType(String name, String source) {
     int errors = ErrorUtil.errorCount();
     parser.setEnableDocComments(Options.docCommentsEnabled());
-    org.eclipse.jdt.core.dom.CompilationUnit unit = parser.parse(name, source);
+    org.eclipse.jdt.core.dom.CompilationUnit unit = parser.parseWithBindings(name, source);
     if (ErrorUtil.errorCount() > errors) {
       int newErrorCount = ErrorUtil.errorCount() - errors;
       String info = String.format(
@@ -285,13 +284,6 @@ public abstract class GenerationTest extends TestCase {
     return result[0];
   }
 
-  protected void loadPackageInfo(String relativePath) throws IOException {
-    PackageInfoPreProcessor packageInfoPreProcessor = new PackageInfoPreProcessor(parser);
-    InputFile file = new RegularInputFile(tempDir.getCanonicalPath()
-        + File.separatorChar + relativePath);
-    packageInfoPreProcessor.processBatch(GenerationBatch.fromFile(file));
-  }
-
   /**
    * Translate a Java source file contents, returning the contents of either
    * the generated header or implementation file.
@@ -333,7 +325,7 @@ public abstract class GenerationTest extends TestCase {
     GenerationBatch batch = new GenerationBatch();
     batch.addGenerationUnit(unit);
     parser.setEnableDocComments(Options.docCommentsEnabled());
-    new HeaderMappingPreProcessor(parser).processBatch(batch);
+    new InputFilePreprocessor(parser).processBatch(batch);
     new TranslationProcessor(parser, DeadCodeMap.builder().build()).processBatch(batch);
     return getTranslatedFile(outputPath + extension);
   }
@@ -342,14 +334,13 @@ public abstract class GenerationTest extends TestCase {
     TranslationProcessor.loadHeaderMappings();
   }
 
-  protected void loadSourceFileHeaderMappings(String... fileNames) {
-    if (Options.shouldPreProcess()) {
-      GenerationBatch batch = new GenerationBatch();
-      for (String fileName : fileNames) {
-        batch.addSource(new RegularInputFile(tempDir.getPath() + "/" + fileName, fileName));
-      }
-      new HeaderMappingPreProcessor(parser).processBatch(batch);
+  protected void preprocessFiles(String... fileNames) {
+    GenerationBatch batch = new GenerationBatch();
+    for (String fileName : fileNames) {
+      batch.addSource(new RegularInputFile(
+          tempDir.getPath() + File.separatorChar + fileName, fileName));
     }
+    new InputFilePreprocessor(parser).processBatch(batch);
   }
 
   protected Map<String, String> writeAndReloadHeaderMappings() throws IOException {

@@ -15,11 +15,10 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTNode;
-
-import java.io.File;
 
 /**
  * Converts a Java AST from the JDT data structure to our J2ObjC data structure.
@@ -30,22 +29,8 @@ public class TreeConverter {
       org.eclipse.jdt.core.dom.CompilationUnit jdtUnit, InputFile inputFile, String source,
       NameTable nameTable) {
     return new CompilationUnit(
-        jdtUnit, inputFile, getClassNameFromFilePath(inputFile.getUnitName()), source, nameTable);
-  }
-
-  /**
-   * Gets the name of the file, stripped of any directory or extension.
-   */
-  private static String getClassNameFromFilePath(String sourceFileName) {
-    int begin = sourceFileName.lastIndexOf(File.separatorChar) + 1;
-    // Also check for /, since this may be a jar'd source when translating on Windows.
-    int n = sourceFileName.lastIndexOf('/') + 1;
-    if (n > begin) {
-      begin = n;
-    }
-    int end = sourceFileName.lastIndexOf(".java");
-    String className = sourceFileName.substring(begin, end);
-    return className;
+        jdtUnit, inputFile, FileUtil.getClassNameFromFilePath(inputFile.getUnitName()), source,
+        nameTable);
   }
 
   public static Statement convertStatement(org.eclipse.jdt.core.dom.Statement jdtStatement) {

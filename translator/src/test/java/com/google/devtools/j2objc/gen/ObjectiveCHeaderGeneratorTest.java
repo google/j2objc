@@ -159,7 +159,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "    public AnotherDummy() {}"
         + "}", "unit/test/AnotherDummy.java");
 
-    loadSourceFileHeaderMappings("unit/test/Dummy.java", "unit/test/AnotherDummy.java");
+    preprocessFiles("unit/test/Dummy.java", "unit/test/AnotherDummy.java");
     loadHeaderMappings();
 
     String translation = translateSourceFile(getTranslatedFile("unit/test/AnotherDummy.java"),
@@ -193,7 +193,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
             + "    public AnotherDummy() {}"
             + "}", "unit/test/AnotherDummy.java");
 
-    loadSourceFileHeaderMappings("unit/test/Dummy.java", "unit/test/AnotherDummy.java");
+    preprocessFiles("unit/test/Dummy.java", "unit/test/AnotherDummy.java");
     loadHeaderMappings();
 
     String translationForDummy = translateSourceFile(getTranslatedFile("unit/test/Dummy.java"),

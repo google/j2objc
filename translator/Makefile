@@ -53,6 +53,7 @@ JAVA_SOURCES = \
 	AnnotationPreProcessor.java \
 	FileProcessor.java \
 	GenerationBatch.java \
+	InputFilePreprocessor.java \
 	J2ObjC.java \
 	Options.java \
 	Plugin.java \

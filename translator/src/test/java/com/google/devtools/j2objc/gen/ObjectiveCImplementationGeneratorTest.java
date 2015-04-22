@@ -833,7 +833,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "package foo.bar.mumble;\n"
         + "import com.google.j2objc.annotations.ObjectiveCName;",
         "foo/bar/mumble/package-info.java");
-    loadPackageInfo("foo/bar/mumble/package-info.java");
+    preprocessFiles("foo/bar/mumble/package-info.java");
     String translation = translateSourceFile("package foo.bar.mumble;\n"
         + "public class Test {}",
         "foo.bar.mumble.Test", "foo/bar/mumble/Test.h");

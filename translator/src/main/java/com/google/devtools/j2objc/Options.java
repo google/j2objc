@@ -322,9 +322,9 @@ public class Options {
       ++nArg;
     }
 
-    if (shouldPreProcess() && buildClosure) {
-      ErrorUtil.error("--build-closure is not supported with "
-          + "--use-header-mappings, -XcombineJars or --preserve-full-paths");
+    if (shouldMapHeaders() && buildClosure) {
+      ErrorUtil.error(
+          "--build-closure is not supported with -XcombineJars or --preserve-full-paths");
     }
 
     if (memoryManagementOption == null) {
@@ -790,7 +790,7 @@ public class Options {
     hidePrivateMembers = false;
   }
 
-  public static boolean shouldPreProcess() {
+  public static boolean shouldMapHeaders() {
     return Options.useSourceDirectories() || Options.combineSourceJars();
   }
 }

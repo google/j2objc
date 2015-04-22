@@ -411,7 +411,7 @@ class TranslationProcessor extends FileProcessor {
       return;
     }
     // Should be an error if the user specifies this with --build-closure
-    assert !Options.shouldPreProcess();
+    assert !Options.shouldMapHeaders();
     seenFiles.add(sourceName);
 
     // Check if class exists on classpath.

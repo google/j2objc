@@ -142,9 +142,8 @@ abstract class FileProcessor {
       return;
     }
 
-    int errorCount = ErrorUtil.errorCount();
-    CompilationUnit compilationUnit = parser.parse(file.getUnitName(), source);
-    if (ErrorUtil.errorCount() > errorCount) {
+    CompilationUnit compilationUnit = parser.parseWithBindings(file.getUnitName(), source);
+    if (compilationUnit == null) {
       return;
     }
 

@@ -14,61 +14,87 @@
 
 package com.google.devtools.j2objc;
 
-import com.google.devtools.j2objc.gen.GenerationUnit;
-import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
- * Batches lists of the various files we need to process, and pre-proecsses package-info.java files.
- *
- * @author Mike Thvedt
+ * Preprocesses each input file in the batch.
  */
-public class PackageInfoPreProcessor {
-
-  private static final Logger logger = Logger.getLogger(PackageInfoPreProcessor.class.getName());
+public class InputFilePreprocessor {
 
   private final JdtParser parser;
 
-  public PackageInfoPreProcessor(JdtParser parser) {
+  public InputFilePreprocessor(JdtParser parser) {
     this.parser = parser;
   }
 
   public void processBatch(GenerationBatch batch) {
-    for (GenerationUnit unit : batch.getGenerationUnits()) {
-      for (InputFile file : unit.getInputFiles()) {
-        processSource(file);
+    for (GenerationUnit generationUnit : batch.getGenerationUnits()) {
+      for (InputFile inputFile : generationUnit.getInputFiles()) {
+        processFile(inputFile, generationUnit);
       }
     }
   }
 
-  protected void processSource(InputFile file) {
-    if (file.getUnitName().endsWith("package-info.java")) {
-      logger.finest("processing package-info file " + file.getPath());
-      try {
-        processUnit(file, parser.parse(file.getUnitName(), FileUtil.readFile(file)));
-      } catch (IOException e) {
-        ErrorUtil.error(e.getMessage());
+  private void processFile(InputFile file, GenerationUnit generationUnit) {
+    try {
+      if (file.getUnitName().endsWith("package-info.java")) {
+        processPackageInfoFile(file);
+      } else {
+        processSourceFile(file, generationUnit);
+      }
+    } catch (IOException e) {
+      ErrorUtil.error(e.getMessage());
+    }
+  }
+
+  private void processSourceFile(InputFile file, GenerationUnit generationUnit) throws IOException {
+    if (Options.shouldMapHeaders()) {
+      String source = FileUtil.readFile(file);
+      CompilationUnit compilationUnit = parser.parseWithoutBindings(file.getUnitName(), source);
+      if (compilationUnit != null) {
+        addHeaderMapping(file, generationUnit, compilationUnit);
       }
     }
   }
 
-  protected void processUnit(InputFile file, CompilationUnit unit) {
+  private void addHeaderMapping(
+      InputFile file, GenerationUnit generationUnit, CompilationUnit compilationUnit) {
+    String qualifiedName = FileUtil.getClassNameFromFilePath(file.getUnitName());
+    PackageDeclaration packageDecl = compilationUnit.getPackage();
+    if (packageDecl != null) {
+      String packageName = packageDecl.getName().getFullyQualifiedName();
+      qualifiedName = packageName + "." + qualifiedName;
+    }
+    Options.getHeaderMappings().put(qualifiedName, generationUnit.getOutputPath() + ".h");
+  }
+
+  private void processPackageInfoFile(InputFile file) throws IOException {
+    String source = FileUtil.readFile(file);
+    CompilationUnit compilationUnit = parser.parseWithBindings(file.getUnitName(), source);
+    if (compilationUnit != null) {
+      extractPackagePrefix(file, compilationUnit);
+    }
+  }
+
+  private void extractPackagePrefix(InputFile file, CompilationUnit unit) {
     // We should only reach here if it's a package-info.java file.
     assert file.getUnitName().endsWith("package-info.java");
     @SuppressWarnings("unchecked")
-    List<Annotation> annotations = (List<Annotation>)unit.getPackage().annotations();
-    for (Annotation annotation: annotations) {
+    List<Annotation> annotations = (List<Annotation>) unit.getPackage().annotations();
+    for (Annotation annotation : annotations) {
       // getFullyQualifiedName() might not actually return a fully qualified name.
       String name = annotation.getTypeName().getFullyQualifiedName();
       if (name.endsWith("ObjectiveCName")) {

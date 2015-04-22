@@ -107,13 +107,24 @@ public class JdtParser {
         enable ? "enabled" : "disabled");
   }
 
-  public CompilationUnit parse(String unitName, String source) {
-    ASTParser parser = newASTParser();
+  public CompilationUnit parseWithoutBindings(String unitName, String source) {
+    return parse(unitName, source, false);
+  }
+
+  public CompilationUnit parseWithBindings(String unitName, String source) {
+    return parse(unitName, source, true);
+  }
+
+  private CompilationUnit parse(String unitName, String source, boolean resolveBindings) {
+    ASTParser parser = newASTParser(resolveBindings);
     parser.setUnitName(unitName);
     parser.setSource(source.toCharArray());
     CompilationUnit unit = (CompilationUnit) parser.createAST(null);
-    checkCompilationErrors(unitName, unit);
-    return unit;
+    if (checkCompilationErrors(unitName, unit)) {
+      return unit;
+    } else {
+      return null;
+    }
   }
 
   /**
@@ -127,18 +138,16 @@ public class JdtParser {
   public void parseFiles(List<InputFile> files, final Handler handler) {
     // We need the whole SourceFile to correctly handle a parsed ADT, so we keep track of it here.
     final Map<String, InputFile> reverseMap = new LinkedHashMap<String, InputFile>();
-    for (InputFile file: files) {
+    for (InputFile file : files) {
       reverseMap.put(file.getPath(), file);
     }
 
-    ASTParser parser = newASTParser();
+    ASTParser parser = newASTParser(true);
     FileASTRequestor astRequestor = new FileASTRequestor() {
       @Override
       public void acceptAST(String sourceFilePath, CompilationUnit ast) {
         logger.fine("acceptAST: " + sourceFilePath);
-        int errors = ErrorUtil.errorCount();
-        checkCompilationErrors(sourceFilePath, ast);
-        if (errors == ErrorUtil.errorCount()) {
+        if (checkCompilationErrors(sourceFilePath, ast)) {
           handler.handleParsedUnit(reverseMap.get(sourceFilePath), ast);
         }
       }
@@ -151,10 +160,10 @@ public class JdtParser {
     parser.createASTs(paths, getEncodings(paths.length), paths, astRequestor, null);
   }
 
-  private ASTParser newASTParser() {
+  private ASTParser newASTParser(boolean resolveBindings) {
     ASTParser parser = ASTParser.newParser(AST.JLS4);
     parser.setCompilerOptions(compilerOptions);
-    parser.setResolveBindings(true);
+    parser.setResolveBindings(resolveBindings);
     parser.setEnvironment(
         toArray(classpathEntries), toArray(sourcepathEntries),
         getEncodings(sourcepathEntries.size()), includeRunningVMBootclasspath);
@@ -180,12 +189,15 @@ public class JdtParser {
     return encodings;
   }
 
-  private void checkCompilationErrors(String filename, CompilationUnit unit) {
+  private boolean checkCompilationErrors(String filename, CompilationUnit unit) {
+    boolean hasErrors = false;
     for (IProblem problem : unit.getProblems()) {
       if (problem.isError()) {
         ErrorUtil.error(String.format(
             "%s:%s: %s", filename, problem.getSourceLineNumber(), problem.getMessage()));
+        hasErrors = true;
       }
     }
+    return !hasErrors;
   }
 }

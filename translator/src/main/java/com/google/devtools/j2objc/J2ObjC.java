@@ -30,7 +30,6 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Translation tool for generating Objective C source files from Java sources.
@@ -114,18 +113,10 @@ public class J2ObjC {
         parser.addSourcepathEntry(preProcessorTempDir.getAbsolutePath());
       }
 
-      PackageInfoPreProcessor packageInfoPreProcessor = new PackageInfoPreProcessor(parser);
-      packageInfoPreProcessor.processBatch(batch);
+      InputFilePreprocessor inputFilePreprocessor = new InputFilePreprocessor(parser);
+      inputFilePreprocessor.processBatch(batch);
       if (ErrorUtil.errorCount() > 0) {
         return;
-      }
-
-      if (Options.shouldPreProcess()) {
-        HeaderMappingPreProcessor headerMappingPreProcessor = new HeaderMappingPreProcessor(parser);
-        headerMappingPreProcessor.processBatch(batch);
-        if (ErrorUtil.errorCount() > 0) {
-          return;
-        }
       }
 
       TranslationProcessor translationProcessor
