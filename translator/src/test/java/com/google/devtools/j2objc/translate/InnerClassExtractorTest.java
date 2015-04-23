@@ -302,7 +302,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "        public void foo() { if (x ==0) mumble(y); } }; } }"
         + "  private void mumble(int y) { } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "[this$0_->this$0_ mumbleWithInt:0]");
+    assertTranslation(translation, "Test_mumbleWithInt_(this$0_->this$0_, 0)");
   }
 
   public void testInnerSubClassOfGenericClassInner() throws IOException {

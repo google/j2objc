@@ -26,12 +26,6 @@ import java.io.IOException;
  */
 public class TypeImplementationGeneratorTest extends GenerationTest {
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.setEmitLineDirectives(false);
-    super.tearDown();
-  }
-
   public void testFieldAnnotationMethodForAnnotationType() throws IOException {
     String translation = translateSourceFile(
         "import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) "

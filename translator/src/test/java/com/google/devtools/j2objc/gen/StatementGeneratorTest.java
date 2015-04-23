@@ -31,12 +31,6 @@ import java.util.List;
  */
 public class StatementGeneratorTest extends GenerationTest {
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.resetMemoryManagementOption();
-    super.tearDown();
-  }
-
   // Verify that return statements output correctly for reserved words.
   public void testReturnReservedWord() throws IOException {
     String translation = translateSourceFile(

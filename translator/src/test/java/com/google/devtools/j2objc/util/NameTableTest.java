@@ -35,12 +35,6 @@ import java.io.IOException;
  */
 public class NameTableTest extends GenerationTest {
 
-  @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-    Options.clearPackagePrefixes();
-  }
-
   // Verify class name with prefix.
   public void testGetFullNameWithPrefix() {
     String source = "package foo.bar; public class SomeClass {}";

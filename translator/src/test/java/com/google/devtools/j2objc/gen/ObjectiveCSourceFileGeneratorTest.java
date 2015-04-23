@@ -173,7 +173,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
   }
 
   public void testNoPrivateMethodHiding() throws IOException {
-    Options.resetHidePrivateMembers();
+    Options.setHidePrivateMembers(false);
     String translation = translateSourceFile(
         "class Test  { public void test1() {} private void test2() {} }", "Test", "Test.h");
     assertTranslation(translation, "- (void)test1;");
@@ -197,7 +197,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
   }
 
   public void testNoPrivateFieldHiding() throws IOException {
-    Options.resetHidePrivateMembers();
+    Options.setHidePrivateMembers(false);
     String translation = translateSourceFile(
         "class Test  { public Object o1; protected Object o2; Object o3; private Object o4; }",
         "Test", "Test.h");

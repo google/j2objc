@@ -28,12 +28,6 @@ import java.io.IOException;
  */
 public class DestructorGeneratorTest extends GenerationTest {
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.resetMemoryManagementOption();
-    super.tearDown();
-  }
-
   public void testFinalizeMethodRenamed() throws IOException {
     String translation = translateSourceFile(
         "public class Test { public void finalize() { "

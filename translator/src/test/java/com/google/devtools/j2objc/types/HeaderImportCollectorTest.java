@@ -26,12 +26,6 @@ import java.io.IOException;
  */
 public class HeaderImportCollectorTest extends GenerationTest {
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.resetRemoveClassMethods();
-    super.tearDown();
-  }
-
   public void testVarargsDeclarations() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test1(double... values) {} void test2(Runnable... values) {} }",

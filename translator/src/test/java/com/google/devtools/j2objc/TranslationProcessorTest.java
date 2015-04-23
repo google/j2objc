@@ -31,13 +31,6 @@ import java.util.jar.JarOutputStream;
  */
 public class TranslationProcessorTest extends GenerationTest {
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.resetBatchTranslateMaximum();
-    Options.resetBuildClosure();
-    super.tearDown();
-  }
-
   public void testJarBatchTranslation() throws IOException {
     String fooSource = "package mypkg; class Foo {}";
     String barSource = "package mypkg; class Bar {}";

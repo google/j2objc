@@ -29,13 +29,7 @@ public class FunctionizerTest extends GenerationTest {
   @Override
   protected void setUp() throws IOException {
     super.setUp();
-    Options.enableFinalMethodsAsFunctions();
-  }
-
-  @Override
-  protected void tearDown() throws Exception {
-    Options.resetFinalMethodsAsFunctions();
-    super.tearDown();
+    Options.setFinalMethodsAsFunctions(true);
   }
 
   public void testPrivateInstanceMethodNoArgs() throws IOException {

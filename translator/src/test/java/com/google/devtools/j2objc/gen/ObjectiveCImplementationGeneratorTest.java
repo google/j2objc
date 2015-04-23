@@ -34,16 +34,6 @@ import java.util.List;
  */
 public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.clearPackagePrefixes();
-    Options.resetDeprecatedDeclarations();
-    Options.resetDocComments();
-    Options.resetMemoryManagementOption();
-    Options.setStripReflection(false);
-    super.tearDown();
-  }
-
   public void testOuterVariableAccess() throws IOException {
     String translation = translateSourceFile(
         "public class Example { int foo; class Inner { int test() { return foo; }}}",

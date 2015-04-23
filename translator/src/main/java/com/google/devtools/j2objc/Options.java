@@ -51,38 +51,43 @@ import javax.annotation.Nullable;
  */
 public class Options {
 
-  private static List<String> sourcePathEntries = Lists.newArrayList(".");
-  private static List<String> classPathEntries = Lists.newArrayList(".");
-  private static File outputDirectory = new File(".");
-  private static OutputStyleOption outputStyle = OutputStyleOption.PACKAGE;
-  private static String implementationSuffix = ".m";
-  private static MemoryManagementOption memoryManagementOption = null;
-  private static boolean emitLineDirectives = false;
-  private static boolean warningsAsErrors = false;
-  private static boolean deprecatedDeclarations = false;
+  // Using instance fields instead of static fields makes it easier to reset
+  // state for unit testing.
+  private static Options instance;
+
+  private List<String> sourcePathEntries = Lists.newArrayList(".");
+  private List<String> classPathEntries = Lists.newArrayList(".");
+  private File outputDirectory = new File(".");
+  private OutputStyleOption outputStyle = OutputStyleOption.PACKAGE;
+  private String implementationSuffix = ".m";
+  private MemoryManagementOption memoryManagementOption = null;
+  private boolean emitLineDirectives = false;
+  private boolean warningsAsErrors = false;
+  private boolean deprecatedDeclarations = false;
   // Keys are class names, values are header paths (with a .h).
-  private static Map<String, String> headerMappings = Maps.newLinkedHashMap();
-  private static File outputHeaderMappingFile = null;
-  private static Map<String, String> classMappings = Maps.newLinkedHashMap();
-  private static Map<String, String> methodMappings = Maps.newLinkedHashMap();
-  private static boolean stripGwtIncompatible = false;
-  private static boolean segmentedHeaders = false;
-  private static String fileEncoding = System.getProperty("file.encoding", "UTF-8");
-  private static boolean jsniWarnings = true;
-  private static boolean buildClosure = false;
-  private static boolean stripReflection = false;
-  private static boolean extractUnsequencedModifications = true;
-  private static boolean docCommentsEnabled = false;
-  private static boolean finalMethodsAsFunctions = true;
-  private static boolean removeClassMethods = false;
-  private static boolean hidePrivateMembers = true;
-  private static int batchTranslateMaximum = 0;
+  private Map<String, String> headerMappings = Maps.newLinkedHashMap();
+  private File outputHeaderMappingFile = null;
+  private Map<String, String> classMappings = Maps.newLinkedHashMap();
+  private Map<String, String> methodMappings = Maps.newLinkedHashMap();
+  private boolean stripGwtIncompatible = false;
+  private boolean segmentedHeaders = false;
+  private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
+  private boolean jsniWarnings = true;
+  private boolean buildClosure = false;
+  private boolean stripReflection = false;
+  private boolean extractUnsequencedModifications = true;
+  private boolean docCommentsEnabled = false;
+  private boolean finalMethodsAsFunctions = true;
+  private boolean removeClassMethods = false;
+  private boolean hidePrivateMembers = true;
+  private int batchTranslateMaximum = 0;
+  private List<String> headerMappingFiles = null;
+  private Map<String, String> packagePrefixes = Maps.newHashMap();
 
   private static File proGuardUsageFile = null;
 
   static final String DEFAULT_HEADER_MAPPING_FILE = "mappings.j2objc";
   // Null if not set (means we use the default). Can be empty also (means we use no mapping files).
-  private static List<String> headerMappingFiles = null;
 
   private static final String JRE_MAPPINGS_FILE = "JRE.mappings";
 
@@ -95,7 +100,6 @@ public class Options {
   private static String temporaryDirectory;
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static String bootclasspath = System.getProperty("sun.boot.class.path");
-  private static Map<String, String> packagePrefixes = Maps.newHashMap();
   private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
 
   static {
@@ -120,8 +124,6 @@ public class Options {
    * Types of memory management to be used by translated code.
    */
   public static enum MemoryManagementOption { REFERENCE_COUNTING, ARC }
-  private static final MemoryManagementOption DEFAULT_MEMORY_MANAGEMENT_OPTION =
-      MemoryManagementOption.REFERENCE_COUNTING;
 
   /**
    * Types of output file generation. Output files are generated in
@@ -161,6 +163,11 @@ public class Options {
    * @throws IOException
    */
   public static String[] load(String[] args) throws IOException {
+    instance = new Options();
+    return instance.loadInternal(args);
+  }
+
+  private String[] loadInternal(String[] args) throws IOException {
     setLogLevel(Level.INFO);
 
     addJreMappings();
@@ -377,7 +384,7 @@ public class Options {
     }
   }
 
-  private static void addMappingsFiles(String[] filenames) throws IOException {
+  private void addMappingsFiles(String[] filenames) throws IOException {
     for (String filename : filenames) {
       if (!filename.isEmpty()) {
         addMappingsProperties(FileUtil.loadProperties(filename));
@@ -385,12 +392,12 @@ public class Options {
     }
   }
 
-  private static void addJreMappings() throws IOException {
+  private void addJreMappings() throws IOException {
     InputStream stream = J2ObjC.class.getResourceAsStream(JRE_MAPPINGS_FILE);
     addMappingsProperties(FileUtil.loadProperties(stream));
   }
 
-  private static void addMappingsProperties(Properties mappings) {
+  private void addMappingsProperties(Properties mappings) {
     Enumeration<?> keyIterator = mappings.propertyNames();
     while (keyIterator.hasMoreElements()) {
       String key = (String) keyIterator.nextElement();
@@ -409,7 +416,7 @@ public class Options {
    * Check that the memory management option wasn't previously set to a
    * different value.  If okay, then set the option.
    */
-  private static void checkMemoryManagementOption(MemoryManagementOption option) {
+  private void checkMemoryManagementOption(MemoryManagementOption option) {
     if (memoryManagementOption != null && memoryManagementOption != option) {
       usage("Multiple memory management options cannot be set.");
     }
@@ -446,37 +453,32 @@ public class Options {
   }
 
   public static boolean docCommentsEnabled() {
-    return docCommentsEnabled;
+    return instance.docCommentsEnabled;
   }
 
   @VisibleForTesting
   public static void setDocCommentsEnabled(boolean value) {
-    docCommentsEnabled = value;
-  }
-
-  @VisibleForTesting
-  public static void resetDocComments() {
-    docCommentsEnabled = false;
+    instance.docCommentsEnabled = value;
   }
 
   public static List<String> getSourcePathEntries() {
-    return sourcePathEntries;
+    return instance.sourcePathEntries;
   }
 
   public static void appendSourcePath(String entry) {
-    sourcePathEntries.add(entry);
+    instance.sourcePathEntries.add(entry);
   }
 
   public static void insertSourcePath(int index, String entry) {
-    sourcePathEntries.add(index, entry);
+    instance.sourcePathEntries.add(index, entry);
   }
 
   public static List<String> getClassPathEntries() {
-    return classPathEntries;
+    return instance.classPathEntries;
   }
 
   public static File getOutputDirectory() {
-    return outputDirectory;
+    return instance.outputDirectory;
   }
 
   /**
@@ -484,7 +486,7 @@ public class Options {
    * package declaration (like javac does).
    */
   public static boolean usePackageDirectories() {
-    return outputStyle == OutputStyleOption.PACKAGE;
+    return instance.outputStyle == OutputStyleOption.PACKAGE;
   }
 
   /**
@@ -492,88 +494,80 @@ public class Options {
    * which the input files were read.
    */
   public static boolean useSourceDirectories() {
-    return outputStyle == OutputStyleOption.SOURCE
-        || outputStyle == OutputStyleOption.SOURCE_COMBINED;
+    return instance.outputStyle == OutputStyleOption.SOURCE
+        || instance.outputStyle == OutputStyleOption.SOURCE_COMBINED;
   }
 
   public static boolean combineSourceJars() {
-    return outputStyle == OutputStyleOption.SOURCE_COMBINED;
+    return instance.outputStyle == OutputStyleOption.SOURCE_COMBINED;
   }
 
+  @VisibleForTesting
   public static void setOutputStyle(OutputStyleOption style) {
-    outputStyle = style;
+    instance.outputStyle = style;
   }
 
   public static String getImplementationFileSuffix() {
-    return implementationSuffix;
+    return instance.implementationSuffix;
   }
 
   public static boolean useReferenceCounting() {
-    return memoryManagementOption == MemoryManagementOption.REFERENCE_COUNTING;
+    return instance.memoryManagementOption == MemoryManagementOption.REFERENCE_COUNTING;
   }
 
   public static boolean useARC() {
-    return memoryManagementOption == MemoryManagementOption.ARC;
+    return instance.memoryManagementOption == MemoryManagementOption.ARC;
   }
 
   public static MemoryManagementOption getMemoryManagementOption() {
-    return memoryManagementOption;
+    return instance.memoryManagementOption;
   }
 
-  // Used by tests.
+  @VisibleForTesting
   public static void setMemoryManagementOption(MemoryManagementOption option) {
-    memoryManagementOption = option;
-  }
-
-  public static void resetMemoryManagementOption() {
-    memoryManagementOption = DEFAULT_MEMORY_MANAGEMENT_OPTION;
+    instance.memoryManagementOption = option;
   }
 
   public static boolean emitLineDirectives() {
-    return emitLineDirectives;
+    return instance.emitLineDirectives;
   }
 
   public static void setEmitLineDirectives(boolean b) {
-    emitLineDirectives = b;
+    instance.emitLineDirectives = b;
   }
 
   public static boolean treatWarningsAsErrors() {
-    return warningsAsErrors;
+    return instance.warningsAsErrors;
   }
 
   @VisibleForTesting
   public static void enableDeprecatedDeclarations() {
-    deprecatedDeclarations = true;
-  }
-
-  @VisibleForTesting
-  public static void resetDeprecatedDeclarations() {
-    deprecatedDeclarations = false;
+    instance.deprecatedDeclarations = true;
   }
 
   public static boolean generateDeprecatedDeclarations() {
-    return deprecatedDeclarations;
+    return instance.deprecatedDeclarations;
   }
 
   public static Map<String, String> getClassMappings() {
-    return classMappings;
+    return instance.classMappings;
   }
 
   public static Map<String, String> getMethodMappings() {
-    return methodMappings;
+    return instance.methodMappings;
   }
 
   public static Map<String, String> getHeaderMappings() {
-    return headerMappings;
+    return instance.headerMappings;
   }
 
   @Nullable
   public static List<String> getHeaderMappingFiles() {
-    return headerMappingFiles;
+    return instance.headerMappingFiles;
   }
 
   public static void setHeaderMappingFiles(List<String> headerMappingFiles) {
-    Options.headerMappingFiles = headerMappingFiles;
+    instance.headerMappingFiles = headerMappingFiles;
   }
 
   public static String getUsageMessage() {
@@ -593,12 +587,12 @@ public class Options {
   }
 
   public static File getOutputHeaderMappingFile() {
-    return outputHeaderMappingFile;
+    return instance.outputHeaderMappingFile;
   }
 
   @VisibleForTesting
   public static void setOutputHeaderMappingFile(File outputHeaderMappingFile) {
-    Options.outputHeaderMappingFile = outputHeaderMappingFile;
+    instance.outputHeaderMappingFile = outputHeaderMappingFile;
   }
 
   public static List<String> getBootClasspath() {
@@ -606,16 +600,11 @@ public class Options {
   }
 
   public static Map<String, String> getPackagePrefixes() {
-    return packagePrefixes;
+    return instance.packagePrefixes;
   }
 
   public static String addPackagePrefix(String pkg, String prefix) {
-    return packagePrefixes.put(pkg, prefix);
-  }
-
-  @VisibleForTesting
-  public static void clearPackagePrefixes() {
-    packagePrefixes.clear();
+    return instance.packagePrefixes.put(pkg, prefix);
   }
 
   public static String getTemporaryDirectory() throws IOException {
@@ -659,138 +648,103 @@ public class Options {
   }
 
   public static String fileEncoding() {
-    return fileEncoding;
+    return instance.fileEncoding;
   }
 
   public static Charset getCharset() {
-    return Charset.forName(fileEncoding);
+    return Charset.forName(instance.fileEncoding);
   }
 
   public static boolean stripGwtIncompatibleMethods() {
-    return stripGwtIncompatible;
+    return instance.stripGwtIncompatible;
   }
 
   @VisibleForTesting
   public static void setStripGwtIncompatibleMethods(boolean b) {
-    stripGwtIncompatible = b;
+    instance.stripGwtIncompatible = b;
   }
 
   public static boolean generateSegmentedHeaders() {
-    return segmentedHeaders;
+    return instance.segmentedHeaders;
   }
 
   @VisibleForTesting
   public static void enableSegmentedHeaders() {
-    segmentedHeaders = true;
-  }
-
-  @VisibleForTesting
-  public static void resetSegmentedHeaders() {
-    segmentedHeaders = false;
+    instance.segmentedHeaders = true;
   }
 
   public static boolean jsniWarnings() {
-    return jsniWarnings;
+    return instance.jsniWarnings;
   }
 
   public static void setJsniWarnings(boolean b) {
-    jsniWarnings = b;
+    instance.jsniWarnings = b;
   }
 
   public static boolean buildClosure() {
-    return buildClosure;
+    return instance.buildClosure;
   }
 
   @VisibleForTesting
   public static void setBuildClosure(boolean b) {
-    buildClosure = b;
-  }
-
-  @VisibleForTesting
-  public static void resetBuildClosure() {
-    buildClosure = false;
+    instance.buildClosure = b;
   }
 
   public static boolean stripReflection() {
-    return stripReflection;
+    return instance.stripReflection;
   }
 
   @VisibleForTesting
   public static void setStripReflection(boolean b) {
-    stripReflection = b;
+    instance.stripReflection = b;
   }
 
   public static boolean extractUnsequencedModifications() {
-    return extractUnsequencedModifications;
+    return instance.extractUnsequencedModifications;
   }
 
   @VisibleForTesting
   public static void enableExtractUnsequencedModifications() {
-    extractUnsequencedModifications = true;
-  }
-
-  @VisibleForTesting
-  public static void resetExtractUnsequencedModifications() {
-    extractUnsequencedModifications = false;
+    instance.extractUnsequencedModifications = true;
   }
 
   public static int batchTranslateMaximum() {
-    return batchTranslateMaximum;
+    return instance.batchTranslateMaximum;
   }
 
   @VisibleForTesting
   public static void setBatchTranslateMaximum(int max) {
-    batchTranslateMaximum = max;
-  }
-
-  @VisibleForTesting
-  public static void resetBatchTranslateMaximum() {
-    batchTranslateMaximum = 0;
+    instance.batchTranslateMaximum = max;
   }
 
   public static boolean finalMethodsAsFunctions() {
-    return finalMethodsAsFunctions;
+    return instance.finalMethodsAsFunctions;
   }
 
   @VisibleForTesting
-  public static void enableFinalMethodsAsFunctions() {
-    finalMethodsAsFunctions = true;
-  }
-
-  @VisibleForTesting
-  public static void resetFinalMethodsAsFunctions() {
-    finalMethodsAsFunctions = false;
+  public static void setFinalMethodsAsFunctions(boolean b) {
+    instance.finalMethodsAsFunctions = b;
   }
 
   public static boolean removeClassMethods() {
-    return removeClassMethods;
+    return instance.removeClassMethods;
   }
 
   @VisibleForTesting
   public static void setRemoveClassMethods(boolean b) {
-    removeClassMethods = b;
-  }
-
-  @VisibleForTesting
-  public static void resetRemoveClassMethods() {
-    removeClassMethods = false;
+    instance.removeClassMethods = b;
   }
 
   public static boolean hidePrivateMembers() {
-    return hidePrivateMembers;
+    return instance.hidePrivateMembers;
   }
 
   @VisibleForTesting
-  public static void enableHidePrivateMembers() {
-    hidePrivateMembers = true;
-  }
-
-  @VisibleForTesting
-  public static void resetHidePrivateMembers() {
-    hidePrivateMembers = false;
+  public static void setHidePrivateMembers(boolean b) {
+    instance.hidePrivateMembers = b;
   }
 
   public static boolean shouldMapHeaders() {
-    return Options.useSourceDirectories() || Options.combineSourceJars();
+    return useSourceDirectories() || combineSourceJars();
   }
 }

@@ -32,13 +32,6 @@ import java.util.Map;
  */
 public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.resetDeprecatedDeclarations();
-    Options.setDocCommentsEnabled(false);
-    super.tearDown();
-  }
-
   public void testInnerEnumWithPackage() throws IOException {
     String translation = translateSourceFile(
         "package mypackage;"

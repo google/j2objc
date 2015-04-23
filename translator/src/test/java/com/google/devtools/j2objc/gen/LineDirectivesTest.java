@@ -36,12 +36,6 @@ public class LineDirectivesTest extends GenerationTest {
     Options.setEmitLineDirectives(true);
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.setEmitLineDirectives(false);
-    super.tearDown();
-  }
-
   public void testNoHeaderNumbering() throws IOException {
     String translation = translateSourceFile(
         "import java.util.*;\n\n public class A {\n\n"

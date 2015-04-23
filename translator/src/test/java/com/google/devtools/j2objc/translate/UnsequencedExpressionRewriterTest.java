@@ -32,12 +32,6 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
     Options.enableExtractUnsequencedModifications();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.resetExtractUnsequencedModifications();
-    super.tearDown();
-  }
-
   public void testUnsequencedPrefixExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test(int i) { int j = ++i - ++i; } }", "Test", "Test.m");

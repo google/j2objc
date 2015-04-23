@@ -49,8 +49,9 @@ public class CycleFinder {
     }
   }
 
-  public CycleFinder(Options options) {
+  public CycleFinder(Options options) throws IOException {
     this.options = options;
+    com.google.devtools.j2objc.Options.load(new String[] { "-encoding", options.fileEncoding() });
   }
 
   private static JdtParser createParser(Options options) {

@@ -32,12 +32,6 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     Options.enableSegmentedHeaders();
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.resetSegmentedHeaders();
-    super.tearDown();
-  }
-
   public void testTypicalPreprocessorStatements() throws IOException {
     String translation = translateSourceFile(
         "class Test { static class Inner {} }", "Test", "Test.h");
@@ -89,8 +83,8 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
   // isn't included for it.
   public void testPackagePrivateBaseClass() throws IOException {
     String translation = translateSourceFile(
-        "package bar; public class Test extends Foo {} " +
-        "abstract class Foo {}", "Test", "bar/Test.h");
+        "package bar; public class Test extends Foo {} "
+        + "abstract class Foo {}", "Test", "bar/Test.h");
     assertNotInTranslation(translation, "#include \"Foo.h\"");
   }
 

@@ -26,11 +26,6 @@ import java.util.Properties;
  */
 public class OptionsTest extends GenerationTest {
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.clearPackagePrefixes();
-  }
-
   /**
    * Regression test for http://code.google.com/p/j2objc/issues/detail?id=100.
    */

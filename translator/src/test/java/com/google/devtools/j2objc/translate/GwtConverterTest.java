@@ -45,12 +45,6 @@ public class GwtConverterTest extends GenerationTest {
         "com/google/common/annotations/GwtIncompatible.java");
   }
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.setStripGwtIncompatibleMethods(false);
-    super.tearDown();
-  }
-
   public void testGwtCreate() throws IOException {
     String translation = translateSourceFile(
         "import com.google.gwt.core.client.GWT;"

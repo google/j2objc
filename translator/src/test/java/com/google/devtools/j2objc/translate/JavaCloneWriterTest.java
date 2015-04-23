@@ -27,12 +27,6 @@ import java.io.IOException;
  */
 public class JavaCloneWriterTest extends GenerationTest {
 
-  @Override
-  protected void tearDown() throws Exception {
-    Options.resetMemoryManagementOption();
-    super.tearDown();
-  }
-
   // Make sure __javaClone is not emitted unless there is a weak field.
   public void testNoJavaCloneMethod() throws IOException {
     String translation = translateSourceFile(
