@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,11 +61,10 @@ public class GenerationUnit {
   }
 
   /**
-   * Sets the name of this GenerationUnit.
-   * This should be a name appropriate for use in Obj-C output code.
+   * Sets the name of this GenerationUnit after munging it into a valid Objective-C identifier.
    */
   public void setName(String name) {
-    this.name = name;
+    this.name = UnicodeUtils.asValidObjcIdentifier(name);
   }
 
   public void addInputFile(InputFile file) {

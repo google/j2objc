@@ -68,8 +68,10 @@ clean:
 
 $(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
   | $(CLASS_DIR) java_deps_dist annotations_dist translator
-	@javac -Xlint:unchecked -sourcepath $(JAVA_SOURCE_DIR) -classpath $(JAR_DEPS_PATH) \
-	    -d $(CLASS_DIR) -source 1.6 -target 1.6 -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
+	@javac -Xlint:unchecked -sourcepath $(JAVA_SOURCE_DIR) \
+	    -classpath $(JAR_DEPS_PATH) -d $(CLASS_DIR) \
+	    -encoding UTF-8 -source 1.6 -target 1.6 \
+	    -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
 	@jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
 
 # Format manifest classpath with each jar on a separate line, to avoid
@@ -105,5 +107,6 @@ test: compile-tests
 	    com.google.devtools.cyclefinder.CycleFinderTest
 
 compile-tests: $(JAR) | $(TEST_CLASS_DIR)
-	javac -sourcepath src/test/java -classpath $(TEST_CLASSPATH) -d $(TEST_CLASS_DIR) \
+	javac -encoding UTF-8 -sourcepath src/test/java \
+	    -classpath $(TEST_CLASSPATH) -d $(TEST_CLASS_DIR) \
 	    src/test/java/com/google/devtools/cyclefinder/CycleFinderTest.java

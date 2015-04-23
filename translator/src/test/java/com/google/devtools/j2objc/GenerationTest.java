@@ -49,7 +49,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -79,7 +78,8 @@ public abstract class GenerationTest extends TestCase {
     Options.load(new String[]{
         "-d", tempDir.getAbsolutePath(),
         "-q", // Suppress console output.
-        "--hide-private-members" // Future default, run tests with it now.
+        "--hide-private-members", // Future default, run tests with it now.
+        "-encoding", "UTF-8" // Translate strings correctly when encodings are nonstandard.
     });
     parser = initializeParser(tempDir);
   }
@@ -358,7 +358,7 @@ public abstract class GenerationTest extends TestCase {
   protected void addSourceFile(String source, String fileName) throws IOException {
     File file = new File(tempDir, fileName);
     file.getParentFile().mkdirs();
-    Files.write(source, file, Charset.defaultCharset());
+    Files.write(source, file, Options.getCharset());
   }
 
   /**
@@ -368,7 +368,7 @@ public abstract class GenerationTest extends TestCase {
   protected String getTranslatedFile(String fileName) throws IOException {
     File f = new File(tempDir, fileName);
     assertTrue(fileName + " not generated", f.exists());
-    return Files.toString(f, Charset.defaultCharset());
+    return Files.toString(f, Options.getCharset());
   }
 
   /**

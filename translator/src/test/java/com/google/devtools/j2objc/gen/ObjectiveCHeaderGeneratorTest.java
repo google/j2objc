@@ -59,6 +59,23 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface Example ");
   }
 
+  public void testUnicodeHeaderGuardTranslation() throws IOException {
+    // Non-letters should be replaced
+    String translation = translateSourceFile(
+        "public class ¢ents {}", "¢ents", "¢ents.h");
+    assertTranslation(translation, "#ifndef __ents_H_");
+
+    // Unicode letters outside the Basic Latin range should not be replaced
+    translation = translateSourceFile(
+        "public class こんにちは {}", "こんにちは", "こんにちは.h");
+    assertTranslation(translation, "#ifndef _こんにちは_H");
+
+    // Egyptian heiroglyph letters outside UCS-2, requiring two UTF-16 chars
+    translation = translateSourceFile(
+        "public class egyptian\uD80C\uDC00 {}", "egyptian\uD80C\uDC00", "egyptian\uD80C\uDC00.h");
+    assertTranslation(translation, "#ifndef _Egyptian\uD80C\uDC00_H");
+  }
+
   public void testDeprecatedTypeNameTranslation() throws IOException {
     Options.enableDeprecatedDeclarations();
     String translation = translateSourceFile(

@@ -251,7 +251,7 @@ $(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
   | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo Building j2objc jar
 	@javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
-	    -d $(CLASS_DIR) -encoding ISO-8859-1 -source 1.6 -target 1.6 -nowarn \
+	    -d $(CLASS_DIR) -encoding UTF-8 -source 1.6 -target 1.6 -nowarn \
 	    $(JAVA_SOURCES_FULL)
 	@jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
 
@@ -291,8 +291,9 @@ test: compile-tests copy-test-resources
 
 compile-tests: $(J2OBJC_JAR)
 	@mkdir -p $(TEST_DIR)
-	@javac -Xlint:unchecked -sourcepath src/test/java -classpath $(TEST_CLASSPATH) \
-	    -d $(TEST_DIR) `find src/test/java -name '*.java'`
+	@javac -Xlint:unchecked -sourcepath src/test/java \
+	    -classpath $(TEST_CLASSPATH) -encoding UTF-8 -d $(TEST_DIR) \
+	    `find src/test/java -name '*.java'`
 
 copy-test-resources: $(TEST_RESOURCE_FILES)
 

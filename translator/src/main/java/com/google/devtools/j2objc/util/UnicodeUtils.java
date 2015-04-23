@@ -173,4 +173,33 @@ public final class UnicodeUtils {
         c >= 0xffe8 && c <= 0xffee ||
         c >= 0xfff9 && c <= 0xfffd;
   }
+
+  /**
+   * For a given String, returns a legal identifier for Objective-C.
+   */
+  // TODO(mthvedt): Consider using this for all identifiers.
+  public static String asValidObjcIdentifier(String word) {
+    StringBuffer objcWord = new StringBuffer();
+    int offset = 0;
+
+    if (word.length() > 0 && Character.isDigit(word.codePointAt(0))) {
+      // Identifiers must not start with a digit
+      objcWord.append("_");
+    }
+
+    while (offset < word.length()) {
+      int codepoint = word.codePointAt(offset);
+      offset += Character.charCount(codepoint);
+      if (Character.isLetterOrDigit(codepoint)) {
+        objcWord.appendCodePoint(codepoint);
+      } else if (codepoint == '$') {
+        // Allowed by Clang in non-strict mode (and used in J2ObjC)
+        objcWord.append('$');
+      } else {
+        objcWord.append("_");
+      }
+    }
+
+    return objcWord.toString();
+  }
 }
