@@ -53,7 +53,7 @@ public class Options {
 
   // Using instance fields instead of static fields makes it easier to reset
   // state for unit testing.
-  private static Options instance;
+  private static Options instance = new Options();
 
   private List<String> sourcePathEntries = Lists.newArrayList(".");
   private List<String> classPathEntries = Lists.newArrayList(".");
@@ -156,6 +156,11 @@ public class Options {
     return Logger.getLogger("com.google.devtools.j2objc").getLevel() == Level.FINEST;
   }
 
+  @VisibleForTesting
+  public static void reset() {
+    instance = new Options();
+  }
+
   /**
    * Load the options from a command-line, returning the arguments that were
    * not option-related (usually files).  If help is requested or an error is
@@ -163,7 +168,6 @@ public class Options {
    * @throws IOException
    */
   public static String[] load(String[] args) throws IOException {
-    instance = new Options();
     return instance.loadInternal(args);
   }
 

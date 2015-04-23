@@ -86,10 +86,7 @@ public abstract class GenerationTest extends TestCase {
 
   @Override
   protected void tearDown() throws Exception {
-    Options.setHeaderMappingFiles(null);
-    Options.getHeaderMappings().clear();
-    Options.setOutputStyle(Options.OutputStyleOption.PACKAGE);
-    Options.getSourcePathEntries().clear();
+    Options.reset();
     FileUtil.deleteTempDir(tempDir);
     ErrorUtil.reset();
   }
