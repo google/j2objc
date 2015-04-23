@@ -55,7 +55,7 @@ class Options {
   private List<String> whitelistFiles = Lists.newArrayList();
   private List<String> blacklistFiles = Lists.newArrayList();
   private List<String> sourceFiles = Lists.newArrayList();
-  private String fileEncoding = System.getProperty("file.encoding", "ISO-8859-1");
+  private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
 
   public List<String> getSourceFiles() {
     return sourceFiles;
