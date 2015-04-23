@@ -13,12 +13,17 @@
  */
 package com.google.devtools.j2objc.gen;
 
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -39,8 +44,32 @@ public class GenerationUnit {
   private final String sourceName;
   private final List<String> errors = new ArrayList<String>();
 
-  public GenerationUnit(String sourceName) {
+  private GenerationUnit(String sourceName) {
     this.sourceName = sourceName;
+  }
+
+  public static GenerationUnit newSingleFileUnit(InputFile file) {
+    GenerationUnit unit = new GenerationUnit(file.getPath());
+    unit.inputFiles.add(file);
+    if (Options.useSourceDirectories()) {
+      String outputPath = file.getUnitName();
+      outputPath = outputPath.substring(0, outputPath.lastIndexOf(".java"));
+      unit.outputPath = outputPath;
+    }
+    return unit;
+  }
+
+  public static GenerationUnit newCombinedJarUnit(
+      String filename, Collection<? extends InputFile> inputFiles) {
+    String outputPath = filename;
+    if (outputPath.lastIndexOf(File.separatorChar) < outputPath.lastIndexOf(".")) {
+      outputPath = outputPath.substring(0, outputPath.lastIndexOf("."));
+    }
+    GenerationUnit unit = new GenerationUnit(filename);
+    unit.outputPath = outputPath;
+    unit.name = UnicodeUtils.asValidObjcIdentifier(NameTable.camelCasePath(outputPath));
+    unit.inputFiles.addAll(inputFiles);
+    return unit;
   }
 
   /**
@@ -60,18 +89,6 @@ public class GenerationUnit {
     return name;
   }
 
-  /**
-   * Sets the name of this GenerationUnit after munging it into a valid Objective-C identifier.
-   */
-  public void setName(String name) {
-    this.name = UnicodeUtils.asValidObjcIdentifier(name);
-  }
-
-  public void addInputFile(InputFile file) {
-    assert compilationUnits.isEmpty();  // Probably shouldn't be adding files when this isn't empty.
-    inputFiles.add(file);
-  }
-
   public List<InputFile> getInputFiles() {
     return inputFiles;
   }
@@ -89,6 +106,38 @@ public class GenerationUnit {
   public void addCompilationUnit(CompilationUnit unit) {
     assert compilationUnits.size() < inputFiles.size();
     compilationUnits.add(unit);
+
+    if (name == null) {
+      assert inputFiles.size() == 1;
+      name = UnicodeUtils.asValidObjcIdentifier(NameTable.getMainTypeFullName(unit));
+    }
+    if (outputPath == null) {
+      // We can only infer the output path if there's one compilation unit.
+      assert inputFiles.size() == 1;
+      outputPath = getDefaultOutputPath(unit);
+    }
+  }
+
+  public boolean isFullyParsed() {
+    return compilationUnits.size() == inputFiles.size();
+  }
+
+  /**
+   * Gets the output path if there isn't one already.
+   * For example, foo/bar/Mumble.java translates to $(OUTPUT_DIR)/foo/bar/Mumble.
+   * If --no-package-directories is specified, though, the output file is $(OUTPUT_DIR)/Mumble.
+   */
+  private static String getDefaultOutputPath(CompilationUnit unit) {
+    String path = unit.getMainTypeName();
+    if (path.equals(NameTable.PACKAGE_INFO_MAIN_TYPE)) {
+      path = NameTable.PACKAGE_INFO_FILE_NAME;
+    }
+    PackageDeclaration pkg = unit.getPackage();
+    if (Options.usePackageDirectories() && !pkg.isDefaultPackage()) {
+      path = pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
+          + File.separatorChar + path;
+    }
+    return path;
   }
 
   /**
@@ -104,10 +153,6 @@ public class GenerationUnit {
   @Nullable
   public String getOutputPath() {
     return outputPath;
-  }
-
-  public void setOutputPath(String outputPath) {
-    this.outputPath = outputPath;
   }
 
   /**

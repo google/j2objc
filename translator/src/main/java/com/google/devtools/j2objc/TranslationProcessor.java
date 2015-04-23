@@ -138,9 +138,7 @@ class TranslationProcessor extends FileProcessor {
         continue;
       }
 
-      GenerationUnit genUnit = new GenerationUnit(file.getPath());
-      genUnit.addInputFile(file);
-      processGenerationUnit(genUnit);
+      processGenerationUnit(GenerationUnit.newSingleFileUnit(file));
       // Possible for a batch to add to pending files.
       if (pendingFiles.isEmpty()) {
         processBatch();

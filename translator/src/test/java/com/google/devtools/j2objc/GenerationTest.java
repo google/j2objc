@@ -316,12 +316,11 @@ public abstract class GenerationTest extends TestCase {
 
   protected String translateCombinedFiles(String outputPath, String extension, String... sources)
       throws IOException {
-    GenerationUnit unit = new GenerationUnit(outputPath + ".testfile");
-    unit.setOutputPath(outputPath);
-    unit.setName(NameTable.camelCasePath(outputPath));
+    List<RegularInputFile> inputFiles = Lists.newArrayList();
     for (String sourceFile : sources) {
-      unit.addInputFile(new RegularInputFile(tempDir + "/" + sourceFile, sourceFile));
+      inputFiles.add(new RegularInputFile(tempDir + "/" + sourceFile, sourceFile));
     }
+    GenerationUnit unit = GenerationUnit.newCombinedJarUnit(outputPath + ".testfile", inputFiles);
     GenerationBatch batch = new GenerationBatch();
     batch.addGenerationUnit(unit);
     parser.setEnableDocComments(Options.docCommentsEnabled());

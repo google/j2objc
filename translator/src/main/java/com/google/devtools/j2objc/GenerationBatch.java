@@ -24,15 +24,12 @@ import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
-import com.google.devtools.j2objc.util.NameTable;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
@@ -70,10 +67,6 @@ public class GenerationBatch {
     assert newBatch.units.size() == 1;  // One input file -> one GenerationUnit.
     GenerationUnit unit = newBatch.units.get(0);
     unit.addCompilationUnit(node);
-    FileProcessor.ensureOutputPath(unit);
-    if (unit.getName() == null) {
-      unit.setName(NameTable.camelCaseQualifiedName(NameTable.getMainTypeFullName(node)));
-    }
     return newBatch;
   }
 
@@ -172,7 +165,7 @@ public class GenerationBatch {
         zfile.close();  // Also closes input stream.
       }
       if (Options.combineSourceJars()) {
-        addCombinedJar(filename, inputFiles);
+        units.add(GenerationUnit.newCombinedJarUnit(filename, inputFiles));
       } else {
         for (InputFile file : inputFiles) {
           addSource(file);
@@ -186,33 +179,12 @@ public class GenerationBatch {
     }
   }
 
-  private void addCombinedJar(String filename, List<InputFile> inputFiles) {
-    String outputPath = filename;
-    if (outputPath.lastIndexOf("/") < outputPath.lastIndexOf(".")) {
-      outputPath = outputPath.substring(0, outputPath.lastIndexOf("."));
-    }
-    GenerationUnit unit = new GenerationUnit(filename);
-    unit.setOutputPath(outputPath);
-    unit.setName(NameTable.camelCasePath(outputPath));
-    for (InputFile file : inputFiles) {
-      unit.addInputFile(file);
-    }
-    units.add(unit);
-  }
-
   /**
    * Adds the given InputFile to this GenerationBatch,
    * creating GenerationUnits and inferring unit names/output paths as necessary.
    */
-  protected void addSource(InputFile file) {
-    GenerationUnit unit = new GenerationUnit(file.getPath());
-    unit.addInputFile(file);
-    if (Options.useSourceDirectories()) {
-      String outputPath = file.getUnitName();
-      outputPath = outputPath.substring(0, outputPath.lastIndexOf(".java"));
-      unit.setOutputPath(outputPath);
-    }
-    units.add(unit);
+  public void addSource(InputFile file) {
+    units.add(GenerationUnit.newSingleFileUnit(file));
   }
 
   @VisibleForTesting

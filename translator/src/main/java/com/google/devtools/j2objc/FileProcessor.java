@@ -15,12 +15,10 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.base.Preconditions;
-import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.types.Types;
-import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
@@ -147,10 +145,6 @@ abstract class FileProcessor {
     processCompilationUnit(generationUnit, compilationUnit, file);
   }
 
-  private boolean isFullyParsed(GenerationUnit unit) {
-    return unit.getCompilationUnits().size() == unit.getInputFiles().size();
-  }
-
   /**
    * Callback invoked when a file is parsed.
    */
@@ -163,16 +157,7 @@ abstract class FileProcessor {
           = TreeConverter.convertCompilationUnit(unit, file, source, nameTable);
       genUnit.addCompilationUnit(translatedUnit);
 
-      if (isFullyParsed(genUnit)) {
-        ensureOutputPath(genUnit);
-        if (genUnit.getName() == null) {
-          // We infer names from the AST. If size > 1 we shouldn't reach here.
-          assert genUnit.getCompilationUnits().size() == 1;
-          genUnit.setName(
-              NameTable.camelCaseQualifiedName(
-                  NameTable.getMainTypeFullName(translatedUnit)));
-        }
-
+      if (genUnit.isFullyParsed()) {
         logger.finest("Processing compiled unit " + genUnit.getName()
             + " of size " + genUnit.getCompilationUnits().size());
         processCompiledGenerationUnit(genUnit);
@@ -185,36 +170,6 @@ abstract class FileProcessor {
   }
 
   protected abstract void processCompiledGenerationUnit(GenerationUnit unit);
-
-  /**
-   * Sets the output path if there isn't one already.
-   * For example, foo/bar/Mumble.java translates to $(OUTPUT_DIR)/foo/bar/Mumble.
-   * If --no-package-directories is specified, though, the output file is $(OUTPUT_DIR)/Mumble.
-   * <p>
-   * Note: class names are still camel-cased to avoid name collisions.
-   */
-  static void ensureOutputPath(GenerationUnit unit) {
-    String result = unit.getOutputPath();
-    if (result == null) {
-      // We can only infer the output path if there's one compilation unit.
-      assert unit.getCompilationUnits().size() == 1;
-      com.google.devtools.j2objc.ast.CompilationUnit node = unit.getCompilationUnits().get(0);
-      PackageDeclaration pkg = node.getPackage();
-      if (Options.usePackageDirectories() && !pkg.isDefaultPackage()) {
-        result = pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar);
-        result += File.separatorChar + node.getMainTypeName();
-      } else {
-        result = node.getMainTypeName();
-      }
-
-      // Make sure the name is legal...
-      if (node.getMainTypeName().equals(NameTable.PACKAGE_INFO_MAIN_TYPE)) {
-        result = result.replace(NameTable.PACKAGE_INFO_MAIN_TYPE, NameTable.PACKAGE_INFO_FILE_NAME);
-      }
-    }
-
-    unit.setOutputPath(result);
-  }
 
   protected TimeTracker getTicker(String name) {
     if (logger.isLoggable(Level.FINEST)) {
