@@ -376,6 +376,10 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_EnumDescriptor)
   return number_;
 }
 
+- (NSString *)getName {
+  return [enum_ name];
+}
+
 J2OBJC_ETERNAL_SINGLETON
 
 @end

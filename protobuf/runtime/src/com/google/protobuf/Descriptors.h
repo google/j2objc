@@ -107,6 +107,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_EnumDescriptor)
 
 - (int)getNumber;
 
+- (NSString *)getName;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors_EnumValueDescriptor)

@@ -432,6 +432,7 @@ public class CompatibilityTest extends ProtobufTest {
 
     EnumValueDescriptor enumValueDescriptor = enumDescriptor.findValueByNumber(1);
     assertEquals(1, enumValueDescriptor.getNumber());
+    assertEquals("VALUE1", enumValueDescriptor.getName());
   }
 
   public void testExtensionRegistry() throws Exception {
