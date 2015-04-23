@@ -168,18 +168,10 @@ class TranslationProcessor extends FileProcessor {
         System.out.println("translating " + unit.getSourceName());
       }
 
-      boolean isDead = true;
       for (CompilationUnit compUnit : unit.getCompilationUnits()) {
         compUnit.setGenerationContext();
         applyMutations(compUnit, deadCodeMap, ticker);
         ticker.tick("Tree mutations for " + compUnit.getMainTypeName());
-        isDead &= compUnit.getTypes().isEmpty()
-            && !compUnit.getMainTypeName().endsWith("package_info");
-      }
-
-      if (isDead) {
-        logger.finest("skipping dead file " + unit.getSourceName());
-        return;
       }
 
       logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
