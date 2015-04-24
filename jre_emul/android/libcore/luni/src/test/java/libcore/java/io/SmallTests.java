@@ -17,7 +17,6 @@
 package libcore.java.io;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 public class SmallTests extends TestSuite {
@@ -92,7 +91,6 @@ public class SmallTests extends TestSuite {
     OldStringWriterTest.class,
     OldWriterTest.class,
     OutputStreamWriterTest.class,
-    RandomAccessFileTest.class,
     StreamTokenizerTest.class
   };
 

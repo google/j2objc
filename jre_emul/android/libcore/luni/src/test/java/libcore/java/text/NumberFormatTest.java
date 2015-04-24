@@ -16,14 +16,11 @@
 
 package libcore.java.text;
 
-import java.math.BigInteger;
-import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
-import java.text.FieldPosition;
-import java.text.NumberFormat;
-import java.text.ParsePosition;
-import java.util.Locale;
 import tests.support.Support_Locale;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 /*-[
 #include <sys/utsname.h>
@@ -75,16 +72,16 @@ public class NumberFormatTest extends junit.framework.TestCase {
             return;
         }
         NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("ar"));
-        if (onMavericks()) {
-            assertEquals("#0.###;#0.###", ((DecimalFormat) numberFormat).toPattern());
+        if (onYosemite()) {
+            assertEquals("#,##0.###;#,##0.###", ((DecimalFormat) numberFormat).toPattern());
         } else {
-            assertEquals("#0.###;#0.###-", ((DecimalFormat) numberFormat).toPattern());
+            assertEquals("#0.###;#0.###", ((DecimalFormat) numberFormat).toPattern());
         }
         NumberFormat integerFormat = NumberFormat.getIntegerInstance(new Locale("ar"));
-        if (onMavericks()) {
-            assertEquals("#0;#0", ((DecimalFormat) integerFormat).toPattern());
+        if (onYosemite()) {
+            assertEquals("#,##0;#,##0", ((DecimalFormat) integerFormat).toPattern());
         } else {
-            assertEquals("#0;#0-", ((DecimalFormat) integerFormat).toPattern());
+            assertEquals("#0;#0", ((DecimalFormat) integerFormat).toPattern());
         }
     }
 
@@ -108,7 +105,7 @@ public class NumberFormatTest extends junit.framework.TestCase {
       assertEquals(NumberFormat.getIntegerInstance().format(23.45678), "23");
       assertEquals(NumberFormat.getNumberInstance().format(23.45678), "23.457");
       assertEquals(NumberFormat.getPercentInstance().format(23.45678), "2,346%");
-   }
+    }
 
     // Verify that default formatters use correct precision and rounding with
     // the French locale.
@@ -119,12 +116,12 @@ public class NumberFormatTest extends junit.framework.TestCase {
       assertEquals(NumberFormat.getIntegerInstance(locale).format(23.45678), "23");
       assertEquals(NumberFormat.getNumberInstance(locale).format(23.45678), "23,457");
       assertEquals(NumberFormat.getPercentInstance(locale).format(23.45678), "2 346 %");
-   }
+    }
 
-    private static native boolean onMavericks() /*-[
+    private static native boolean onYosemite() /*-[
       struct utsname uts;
       if (uname(&uts) == 0) {
-        return atoi(uts.release) >= 13;
+        return atoi(uts.release) >= 14;
       }
       return NO;
     ]-*/;

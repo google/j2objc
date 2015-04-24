@@ -225,7 +225,6 @@ TEST_SOURCES := \
     libcore/java/io/OldStringWriterTest.java \
     libcore/java/io/OldWriterTest.java \
     libcore/java/io/OutputStreamWriterTest.java \
-    libcore/java/io/RandomAccessFileTest.java \
     libcore/java/io/SerializationTest.java \
     libcore/java/io/StreamTokenizerTest.java \
     libcore/java/lang/CharacterTest.java \
