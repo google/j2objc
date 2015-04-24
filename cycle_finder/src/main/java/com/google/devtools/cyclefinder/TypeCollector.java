@@ -117,7 +117,7 @@ class TypeCollector {
       public boolean visit(AnonymousClassDeclaration node) {
         ITypeBinding binding = node.getTypeBinding();
         visitType(binding);
-        renamings.put(binding, "anonymous:" + unit.getLineNumber(node.getStartPosition()));
+        renamings.put(binding, "anonymous:" + node.getLineNumber());
         return true;
       }
       @Override

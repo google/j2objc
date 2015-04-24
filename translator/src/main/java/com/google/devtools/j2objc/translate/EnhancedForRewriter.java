@@ -30,7 +30,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.LoopTranslation;
@@ -79,8 +78,8 @@ public class EnhancedForRewriter extends TreeVisitor {
       Expression expression, ITypeBinding expressionType, IVariableBinding loopVariable,
       Statement loopBody) {
     ITypeBinding componentType = expressionType.getComponentType();
-    ITypeBinding iosArrayType = Types.resolveArrayType(componentType);
-    PointerTypeBinding bufferType = Types.getPointerType(componentType);
+    ITypeBinding iosArrayType = typeEnv.resolveArrayType(componentType);
+    PointerTypeBinding bufferType = typeEnv.getPointerType(componentType);
     IVariableBinding arrayVariable = new GeneratedVariableBinding(
         "a__", 0, expressionType, false, false, null, null);
     GeneratedVariableBinding bufferVariable = new GeneratedVariableBinding(
@@ -92,7 +91,7 @@ public class EnhancedForRewriter extends TreeVisitor {
     IVariableBinding bufferField = new GeneratedVariableBinding(
         "buffer", Modifier.PUBLIC, bufferType, true, false, iosArrayType, null);
     IVariableBinding sizeField = new GeneratedVariableBinding(
-        "size", Modifier.PUBLIC, Types.resolveJavaType("int"), true, false, iosArrayType, null);
+        "size", Modifier.PUBLIC, typeEnv.resolveJavaType("int"), true, false, iosArrayType, null);
 
     VariableDeclarationStatement arrayDecl =
         new VariableDeclarationStatement(arrayVariable, expression.copy());
@@ -106,13 +105,13 @@ public class EnhancedForRewriter extends TreeVisitor {
 
     WhileStatement loop = new WhileStatement();
     loop.setExpression(new InfixExpression(
-        Types.resolveJavaType("boolean"), InfixExpression.Operator.LESS,
+        typeEnv.resolveJavaType("boolean"), InfixExpression.Operator.LESS,
         new SimpleName(bufferVariable), new SimpleName(endVariable)));
     Block newLoopBody = makeBlock(loopBody.copy());
     loop.setBody(newLoopBody);
     newLoopBody.getStatements().add(0, new VariableDeclarationStatement(
         loopVariable, new PrefixExpression(
-            PrefixExpression.Operator.DEREFERENCE, new PostfixExpression(
+            componentType, PrefixExpression.Operator.DEREFERENCE, new PostfixExpression(
                 bufferVariable, PostfixExpression.Operator.INCREMENT))));
 
     Block block = new Block();
@@ -183,7 +182,7 @@ public class EnhancedForRewriter extends TreeVisitor {
       ITypeBinding iterableType = BindingUtil.findInterface(expressionType, "java.lang.Iterable");
       typeArgs = iterableType != null ? iterableType.getTypeArguments() : new ITypeBinding[0];
     }
-    assert typeArgs.length == 1 && Types.isBoxedPrimitive(typeArgs[0]);
+    assert typeArgs.length == 1 && typeEnv.isBoxedPrimitive(typeArgs[0]);
     IVariableBinding boxVariable = new GeneratedVariableBinding(
         "boxed__", 0, typeArgs[0], false, false, null, null);
     node.setParameter(new SingleVariableDeclaration(boxVariable));

@@ -27,7 +27,6 @@ import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeNode;
-import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -81,7 +80,6 @@ public class HeaderImportCollector extends TreeVisitor {
   }
 
   public void collect(TreeNode node) {
-    TreeUtil.getCompilationUnit(node).setGenerationContext();
     run(node);
   }
 
@@ -106,15 +104,15 @@ public class HeaderImportCollector extends TreeVisitor {
   }
 
   private void addForwardDecl(ITypeBinding type) {
-    forwardDecls.addAll(Sets.difference(Import.getImports(type, nameTable), declaredTypes));
+    forwardDecls.addAll(Sets.difference(Import.getImports(type, unit), declaredTypes));
   }
 
   private void addSuperType(ITypeBinding type) {
-    Import.addImports(type, superTypes, nameTable);
+    Import.addImports(type, superTypes, unit);
   }
 
   private void addDeclaredType(ITypeBinding type) {
-    Import.addImports(type, declaredTypes, nameTable);
+    Import.addImports(type, declaredTypes, unit);
   }
 
   @Override

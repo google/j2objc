@@ -29,6 +29,8 @@ import java.util.List;
  */
 public class CompilationUnit extends TreeNode {
 
+  private final Types typeEnv;
+  private final NameTable nameTable;
   private final InputFile inputFile;
   private final String mainTypeName;
   private final String source;
@@ -42,16 +44,13 @@ public class CompilationUnit extends TreeNode {
       ChildList.create(NativeDeclaration.class, this);
   private final ChildList<AbstractTypeDeclaration> types =
       ChildList.create(AbstractTypeDeclaration.class, this);
-  private final NameTable nameTable;
-  private final Types typesService;
 
   public CompilationUnit(
       org.eclipse.jdt.core.dom.CompilationUnit jdtNode, InputFile inputFile,
-      String mainTypeName, String source, NameTable nameTable) {
+      String mainTypeName, String source, NameTable.Factory nameTableFactory) {
     super(jdtNode);
-    this.nameTable = nameTable;
-    this.typesService = Types.newTypes(jdtNode);
-    setGenerationContext();
+    typeEnv = new Types(jdtNode.getAST());
+    nameTable = nameTableFactory == null ? null : nameTableFactory.newNameTable(typeEnv);
     this.inputFile = Preconditions.checkNotNull(inputFile);
     Preconditions.checkNotNull(mainTypeName);
     if (mainTypeName.endsWith(NameTable.PACKAGE_INFO_FILE_NAME)) {
@@ -84,22 +83,10 @@ public class CompilationUnit extends TreeNode {
     }
   }
 
-  /**
-   * Sets the mutable global state that's particular to each CompilationUnit.
-   * Many of the operations in the ast, gen, translate, types, and util
-   * packages require these to be set to a given CompilationUnit before operations are performed
-   * on that unit.
-   * Using this method concurrently with NameTable/Types
-   * is incredibly, unbelievably, astoundingly not thread safe.
-   */
-  public void setGenerationContext() {
-    typesService.setInstance();
-  }
-
   public CompilationUnit(CompilationUnit other) {
     super(other);
-    nameTable = other.nameTable;
-    typesService = other.typesService;
+    typeEnv = other.getTypeEnv();
+    nameTable = other.getNameTable();
     inputFile = other.getInputFile();
     mainTypeName = other.getMainTypeName();
     source = other.getSource();
@@ -116,6 +103,14 @@ public class CompilationUnit extends TreeNode {
     return Kind.COMPILATION_UNIT;
   }
 
+  public Types getTypeEnv() {
+    return typeEnv;
+  }
+
+  public NameTable getNameTable() {
+    return nameTable;
+  }
+
   public InputFile getInputFile() {
     return inputFile;
   }
@@ -126,10 +121,6 @@ public class CompilationUnit extends TreeNode {
 
   public String getSource() {
     return source;
-  }
-
-  public NameTable getNameTable() {
-    return nameTable;
   }
 
   public boolean hasIncompleteProtocol() {

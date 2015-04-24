@@ -15,8 +15,6 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.types.PointerTypeBinding;
-import com.google.devtools.j2objc.types.Types;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -36,24 +34,9 @@ public class PrefixExpression extends Expression {
     PLUS("+"),
     MINUS("-"),
     COMPLEMENT("~"),
-    NOT("!") {
-      @Override protected ITypeBinding resolveExpressionType(ITypeBinding operandType) {
-        return Types.resolveJavaType("boolean");
-      }
-    },
-    DEREFERENCE("*") {
-      @Override protected ITypeBinding resolveExpressionType(ITypeBinding operandType) {
-        if (operandType instanceof PointerTypeBinding) {
-          return ((PointerTypeBinding) operandType).getPointeeType();
-        }
-        return null;
-      }
-    },
-    ADDRESS_OF("&") {
-      @Override protected ITypeBinding resolveExpressionType(ITypeBinding operandType) {
-        return operandType != null ? Types.getPointerType(operandType) : null;
-      }
-    };
+    NOT("!"),
+    DEREFERENCE("*"),
+    ADDRESS_OF("&");
 
     private final String opString;
     private static Map<String, Operator> stringLookup = Maps.newHashMap();
@@ -66,11 +49,6 @@ public class PrefixExpression extends Expression {
 
     private Operator(String opString) {
       this.opString = opString;
-    }
-
-    protected ITypeBinding resolveExpressionType(ITypeBinding operandType) {
-      // Default behavior.
-      return operandType;
     }
 
     @Override
@@ -86,22 +64,26 @@ public class PrefixExpression extends Expression {
     }
   }
 
+  private ITypeBinding typeBinding = null;
   private Operator operator = null;
   private ChildLink<Expression> operand = ChildLink.create(Expression.class, this);
 
   public PrefixExpression(org.eclipse.jdt.core.dom.PrefixExpression jdtNode) {
     super(jdtNode);
+    typeBinding = jdtNode.resolveTypeBinding();
     operator = Operator.fromJdtOperator(jdtNode.getOperator());
     operand.set((Expression) TreeConverter.convert(jdtNode.getOperand()));
   }
 
   public PrefixExpression(PrefixExpression other) {
     super(other);
+    typeBinding = other.getTypeBinding();
     operator = other.getOperator();
     operand.copyFrom(other.getOperand());
   }
 
-  public PrefixExpression(Operator operator, Expression operand) {
+  public PrefixExpression(ITypeBinding typeBinding, Operator operator, Expression operand) {
+    this.typeBinding = typeBinding;
     this.operator = operator;
     this.operand.set(operand);
   }
@@ -113,11 +95,7 @@ public class PrefixExpression extends Expression {
 
   @Override
   public ITypeBinding getTypeBinding() {
-    Expression operandNode = operand.get();
-    if (operator == null || operandNode == null) {
-      return null;
-    }
-    return operator.resolveExpressionType(operandNode.getTypeBinding());
+    return typeBinding;
   }
 
   public Operator getOperator() {

@@ -14,6 +14,11 @@
 
 package com.google.devtools.j2objc.translate;
 
+import static com.google.devtools.j2objc.ast.InfixExpression.Operator.CONDITIONAL_AND;
+import static com.google.devtools.j2objc.ast.InfixExpression.Operator.CONDITIONAL_OR;
+import static java.lang.Boolean.FALSE;
+import static java.lang.Boolean.TRUE;
+
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.Expression;
@@ -23,11 +28,6 @@ import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.WhileStatement;
-
-import static com.google.devtools.j2objc.ast.InfixExpression.Operator.CONDITIONAL_AND;
-import static com.google.devtools.j2objc.ast.InfixExpression.Operator.CONDITIONAL_OR;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 /**
  * Removes branches that are tested with boolean constant expressions
@@ -68,9 +68,9 @@ public class ConstantBranchPruner extends TreeVisitor {
     Boolean right = getValue(node.getRightOperand());
     if (left != null && right != null) {
       if (operator == CONDITIONAL_AND) {
-        node.replaceWith(new BooleanLiteral(left && right));
+        node.replaceWith(new BooleanLiteral(left && right, typeEnv));
       } else {
-        node.replaceWith(new BooleanLiteral(left || right));
+        node.replaceWith(new BooleanLiteral(left || right, typeEnv));
       }
     } else if (left != null || right != null) {
       if (operator == CONDITIONAL_AND) {
@@ -79,7 +79,7 @@ public class ConstantBranchPruner extends TreeVisitor {
         } else if (right == TRUE) {
           node.replaceWith(node.getLeftOperand().copy());
         } else {
-          node.replaceWith(new BooleanLiteral(false));
+          node.replaceWith(new BooleanLiteral(false, typeEnv));
         }
       } else {
         if (left == FALSE) {
@@ -87,7 +87,7 @@ public class ConstantBranchPruner extends TreeVisitor {
         } else if (right == FALSE) {
           node.replaceWith(node.getLeftOperand().copy());
         } else {
-          node.replaceWith(new BooleanLiteral(true));
+          node.replaceWith(new BooleanLiteral(true, typeEnv));
         }
       }
     }
@@ -100,7 +100,7 @@ public class ConstantBranchPruner extends TreeVisitor {
   public void endVisit(PrefixExpression node) {
     Boolean value = getValue(node.getOperand());
     if (node.getOperator() == PrefixExpression.Operator.NOT && value != null) {
-      node.replaceWith(new BooleanLiteral(!value));
+      node.replaceWith(new BooleanLiteral(!value, typeEnv));
     }
   }
 

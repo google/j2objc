@@ -24,19 +24,23 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 public class StringLiteral extends Expression {
 
   private String literalValue = null;
+  private final ITypeBinding typeBinding;
 
   public StringLiteral(org.eclipse.jdt.core.dom.StringLiteral jdtNode) {
     super(jdtNode);
     literalValue = jdtNode.getLiteralValue();
+    typeBinding = jdtNode.resolveTypeBinding();
   }
 
   public StringLiteral(StringLiteral other) {
     super(other);
     literalValue = other.getLiteralValue();
+    typeBinding = other.getTypeBinding();
   }
 
-  public StringLiteral(String literalValue) {
+  public StringLiteral(String literalValue, Types typeEnv) {
     this.literalValue = literalValue;
+    typeBinding = typeEnv.resolveJavaType("java.lang.String");
   }
 
   @Override
@@ -46,7 +50,7 @@ public class StringLiteral extends Expression {
 
   @Override
   public ITypeBinding getTypeBinding() {
-    return Types.resolveJavaType("java.lang.String");
+    return typeBinding;
   }
 
   public String getLiteralValue() {

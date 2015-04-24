@@ -70,7 +70,7 @@ public class VarargsRewriter extends TreeVisitor {
     List<Expression> varargsCopy = Lists.newArrayList(varargs);
     varargs.clear();
     if (varargsCopy.isEmpty()) {
-      args.add(new ArrayCreation(lastParam.getErasure(), 0));
+      args.add(new ArrayCreation(lastParam.getErasure(), typeEnv, 0));
     } else {
       ArrayInitializer newInit = new ArrayInitializer(lastParam.getErasure());
       newInit.getExpressions().addAll(varargsCopy);
@@ -81,7 +81,7 @@ public class VarargsRewriter extends TreeVisitor {
   @Override
   public void endVisit(ArrayInitializer node) {
     if (!(node.getParent() instanceof ArrayCreation)) {
-      ArrayCreation newArray = new ArrayCreation(node.getTypeBinding());
+      ArrayCreation newArray = new ArrayCreation(node.getTypeBinding(), typeEnv);
       node.replaceWith(newArray);
       newArray.setInitializer(node);
     }

@@ -27,10 +27,10 @@ public class TreeConverter {
 
   public static CompilationUnit convertCompilationUnit(
       org.eclipse.jdt.core.dom.CompilationUnit jdtUnit, InputFile inputFile, String source,
-      NameTable nameTable) {
+      NameTable.Factory nameTableFactory) {
     return new CompilationUnit(
         jdtUnit, inputFile, FileUtil.getClassNameFromFilePath(inputFile.getUnitName()), source,
-        nameTable);
+        nameTableFactory);
   }
 
   public static Statement convertStatement(org.eclipse.jdt.core.dom.Statement jdtStatement) {

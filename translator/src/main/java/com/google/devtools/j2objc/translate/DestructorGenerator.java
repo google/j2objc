@@ -33,7 +33,6 @@ import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -149,7 +148,7 @@ public class DestructorGenerator extends TreeVisitor {
     if (Options.useReferenceCounting()) {
       for (IVariableBinding field : fields) {
         if (!field.getType().isPrimitive() && !BindingUtil.isWeakReference(field)) {
-          ITypeBinding idType = Types.resolveIOSType("id");
+          ITypeBinding idType = typeEnv.resolveIOSType("id");
           FunctionInvocation releaseInvocation = new FunctionInvocation(
               "RELEASE_", idType, idType, idType);
           releaseInvocation.getArguments().add(new SimpleName(field));
@@ -160,7 +159,7 @@ public class DestructorGenerator extends TreeVisitor {
       if (superFinalize == null) {
         IMethodBinding methodBinding = method.getMethodBinding();
         GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
-            NameTable.DEALLOC_METHOD, Modifier.PUBLIC, Types.mapTypeName("void"),
+            NameTable.DEALLOC_METHOD, Modifier.PUBLIC, typeEnv.mapTypeName("void"),
             methodBinding.getDeclaringClass());
         SuperMethodInvocation call = new SuperMethodInvocation(binding);
         ExpressionStatement stmt = new ExpressionStatement(call);
@@ -171,7 +170,7 @@ public class DestructorGenerator extends TreeVisitor {
 
   private MethodDeclaration buildFinalizeMethod(
       ITypeBinding declaringClass, List<IVariableBinding> fields) {
-    ITypeBinding voidType = Types.mapTypeName("void");
+    ITypeBinding voidType = typeEnv.mapTypeName("void");
     int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
     GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
         NameTable.DEALLOC_METHOD, modifiers, voidType, declaringClass);

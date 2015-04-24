@@ -182,6 +182,7 @@ JAVA_SOURCES = \
 	translate/Autoboxer.java \
 	translate/CastResolver.java \
 	translate/ComplexExpressionExtractor.java \
+	translate/ConstantBranchPruner.java \
 	translate/DeadCodeEliminator.java \
 	translate/DestructorGenerator.java \
 	translate/EnhancedForRewriter.java \

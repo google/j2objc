@@ -45,7 +45,6 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -69,14 +68,7 @@ import java.util.Set;
  */
 public class Functionizer extends TreeVisitor {
 
-  private final IOSMethodBinding autoreleaseBinding;
   private Set<IMethodBinding> functionizableMethods;
-
-  public Functionizer() {
-    ITypeBinding idType = Types.resolveIOSType("id");
-    autoreleaseBinding = IOSMethodBinding.newMethod(
-        NameTable.AUTORELEASE_METHOD, Modifier.PUBLIC, idType, idType);
-  }
 
   @Override
   public boolean visit(CompilationUnit node) {
@@ -236,7 +228,7 @@ public class Functionizer extends TreeVisitor {
     Expression expression = invocation;
     if (Options.useReferenceCounting() && !node.hasRetainedResult()) {
       expression = new MethodInvocation(
-          IOSMethodBinding.newTypedInvocation(autoreleaseBinding, type), expression);
+          IOSMethodBinding.newTypedInvocation(typeEnv.getAutoreleaseMethod(), type), expression);
     }
     node.replaceWith(expression);
   }
@@ -315,7 +307,7 @@ public class Functionizer extends TreeVisitor {
     if (BindingUtil.isStatic(m)) {
       // Add class initialization invocation, since this may be the first use of this class.
       String initName = String.format("%s_initialize", nameTable.getFullName(declaringClass));
-      ITypeBinding voidType = Types.resolveJavaType("void");
+      ITypeBinding voidType = typeEnv.resolveJavaType("void");
       FunctionInvocation initCall =
           new FunctionInvocation(initName, voidType, voidType, declaringClass);
       function.getBody().getStatements().add(0, new ExpressionStatement(initCall));
@@ -350,8 +342,8 @@ public class Functionizer extends TreeVisitor {
     GeneratedVariableBinding selfVar = new GeneratedVariableBinding(
         NameTable.SELF_NAME, 0, declaringClass, false, false, declaringClass, null);
     IOSMethodBinding allocBinding = IOSMethodBinding.newMethod(
-        NameTable.ALLOC_METHOD, Modifier.PUBLIC, Types.resolveIOSType("id"),
-        Types.resolveIOSType("NSObject"));
+        NameTable.ALLOC_METHOD, Modifier.PUBLIC, typeEnv.resolveIOSType("id"),
+        typeEnv.resolveIOSType("NSObject"));
     stmts.add(new VariableDeclarationStatement(
         selfVar, new MethodInvocation(allocBinding, new SimpleName(declaringClass))));
 
@@ -388,7 +380,7 @@ public class Functionizer extends TreeVisitor {
     for (SingleVariableDeclaration param : method.getParameters()) {
       args.add(new SimpleName(param.getVariableBinding()));
     }
-    if (Types.isVoidType(returnType)) {
+    if (typeEnv.isVoidType(returnType)) {
       stmts.add(new ExpressionStatement(invocation));
       if (methodBinding.isConstructor()) {
         stmts.add(new ReturnStatement(new ThisExpression(declaringClass)));

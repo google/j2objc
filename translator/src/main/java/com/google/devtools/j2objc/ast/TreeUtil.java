@@ -18,6 +18,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IBinding;
@@ -344,15 +345,15 @@ public class TreeUtil {
     return newNode;
   }
 
-  public static Expression newLiteral(Object value) {
+  public static Expression newLiteral(Object value, Types typeEnv) {
     if (value instanceof Boolean) {
-      return new BooleanLiteral((Boolean) value);
+      return new BooleanLiteral((Boolean) value, typeEnv);
     } else if (value instanceof Character) {
-      return new CharacterLiteral((Character) value);
+      return new CharacterLiteral((Character) value, typeEnv);
     } else if (value instanceof Number) {
-      return new NumberLiteral((Number) value);
+      return new NumberLiteral((Number) value, typeEnv);
     } else if (value instanceof String) {
-      return new StringLiteral((String) value);
+      return new StringLiteral((String) value, typeEnv);
     }
     throw new AssertionError("unknown constant type");
   }

@@ -37,7 +37,6 @@ import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.CharacterLiteral;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CommaExpression;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.ContinueStatement;
@@ -97,7 +96,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -120,9 +118,7 @@ import java.util.Map;
  */
 public class StatementGenerator extends TreeVisitor {
 
-  private final CompilationUnit unit;
   private final SourceBuilder buffer;
-  private final NameTable nameTable;
   private final boolean asFunction;
   private final boolean useReferenceCounting;
 
@@ -136,8 +132,6 @@ public class StatementGenerator extends TreeVisitor {
   }
 
   private StatementGenerator(TreeNode node, boolean asFunction, int currentLine) {
-    this.unit = TreeUtil.getCompilationUnit(node);
-    this.nameTable = unit.getNameTable();
     buffer = new SourceBuilder(Options.emitLineDirectives(), currentLine);
     this.asFunction = asFunction;
     useReferenceCounting = !Options.useARC();
@@ -215,7 +209,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(ArrayType node) {
-    ITypeBinding binding = Types.mapType(node.getTypeBinding());
+    ITypeBinding binding = typeEnv.mapType(node.getTypeBinding());
     if (binding instanceof IOSTypeBinding) {
       buffer.append(binding.getName());
     } else {
@@ -902,7 +896,7 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(SwitchStatement node) {
     Expression expr = node.getExpression();
     ITypeBinding exprType = expr.getTypeBinding();
-    if (Types.isJavaStringType(exprType)) {
+    if (typeEnv.isJavaStringType(exprType)) {
       printStringSwitchStatement(node);
       return false;
     }

@@ -143,7 +143,7 @@ public abstract class GenerationTest extends TestCase {
     fullSourcePath += typePath + ".java";
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(
         unit, new RegularInputFile(fullSourcePath, typePath + ".java"), source,
-        NameTable.newFactory().newNameTable());
+        NameTable.newFactory());
     TranslationProcessor.applyMutations(newUnit, deadCodeMap, TimeTracker.noop());
     return newUnit;
   }

@@ -77,7 +77,6 @@ public class ImplementationImportCollector extends TreeVisitor {
   private Set<Import> imports = Sets.newLinkedHashSet();
 
   public void collect(TreeNode node) {
-    TreeUtil.getCompilationUnit(node).setGenerationContext();
     run(node);
   }
 
@@ -102,14 +101,14 @@ public class ImplementationImportCollector extends TreeVisitor {
   }
 
   private void addImports(ITypeBinding type) {
-    Import.addImports(type, imports, nameTable);
+    Import.addImports(type, imports, unit);
   }
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     addImports(type);
-    addImports(Types.resolveIOSType("IOSClass"));
+    addImports(typeEnv.resolveIOSType("IOSClass"));
     return true;
   }
 
@@ -122,11 +121,11 @@ public class ImplementationImportCollector extends TreeVisitor {
   @Override
   public boolean visit(Assignment node) {
     if (node.getOperator() == Operator.PLUS_ASSIGN
-        && Types.isJavaStringType(node.getLeftHandSide().getTypeBinding())
-        && Types.isBooleanType(node.getRightHandSide().getTypeBinding())) {
+        && typeEnv.isJavaStringType(node.getLeftHandSide().getTypeBinding())
+        && typeEnv.isBooleanType(node.getRightHandSide().getTypeBinding())) {
       // Implicit conversion from boolean -> String translates into a
       // Boolean.toString(...) call, so add a reference to java.lang.Boolean.
-      addImports(Types.resolveJavaType("java.lang.Boolean"));
+      addImports(typeEnv.resolveJavaType("java.lang.Boolean"));
     }
     return true;
   }
@@ -174,9 +173,9 @@ public class ImplementationImportCollector extends TreeVisitor {
   public boolean visit(EnumDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     addImports(type);
-    addImports(Types.resolveIOSType("IOSClass"));
+    addImports(typeEnv.resolveIOSType("IOSClass"));
     addImports(GeneratedTypeBinding.newTypeBinding("java.lang.IllegalArgumentException",
-        Types.resolveJavaType("java.lang.RuntimeException"), false));
+        typeEnv.resolveJavaType("java.lang.RuntimeException"), false));
     return true;
   }
 
@@ -216,7 +215,7 @@ public class ImplementationImportCollector extends TreeVisitor {
     IMethodBinding binding = node.getMethodBinding();
     for (ITypeBinding exceptionType : binding.getExceptionTypes()) {
       addImports(exceptionType);
-      addImports(Types.resolveIOSType("IOSClass"));
+      addImports(typeEnv.resolveIOSType("IOSClass"));
     }
     return true;
   }
@@ -302,7 +301,7 @@ public class ImplementationImportCollector extends TreeVisitor {
     ITypeBinding type = node.getTypeBinding();
     if (BindingUtil.isRuntimeAnnotation(type)) {
       addImports(type);
-      addImports(Types.resolveIOSType("IOSClass"));
+      addImports(typeEnv.resolveIOSType("IOSClass"));
     }
     return true;
   }
@@ -321,7 +320,7 @@ public class ImplementationImportCollector extends TreeVisitor {
   @Override
   public boolean visit(TryStatement node) {
     if (node.getResources().size() > 0) {
-      addImports(Types.mapTypeName("java.lang.Throwable"));
+      addImports(typeEnv.mapTypeName("java.lang.Throwable"));
     }
     return true;
   }
@@ -337,7 +336,7 @@ public class ImplementationImportCollector extends TreeVisitor {
   public boolean visit(TypeLiteral node) {
     ITypeBinding type = node.getType().getTypeBinding();
     if (type.isPrimitive()) {
-      addImports(Types.resolveIOSType("IOSClass"));
+      addImports(typeEnv.resolveIOSType("IOSClass"));
     } else {
       addImports(node.getType());
     }

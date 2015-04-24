@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.NameTable;
 
 /**
@@ -21,6 +22,8 @@ import com.google.devtools.j2objc.util.NameTable;
  */
 public class TreeVisitor {
 
+  protected CompilationUnit unit = null;
+  protected Types typeEnv = null;
   protected NameTable nameTable = null;
 
   /**
@@ -30,8 +33,12 @@ public class TreeVisitor {
    * @param node the top-level node to visit.
    */
   public void run(TreeNode node) {
-    nameTable = TreeUtil.getCompilationUnit(node).getNameTable();
+    unit = TreeUtil.getCompilationUnit(node);
+    typeEnv = unit.getTypeEnv();
+    nameTable = unit.getNameTable();
     node.accept(this);
+    unit = null;
+    typeEnv = null;
     nameTable = null;
   }
 

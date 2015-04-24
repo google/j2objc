@@ -30,7 +30,6 @@ import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -125,7 +124,7 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
     List<Expression> args = invocation.getArguments();
     args.add(TreeUtil.remove(qualifier));
     String selectorExpr = String.format("@selector(%s)", nameTable.getMethodSelector(method));
-    args.add(new NativeExpression(selectorExpr, Types.resolveIOSType("id")));
+    args.add(new NativeExpression(selectorExpr, typeEnv.resolveIOSType("id")));
     TreeUtil.copyList(node.getArguments(), args);
     node.replaceWith(invocation);
   }

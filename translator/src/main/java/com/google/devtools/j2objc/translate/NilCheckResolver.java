@@ -50,7 +50,6 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -145,7 +144,7 @@ public class NilCheckResolver extends TreeVisitor {
     if (method != null) {
       // Check for some common cases where the result is known not to be null.
       return !method.isConstructor() && !method.getName().equals("getClass")
-          && !(Types.isBoxedPrimitive(method.getDeclaringClass())
+          && !(typeEnv.isBoxedPrimitive(method.getDeclaringClass())
                && method.getName().equals("valueOf"));
     }
     switch (e.getKind()) {
@@ -171,7 +170,7 @@ public class NilCheckResolver extends TreeVisitor {
       safeVarsTrue.add(var);
       safeVarsFalse.add(var);
     }
-    ITypeBinding idType = Types.resolveIOSType("id");
+    ITypeBinding idType = typeEnv.resolveIOSType("id");
     FunctionInvocation nilChkInvocation = new FunctionInvocation(
         "nil_chk", node.getTypeBinding(), idType, idType);
     node.replaceWith(nilChkInvocation);

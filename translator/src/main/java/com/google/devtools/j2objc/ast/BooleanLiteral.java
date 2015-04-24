@@ -24,19 +24,23 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 public class BooleanLiteral extends Expression {
 
   private boolean booleanValue = false;
+  private final ITypeBinding typeBinding;
 
   public BooleanLiteral(org.eclipse.jdt.core.dom.BooleanLiteral jdtNode) {
     super(jdtNode);
     booleanValue = jdtNode.booleanValue();
+    typeBinding = jdtNode.resolveTypeBinding();
   }
 
   public BooleanLiteral(BooleanLiteral other) {
     super(other);
     booleanValue = other.booleanValue();
+    typeBinding = other.getTypeBinding();
   }
 
-  public BooleanLiteral(boolean booleanValue) {
+  public BooleanLiteral(boolean booleanValue, Types typeEnv) {
     this.booleanValue = booleanValue;
+    typeBinding = typeEnv.resolveJavaType("boolean");
   }
 
   @Override
@@ -46,7 +50,7 @@ public class BooleanLiteral extends Expression {
 
   @Override
   public ITypeBinding getTypeBinding() {
-    return Types.resolveJavaType("boolean");
+    return typeBinding;
   }
 
   public boolean booleanValue() {

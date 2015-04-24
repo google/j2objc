@@ -23,20 +23,24 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class TypeLiteral extends Expression {
 
+  private final ITypeBinding typeBinding;
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
 
   public TypeLiteral(org.eclipse.jdt.core.dom.TypeLiteral jdtNode) {
     super(jdtNode);
+    typeBinding = jdtNode.resolveTypeBinding();
     type.set((Type) TreeConverter.convert(jdtNode.getType()));
   }
 
   public TypeLiteral(TypeLiteral other) {
     super(other);
+    typeBinding = other.getTypeBinding();
     type.copyFrom(other.getType());
   }
 
-  public TypeLiteral(ITypeBinding typeBinding) {
-    type.set(Type.newType(typeBinding));
+  public TypeLiteral(ITypeBinding literalType, Types typeEnv) {
+    typeBinding = typeEnv.resolveJavaType("java.lang.Class");
+    type.set(Type.newType(literalType));
   }
 
   @Override
@@ -46,7 +50,7 @@ public class TypeLiteral extends Expression {
 
   @Override
   public ITypeBinding getTypeBinding() {
-    return Types.resolveJavaType("java.lang.Class");
+    return typeBinding;
   }
 
   public Type getType() {

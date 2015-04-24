@@ -32,9 +32,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -66,20 +64,6 @@ public class JavaCloneWriter extends TreeVisitor {
     }
   };
 
-  // Binding for the declaration of __javaClone in NSObject.
-  private final IOSMethodBinding nsObjectJavaClone;
-
-  private final IOSMethodBinding releaseBinding;
-
-  public JavaCloneWriter() {
-    ITypeBinding voidType = Types.resolveJavaType("void");
-    ITypeBinding nsObjectType = Types.resolveIOSType("NSObject");
-    nsObjectJavaClone = IOSMethodBinding.newMethod(
-        JAVA_CLONE_METHOD, Modifier.PUBLIC, voidType, nsObjectType);
-    releaseBinding = IOSMethodBinding.newMethod(
-        NameTable.RELEASE_METHOD, Modifier.PUBLIC, voidType, nsObjectType);
-  }
-
   @Override
   public void endVisit(TypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
@@ -88,7 +72,7 @@ public class JavaCloneWriter extends TreeVisitor {
       return;
     }
 
-    ITypeBinding voidType = Types.resolveJavaType("void");
+    ITypeBinding voidType = typeEnv.resolveJavaType("void");
     int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
     IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
         JAVA_CLONE_METHOD, modifiers, voidType, type);
@@ -100,7 +84,10 @@ public class JavaCloneWriter extends TreeVisitor {
     declaration.setBody(body);
     List<Statement> statements = body.getStatements();
 
-    SuperMethodInvocation superCall = new SuperMethodInvocation(nsObjectJavaClone);
+    ITypeBinding nsObjectType = typeEnv.resolveIOSType("NSObject");
+    IOSMethodBinding cloneMethod = IOSMethodBinding.newMethod(
+        JAVA_CLONE_METHOD, Modifier.PUBLIC, voidType, nsObjectType);
+    SuperMethodInvocation superCall = new SuperMethodInvocation(cloneMethod);
     statements.add(new ExpressionStatement(superCall));
 
     for (IVariableBinding field : fields) {
@@ -111,7 +98,7 @@ public class JavaCloneWriter extends TreeVisitor {
         statements.add(new ExpressionStatement(invocation));
       } else {
         statements.add(new ExpressionStatement(
-            new MethodInvocation(releaseBinding, new SimpleName(field))));
+            new MethodInvocation(typeEnv.getReleaseMethod(), new SimpleName(field))));
       }
     }
   }

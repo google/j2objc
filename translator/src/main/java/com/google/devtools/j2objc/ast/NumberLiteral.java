@@ -26,6 +26,7 @@ public class NumberLiteral extends Expression {
 
   private String token = null;
   private Number value = null;
+  private final ITypeBinding typeBinding;
 
   public NumberLiteral(org.eclipse.jdt.core.dom.NumberLiteral jdtNode) {
     super(jdtNode);
@@ -33,20 +34,23 @@ public class NumberLiteral extends Expression {
     Object constantValue = jdtNode.resolveConstantExpressionValue();
     assert constantValue instanceof Number;
     value = (Number) constantValue;
+    typeBinding = jdtNode.resolveTypeBinding();
   }
 
   public NumberLiteral(NumberLiteral other) {
     super(other);
     token = other.getToken();
     value = other.getValue();
+    typeBinding = other.getTypeBinding();
   }
 
-  public NumberLiteral(Number value) {
+  public NumberLiteral(Number value, Types typeEnv) {
     this.value = value;
+    this.typeBinding = typeForNumber(value, typeEnv);
   }
 
-  public static NumberLiteral newIntLiteral(Integer i) {
-    return new NumberLiteral(i);
+  public static NumberLiteral newIntLiteral(Integer i, Types typeEnv) {
+    return new NumberLiteral(i, typeEnv);
   }
 
   @Override
@@ -56,7 +60,7 @@ public class NumberLiteral extends Expression {
 
   @Override
   public ITypeBinding getTypeBinding() {
-    return typeForNumber(value);
+    return typeBinding;
   }
 
   public String getToken() {
@@ -84,19 +88,19 @@ public class NumberLiteral extends Expression {
     Preconditions.checkNotNull(value);
   }
 
-  private ITypeBinding typeForNumber(Number value) {
+  private static ITypeBinding typeForNumber(Number value, Types typeEnv) {
     if (value instanceof Byte) {
-      return Types.resolveJavaType("byte");
+      return typeEnv.resolveJavaType("byte");
     } else if (value instanceof Short) {
-      return Types.resolveJavaType("short");
+      return typeEnv.resolveJavaType("short");
     } else if (value instanceof Integer) {
-      return Types.resolveJavaType("int");
+      return typeEnv.resolveJavaType("int");
     } else if (value instanceof Long) {
-      return Types.resolveJavaType("long");
+      return typeEnv.resolveJavaType("long");
     } else if (value instanceof Float) {
-      return Types.resolveJavaType("float");
+      return typeEnv.resolveJavaType("float");
     } else if (value instanceof Double) {
-      return Types.resolveJavaType("double");
+      return typeEnv.resolveJavaType("double");
     } else {
       throw new AssertionError("Invalid number literal type: " + value.getClass().getName());
     }

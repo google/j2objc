@@ -189,7 +189,7 @@ public class InitializationNormalizer extends TreeVisitor {
           && !UnicodeUtils.hasValidCppCharacters((String) constantValue)) {
         return true;
       }
-      frag.setInitializer(TreeUtil.newLiteral(constantValue));
+      frag.setInitializer(TreeUtil.newLiteral(constantValue, typeEnv));
       return false;
     }
     return true;
@@ -218,7 +218,7 @@ public class InitializationNormalizer extends TreeVisitor {
       if (superCallIdx == -1) {
         ITypeBinding superType = node.getMethodBinding().getDeclaringClass().getSuperclass();
         stmts.add(0, new SuperConstructorInvocation(
-            TranslationUtil.findDefaultConstructorBinding(superType)));
+            TranslationUtil.findDefaultConstructorBinding(superType, typeEnv)));
         superCallIdx = 0;
       }
 
@@ -261,12 +261,12 @@ public class InitializationNormalizer extends TreeVisitor {
     int constructorModifier =
         type.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
     MethodDeclaration method = new MethodDeclaration(
-        GeneratedMethodBinding.newConstructor(type, constructorModifier));
+        GeneratedMethodBinding.newConstructor(type, constructorModifier, typeEnv));
     Block body = new Block();
     method.setBody(body);
     TreeUtil.copyList(initStatements, body.getStatements());
     body.getStatements().add(0, new SuperConstructorInvocation(
-        TranslationUtil.findDefaultConstructorBinding(type.getSuperclass())));
+        TranslationUtil.findDefaultConstructorBinding(type.getSuperclass(), typeEnv)));
     members.add(method);
   }
 }

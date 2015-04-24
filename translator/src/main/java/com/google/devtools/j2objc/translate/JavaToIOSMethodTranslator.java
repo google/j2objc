@@ -33,7 +33,6 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -79,12 +78,6 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
       .put("java.lang.String.String(Ljava/lang/StringBuilder;)V",
            "stringWithJavaLangStringBuilder:")
       .build();
-
-  private final ITypeBinding javaLangCloneable;
-
-  public JavaToIOSMethodTranslator() {
-    javaLangCloneable = Types.resolveJavaType("java.lang.Cloneable");
-  }
 
   @Override
   public boolean visit(MethodDeclaration node) {
@@ -144,6 +137,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     // If this type implements Cloneable but its parent doesn't, add a
     // copyWithZone: method that calls clone().
     ITypeBinding type = node.getTypeBinding();
+    ITypeBinding javaLangCloneable = typeEnv.resolveJavaType("java.lang.Cloneable");
     if (type.isAssignmentCompatible(javaLangCloneable)) {
       ITypeBinding superclass = type.getSuperclass();
       if (superclass == null || !superclass.isAssignmentCompatible(javaLangCloneable)) {
@@ -155,8 +149,8 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
   private void addCopyWithZoneMethod(TypeDeclaration node) {
     // Create copyWithZone: method.
     ITypeBinding type = node.getTypeBinding().getTypeDeclaration();
-    ITypeBinding idType = Types.resolveIOSType("id");
-    ITypeBinding nsObjectType = Types.resolveIOSType("NSObject");
+    ITypeBinding idType = typeEnv.resolveIOSType("id");
+    ITypeBinding nsObjectType = typeEnv.resolveIOSType("NSObject");
 
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
         "copyWithZone:", Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC, idType, type);
@@ -164,7 +158,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
 
     // Add NSZone *zone parameter.
     GeneratedVariableBinding zoneBinding = new GeneratedVariableBinding(
-        "zone", 0, Types.resolveIOSType("NSZone"), false, true, binding.getDeclaringClass(),
+        "zone", 0, typeEnv.resolveIOSType("NSZone"), false, true, binding.getDeclaringClass(),
         binding);
     binding.addParameter(zoneBinding.getType());
     cloneMethod.getParameters().add(new SingleVariableDeclaration(zoneBinding));
@@ -176,9 +170,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
         "clone", 0, nsObjectType, type);
     MethodInvocation invocation = new MethodInvocation(cloneBinding, null);
     if (Options.useReferenceCounting()) {
-      IOSMethodBinding retainBinding = IOSMethodBinding.newMethod(
-          NameTable.RETAIN_METHOD, Modifier.PUBLIC, idType, nsObjectType);
-      invocation = new MethodInvocation(retainBinding, invocation);
+      invocation = new MethodInvocation(typeEnv.getRetainMethod(), invocation);
     }
     block.getStatements().add(new ReturnStatement(invocation));
 

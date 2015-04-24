@@ -31,7 +31,6 @@ import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -386,7 +385,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       "int", "long", "double", "float", "short", "byte", "char");
 
   private void printIncrementAndDecrementFunctions() {
-    ITypeBinding primitiveType = Types.getPrimitiveType(typeBinding);
+    ITypeBinding primitiveType = typeEnv.getPrimitiveType(typeBinding);
     if (primitiveType == null || !NEEDS_INC_AND_DEC.contains(primitiveType.getName())) {
       return;
     }

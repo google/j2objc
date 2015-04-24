@@ -33,7 +33,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -52,13 +51,10 @@ public class EnumRewriter extends TreeVisitor {
   private GeneratedVariableBinding nameVar = null;
   private GeneratedVariableBinding ordinalVar = null;
 
-  private final ITypeBinding stringType = Types.resolveIOSType("NSString");
-  private final ITypeBinding intType = Types.resolveJavaType("int");
-
   private GeneratedMethodBinding addEnumConstructorParams(IMethodBinding method) {
     GeneratedMethodBinding newMethod = new GeneratedMethodBinding(method);
-    newMethod.addParameter(stringType);
-    newMethod.addParameter(intType);
+    newMethod.addParameter(typeEnv.resolveIOSType("NSString"));
+    newMethod.addParameter(typeEnv.resolveJavaType("int"));
     return newMethod;
   }
 
@@ -72,8 +68,8 @@ public class EnumRewriter extends TreeVisitor {
       ClassInstanceCreation creation = new ClassInstanceCreation(binding);
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
       String name = nameTable.getVariableName(constant.getVariableBinding());
-      creation.getArguments().add(new StringLiteral(name));
-      creation.getArguments().add(new NumberLiteral(i++));
+      creation.getArguments().add(new StringLiteral(name, typeEnv));
+      creation.getArguments().add(new NumberLiteral(i++, typeEnv));
       creation.setHasRetainedResult(true);
       stmts.add(new ExpressionStatement(new Assignment(
           new SimpleName(constant.getVariableBinding()), creation)));
@@ -100,9 +96,9 @@ public class EnumRewriter extends TreeVisitor {
     newBinding.setModifiers((newBinding.getModifiers() & ~(Modifier.PUBLIC | Modifier.PROTECTED))
         | Modifier.PRIVATE | BindingUtil.ACC_SYNTHETIC);
     nameVar = new GeneratedVariableBinding(
-        "__name", 0, stringType, false, true, declaringClass, newBinding);
+        "__name", 0, typeEnv.resolveIOSType("NSString"), false, true, declaringClass, newBinding);
     ordinalVar = new GeneratedVariableBinding(
-        "__ordinal", 0, intType, false, true, declaringClass, newBinding);
+        "__ordinal", 0, typeEnv.resolveJavaType("int"), false, true, declaringClass, newBinding);
     node.getParameters().add(new SingleVariableDeclaration(nameVar));
     node.getParameters().add(new SingleVariableDeclaration(ordinalVar));
     return true;

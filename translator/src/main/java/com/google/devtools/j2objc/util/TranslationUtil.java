@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
+import com.google.devtools.j2objc.types.Types;
 import com.google.j2objc.annotations.ReflectionSupport;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -122,7 +123,7 @@ public final class TranslationUtil {
     return null;
   }
 
-  public static IMethodBinding findDefaultConstructorBinding(ITypeBinding type) {
+  public static IMethodBinding findDefaultConstructorBinding(ITypeBinding type, Types typeEnv) {
     // Search for a non-varargs match.
     for (IMethodBinding m : type.getDeclaredMethods()) {
       if (m.isConstructor() && m.getParameterTypes().length == 0) {
@@ -144,6 +145,6 @@ public final class TranslationUtil {
     }
     // Sometimes there won't be a default constructor (eg. enums), so just
     // create our own binding.
-    return GeneratedMethodBinding.newConstructor(type, type.getModifiers());
+    return GeneratedMethodBinding.newConstructor(type, type.getModifiers(), typeEnv);
   }
 }

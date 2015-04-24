@@ -18,7 +18,6 @@ package com.google.devtools.j2objc;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.io.Files;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
@@ -127,7 +126,6 @@ public class J2ObjC {
       }
       translationProcessor.postProcess();
     } finally {
-      Types.cleanup();
       if (preProcessorTempDir != null) {
         FileUtil.deleteTempDir(preProcessorTempDir);
       }

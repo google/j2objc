@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.Types;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
@@ -48,10 +50,10 @@ public class ArrayCreation extends Expression {
     initializer.copyFrom(other.getInitializer());
   }
 
-  public ArrayCreation(ITypeBinding type, int... dimensions) {
+  public ArrayCreation(ITypeBinding type, Types typeEnv, int... dimensions) {
     arrayType.set(new ArrayType(type));
     for (int i : dimensions) {
-      this.dimensions.add(NumberLiteral.newIntLiteral(i));
+      this.dimensions.add(NumberLiteral.newIntLiteral(i, typeEnv));
     }
   }
 

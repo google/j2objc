@@ -20,7 +20,6 @@ import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
@@ -105,7 +104,6 @@ public class CycleFinder {
         } catch (IOException e) {
           ErrorUtil.error("Error reading file " + file.getPath() + ": " + e.getMessage());
         }
-        Types.initialize(jdtUnit);
         CompilationUnit unit = TreeConverter.convertCompilationUnit(jdtUnit, file, source, null);
         typeCollector.visitAST(unit);
         OuterReferenceResolver.resolve(unit);

@@ -58,6 +58,7 @@ import java.util.regex.Pattern;
  */
 public class NameTable {
 
+  private final Types typeEnv;
   private final Map<IVariableBinding, String> variableNames = Maps.newHashMap();
 
   public static final String INIT_NAME = "init";
@@ -283,8 +284,8 @@ public class NameTable {
     private final Map<String, String> methodMappings = ImmutableMap.copyOf(
         Maps.transformValues(Options.getMethodMappings(), EXTRACT_SELECTOR_FUNC));
 
-    public NameTable newNameTable() {
-      return new NameTable(prefixMap, methodMappings);
+    public NameTable newNameTable(Types typeEnv) {
+      return new NameTable(typeEnv, prefixMap, methodMappings);
     }
   }
 
@@ -299,7 +300,9 @@ public class NameTable {
     }
   };
 
-  private NameTable(Map<String, String> prefixMap, Map<String, String> methodMappings) {
+  private NameTable(
+      Types typeEnv, Map<String, String> prefixMap, Map<String, String> methodMappings) {
+    this.typeEnv = typeEnv;
     this.prefixMap = prefixMap;
     this.methodMappings = methodMappings;
   }
@@ -377,10 +380,8 @@ public class NameTable {
 
   public static String primitiveTypeToObjC(ITypeBinding type) {
     assert type.isPrimitive();
-    if (Types.isVoidType(type)) {
-      return "void";
-    }
-    return "j" + type.getName();
+    String name = type.getName();
+    return name.equals("void") ? name : "j" + name;
   }
 
   // TODO(kstanger): See whether the logic in this method can be simplified.
@@ -405,9 +406,9 @@ public class NameTable {
     return name;
   }
 
-  private static boolean isIdType(ITypeBinding type) {
-    return type == Types.resolveIOSType("id") || type == Types.resolveIOSType("NSObject")
-        || Types.isJavaObjectType(type);
+  private boolean isIdType(ITypeBinding type) {
+    return type == typeEnv.resolveIOSType("id") || type == typeEnv.resolveIOSType("NSObject")
+        || typeEnv.isJavaObjectType(type);
   }
 
   private String getParameterTypeKeyword(ITypeBinding type) {
@@ -605,7 +606,7 @@ public class NameTable {
    * methods from multiple interfaces or classes that do not share the same
    * hierarchy.
    */
-  private static List<IMethodBinding> getOriginalMethodBindings(IMethodBinding method) {
+  private List<IMethodBinding> getOriginalMethodBindings(IMethodBinding method) {
     method = method.getMethodDeclaration();
     if (method.isConstructor() || BindingUtil.isStatic(method)) {
       return Lists.newArrayList(method);
@@ -619,7 +620,7 @@ public class NameTable {
     Set<ITypeBinding> inheritedTypes = Sets.newLinkedHashSet();
     BindingUtil.collectAllInheritedTypes(declaringClass, inheritedTypes);
     if (declaringClass.isInterface()) {
-      inheritedTypes.add(Types.resolveJavaType("java.lang.Object"));
+      inheritedTypes.add(typeEnv.resolveJavaType("java.lang.Object"));
     }
 
     // Find all overridden methods.
@@ -717,7 +718,7 @@ public class NameTable {
     String classType = null;
     List<String> interfaces = Lists.newArrayListWithCapacity(types.length);
     for (ITypeBinding type : types) {
-      if (type == null || isIdType(type) || Types.isJavaVoidType(type)) {
+      if (type == null || isIdType(type) || typeEnv.isJavaVoidType(type)) {
         continue;
       }
       if (type.isInterface()) {
@@ -769,7 +770,7 @@ public class NameTable {
   }
 
   private String getFullNameInner(ITypeBinding binding) {
-    binding = Types.mapType(binding.getErasure());  // Make sure type variables aren't included.
+    binding = typeEnv.mapType(binding.getErasure());  // Make sure type variables aren't included.
     ITypeBinding outerBinding = binding.getDeclaringClass();
     if (outerBinding != null) {
       String baseName = getFullNameInner(outerBinding) + '_' + getTypeSubName(binding);

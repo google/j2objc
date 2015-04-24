@@ -24,14 +24,17 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 public class CStringLiteral extends Expression {
 
   private String literalValue = null;
+  private final ITypeBinding typeBinding;
 
   public CStringLiteral(CStringLiteral other) {
     super(other);
     literalValue = other.getLiteralValue();
+    typeBinding = other.getTypeBinding();
   }
 
-  public CStringLiteral(String literalValue) {
+  public CStringLiteral(String literalValue, Types typeEnv) {
     this.literalValue = literalValue;
+    typeBinding = typeEnv.getPointerType(typeEnv.resolveJavaType("char"));
   }
 
   @Override
@@ -41,7 +44,7 @@ public class CStringLiteral extends Expression {
 
   @Override
   public ITypeBinding getTypeBinding() {
-    return Types.getPointerType(Types.resolveJavaType("char"));
+    return typeBinding;
   }
 
   public String getLiteralValue() {

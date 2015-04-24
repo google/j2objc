@@ -18,7 +18,6 @@ import com.google.common.base.Preconditions;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
@@ -152,9 +151,8 @@ abstract class FileProcessor {
       GenerationUnit genUnit, CompilationUnit unit, InputFile file) {
     try {
       String source = FileUtil.readFile(file);
-      NameTable nameTable = nameTableFactory.newNameTable();
       com.google.devtools.j2objc.ast.CompilationUnit translatedUnit
-          = TreeConverter.convertCompilationUnit(unit, file, source, nameTable);
+          = TreeConverter.convertCompilationUnit(unit, file, source, nameTableFactory);
       genUnit.addCompilationUnit(translatedUnit);
 
       if (genUnit.isFullyParsed()) {
@@ -164,8 +162,6 @@ abstract class FileProcessor {
       }
     } catch (IOException e) {
       genUnit.error(e.getMessage());
-    } finally {
-      Types.cleanup();
     }
   }
 

@@ -169,7 +169,6 @@ class TranslationProcessor extends FileProcessor {
       }
 
       for (CompilationUnit compUnit : unit.getCompilationUnits()) {
-        compUnit.setGenerationContext();
         applyMutations(compUnit, deadCodeMap, ticker);
         ticker.tick("Tree mutations for " + compUnit.getMainTypeName());
       }

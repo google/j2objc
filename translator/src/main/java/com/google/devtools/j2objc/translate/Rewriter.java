@@ -51,7 +51,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
@@ -215,8 +214,8 @@ public class Rewriter extends TreeVisitor {
     ITypeBinding type = node.getTypeBinding();
     ITypeBinding lhsType = node.getLeftOperand().getTypeBinding();
     ITypeBinding rhsType = node.getRightOperand().getTypeBinding();
-    if (Types.isJavaStringType(type) && op == InfixExpression.Operator.PLUS
-        && !Types.isJavaStringType(lhsType) && !Types.isJavaStringType(rhsType)) {
+    if (typeEnv.isJavaStringType(type) && op == InfixExpression.Operator.PLUS
+        && !typeEnv.isJavaStringType(lhsType) && !typeEnv.isJavaStringType(rhsType)) {
       // String concatenation where the first two operands are not strings.
       // We move all the preceding non-string operands into a sub-expression.
       ITypeBinding nonStringExprType = getAdditionType(lhsType, rhsType);
@@ -224,7 +223,7 @@ public class Rewriter extends TreeVisitor {
           nonStringExprType, InfixExpression.Operator.PLUS, TreeUtil.remove(node.getLeftOperand()),
           TreeUtil.remove(node.getRightOperand()));
       InfixExpression stringExpr = new InfixExpression(
-          Types.resolveJavaType("java.lang.String"), InfixExpression.Operator.PLUS, nonStringExpr,
+          typeEnv.resolveJavaType("java.lang.String"), InfixExpression.Operator.PLUS, nonStringExpr,
           null);
       List<Expression> extendedOperands = node.getExtendedOperands();
       List<Expression> nonStringOperands = nonStringExpr.getExtendedOperands();
@@ -233,7 +232,7 @@ public class Rewriter extends TreeVisitor {
       for (Expression expr : extendedOperands) {
         Expression copiedExpr = expr.copy();
         ITypeBinding exprType = expr.getTypeBinding();
-        if (foundStringType || Types.isJavaStringType(exprType)) {
+        if (foundStringType || typeEnv.isJavaStringType(exprType)) {
           if (foundStringType) {
             stringOperands.add(copiedExpr);
           } else {
@@ -275,25 +274,25 @@ public class Rewriter extends TreeVisitor {
   }
 
   private ITypeBinding getAdditionType(ITypeBinding aType, ITypeBinding bType) {
-    ITypeBinding doubleType = Types.resolveJavaType("double");
-    ITypeBinding boxedDoubleType = Types.resolveJavaType("java.lang.Double");
+    ITypeBinding doubleType = typeEnv.resolveJavaType("double");
+    ITypeBinding boxedDoubleType = typeEnv.resolveJavaType("java.lang.Double");
     if (aType == doubleType || bType == doubleType
         || aType == boxedDoubleType || bType == boxedDoubleType) {
       return doubleType;
     }
-    ITypeBinding floatType = Types.resolveJavaType("float");
-    ITypeBinding boxedFloatType = Types.resolveJavaType("java.lang.Float");
+    ITypeBinding floatType = typeEnv.resolveJavaType("float");
+    ITypeBinding boxedFloatType = typeEnv.resolveJavaType("java.lang.Float");
     if (aType == floatType || bType == floatType
         || aType == boxedFloatType || bType == boxedFloatType) {
       return floatType;
     }
-    ITypeBinding longType = Types.resolveJavaType("long");
-    ITypeBinding boxedLongType = Types.resolveJavaType("java.lang.Long");
+    ITypeBinding longType = typeEnv.resolveJavaType("long");
+    ITypeBinding boxedLongType = typeEnv.resolveJavaType("java.lang.Long");
     if (aType == longType || bType == longType
         || aType == boxedLongType || bType == boxedLongType) {
       return longType;
     }
-    return Types.resolveJavaType("int");
+    return typeEnv.resolveJavaType("int");
   }
 
   /**
@@ -357,7 +356,7 @@ public class Rewriter extends TreeVisitor {
     }
     // Scan modifiers since variable declarations don't have variable bindings.
     if (TreeUtil.hasAnnotation(RetainedLocalRef.class, node.getAnnotations())) {
-      ITypeBinding localRefType = Types.getLocalRefType();
+      ITypeBinding localRefType = typeEnv.getLocalRefType();
       node.setType(Type.newType(localRefType));
 
       // Convert fragments to retained local refs.
@@ -416,7 +415,7 @@ public class Rewriter extends TreeVisitor {
     if (var instanceof IVariableBinding) {
       IVariableBinding localRef = localRefs.get(node.getQualifier().getBinding());
       if (localRef != null) {
-        IVariableBinding localRefFieldBinding = Types.getLocalRefType().getDeclaredFields()[0];
+        IVariableBinding localRefFieldBinding = typeEnv.getLocalRefType().getDeclaredFields()[0];
         Name newQualifier = node.getQualifier().copy();
         newQualifier.setBinding(localRef);
         FieldAccess localRefAccess = new FieldAccess(localRefFieldBinding, newQualifier);
@@ -437,7 +436,7 @@ public class Rewriter extends TreeVisitor {
     IVariableBinding localRef = localRefs.get(node.getBinding());
     if (localRef != null) {
       FieldAccess access = new FieldAccess(
-          Types.getLocalRefType().getDeclaredFields()[0], new SimpleName(localRef));
+          typeEnv.getLocalRefType().getDeclaredFields()[0], new SimpleName(localRef));
       CastExpression newCast = new CastExpression(node.getTypeBinding(), access);
       ParenthesizedExpression newParens = ParenthesizedExpression.parenthesize(newCast);
       node.replaceWith(newParens);
@@ -482,7 +481,7 @@ public class Rewriter extends TreeVisitor {
     Expression lhs = node.getLeftHandSide();
     Expression rhs = node.getRightHandSide();
     ITypeBinding lhsType = lhs.getTypeBinding();
-    if (op == Assignment.Operator.PLUS_ASSIGN && Types.isJavaStringType(lhsType)) {
+    if (op == Assignment.Operator.PLUS_ASSIGN && typeEnv.isJavaStringType(lhsType)) {
       // Change "str1 += str2" to "str1 = str1 + str2".
       node.setOperator(Assignment.Operator.ASSIGN);
       node.setRightHandSide(new InfixExpression(

@@ -33,7 +33,6 @@ import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -121,13 +120,13 @@ public class GwtConverter extends TreeVisitor {
         && args.size() == 1) {
       // Convert GWT.create(Foo.class) to Foo.class.newInstance().
       IMethodBinding newBinding = BindingUtil.findDeclaredMethod(
-          Types.resolveJavaType("java.lang.Class"), "newInstance");
+          typeEnv.resolveJavaType("java.lang.Class"), "newInstance");
       node.setName(new SimpleName(newBinding));
       Expression clazz = args.remove(0);
       node.setExpression(clazz);
       node.setMethodBinding(newBinding);
     } else if (isGwtTest(node)) {
-      node.replaceWith(new BooleanLiteral(false));
+      node.replaceWith(new BooleanLiteral(false, typeEnv));
     }
     return true;
   }

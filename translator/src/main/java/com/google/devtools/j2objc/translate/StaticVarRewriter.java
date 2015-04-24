@@ -30,7 +30,6 @@ import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
@@ -179,16 +178,17 @@ public class StaticVarRewriter extends TreeVisitor {
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
     String varName = nameTable.getStaticVarName(var);
     String getterName = "get";
-    ITypeBinding returnType = var.getType();
+    ITypeBinding type = var.getType();
+    ITypeBinding returnType = type;
     if (assignable) {
       getterName += "Ref";
-      returnType = Types.getPointerType(returnType);
+      returnType = typeEnv.getPointerType(returnType);
     }
     getterName = nameTable.getFullName(declaringType) + "_" + getterName + "_" + varName;
     Expression invocation = new FunctionInvocation(
         getterName, returnType, returnType, declaringType);
     if (assignable) {
-      invocation = new PrefixExpression(PrefixExpression.Operator.DEREFERENCE, invocation);
+      invocation = new PrefixExpression(type, PrefixExpression.Operator.DEREFERENCE, invocation);
     }
     return invocation;
   }

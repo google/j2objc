@@ -31,7 +31,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -56,20 +55,20 @@ public class CastResolver extends TreeVisitor {
     ITypeBinding type = node.getType().getTypeBinding();
     Expression expr = node.getExpression();
     ITypeBinding exprType = expr.getTypeBinding();
-    if (Types.isFloatingPointType(exprType)) {
-      if (Types.isLongType(type)) {
+    if (typeEnv.isFloatingPointType(exprType)) {
+      if (typeEnv.isLongType(type)) {
         FunctionInvocation invocation = new FunctionInvocation("J2ObjCFpToLong", type, type, null);
         invocation.getArguments().add(TreeUtil.remove(expr));
         node.replaceWith(invocation);
         return;
-      } else if (type.isEqualTo(Types.resolveJavaType("char"))) {
+      } else if (type.isEqualTo(typeEnv.resolveJavaType("char"))) {
         FunctionInvocation invocation =
             new FunctionInvocation("J2ObjCFpToUnichar", type, type, null);
         invocation.getArguments().add(TreeUtil.remove(expr));
         node.replaceWith(invocation);
         return;
-      } else if (Types.isIntegralType(type)) {
-        ITypeBinding intType = Types.resolveJavaType("int");
+      } else if (typeEnv.isIntegralType(type)) {
+        ITypeBinding intType = typeEnv.resolveJavaType("int");
         FunctionInvocation invocation =
             new FunctionInvocation("J2ObjCFpToInt", intType, intType, null);
         invocation.getArguments().add(TreeUtil.remove(expr));
@@ -95,7 +94,7 @@ public class CastResolver extends TreeVisitor {
     }
   }
 
-  private static FunctionInvocation createCastCheck(ITypeBinding type, Expression expr) {
+  private FunctionInvocation createCastCheck(ITypeBinding type, Expression expr) {
     // Find the first bound for a type variable.
     while (type.isTypeVariable()) {
       ITypeBinding[] bounds = type.getTypeBounds();
@@ -104,7 +103,7 @@ public class CastResolver extends TreeVisitor {
       }
       type = bounds[0];
     }
-    ITypeBinding idType = Types.resolveIOSType("id");
+    ITypeBinding idType = typeEnv.resolveIOSType("id");
     FunctionInvocation invocation = null;
     if (type.isInterface() && !type.isAnnotation()) {
       invocation = new FunctionInvocation("check_protocol_cast", idType, idType, null);
@@ -124,7 +123,7 @@ public class CastResolver extends TreeVisitor {
   }
 
   private void addCast(Expression expr) {
-    ITypeBinding exprType = Types.mapType(expr.getTypeBinding().getTypeDeclaration());
+    ITypeBinding exprType = typeEnv.mapType(expr.getTypeBinding().getTypeDeclaration());
     CastExpression castExpr = new CastExpression(exprType, null);
     expr.replaceWith(ParenthesizedExpression.parenthesize(castExpr));
     castExpr.setExpression(expr);
@@ -141,15 +140,15 @@ public class CastResolver extends TreeVisitor {
     if (declaredType == null) {
       return false;
     }
-    ITypeBinding exprType = Types.mapType(expr.getTypeBinding().getTypeDeclaration());
-    declaredType = Types.mapType(declaredType.getTypeDeclaration());
+    ITypeBinding exprType = typeEnv.mapType(expr.getTypeBinding().getTypeDeclaration());
+    declaredType = typeEnv.mapType(declaredType.getTypeDeclaration());
     if (declaredType.isAssignmentCompatible(exprType)) {
       return false;
     }
-    if (declaredType == Types.resolveIOSType("id") && !shouldCastFromId) {
+    if (declaredType == typeEnv.resolveIOSType("id") && !shouldCastFromId) {
       return false;
     }
-    if (exprType.isPrimitive() || Types.isVoidType(exprType)) {
+    if (exprType.isPrimitive() || typeEnv.isVoidType(exprType)) {
       return false;
     }
     String typeName = nameTable.getSpecificObjCType(exprType);
@@ -166,7 +165,7 @@ public class CastResolver extends TreeVisitor {
     }
     switch (expr.getKind()) {
       case CLASS_INSTANCE_CREATION:
-        return Types.resolveIOSType("id");
+        return typeEnv.resolveIOSType("id");
       case FUNCTION_INVOCATION:
         return ((FunctionInvocation) expr).getDeclaredReturnType();
       case METHOD_INVOCATION:
@@ -187,7 +186,7 @@ public class CastResolver extends TreeVisitor {
             // For a qualified super invocation, the statement generator will look
             // up the IMP using instanceMethodForSelector.
             if (!method.getReturnType().isPrimitive()) {
-              return Types.resolveIOSType("id");
+              return typeEnv.resolveIOSType("id");
             } else {
               return null;
             }
@@ -208,7 +207,7 @@ public class CastResolver extends TreeVisitor {
     }
     ITypeBinding returnType = actualDeclaration.getReturnType();
     if (returnType.isTypeVariable()) {
-      return Types.resolveIOSType("id");
+      return typeEnv.resolveIOSType("id");
     }
     return returnType.getErasure();
   }
@@ -265,10 +264,10 @@ public class CastResolver extends TreeVisitor {
 
     String methodName = nameTable.getMethodSelector(methodBinding);
     if (methodName.equals("hash")
-        && methodBinding.getReturnType().isEqualTo(Types.resolveJavaType("int"))) {
+        && methodBinding.getReturnType().isEqualTo(typeEnv.resolveJavaType("int"))) {
       return true;
     }
-    if (Types.isStringType(methodBinding.getDeclaringClass()) && methodName.equals("length")) {
+    if (typeEnv.isStringType(methodBinding.getDeclaringClass()) && methodName.equals("length")) {
       return true;
     }
     return false;

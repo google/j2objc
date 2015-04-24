@@ -161,7 +161,7 @@ public class InnerClassExtractor extends TreeVisitor {
 
     if (needsConstructor) {
       GeneratedMethodBinding binding =
-          GeneratedMethodBinding.newConstructor(node.getTypeBinding(), 0);
+          GeneratedMethodBinding.newConstructor(node.getTypeBinding(), 0, typeEnv);
       MethodDeclaration constructor = new MethodDeclaration(binding);
       constructor.setBody(new Block());
       addOuterParameters(node, constructor);
@@ -233,7 +233,7 @@ public class InnerClassExtractor extends TreeVisitor {
       ITypeBinding superType = type.getSuperclass().getTypeDeclaration();
       if (superCall == null) {
         superCall = new SuperConstructorInvocation(
-            TranslationUtil.findDefaultConstructorBinding(superType));
+            TranslationUtil.findDefaultConstructorBinding(superType, typeEnv));
         statements.add(0, superCall);
       }
       passOuterParamToSuper(typeNode, superCall, superType, outerParamBinding);

@@ -23,22 +23,26 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class InstanceofExpression extends Expression {
 
+  private final ITypeBinding typeBinding;
   private ChildLink<Expression> leftOperand = ChildLink.create(Expression.class, this);
   private ChildLink<Type> rightOperand = ChildLink.create(Type.class, this);
 
   public InstanceofExpression(org.eclipse.jdt.core.dom.InstanceofExpression jdtNode) {
     super(jdtNode);
+    typeBinding = jdtNode.resolveTypeBinding();
     leftOperand.set((Expression) TreeConverter.convert(jdtNode.getLeftOperand()));
     rightOperand.set((Type) TreeConverter.convert(jdtNode.getRightOperand()));
   }
 
   public InstanceofExpression(InstanceofExpression other) {
     super(other);
+    typeBinding = other.getTypeBinding();
     leftOperand.copyFrom(other.getLeftOperand());
     rightOperand.copyFrom(other.getRightOperand());
   }
 
-  public InstanceofExpression(Expression lhs, ITypeBinding rhsType) {
+  public InstanceofExpression(Expression lhs, ITypeBinding rhsType, Types typeEnv) {
+    typeBinding = typeEnv.resolveJavaType("boolean");
     leftOperand.set(lhs);
     rightOperand.set(Type.newType(rhsType));
   }
@@ -50,7 +54,7 @@ public class InstanceofExpression extends Expression {
 
   @Override
   public ITypeBinding getTypeBinding() {
-    return Types.resolveJavaType("boolean");
+    return typeBinding;
   }
 
   public Expression getLeftOperand() {

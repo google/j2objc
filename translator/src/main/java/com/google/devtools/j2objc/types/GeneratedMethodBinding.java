@@ -75,9 +75,11 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
         null, name, modifiers, returnType, null, declaringClass, false, false);
   }
 
-  public static GeneratedMethodBinding newConstructor(ITypeBinding clazz, int modifiers) {
+  public static GeneratedMethodBinding newConstructor(
+      ITypeBinding clazz, int modifiers, Types typeEnv) {
     return new GeneratedMethodBinding(
-        null, NameTable.INIT_NAME, modifiers, Types.mapTypeName("void"), null, clazz, true, false);
+        null, NameTable.INIT_NAME, modifiers, typeEnv.mapTypeName("void"), null, clazz, true,
+        false);
   }
 
   @Override

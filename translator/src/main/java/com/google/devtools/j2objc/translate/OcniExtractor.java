@@ -117,7 +117,7 @@ public class OcniExtractor extends TreeVisitor {
     if (Modifier.isSynchronized(modifiers)) {
       ITypeBinding declaringClass = node.getMethodBinding().getDeclaringClass();
       SynchronizedStatement syncStmt = new SynchronizedStatement(
-          Modifier.isStatic(modifiers) ? new TypeLiteral(declaringClass)
+          Modifier.isStatic(modifiers) ? new TypeLiteral(declaringClass, typeEnv)
           : new ThisExpression(declaringClass));
       syncStmt.setBody(TreeUtil.remove(node.getBody()));
       Block newBody = new Block();

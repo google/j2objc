@@ -20,6 +20,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
@@ -27,6 +28,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -51,6 +53,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   // Convenient fields for use by subclasses.
   protected final AbstractTypeDeclaration typeNode;
   protected final ITypeBinding typeBinding;
+  protected final Types typeEnv;
   protected final NameTable nameTable;
   protected final String typeName;
   protected final boolean typeNeedsReflection;
@@ -61,7 +64,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     super(builder);
     typeNode = node;
     typeBinding = node.getTypeBinding();
-    nameTable = TreeUtil.getCompilationUnit(node).getNameTable();
+    CompilationUnit unit = TreeUtil.getCompilationUnit(node);
+    typeEnv = unit.getTypeEnv();
+    nameTable = unit.getNameTable();
     typeName = nameTable.getFullName(typeBinding);
     typeNeedsReflection = TranslationUtil.needsReflection(typeBinding);
     declarations = filterDeclarations(node.getBodyDeclarations());

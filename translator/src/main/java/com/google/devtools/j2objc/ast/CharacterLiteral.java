@@ -24,19 +24,23 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 public class CharacterLiteral extends Expression {
 
   private char charValue = '\0';
+  private final ITypeBinding typeBinding;
 
   public CharacterLiteral(org.eclipse.jdt.core.dom.CharacterLiteral jdtNode) {
     super(jdtNode);
     charValue = jdtNode.charValue();
+    typeBinding = jdtNode.resolveTypeBinding();
   }
 
   public CharacterLiteral(CharacterLiteral other) {
     super(other);
     charValue = other.charValue();
+    typeBinding = other.getTypeBinding();
   }
 
-  public CharacterLiteral(char charValue) {
+  public CharacterLiteral(char charValue, Types typeEnv) {
     this.charValue = charValue;
+    typeBinding = typeEnv.resolveJavaType("char");
   }
 
   @Override
@@ -46,7 +50,7 @@ public class CharacterLiteral extends Expression {
 
   @Override
   public ITypeBinding getTypeBinding() {
-    return Types.resolveJavaType("char");
+    return typeBinding;
   }
 
   public char charValue() {

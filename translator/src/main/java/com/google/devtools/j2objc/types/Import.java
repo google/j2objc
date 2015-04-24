@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.types;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -188,31 +189,31 @@ public class Import implements Comparable<Import> {
     return typeName;
   }
 
-  public static Set<Import> getImports(ITypeBinding binding, NameTable nameTable) {
+  public static Set<Import> getImports(ITypeBinding binding, CompilationUnit unit) {
     Set<Import> result = Sets.newLinkedHashSet();
-    addImports(binding, result, nameTable);
+    addImports(binding, result, unit);
     return result;
   }
 
   public static void addImports(
-      ITypeBinding binding, Collection<Import> imports, NameTable nameTable) {
+      ITypeBinding binding, Collection<Import> imports, CompilationUnit unit) {
     if (binding == null || binding.isPrimitive()) {
       return;
     }
     if (binding instanceof PointerTypeBinding) {
-      addImports(((PointerTypeBinding) binding).getPointeeType(), imports, nameTable);
+      addImports(((PointerTypeBinding) binding).getPointeeType(), imports, unit);
       return;
     }
     if (binding.isTypeVariable()) {
       for (ITypeBinding bound : binding.getTypeBounds()) {
-        addImports(bound, imports, nameTable);
+        addImports(bound, imports, unit);
       }
       return;
     }
-    binding = Types.mapType(binding.getErasure());
+    binding = unit.getTypeEnv().mapType(binding.getErasure());
     if (FOUNDATION_TYPES.contains(binding.getName())) {
       return;
     }
-    imports.add(new Import(binding, nameTable));
+    imports.add(new Import(binding, unit.getNameTable()));
   }
 }

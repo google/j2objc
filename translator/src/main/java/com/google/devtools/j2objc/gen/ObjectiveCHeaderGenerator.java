@@ -59,8 +59,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     // First, gather everything we need to generate.
     // We do this first because we'll be reordering it later.
     for (CompilationUnit unit : getGenerationUnit().getCompilationUnits()) {
-      unit.setGenerationContext();
-
       // It would be nice if we could put the PackageDeclarations and AbstractTypeDeclarations
       // in the same list of 'things to generate'.
       // TODO(mthvedt): Puzzle--figure out a way to do that in Java's type system
@@ -75,7 +73,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     for (AbstractTypeDeclaration decl : getOrderedTypes()) {
       CompilationUnit unit = TreeUtil.getCompilationUnit(decl);
-      unit.setGenerationContext();
 
       // Print package docs before the first type in the package. (See above comments and TODO.)
       if (Options.docCommentsEnabled() && packagesToDoc.contains(unit.getPackage())) {

@@ -26,7 +26,6 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 
@@ -115,7 +114,7 @@ public class DeadCodeEliminator extends TreeVisitor {
       return false;
     }
     ITypeBinding type = ((FieldDeclaration) decl).getType().getTypeBinding();
-    return type.isPrimitive() || Types.isStringType(type);
+    return type.isPrimitive() || typeEnv.isStringType(type);
   }
 
   /**

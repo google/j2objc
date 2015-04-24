@@ -35,7 +35,6 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -87,7 +86,9 @@ public class OperatorRewriter extends TreeVisitor {
       if (funcName != null) {
         FunctionInvocation invocation = new FunctionInvocation(funcName, lhsType, lhsType, null);
         List<Expression> args = invocation.getArguments();
-        args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
+        args.add(new PrefixExpression(
+            typeEnv.getPointerType(lhsType), PrefixExpression.Operator.ADDRESS_OF,
+            TreeUtil.remove(lhs)));
         args.add(TreeUtil.remove(rhs));
         node.replaceWith(invocation);
       }
@@ -109,7 +110,7 @@ public class OperatorRewriter extends TreeVisitor {
       args.add(TreeUtil.remove(node.getLeftOperand()));
       args.add(TreeUtil.remove(node.getRightOperand()));
       node.replaceWith(invocation);
-    } else if (op == InfixExpression.Operator.PLUS && Types.isStringType(nodeType)) {
+    } else if (op == InfixExpression.Operator.PLUS && typeEnv.isStringType(nodeType)) {
       rewriteStringConcatenation(node);
     }
   }
@@ -126,9 +127,11 @@ public class OperatorRewriter extends TreeVisitor {
       value = retainedValue;
     }
     FunctionInvocation invocation = new FunctionInvocation(
-        assignFunc, value.getTypeBinding(), Types.resolveIOSType("id"), null);
+        assignFunc, value.getTypeBinding(), typeEnv.resolveIOSType("id"), null);
     List<Expression> args = invocation.getArguments();
-    args.add(new PrefixExpression(PrefixExpression.Operator.ADDRESS_OF, new SimpleName(var)));
+    args.add(new PrefixExpression(
+        typeEnv.getPointerType(var.getType()), PrefixExpression.Operator.ADDRESS_OF,
+        new SimpleName(var)));
     args.add(new NullLiteral());
     args.add(TreeUtil.remove(value));
     return invocation;
@@ -202,7 +205,7 @@ public class OperatorRewriter extends TreeVisitor {
     }
   }
 
-  private static void rewriteStringConcatenation(InfixExpression node) {
+  private void rewriteStringConcatenation(InfixExpression node) {
     List<Expression> extendedOperands = node.getExtendedOperands();
     List<Expression> operands = Lists.newArrayListWithCapacity(extendedOperands.size() + 2);
     operands.add(TreeUtil.remove(node.getLeftOperand()));
@@ -210,12 +213,12 @@ public class OperatorRewriter extends TreeVisitor {
     TreeUtil.moveList(extendedOperands, operands);
 
     operands = coalesceStringLiterals(operands);
-    if (operands.size() == 1 && Types.isStringType(operands.get(0).getTypeBinding())) {
+    if (operands.size() == 1 && typeEnv.isStringType(operands.get(0).getTypeBinding())) {
       node.replaceWith(operands.get(0));
       return;
     }
 
-    ITypeBinding stringType = Types.resolveIOSType("NSString");
+    ITypeBinding stringType = typeEnv.resolveIOSType("NSString");
     FunctionInvocation invocation =
         new FunctionInvocation("JreStrcat", stringType, stringType, null);
     List<Expression> args = invocation.getArguments();
@@ -223,14 +226,14 @@ public class OperatorRewriter extends TreeVisitor {
     for (Expression expr : operands) {
       typeArg.append(getStringConcatenationTypeCharacter(expr));
     }
-    args.add(new CStringLiteral(typeArg.toString()));
+    args.add(new CStringLiteral(typeArg.toString(), typeEnv));
     for (Expression expr : operands) {
       args.add(expr);
     }
     node.replaceWith(invocation);
   }
 
-  private static List<Expression> coalesceStringLiterals(List<Expression> rawOperands) {
+  private List<Expression> coalesceStringLiterals(List<Expression> rawOperands) {
     List<Expression> operands = Lists.newArrayListWithCapacity(rawOperands.size());
     String currentLiteral = null;
     for (Expression expr : rawOperands) {
@@ -251,13 +254,13 @@ public class OperatorRewriter extends TreeVisitor {
     return operands;
   }
 
-  private static void addStringLiteralArgument(List<Expression> args, String literal) {
+  private void addStringLiteralArgument(List<Expression> args, String literal) {
     if (literal.length() == 0) {
       return;  // Skip it.
     } else if (literal.length() == 1) {
-      args.add(new CharacterLiteral(literal.charAt(0)));
+      args.add(new CharacterLiteral(literal.charAt(0), typeEnv));
     } else {
-      args.add(new StringLiteral(literal));
+      args.add(new StringLiteral(literal, typeEnv));
     }
   }
 
@@ -286,11 +289,11 @@ public class OperatorRewriter extends TreeVisitor {
    * '$' for String, '@' for other objects, and the binary name character for
    * the primitives.
    */
-  private static char getStringConcatenationTypeCharacter(Expression operand) {
+  private char getStringConcatenationTypeCharacter(Expression operand) {
     ITypeBinding operandType = operand.getTypeBinding();
     if (operandType.isPrimitive()) {
       return operandType.getBinaryName().charAt(0);
-    } else if (Types.isStringType(operandType)) {
+    } else if (typeEnv.isStringType(operandType)) {
       return '$';
     } else {
       return '@';

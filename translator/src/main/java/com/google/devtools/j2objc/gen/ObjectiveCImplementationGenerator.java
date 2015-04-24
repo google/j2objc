@@ -72,7 +72,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
       printImports(packageInfos);
       for (CompilationUnit packageInfo : packageInfos) {
         syncFilename(packageInfo.getInputFile().getPath());
-        packageInfo.setGenerationContext();
         generatePackageInfo(packageInfo);
       }
 
@@ -100,7 +99,6 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     List<CompilationUnit> packageInfos = new ArrayList<CompilationUnit>();
 
     for (CompilationUnit unit : units) {
-      unit.setGenerationContext();
       if (unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_MAIN_TYPE)) {
         PackageDeclaration pkg = unit.getPackage();
         if (TreeUtil.getRuntimeAnnotationsList(pkg.getAnnotations()).size() > 0

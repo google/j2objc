@@ -37,7 +37,6 @@ import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
-import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -77,15 +76,15 @@ public class ArrayRewriter extends TreeVisitor {
   private MethodInvocation newInitializedArrayInvocation(
       ITypeBinding arrayType, List<Expression> elements, boolean retainedResult) {
     ITypeBinding componentType = arrayType.getComponentType();
-    IOSTypeBinding iosArrayBinding = Types.resolveArrayType(componentType);
+    IOSTypeBinding iosArrayBinding = typeEnv.resolveArrayType(componentType);
 
     IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
         getInitializeSelector(componentType, retainedResult), Modifier.PUBLIC | Modifier.STATIC,
         iosArrayBinding, iosArrayBinding);
     methodBinding.addParameter(iosArrayBinding);
-    methodBinding.addParameter(Types.resolveJavaType("int"));
+    methodBinding.addParameter(typeEnv.resolveJavaType("int"));
     if (!componentType.isPrimitive()) {
-      methodBinding.addParameter(Types.getIOSClass());
+      methodBinding.addParameter(typeEnv.getIOSClass());
     }
     MethodInvocation invocation =
         new MethodInvocation(methodBinding, new SimpleName(iosArrayBinding));
@@ -98,7 +97,8 @@ public class ArrayRewriter extends TreeVisitor {
     invocation.getArguments().add(arrayInit);
 
     // Add the array size parameter.
-    invocation.getArguments().add(NumberLiteral.newIntLiteral(arrayInit.getExpressions().size()));
+    invocation.getArguments().add(
+        NumberLiteral.newIntLiteral(arrayInit.getExpressions().size(), typeEnv));
 
     // Add the type argument for object arrays.
     if (!componentType.isPrimitive()) {
@@ -140,15 +140,15 @@ public class ArrayRewriter extends TreeVisitor {
   private MethodInvocation newSingleDimensionArrayInvocation(
       ITypeBinding arrayType, Expression dimensionExpr, boolean retainedResult) {
     ITypeBinding componentType = arrayType.getComponentType();
-    IOSTypeBinding iosArrayBinding = Types.resolveArrayType(componentType);
+    IOSTypeBinding iosArrayBinding = typeEnv.resolveArrayType(componentType);
 
     String selector = (retainedResult ? "newArray" : "array") + "WithLength:"
         + (componentType.isPrimitive() ? "" : "type:");
     IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
         selector, Modifier.PUBLIC | Modifier.STATIC, iosArrayBinding, iosArrayBinding);
-    methodBinding.addParameter(Types.resolveJavaType("int"));
+    methodBinding.addParameter(typeEnv.resolveJavaType("int"));
     if (!componentType.isPrimitive()) {
-      methodBinding.addParameter(Types.getIOSClass());
+      methodBinding.addParameter(typeEnv.getIOSClass());
     }
     MethodInvocation invocation =
         new MethodInvocation(methodBinding, new SimpleName(iosArrayBinding));
@@ -170,7 +170,7 @@ public class ArrayRewriter extends TreeVisitor {
     for (int i = 0; i < dimensions.size(); i++) {
       componentType = componentType.getComponentType();
     }
-    IOSTypeBinding iosArrayBinding = Types.resolveArrayType(componentType);
+    IOSTypeBinding iosArrayBinding = typeEnv.resolveArrayType(componentType);
 
     IOSMethodBinding methodBinding = getMultiDimensionMethod(
         componentType, iosArrayBinding, retainedResult);
@@ -178,11 +178,11 @@ public class ArrayRewriter extends TreeVisitor {
         new MethodInvocation(methodBinding, new SimpleName(iosArrayBinding));
 
     // Add the dimension count argument.
-    invocation.getArguments().add(NumberLiteral.newIntLiteral(dimensions.size()));
+    invocation.getArguments().add(NumberLiteral.newIntLiteral(dimensions.size(), typeEnv));
 
     // Create the dimensions array.
     ArrayInitializer dimensionsArg = new ArrayInitializer(
-        GeneratedTypeBinding.newArrayType(Types.resolveJavaType("int")));
+        GeneratedTypeBinding.newArrayType(typeEnv.resolveJavaType("int")));
     for (Expression e : dimensions) {
       dimensionsArg.getExpressions().add(e.copy());
     }
@@ -200,13 +200,13 @@ public class ArrayRewriter extends TreeVisitor {
     String selector = (retainedResult ? "newArray" : "array") + "WithDimensions:lengths:"
         + (componentType.isPrimitive() ? "" : "type:");
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
-        selector, Modifier.PUBLIC | Modifier.STATIC, Types.resolveIOSType("IOSObjectArray"),
+        selector, Modifier.PUBLIC | Modifier.STATIC, typeEnv.resolveIOSType("IOSObjectArray"),
         arrayType);
-    ITypeBinding intType = Types.resolveJavaType("int");
+    ITypeBinding intType = typeEnv.resolveJavaType("int");
     binding.addParameter(intType);
     binding.addParameter(GeneratedTypeBinding.newArrayType(intType));
     if (!componentType.isPrimitive()) {
-      binding.addParameter(Types.getIOSClass());
+      binding.addParameter(typeEnv.getIOSClass());
     }
     return binding;
   }
@@ -229,7 +229,7 @@ public class ArrayRewriter extends TreeVisitor {
   @Override
   public void endVisit(ArrayAccess node) {
     ITypeBinding componentType = node.getTypeBinding();
-    IOSTypeBinding iosArrayBinding = Types.resolveArrayType(componentType);
+    IOSTypeBinding iosArrayBinding = typeEnv.resolveArrayType(componentType);
 
     boolean assignable = needsAssignableAccess(node);
     node.replaceWith(newArrayAccess(node, componentType, iosArrayBinding, assignable));
@@ -261,17 +261,18 @@ public class ArrayRewriter extends TreeVisitor {
     String funcName = iosArrayBinding.getName() + "_Get";
     ITypeBinding returnType = componentType;
     ITypeBinding declaredReturnType =
-        componentType.isPrimitive() ? componentType : Types.resolveIOSType("id");
+        componentType.isPrimitive() ? componentType : typeEnv.resolveIOSType("id");
     if (assignable) {
+      assert componentType.isPrimitive();
       funcName += "Ref";
-      returnType = declaredReturnType = Types.getPointerType(declaredReturnType);
+      returnType = declaredReturnType = typeEnv.getPointerType(componentType);
     }
     FunctionInvocation invocation = new FunctionInvocation(
         funcName, returnType, declaredReturnType, iosArrayBinding);
     invocation.getArguments().add(arrayAccessNode.getArray().copy());
     invocation.getArguments().add(arrayAccessNode.getIndex().copy());
     if (assignable) {
-      return new PrefixExpression(PrefixExpression.Operator.DEREFERENCE, invocation);
+      return new PrefixExpression(componentType, PrefixExpression.Operator.DEREFERENCE, invocation);
     }
     return invocation;
   }
@@ -290,8 +291,8 @@ public class ArrayRewriter extends TreeVisitor {
       value = retainedValue;
     }
     FunctionInvocation invocation = new FunctionInvocation(
-        funcName, componentType, Types.resolveIOSType("id"),
-        Types.resolveIOSType("IOSObjectArray"));
+        funcName, componentType, typeEnv.resolveIOSType("id"),
+        typeEnv.resolveIOSType("IOSObjectArray"));
     List<Expression> args = invocation.getArguments();
     args.add(TreeUtil.remove(arrayAccessNode.getArray()));
     args.add(TreeUtil.remove(arrayAccessNode.getIndex()));
@@ -313,8 +314,8 @@ public class ArrayRewriter extends TreeVisitor {
     ITypeBinding exprType = expr.getTypeBinding();
     if (name.getIdentifier().equals("length") && exprType.isArray()) {
       GeneratedVariableBinding sizeField = new GeneratedVariableBinding(
-          "size", Modifier.PUBLIC, Types.resolveJavaType("int"), true, false,
-          Types.mapType(exprType), null);
+          "size", Modifier.PUBLIC, typeEnv.resolveJavaType("int"), true, false,
+          typeEnv.mapType(exprType), null);
       node.replaceWith(new FieldAccess(sizeField, TreeUtil.remove(expr)));
     }
   }
@@ -326,8 +327,8 @@ public class ArrayRewriter extends TreeVisitor {
       return;
     }
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
-        "isInstance", Modifier.PUBLIC, Types.resolveJavaType("boolean"), Types.getIOSClass());
-    binding.addParameter(Types.resolveIOSType("id"));
+        "isInstance", Modifier.PUBLIC, typeEnv.resolveJavaType("boolean"), typeEnv.getIOSClass());
+    binding.addParameter(typeEnv.resolveIOSType("id"));
     MethodInvocation invocation = new MethodInvocation(binding, newTypeLiteralInvocation(type));
     invocation.getArguments().add(TreeUtil.remove(node.getLeftOperand()));
     node.replaceWith(invocation);
@@ -341,25 +342,25 @@ public class ArrayRewriter extends TreeVisitor {
     }
   }
 
-  private static Expression newTypeLiteral(ITypeBinding type) {
+  private Expression newTypeLiteral(ITypeBinding type) {
     if (type.isArray()) {
       return newTypeLiteralInvocation(type);
     }
-    return new TypeLiteral(type);
+    return new TypeLiteral(type, typeEnv);
   }
 
-  private static FunctionInvocation newTypeLiteralInvocation(ITypeBinding type) {
+  private FunctionInvocation newTypeLiteralInvocation(ITypeBinding type) {
     assert type.isArray();
     ITypeBinding elementType = type.getElementType();
-    ITypeBinding iosClassType = Types.getIOSClass();
+    ITypeBinding iosClassType = typeEnv.getIOSClass();
     String funcName = elementType.isPrimitive()
         ? String.format("IOSClass_%sArray", elementType.getName()) : "IOSClass_arrayType";
     FunctionInvocation invocation = new FunctionInvocation(
         funcName, iosClassType, iosClassType, iosClassType);
     if (!elementType.isPrimitive()) {
-      invocation.getArguments().add(new TypeLiteral(elementType));
+      invocation.getArguments().add(new TypeLiteral(elementType, typeEnv));
     }
-    invocation.getArguments().add(NumberLiteral.newIntLiteral(type.getDimensions()));
+    invocation.getArguments().add(NumberLiteral.newIntLiteral(type.getDimensions(), typeEnv));
     return invocation;
   }
 }
