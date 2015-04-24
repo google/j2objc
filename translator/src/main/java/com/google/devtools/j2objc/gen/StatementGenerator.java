@@ -194,9 +194,7 @@ public class StatementGenerator extends TreeVisitor {
     ITypeBinding type = node.getTypeBinding();
     assert type.isArray();
     ITypeBinding componentType = type.getComponentType();
-    String componentTypeName = componentType.isPrimitive()
-        ? NameTable.primitiveTypeToObjC(componentType) : "id";
-    buffer.append(String.format("(%s[]){ ", componentTypeName));
+    buffer.append(String.format("(%s[]){ ", NameTable.getPrimitiveObjCType(componentType)));
     for (Iterator<Expression> it = node.getExpressions().iterator(); it.hasNext(); ) {
       it.next().accept(this);
       if (it.hasNext()) {
@@ -718,7 +716,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(PrimitiveType node) {
-    buffer.append(NameTable.primitiveTypeToObjC(node.getTypeBinding()));
+    buffer.append(NameTable.getPrimitiveObjCType(node.getTypeBinding()));
     return false;
   }
 

@@ -378,12 +378,6 @@ public class NameTable {
     return sb.toString();
   }
 
-  public static String primitiveTypeToObjC(ITypeBinding type) {
-    assert type.isPrimitive();
-    String name = type.getName();
-    return name.equals("void") ? name : "j" + name;
-  }
-
   // TODO(kstanger): See whether the logic in this method can be simplified.
   //     Also, what about type variables?
   private String getArrayTypeParameterKeyword(ITypeBinding elementType, int dimensions) {
@@ -651,6 +645,14 @@ public class NameTable {
   }
 
   /**
+   * Converts a Java type to an equivalent Objective-C type, returning "id" for
+   * an object type.
+   */
+  public static String getPrimitiveObjCType(ITypeBinding type) {
+    return type.isPrimitive() ? (BindingUtil.isVoid(type) ? "void" : "j" + type.getName()) : "id";
+  }
+
+  /**
    * Convert a Java type to an equivalent Objective-C type with type variables
    * resolved to their bounds.
    */
@@ -701,7 +703,7 @@ public class NameTable {
         objCType = ID_TYPE;
       }
     } else if (type.isPrimitive()) {
-      objCType = primitiveTypeToObjC(type);
+      objCType = getPrimitiveObjCType(type);
     } else {
       objCType = constructObjCType(type.getErasure());
     }

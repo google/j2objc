@@ -83,20 +83,14 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
   }
 
   private static String getSuperFunctionSignature(IMethodBinding method) {
-    StringBuilder signature = new StringBuilder(signatureType(method.getReturnType()));
+    StringBuilder signature = new StringBuilder(
+        NameTable.getPrimitiveObjCType(method.getReturnType()));
     signature.append(" (*%s)(id, SEL");
     for (ITypeBinding paramType : method.getParameterTypes()) {
-      signature.append(", ").append(signatureType(paramType));
+      signature.append(", ").append(NameTable.getPrimitiveObjCType(paramType));
     }
     signature.append(")");
     return signature.toString();
-  }
-
-  private static String signatureType(ITypeBinding type) {
-    if (type.isPrimitive()) {
-      return NameTable.primitiveTypeToObjC(type);
-    }
-    return "id";
   }
 
   private String getSuperFunctionName(SuperMethodBindingPair superMethod) {

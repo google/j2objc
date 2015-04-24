@@ -380,7 +380,7 @@ public class Functionizer extends TreeVisitor {
     for (SingleVariableDeclaration param : method.getParameters()) {
       args.add(new SimpleName(param.getVariableBinding()));
     }
-    if (typeEnv.isVoidType(returnType)) {
+    if (BindingUtil.isVoid(returnType)) {
       stmts.add(new ExpressionStatement(invocation));
       if (methodBinding.isConstructor()) {
         stmts.add(new ReturnStatement(new ThisExpression(declaringClass)));

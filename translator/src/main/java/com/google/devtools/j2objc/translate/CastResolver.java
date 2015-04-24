@@ -55,29 +55,21 @@ public class CastResolver extends TreeVisitor {
     ITypeBinding type = node.getType().getTypeBinding();
     Expression expr = node.getExpression();
     ITypeBinding exprType = expr.getTypeBinding();
-    if (typeEnv.isFloatingPointType(exprType)) {
-      if (typeEnv.isLongType(type)) {
-        FunctionInvocation invocation = new FunctionInvocation("J2ObjCFpToLong", type, type, null);
-        invocation.getArguments().add(TreeUtil.remove(expr));
-        node.replaceWith(invocation);
-        return;
-      } else if (type.isEqualTo(typeEnv.resolveJavaType("char"))) {
-        FunctionInvocation invocation =
-            new FunctionInvocation("J2ObjCFpToUnichar", type, type, null);
-        invocation.getArguments().add(TreeUtil.remove(expr));
-        node.replaceWith(invocation);
-        return;
-      } else if (typeEnv.isIntegralType(type)) {
-        ITypeBinding intType = typeEnv.resolveJavaType("int");
-        FunctionInvocation invocation =
-            new FunctionInvocation("J2ObjCFpToInt", intType, intType, null);
-        invocation.getArguments().add(TreeUtil.remove(expr));
-        Expression newExpr = invocation;
-        if (!type.isEqualTo(intType)) {
-          newExpr = new CastExpression(type, newExpr);
-        }
-        node.replaceWith(newExpr);
-        return;
+    if (BindingUtil.isFloatingPoint(exprType)) {
+      assert type.isPrimitive();  // Java wouldn't allow a cast from primitive to non-primitive.
+      switch (type.getBinaryName().charAt(0)) {
+        case 'J':
+          node.replaceWith(rewriteFloatToIntegralCast(type, expr, "J2ObjCFpToLong", type));
+          return;
+        case 'C':
+          node.replaceWith(rewriteFloatToIntegralCast(type, expr, "J2ObjCFpToUnichar", type));
+          return;
+        case 'B':
+        case 'S':
+        case 'I':
+          node.replaceWith(rewriteFloatToIntegralCast(
+              type, expr, "J2ObjCFpToInt", typeEnv.resolveJavaType("int")));
+          return;
       }
       // else fall-through.
     }
@@ -92,6 +84,18 @@ public class CastResolver extends TreeVisitor {
     if (castCheck != null) {
       node.setExpression(castCheck);
     }
+  }
+
+  private static Expression rewriteFloatToIntegralCast(
+      ITypeBinding castType, Expression expr, String funcName, ITypeBinding funcReturnType) {
+    FunctionInvocation invocation = new FunctionInvocation(
+        funcName, funcReturnType, funcReturnType, null);
+    invocation.getArguments().add(TreeUtil.remove(expr));
+    Expression newExpr = invocation;
+    if (!castType.isEqualTo(funcReturnType)) {
+      newExpr = new CastExpression(castType, newExpr);
+    }
+    return newExpr;
   }
 
   private FunctionInvocation createCastCheck(ITypeBinding type, Expression expr) {
@@ -148,7 +152,7 @@ public class CastResolver extends TreeVisitor {
     if (declaredType == typeEnv.resolveIOSType("id") && !shouldCastFromId) {
       return false;
     }
-    if (exprType.isPrimitive() || typeEnv.isVoidType(exprType)) {
+    if (exprType.isPrimitive()) {
       return false;
     }
     String typeName = nameTable.getSpecificObjCType(exprType);

@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -61,7 +62,7 @@ public class AbstractMethodRewriter extends TreeVisitor {
       // Generate a body which throws a NSInvalidArgumentException.
       String bodyCode = "// can't call an abstract method\n"
           + "[self doesNotRecognizeSelector:_cmd];";
-      if (!typeEnv.isVoidType(node.getReturnType().getTypeBinding())) {
+      if (!BindingUtil.isVoid(node.getReturnType().getTypeBinding())) {
         bodyCode += "\nreturn 0;"; // Never executes, but avoids a gcc warning.
       }
       body.getStatements().add(new NativeStatement(bodyCode));

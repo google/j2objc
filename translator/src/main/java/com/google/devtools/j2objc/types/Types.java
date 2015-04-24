@@ -48,8 +48,6 @@ public class Types {
   private final ITypeBinding javaNumberType;
   private final ITypeBinding javaStringType;
   private final ITypeBinding javaVoidType;
-  private final ITypeBinding voidType;
-  private final ITypeBinding booleanType;
 
   // Lazily load localRefType, since its initialization requires Types to be fully initialized.
   private ITypeBinding localRefType;
@@ -86,8 +84,6 @@ public class Types {
     javaCloneableType = ast.resolveWellKnownType("java.lang.Cloneable");
     javaStringType = ast.resolveWellKnownType("java.lang.String");
     javaVoidType = ast.resolveWellKnownType("java.lang.Void");
-    voidType = ast.resolveWellKnownType("void");
-    booleanType = ast.resolveWellKnownType("boolean");
     ITypeBinding binding = ast.resolveWellKnownType("java.lang.Integer");
     javaNumberType = binding.getSuperclass();
 
@@ -104,6 +100,8 @@ public class Types {
     initializeTypeMap();
     initializeCommonJavaTypes();
     populatePrimitiveAndWrapperTypeMaps();
+
+    ITypeBinding voidType = ast.resolveWellKnownType("void");
 
     // Commonly used methods.
     retainMethod = IOSMethodBinding.newMethod(
@@ -236,39 +234,9 @@ public class Types {
     return javaStringType.isEqualTo(type) || NSString.isEqualTo(type);
   }
 
-  public boolean isFloatingPointType(ITypeBinding type) {
-    return type.isEqualTo(ast.resolveWellKnownType("double"))
-        || type.isEqualTo(ast.resolveWellKnownType("float"))
-        || type == ast.resolveWellKnownType("java.lang.Double")
-        || type == ast.resolveWellKnownType("java.lang.Float");
-  }
-
-  public boolean isBooleanType(ITypeBinding type) {
-    return type.isEqualTo(booleanType) || type == ast.resolveWellKnownType("java.lang.Boolean");
-  }
-
-  public boolean isIntegralType(ITypeBinding type) {
-    return type.isEqualTo(ast.resolveWellKnownType("byte"))
-        || type.isEqualTo(ast.resolveWellKnownType("short"))
-        || type.isEqualTo(ast.resolveWellKnownType("int"))
-        || type == ast.resolveWellKnownType("java.lang.Byte")
-        || type == ast.resolveWellKnownType("java.lang.Short")
-        || type == ast.resolveWellKnownType("java.lang.Integer")
-        || isLongType(type);
-  }
-
-  public boolean isLongType(ITypeBinding type) {
-    return type.isEqualTo(ast.resolveWellKnownType("long"))
-        || type == ast.resolveWellKnownType("java.lang.Long");
-  }
-
   public IOSTypeBinding resolveArrayType(ITypeBinding binding) {
     IOSTypeBinding arrayBinding = arrayBindingMap.get(binding);
     return arrayBinding != null ? arrayBinding : IOSObjectArray;
-  }
-
-  public boolean isVoidType(ITypeBinding type) {
-    return type.isEqualTo(voidType);
   }
 
   public boolean isJavaVoidType(ITypeBinding type) {

@@ -91,6 +91,22 @@ public final class BindingUtil {
     return isSynthetic(m.getModifiers());
   }
 
+  public static boolean isVoid(ITypeBinding type) {
+    return type.isPrimitive() && type.getBinaryName().charAt(0) == 'V';
+  }
+
+  public static boolean isBoolean(ITypeBinding type) {
+    return type.isPrimitive() && type.getBinaryName().charAt(0) == 'Z';
+  }
+
+  public static boolean isFloatingPoint(ITypeBinding type) {
+    if (!type.isPrimitive()) {
+      return false;
+    }
+    char binaryName = type.getBinaryName().charAt(0);
+    return binaryName == 'F' || binaryName == 'D';
+  }
+
   /**
    * Tests if this type is private to it's source file. A public type declared
    * within a private type is considered private.

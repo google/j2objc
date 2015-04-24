@@ -21,8 +21,6 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
-import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.Assignment.Operator;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -115,18 +113,6 @@ public class ImplementationImportCollector extends TreeVisitor {
   @Override
   public boolean visit(AnnotationTypeMemberDeclaration node) {
     addImports(node.getType());
-    return true;
-  }
-
-  @Override
-  public boolean visit(Assignment node) {
-    if (node.getOperator() == Operator.PLUS_ASSIGN
-        && typeEnv.isJavaStringType(node.getLeftHandSide().getTypeBinding())
-        && typeEnv.isBooleanType(node.getRightHandSide().getTypeBinding())) {
-      // Implicit conversion from boolean -> String translates into a
-      // Boolean.toString(...) call, so add a reference to java.lang.Boolean.
-      addImports(typeEnv.resolveJavaType("java.lang.Boolean"));
-    }
     return true;
   }
 

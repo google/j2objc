@@ -115,10 +115,6 @@ public class OperatorRewriter extends TreeVisitor {
     }
   }
 
-  private static boolean isFloatingPoint(ITypeBinding type) {
-    return type.getName().equals("double") || type.getName().equals("float");
-  }
-
   private FunctionInvocation newStaticAssignInvocation(IVariableBinding var, Expression value) {
     String assignFunc = "JreStrongAssign";
     Expression retainedValue = TranslationUtil.retainResult(value);
@@ -170,7 +166,7 @@ public class OperatorRewriter extends TreeVisitor {
   private static String getInfixFunction(InfixExpression.Operator op, ITypeBinding nodeType) {
     switch (op) {
       case REMAINDER:
-        if (isFloatingPoint(nodeType)) {
+        if (BindingUtil.isFloatingPoint(nodeType)) {
           return nodeType.getName().equals("float") ? "fmodf" : "fmod";
         }
         return null;
@@ -196,7 +192,7 @@ public class OperatorRewriter extends TreeVisitor {
       case RIGHT_SHIFT_UNSIGNED_ASSIGN:
         return "URShiftAssign" + lhsName;
       case REMAINDER_ASSIGN:
-        if (isFloatingPoint(lhsType) || isFloatingPoint(rhsType)) {
+        if (BindingUtil.isFloatingPoint(lhsType) || BindingUtil.isFloatingPoint(rhsType)) {
           return "ModAssign" + lhsName;
         }
         return null;
