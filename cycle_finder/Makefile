@@ -22,6 +22,7 @@ SOURCE_DIR = src/main
 JAVA_SOURCE_DIR = $(SOURCE_DIR)/java
 RESOURCE_DIR = $(SOURCE_DIR)/resources
 J2OBJC_ROOT = ..
+TRANSLATOR_SOURCE_DIR = $(J2OBJC_ROOT)/translator/$(JAVA_SOURCE_DIR)
 
 include ../make/common.mk
 include ../make/j2objc_deps.mk
@@ -30,6 +31,7 @@ include ../java_deps/jars.mk
 BUILD_DIR = build_result
 CLASS_DIR = $(BUILD_DIR)/classes
 TEST_CLASS_DIR = $(BUILD_DIR)/test
+TRANSLATOR_CLASS_DIR = $(J2OBJC_ROOT)/translator/$(CLASS_DIR)
 
 JAVA_SOURCES = \
     com/google/devtools/cyclefinder/CycleFinder.java \
@@ -41,10 +43,13 @@ JAVA_SOURCES = \
     com/google/devtools/cyclefinder/TypeCollector.java
 
 RESOURCES = \
-    com/google/devtools/cyclefinder/CycleFinder.properties
+    com/google/devtools/cyclefinder/CycleFinder.properties \
+    com/google/devtools/j2objc/J2ObjC.properties \
+    com/google/devtools/j2objc/JRE.mappings
 
-JAR_DEPS = $(ECLIPSE_JARS) $(GUAVA_JAR) j2objc.jar j2objc_annotations.jar
-JAR_DEPS_DIST = $(JAR_DEPS:%=$(DIST_JAR_DIR)/%)
+DIST_DEPS = $(GUAVA_JAR) $(JSR305_JAR) j2objc_annotations.jar
+INTERNAL_DEPS = $(ECLIPSE_JARS)
+JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
@@ -56,9 +61,20 @@ JAR_DIST = $(DIST_JAR_DIR)/cycle_finder.jar
 JAVA_SOURCES_FULL = $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
 RESOURCE_FILES = $(RESOURCES:%=$(CLASS_DIR)/%)
 
-TEST_CLASSPATH = $(JAR):$(JUNIT_JAR_DIST):$(JAR_DEPS_PATH):$(TEST_CLASS_DIR)
+TEST_CLASSPATH = \
+    $(CLASS_DIR):$(JAR_DEPS_PATH):$(TEST_CLASS_DIR):$(JUNIT_JAR_DIST):$(TRANSLATOR_CLASS_DIR)
 
 ALL_LIBS = $(JAR) $(ECLIPSE_LIBS)
+
+# Files in dependent jars that aren't needed in combined jar.
+UNUSED_JAR_CONTENTS = \
+  $(CLASS_DIR)/[A-Z]* \
+  $(CLASS_DIR)/[ahps]* \
+  $(CLASS_DIR)/about_files \
+  $(CLASS_DIR)/ant_tasks \
+  $(CLASS_DIR)/compiler* \
+  $(CLASS_DIR)/hook* \
+  $(CLASS_DIR)/jdt*
 
 default: $(JAR)
 	@:
@@ -68,11 +84,14 @@ clean:
 
 $(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
   | $(CLASS_DIR) java_deps_dist annotations_dist translator
-	@javac -Xlint:unchecked -sourcepath $(JAVA_SOURCE_DIR) \
-	    -classpath $(JAR_DEPS_PATH) -d $(CLASS_DIR) \
-	    -encoding UTF-8 -source 1.6 -target 1.6 \
-	    -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
-	@jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
+	@echo building cycle_finder jar
+	@javac -Xlint:unchecked -sourcepath $(JAVA_SOURCE_DIR):$(TRANSLATOR_SOURCE_DIR) \
+	    -classpath $(JAR_DEPS_PATH) -encoding UTF-8 \
+	    -d $(CLASS_DIR) -source 1.6 -target 1.6 -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
+	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
+	@rm -rf $(UNUSED_JAR_CONTENTS)
+	@jar cfm $@-combined $(MANIFEST) -C $(CLASS_DIR) .
+	@java -jar $(JAVA_DEPS_JAR_DIR)/$(JARJAR) process jarjar.rules $@-combined $@
 
 # Format manifest classpath with each jar on a separate line, to avoid
 # maximum line length of 72 bytes in UTF-8 encoding.
@@ -81,12 +100,14 @@ $(MANIFEST): | $(BUILD_DIR)
 	@echo creating $@
 	@echo "Manifest-Version: 1.0" > $@
 	@echo "Main-Class:" $(MAIN_CLASS) >> $@
-	@/bin/echo -n "Class-Path:" >> $@
-	@for lib in $(JAR_DEPS); do echo " " $$lib; done >> $@
 
 $(CLASS_DIR)/%: $(RESOURCE_DIR)/%
 	@mkdir -p $(@D)
 	@cp -f $< $@
+
+$(CLASS_DIR)/%: $(J2OBJC_ROOT)/translator/$(RESOURCE_DIR)/%
+	@mkdir -p $(@D)
+	cp -f $< $@
 
 DIRS = $(BUILD_DIR) $(CLASS_DIR) $(TEST_CLASS_DIR) $(DIST_DIR) $(DIST_JAR_DIR)
 

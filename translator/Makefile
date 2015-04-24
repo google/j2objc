@@ -34,13 +34,14 @@ TEST_DIR = $(BUILD_DIR)/test
 SOURCEPATH = $(CWD):$(JAVA_SOURCE_DIR)
 BASE_PACKAGE = com/google/devtools/j2objc
 
-JAR_DEPS = $(ECLIPSE_JARS) $(GUAVA_JAR) $(JSR305_JAR) j2objc_annotations.jar
-JAR_DEPS_DIST = $(JAR_DEPS:%=$(DIST_JAR_DIR)/%)
+DIST_DEPS = $(GUAVA_JAR) $(JSR305_JAR) j2objc_annotations.jar
+INTERNAL_DEPS = $(ECLIPSE_JARS)
+JAR_DEPS_DIST = $(DIST_DEPS:%=$(DIST_JAR_DIR)/%) $(INTERNAL_DEPS:%=$(JAVA_DEPS_JAR_DIR)/%)
 JAR_DEPS_PATH = $(subst $(eval) ,:,$(strip $(JAR_DEPS_DIST)))
 JUNIT_JAR_DIST = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
 CLASSPATH = $(CLASS_DIR):$(JAR_DEPS_PATH)
-TEST_CLASSPATH = $(TEST_DIR):$(J2OBJC_JAR):$(JAR_DEPS_PATH):$(JUNIT_JAR_DIST)
+TEST_CLASSPATH = $(TEST_DIR):$(CLASS_DIR):$(JAR_DEPS_PATH):$(JUNIT_JAR_DIST)
 
 MAIN_CLASS = com.google.devtools.j2objc.J2ObjC
 MANIFEST = $(BUILD_DIR)/manifest.mf
@@ -245,16 +246,29 @@ TEST_RESOURCES = \
   com/google/devtools/j2objc/util/package-info.java
 TEST_RESOURCE_FILES = $(TEST_RESOURCES:%=$(TEST_DIR)/%)
 
+# Files in dependent jars that aren't needed in combined jar.
+UNUSED_JAR_CONTENTS = \
+  $(CLASS_DIR)/[A-Z]* \
+  $(CLASS_DIR)/[ahps]* \
+  $(CLASS_DIR)/about_files \
+  $(CLASS_DIR)/ant_tasks \
+  $(CLASS_DIR)/compiler* \
+  $(CLASS_DIR)/hook* \
+  $(CLASS_DIR)/jdt*
+
 default: $(J2OBJC_JAR)
 	@: # suppress make's "nothing to be done" message
 
 $(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
   | $(BUILD_DIR) java_deps_dist annotations_dist
-	@echo Building j2objc jar
+	@echo building j2objc jar
 	@javac -Xlint:unchecked -sourcepath $(SOURCEPATH) -classpath $(CLASSPATH) \
 	    -d $(CLASS_DIR) -encoding UTF-8 -source 1.6 -target 1.6 -nowarn \
 	    $(JAVA_SOURCES_FULL)
-	@jar cfm $@ $(MANIFEST) -C $(CLASS_DIR) .
+	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
+	@rm -rf $(UNUSED_JAR_CONTENTS)
+	@jar cfm $@-combined $(MANIFEST) -C $(CLASS_DIR) .
+	@java -jar $(JAVA_DEPS_JAR_DIR)/$(JARJAR) process jarjar.rules $@-combined $@
 
 # Format manifest classpath with each jar on a separate line, to avoid
 # maximum line length of 72 bytes in UTF-8 encoding.
@@ -262,8 +276,6 @@ $(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
 $(MANIFEST): | $(BUILD_DIR)
 	@echo "Manifest-Version: 1.0" > $@
 	@echo "Main-Class:" $(MAIN_CLASS) >> $@
-	@/bin/echo -n "Class-Path:" >> $@
-	@for lib in $(JAR_DEPS); do echo " " $$lib; done >> $@
 
 $(CLASS_DIR)/%: $(RESOURCE_DIR)/%
 	@mkdir -p $(@D)
