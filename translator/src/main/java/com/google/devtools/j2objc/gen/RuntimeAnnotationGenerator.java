@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
-import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -221,8 +220,7 @@ public class RuntimeAnnotationGenerator extends AbstractSourceGenerator {
     } else if (value instanceof ITypeBinding) {
       printf("%s_class_()", nameTable.getFullName((ITypeBinding) value));
     } else if (value instanceof String) {
-      StringLiteral node = new StringLiteral((String) value);
-      print(StatementGenerator.generateStringLiteral(node));
+      print(LiteralGenerator.generateStringLiteral((String) value));
     } else if (value instanceof Number || value instanceof Character || value instanceof Boolean) {
       print(value.toString());
     } else if (value.getClass().isArray()) {

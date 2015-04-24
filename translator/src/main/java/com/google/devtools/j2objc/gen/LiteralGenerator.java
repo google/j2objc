@@ -14,9 +14,12 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
+
+import java.util.regex.Pattern;
 
 /**
  * Utility methods for generating correct Objective-C literals.
@@ -27,6 +30,49 @@ public class LiteralGenerator {
       "[+-]?\\d*\\.?\\d*[eE][+-]?\\d+";
   private static final String FLOATING_POINT_SUFFIX_REGEX = ".*[fFdD]";
   private static final String HEX_LITERAL_REGEX = "0[xX].*";
+  private static final Pattern TRIGRAPH_REGEX = Pattern.compile("@\".*\\?\\?[=/'()!<>-].*\"");
+
+  public static String generateStringLiteral(String value) {
+    if (!UnicodeUtils.hasValidCppCharacters(value)) {
+      return buildStringFromChars(value);
+    }
+    String s = "@\"" + UnicodeUtils.escapeStringLiteral(value) + "\"";
+    if (TRIGRAPH_REGEX.matcher(s).matches()) {
+      // Split string between the two '?' chars in the trigraph, so compiler
+      // will concatenate the string without interpreting the trigraph.
+      String[] substrings = s.split("\\?\\?");
+      StringBuilder buffer = new StringBuilder(substrings[0]);
+      for (int i = 1; i < substrings.length; i++) {
+        buffer.append("?\" \"?");
+        buffer.append(substrings[i]);
+      }
+      return buffer.toString();
+    } else {
+      return s;
+    }
+  }
+
+  @VisibleForTesting
+  static String buildStringFromChars(String s) {
+    int length = s.length();
+    StringBuilder buffer = new StringBuilder();
+    buffer.append(
+        "[NSString stringWithCharacters:(jchar[]) { ");
+    int i = 0;
+    while (i < length) {
+      char c = s.charAt(i);
+      buffer.append("(int) 0x");
+      buffer.append(Integer.toHexString(c));
+      if (++i < length) {
+        buffer.append(", ");
+      }
+    }
+    buffer.append(" } length:");
+    String lengthString = Integer.toString(length);
+    buffer.append(lengthString);
+    buffer.append(']');
+    return buffer.toString();
+  }
 
   public static String fixNumberToken(String token, ITypeBinding type) {
     token = token.replace("_", "");  // Remove any embedded underscores.

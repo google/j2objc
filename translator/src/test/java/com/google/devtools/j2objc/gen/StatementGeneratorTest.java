@@ -1075,14 +1075,6 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "default:\n    ;\n  }");
   }
 
-  public void testBuildStringFromChars() {
-    String s = "a\uffffz";
-    String result = StatementGenerator.buildStringFromChars(s);
-    assertEquals(result,
-        "[NSString stringWithCharacters:(jchar[]) "
-        + "{ (int) 0x61, (int) 0xffff, (int) 0x7a } length:3]");
-  }
-
   // Verify that return statements in constructors return self.
   public void testConstructorReturn() throws IOException {
     String translation = translateSourceFile(

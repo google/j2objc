@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.CharMatcher;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -113,7 +112,6 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Returns an Objective-C equivalent of a Java AST node.
@@ -127,8 +125,6 @@ public class StatementGenerator extends TreeVisitor {
   private final NameTable nameTable;
   private final boolean asFunction;
   private final boolean useReferenceCounting;
-
-  private static final Pattern TRIGRAPH_REGEX = Pattern.compile("@\".*\\?\\?[=/'()!<>-].*\"");
 
   public static String generate(TreeNode node, boolean asFunction, int currentLine) {
     StatementGenerator generator = new StatementGenerator(node, asFunction, currentLine);
@@ -849,50 +845,8 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(StringLiteral node) {
-    String s = generateStringLiteral(node);
-    if (TRIGRAPH_REGEX.matcher(s).matches()) {
-      // Split string between the two '?' chars in the trigraph, so compiler
-      // will concatenate the string without interpreting the trigraph.
-      String[] substrings = s.split("\\?\\?");
-      buffer.append(substrings[0]);
-      for (int i = 1; i < substrings.length; i++) {
-        buffer.append("?\" \"?");
-        buffer.append(substrings[i]);
-      }
-    } else {
-      buffer.append(s);
-    }
+    buffer.append(LiteralGenerator.generateStringLiteral(node.getLiteralValue()));
     return false;
-  }
-
-  public static String generateStringLiteral(StringLiteral node) {
-    if (UnicodeUtils.hasValidCppCharacters(node.getLiteralValue())) {
-      return "@\"" + UnicodeUtils.escapeStringLiteral(node.getLiteralValue()) + "\"";
-    } else {
-      return buildStringFromChars(node.getLiteralValue());
-    }
-  }
-
-  @VisibleForTesting
-  static String buildStringFromChars(String s) {
-    int length = s.length();
-    StringBuilder buffer = new StringBuilder();
-    buffer.append(
-        "[NSString stringWithCharacters:(jchar[]) { ");
-    int i = 0;
-    while (i < length) {
-      char c = s.charAt(i);
-      buffer.append("(int) 0x");
-      buffer.append(Integer.toHexString(c));
-      if (++i < length) {
-        buffer.append(", ");
-      }
-    }
-    buffer.append(" } length:");
-    String lengthString = Integer.toString(length);
-    buffer.append(lengthString);
-    buffer.append(']');
-    return buffer.toString();
   }
 
   @Override

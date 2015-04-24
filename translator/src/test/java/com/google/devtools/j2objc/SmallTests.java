@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.ast.TreeUtilTest;
 import com.google.devtools.j2objc.gen.ArrayAccessTest;
 import com.google.devtools.j2objc.gen.ArrayCreationTest;
 import com.google.devtools.j2objc.gen.LineDirectivesTest;
+import com.google.devtools.j2objc.gen.LiteralGeneratorTest;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGeneratorTest;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGeneratorTest;
 import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGeneratorTest;
@@ -107,6 +108,7 @@ public class SmallTests {
     JavaCloneWriterTest.class,
     JavaToIOSMethodTranslatorTest.class,
     LineDirectivesTest.class,
+    LiteralGeneratorTest.class,
     NameTableTest.class,
     NilCheckResolverTest.class,
     ObjectiveCHeaderGeneratorTest.class,
