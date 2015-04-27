@@ -20,6 +20,9 @@ import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
 
+import org.eclipse.jdt.core.dom.CompilationUnit;
+import org.eclipse.jdt.core.dom.PackageDeclaration;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -50,6 +53,16 @@ public class FileUtil {
     int end = sourceFileName.lastIndexOf(".java");
     String className = sourceFileName.substring(begin, end);
     return className;
+  }
+
+  public static String getQualifiedMainTypeName(InputFile file, CompilationUnit unit) {
+    String qualifiedName = FileUtil.getClassNameFromFilePath(file.getUnitName());
+    PackageDeclaration packageDecl = unit.getPackage();
+    if (packageDecl != null) {
+      String packageName = packageDecl.getName().getFullyQualifiedName();
+      qualifiedName = packageName + "." + qualifiedName;
+    }
+    return qualifiedName;
   }
 
   /**

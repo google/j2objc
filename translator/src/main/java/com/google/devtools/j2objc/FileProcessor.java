@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -172,22 +171,6 @@ abstract class FileProcessor {
       return TimeTracker.start(name);
     } else {
       return TimeTracker.noop();
-    }
-  }
-
-  /**
-   * Returns a path equal to the canonical compilation unit name
-   * for the given file, which is something like path/to/package/Filename.java.
-   */
-  protected static String getRelativePath(String path, CompilationUnit unit) {
-    int index = path.lastIndexOf(File.separatorChar);
-    String name = index >= 0 ? path.substring(index + 1) : path;
-    org.eclipse.jdt.core.dom.PackageDeclaration pkg = unit.getPackage();
-    if (pkg == null) {
-      return name;
-    } else {
-      return pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
-          + File.separatorChar + name;
     }
   }
 

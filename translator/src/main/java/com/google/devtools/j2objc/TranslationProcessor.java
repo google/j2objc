@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
@@ -67,13 +66,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Queue;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -90,38 +87,20 @@ class TranslationProcessor extends FileProcessor {
 
   private final DeadCodeMap deadCodeMap;
 
-  Queue<InputFile> pendingFiles = new ArrayDeque<InputFile>();
+  private final BuildClosureQueue closureQueue;
 
-  /*
-  The below two sets assist in building the transitive closure.
-
-  When building the transitive closure of files we need to process,
-  we look up these files on the source paths by their estimated compilation unit name.
-  This is something like path/to/package/ClassName.java . It's assumed that this will be the
-  directory of a file relative to some source file root. For files supplied as arguments,
-  where the name of the file may differ from the correct compilation unit path,
-  this path is calculated with getRelativePath(String, CompilationUnit). For files built
-  in the transitive closure, this is always the relative path of the file
-  (otherwise we would never have found it).
-
-  The sets processedFiles and seenFiles track the compilation unit names of files we've already
-  processed and seen, respectively. These are used to deduplicate source files so we never process
-  a given compilation unit more than once. For some use cases, this is important, like if
-  we supply a source or input file that overrides files later on the source file paths.
-
-  TODO(mthvedt): Consider whether this logic is correct; in particular, the potential problem of
-  depending on InputFiles to have the correct java relative path returned by #getUnitName().
-  Right now, this fulfills expected behavior and passes tests. See discussion on cl/86308318 .
-   */
-
-  // Relative paths of files that have been processed.
-  Set<String> processedFiles = Sets.newHashSet();
-  // Relative paths of files that have either been processed or added to pendingfiles.
-  Set<String> seenFiles = Sets.newHashSet();
+  private int processedCount = 0;
 
   public TranslationProcessor(JdtParser parser, DeadCodeMap deadCodeMap) {
     super(parser);
     this.deadCodeMap = deadCodeMap;
+    if (Options.buildClosure()) {
+      // Should be an error if the user specifies this with --build-closure
+      assert !Options.shouldMapHeaders();
+      closureQueue = new BuildClosureQueue();
+    } else {
+      closureQueue = null;
+    }
   }
 
   @Override
@@ -132,28 +111,30 @@ class TranslationProcessor extends FileProcessor {
       processGenerationUnit(generationUnit);
     }
 
-    while (!pendingFiles.isEmpty()) {
-      InputFile file = pendingFiles.remove();
-      if (processedFiles.contains(file.getUnitName())) {
-        continue;
+    if (closureQueue != null) {
+      while (true) {
+        InputFile file = closureQueue.getNextFile();
+        if (file == null) {
+          processBatch();
+          file = closureQueue.getNextFile();
+        }
+        if (file == null) {
+          break;
+        }
+        processGenerationUnit(GenerationUnit.newSingleFileUnit(file));
       }
-
-      processGenerationUnit(GenerationUnit.newSingleFileUnit(file));
-      // Possible for a batch to add to pending files.
-      if (pendingFiles.isEmpty()) {
-        processBatch();
-      }
+    } else {
+      processBatch();
     }
-
-    processBatch();
   }
 
   @Override
   protected void processCompilationUnit(
       GenerationUnit genUnit, org.eclipse.jdt.core.dom.CompilationUnit unit, InputFile file) {
-    String relativePath = getRelativePath(file.getUnitName(), unit);
-    processedFiles.add(relativePath);
-    seenFiles.add(relativePath);
+    if (closureQueue != null) {
+      closureQueue.addProcessedName(FileUtil.getQualifiedMainTypeName(file, unit));
+    }
+    processedCount++;
     super.processCompilationUnit(genUnit, unit, file);
   }
 
@@ -178,7 +159,7 @@ class TranslationProcessor extends FileProcessor {
       generateObjectiveCSource(unit, ticker);
       ticker.tick("Source generation");
 
-      if (Options.buildClosure()) {
+      if (closureQueue != null) {
         // Add out-of-date dependencies to translation list.
         for (CompilationUnit compilationUnit : unit.getCompilationUnits()) {
           checkDependencies(compilationUnit);
@@ -364,7 +345,7 @@ class TranslationProcessor extends FileProcessor {
     printHeaderMappings();
 
     if (logger.isLoggable(Level.INFO)) {
-      int nFiles = processedFiles.size();
+      int nFiles = processedCount;
       System.out.println(String.format(
           "Translated %d %s: %d errors, %d warnings",
           nFiles, nFiles == 1 ? "file" : "files", ErrorUtil.errorCount(),
@@ -386,65 +367,12 @@ class TranslationProcessor extends FileProcessor {
     imports.addAll(hdrCollector.getSuperTypes());
     imports.addAll(implCollector.getImports());
     for (Import imp : imports) {
-      maybeAddToClosure(imp.getMainType());
+      ITypeBinding type = imp.getMainType();
+      // Ignore core types.
+      if (!(type instanceof IOSTypeBinding)) {
+        closureQueue.addName(type.getErasure().getQualifiedName());
+      }
     }
-  }
-
-  private void maybeAddToClosure(ITypeBinding type) {
-    if (type instanceof IOSTypeBinding) {
-      return;  // Ignore core types.
-    }
-    String typeName = type.getErasure().getQualifiedName();
-    String sourceName = typeName.replace('.', File.separatorChar) + ".java";
-    if (seenFiles.contains(sourceName)) {
-      return;
-    }
-    // Should be an error if the user specifies this with --build-closure
-    assert !Options.shouldMapHeaders();
-    seenFiles.add(sourceName);
-
-    // Check if class exists on classpath.
-    if (findClassFile(typeName)) {
-      logger.finest("no source for " + typeName + ", class found");
-      return;
-    }
-
-    InputFile inputFile = null;
-    try {
-      inputFile = FileUtil.findOnSourcePath(sourceName);
-    } catch (IOException e) {
-      ErrorUtil.warning(e.getMessage());
-    }
-
-    // Check if the source file is older than the generated header file.
-    File headerSource = new File(Options.getOutputDirectory(), sourceName.replace(".java", ".h"));
-    if (headerSource.exists() && inputFile != null
-        && inputFile.lastModified() < headerSource.lastModified()) {
-      return;
-    }
-    pendingFiles.add(inputFile);
-  }
-
-  private boolean findClassFile(String typeName) {
-    // Zip/jar files always use forward slashes.
-    String path = typeName.replace('.', File.separatorChar) + ".class";
-    InputFile f = null;
-    try {
-      f = FileUtil.findOnClassPath(path);
-    } catch (IOException e) {
-      ErrorUtil.warning(e.getMessage());
-    }
-    if (f != null) {
-      return true;
-    }
-    // See if it's a JRE class.
-    try {
-      Class.forName(typeName);
-      return true;
-    } catch (ClassNotFoundException e) {
-      // Fall-through.
-    }
-    return false;
   }
 
   static void printHeaderMappings() {

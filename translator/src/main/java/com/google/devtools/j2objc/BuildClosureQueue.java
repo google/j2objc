@@ -1,0 +1,124 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.google.devtools.j2objc;
+
+import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.FileUtil;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.logging.Logger;
+
+/**
+ * Looks up and queues dependencies for --build-closure.
+ */
+public class BuildClosureQueue {
+
+  private static final Logger logger = Logger.getLogger(BuildClosureQueue.class.getName());
+
+  private final Set<String> processedNames = Sets.newHashSet();
+
+  private final Set<String> queuedNames = Sets.newLinkedHashSet();
+
+  /**
+   * Returns the next Java source file to be processed. Returns null if the
+   * queue is empty.
+   */
+  public InputFile getNextFile() {
+    for (Iterator<String> iter = queuedNames.iterator(); iter.hasNext(); ) {
+      String name = iter.next();
+      iter.remove();
+      processedNames.add(name);
+      InputFile file = getFileForName(name);
+      if (file != null) {
+        return file;
+      }
+    }
+    return null;
+  }
+
+  /**
+   * Adds a name to the queue. The name must be the fully qualified type name
+   * to search for (dot separated).
+   */
+  public void addName(String name) {
+    if (!processedNames.contains(name)) {
+      queuedNames.add(name);
+    }
+  }
+
+  /**
+   * Adds the name of a file that has been processed to ensure that this name is
+   * not searched for in the future.
+   */
+  public void addProcessedName(String name) {
+    processedNames.add(name);
+    queuedNames.remove(name);
+  }
+
+  private static InputFile getFileForName(String name) {
+    // Check if class exists on classpath.
+    if (findClassFile(name)) {
+      logger.finest("no source for " + name + ", class found");
+      return null;
+    }
+
+    String sourceName = name.replace('.', File.separatorChar) + ".java";
+    InputFile inputFile = null;
+    try {
+      inputFile = FileUtil.findOnSourcePath(sourceName);
+    } catch (IOException e) {
+      ErrorUtil.warning(e.getMessage());
+    }
+
+    if (inputFile == null) {
+      return null;
+    }
+
+    // Check if the source file is older than the generated header file.
+    File headerSource = new File(Options.getOutputDirectory(), sourceName.replace(".java", ".h"));
+    if (headerSource.exists() && inputFile.lastModified() < headerSource.lastModified()) {
+      return null;
+    }
+
+    return inputFile;
+  }
+
+  private static boolean findClassFile(String typeName) {
+    // Zip/jar files always use forward slashes.
+    String path = typeName.replace('.', File.separatorChar) + ".class";
+    InputFile f = null;
+    try {
+      f = FileUtil.findOnClassPath(path);
+    } catch (IOException e) {
+      ErrorUtil.warning(e.getMessage());
+    }
+    if (f != null) {
+      return true;
+    }
+    // See if it's a JRE class.
+    try {
+      Class.forName(typeName);
+      return true;
+    } catch (ClassNotFoundException e) {
+      // Fall-through.
+    }
+    return false;
+  }
+}

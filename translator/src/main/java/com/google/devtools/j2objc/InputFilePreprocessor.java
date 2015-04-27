@@ -23,7 +23,6 @@ import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
-import org.eclipse.jdt.core.dom.PackageDeclaration;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 
 import java.io.IOException;
@@ -72,13 +71,9 @@ public class InputFilePreprocessor {
 
   private void addHeaderMapping(
       InputFile file, GenerationUnit generationUnit, CompilationUnit compilationUnit) {
-    String qualifiedName = FileUtil.getClassNameFromFilePath(file.getUnitName());
-    PackageDeclaration packageDecl = compilationUnit.getPackage();
-    if (packageDecl != null) {
-      String packageName = packageDecl.getName().getFullyQualifiedName();
-      qualifiedName = packageName + "." + qualifiedName;
-    }
-    Options.getHeaderMappings().put(qualifiedName, generationUnit.getOutputPath() + ".h");
+    Options.getHeaderMappings().put(
+        FileUtil.getQualifiedMainTypeName(file, compilationUnit),
+        generationUnit.getOutputPath() + ".h");
   }
 
   private void processPackageInfoFile(InputFile file) throws IOException {
