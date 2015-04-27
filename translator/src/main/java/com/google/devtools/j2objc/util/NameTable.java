@@ -888,15 +888,13 @@ public class NameTable {
    */
   private static String getPrefixFromPackageInfoSource(IPackageBinding packageBinding) {
     try {
-      String expectedPackageInfoPath = packageBinding.getName();
+      String qualifiedName = "package-info";
+      String packageName = packageBinding.getName();
       // Path will be null if this is the empty package.
-      if (expectedPackageInfoPath == null) {
-        expectedPackageInfoPath = "package-info.java";
-      } else {
-        expectedPackageInfoPath = expectedPackageInfoPath.replace('.', File.separatorChar)
-            + File.separatorChar + "package-info.java";
+      if (packageName != null) {
+        qualifiedName = packageName + '.' + qualifiedName;
       }
-      InputFile file = FileUtil.findOnSourcePath(expectedPackageInfoPath);
+      InputFile file = FileUtil.findOnSourcePath(qualifiedName);
       if (file != null) {
         String pkgInfo = FileUtil.readFile(file);
         int i = pkgInfo.indexOf("@ObjectiveCName");

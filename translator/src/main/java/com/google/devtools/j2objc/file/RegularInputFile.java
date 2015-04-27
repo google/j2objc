@@ -62,6 +62,11 @@ public class RegularInputFile implements InputFile {
   }
 
   @Override
+  public String getBasename() {
+    return unitPath.substring(unitPath.lastIndexOf(File.separatorChar) + 1);
+  }
+
+  @Override
   public long lastModified() {
     return new File(path).lastModified();
   }

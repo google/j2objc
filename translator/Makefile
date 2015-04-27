@@ -160,6 +160,9 @@ JAVA_SOURCES = \
 	ast/VariableDeclarationFragment.java \
 	ast/VariableDeclarationStatement.java \
 	ast/WhileStatement.java \
+	file/InputFile.java \
+	file/JarredInputFile.java \
+	file/RegularInputFile.java \
 	gen/AbstractSourceGenerator.java \
 	gen/GenerationUnit.java \
 	gen/JavadocGenerator.java \

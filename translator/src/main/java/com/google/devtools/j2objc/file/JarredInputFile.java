@@ -72,6 +72,11 @@ public class JarredInputFile implements InputFile {
   }
 
   @Override
+  public String getBasename() {
+    return internalPath.substring(internalPath.lastIndexOf('/') + 1);
+  }
+
+  @Override
   public long lastModified() {
     return new File(jarPath).lastModified();
   }

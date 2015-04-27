@@ -79,10 +79,9 @@ public class BuildClosureQueue {
       return null;
     }
 
-    String sourceName = name.replace('.', File.separatorChar) + ".java";
     InputFile inputFile = null;
     try {
-      inputFile = FileUtil.findOnSourcePath(sourceName);
+      inputFile = FileUtil.findOnSourcePath(name);
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }
@@ -92,7 +91,8 @@ public class BuildClosureQueue {
     }
 
     // Check if the source file is older than the generated header file.
-    File headerSource = new File(Options.getOutputDirectory(), sourceName.replace(".java", ".h"));
+    File headerSource =
+        new File(Options.getOutputDirectory(), name.replace('.', File.separatorChar) + ".h");
     if (headerSource.exists() && inputFile.lastModified() < headerSource.lastModified()) {
       return null;
     }
@@ -100,12 +100,10 @@ public class BuildClosureQueue {
     return inputFile;
   }
 
-  private static boolean findClassFile(String typeName) {
-    // Zip/jar files always use forward slashes.
-    String path = typeName.replace('.', File.separatorChar) + ".class";
+  private static boolean findClassFile(String name) {
     InputFile f = null;
     try {
-      f = FileUtil.findOnClassPath(path);
+      f = FileUtil.findOnClassPath(name);
     } catch (IOException e) {
       ErrorUtil.warning(e.getMessage());
     }
@@ -114,7 +112,7 @@ public class BuildClosureQueue {
     }
     // See if it's a JRE class.
     try {
-      Class.forName(typeName);
+      Class.forName(name);
       return true;
     } catch (ClassNotFoundException e) {
       // Fall-through.

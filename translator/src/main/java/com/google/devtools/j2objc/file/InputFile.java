@@ -52,5 +52,12 @@ public interface InputFile {
    */
   String getUnitName();
 
+  /**
+   * Gets name of the file stripped of any path components.
+   * For example, the basename of "package/path/SourceFile.java" is
+   * "SourceFile.java".
+   */
+  String getBasename();
+
   long lastModified();
 }

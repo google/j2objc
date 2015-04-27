@@ -40,23 +40,20 @@ import javax.annotation.Nullable;
  */
 public class FileUtil {
 
-  /**
-   * Gets the name of the file, stripped of any directory or extension.
-   */
-  public static String getClassNameFromFilePath(String sourceFileName) {
-    int begin = sourceFileName.lastIndexOf(File.separatorChar) + 1;
-    // Also check for /, since this may be a jar'd source when translating on Windows.
-    int n = sourceFileName.lastIndexOf('/') + 1;
-    if (n > begin) {
-      begin = n;
+  public static String getMainTypeName(InputFile file) {
+    String basename = file.getBasename();
+    int end = basename.lastIndexOf(".java");
+    if (end == -1) {
+      end = basename.lastIndexOf(".class");
     }
-    int end = sourceFileName.lastIndexOf(".java");
-    String className = sourceFileName.substring(begin, end);
-    return className;
+    if (end != -1) {
+      basename = basename.substring(0, end);
+    }
+    return basename;
   }
 
   public static String getQualifiedMainTypeName(InputFile file, CompilationUnit unit) {
-    String qualifiedName = FileUtil.getClassNameFromFilePath(file.getUnitName());
+    String qualifiedName = getMainTypeName(file);
     PackageDeclaration packageDecl = unit.getPackage();
     if (packageDecl != null) {
       String packageName = packageDecl.getName().getFullyQualifiedName();
@@ -71,8 +68,8 @@ public class FileUtil {
    * Returns a file guaranteed to exist, or null.
    */
   @Nullable
-  public static InputFile findOnSourcePath(String filename) throws IOException {
-    return findOnPaths(filename, Options.getSourcePathEntries());
+  public static InputFile findOnSourcePath(String qualifiedName) throws IOException {
+    return findOnPaths(qualifiedName, Options.getSourcePathEntries(), ".java");
   }
 
   /**
@@ -81,22 +78,26 @@ public class FileUtil {
    * Returns a file guaranteed to exist, or null.
    */
   @Nullable
-  public static InputFile findOnClassPath(String filename) throws IOException {
-    return findOnPaths(filename, Options.getClassPathEntries());
+  public static InputFile findOnClassPath(String qualifiedName) throws IOException {
+    return findOnPaths(qualifiedName, Options.getClassPathEntries(), ".class");
   }
 
-  private static InputFile findOnPaths(String filename, List<String> paths) throws IOException {
+  private static InputFile findOnPaths(
+      String qualifiedName, List<String> paths, String extension) throws IOException {
+    String sourceFileName = qualifiedName.replace('.', File.separatorChar) + extension;
+    // Zip/jar files always use forward slashes.
+    String jarEntryName = qualifiedName.replace('.', '/') + extension;
     for (String pathEntry : paths) {
       File f = new File(pathEntry);
       if (f.isDirectory()) {
         RegularInputFile regularFile = new RegularInputFile(
-            pathEntry + File.separatorChar + filename, filename);
+            pathEntry + File.separatorChar + sourceFileName, sourceFileName);
         if (regularFile.exists()) {
           return regularFile;
         }
       } else {
         // Assume it's a jar file
-        JarredInputFile jarFile = new JarredInputFile(pathEntry, filename);
+        JarredInputFile jarFile = new JarredInputFile(pathEntry, jarEntryName);
         if (jarFile.exists()) {
           return jarFile;
         }
