@@ -912,7 +912,10 @@ JAVA_SOURCES = \
 	javax/annotation/PreDestroy.java \
 	javax/annotation/Resources.java \
 	javax/lang/model/element/Modifier.java \
+	javax/crypto/Mac.java \
+	javax/crypto/MacSpi.java \
 	javax/crypto/SecretKey.java \
+	javax/crypto/ShortBufferException.java \
 	javax/net/DefaultServerSocketFactory.java \
 	javax/net/DefaultSocketFactory.java \
 	javax/net/ServerSocketFactory.java \
