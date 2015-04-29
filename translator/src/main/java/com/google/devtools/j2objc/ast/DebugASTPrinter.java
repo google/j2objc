@@ -453,7 +453,11 @@ public class DebugASTPrinter extends TreeVisitor {
       }
     }
     sb.print(')');
-    node.getBody().accept(this);
+    if (node.getBody() == null) {
+      sb.print(';');
+    } else {
+      node.getBody().accept(this);
+    }
     return false;
   }
 
