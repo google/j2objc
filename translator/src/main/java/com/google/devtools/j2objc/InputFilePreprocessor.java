@@ -33,44 +33,44 @@ import java.util.List;
  */
 public class InputFilePreprocessor {
 
+  private final GenerationBatch batch;
   private final JdtParser parser;
 
-  public InputFilePreprocessor(JdtParser parser) {
+  public InputFilePreprocessor(GenerationBatch batch, JdtParser parser) {
+    this.batch = batch;
     this.parser = parser;
   }
 
-  public void processBatch(GenerationBatch batch) {
-    for (GenerationUnit generationUnit : batch.getGenerationUnits()) {
-      for (InputFile inputFile : generationUnit.getInputFiles()) {
-        processFile(inputFile, generationUnit);
-      }
+  public void process() {
+    for (InputFile inputFile : batch.getInputFiles()) {
+      processFile(inputFile);
     }
   }
 
-  private void processFile(InputFile file, GenerationUnit generationUnit) {
+  private void processFile(InputFile file) {
     try {
       if (file.getUnitName().endsWith("package-info.java")) {
         processPackageInfoFile(file);
       } else {
-        processSourceFile(file, generationUnit);
+        processSourceFile(file);
       }
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     }
   }
 
-  private void processSourceFile(InputFile file, GenerationUnit generationUnit) throws IOException {
+  private void processSourceFile(InputFile file) throws IOException {
     if (Options.shouldMapHeaders()) {
       String source = FileUtil.readFile(file);
       CompilationUnit compilationUnit = parser.parseWithoutBindings(file.getUnitName(), source);
       if (compilationUnit != null) {
-        addHeaderMapping(file, generationUnit, compilationUnit);
+        addHeaderMapping(file, compilationUnit);
       }
     }
   }
 
-  private void addHeaderMapping(
-      InputFile file, GenerationUnit generationUnit, CompilationUnit compilationUnit) {
+  private void addHeaderMapping(InputFile file, CompilationUnit compilationUnit) {
+    GenerationUnit generationUnit = batch.generationUnitForFile(file);
     Options.getHeaderMappings().put(
         FileUtil.getQualifiedMainTypeName(file, compilationUnit),
         generationUnit.getOutputPath() + ".h");

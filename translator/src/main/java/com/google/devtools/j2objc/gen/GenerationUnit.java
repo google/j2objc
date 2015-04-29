@@ -17,7 +17,6 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.file.InputFile;
-import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -42,7 +41,13 @@ public class GenerationUnit {
   private final List<InputFile> inputFiles = new ArrayList<InputFile>();
   private List<CompilationUnit> compilationUnits = new ArrayList<CompilationUnit>();
   private final String sourceName;
-  private final List<String> errors = new ArrayList<String>();
+  private State state = State.ACTIVE;
+
+  private enum State {
+    ACTIVE,   // Initial state, still collecting CompilationUnits.
+    FAILED,   // One or more input files failed to compile.
+    FINISHED  // Finished, object is now invalid.
+  }
 
   private GenerationUnit(String sourceName) {
     this.sourceName = sourceName;
@@ -104,6 +109,10 @@ public class GenerationUnit {
   }
 
   public void addCompilationUnit(CompilationUnit unit) {
+    assert state != State.FINISHED : "Adding to a finished GenerationUnit.";
+    if (state != State.ACTIVE) {
+      return;  // Ignore any added units.
+    }
     assert compilationUnits.size() < inputFiles.size();
     compilationUnits.add(unit);
 
@@ -140,11 +149,14 @@ public class GenerationUnit {
     return path;
   }
 
-  /**
-   * Clear the temporary state of this GenerationUnit.
-   */
-  public void clear() {
+  public void failed() {
     compilationUnits.clear();
+    state = State.FAILED;
+  }
+
+  public void finished() {
+    compilationUnits.clear();
+    state = State.FINISHED;
   }
 
   /**
@@ -153,18 +165,5 @@ public class GenerationUnit {
   @Nullable
   public String getOutputPath() {
     return outputPath;
-  }
-
-  /**
-   * A unit is broken if we couldn't read all of its input files.
-   * We mark it as broken so some processors may decide to halt for broken GenerationUnits.
-   */
-  public boolean hasErrors() {
-    return !errors.isEmpty();
-  }
-
-  public void error(String message) {
-    ErrorUtil.error(message);
-    errors.add(message);
   }
 }

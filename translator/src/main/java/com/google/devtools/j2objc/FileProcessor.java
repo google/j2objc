@@ -15,22 +15,18 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.file.InputFile;
-import com.google.devtools.j2objc.gen.GenerationUnit;
+import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
+import java.util.Set;
 import java.util.logging.Logger;
 
 /**
@@ -43,138 +39,118 @@ abstract class FileProcessor {
   private static final Logger logger = Logger.getLogger(FileProcessor.class.getName());
 
   private final JdtParser parser;
+  protected final BuildClosureQueue closureQueue;
   private final NameTable.Factory nameTableFactory = NameTable.newFactory();
 
-  private final List<GenerationUnit> batchUnits = new ArrayList<GenerationUnit>();
-  private int batchSourceCount = 0;
+  private final int batchSize = Options.batchTranslateMaximum();
+  private final Set<InputFile> batchFiles = Sets.newLinkedHashSetWithExpectedSize(batchSize);
 
-  private final boolean doBatching = Options.batchTranslateMaximum() > 0;
+  private final boolean doBatching = batchSize > 0;
 
   public FileProcessor(JdtParser parser) {
     this.parser = Preconditions.checkNotNull(parser);
+    if (Options.buildClosure()) {
+      // Should be an error if the user specifies this with --build-closure
+      assert !Options.shouldMapHeaders();
+      closureQueue = new BuildClosureQueue();
+    } else {
+      closureQueue = null;
+    }
   }
 
-  public void processBatch(GenerationBatch batch) {
-    for (GenerationUnit unit : batch.getGenerationUnits()) {
-      processGenerationUnit(unit);
+  public void processFiles(Iterable<? extends InputFile> files) {
+    for (InputFile inputFile : files) {
+      processInputFile(inputFile);
     }
-
     processBatch();
   }
 
-  protected void processGenerationUnit(GenerationUnit unit) {
-    if (unit.hasErrors()) {
+  public void processBuildClosureDependencies() {
+    if (closureQueue != null) {
+      while (true) {
+        InputFile file = closureQueue.getNextFile();
+        if (file == null) {
+          processBatch();
+          file = closureQueue.getNextFile();
+        }
+        if (file == null) {
+          break;
+        }
+        processInputFile(file);
+      }
+    }
+  }
+
+  private void processInputFile(InputFile file) {
+    if (isBatchable(file)) {
+      batchFiles.add(file);
+      if (batchFiles.size() == batchSize) {
+        processBatch();
+      }
       return;
     }
 
-    int fileCount = unit.getInputFiles().size();
-    batchUnits.add(unit);
-    batchSourceCount += fileCount;
-    if (batchSourceCount > Options.batchTranslateMaximum()) {
-      processBatch();
+    logger.finest("parsing " + file);
+
+    String source = null;
+    CompilationUnit compilationUnit = null;
+    try {
+      source = FileUtil.readFile(file);
+      compilationUnit = parser.parseWithBindings(file.getUnitName(), source);
+    } catch (IOException e) {
+      ErrorUtil.error(e.getMessage());
     }
+
+    if (compilationUnit == null) {
+      handleError(file);
+      return;
+    }
+
+    processCompiledSource(file, source, compilationUnit);
   }
 
   protected boolean isBatchable(InputFile file) {
     return doBatching && file.getContainingPath().endsWith(".java");
   }
 
-  protected void processBatch() {
-    try {
-      if (batchUnits.isEmpty()) {
-        return;
-      }
-
-      // We need to track all this for the parser callback.
-      final Map<InputFile, GenerationUnit> unitMap = new HashMap<InputFile, GenerationUnit>();
-      List<InputFile> batchFiles = new ArrayList<InputFile>();
-      for (GenerationUnit unit : batchUnits) {
-        if (unit.hasErrors()) {
-          continue;
-        }
-
-        for (InputFile file : unit.getInputFiles()) {
-          if (isBatchable(file)) {
-            batchFiles.add(file);
-            unitMap.put(file, unit);
-          } else {
-            processSource(file, unit);
-          }
-        }
-      }
-
-      logger.finest("Processing batch of size " + batchFiles.size());
-      JdtParser.Handler handler = new JdtParser.Handler() {
-        @Override
-        public void handleParsedUnit(InputFile inputFile, CompilationUnit unit) {
-          processCompilationUnit(unitMap.get(inputFile), unit, inputFile);
-        }
-      };
-
-      if (batchFiles.size() > 0) {
-        parser.parseFiles(batchFiles, handler);
-      }
-    } finally {
-      for (GenerationUnit unit : batchUnits) {
-        // Always clear, and don't leak memory on an exception.
-        unit.clear();
-      }
-      batchUnits.clear();
-      batchSourceCount = 0;
-    }
-  }
-
-  protected void processSource(InputFile file, GenerationUnit generationUnit) {
-    logger.finest("parsing " + file);
-
-    String source;
-    try {
-      source = FileUtil.readFile(file);
-    } catch (IOException e) {
-      generationUnit.error(e.getMessage());
+  private void processBatch() {
+    if (batchFiles.isEmpty()) {
       return;
     }
 
-    CompilationUnit compilationUnit = parser.parseWithBindings(file.getUnitName(), source);
-    if (compilationUnit == null) {
-      return;
-    }
-
-    processCompilationUnit(generationUnit, compilationUnit, file);
-  }
-
-  /**
-   * Callback invoked when a file is parsed.
-   */
-  protected void processCompilationUnit(
-      GenerationUnit genUnit, CompilationUnit unit, InputFile file) {
-    try {
-      String source = FileUtil.readFile(file);
-      com.google.devtools.j2objc.ast.CompilationUnit translatedUnit
-          = TreeConverter.convertCompilationUnit(unit, file, source, nameTableFactory);
-      genUnit.addCompilationUnit(translatedUnit);
-
-      if (genUnit.isFullyParsed()) {
-        logger.finest("Processing compiled unit " + genUnit.getName()
-            + " of size " + genUnit.getCompilationUnits().size());
-        processCompiledGenerationUnit(genUnit);
+    JdtParser.Handler handler = new JdtParser.Handler() {
+      @Override
+      public void handleParsedUnit(InputFile file, CompilationUnit unit) {
+        try {
+          String source = FileUtil.readFile(file);
+          processCompiledSource(file, source, unit);
+          batchFiles.remove(file);
+        } catch (IOException e) {
+          ErrorUtil.error(e.getMessage());
+        }
       }
-    } catch (IOException e) {
-      genUnit.error(e.getMessage());
+    };
+    logger.finest("Processing batch of size " + batchFiles.size());
+    parser.parseFiles(batchFiles, handler);
+
+    // Any remaining files in batchFiles has some kind of error.
+    for (InputFile file : batchFiles) {
+      handleError(file);
     }
+
+    batchFiles.clear();
   }
 
-  protected abstract void processCompiledGenerationUnit(GenerationUnit unit);
-
-  protected TimeTracker getTicker(String name) {
-    if (logger.isLoggable(Level.FINEST)) {
-      return TimeTracker.start(name);
-    } else {
-      return TimeTracker.noop();
+  private void processCompiledSource(InputFile file, String source, CompilationUnit unit) {
+    if (closureQueue != null) {
+      closureQueue.addProcessedName(FileUtil.getQualifiedMainTypeName(file, unit));
     }
+    com.google.devtools.j2objc.ast.CompilationUnit convertedUnit =
+        TreeConverter.convertCompilationUnit(unit, file, source, nameTableFactory);
+    processConvertedTree(convertedUnit);
   }
 
-  public JdtParser getParser() {
-    return parser;
-  }
+  protected abstract void processConvertedTree(com.google.devtools.j2objc.ast.CompilationUnit unit);
+
+  protected abstract void handleError(InputFile file);
 }

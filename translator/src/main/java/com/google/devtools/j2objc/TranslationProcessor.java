@@ -85,60 +85,34 @@ class TranslationProcessor extends FileProcessor {
 
   private static final Logger logger = Logger.getLogger(TranslationProcessor.class.getName());
 
+  private final GenerationBatch batch;
   private final DeadCodeMap deadCodeMap;
-
-  private final BuildClosureQueue closureQueue;
 
   private int processedCount = 0;
 
-  public TranslationProcessor(JdtParser parser, DeadCodeMap deadCodeMap) {
+  public TranslationProcessor(GenerationBatch batch, JdtParser parser, DeadCodeMap deadCodeMap) {
     super(parser);
+    this.batch = batch;
     this.deadCodeMap = deadCodeMap;
-    if (Options.buildClosure()) {
-      // Should be an error if the user specifies this with --build-closure
-      assert !Options.shouldMapHeaders();
-      closureQueue = new BuildClosureQueue();
-    } else {
-      closureQueue = null;
-    }
   }
 
   @Override
-  public void processBatch(GenerationBatch units) {
-    loadHeaderMappings();
-
-    for (GenerationUnit generationUnit : units.getGenerationUnits()) {
-      processGenerationUnit(generationUnit);
+  protected void processConvertedTree(CompilationUnit unit) {
+    InputFile file = unit.getInputFile();
+    GenerationUnit genUnit = batch.generationUnitForFile(file);
+    // Possible with --build-closure and in testing.
+    if (genUnit == null) {
+      genUnit = GenerationUnit.newSingleFileUnit(file);
     }
+    genUnit.addCompilationUnit(unit);
 
-    if (closureQueue != null) {
-      while (true) {
-        InputFile file = closureQueue.getNextFile();
-        if (file == null) {
-          processBatch();
-          file = closureQueue.getNextFile();
-        }
-        if (file == null) {
-          break;
-        }
-        processGenerationUnit(GenerationUnit.newSingleFileUnit(file));
-      }
-    } else {
-      processBatch();
+    if (genUnit.isFullyParsed()) {
+      logger.finest("Processing compiled unit " + genUnit.getName()
+          + " of size " + genUnit.getCompilationUnits().size());
+      processCompiledGenerationUnit(genUnit);
     }
   }
 
-  @Override
-  protected void processCompilationUnit(
-      GenerationUnit genUnit, org.eclipse.jdt.core.dom.CompilationUnit unit, InputFile file) {
-    if (closureQueue != null) {
-      closureQueue.addProcessedName(FileUtil.getQualifiedMainTypeName(file, unit));
-    }
-    processedCount++;
-    super.processCompilationUnit(genUnit, unit, file);
-  }
-
-  @Override
   protected void processCompiledGenerationUnit(GenerationUnit unit) {
     assert unit.getOutputPath() != null;
     assert unit.getCompilationUnits().size() == unit.getInputFiles().size();
@@ -152,6 +126,7 @@ class TranslationProcessor extends FileProcessor {
       for (CompilationUnit compUnit : unit.getCompilationUnits()) {
         applyMutations(compUnit, deadCodeMap, ticker);
         ticker.tick("Tree mutations for " + compUnit.getMainTypeName());
+        processedCount++;
       }
 
       logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
@@ -168,6 +143,7 @@ class TranslationProcessor extends FileProcessor {
 
       OuterReferenceResolver.cleanup();
     } finally {
+      unit.finished();
       ticker.pop();
       ticker.tick("Total processing time");
       ticker.printResults(System.out);
@@ -317,12 +293,6 @@ class TranslationProcessor extends FileProcessor {
   }
 
   @VisibleForTesting
-  static void generateObjectiveCSource(GenerationBatch batch, TimeTracker ticker) {
-    for (GenerationUnit unit : batch.getGenerationUnits()) {
-      generateObjectiveCSource(unit, ticker);
-    }
-  }
-
   public static void generateObjectiveCSource(GenerationUnit unit, TimeTracker ticker) {
     ticker.push();
 
@@ -339,6 +309,14 @@ class TranslationProcessor extends FileProcessor {
     ticker.tick("Implementation generation");
 
     ticker.pop();
+  }
+
+  protected void handleError(InputFile file) {
+    GenerationUnit generationUnit = batch.generationUnitForFile(file);
+    if (generationUnit != null) {
+      // Causes the generation unit to release any trees it was holding.
+      generationUnit.failed();
+    }
   }
 
   public void postProcess() {
@@ -372,6 +350,14 @@ class TranslationProcessor extends FileProcessor {
       if (!(type instanceof IOSTypeBinding)) {
         closureQueue.addName(type.getErasure().getQualifiedName());
       }
+    }
+  }
+
+  private TimeTracker getTicker(String name) {
+    if (logger.isLoggable(Level.FINEST)) {
+      return TimeTracker.start(name);
+    } else {
+      return TimeTracker.noop();
     }
   }
 

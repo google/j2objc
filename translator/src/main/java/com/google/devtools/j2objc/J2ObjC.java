@@ -112,15 +112,17 @@ public class J2ObjC {
         parser.addSourcepathEntry(preProcessorTempDir.getAbsolutePath());
       }
 
-      InputFilePreprocessor inputFilePreprocessor = new InputFilePreprocessor(parser);
-      inputFilePreprocessor.processBatch(batch);
+      InputFilePreprocessor inputFilePreprocessor = new InputFilePreprocessor(batch, parser);
+      inputFilePreprocessor.process();
       if (ErrorUtil.errorCount() > 0) {
         return;
       }
 
+      TranslationProcessor.loadHeaderMappings();
       TranslationProcessor translationProcessor
-          = new TranslationProcessor(parser, loadDeadCodeMap());
-      translationProcessor.processBatch(batch);
+          = new TranslationProcessor(batch, parser, loadDeadCodeMap());
+      translationProcessor.processFiles(batch.getInputFiles());
+      translationProcessor.processBuildClosureDependencies();
       if (ErrorUtil.errorCount() > 0) {
         return;
       }

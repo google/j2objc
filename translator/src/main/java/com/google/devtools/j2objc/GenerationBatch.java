@@ -16,8 +16,8 @@ package com.google.devtools.j2objc;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.io.Files;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;
@@ -27,10 +27,11 @@ import com.google.devtools.j2objc.util.FileUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -48,7 +49,7 @@ public class GenerationBatch {
 
   private static final Logger logger = Logger.getLogger(GenerationBatch.class.getName());
 
-  private final List<GenerationUnit> units = new ArrayList<GenerationUnit>();
+  private final Map<InputFile, GenerationUnit> unitMap = Maps.newLinkedHashMap();
 
   public GenerationBatch() {
   }
@@ -60,18 +61,12 @@ public class GenerationBatch {
     return newBatch;
   }
 
-  @VisibleForTesting
-  public static GenerationBatch fromUnit(CompilationUnit node, String name) {
-    GenerationBatch newBatch = new GenerationBatch();
-    newBatch.addSource(new RegularInputFile(name)); // Might or might not actually exist
-    assert newBatch.units.size() == 1;  // One input file -> one GenerationUnit.
-    GenerationUnit unit = newBatch.units.get(0);
-    unit.addCompilationUnit(node);
-    return newBatch;
+  public Set<InputFile> getInputFiles() {
+    return unitMap.keySet();
   }
 
-  public List<GenerationUnit> getGenerationUnits() {
-    return Collections.unmodifiableList(units);
+  public GenerationUnit generationUnitForFile(InputFile file) {
+    return unitMap.get(file);
   }
 
   public void processFileArgs(Iterable<String> args) {
@@ -168,7 +163,7 @@ public class GenerationBatch {
         zfile.close();  // Also closes input stream.
       }
       if (Options.combineSourceJars()) {
-        units.add(GenerationUnit.newCombinedJarUnit(filename, inputFiles));
+        addCombinedJar(filename, inputFiles);
       } else {
         for (InputFile file : inputFiles) {
           addSource(file);
@@ -182,16 +177,19 @@ public class GenerationBatch {
     }
   }
 
+  @VisibleForTesting
+  public void addCombinedJar(String filename, Collection<? extends InputFile> inputFiles) {
+    GenerationUnit unit = GenerationUnit.newCombinedJarUnit(filename, inputFiles);
+    for (InputFile file : inputFiles) {
+      unitMap.put(file, unit);
+    }
+  }
+
   /**
    * Adds the given InputFile to this GenerationBatch,
    * creating GenerationUnits and inferring unit names/output paths as necessary.
    */
   public void addSource(InputFile file) {
-    units.add(GenerationUnit.newSingleFileUnit(file));
-  }
-
-  @VisibleForTesting
-  void addGenerationUnit(GenerationUnit unit) {
-    units.add(unit);
+    unitMap.put(file, GenerationUnit.newSingleFileUnit(file));
   }
 }

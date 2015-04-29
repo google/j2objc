@@ -18,14 +18,12 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.GenerationBatch;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.util.NameTable;
 
 import java.io.IOException;
@@ -256,9 +254,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify constructor takes both outer field and var.
-    GenerationBatch batch = GenerationBatch.fromUnit(unit, "Test");
-    ObjectiveCImplementationGenerator.generate(batch.getGenerationUnits().get(0));
-    String translation = getTranslatedFile("Test.m");
+    String translation = generateFromUnit(unit, "Test.m");
     assertTranslation(translation, "r2 = [new_Test_$1_$1_initWithJavaLangInteger_(i) autorelease]");
   }
 
@@ -287,9 +283,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify method var is passed to constructor.
-    GenerationBatch batch = GenerationBatch.fromUnit(unit, "Test");
-    ObjectiveCImplementationGenerator.generate(batch.getGenerationUnits().get(0));
-    String translation = getTranslatedFile("Test.m");
+    String translation = generateFromUnit(unit, "Test.m");
     assertTranslation(translation, "r = [new_Test_$1_initWithJavaLangInteger_(i) autorelease]");
   }
 
@@ -318,9 +312,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTrue("required field not found", found);
 
     // Verify method var is passed to constructor.
-    GenerationBatch batch = GenerationBatch.fromUnit(unit, "Test");
-    ObjectiveCImplementationGenerator.generate(batch.getGenerationUnits().get(0));
-    String translation = getTranslatedFile("Test.m");
+    String translation = generateFromUnit(unit, "Test.m");
     assertTranslation(translation, "r = [new_Test_$1_initWithJavaLangInteger_(i) autorelease]");
   }
 

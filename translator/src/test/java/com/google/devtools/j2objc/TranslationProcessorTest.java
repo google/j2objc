@@ -52,11 +52,11 @@ public class TranslationProcessorTest extends GenerationTest {
     Options.appendSourcePath(jarFile.getPath());
     Options.setBatchTranslateMaximum(2);
 
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
     GenerationBatch batch = new GenerationBatch();
     batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Foo.java"));
     batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Bar.java"));
-    processor.processBatch(batch);
+    TranslationProcessor processor = new TranslationProcessor(batch, J2ObjC.createParser(), null);
+    processor.processFiles(batch.getInputFiles());
 
     assertEquals(0, ErrorUtil.errorCount());
   }
@@ -66,10 +66,11 @@ public class TranslationProcessorTest extends GenerationTest {
 
     addSourceFile("class Test { }", "Test.java");
 
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
     GenerationBatch batch = new GenerationBatch();
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
-    processor.processBatch(batch);
+    TranslationProcessor processor = new TranslationProcessor(batch, J2ObjC.createParser(), null);
+    processor.processFiles(batch.getInputFiles());
+    processor.processBuildClosureDependencies();
 
     String translation = getTranslatedFile("Test.h");
     assertTranslation(translation, "@interface Test");
@@ -85,11 +86,12 @@ public class TranslationProcessorTest extends GenerationTest {
     addSourceFile("class Foo { void foo1() {} }", "Foo.java");
     addSourceFile("class Foo { void foo2() {} }", "src/main/java/Foo.java");
 
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
     GenerationBatch batch = new GenerationBatch();
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
     batch.addSource(new RegularInputFile(getTempDir() + "/src/main/java/Foo.java", "Foo.java"));
-    processor.processBatch(batch);
+    TranslationProcessor processor = new TranslationProcessor(batch, J2ObjC.createParser(), null);
+    processor.processFiles(batch.getInputFiles());
+    processor.processBuildClosureDependencies();
 
     String translation = getTranslatedFile("Foo.h");
     assertTranslation(translation, "- (void)foo2;");
@@ -99,19 +101,17 @@ public class TranslationProcessorTest extends GenerationTest {
   public void testBatchReuse() throws IOException {
     addSourceFile("class Test { }", "Test.java");
 
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
     GenerationBatch batch = new GenerationBatch();
-    batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
-    processor.processBatch(batch);
-    String header1 = getTranslatedFile("Test.h");
-    String impl1 = getTranslatedFile("Test.m");
+    RegularInputFile inputFile = new RegularInputFile(getTempDir() + "/Test.java", "Test.java");
+    batch.addSource(inputFile);
+    TranslationProcessor processor = new TranslationProcessor(batch, J2ObjC.createParser(), null);
+    processor.processFiles(batch.getInputFiles());
+    String header = getTranslatedFile("Test.h");
+    String impl = getTranslatedFile("Test.m");
+    assertTranslation(header, "@interface Test");
+    assertTranslation(impl, "@implementation Test");
 
-    // Test that the temp states of GenerationUnit/GenerationBatch are cleared
-    // and reusable.
-    processor.processBatch(batch);
-    String header2 = getTranslatedFile("Test.h");
-    String impl2 = getTranslatedFile("Test.m");
-    assertEquals(header1, header2);
-    assertEquals(impl1, impl2);
+    // Test that the GenerationUnit no longer holds a reference to the tree.
+    assertEquals(0, batch.generationUnitForFile(inputFile).getCompilationUnits().size());
   }
 }

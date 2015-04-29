@@ -139,11 +139,8 @@ public abstract class GenerationTest extends TestCase {
   protected CompilationUnit translateType(String typeName, String source) {
     String typePath = typeName.replace('.', '/');
     org.eclipse.jdt.core.dom.CompilationUnit unit = compileType(typePath + ".java", source);
-    String fullSourcePath = Options.useSourceDirectories() ? "" : tempDir.getPath() + '/';
-    fullSourcePath += typePath + ".java";
     CompilationUnit newUnit = TreeConverter.convertCompilationUnit(
-        unit, new RegularInputFile(fullSourcePath, typePath + ".java"), source,
-        NameTable.newFactory());
+        unit, new RegularInputFile(typePath + ".java"), source, NameTable.newFactory());
     TranslationProcessor.applyMutations(newUnit, deadCodeMap, TimeTracker.noop());
     return newUnit;
   }
@@ -305,10 +302,14 @@ public abstract class GenerationTest extends TestCase {
    */
   protected String translateSourceFile(String source, String typeName, String fileName)
       throws IOException {
-    CompilationUnit unit = translateType(typeName, source);
-    TranslationProcessor.generateObjectiveCSource(
-        GenerationBatch.fromUnit(unit, typeName + ".java"), TimeTracker.noop());
-    return getTranslatedFile(fileName);
+    return generateFromUnit(translateType(typeName, source), fileName);
+  }
+
+  protected String generateFromUnit(CompilationUnit unit, String filename) throws IOException {
+    GenerationUnit genUnit = GenerationUnit.newSingleFileUnit(unit.getInputFile());
+    genUnit.addCompilationUnit(unit);
+    TranslationProcessor.generateObjectiveCSource(genUnit, TimeTracker.noop());
+    return getTranslatedFile(filename);
   }
 
   protected String translateCombinedFiles(String outputPath, String extension, String... sources)
@@ -317,12 +318,12 @@ public abstract class GenerationTest extends TestCase {
     for (String sourceFile : sources) {
       inputFiles.add(new RegularInputFile(tempDir + "/" + sourceFile, sourceFile));
     }
-    GenerationUnit unit = GenerationUnit.newCombinedJarUnit(outputPath + ".testfile", inputFiles);
     GenerationBatch batch = new GenerationBatch();
-    batch.addGenerationUnit(unit);
+    batch.addCombinedJar(outputPath + ".testfile", inputFiles);
     parser.setEnableDocComments(Options.docCommentsEnabled());
-    new InputFilePreprocessor(parser).processBatch(batch);
-    new TranslationProcessor(parser, DeadCodeMap.builder().build()).processBatch(batch);
+    new InputFilePreprocessor(batch, parser).process();
+    new TranslationProcessor(batch, parser, DeadCodeMap.builder().build())
+        .processFiles(batch.getInputFiles());
     return getTranslatedFile(outputPath + extension);
   }
 
@@ -336,7 +337,7 @@ public abstract class GenerationTest extends TestCase {
       batch.addSource(new RegularInputFile(
           tempDir.getPath() + File.separatorChar + fileName, fileName));
     }
-    new InputFilePreprocessor(parser).processBatch(batch);
+    new InputFilePreprocessor(batch, parser).process();
   }
 
   protected Map<String, String> writeAndReloadHeaderMappings() throws IOException {
