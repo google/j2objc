@@ -135,7 +135,6 @@ public class J2ObjC {
       if (preProcessorTempDir != null) {
         FileUtil.deleteTempDir(preProcessorTempDir);
       }
-      Options.deleteTemporaryDirectory();
     }
   }
 

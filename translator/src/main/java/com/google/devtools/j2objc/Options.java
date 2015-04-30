@@ -97,7 +97,6 @@ public class Options {
   private static String helpMessage;
   private static final String USAGE_MSG_KEY = "usage-message";
   private static final String HELP_MSG_KEY = "help-message";
-  private static String temporaryDirectory;
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static String bootclasspath = System.getProperty("sun.boot.class.path");
   private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
@@ -609,46 +608,6 @@ public class Options {
 
   public static String addPackagePrefix(String pkg, String prefix) {
     return instance.packagePrefixes.put(pkg, prefix);
-  }
-
-  public static String getTemporaryDirectory() throws IOException {
-    if (temporaryDirectory != null) {
-      return temporaryDirectory;
-    }
-    File tmpfile = File.createTempFile("j2objc", Long.toString(System.nanoTime()));
-    if (!tmpfile.delete()) {
-      throw new IOException("Could not delete temp file: " + tmpfile.getAbsolutePath());
-    }
-    if (!tmpfile.mkdir()) {
-      throw new IOException("Could not create temp directory: " + tmpfile.getAbsolutePath());
-    }
-    temporaryDirectory = tmpfile.getAbsolutePath();
-    return temporaryDirectory;
-  }
-
-  // Called on exit.  This is done here rather than using File.deleteOnExit(),
-  // so the package directories created by the dead-code-eliminator don't have
-  // to be tracked.
-  public static void deleteTemporaryDirectory() {
-    if (temporaryDirectory != null) {
-      deleteDir(new File(temporaryDirectory));
-      temporaryDirectory = null;
-    }
-  }
-
-  static void deleteDir(File dir) {
-    for (File f : dir.listFiles()) {
-      if (f.isDirectory()) {
-        deleteDir(f);
-      } else if (f.getName().endsWith(".java")) {
-        // Only delete Java files, as other temporary files (like hsperfdata)
-        // may also be in tmpdir.
-        // TODO(kstanger): It doesn't make sense that hsperfdata would show up in our tempdir.
-        // Consider deleting this method and using FileUtil#deleteTempDir() instead.
-        f.delete();
-      }
-    }
-    dir.delete();  // Will fail if other files in dir, which is fine.
   }
 
   public static String fileEncoding() {
