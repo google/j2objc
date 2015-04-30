@@ -59,9 +59,12 @@ final class EmptyImmutableSet extends ImmutableSet<Object> {
     return false;
   }
 
-  @Override
-  int copyIntoArray(Object[] dst, int offset) {
-    return offset;
+  @Override public Object[] toArray() {
+    return ObjectArrays.EMPTY_ARRAY;
+  }
+
+  @Override public <T> T[] toArray(T[] a) {
+    return asList().toArray(a);
   }
 
   @Override

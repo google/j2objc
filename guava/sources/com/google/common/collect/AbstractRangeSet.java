@@ -14,6 +14,8 @@
 
 package com.google.common.collect;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import javax.annotation.Nullable;
 
 /**
@@ -30,7 +32,15 @@ abstract class AbstractRangeSet<C extends Comparable> implements RangeSet<C> {
   }
 
   @Override
-  public abstract Range<C> rangeContaining(C value);
+  public Range<C> rangeContaining(C value) {
+    checkNotNull(value);
+    for (Range<C> range : asRanges()) {
+      if (range.contains(value)) {
+        return range;
+      }
+    }
+    return null;
+  }
 
   @Override
   public boolean isEmpty() {
@@ -77,13 +87,18 @@ abstract class AbstractRangeSet<C extends Comparable> implements RangeSet<C> {
   }
 
   @Override
-  public abstract boolean encloses(Range<C> otherRange);
+  public boolean encloses(Range<C> otherRange) {
+    for (Range<C> range : asRanges()) {
+      if (range.encloses(otherRange)) {
+        return true;
+      }
+    }
+    return false;
+  }
 
   @Override
   public boolean equals(@Nullable Object obj) {
-    if (obj == this) {
-      return true;
-    } else if (obj instanceof RangeSet) {
+    if (obj instanceof RangeSet) {
       RangeSet<?> other = (RangeSet<?>) obj;
       return this.asRanges().equals(other.asRanges());
     }
@@ -97,6 +112,12 @@ abstract class AbstractRangeSet<C extends Comparable> implements RangeSet<C> {
 
   @Override
   public final String toString() {
-    return asRanges().toString();
+    StringBuilder builder = new StringBuilder();
+    builder.append('{');
+    for (Range<C> range : asRanges()) {
+      builder.append(range);
+    }
+    builder.append('}');
+    return builder.toString();
   }
 }

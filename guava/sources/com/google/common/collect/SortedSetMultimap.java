@@ -100,12 +100,11 @@ public interface SortedSetMultimap<K, V> extends SetMultimap<K, V> {
    * live collection. When passed a key that is not present, however, {@code
    * asMap().get(Object)} returns {@code null} instead of an empty collection.
    *
-   * <p><b>Note:</b> The returned map's values are guaranteed to be of type
-   * {@link SortedSet}. To obtain this map with the more specific generic type
-   * {@code Map<K, SortedSet<V>>}, call
-   * {@link Multimaps#asMap(SortedSetMultimap)} instead.
+   * <p>Though the method signature doesn't say so explicitly, the returned map
+   * has {@link SortedSet} values.
    */
-  @Override Map<K, Collection<V>> asMap();
+  @Override
+  Map<K, Collection<V>> asMap();
 
   /**
    * Returns the comparator that orders the multimap values, with {@code null}

@@ -286,19 +286,16 @@ public final class Suppliers {
    * @since 8.0
    */
   @Beta
+  //SupplierFunction works for any T.
+  @SuppressWarnings({"unchecked", "rawtypes"})
   public static <T> Function<Supplier<T>, T> supplierFunction() {
-    @SuppressWarnings("unchecked") // implementation is "fully variant"
-    SupplierFunction<T> sf = (SupplierFunction<T>) SupplierFunctionImpl.INSTANCE;
-    return sf;
+    return (Function) SupplierFunction.INSTANCE;
   }
 
-  private interface SupplierFunction<T> extends Function<Supplier<T>, T> {}
-
-  private enum SupplierFunctionImpl implements SupplierFunction<Object> {
+  private enum SupplierFunction implements Function<Supplier<?>, Object> {
     INSTANCE;
 
-    // Note: This makes T a "pass-through type"
-    @Override public Object apply(Supplier<Object> input) {
+    @Override public Object apply(Supplier<?> input) {
       return input.get();
     }
 

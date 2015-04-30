@@ -25,9 +25,9 @@ import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Ascii;
 import com.google.common.base.CharMatcher;
 import com.google.common.base.Joiner;
+import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableList;
-import com.google.thirdparty.publicsuffix.PublicSuffixPatterns;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ import javax.annotation.Nullable;
  * suffixes and addressable as hosts; {@code "uk.com"} is one example. As a
  * result, the only useful test to determine if a domain is a plausible web host
  * is {@link #hasPublicSuffix()}. This will return {@code true} for many domains
- * which (currently) are not hosts, such as {@code "com"}, but given that any
+ * which (currently) are not hosts, such as {@code "com"}), but given that any
  * public suffix may become a host without warning, it is better to err on the
  * side of permissiveness and thus avoid spurious rejection of valid sites.
  *
@@ -59,12 +59,12 @@ import javax.annotation.Nullable;
  * <li>Unicode dot separators other than the ASCII period ({@code '.'}) are
  * converted to the ASCII period.
  * </ol>
- * <p>The normalized values will be returned from {@link #toString()} and
+ * The normalized values will be returned from {@link #name()} and
  * {@link #parts()}, and will be reflected in the result of
  * {@link #equals(Object)}.
  *
  * <p><a href="http://en.wikipedia.org/wiki/Internationalized_domain_name">
- * Internationalized domain names</a> such as {@code 网络.cn} are supported, as
+ * internationalized domain names</a> such as {@code 网络.cn} are supported, as
  * are the equivalent <a
  * href="http://en.wikipedia.org/wiki/Internationalized_domain_name">IDNA
  * Punycode-encoded</a> versions.
@@ -170,14 +170,14 @@ public final class InternetDomainName {
     for (int i = 0; i < partsSize; i++) {
       String ancestorName = DOT_JOINER.join(parts.subList(i, partsSize));
 
-      if (PublicSuffixPatterns.EXACT.containsKey(ancestorName)) {
+      if (TldPatterns.EXACT.contains(ancestorName)) {
         return i;
       }
 
       // Excluded domains (e.g. !nhs.uk) use the next highest
       // domain as the effective public suffix (e.g. uk).
 
-      if (PublicSuffixPatterns.EXCLUDED.containsKey(ancestorName)) {
+      if (TldPatterns.EXCLUDED.contains(ancestorName)) {
         return i + 1;
       }
 
@@ -187,6 +187,20 @@ public final class InternetDomainName {
     }
 
     return NO_PUBLIC_SUFFIX_FOUND;
+  }
+
+  /**
+   * A deprecated synonym for {@link #from(String)}.
+   *
+   * @param domain A domain name (not IP address)
+   * @throws IllegalArgumentException if {@code name} is not syntactically valid
+   *     according to {@link #isValid}
+   * @since 8.0 (previously named {@code from})
+   * @deprecated Use {@link #from(String)}
+   */
+  @Deprecated
+  public static InternetDomainName fromLenient(String domain) {
+    return from(domain);
   }
 
   /**
@@ -296,6 +310,13 @@ public final class InternetDomainName {
     }
 
     return true;
+  }
+
+  /**
+   * Returns the domain name, normalized to all lower case.
+   */
+  public String name() {
+    return name;
   }
 
   /**
@@ -450,6 +471,17 @@ public final class InternetDomainName {
   }
 
   /**
+   * A deprecated synonym for {@link #isValid(String)}.
+   *
+   * @since 8.0 (previously named {@code isValid})
+   * @deprecated Use {@link #isValid(String)} instead
+   */
+  @Deprecated
+  public static boolean isValidLenient(String name) {
+    return isValid(name);
+  }
+
+  /**
    * Indicates whether the argument is a syntactically valid domain name using
    * lenient validation. Specifically, validation against <a
    * href="http://www.ietf.org/rfc/rfc3490.txt">RFC 3490</a>
@@ -458,11 +490,14 @@ public final class InternetDomainName {
    * <p>The following two code snippets are equivalent:
    *
    * <pre>   {@code
+   *
    *   domainName = InternetDomainName.isValid(name)
    *       ? InternetDomainName.from(name)
-   *       : DEFAULT_DOMAIN;}</pre>
+   *       : DEFAULT_DOMAIN;
+   *   }</pre>
    *
    * <pre>   {@code
+   *
    *   try {
    *     domainName = InternetDomainName.from(name);
    *   } catch (IllegalArgumentException e) {
@@ -486,15 +521,13 @@ public final class InternetDomainName {
    */
   private static boolean matchesWildcardPublicSuffix(String domain) {
     final String[] pieces = domain.split(DOT_REGEX, 2);
-    return pieces.length == 2 && PublicSuffixPatterns.UNDER.containsKey(pieces[1]);
+    return pieces.length == 2 && TldPatterns.UNDER.contains(pieces[1]);
   }
 
-  /**
-   * Returns the domain name, normalized to all lower case.
-   */
+  // TODO: specify this to return the same as name(); remove name()
   @Override
   public String toString() {
-    return name;
+    return Objects.toStringHelper(this).add("name", name).toString();
   }
 
   /**

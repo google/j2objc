@@ -16,7 +16,7 @@
 
 package com.google.common.collect;
 
-import static com.google.common.collect.CollectPreconditions.checkNonnegative;
+import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
@@ -110,7 +110,7 @@ public final class ArrayListMultimap<K, V> extends AbstractListMultimap<K, V> {
 
   private ArrayListMultimap(int expectedKeys, int expectedValuesPerKey) {
     super(Maps.<K, Collection<V>>newHashMapWithExpectedSize(expectedKeys));
-    checkNonnegative(expectedValuesPerKey, "expectedValuesPerKey");
+    checkArgument(expectedValuesPerKey >= 0);
     this.expectedValuesPerKey = expectedValuesPerKey;
   }
 

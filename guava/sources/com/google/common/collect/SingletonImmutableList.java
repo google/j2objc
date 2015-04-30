@@ -110,9 +110,19 @@ final class SingletonImmutableList<E> extends ImmutableList<E> {
     return false;
   }
 
-  @Override
-  int copyIntoArray(Object[] dst, int offset) {
-    dst[offset] = element;
-    return offset + 1;
+  @Override public Object[] toArray() {
+    return new Object[] { element };
+  }
+
+  @Override public <T> T[] toArray(T[] array) {
+    if (array.length == 0) {
+      array = ObjectArrays.newArray(array, 1);
+    } else if (array.length > 1) {
+      array[1] = null;
+    }
+    // Writes will produce ArrayStoreException when the toArray() doc requires.
+    Object[] objectArray = array;
+    objectArray[0] = element;
+    return array;
   }
 }

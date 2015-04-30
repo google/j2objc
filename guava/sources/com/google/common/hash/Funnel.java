@@ -20,7 +20,6 @@ import java.io.Serializable;
 
 /**
  * An object which can send data from an object of type {@code T} into a {@code PrimitiveSink}.
- * Implementations for common types can be found in {@link Funnels}.
  *
  * <p>Note that serialization of {@linkplain BloomFilter bloom filters} requires the proper
  * serialization of funnels. When possible, it is recommended that funnels be implemented as a
@@ -30,12 +29,12 @@ import java.io.Serializable;
  *   public enum PersonFunnel implements Funnel<Person> {
  *     INSTANCE;
  *     public void funnel(Person person, PrimitiveSink into) {
- *       into.putUnencodedChars(person.getFirstName())
- *           .putUnencodedChars(person.getLastName())
+ *       into.putString(person.getFirstName())
+ *           .putString(person.getLastName())
  *           .putInt(person.getAge());
  *     }
  *   }}</pre>
- *
+ * 
  * @author Dimitris Andreou
  * @since 11.0
  */

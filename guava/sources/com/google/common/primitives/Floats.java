@@ -26,7 +26,6 @@ import static java.lang.Float.POSITIVE_INFINITY;
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
-import com.google.common.base.Converter;
 
 import java.io.Serializable;
 import java.util.AbstractList;
@@ -79,10 +78,6 @@ public final class Floats {
    * Float#compare(float, float)}. You may prefer to invoke that method
    * directly; this method exists only for consistency with the other utilities
    * in this package.
-   *
-   * <p><b>Note:</b> this method simply delegates to the JDK method {@link
-   * Float#compare}. It is provided for consistency with the other primitive
-   * types, whose compare methods were not added to the JDK until JDK 7.
    *
    * @param a the first {@code float} to compare
    * @param b the second {@code float} to compare
@@ -264,42 +259,6 @@ public final class Floats {
     return result;
   }
 
-  private static final class FloatConverter
-      extends Converter<String, Float> implements Serializable {
-    static final FloatConverter INSTANCE = new FloatConverter();
-
-    @Override
-    protected Float doForward(String value) {
-      return Float.valueOf(value);
-    }
-
-    @Override
-    protected String doBackward(Float value) {
-      return value.toString();
-    }
-
-    @Override
-    public String toString() {
-      return "Floats.stringConverter()";
-    }
-
-    private Object readResolve() {
-      return INSTANCE;
-    }
-    private static final long serialVersionUID = 1;
-  }
-
-  /**
-   * Returns a serializable converter object that converts between strings and
-   * floats using {@link Float#valueOf} and {@link Float#toString()}.
-   *
-   * @since 16.0
-   */
-  @Beta
-  public static Converter<String, Float> stringConverter() {
-    return FloatConverter.INSTANCE;
-  }
-
   /**
    * Returns an array containing the same values as {@code array}, but
    * guaranteed to be of a specified minimum length. If {@code array} already
@@ -388,7 +347,7 @@ public final class Floats {
     public int compare(float[] left, float[] right) {
       int minLength = Math.min(left.length, right.length);
       for (int i = 0; i < minLength; i++) {
-        int result = Float.compare(left[i], right[i]);
+        int result = Floats.compare(left[i], right[i]);
         if (result != 0) {
           return result;
         }

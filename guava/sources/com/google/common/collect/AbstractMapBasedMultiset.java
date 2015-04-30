@@ -18,8 +18,8 @@ package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.CollectPreconditions.checkNonnegative;
-import static com.google.common.collect.CollectPreconditions.checkRemove;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Multisets.checkNonnegative;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
@@ -105,21 +105,21 @@ abstract class AbstractMapBasedMultiset<E> extends AbstractMultiset<E>
           }
           @Override
           public int getCount() {
-            Count count = mapEntry.getValue();
-            if (count == null || count.get() == 0) {
+            int count = mapEntry.getValue().get();
+            if (count == 0) {
               Count frequency = backingMap.get(getElement());
               if (frequency != null) {
-                return frequency.get();
+                count = frequency.get();
               }
             }
-            return (count == null) ? 0 : count.get();
+            return count;
           }
         };
       }
 
       @Override
       public void remove() {
-        checkRemove(toRemove != null);
+        Iterators.checkRemove(toRemove != null);
         size -= toRemove.getValue().getAndSet(0);
         backingEntries.remove();
         toRemove = null;
@@ -184,7 +184,8 @@ abstract class AbstractMapBasedMultiset<E> extends AbstractMultiset<E>
 
     @Override
     public void remove() {
-      checkRemove(canRemove);
+      checkState(canRemove,
+          "no calls to next() since the last call to remove()");
       int frequency = currentEntry.getValue().get();
       if (frequency <= 0) {
         throw new ConcurrentModificationException();

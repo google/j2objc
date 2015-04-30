@@ -87,9 +87,6 @@ final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
     // targets.size() < size() / log(size())
     // TODO(kevinb): see if we can share code with OrderedIterator after it
     // graduates from labs.
-    if (targets instanceof Multiset) {
-      targets = ((Multiset<?>) targets).elementSet();
-    }
     if (!SortedIterables.hasSameComparator(comparator(), targets)
         || (targets.size() <= 1)) {
       return super.containsAll(targets);
@@ -99,7 +96,7 @@ final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
      * If targets is a sorted set with the same comparator, containsAll can run
      * in O(n) time stepping through the two collections.
      */
-    PeekingIterator<E> thisIterator = Iterators.peekingIterator(iterator());
+    Iterator<E> thisIterator = iterator();
     Iterator<?> thatIterator = targets.iterator();
     Object target = thatIterator.next();
 
@@ -107,11 +104,9 @@ final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
 
       while (thisIterator.hasNext()) {
 
-        int cmp = unsafeCompare(thisIterator.peek(), target);
+        int cmp = unsafeCompare(thisIterator.next(), target);
 
-        if (cmp < 0) {
-          thisIterator.next();
-        } else if (cmp == 0) {
+        if (cmp == 0) {
 
           if (!thatIterator.hasNext()) {
 
@@ -141,9 +136,12 @@ final class RegularImmutableSortedSet<E> extends ImmutableSortedSet<E> {
     return elements.isPartialView();
   }
 
-  @Override
-  int copyIntoArray(Object[] dst, int offset) {
-    return elements.copyIntoArray(dst, offset);
+  @Override public Object[] toArray() {
+    return elements.toArray();
+  }
+
+  @Override public <T> T[] toArray(T[] array) {
+    return elements.toArray(array);
   }
 
   @Override public boolean equals(@Nullable Object object) {

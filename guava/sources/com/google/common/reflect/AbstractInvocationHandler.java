@@ -21,22 +21,12 @@ import com.google.common.annotations.Beta;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Arrays;
 
 import javax.annotation.Nullable;
 
 /**
  * Abstract implementation of {@link InvocationHandler} that handles {@link Object#equals},
- * {@link Object#hashCode} and {@link Object#toString}. For example: <pre>
- * class Unsupported extends AbstractInvocationHandler {
- *   protected Object handleInvocation(
- *       Object proxy, Method method, Object[] args) {
- *     throw new UnsupportedOperationException();
- *   }
- * }
- *
- * CharSequence unsupported = Reflection.newProxy(CharSequence.class, new Unsupported());
- * </pre>
+ * {@link Object#hashCode} and {@link Object#toString}.
  *
  * @author Ben Yu
  * @since 12.0
@@ -72,14 +62,7 @@ public abstract class AbstractInvocationHandler implements InvocationHandler {
         && method.getName().equals("equals")
         && method.getParameterTypes()[0] == Object.class) {
       Object arg = args[0];
-      if (arg == null) {
-        return false;
-      }
-      if (proxy == arg) {
-        return true;
-      }
-      return isProxyOfSameInterfaces(arg, proxy.getClass())
-          && equals(Proxy.getInvocationHandler(arg));
+      return proxy.getClass().isInstance(arg) && equals(Proxy.getInvocationHandler(arg));
     }
     if (args.length == 0 && method.getName().equals("toString")) {
       return toString();
@@ -104,7 +87,7 @@ public abstract class AbstractInvocationHandler implements InvocationHandler {
    * <li>{@code proxy} and {@code argument} are of the same type
    * <li>and this method returns true for the {@link InvocationHandler} of {@code argument}
    * </ul>
-   * <p>Subclasses can override this method to provide custom equality.
+   * Subclasses can override this method to provide custom equality.
    */
   @Override public boolean equals(Object obj) {
     return super.equals(obj);
@@ -125,16 +108,5 @@ public abstract class AbstractInvocationHandler implements InvocationHandler {
    */
   @Override public String toString() {
     return super.toString();
-  }
-
-  private static boolean isProxyOfSameInterfaces(Object arg, Class<?> proxyClass) {
-    return proxyClass.isInstance(arg)
-        // Equal proxy instances should mostly be instance of proxyClass
-        // Under some edge cases (such as the proxy of JDK types serialized and then deserialized)
-        // the proxy type may not be the same.
-        // We first check isProxyClass() so that the common case of comparing with non-proxy objects
-        // is efficient.
-        || (Proxy.isProxyClass(arg.getClass())
-            && Arrays.equals(arg.getClass().getInterfaces(), proxyClass.getInterfaces()));
   }
 }

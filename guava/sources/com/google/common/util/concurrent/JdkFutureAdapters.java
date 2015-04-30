@@ -17,7 +17,6 @@
 package com.google.common.util.concurrent;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.util.concurrent.Uninterruptibles.getUninterruptibly;
 
 import com.google.common.annotations.Beta;
 
@@ -70,7 +69,7 @@ public final class JdkFutureAdapters {
    * <p><b>Warning:</b> If the input future does not already implement {@code
    * ListenableFuture}, the returned future will emulate {@link
    * ListenableFuture#addListener} by submitting a task to the given executor at
-   * the first call to {@code addListener}. The task must be started by the
+   * at the first call to {@code addListener}. The task must be started by the
    * executor promptly, or else the returned {@code ListenableFuture} may fail
    * to work.  The task's execution consists of blocking until the input future
    * is {@linkplain Future#isDone() done}, so each call to this method may
@@ -161,15 +160,13 @@ public final class JdkFutureAdapters {
           @Override
           public void run() {
             try {
-              /*
-               * Threads from our private pool are never interrupted. Threads
-               * from a user-supplied executor might be, but... what can we do?
-               * This is another reason to return a proper ListenableFuture
-               * instead of using listenInPoolThread.
-               */
-              getUninterruptibly(delegate);
+              delegate.get();
             } catch (Error e) {
               throw e;
+            } catch (InterruptedException e) {
+              Thread.currentThread().interrupt();
+              // Threads from our private pool are never interrupted.
+              throw new AssertionError(e);
             } catch (Throwable e) {
               // ExecutionException / CancellationException / RuntimeException
               // The task is done, run the listeners.

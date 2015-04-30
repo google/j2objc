@@ -17,11 +17,10 @@
 package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static java.util.Arrays.asList;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
-import com.google.common.base.MoreObjects;
+import com.google.common.base.Function;
 
 import java.io.IOException;
 import java.io.InvalidObjectException;
@@ -57,6 +56,9 @@ import javax.annotation.Nullable;
  * <p>See the Guava User Guide article on <a href=
  * "http://code.google.com/p/guava-libraries/wiki/ImmutableCollectionsExplained">
  * immutable collections</a>.
+ *
+ * J2ObjC Modifications:
+ * - Commented out readObject().
  *
  * @author Mike Ward
  * @since 2.0 (imported from Google Collections Library)
@@ -174,7 +176,7 @@ public class ImmutableSetMultimap<K, V>
    *           .putAll("many", 1, 2, 3, 4, 5)
    *           .build();}</pre>
    *
-   * <p>Builder instances can be reused; it is safe to call {@link #build} multiple
+   * Builder instances can be reused; it is safe to call {@link #build} multiple
    * times to build multiple multimaps in series. Each multimap contains the
    * key-value mappings in the previously created multimaps.
    *
@@ -270,7 +272,12 @@ public class ImmutableSetMultimap<K, V>
             builderMultimap.asMap().entrySet());
         Collections.sort(
             entries,
-            Ordering.from(keyComparator).<K>onKeys());
+            Ordering.from(keyComparator).onResultOf(new Function<Entry<K, Collection<V>>, K>() {
+              @Override
+              public K apply(Entry<K, Collection<V>> entry) {
+                return entry.getKey();
+              }
+            }));
         for (Map.Entry<K, Collection<V>> entry : entries) {
           sortedCopy.putAll(entry.getKey(), entry.getValue());
         }
@@ -323,7 +330,9 @@ public class ImmutableSetMultimap<K, V>
         : multimap.asMap().entrySet()) {
       K key = entry.getKey();
       Collection<? extends V> values = entry.getValue();
-      ImmutableSet<V> set = valueSet(valueComparator, values);
+      ImmutableSet<V> set = (valueComparator == null)
+          ? ImmutableSet.copyOf(values)
+          : ImmutableSortedSet.copyOf(valueComparator, values);
       if (!set.isEmpty()) {
         builder.put(key, set);
         size += set.size();
@@ -334,16 +343,14 @@ public class ImmutableSetMultimap<K, V>
         builder.build(), size, valueComparator);
   }
 
-  /**
-   * Returned by get() when a missing key is provided. Also holds the
-   * comparator, if any, used for values.
-   */
-  private final transient ImmutableSet<V> emptySet;
+  // Returned by get() when values are sorted and a missing key is provided.
+  private final transient ImmutableSortedSet<V> emptySet;
 
   ImmutableSetMultimap(ImmutableMap<K, ImmutableSet<V>> map, int size,
       @Nullable Comparator<? super V> valueComparator) {
     super(map, size);
-    this.emptySet = emptySet(valueComparator);
+    this.emptySet = (valueComparator == null)
+        ? null : ImmutableSortedSet.<V>emptySet(valueComparator);
   }
 
   // views
@@ -357,7 +364,13 @@ public class ImmutableSetMultimap<K, V>
   @Override public ImmutableSet<V> get(@Nullable K key) {
     // This cast is safe as its type is known in constructor.
     ImmutableSet<V> set = (ImmutableSet<V>) map.get(key);
-    return MoreObjects.firstNonNull(set, emptySet);
+    if (set != null) {
+      return set;
+    } else if (emptySet != null) {
+      return emptySet;
+    } else {
+      return ImmutableSet.<V>of();
+    }
   }
 
   private transient ImmutableSetMultimap<V, K> inverse;
@@ -415,58 +428,12 @@ public class ImmutableSetMultimap<K, V>
    * Its iterator traverses the values for the first key, the values for the
    * second key, and so on.
    */
+  // TODO(kevinb): Fix this so that two copies of the entries are not created.
   @Override public ImmutableSet<Entry<K, V>> entries() {
     ImmutableSet<Entry<K, V>> result = entries;
     return (result == null)
-        ? (entries = new EntrySet<K, V>(this))
+        ? (entries = ImmutableSet.copyOf(super.entries()))
         : result;
-  }
-  
-  private static final class EntrySet<K, V> extends ImmutableSet<Entry<K, V>> {
-    private transient final ImmutableSetMultimap<K, V> multimap;
-    
-    EntrySet(ImmutableSetMultimap<K, V> multimap) {
-      this.multimap = multimap;
-    }
-
-    @Override
-    public boolean contains(@Nullable Object object) {
-      if (object instanceof Entry) {
-        Entry<?, ?> entry = (Entry<?, ?>) object;
-        return multimap.containsEntry(entry.getKey(), entry.getValue());
-      }
-      return false;
-    }
-
-    @Override
-    public int size() {
-      return multimap.size();
-    }
-
-    @Override
-    public UnmodifiableIterator<Entry<K, V>> iterator() {
-      return multimap.entryIterator();
-    }
-
-    @Override
-    boolean isPartialView() {
-      return false;
-    }    
-  }
-
-  private static <V> ImmutableSet<V> valueSet(
-      @Nullable Comparator<? super V> valueComparator,
-      Collection<? extends V> values) {
-    return (valueComparator == null)
-        ? ImmutableSet.copyOf(values)
-        : ImmutableSortedSet.copyOf(valueComparator, values);
-  }
-
-  private static <V> ImmutableSet<V> emptySet(
-      @Nullable Comparator<? super V> valueComparator) {
-    return (valueComparator == null)
-        ? ImmutableSet.<V>of()
-        : ImmutableSortedSet.<V>emptySet(valueComparator);
   }
 
   /**
@@ -476,24 +443,13 @@ public class ImmutableSetMultimap<K, V>
   @GwtIncompatible("java.io.ObjectOutputStream")
   private void writeObject(ObjectOutputStream stream) throws IOException {
     stream.defaultWriteObject();
-    stream.writeObject(valueComparator());
     Serialization.writeMultimap(this, stream);
   }
 
-  @Nullable Comparator<? super V> valueComparator() {
-    return emptySet instanceof ImmutableSortedSet
-        ? ((ImmutableSortedSet<V>) emptySet).comparator()
-        : null;
-  }
-
-  @GwtIncompatible("java.io.ObjectInputStream")
-  // Serialization type safety is at the caller's mercy.
-  @SuppressWarnings("unchecked")
+  /*@GwtIncompatible("java.io.ObjectInputStream")
   private void readObject(ObjectInputStream stream)
       throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
-    Comparator<Object> valueComparator =
-        (Comparator<Object>) stream.readObject();
     int keyCount = stream.readInt();
     if (keyCount < 0) {
       throw new InvalidObjectException("Invalid key count " + keyCount);
@@ -513,7 +469,7 @@ public class ImmutableSetMultimap<K, V>
       for (int j = 0; j < valueCount; j++) {
         array[j] = stream.readObject();
       }
-      ImmutableSet<Object> valueSet = valueSet(valueComparator, asList(array));
+      ImmutableSet<Object> valueSet = ImmutableSet.copyOf(array);
       if (valueSet.size() != array.length) {
         throw new InvalidObjectException(
             "Duplicate key-value pairs exist for key " + key);
@@ -532,9 +488,7 @@ public class ImmutableSetMultimap<K, V>
 
     FieldSettersHolder.MAP_FIELD_SETTER.set(this, tmpMap);
     FieldSettersHolder.SIZE_FIELD_SETTER.set(this, tmpSize);
-    FieldSettersHolder.EMPTY_SET_FIELD_SETTER.set(
-        this, emptySet(valueComparator));
-  }
+  }*/
 
   @GwtIncompatible("not needed in emulated source.")
   private static final long serialVersionUID = 0;

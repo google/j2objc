@@ -71,10 +71,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
       if (!result.containsKey(key)) {
         @SuppressWarnings("unchecked")
         K castKey = (K) key;
-        V value = getIfPresent(key);
-        if (value != null) {
-          result.put(castKey, value);
-        }
+        result.put(castKey, getIfPresent(key));
       }
     }
     return ImmutableMap.copyOf(result);
@@ -150,7 +147,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * @param count the number of hits to record
      * @since 11.0
      */
-    void recordHits(int count);
+    public void recordHits(int count);
 
     /**
      * Records cache misses. This should be called when a cache request returns a value that was
@@ -163,7 +160,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * @param count the number of misses to record
      * @since 11.0
      */
-    void recordMisses(int count);
+    public void recordMisses(int count);
 
     /**
      * Records the successful load of a new entry. This should be called when a cache request
@@ -173,7 +170,7 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * @param loadTime the number of nanoseconds the cache spent computing or retrieving the new
      *     value
      */
-    void recordLoadSuccess(long loadTime);
+    public void recordLoadSuccess(long loadTime);
 
     /**
      * Records the failed load of a new entry. This should be called when a cache request causes
@@ -183,20 +180,20 @@ public abstract class AbstractCache<K, V> implements Cache<K, V> {
      * @param loadTime the number of nanoseconds the cache spent computing or retrieving the new
      *     value prior to an exception being thrown
      */
-    void recordLoadException(long loadTime);
+    public void recordLoadException(long loadTime);
 
     /**
      * Records the eviction of an entry from the cache. This should only been called when an entry
      * is evicted due to the cache's eviction strategy, and not as a result of manual {@linkplain
      * Cache#invalidate invalidations}.
      */
-    void recordEviction();
+    public void recordEviction();
 
     /**
      * Returns a snapshot of this counter's values. Note that this may be an inconsistent view, as
      * it may be interleaved with update operations.
      */
-    CacheStats snapshot();
+    public CacheStats snapshot();
   }
 
   /**

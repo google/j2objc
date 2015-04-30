@@ -87,6 +87,7 @@ final class SmallCharMatcher extends FastMatcher {
     return tableSize;
   }
 
+  @GwtIncompatible("java.util.BitSet")
   static CharMatcher from(BitSet chars, String description) {
     // Compute the filter.
     long filter = 0;
@@ -139,6 +140,7 @@ final class SmallCharMatcher extends FastMatcher {
     return false;
   }
 
+  @GwtIncompatible("java.util.BitSet")
   @Override
   void setBits(BitSet table) {
     if (containsZero) {

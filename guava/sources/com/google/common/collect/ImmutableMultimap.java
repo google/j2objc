@@ -17,10 +17,10 @@
 package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.collect.CollectPreconditions.checkEntryNotNull;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
+import com.google.common.base.Function;
 import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
 
@@ -59,6 +59,9 @@ import javax.annotation.Nullable;
  * <p>See the Guava User Guide article on <a href=
  * "http://code.google.com/p/guava-libraries/wiki/ImmutableCollectionsExplained">
  * immutable collections</a>.
+ *
+ * J2ObjC Modifications:
+ * - Commented out static class FieldSettersHolder. (Used for serialization)
  *
  * @author Jared Levy
  * @since 2.0 (imported from Google Collections Library)
@@ -147,7 +150,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
    *           .putAll("many", 1, 2, 3, 4, 5)
    *           .build();}</pre>
    *
-   * <p>Builder instances can be reused; it is safe to call {@link #build} multiple
+   * Builder instances can be reused; it is safe to call {@link #build} multiple
    * times to build multiple multimaps in series. Each multimap contains the
    * key-value mappings in the previously created multimaps.
    *
@@ -168,8 +171,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
      * Adds a key-value mapping to the built multimap.
      */
     public Builder<K, V> put(K key, V value) {
-      checkEntryNotNull(key, value);
-      builderMultimap.put(key, value);
+      builderMultimap.put(checkNotNull(key), checkNotNull(value));
       return this;
     }
 
@@ -179,7 +181,9 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
      * @since 11.0
      */
     public Builder<K, V> put(Entry<? extends K, ? extends V> entry) {
-      return put(entry.getKey(), entry.getValue());
+      builderMultimap.put(
+          checkNotNull(entry.getKey()), checkNotNull(entry.getValue()));
+      return this;
     }
 
     /**
@@ -190,14 +194,9 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
      *     state.
      */
     public Builder<K, V> putAll(K key, Iterable<? extends V> values) {
-      if (key == null) {
-        throw new NullPointerException(
-            "null key in entry: null=" + Iterables.toString(values));
-      }
-      Collection<V> valueList = builderMultimap.get(key);
+      Collection<V> valueList = builderMultimap.get(checkNotNull(key));
       for (V value : values) {
-        checkEntryNotNull(key, value);
-        valueList.add(value);
+        valueList.add(checkNotNull(value));
       }
       return this;
     }
@@ -265,7 +264,12 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
             builderMultimap.asMap().entrySet());
         Collections.sort(
             entries,
-            Ordering.from(keyComparator).<K>onKeys());
+            Ordering.from(keyComparator).onResultOf(new Function<Entry<K, Collection<V>>, K>() {
+              @Override
+              public K apply(Entry<K, Collection<V>> entry) {
+                return entry.getKey();
+              }
+            }));
         for (Map.Entry<K, Collection<V>> entry : entries) {
           sortedCopy.putAll(entry.getKey(), entry.getValue());
         }
@@ -306,7 +310,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
   // These constants allow the deserialization code to set final fields. This
   // holder class makes sure they are not initialized unless an instance is
   // deserialized.
-  @GwtIncompatible("java serialization is not supported")
+  /*@GwtIncompatible("java serialization is not supported")
   static class FieldSettersHolder {
     static final Serialization.FieldSetter<ImmutableMultimap>
         MAP_FIELD_SETTER = Serialization.getFieldSetter(
@@ -314,10 +318,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
     static final Serialization.FieldSetter<ImmutableMultimap>
         SIZE_FIELD_SETTER = Serialization.getFieldSetter(
         ImmutableMultimap.class, "size");
-    static final Serialization.FieldSetter<ImmutableSetMultimap>
-        EMPTY_SET_FIELD_SETTER = Serialization.getFieldSetter(
-        ImmutableSetMultimap.class, "emptySet");
-  }
+  }*/
 
   ImmutableMultimap(ImmutableMap<K, ? extends ImmutableCollection<V>> map,
       int size) {
@@ -429,13 +430,7 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
   public boolean remove(Object key, Object value) {
     throw new UnsupportedOperationException();
   }
-  
-  /**
-   * Returns {@code true} if this immutable multimap's implementation contains references to
-   * user-created objects that aren't accessible via this multimap's methods. This is generally
-   * used to determine whether {@code copyOf} implementations should make an explicit copy to avoid
-   * memory leaks.
-   */
+
   boolean isPartialView() {
     return map.isPartialView();
   }
@@ -447,11 +442,6 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
     return map.containsKey(key);
   }
 
-  @Override
-  public boolean containsValue(@Nullable Object value) {
-    return value != null && super.containsValue(value);
-  }
-  
   @Override
   public int size() {
     return size;
@@ -531,35 +521,30 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
     private static final long serialVersionUID = 0;
   }
   
-  private abstract class Itr<T> extends UnmodifiableIterator<T> {
-    final Iterator<Entry<K, Collection<V>>> mapIterator = asMap().entrySet().iterator();
-    K key = null;
-    Iterator<V> valueIterator = Iterators.emptyIterator();
-    
-    abstract T output(K key, V value);
-
-    @Override
-    public boolean hasNext() {
-      return mapIterator.hasNext() || valueIterator.hasNext();
-    }
-
-    @Override
-    public T next() {
-      if (!valueIterator.hasNext()) {
-        Entry<K, Collection<V>> mapEntry = mapIterator.next();
-        key = mapEntry.getKey();
-        valueIterator = mapEntry.getValue().iterator();
-      }
-      return output(key, valueIterator.next());
-    }
-  }
-  
   @Override
   UnmodifiableIterator<Entry<K, V>> entryIterator() {
-    return new Itr<Entry<K, V>>() {
+    final Iterator<? extends Entry<K, ? extends ImmutableCollection<V>>>
+        mapIterator = map.entrySet().iterator();
+
+    return new UnmodifiableIterator<Entry<K, V>>() {
+      K key;
+      Iterator<V> valueIterator;
+
       @Override
-      Entry<K, V> output(K key, V value) {
-        return Maps.immutableEntry(key, value);
+      public boolean hasNext() {
+        return (key != null && valueIterator.hasNext())
+            || mapIterator.hasNext();
+      }
+
+      @Override
+      public Entry<K, V> next() {
+        if (key == null || !valueIterator.hasNext()) {
+          Entry<K, ? extends ImmutableCollection<V>> entry
+              = mapIterator.next();
+          key = entry.getKey();
+          valueIterator = entry.getValue().iterator();
+        }
+        return Maps.immutableEntry(key, valueIterator.next());
       }
     };
   }
@@ -603,11 +588,41 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
     public int size() {
       return ImmutableMultimap.this.size();
     }
-    
+
     @Override
-    Multiset.Entry<K> getEntry(int index) {
-      Map.Entry<K, ? extends Collection<V>> entry = map.entrySet().asList().get(index);
-      return Multisets.immutableEntry(entry.getKey(), entry.getValue().size());
+    ImmutableSet<Entry<K>> createEntrySet() {
+      return new KeysEntrySet();
+    }
+
+    @WeakOuter
+    private class KeysEntrySet extends ImmutableMultiset<K>.EntrySet {
+      @Override
+      public int size() {
+        return keySet().size();
+      }
+
+      @Override
+      public UnmodifiableIterator<Entry<K>> iterator() {
+        return asList().iterator();
+      }
+
+      @Override
+      ImmutableList<Entry<K>> createAsList() {
+        final ImmutableList<? extends Map.Entry<K, ? extends Collection<V>>> mapEntries =
+            map.entrySet().asList();
+        return new ImmutableAsList<Entry<K>>() {
+          @Override
+          public Entry<K> get(int index) {
+            Map.Entry<K, ? extends Collection<V>> entry = mapEntries.get(index);
+            return Multisets.immutableEntry(entry.getKey(), entry.getValue().size());
+          }
+
+          @Override
+          ImmutableCollection<Entry<K>> delegateCollection() {
+            return KeysEntrySet.this;
+          }
+        };
+      }
     }
 
     @Override
@@ -628,42 +643,18 @@ public abstract class ImmutableMultimap<K, V> extends AbstractMultimap<K, V>
   
   @Override
   ImmutableCollection<V> createValues() {
-    return new Values<K, V>(this);
+    return new Values<V>(this);
   }
 
-  @Override
-  UnmodifiableIterator<V> valueIterator() {
-    return new Itr<V>() {
-      @Override
-      V output(K key, V value) {
-        return value;
-      }
-    };
-  }
+  private static class Values<V> extends ImmutableCollection<V> {
+    @Weak final ImmutableMultimap<?, V> multimap;
 
-  private static final class Values<K, V> extends ImmutableCollection<V> {
-    @Weak private transient final ImmutableMultimap<K, V> multimap;
-    
-    Values(ImmutableMultimap<K, V> multimap) {
+    Values(ImmutableMultimap<?, V> multimap) {
       this.multimap = multimap;
     }
 
-    @Override
-    public boolean contains(@Nullable Object object) {
-      return multimap.containsValue(object);
-    }
-    
     @Override public UnmodifiableIterator<V> iterator() {
-      return multimap.valueIterator();
-    }
-
-    @GwtIncompatible("not present in emulated superclass")
-    @Override
-    int copyIntoArray(Object[] dst, int offset) {
-      for (ImmutableCollection<V> valueCollection : multimap.map.values()) {
-        offset = valueCollection.copyIntoArray(dst, offset);
-      }
-      return offset;
+      return Maps.valueIterator(multimap.entries().iterator());
     }
 
     @Override

@@ -20,20 +20,16 @@ import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Supplier;
 
+import java.nio.ByteBuffer;
 import java.security.MessageDigest;
 import java.util.Iterator;
 import java.util.zip.Adler32;
 import java.util.zip.CRC32;
 import java.util.zip.Checksum;
 
-import javax.annotation.Nullable;
-
 /**
  * Static methods to obtain {@link HashFunction} instances, and other static hashing-related
  * utilities.
- *
- * <p>A comparison of the various hash functions can be found
- * <a href="http://goo.gl/jS7HH">here</a>.
  *
  * @author Kevin Bourrillion
  * @author Dimitris Andreou
@@ -42,35 +38,48 @@ import javax.annotation.Nullable;
  */
 @Beta
 public final class Hashing {
+  private Hashing() {}
+
   /**
-   * Returns a general-purpose, <b>temporary-use</b>, non-cryptographic hash function. The algorithm
-   * the returned function implements is unspecified and subject to change without notice.
+   * Used to randomize {@link #goodFastHash} instances, so that programs which persist anything
+   * dependent on hashcodes of those, will fail sooner than later.
+   */
+  private static final int GOOD_FAST_HASH_SEED = (int) System.currentTimeMillis();
+
+  // Used by goodFastHash when minimumBits == 32.
+  private static final HashFunction GOOD_FAST_HASH_FUNCTION_32 = murmur3_32(GOOD_FAST_HASH_SEED);
+
+  // Used by goodFastHash when 32 < minimumBits <= 128.
+  private static final HashFunction GOOD_FAST_HASH_FUNCTION_128 = murmur3_128(GOOD_FAST_HASH_SEED);
+
+  /**
+   * Returns a general-purpose, <b>non-cryptographic-strength</b>, streaming hash function that
+   * produces hash codes of length at least {@code minimumBits}. Users without specific
+   * compatibility requirements and who do not persist the hash codes are encouraged to
+   * choose this hash function.
    *
-   * <p><b>Warning:</b> a new random seed for these functions is chosen each time the {@code
-   * Hashing} class is loaded. <b>Do not use this method</b> if hash codes may escape the current
-   * process in any way, for example being sent over RPC, or saved to disk.
+   * <p>Repeated calls to {@link #goodFastHash} with the same {@code minimumBits} value will
+   * return {@link HashFunction} instances with identical behavior (but not necessarily the
+   * same instance) for the duration of the current virtual machine.
    *
-   * <p>Repeated calls to this method on the same loaded {@code Hashing} class, using the same value
-   * for {@code minimumBits}, will return identically-behaving {@link HashFunction} instances.
+   * <p><b>Warning: the implementation is unspecified and is subject to change.</b>
    *
-   * @param minimumBits a positive integer (can be arbitrarily large)
-   * @return a hash function, described above, that produces hash codes of length {@code
-   *     minimumBits} or greater
+   * @throws IllegalArgumentException if {@code minimumBits} is not positive
    */
   public static HashFunction goodFastHash(int minimumBits) {
     int bits = checkPositiveAndMakeMultipleOf32(minimumBits);
 
     if (bits == 32) {
-      return Murmur3_32Holder.GOOD_FAST_HASH_FUNCTION_32;
+      return GOOD_FAST_HASH_FUNCTION_32;
     }
     if (bits <= 128) {
-      return Murmur3_128Holder.GOOD_FAST_HASH_FUNCTION_128;
+      return GOOD_FAST_HASH_FUNCTION_128;
     }
 
     // Otherwise, join together some 128-bit murmur3s
     int hashFunctionsNeeded = (bits + 127) / 128;
     HashFunction[] hashFunctions = new HashFunction[hashFunctionsNeeded];
-    hashFunctions[0] = Murmur3_128Holder.GOOD_FAST_HASH_FUNCTION_128;
+    hashFunctions[0] = GOOD_FAST_HASH_FUNCTION_128;
     int seed = GOOD_FAST_HASH_SEED;
     for (int i = 1; i < hashFunctionsNeeded; i++) {
       seed += 1500450271; // a prime; shouldn't matter
@@ -78,12 +87,6 @@ public final class Hashing {
     }
     return new ConcatenatedHashFunction(hashFunctions);
   }
-
-  /**
-   * Used to randomize {@link #goodFastHash} instances, so that programs which persist anything
-   * dependent on the hash codes they produce will fail sooner.
-   */
-  private static final int GOOD_FAST_HASH_SEED = (int) System.currentTimeMillis();
 
   /**
    * Returns a hash function implementing the
@@ -106,15 +109,10 @@ public final class Hashing {
    * <p>The exact C++ equivalent is the MurmurHash3_x86_32 function (Murmur3A).
    */
   public static HashFunction murmur3_32() {
-    return Murmur3_32Holder.MURMUR3_32;
+    return MURMUR3_32;
   }
 
-  private static class Murmur3_32Holder {
-    static final HashFunction MURMUR3_32 = new Murmur3_32HashFunction(0);
-
-    /** Returned by {@link #goodFastHash} when {@code minimumBits <= 32}. */
-    static final HashFunction GOOD_FAST_HASH_FUNCTION_32 = murmur3_32(GOOD_FAST_HASH_SEED);
-  }
+  private static final HashFunction MURMUR3_32 = new Murmur3_32HashFunction(0);
 
   /**
    * Returns a hash function implementing the
@@ -137,107 +135,53 @@ public final class Hashing {
    * <p>The exact C++ equivalent is the MurmurHash3_x64_128 function (Murmur3F).
    */
   public static HashFunction murmur3_128() {
-    return Murmur3_128Holder.MURMUR3_128;
+    return MURMUR3_128;
   }
 
-  private static class Murmur3_128Holder {
-    static final HashFunction MURMUR3_128 = new Murmur3_128HashFunction(0);
-
-    /** Returned by {@link #goodFastHash} when {@code 32 < minimumBits <= 128}. */
-    static final HashFunction GOOD_FAST_HASH_FUNCTION_128 = murmur3_128(GOOD_FAST_HASH_SEED);
-  }
-
-  /**
-   * Returns a hash function implementing the
-   * <a href="https://131002.net/siphash/">64-bit SipHash-2-4 algorithm</a>
-   * using a seed value of {@code k = 00 01 02 ...}.
-   *
-   * @since 15.0
-   */
-  public static HashFunction sipHash24() {
-    return SipHash24Holder.SIP_HASH_24;
-  }
-
-  private static class SipHash24Holder {
-    static final HashFunction SIP_HASH_24 =
-        new SipHashFunction(2, 4, 0x0706050403020100L, 0x0f0e0d0c0b0a0908L);
-  }
-
-  /**
-   * Returns a hash function implementing the
-   * <a href="https://131002.net/siphash/">64-bit SipHash-2-4 algorithm</a>
-   * using the given seed.
-   *
-   * @since 15.0
-   */
-  public static HashFunction sipHash24(long k0, long k1) {
-    return new SipHashFunction(2, 4, k0, k1);
-  }
+  private static final HashFunction MURMUR3_128 = new Murmur3_128HashFunction(0);
 
   /**
    * Returns a hash function implementing the MD5 hash algorithm (128 hash bits) by delegating to
    * the MD5 {@link MessageDigest}.
    */
   public static HashFunction md5() {
-    return Md5Holder.MD5;
+    return MD5;
   }
 
-  private static class Md5Holder {
-    static final HashFunction MD5 = new MessageDigestHashFunction("MD5", "Hashing.md5()");
-  }
+  private static final HashFunction MD5 = new MessageDigestHashFunction("MD5", "Hashing.md5()");
 
   /**
    * Returns a hash function implementing the SHA-1 algorithm (160 hash bits) by delegating to the
    * SHA-1 {@link MessageDigest}.
    */
   public static HashFunction sha1() {
-    return Sha1Holder.SHA_1;
+    return SHA_1;
   }
 
-  private static class Sha1Holder {
-    static final HashFunction SHA_1 =
-        new MessageDigestHashFunction("SHA-1", "Hashing.sha1()");
-  }
+  private static final HashFunction SHA_1 =
+      new MessageDigestHashFunction("SHA-1", "Hashing.sha1()");
 
   /**
    * Returns a hash function implementing the SHA-256 algorithm (256 hash bits) by delegating to
    * the SHA-256 {@link MessageDigest}.
    */
   public static HashFunction sha256() {
-    return Sha256Holder.SHA_256;
+    return SHA_256;
   }
 
-  private static class Sha256Holder {
-    static final HashFunction SHA_256 =
-        new MessageDigestHashFunction("SHA-256", "Hashing.sha256()");
-  }
+  private static final HashFunction SHA_256 =
+      new MessageDigestHashFunction("SHA-256", "Hashing.sha256()");
 
   /**
    * Returns a hash function implementing the SHA-512 algorithm (512 hash bits) by delegating to the
    * SHA-512 {@link MessageDigest}.
    */
   public static HashFunction sha512() {
-    return Sha512Holder.SHA_512;
+    return SHA_512;
   }
 
-  private static class Sha512Holder {
-    static final HashFunction SHA_512 =
-        new MessageDigestHashFunction("SHA-512", "Hashing.sha512()");
-  }
-
-  /**
-   * Returns a hash function implementing the CRC32C checksum algorithm (32 hash bits) as described
-   * by RFC 3720, Section 12.1.
-   *
-   * @since 18.0
-   */
-  public static HashFunction crc32c() {
-    return Crc32cHolder.CRC_32_C;
-  }
-
-  private static final class Crc32cHolder {
-    static final HashFunction CRC_32_C = new Crc32cHashFunction();
-  }
+  private static final HashFunction SHA_512 =
+      new MessageDigestHashFunction("SHA-512", "Hashing.sha512()");
 
   /**
    * Returns a hash function implementing the CRC-32 checksum algorithm (32 hash bits) by delegating
@@ -249,13 +193,11 @@ public final class Hashing {
    * @since 14.0
    */
   public static HashFunction crc32() {
-    return Crc32Holder.CRC_32;
+    return CRC_32;
   }
 
-  private static class Crc32Holder {
-    static final HashFunction CRC_32 =
-        checksumHashFunction(ChecksumType.CRC_32, "Hashing.crc32()");
-  }
+  private static final HashFunction CRC_32 =
+      checksumHashFunction(ChecksumType.CRC_32, "Hashing.crc32()");
 
   /**
    * Returns a hash function implementing the Adler-32 checksum algorithm (32 hash bits) by
@@ -267,13 +209,11 @@ public final class Hashing {
    * @since 14.0
    */
   public static HashFunction adler32() {
-    return Adler32Holder.ADLER_32;
+    return ADLER_32;
   }
 
-  private static class Adler32Holder {
-    static final HashFunction ADLER_32 =
-        checksumHashFunction(ChecksumType.ADLER_32, "Hashing.adler32()");
-  }
+  private static final HashFunction ADLER_32 =
+      checksumHashFunction(ChecksumType.ADLER_32, "Hashing.adler32()");
 
   private static HashFunction checksumHashFunction(ChecksumType type, String toString) {
     return new ChecksumHashFunction(type, type.bits, toString);
@@ -303,6 +243,21 @@ public final class Hashing {
     public abstract Checksum get();
   }
 
+  // Lazy initialization holder class idiom.
+
+  /**
+   * If {@code hashCode} has enough bits, returns {@code hashCode.asLong()}, otherwise
+   * returns a {@code long} value with {@code hashCode.asInt()} as the least-significant
+   * four bytes and {@code 0x00} as each of the most-significant four bytes.
+   *
+   * @deprecated Use {@code HashCode.padToLong()} instead. This method is scheduled to be
+   *     removed in Guava 15.0.
+   */
+  @Deprecated
+  public static long padToLong(HashCode hashCode) {
+    return hashCode.padToLong();
+  }
+
   /**
    * Assigns to {@code hashCode} a "bucket" in the range {@code [0, buckets)}, in a uniform
    * manner that minimizes the need for remapping as {@code buckets} grows. That is,
@@ -315,6 +270,9 @@ public final class Hashing {
    *
    * <p>See the <a href="http://en.wikipedia.org/wiki/Consistent_hashing">wikipedia
    * article on consistent hashing</a> for more information.
+   * <p>
+   * If you might want to have weights for the buckets in the future, take a look at
+   * {@code weightedConsistentHash}.
    */
   public static int consistentHash(HashCode hashCode, int buckets) {
     return consistentHash(hashCode.padToLong(), buckets);
@@ -332,6 +290,9 @@ public final class Hashing {
    *
    * <p>See the <a href="http://en.wikipedia.org/wiki/Consistent_hashing">wikipedia
    * article on consistent hashing</a> for more information.
+   * <p>
+   * If you might want to have weights for the buckets in the future, take a look at
+   * {@code weightedConsistentHash}.
    */
   public static int consistentHash(long input, int buckets) {
     checkArgument(buckets > 0, "buckets must be positive: %s", buckets);
@@ -373,7 +334,7 @@ public final class Hashing {
         resultBytes[i] = (byte) (resultBytes[i] * 37 ^ nextBytes[i]);
       }
     }
-    return HashCode.fromBytesNoCopy(resultBytes);
+    return HashCodes.fromBytesNoCopy(resultBytes);
   }
 
   /**
@@ -398,7 +359,7 @@ public final class Hashing {
         resultBytes[i] += nextBytes[i];
       }
     }
-    return HashCode.fromBytesNoCopy(resultBytes);
+    return HashCodes.fromBytesNoCopy(resultBytes);
   }
 
   /**
@@ -425,44 +386,18 @@ public final class Hashing {
 
     @Override
     HashCode makeHash(Hasher[] hashers) {
+      // TODO(user): Get rid of the ByteBuffer here?
       byte[] bytes = new byte[bits / 8];
-      int i = 0;
+      ByteBuffer buffer = ByteBuffer.wrap(bytes);
       for (Hasher hasher : hashers) {
-        HashCode newHash = hasher.hash();
-        i += newHash.writeBytesTo(bytes, i, newHash.bits() / 8);
+        buffer.put(hasher.hash().asBytes());
       }
-      return HashCode.fromBytesNoCopy(bytes);
+      return HashCodes.fromBytesNoCopy(bytes);
     }
 
     @Override
     public int bits() {
       return bits;
-    }
-
-    @Override
-    public boolean equals(@Nullable Object object) {
-      if (object instanceof ConcatenatedHashFunction) {
-        ConcatenatedHashFunction other = (ConcatenatedHashFunction) object;
-        if (bits != other.bits || functions.length != other.functions.length) {
-          return false;
-        }
-        for (int i = 0; i < functions.length; i++) {
-          if (!functions[i].equals(other.functions[i])) {
-            return false;
-          }
-        }
-        return true;
-      }
-      return false;
-    }
-
-    @Override
-    public int hashCode() {
-      int hash = bits;
-      for (HashFunction function : functions) {
-        hash ^= function.hashCode();
-      }
-      return hash;
     }
   }
 
@@ -482,6 +417,4 @@ public final class Hashing {
       return ((double) ((int) (state >>> 33) + 1)) / (0x1.0p31);
     }
   }
-
-  private Hashing() {}
 }

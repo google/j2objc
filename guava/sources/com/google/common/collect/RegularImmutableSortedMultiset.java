@@ -19,6 +19,7 @@ import static com.google.common.base.Preconditions.checkPositionIndexes;
 import static com.google.common.collect.BoundType.CLOSED;
 
 import com.google.common.primitives.Ints;
+import com.google.j2objc.annotations.WeakOuter;
 
 import javax.annotation.Nullable;
 
@@ -48,8 +49,7 @@ final class RegularImmutableSortedMultiset<E> extends ImmutableSortedMultiset<E>
     this.length = length;
   }
 
-  @Override
-  Entry<E> getEntry(int index) {
+  private Entry<E> getEntry(int index) {
     return Multisets.immutableEntry(
         elementSet.asList().get(index),
         counts[offset + index]);
@@ -104,6 +104,39 @@ final class RegularImmutableSortedMultiset<E> extends ImmutableSortedMultiset<E>
           (RegularImmutableSortedSet<E>) elementSet.getSubSet(from, to);
       return new RegularImmutableSortedMultiset<E>(
           subElementSet, counts, cumulativeCounts, offset + from, to - from);
+    }
+  }
+
+  @Override
+  ImmutableSet<Entry<E>> createEntrySet() {
+    return new EntrySet();
+  }
+
+  @WeakOuter
+  private final class EntrySet extends ImmutableMultiset<E>.EntrySet {
+    @Override
+    public int size() {
+      return length;
+    }
+
+    @Override
+    public UnmodifiableIterator<Entry<E>> iterator() {
+      return asList().iterator();
+    }
+
+    @Override
+    ImmutableList<Entry<E>> createAsList() {
+      return new ImmutableAsList<Entry<E>>() {
+        @Override
+        public Entry<E> get(int index) {
+          return getEntry(index);
+        }
+
+        @Override
+        ImmutableCollection<Entry<E>> delegateCollection() {
+          return EntrySet.this;
+        }
+      };
     }
   }
 

@@ -29,8 +29,6 @@ import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.logging.Level;
 
-import javax.annotation.Nullable;
-
 /**
  * A {@link Closeable} that collects {@code Closeable} resources and closes them all when it is
  * {@linkplain #close closed}. This is intended to approximately emulate the behavior of Java 7's
@@ -40,21 +38,22 @@ import javax.annotation.Nullable;
  * Running on Java 6, exceptions that cannot be thrown must be logged rather than being added to the
  * thrown exception as a suppressed exception.
  *
- * <p>This class is intended to be used in the following pattern:
+ * <p>This class is intended to to be used in the following pattern:
  *
- * <pre>   {@code
- *   Closer closer = Closer.create();
- *   try {
- *     InputStream in = closer.register(openInputStream());
- *     OutputStream out = closer.register(openOutputStream());
- *     // do stuff
- *   } catch (Throwable e) {
- *     // ensure that any checked exception types other than IOException that could be thrown are
- *     // provided here, e.g. throw closer.rethrow(e, CheckedException.class);
- *     throw closer.rethrow(e);
- *   } finally {
- *     closer.close();
- *   }}</pre>
+ * <pre>{@code
+ * Closer closer = Closer.create();
+ * try {
+ *   InputStream in = closer.register(openInputStream());
+ *   OutputStream out = closer.register(openOutputStream());
+ *   // do stuff
+ * } catch (Throwable e) {
+ *   // ensure that any checked exception types other than IOException that could be thrown are
+ *   // provided here, e.g. throw closer.rethrow(e, CheckedException.class);
+ *   throw closer.rethrow(e);
+ * } finally {
+ *   closer.close();
+ * }
+ * }</pre>
  *
  * <p>Note that this try-catch-finally block is not equivalent to a try-catch-finally block using
  * try-with-resources. To get the equivalent of that, you must wrap the above code in <i>another</i>
@@ -62,7 +61,6 @@ import javax.annotation.Nullable;
  * {@code close()}).
  *
  * <p>This pattern ensures the following:
- *
  * <ul>
  *   <li>Each {@code Closeable} resource that is successfully registered will be closed later.</li>
  *   <li>If a {@code Throwable} is thrown in the try block, no exceptions that occur when attempting
@@ -74,7 +72,7 @@ import javax.annotation.Nullable;
  *   (because another exception is already being thrown) is <i>suppressed</i>.</li>
  * </ul>
  *
- * <p>An exception that is suppressed is not thrown. The method of suppression used depends on the
+ * An exception that is suppressed is not thrown. The method of suppression used depends on the
  * version of Java the code is running on:
  *
  * <ul>
@@ -121,11 +119,8 @@ public final class Closer implements Closeable {
    * @return the given {@code closeable}
    */
   // close. this word no longer has any meaning to me.
-  public <C extends Closeable> C register(@Nullable C closeable) {
-    if (closeable != null) {
-      stack.addFirst(closeable);
-    }
-
+  public <C extends Closeable> C register(C closeable) {
+    stack.push(closeable);
     return closeable;
   }
 
@@ -143,10 +138,9 @@ public final class Closer implements Closeable {
    * @throws IOException when the given throwable is an IOException
    */
   public RuntimeException rethrow(Throwable e) throws IOException {
-    checkNotNull(e);
     thrown = e;
     Throwables.propagateIfPossible(e, IOException.class);
-    throw new RuntimeException(e);
+    throw Throwables.propagate(e);
   }
 
   /**
@@ -165,11 +159,10 @@ public final class Closer implements Closeable {
    */
   public <X extends Exception> RuntimeException rethrow(Throwable e,
       Class<X> declaredType) throws IOException, X {
-    checkNotNull(e);
     thrown = e;
     Throwables.propagateIfPossible(e, IOException.class);
     Throwables.propagateIfPossible(e, declaredType);
-    throw new RuntimeException(e);
+    throw Throwables.propagate(e);
   }
 
   /**
@@ -189,11 +182,10 @@ public final class Closer implements Closeable {
    */
   public <X1 extends Exception, X2 extends Exception> RuntimeException rethrow(
       Throwable e, Class<X1> declaredType1, Class<X2> declaredType2) throws IOException, X1, X2 {
-    checkNotNull(e);
     thrown = e;
     Throwables.propagateIfPossible(e, IOException.class);
     Throwables.propagateIfPossible(e, declaredType1, declaredType2);
-    throw new RuntimeException(e);
+    throw Throwables.propagate(e);
   }
 
   /**
@@ -209,7 +201,7 @@ public final class Closer implements Closeable {
 
     // close closeables in LIFO order
     while (!stack.isEmpty()) {
-      Closeable closeable = stack.removeFirst();
+      Closeable closeable = stack.pop();
       try {
         closeable.close();
       } catch (Throwable e) {

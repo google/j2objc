@@ -20,6 +20,7 @@ import static com.google.common.primitives.UnsignedInts.INT_MASK;
 import static com.google.common.primitives.UnsignedInts.compare;
 import static com.google.common.primitives.UnsignedInts.toLong;
 
+import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 
@@ -43,15 +44,37 @@ import javax.annotation.Nullable;
  */
 @GwtCompatible(emulated = true)
 public final class UnsignedInteger extends Number implements Comparable<UnsignedInteger> {
-  public static final UnsignedInteger ZERO = fromIntBits(0);
-  public static final UnsignedInteger ONE = fromIntBits(1);
-  public static final UnsignedInteger MAX_VALUE = fromIntBits(-1);
+  public static final UnsignedInteger ZERO = asUnsigned(0);
+  public static final UnsignedInteger ONE = asUnsigned(1);
+  public static final UnsignedInteger MAX_VALUE = asUnsigned(-1);
 
   private final int value;
+
+/*-[
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
+]-*/
 
   private UnsignedInteger(int value) {
     // GWT doesn't consistently overflow values to make them 32-bit, so we need to force it.
     this.value = value & 0xffffffff;
+  }
+
+/*-[
+#pragma clang diagnostic pop
+]-*/
+
+  /**
+   * Returns an {@code UnsignedInteger} that, when treated as signed, is
+   * equal to {@code value}.
+   *
+   * @deprecated Use {@link #fromIntBits(int)}. This method is scheduled to be removed in Guava
+   *             release 15.0.
+   */
+  @Deprecated
+  @Beta
+  public static UnsignedInteger asUnsigned(int value) {
+    return fromIntBits(value);
   }
 
   /**
@@ -119,6 +142,19 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    * Returns the result of adding this and {@code val}. If the result would have more than 32 bits,
    * returns the low 32 bits of the result.
    *
+   * @deprecated Use {@link #plus(UnsignedInteger)}. This method is scheduled to be removed in Guava
+   *             release 15.0.
+   */
+  @Deprecated
+  @Beta
+  public UnsignedInteger add(UnsignedInteger val) {
+    return plus(val);
+  }
+
+  /**
+   * Returns the result of adding this and {@code val}. If the result would have more than 32 bits,
+   * returns the low 32 bits of the result.
+   *
    * @since 14.0
    */
   @CheckReturnValue
@@ -130,11 +166,38 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
    * Returns the result of subtracting this and {@code val}. If the result would be negative,
    * returns the low 32 bits of the result.
    *
+   * @deprecated Use {@link #minus(UnsignedInteger)}. This method is scheduled to be removed in
+   *             Guava release 15.0.
+   */
+  @Deprecated
+  @Beta
+  public UnsignedInteger subtract(UnsignedInteger val) {
+    return minus(val);
+  }
+
+  /**
+   * Returns the result of subtracting this and {@code val}. If the result would be negative,
+   * returns the low 32 bits of the result.
+   *
    * @since 14.0
    */
   @CheckReturnValue
   public UnsignedInteger minus(UnsignedInteger val) {
     return fromIntBits(value - checkNotNull(val).value);
+  }
+
+  /**
+   * Returns the result of multiplying this and {@code val}. If the result would have more than 32
+   * bits, returns the low 32 bits of the result.
+   *
+   * @deprecated Use {@link #times(UnsignedInteger)}. This method is scheduled to be removed in
+   *             Guava release 15.0.
+   */
+  @Deprecated
+  @Beta
+  @GwtIncompatible("Does not truncate correctly")
+  public UnsignedInteger multiply(UnsignedInteger val) {
+    return times(val);
   }
 
   /**
@@ -153,12 +216,36 @@ public final class UnsignedInteger extends Number implements Comparable<Unsigned
   /**
    * Returns the result of dividing this by {@code val}.
    *
+   * @deprecated Use {@link #dividedBy(UnsignedInteger)}. This method is scheduled to be removed in
+   *             Guava release 15.0.
+   */
+  @Deprecated
+  @Beta
+  public UnsignedInteger divide(UnsignedInteger val) {
+    return dividedBy(val);
+  }
+
+  /**
+   * Returns the result of dividing this by {@code val}.
+   *
    * @throws ArithmeticException if {@code val} is zero
    * @since 14.0
    */
   @CheckReturnValue
   public UnsignedInteger dividedBy(UnsignedInteger val) {
     return fromIntBits(UnsignedInts.divide(value, checkNotNull(val).value));
+  }
+
+  /**
+   * Returns the remainder of dividing this by {@code val}.
+   *
+   * @deprecated Use {@link #mod(UnsignedInteger)}. This method is scheduled to be removed in Guava
+   *             release 15.0.
+   */
+  @Deprecated
+  @Beta
+  public UnsignedInteger remainder(UnsignedInteger val) {
+    return mod(val);
   }
 
   /**

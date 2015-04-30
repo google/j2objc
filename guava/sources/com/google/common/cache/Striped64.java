@@ -6,7 +6,7 @@
 
 /*
  * Source:
- * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/src/jsr166e/Striped64.java?revision=1.9
+ * http://gee.cs.oswego.edu/cgi-bin/viewcvs.cgi/jsr166/src/jsr166e/Striped64.java?revision=1.7
  */
 
 package com.google.common.cache;
@@ -46,7 +46,7 @@ abstract class Striped64 extends Number {
      *
      * A single spinlock ("busy") is used for initializing and
      * resizing the table, as well as populating slots with new Cells.
-     * There is no need for a blocking lock; when the lock is not
+     * There is no need for a blocking lock: When the lock is not
      * available, threads try other slots (or the base).  During these
      * retries, there is increased contention and reduced locality,
      * which is still better than alternatives.
@@ -117,17 +117,32 @@ abstract class Striped64 extends Number {
     }
 
     /**
-     * ThreadLocal holding a single-slot int array holding hash code.
-     * Unlike the JDK8 version of this class, we use a suboptimal
-     * int[] representation to avoid introducing a new type that can
-     * impede class-unloading when ThreadLocals are not removed.
+     * Holder for the thread-local hash code. The code is initially
+     * random, but may be set to a different value upon collisions.
      */
-    static final ThreadLocal<int[]> threadHashCode = new ThreadLocal<int[]>();
+    static final class HashCode {
+        static final Random rng = new Random();
+        int code;
+        HashCode() {
+            int h = rng.nextInt(); // Avoid zero to allow xorShift rehash
+            code = (h == 0) ? 1 : h;
+        }
+    }
 
     /**
-     * Generator of new random hash codes
+     * The corresponding ThreadLocal class
      */
-    static final Random rng = new Random();
+    static final class ThreadHashCode extends ThreadLocal<HashCode> {
+        public HashCode initialValue() { return new HashCode(); }
+    }
+
+    /**
+     * Static per-thread hash codes. Shared across all instances to
+     * reduce ThreadLocal pollution and because adjustments due to
+     * collisions in one table are likely to be appropriate for
+     * others.
+     */
+    static final ThreadHashCode threadHashCode = new ThreadHashCode();
 
     /** Number of CPUS, to place bound on table size */
     static final int NCPU = Runtime.getRuntime().availableProcessors();
@@ -190,15 +205,8 @@ abstract class Striped64 extends Number {
      * @param hc the hash code holder
      * @param wasUncontended false if CAS failed before call
      */
-    final void retryUpdate(long x, int[] hc, boolean wasUncontended) {
-        int h;
-        if (hc == null) {
-            threadHashCode.set(hc = new int[1]); // Initialize randomly
-            int r = rng.nextInt(); // Avoid zero to allow xorShift rehash
-            h = hc[0] = (r == 0) ? 1 : r;
-        }
-        else
-            h = hc[0];
+    final void retryUpdate(long x, HashCode hc, boolean wasUncontended) {
+        int h = hc.code;
         boolean collide = false;                // True if last slot nonempty
         for (;;) {
             Cell[] as; Cell a; int n; long v;
@@ -251,7 +259,6 @@ abstract class Striped64 extends Number {
                 h ^= h << 13;                   // Rehash
                 h ^= h >>> 17;
                 h ^= h << 5;
-                hc[0] = h;                      // Record index for next time
             }
             else if (busy == 0 && cells == as && casBusy()) {
                 boolean init = false;
@@ -271,6 +278,7 @@ abstract class Striped64 extends Number {
             else if (casBase(v = base, fn(v, x)))
                 break;                          // Fall back on using base
         }
+        hc.code = h;                            // Record index for next time
     }
 
     /**
@@ -335,4 +343,5 @@ abstract class Striped64 extends Number {
                                        e.getCause());
         }
     }
+
 }
