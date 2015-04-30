@@ -47,4 +47,15 @@ public class PrivateDeclarationResolverTest extends GenerationTest {
     // "B" should not be public because it is inside the private class "A".
     assertNotInTranslation(translation, "Test_A_B");
   }
+
+  public void testPrivateBaseClassExposedBySubclass() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { private static class Base { protected int field; protected void method() {}"
+        + " protected static void staticMethod() {} } public static class Foo extends Base {} }",
+        "Test", "Test.h");
+    assertTranslation(translation, "jint field_");
+    assertTranslation(translation, "- (void)method;");
+    assertTranslation(translation, "+ (void)staticMethod;");
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_Base_staticMethod();");
+  }
 }

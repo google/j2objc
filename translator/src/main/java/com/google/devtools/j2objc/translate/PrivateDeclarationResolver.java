@@ -51,7 +51,6 @@ public class PrivateDeclarationResolver extends TreeVisitor {
   // public declaration. These types and all of their supertypes must be public.
   private Set<ITypeBinding> publicTypes = Sets.newHashSet();
   private List<AbstractTypeDeclaration> publicNodesToVisit = Lists.newArrayList();
-  private ITypeBinding currentType;
 
   @Override
   public boolean visit(CompilationUnit node) {
@@ -73,7 +72,6 @@ public class PrivateDeclarationResolver extends TreeVisitor {
     while (!publicNodesToVisit.isEmpty()) {
       AbstractTypeDeclaration publicNode = publicNodesToVisit.remove(publicNodesToVisit.size() - 1);
       publicNode.setHasPrivateDeclaration(false);
-      currentType = publicNode.getTypeBinding();
       for (BodyDeclaration decl : publicNode.getBodyDeclarations()) {
         decl.accept(this);
       }
@@ -124,8 +122,7 @@ public class PrivateDeclarationResolver extends TreeVisitor {
 
   @Override
   public boolean visit(FieldDeclaration node) {
-    boolean isPrivate = isPrivateType(currentType)
-        || (Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers()));
+    boolean isPrivate = Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers());
     node.setHasPrivateDeclaration(isPrivate);
     if (!isPrivate) {
       addPublicType(node.getType());
@@ -135,7 +132,7 @@ public class PrivateDeclarationResolver extends TreeVisitor {
 
   @Override
   public boolean visit(FunctionDeclaration node) {
-    boolean isPrivate = isPrivateType(currentType) || Modifier.isPrivate(node.getModifiers());
+    boolean isPrivate = Modifier.isPrivate(node.getModifiers());
     node.setHasPrivateDeclaration(isPrivate);
     if (!isPrivate) {
       addPublicType(node.getReturnType());
@@ -145,8 +142,7 @@ public class PrivateDeclarationResolver extends TreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    boolean isPrivate = (!currentType.isInterface() && isPrivateType(currentType))
-        || (Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers()));
+    boolean isPrivate = Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers());
     node.setHasPrivateDeclaration(isPrivate);
     if (!isPrivate) {
       addPublicType(node.getReturnType());
@@ -156,8 +152,7 @@ public class PrivateDeclarationResolver extends TreeVisitor {
 
   @Override
   public boolean visit(NativeDeclaration node) {
-    boolean isPrivate = (!currentType.isInterface() && isPrivateType(currentType))
-        || (Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers()));
+    boolean isPrivate = Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers());
     node.setHasPrivateDeclaration(isPrivate);
     return false;
   }
