@@ -16,7 +16,13 @@
 
 package com.google.common.base;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+
+import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
+
+import javax.annotation.CheckReturnValue;
 
 /**
  * Static methods pertaining to ASCII characters (those in the range of values
@@ -429,17 +435,33 @@ public final class Ascii {
    * modification.
    */
   public static String toLowerCase(String string) {
-    return toLowerCase((CharSequence) string);
+    int length = string.length();
+    for (int i = 0; i < length; i++) {
+      if (isUpperCase(string.charAt(i))) {
+        char[] chars = string.toCharArray();
+        for (; i < length; i++) {
+          char c = chars[i];
+          if (isUpperCase(c)) {
+            chars[i] = (char) (c ^ 0x20);
+          }
+        }
+        return String.valueOf(chars);
+      }
+    }
+    return string;
   }
 
   /**
    * Returns a copy of the input character sequence in which all {@linkplain #isUpperCase(char)
    * uppercase ASCII characters} have been converted to lowercase. All other characters are copied
    * without modification.
-   * 
+   *
    * @since 14.0
    */
   public static String toLowerCase(CharSequence chars) {
+    if (chars instanceof String) {
+      return toLowerCase((String) chars);
+    }
     int length = chars.length();
     StringBuilder builder = new StringBuilder(length);
     for (int i = 0; i < length; i++) {
@@ -455,24 +477,40 @@ public final class Ascii {
   public static char toLowerCase(char c) {
     return isUpperCase(c) ? (char) (c ^ 0x20) : c;
   }
-  
+
   /**
    * Returns a copy of the input string in which all {@linkplain #isLowerCase(char) lowercase ASCII
    * characters} have been converted to uppercase. All other characters are copied without
    * modification.
    */
   public static String toUpperCase(String string) {
-    return toUpperCase((CharSequence) string);
+    int length = string.length();
+    for (int i = 0; i < length; i++) {
+      if (isLowerCase(string.charAt(i))) {
+        char[] chars = string.toCharArray();
+        for (; i < length; i++) {
+          char c = chars[i];
+          if (isLowerCase(c)) {
+            chars[i] = (char) (c & 0x5f);
+          }
+        }
+        return String.valueOf(chars);
+      }
+    }
+    return string;
   }
 
   /**
    * Returns a copy of the input character sequence in which all {@linkplain #isLowerCase(char)
    * lowercase ASCII characters} have been converted to uppercase. All other characters are copied
    * without modification.
-   * 
+   *
    * @since 14.0
    */
   public static String toUpperCase(CharSequence chars) {
+    if (chars instanceof String) {
+      return toUpperCase((String) chars);
+    }
     int length = chars.length();
     StringBuilder builder = new StringBuilder(length);
     for (int i = 0; i < length; i++) {
@@ -495,6 +533,8 @@ public final class Ascii {
    * return {@code false}.
    */
   public static boolean isLowerCase(char c) {
+    // Note: This was benchmarked against the alternate expression "(char)(c - 'a') < 26" (Nov '13)
+    // and found to perform at least as well, or better.
     return (c >= 'a') && (c <= 'z');
   }
 
@@ -505,5 +545,123 @@ public final class Ascii {
    */
   public static boolean isUpperCase(char c) {
     return (c >= 'A') && (c <= 'Z');
+  }
+
+  /**
+   * Truncates the given character sequence to the given maximum length. If the length of the
+   * sequence is greater than {@code maxLength}, the returned string will be exactly
+   * {@code maxLength} chars in length and will end with the given {@code truncationIndicator}.
+   * Otherwise, the sequence will be returned as a string with no changes to the content.
+   *
+   * <p>Examples:
+   *
+   * <pre>   {@code
+   *   Ascii.truncate("foobar", 7, "..."); // returns "foobar"
+   *   Ascii.truncate("foobar", 5, "..."); // returns "fo..." }</pre>
+   *
+   * <p><b>Note:</b> This method <i>may</i> work with certain non-ASCII text but is not safe for
+   * use with arbitrary Unicode text. It is mostly intended for use with text that is known to be
+   * safe for use with it (such as all-ASCII text) and for simple debugging text. When using this
+   * method, consider the following:
+   *
+   * <ul>
+   *   <li>it may split surrogate pairs</li>
+   *   <li>it may split characters and combining characters</li>
+   *   <li>it does not consider word boundaries</li>
+   *   <li>if truncating for display to users, there are other considerations that must be taken
+   *   into account</li>
+   *   <li>the appropriate truncation indicator may be locale-dependent</li>
+   *   <li>it is safe to use non-ASCII characters in the truncation indicator</li>
+   * </ul>
+   *
+   *
+   * @throws IllegalArgumentException if {@code maxLength} is less than the length of
+   *     {@code truncationIndicator}
+   * @since 16.0
+   */
+  @Beta
+  @CheckReturnValue
+  public static String truncate(CharSequence seq, int maxLength, String truncationIndicator) {
+    checkNotNull(seq);
+
+    // length to truncate the sequence to, not including the truncation indicator
+    int truncationLength = maxLength - truncationIndicator.length();
+
+    // in this worst case, this allows a maxLength equal to the length of the truncationIndicator,
+    // meaning that a string will be truncated to just the truncation indicator itself
+    checkArgument(truncationLength >= 0,
+        "maxLength (%s) must be >= length of the truncation indicator (%s)",
+        maxLength, truncationIndicator.length());
+
+    if (seq.length() <= maxLength) {
+      String string = seq.toString();
+      if (string.length() <= maxLength) {
+        return string;
+      }
+      // if the length of the toString() result was > maxLength for some reason, truncate that
+      seq = string;
+    }
+
+    return new StringBuilder(maxLength)
+        .append(seq, 0, truncationLength)
+        .append(truncationIndicator)
+        .toString();
+  }
+
+  /**
+   * Indicates whether the contents of the given character sequences {@code s1} and {@code s2} are
+   * equal, ignoring the case of any ASCII alphabetic characters between {@code 'a'} and {@code 'z'}
+   * or {@code 'A'} and {@code 'Z'} inclusive.
+   *
+   * <p>This method is significantly faster than {@link String#equalsIgnoreCase} and should be used
+   * in preference if at least one of the parameters is known to contain only ASCII characters.
+   *
+   * <p>Note however that this method does not always behave identically to expressions such as:
+   * <ul>
+   * <li>{@code string.toUpperCase().equals("UPPER CASE ASCII")}
+   * <li>{@code string.toLowerCase().equals("lower case ascii")}
+   * </ul>
+   * <p>due to case-folding of some non-ASCII characters (which does not occur in
+   * {@link String#equalsIgnoreCase}). However in almost all cases that ASCII strings are used,
+   * the author probably wanted the behavior provided by this method rather than the subtle and
+   * sometimes surprising behavior of {@code toUpperCase()} and {@code toLowerCase()}.
+   *
+   * @since 16.0
+   */
+  @Beta
+  public static boolean equalsIgnoreCase(CharSequence s1, CharSequence s2) {
+    // Calling length() is the null pointer check (so do it before we can exit early).
+    int length = s1.length();
+    if (s1 == s2) {
+      return true;
+    }
+    if (length != s2.length()) {
+      return false;
+    }
+    for (int i = 0; i < length; i++) {
+      char c1 = s1.charAt(i);
+      char c2 = s2.charAt(i);
+      if (c1 == c2) {
+        continue;
+      }
+      int alphaIndex = getAlphaIndex(c1);
+      // This was also benchmarked using '&' to avoid branching (but always evaluate the rhs),
+      // however this showed no obvious improvement.
+      if (alphaIndex < 26 && alphaIndex == getAlphaIndex(c2)) {
+        continue;
+      }
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Returns the non-negative index value of the alpha character {@code c}, regardless of case.
+   * Ie, 'a'/'A' returns 0 and 'z'/'Z' returns 25. Non-alpha characters return a value of 26 or
+   * greater.
+   */
+  private static int getAlphaIndex(char c) {
+    // Fold upper-case ASCII to lower-case and make zero-indexed and unsigned (by casting to char).
+    return (char) ((c | 0x20) - 'a');
   }
 }

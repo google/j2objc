@@ -19,11 +19,8 @@ package com.google.common.collect;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtCompatible;
-import com.google.common.base.Objects;
 
 import java.util.Map;
-
-import javax.annotation.Nullable;
 
 /**
  * An implementation of {@link ImmutableTable} that holds a single cell.
@@ -31,10 +28,10 @@ import javax.annotation.Nullable;
  * @author Gregory Kick
  */
 @GwtCompatible
-final class SingletonImmutableTable<R, C, V> extends ImmutableTable<R, C, V> {
-  private final R singleRowKey;
-  private final C singleColumnKey;
-  private final V singleValue;
+class SingletonImmutableTable<R, C, V> extends ImmutableTable<R, C, V> {
+  final R singleRowKey;
+  final C singleColumnKey;
+  final V singleValue;
 
   SingletonImmutableTable(R rowKey, C columnKey, V value) {
     this.singleRowKey = checkNotNull(rowKey);
@@ -46,11 +43,6 @@ final class SingletonImmutableTable<R, C, V> extends ImmutableTable<R, C, V> {
     this(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
   }
 
-  @Override public ImmutableSet<Cell<R, C, V>> cellSet() {
-    return ImmutableSet.of(
-        Tables.immutableCell(singleRowKey, singleColumnKey, singleValue));
-  }
-
   @Override public ImmutableMap<R, V> column(C columnKey) {
     checkNotNull(columnKey);
     return containsColumn(columnKey)
@@ -58,49 +50,9 @@ final class SingletonImmutableTable<R, C, V> extends ImmutableTable<R, C, V> {
         : ImmutableMap.<R, V>of();
   }
 
-  @Override public ImmutableSet<C> columnKeySet() {
-    return ImmutableSet.of(singleColumnKey);
-  }
-
   @Override public ImmutableMap<C, Map<R, V>> columnMap() {
     return ImmutableMap.of(singleColumnKey,
         (Map<R, V>) ImmutableMap.of(singleRowKey, singleValue));
-  }
-
-  @Override public boolean contains(@Nullable Object rowKey,
-      @Nullable Object columnKey) {
-    return containsRow(rowKey) && containsColumn(columnKey);
-  }
-
-  @Override public boolean containsColumn(@Nullable Object columnKey) {
-    return Objects.equal(this.singleColumnKey, columnKey);
-  }
-
-  @Override public boolean containsRow(@Nullable Object rowKey) {
-    return Objects.equal(this.singleRowKey, rowKey);
-  }
-
-  @Override public boolean containsValue(@Nullable Object value) {
-    return Objects.equal(this.singleValue, value);
-  }
-
-  @Override public V get(@Nullable Object rowKey, @Nullable Object columnKey) {
-    return contains(rowKey, columnKey) ? singleValue : null;
-  }
-
-  @Override public boolean isEmpty() {
-    return false;
-  }
-
-  @Override public ImmutableMap<C, V> row(R rowKey) {
-    checkNotNull(rowKey);
-    return containsRow(rowKey)
-        ? ImmutableMap.of(singleColumnKey, singleValue)
-        : ImmutableMap.<C, V>of();
-  }
-
-  @Override public ImmutableSet<R> rowKeySet() {
-    return ImmutableSet.of(singleRowKey);
   }
 
   @Override public ImmutableMap<R, Map<C, V>> rowMap() {
@@ -112,38 +64,13 @@ final class SingletonImmutableTable<R, C, V> extends ImmutableTable<R, C, V> {
     return 1;
   }
 
-  @Override public ImmutableCollection<V> values() {
+  @Override
+  ImmutableSet<Cell<R, C, V>> createCellSet() {
+    return ImmutableSet.of(
+        cellOf(singleRowKey, singleColumnKey, singleValue));
+  }
+
+  @Override ImmutableCollection<V> createValues() {
     return ImmutableSet.of(singleValue);
-  }
-
-  @Override public boolean equals(@Nullable Object obj) {
-    if (obj == this) {
-      return true;
-    } else if (obj instanceof Table) {
-      Table<?, ?, ?> that = (Table<?, ?, ?>) obj;
-      if (that.size() == 1) {
-        Cell<?, ?, ?> thatCell = that.cellSet().iterator().next();
-        return Objects.equal(this.singleRowKey, thatCell.getRowKey()) &&
-            Objects.equal(this.singleColumnKey, thatCell.getColumnKey()) &&
-            Objects.equal(this.singleValue, thatCell.getValue());
-      }
-    }
-    return false;
-  }
-
-  @Override public int hashCode() {
-    return Objects.hashCode(singleRowKey, singleColumnKey, singleValue);
-  }
-
-  @Override public String toString() {
-    return new StringBuilder()
-        .append('{')
-        .append(singleRowKey)
-        .append("={")
-        .append(singleColumnKey)
-        .append('=')
-        .append(singleValue)
-        .append("}}")
-        .toString();
   }
 }

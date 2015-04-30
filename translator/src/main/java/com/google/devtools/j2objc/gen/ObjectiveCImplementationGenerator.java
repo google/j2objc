@@ -78,15 +78,12 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
         printIgnoreIncompletePragmas(units);
         pushIgnoreDeprecatedDeclarationsPragma();
         for (AbstractTypeDeclaration type : types) {
-          setGenerationContext(type);
           TypePrivateDeclarationGenerator.generate(getBuilder(), type);
         }
         for (AbstractTypeDeclaration type : types) {
-          setGenerationContext(type);
           TypeImplementationGenerator.generate(getBuilder(), type);
         }
 
-        syncFilename(getGenerationUnit().getSourceName());
         popIgnoreDeprecatedDeclarationsPragma();
       }
     }

@@ -22,9 +22,11 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Maps.EntryTransformer;
 
 import java.lang.reflect.Array;
+import java.util.Collections;
 import java.util.Map;
 import java.util.NavigableMap;
 import java.util.NavigableSet;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.SortedSet;
 
@@ -34,15 +36,7 @@ import java.util.SortedSet;
  * @author Hayward Chan
  */
 @GwtCompatible(emulated = true)
-class Platform {
-  /**
-   * Clone the given array using {@link Object#clone()}.  It is factored out so
-   * that it can be emulated in GWT.
-   */
-  static <T> T[] clone(T[] array) {
-    return array.clone();
-  }
-
+final class Platform {
   /**
    * Returns a new array of the given length with the same type as a reference
    * array.
@@ -58,6 +52,10 @@ class Platform {
     @SuppressWarnings("unchecked")
     T[] result = (T[]) Array.newInstance(type, length);
     return result;
+  }
+  
+  static <E> Set<E> newSetFromMap(Map<E, Boolean> map) {
+    return Collections.newSetFromMap(map);
   }
 
   /**

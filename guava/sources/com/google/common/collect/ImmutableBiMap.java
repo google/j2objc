@@ -16,11 +16,8 @@
 
 package com.google.common.collect;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.annotations.GwtCompatible;
 
-import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -57,8 +54,6 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableMap<K, V>
    * Returns an immutable bimap containing a single entry.
    */
   public static <K, V> ImmutableBiMap<K, V> of(K k1, V v1) {
-    checkNotNull(k1, "null key in entry: null=%s", v1);
-    checkNotNull(v1, "null value in entry: %s=null", k1);
     return new SingletonImmutableBiMap<K, V>(k1, v1);
   }
 
@@ -68,10 +63,7 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableMap<K, V>
    * @throws IllegalArgumentException if duplicate keys or values are added
    */
   public static <K, V> ImmutableBiMap<K, V> of(K k1, V v1, K k2, V v2) {
-    return new Builder<K, V>()
-        .put(k1, v1)
-        .put(k2, v2)
-        .build();
+    return new RegularImmutableBiMap<K, V>(entryOf(k1, v1), entryOf(k2, v2));
   }
 
   /**
@@ -81,11 +73,7 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableMap<K, V>
    */
   public static <K, V> ImmutableBiMap<K, V> of(
       K k1, V v1, K k2, V v2, K k3, V v3) {
-    return new Builder<K, V>()
-        .put(k1, v1)
-        .put(k2, v2)
-        .put(k3, v3)
-        .build();
+    return new RegularImmutableBiMap<K, V>(entryOf(k1, v1), entryOf(k2, v2), entryOf(k3, v3));
   }
 
   /**
@@ -95,12 +83,8 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableMap<K, V>
    */
   public static <K, V> ImmutableBiMap<K, V> of(
       K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4) {
-    return new Builder<K, V>()
-        .put(k1, v1)
-        .put(k2, v2)
-        .put(k3, v3)
-        .put(k4, v4)
-        .build();
+    return new RegularImmutableBiMap<K, V>(entryOf(k1, v1), entryOf(k2, v2), entryOf(k3, v3),
+        entryOf(k4, v4));
   }
 
   /**
@@ -110,13 +94,8 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableMap<K, V>
    */
   public static <K, V> ImmutableBiMap<K, V> of(
       K k1, V v1, K k2, V v2, K k3, V v3, K k4, V v4, K k5, V v5) {
-    return new Builder<K, V>()
-        .put(k1, v1)
-        .put(k2, v2)
-        .put(k3, v3)
-        .put(k4, v4)
-        .put(k5, v5)
-        .build();
+    return new RegularImmutableBiMap<K, V>(entryOf(k1, v1), entryOf(k2, v2), entryOf(k3, v3),
+        entryOf(k4, v4), entryOf(k5, v5));
   }
 
   // looking for of() with > 5 entries? Use the builder instead.
@@ -140,7 +119,7 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableMap<K, V>
    *           .put("three", 3)
    *           .build();}</pre>
    *
-   * For <i>small</i> immutable bimaps, the {@code ImmutableBiMap.of()} methods
+   * <p>For <i>small</i> immutable bimaps, the {@code ImmutableBiMap.of()} methods
    * are even more convenient.
    *
    * <p>Builder instances can be reused - it is safe to call {@link #build}
@@ -184,7 +163,14 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableMap<K, V>
      * @throws IllegalArgumentException if duplicate keys or values were added
      */
     @Override public ImmutableBiMap<K, V> build() {
-      return fromEntries(entries);
+      switch (size) {
+        case 0:
+          return of();
+        case 1:
+          return of(entries[0].getKey(), entries[0].getValue());
+        default:
+          return new RegularImmutableBiMap<K, V>(size, entries);
+      }
     }
   }
 
@@ -212,23 +198,20 @@ public abstract class ImmutableBiMap<K, V> extends ImmutableMap<K, V>
         return bimap;
       }
     }
-
-    return fromEntries(ImmutableList.copyOf(map.entrySet()));
-  }
-
-  static <K, V> ImmutableBiMap<K, V> fromEntries(
-      Collection<? extends Entry<? extends K, ? extends V>> entries) {
-    switch (entries.size()) {
+    Entry<?, ?>[] entries = map.entrySet().toArray(EMPTY_ENTRY_ARRAY);
+    switch (entries.length) {
       case 0:
         return of();
-      case 1: {
-        Entry<? extends K, ? extends V> entry = Iterables.getOnlyElement(entries);
-        return new SingletonImmutableBiMap<K, V>(entry.getKey(), entry.getValue());
-      }
+      case 1:
+        @SuppressWarnings("unchecked") // safe covariant cast in this context
+        Entry<K, V> entry = (Entry<K, V>) entries[0];
+        return of(entry.getKey(), entry.getValue());
       default:
         return new RegularImmutableBiMap<K, V>(entries);
     }
   }
+
+  private static final Entry<?, ?>[] EMPTY_ENTRY_ARRAY = new Entry<?, ?>[0];
 
   ImmutableBiMap() {}
 

@@ -41,28 +41,28 @@ import javax.annotation.Nullable;
 @GwtIncompatible("NavigableMap")
 public class ImmutableRangeMap<K extends Comparable<?>, V> implements RangeMap<K, V> {
 
-  @SuppressWarnings("unchecked")
-  private static final ImmutableRangeMap EMPTY =
-      new ImmutableRangeMap(ImmutableList.of(), ImmutableList.of());
+  private static final ImmutableRangeMap<Comparable<?>, Object> EMPTY =
+      new ImmutableRangeMap<Comparable<?>, Object>(
+          ImmutableList.<Range<Comparable<?>>>of(), ImmutableList.of());
 
   /**
    * Returns an empty immutable range map.
    */
   @SuppressWarnings("unchecked")
-  public static final <K extends Comparable<?>, V> ImmutableRangeMap<K, V> of() {
-    return EMPTY;
+  public static <K extends Comparable<?>, V> ImmutableRangeMap<K, V> of() {
+    return (ImmutableRangeMap<K, V>) EMPTY;
   }
 
   /**
    * Returns an immutable range map mapping a single range to a single value.
    */
-  public static final <K extends Comparable<?>, V> ImmutableRangeMap<K, V> of(
+  public static <K extends Comparable<?>, V> ImmutableRangeMap<K, V> of(
       Range<K> range, V value) {
     return new ImmutableRangeMap<K, V>(ImmutableList.of(range), ImmutableList.of(value));
   }
 
   @SuppressWarnings("unchecked")
-  public static final <K extends Comparable<?>, V> ImmutableRangeMap<K, V> copyOf(
+  public static <K extends Comparable<?>, V> ImmutableRangeMap<K, V> copyOf(
       RangeMap<K, ? extends V> rangeMap) {
     if (rangeMap instanceof ImmutableRangeMap) {
       return (ImmutableRangeMap<K, V>) rangeMap;

@@ -218,7 +218,11 @@ public final class BigIntegerMath {
         return sqrtFloor;
       case CEILING:
       case UP:
-        return sqrtFloor.pow(2).equals(x) ? sqrtFloor : sqrtFloor.add(BigInteger.ONE);
+        int sqrtFloorInt = sqrtFloor.intValue();
+        boolean sqrtFloorIsExact =
+            (sqrtFloorInt * sqrtFloorInt == x.intValue()) // fast check mod 2^32
+            && sqrtFloor.pow(2).equals(x); // slow exact check
+        return sqrtFloorIsExact ? sqrtFloor : sqrtFloor.add(BigInteger.ONE);
       case HALF_DOWN:
       case HALF_UP:
       case HALF_EVEN:
@@ -257,7 +261,7 @@ public final class BigIntegerMath {
      */
     BigInteger sqrt0;
     int log2 = log2(x, FLOOR);
-    if(log2 < Double.MAX_EXPONENT) {
+    if (log2 < Double.MAX_EXPONENT) {
       sqrt0 = sqrtApproxWithDoubles(x);
     } else {
       int shift = (log2 - DoubleUtils.SIGNIFICAND_BITS) & ~1; // even!
@@ -291,7 +295,7 @@ public final class BigIntegerMath {
    *         is not an integer multiple of {@code b}
    */
   @GwtIncompatible("TODO")
-  public static BigInteger divide(BigInteger p, BigInteger q, RoundingMode mode){
+  public static BigInteger divide(BigInteger p, BigInteger q, RoundingMode mode) {
     BigDecimal pDec = new BigDecimal(p);
     BigDecimal qDec = new BigDecimal(q);
     return pDec.divide(qDec, 0, mode).toBigIntegerExact();
@@ -301,7 +305,7 @@ public final class BigIntegerMath {
    * Returns {@code n!}, that is, the product of the first {@code n} positive
    * integers, or {@code 1} if {@code n == 0}.
    *
-   * <p><b>Warning</b>: the result takes <i>O(n log n)</i> space, so use cautiously.
+   * <p><b>Warning:</b> the result takes <i>O(n log n)</i> space, so use cautiously.
    *
    * <p>This uses an efficient binary recursive algorithm to compute the factorial
    * with balanced multiplies.  It also removes all the 2s from the intermediate
@@ -389,7 +393,7 @@ public final class BigIntegerMath {
    * Returns {@code n} choose {@code k}, also known as the binomial coefficient of {@code n} and
    * {@code k}, that is, {@code n! / (k! (n - k)!)}.
    *
-   * <p><b>Warning</b>: the result can take as much as <i>O(k log n)</i> space.
+   * <p><b>Warning:</b> the result can take as much as <i>O(k log n)</i> space.
    *
    * @throws IllegalArgumentException if {@code n < 0}, {@code k < 0}, or {@code k > n}
    */

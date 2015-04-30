@@ -15,7 +15,8 @@
 package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.CollectPreconditions.checkNonnegative;
+import static com.google.common.collect.CollectPreconditions.checkRemove;
 
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
@@ -78,11 +79,8 @@ public final class HashBiMap<K, V> extends AbstractMap<K, V> implements BiMap<K,
     return bimap;
   }
 
-  private static final class BiEntry<K, V> {
-    final K key;
+  private static final class BiEntry<K, V> extends ImmutableEntry<K, V> {
     final int keyHash;
-
-    final V value;
     final int valueHash;
 
     @Nullable
@@ -92,9 +90,8 @@ public final class HashBiMap<K, V> extends AbstractMap<K, V> implements BiMap<K,
     BiEntry<K, V> nextInVToKBucket;
 
     BiEntry(K key, int keyHash, V value, int valueHash) {
-      this.key = key;
+      super(key, value);
       this.keyHash = keyHash;
-      this.value = value;
       this.valueHash = valueHash;
     }
   }
@@ -112,7 +109,7 @@ public final class HashBiMap<K, V> extends AbstractMap<K, V> implements BiMap<K,
   }
 
   private void init(int expectedSize) {
-    checkArgument(expectedSize >= 0, "expectedSize must be >= 0 but was %s", expectedSize);
+    checkNonnegative(expectedSize, "expectedSize");
     int tableSize = Hashing.closedTableSize(expectedSize, LOAD_FACTOR);
     this.hashTableKToV = createTable(tableSize);
     this.hashTableVToK = createTable(tableSize);
@@ -376,7 +373,7 @@ public final class HashBiMap<K, V> extends AbstractMap<K, V> implements BiMap<K,
     @Override
     public void remove() {
       checkForConcurrentModification();
-      checkState(toRemove != null, "Only one remove() call allowed per call to next");
+      checkRemove(toRemove != null);
       delete(toRemove);
       expectedModCount = modCount;
       toRemove = null;
@@ -392,9 +389,8 @@ public final class HashBiMap<K, V> extends AbstractMap<K, V> implements BiMap<K,
 
   @WeakOuter
   private final class KeySet extends Maps.KeySet<K, V> {
-    @Override
-    Map<K, V> map() {
-      return HashBiMap.this;
+    KeySet() {
+      super(HashBiMap.this);
     }
 
     @Override
@@ -549,9 +545,8 @@ public final class HashBiMap<K, V> extends AbstractMap<K, V> implements BiMap<K,
 
     @WeakOuter
     private final class InverseKeySet extends Maps.KeySet<V, K> {
-      @Override
-      Map<V, K> map() {
-        return Inverse.this;
+      InverseKeySet() {
+        super(Inverse.this);
       }
 
       @Override

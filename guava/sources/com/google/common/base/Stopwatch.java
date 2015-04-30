@@ -30,10 +30,7 @@ import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-
-import javax.annotation.CheckReturnValue;
 
 /**
  * An object that measures elapsed time in nanoseconds. It is useful to measure
@@ -88,7 +85,6 @@ public final class Stopwatch {
    *
    * @since 15.0
    */
-  @CheckReturnValue
   public static Stopwatch createUnstarted() {
     return new Stopwatch();
   }
@@ -99,7 +95,6 @@ public final class Stopwatch {
    *
    * @since 15.0
    */
-  @CheckReturnValue
   public static Stopwatch createUnstarted(Ticker ticker) {
     return new Stopwatch(ticker);
   }
@@ -110,7 +105,6 @@ public final class Stopwatch {
    *
    * @since 15.0
    */
-  @CheckReturnValue
   public static Stopwatch createStarted() {
     return new Stopwatch().start();
   }
@@ -121,7 +115,6 @@ public final class Stopwatch {
    *
    * @since 15.0
    */
-  @CheckReturnValue
   public static Stopwatch createStarted(Ticker ticker) {
     return new Stopwatch(ticker).start();
   }
@@ -133,7 +126,7 @@ public final class Stopwatch {
    * @deprecated Use {@link Stopwatch#createUnstarted()} instead.
    */
   @Deprecated
-  public Stopwatch() {
+  Stopwatch() {
     this(Ticker.systemTicker());
   }
 
@@ -144,7 +137,7 @@ public final class Stopwatch {
    * @deprecated Use {@link Stopwatch#createUnstarted(Ticker)} instead.
    */
   @Deprecated
-  public Stopwatch(Ticker ticker) {
+  Stopwatch(Ticker ticker) {
     this.ticker = checkNotNull(ticker, "ticker");
   }
 
@@ -153,7 +146,6 @@ public final class Stopwatch {
    * and {@link #stop()} has not been called since the last call to {@code
    * start()}.
    */
-  @CheckReturnValue
   public boolean isRunning() {
     return isRunning;
   }
@@ -212,7 +204,6 @@ public final class Stopwatch {
    *
    * @since 14.0 (since 10.0 as {@code elapsedTime()})
    */
-  @CheckReturnValue
   public long elapsed(TimeUnit desiredUnit) {
     return desiredUnit.convert(elapsedNanos(), NANOSECONDS);
   }
@@ -228,7 +219,7 @@ public final class Stopwatch {
     double value = (double) nanos / NANOSECONDS.convert(1, unit);
 
     // Too bad this functionality is not exposed as a regular method call
-    return String.format(Locale.ROOT, "%.4g %s", value, abbreviate(unit));
+    return String.format("%.4g %s", value, abbreviate(unit));
   }
 
   private static TimeUnit chooseUnit(long nanos) {

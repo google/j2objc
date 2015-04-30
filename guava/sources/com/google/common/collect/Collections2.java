@@ -18,6 +18,10 @@ package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Predicates.and;
+import static com.google.common.base.Predicates.in;
+import static com.google.common.base.Predicates.not;
+import static com.google.common.collect.CollectPreconditions.checkNonnegative;
 import static com.google.common.math.LongMath.binomial;
 
 import com.google.common.annotations.Beta;
@@ -31,6 +35,7 @@ import com.google.common.primitives.Ints;
 
 import java.util.AbstractCollection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -98,7 +103,8 @@ public final class Collections2 {
    * {@code contains} method throws a {@code ClassCastException} or
    * {@code NullPointerException}.
    */
-  static boolean safeContains(Collection<?> collection, Object object) {
+  static boolean safeContains(
+      Collection<?> collection, @Nullable Object object) {
     checkNotNull(collection);
     try {
       return collection.contains(object);
@@ -114,7 +120,7 @@ public final class Collections2 {
    * {@code remove} method throws a {@code ClassCastException} or
    * {@code NullPointerException}.
    */
-  static boolean safeRemove(Collection<?> collection, Object object) {
+  static boolean safeRemove(Collection<?> collection, @Nullable Object object) {
     checkNotNull(collection);
     try {
       return collection.remove(object);
@@ -125,7 +131,7 @@ public final class Collections2 {
     }
   }
 
-  static class FilteredCollection<E> implements Collection<E> {
+  static class FilteredCollection<E> extends AbstractCollection<E> {
     final Collection<E> unfiltered;
     final Predicate<? super E> predicate;
 
@@ -161,42 +167,23 @@ public final class Collections2 {
     }
 
     @Override
-    public boolean contains(Object element) {
-      try {
-        // TODO(user): consider doing the predicate after unfiltered.contains,
-        // which would reduce the risk of CCE here
-
-        // unsafe cast can result in a CCE from predicate.apply(), which we
-        // will catch
-        @SuppressWarnings("unchecked")
+    public boolean contains(@Nullable Object element) {
+      if (safeContains(unfiltered, element)) {
+        @SuppressWarnings("unchecked") // element is in unfiltered, so it must be an E
         E e = (E) element;
-
-        /*
-         * We check whether e satisfies the predicate, when we really mean to
-         * check whether the element contained in the set does. This is ok as
-         * long as the predicate is consistent with equals, as required.
-         */
-        return predicate.apply(e) && unfiltered.contains(element);
-      } catch (NullPointerException e) {
-        return false;
-      } catch (ClassCastException e) {
-        return false;
+        return predicate.apply(e);
       }
+      return false;
     }
 
     @Override
     public boolean containsAll(Collection<?> collection) {
-      for (Object element : collection) {
-        if (!contains(element)) {
-          return false;
-        }
-      }
-      return true;
+      return containsAllImpl(this, collection);
     }
 
     @Override
     public boolean isEmpty() {
-      return !Iterators.any(unfiltered.iterator(), predicate);
+      return !Iterables.any(unfiltered, predicate);
     }
 
     @Override
@@ -206,47 +193,17 @@ public final class Collections2 {
 
     @Override
     public boolean remove(Object element) {
-      try {
-        // TODO(user): consider doing the predicate after unfiltered.contains,
-        // which would reduce the risk of CCE here
-
-        // unsafe cast can result in a CCE from predicate.apply(), which we
-        // will catch
-        @SuppressWarnings("unchecked")
-        E e = (E) element;
-
-        // See comment in contains() concerning predicate.apply(e)
-        return predicate.apply(e) && unfiltered.remove(element);
-      } catch (NullPointerException e) {
-        return false;
-      } catch (ClassCastException e) {
-        return false;
-      }
+      return contains(element) && unfiltered.remove(element);
     }
 
     @Override
     public boolean removeAll(final Collection<?> collection) {
-      checkNotNull(collection);
-      Predicate<E> combinedPredicate = new Predicate<E>() {
-        @Override
-        public boolean apply(E input) {
-          return predicate.apply(input) && collection.contains(input);
-        }
-      };
-      return Iterables.removeIf(unfiltered, combinedPredicate);
+      return Iterables.removeIf(unfiltered, and(predicate, in(collection)));
     }
 
     @Override
     public boolean retainAll(final Collection<?> collection) {
-      checkNotNull(collection);
-      Predicate<E> combinedPredicate = new Predicate<E>() {
-        @Override
-        public boolean apply(E input) {
-          // See comment in contains() concerning predicate.apply(e)
-          return predicate.apply(input) && !collection.contains(input);
-        }
-      };
-      return Iterables.removeIf(unfiltered, combinedPredicate);
+      return Iterables.removeIf(unfiltered, and(predicate, not(in(collection))));
     }
 
     @Override
@@ -263,10 +220,6 @@ public final class Collections2 {
     @Override
     public <T> T[] toArray(T[] array) {
       return Lists.newArrayList(iterator()).toArray(array);
-    }
-
-    @Override public String toString() {
-      return Iterators.toString(iterator());
     }
   }
 
@@ -334,13 +287,7 @@ public final class Collections2 {
    * @param c a collection whose elements might be contained by {@code self}
    */
   static boolean containsAllImpl(Collection<?> self, Collection<?> c) {
-    checkNotNull(self);
-    for (Object o : c) {
-      if (!self.contains(o)) {
-        return false;
-      }
-    }
-    return true;
+    return Iterables.all(c, Predicates.in(self));
   }
 
   /**
@@ -362,7 +309,7 @@ public final class Collections2 {
    * Returns best-effort-sized StringBuilder based on the given collection size.
    */
   static StringBuilder newStringBuilderForCollection(int size) {
-    checkArgument(size >= 0, "size must be non-negative");
+    checkNonnegative(size, "size");
     return new StringBuilder((int) Math.min(size * 8L, Ints.MAX_POWER_OF_TWO));
   }
 
@@ -657,10 +604,8 @@ public final class Collections2 {
       int n = list.size();
       c = new int[n];
       o = new int[n];
-      for (int i = 0; i < n; i++) {
-        c[i] = 0;
-        o[i] = 1;
-      }
+      Arrays.fill(c, 0);
+      Arrays.fill(o, 1);
       j = Integer.MAX_VALUE;
     }
 
@@ -718,9 +663,9 @@ public final class Collections2 {
     if (first.size() != second.size()) {
       return false;
     }
-    Multiset<?> firstSet = HashMultiset.create(first);
-    Multiset<?> secondSet = HashMultiset.create(second);
-    return firstSet.equals(secondSet);
+    Multiset<?> firstMultiset = HashMultiset.create(first);
+    Multiset<?> secondMultiset = HashMultiset.create(second);
+    return firstMultiset.equals(secondMultiset);
   }
 
   private static boolean isPositiveInt(long n) {

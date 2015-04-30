@@ -28,8 +28,6 @@ import com.google.j2objc.annotations.WeakOuter;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
-import java.util.AbstractCollection;
-import java.util.AbstractSet;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -86,7 +84,7 @@ import javax.annotation.Nullable;
  */
 @Beta
 @GwtCompatible(emulated = true)
-public final class ArrayTable<R, C, V> implements Table<R, C, V>, Serializable {
+public final class ArrayTable<R, C, V> extends AbstractTable<R, C, V> implements Serializable {
 
   /**
    * Creates an empty {@code ArrayTable}.
@@ -131,16 +129,9 @@ public final class ArrayTable<R, C, V> implements Table<R, C, V>, Serializable {
    * @throws IllegalArgumentException if the provided table is empty
    */
   public static <R, C, V> ArrayTable<R, C, V> create(Table<R, C, V> table) {
-    return new ArrayTable<R, C, V>(table);
-  }
-
-  /**
-   * Creates an {@code ArrayTable} with the same mappings, allowed keys, and
-   * iteration ordering as the provided {@code ArrayTable}.
-   */
-  public static <R, C, V> ArrayTable<R, C, V> create(
-      ArrayTable<R, C, V> table) {
-    return new ArrayTable<R, C, V>(table);
+    return (table instanceof ArrayTable<?, ?, ?>)
+      ? new ArrayTable<R, C, V>((ArrayTable<R, C, V>) table)
+      : new ArrayTable<R, C, V>(table);
   }
 
   private final ImmutableList<R> rowList;
@@ -270,6 +261,8 @@ public final class ArrayTable<R, C, V> implements Table<R, C, V>, Serializable {
       }
       return new ArrayMapEntrySet();
     }
+
+    // TODO(user): consider an optimized values() implementation
 
     @Override
     public boolean containsKey(@Nullable Object key) {
@@ -502,9 +495,7 @@ public final class ArrayTable<R, C, V> implements Table<R, C, V>, Serializable {
    */
   @Override
   public void putAll(Table<? extends R, ? extends C, ? extends V> table) {
-    for (Cell<? extends R, ? extends C, ? extends V> cell : table.cellSet()) {
-      put(cell.getRowKey(), cell.getColumnKey(), cell.getValue());
-    }
+    super.putAll(table);
   }
 
   /**
@@ -547,27 +538,6 @@ public final class ArrayTable<R, C, V> implements Table<R, C, V>, Serializable {
     return rowList.size() * columnList.size();
   }
 
-  @Override public boolean equals(@Nullable Object obj) {
-    if (obj instanceof Table) {
-      Table<?, ?, ?> other = (Table<?, ?, ?>) obj;
-      return cellSet().equals(other.cellSet());
-    }
-    return false;
-  }
-
-  @Override public int hashCode() {
-    return cellSet().hashCode();
-  }
-
-  /**
-   * Returns the string representation {@code rowMap().toString()}.
-   */
-  @Override public String toString() {
-    return rowMap().toString();
-  }
-
-  private transient CellSet cellSet;
-
   /**
    * Returns an unmodifiable set of all row key / column key / value
    * triplets. Changes to the table will update the returned set.
@@ -583,51 +553,31 @@ public final class ArrayTable<R, C, V> implements Table<R, C, V>, Serializable {
    */
   @Override
   public Set<Cell<R, C, V>> cellSet() {
-    CellSet set = cellSet;
-    return (set == null) ? cellSet = new CellSet() : set;
+    return super.cellSet();
   }
 
-  @WeakOuter
-  private class CellSet extends AbstractSet<Cell<R, C, V>> {
-
-    @Override public Iterator<Cell<R, C, V>> iterator() {
-      return new AbstractIndexedListIterator<Cell<R, C, V>>(size()) {
-        @Override protected Cell<R, C, V> get(final int index) {
-          return new Tables.AbstractCell<R, C, V>() {
-            final int rowIndex = index / columnList.size();
-            final int columnIndex = index % columnList.size();
-            @Override
-            public R getRowKey() {
-              return rowList.get(rowIndex);
-            }
-            @Override
-            public C getColumnKey() {
-              return columnList.get(columnIndex);
-            }
-            @Override
-            public V getValue() {
-              return at(rowIndex, columnIndex);
-            }
-          };
-        }
-      };
-    }
-
-    @Override public int size() {
-      return ArrayTable.this.size();
-    }
-
-    @Override public boolean contains(Object obj) {
-      if (obj instanceof Cell) {
-        Cell<?, ?, ?> cell = (Cell<?, ?, ?>) obj;
-        Integer rowIndex = rowKeyToIndex.get(cell.getRowKey());
-        Integer columnIndex = columnKeyToIndex.get(cell.getColumnKey());
-        return rowIndex != null
-            && columnIndex != null
-            && Objects.equal(at(rowIndex, columnIndex), cell.getValue());
+  @Override
+  Iterator<Cell<R, C, V>> cellIterator() {
+    return new AbstractIndexedListIterator<Cell<R, C, V>>(size()) {
+      @Override protected Cell<R, C, V> get(final int index) {
+        return new Tables.AbstractCell<R, C, V>() {
+          final int rowIndex = index / columnList.size();
+          final int columnIndex = index % columnList.size();
+          @Override
+          public R getRowKey() {
+            return rowList.get(rowIndex);
+          }
+          @Override
+          public C getColumnKey() {
+            return columnList.get(columnIndex);
+          }
+          @Override
+          public V getValue() {
+            return at(rowIndex, columnIndex);
+          }
+        };
       }
-      return false;
-    }
+    };
   }
 
   /**
@@ -810,8 +760,6 @@ public final class ArrayTable<R, C, V> implements Table<R, C, V>, Serializable {
     }
   }
 
-  private transient Collection<V> values;
-
   /**
    * Returns an unmodifiable collection of all values, which may contain
    * duplicates. Changes to the table will update the returned collection.
@@ -823,24 +771,7 @@ public final class ArrayTable<R, C, V> implements Table<R, C, V>, Serializable {
    */
   @Override
   public Collection<V> values() {
-    Collection<V> v = values;
-    return (v == null) ? values = new Values() : v;
-  }
-
-  @WeakOuter
-  private class Values extends AbstractCollection<V> {
-    @Override public Iterator<V> iterator() {
-      return new TransformedIterator<Cell<R, C, V>, V>(cellSet().iterator()) {
-        @Override
-        V transform(Cell<R, C, V> cell) {
-          return cell.getValue();
-        }
-      };
-    }
-
-    @Override public int size() {
-      return ArrayTable.this.size();
-    }
+    return super.values();
   }
 
   private static final long serialVersionUID = 0;

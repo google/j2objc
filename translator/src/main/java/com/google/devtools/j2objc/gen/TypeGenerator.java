@@ -53,6 +53,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   // Convenient fields for use by subclasses.
   protected final AbstractTypeDeclaration typeNode;
   protected final ITypeBinding typeBinding;
+  protected final CompilationUnit compilationUnit;
   protected final Types typeEnv;
   protected final NameTable nameTable;
   protected final String typeName;
@@ -64,9 +65,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     super(builder);
     typeNode = node;
     typeBinding = node.getTypeBinding();
-    CompilationUnit unit = TreeUtil.getCompilationUnit(node);
-    typeEnv = unit.getTypeEnv();
-    nameTable = unit.getNameTable();
+    compilationUnit = TreeUtil.getCompilationUnit(node);
+    typeEnv = compilationUnit.getTypeEnv();
+    nameTable = compilationUnit.getNameTable();
     typeName = nameTable.getFullName(typeBinding);
     typeNeedsReflection = TranslationUtil.needsReflection(typeBinding);
     declarations = filterDeclarations(node.getBodyDeclarations());

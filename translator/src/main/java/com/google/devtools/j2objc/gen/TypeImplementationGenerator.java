@@ -52,6 +52,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   protected void generate() {
+    syncFilename(compilationUnit.getSourceFilePath());
+
     printInitFlagDefinition();
     printStaticVars();
     printEnumValuesArray();

@@ -21,6 +21,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.GwtCompatible;
 import com.google.j2objc.annotations.WeakOuter;
 
+import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
@@ -72,7 +73,15 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
   @Override
   public boolean putAll(@Nullable K key, Iterable<? extends V> values) {
     checkNotNull(values);
-    return values.iterator().hasNext() && Iterables.addAll(get(key), values);
+    // make sure we only call values.iterator() once
+    // and we only call get(key) if values is nonempty
+    if (values instanceof Collection) {
+      Collection<? extends V> valueCollection = (Collection<? extends V>) values;
+      return !valueCollection.isEmpty() && get(key).addAll(valueCollection);
+    } else {
+      Iterator<? extends V> valueItr = values.iterator();
+      return valueItr.hasNext() && Iterators.addAll(get(key), valueItr);
+    }
   }
 
   @Override
@@ -102,33 +111,36 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
   
   Collection<Entry<K, V>> createEntries() {
     if (this instanceof SetMultimap) {
-      @WeakOuter
-      class AbstractMultimapEntrySet extends Multimaps.EntrySet<K, V> {
-        @Override
-        Multimap<K, V> multimap() {
-          return AbstractMultimap.this;
-        }
-
-        @Override
-        public Iterator<Entry<K, V>> iterator() {
-          return entryIterator();
-        }
-      }
-      return new AbstractMultimapEntrySet();
+      return new EntrySet();
+    } else {
+      return new Entries();
     }
-    @WeakOuter
-    class AbstractMultimapEntries extends Multimaps.Entries<K, V> {
-      @Override
-      Multimap<K, V> multimap() {
-        return AbstractMultimap.this;
-      }
-
-      @Override
-      public Iterator<Entry<K, V>> iterator() {
-        return entryIterator();
-      }
+  }
+  
+  @WeakOuter
+  private class Entries extends Multimaps.Entries<K, V> {
+    @Override
+    Multimap<K, V> multimap() {
+      return AbstractMultimap.this;
     }
-    return new AbstractMultimapEntries();
+
+    @Override
+    public Iterator<Entry<K, V>> iterator() {
+      return entryIterator();
+    }
+  }
+  
+  @WeakOuter
+  private class EntrySet extends Entries implements Set<Entry<K, V>> {
+    @Override
+    public int hashCode() {
+      return Sets.hashCodeImpl(this);
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+      return Sets.equalsImpl(this, obj);
+    }    
   }
   
   abstract Iterator<Entry<K, V>> entryIterator();
@@ -142,14 +154,7 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
   }
 
   Set<K> createKeySet() {
-    @WeakOuter
-    class AbstractMultimapKeySet extends Maps.KeySet<K, Collection<V>> {
-      @Override
-      Map<K, Collection<V>> map() {
-        return asMap();
-      }
-    }
-    return new AbstractMultimapKeySet();
+    return new Maps.KeySet<K, Collection<V>>(asMap());
   }
   
   private transient Multiset<K> keys;
@@ -173,7 +178,29 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
   }
   
   Collection<V> createValues() {
-    return new Multimaps.Values<K, V>(this);
+    return new Values();
+  }
+
+  class Values extends AbstractCollection<V> {
+    @Override public Iterator<V> iterator() {
+      return valueIterator();
+    }
+
+    @Override public int size() {
+      return AbstractMultimap.this.size();
+    }
+
+    @Override public boolean contains(@Nullable Object o) {
+      return AbstractMultimap.this.containsValue(o);
+    }
+
+    @Override public void clear() {
+      AbstractMultimap.this.clear();
+    }
+  }
+  
+  Iterator<V> valueIterator() {
+    return Maps.valueIterator(entries().iterator());
   }
   
   private transient Map<K, Collection<V>> asMap;
@@ -189,14 +216,7 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
   // Comparison and hashing
 
   @Override public boolean equals(@Nullable Object object) {
-    if (object == this) {
-      return true;
-    }
-    if (object instanceof Multimap) {
-      Multimap<?, ?> that = (Multimap<?, ?>) object;
-      return this.asMap().equals(that.asMap());
-    }
-    return false;
+    return Multimaps.equalsImpl(this, object);
   }
 
   /**

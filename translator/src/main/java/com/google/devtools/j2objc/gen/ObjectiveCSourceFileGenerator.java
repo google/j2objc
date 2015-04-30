@@ -23,7 +23,6 @@ import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.ErrorUtil;
 
@@ -88,11 +87,6 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
 
   protected boolean isLocalType(ITypeBinding type) {
     return typesByKey.containsKey(type.getKey());
-  }
-
-  protected void setGenerationContext(AbstractTypeDeclaration type) {
-    CompilationUnit unit = TreeUtil.getCompilationUnit(type);
-    syncFilename(unit.getSourceFilePath());
   }
 
   protected void save(String path) {

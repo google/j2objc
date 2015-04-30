@@ -23,9 +23,11 @@ import com.google.common.annotations.Beta;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -61,7 +63,7 @@ import javax.annotation.CheckReturnValue;
  *       .trimResults()
  *       .omitEmptyStrings();}</pre>
  *
- * Now {@code MY_SPLITTER.split("foo,,,  bar ,")} returns just {@code ["foo",
+ * <p>Now {@code MY_SPLITTER.split("foo,,,  bar ,")} returns just {@code ["foo",
  * "bar"]}. Note that the order in which these configuration methods are called
  * is never significant.
  *
@@ -174,12 +176,12 @@ public final class Splitter {
           Splitter splitter, CharSequence toSplit) {
         return new SplittingIterator(splitter, toSplit) {
           @Override public int separatorStart(int start) {
-            int delimeterLength = separator.length();
+            int separatorLength = separator.length();
 
             positions:
-            for (int p = start, last = toSplit.length() - delimeterLength;
+            for (int p = start, last = toSplit.length() - separatorLength;
                 p <= last; p++) {
-              for (int i = 0; i < delimeterLength; i++) {
+              for (int i = 0; i < separatorLength; i++) {
                 if (toSplit.charAt(i + p) != separator.charAt(i)) {
                   continue positions;
                 }
@@ -374,7 +376,8 @@ public final class Splitter {
 
   /**
    * Splits {@code sequence} into string components and makes them available
-   * through an {@link Iterator}, which may be lazily evaluated.
+   * through an {@link Iterator}, which may be lazily evaluated. If you want
+   * an eagerly computed {@link List}, use {@link #splitToList(CharSequence)}.
    *
    * @param sequence the sequence of characters to split
    * @return an iteration over the segments split from the parameter.
@@ -384,7 +387,7 @@ public final class Splitter {
 
     return new Iterable<String>() {
       @Override public Iterator<String> iterator() {
-        return spliterator(sequence);
+        return splittingIterator(sequence);
       }
       @Override public String toString() {
         return Joiner.on(", ")
@@ -395,8 +398,31 @@ public final class Splitter {
     };
   }
 
-  private Iterator<String> spliterator(CharSequence sequence) {
+  private Iterator<String> splittingIterator(CharSequence sequence) {
     return strategy.iterator(this, sequence);
+  }
+
+  /**
+   * Splits {@code sequence} into string components and returns them as
+   * an immutable list. If you want an {@link Iterable} which may be lazily
+   * evaluated, use {@link #split(CharSequence)}.
+   *
+   * @param sequence the sequence of characters to split
+   * @return an immutable list of the segments split from the parameter
+   * @since 15.0
+   */
+  @Beta
+  public List<String> splitToList(CharSequence sequence) {
+    checkNotNull(sequence);
+
+    Iterator<String> iterator = splittingIterator(sequence);
+    List<String> result = new ArrayList<String>();
+
+    while (iterator.hasNext()) {
+      result.add(iterator.next());
+    }
+
+    return Collections.unmodifiableList(result);
   }
 
   /**
@@ -473,7 +499,7 @@ public final class Splitter {
     public Map<String, String> split(CharSequence sequence) {
       Map<String, String> map = new LinkedHashMap<String, String>();
       for (String entry : outerSplitter.split(sequence)) {
-        Iterator<String> entryFields = entrySplitter.spliterator(entry);
+        Iterator<String> entryFields = entrySplitter.splittingIterator(entry);
 
         checkArgument(entryFields.hasNext(), INVALID_ENTRY_MESSAGE, entry);
         String key = entryFields.next();
