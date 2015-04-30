@@ -167,9 +167,9 @@ public class NameTableTest extends GenerationTest {
       addSourceFile("package foo.bar; public class A { static void test() {}}", "foo/bar/A.java");
       addSourceFile(
           "package foo.bar; public class B { void test() { A.test(); }}", "foo/bar/B.java");
-      String translation = translateSourceFile("foo/bar/A", "foo/bar/A.h");
+      String translation = translateSourceFile("foo.bar.A", "foo/bar/A.h");
       assertTranslation(translation, "@interface Test2Name : NSObject");
-      translation = translateSourceFile("foo/bar/B", "foo/bar/B.m");
+      translation = translateSourceFile("foo.bar.B", "foo/bar/B.m");
       assertTranslation(translation, "Test2Name_test();");
     } finally {
       Options.getClassMappings().remove("foo.bar.A");
@@ -285,7 +285,7 @@ public class NameTableTest extends GenerationTest {
     addSourceFile("@com.google.j2objc.annotations.ObjectiveCName(\"FB\") "
         + "package foo.bar;", "foo/bar/package-info.java");
     addSourceFile("package foo.bar; public class Test {}", "foo/bar/Test.java");
-    String translation = translateSourceFile("foo/bar/Test", "foo/bar/Test.h");
+    String translation = translateSourceFile("foo.bar.Test", "foo/bar/Test.h");
     assertTranslation(translation, "@interface FBTest : NSObject");
     assertTranslation(translation, "J2OBJC_EMPTY_STATIC_INIT(FBTest)");
     assertTranslation(translation, "typedef FBTest FooBarTest;");
@@ -301,7 +301,7 @@ public class NameTableTest extends GenerationTest {
     addSourceFile("@com.google.j2objc.annotations.ObjectiveCName(\"FB\") "
         + "package foo.bar;", "foo/bar/package-info.java");
     addSourceFile("package foo.bar; public enum Test { FOO, BAR }", "foo/bar/Test.java");
-    String translation = translateSourceFile("foo/bar/Test", "foo/bar/Test.h");
+    String translation = translateSourceFile("foo.bar.Test", "foo/bar/Test.h");
     assertTranslatedLines(translation,
         "typedef NS_ENUM(NSUInteger, FBTest) {", "FBTest_FOO = 0,", "FBTest_BAR = 1,", "};");
     assertTranslation(translation, "@interface FBTestEnum : JavaLangEnum");
@@ -317,7 +317,7 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "J2ObjcClassInfo _FBTestEnum = { 2, \"Test\", \"foo.bar\", ");
 
     // Make sure package-info class doesn't use prefix for its own type name.
-    translation = translateSourceFile("foo/bar/package-info", "foo/bar/package-info.m");
+    translation = translateSourceFile("foo.bar.package-info", "foo/bar/package-info.m");
     assertTranslation(translation, "@interface FooBarpackage_info");
     assertTranslation(translation, "@implementation FooBarpackage_info");
     assertNotInTranslation(translation, "FBpackage_info");

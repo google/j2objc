@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
@@ -55,8 +56,8 @@ public class TranslationProcessorTest extends GenerationTest {
     GenerationBatch batch = new GenerationBatch();
     batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Foo.java"));
     batch.addSource(new JarredInputFile(getTempDir() + "/test.jar", "mypkg/Bar.java"));
-    TranslationProcessor processor = new TranslationProcessor(batch, J2ObjC.createParser(), null);
-    processor.processFiles(batch.getInputFiles());
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    processor.processInputs(batch.getInputs());
 
     assertEquals(0, ErrorUtil.errorCount());
   }
@@ -68,8 +69,8 @@ public class TranslationProcessorTest extends GenerationTest {
 
     GenerationBatch batch = new GenerationBatch();
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
-    TranslationProcessor processor = new TranslationProcessor(batch, J2ObjC.createParser(), null);
-    processor.processFiles(batch.getInputFiles());
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    processor.processInputs(batch.getInputs());
     processor.processBuildClosureDependencies();
 
     String translation = getTranslatedFile("Test.h");
@@ -89,8 +90,8 @@ public class TranslationProcessorTest extends GenerationTest {
     GenerationBatch batch = new GenerationBatch();
     batch.addSource(new RegularInputFile(getTempDir() + "/Test.java", "Test.java"));
     batch.addSource(new RegularInputFile(getTempDir() + "/src/main/java/Foo.java", "Foo.java"));
-    TranslationProcessor processor = new TranslationProcessor(batch, J2ObjC.createParser(), null);
-    processor.processFiles(batch.getInputFiles());
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    processor.processInputs(batch.getInputs());
     processor.processBuildClosureDependencies();
 
     String translation = getTranslatedFile("Foo.h");
@@ -101,17 +102,16 @@ public class TranslationProcessorTest extends GenerationTest {
   public void testBatchReuse() throws IOException {
     addSourceFile("class Test { }", "Test.java");
 
-    GenerationBatch batch = new GenerationBatch();
     RegularInputFile inputFile = new RegularInputFile(getTempDir() + "/Test.java", "Test.java");
-    batch.addSource(inputFile);
-    TranslationProcessor processor = new TranslationProcessor(batch, J2ObjC.createParser(), null);
-    processor.processFiles(batch.getInputFiles());
+    ProcessingContext input = ProcessingContext.fromFile(inputFile);
+    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
+    processor.processInputs(Collections.singletonList(input));
     String header = getTranslatedFile("Test.h");
     String impl = getTranslatedFile("Test.m");
     assertTranslation(header, "@interface Test");
     assertTranslation(impl, "@implementation Test");
 
     // Test that the GenerationUnit no longer holds a reference to the tree.
-    assertEquals(0, batch.generationUnitForFile(inputFile).getCompilationUnits().size());
+    assertEquals(0, input.getGenerationUnit().getCompilationUnits().size());
   }
 }

@@ -130,7 +130,7 @@ public class ErrorUtil {
 
   private static String formatMessage(TreeNode node, String message) {
     CompilationUnit unit = TreeUtil.getCompilationUnit(node);
-    return String.format("%s:%s: %s", unit.getInputFile().getPath(), node.getLineNumber(), message);
+    return String.format("%s:%s: %s", unit.getSourceFilePath(), node.getLineNumber(), message);
   }
 
   public static void functionizedMethod() {

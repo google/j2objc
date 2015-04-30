@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.file.InputFile;
-import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ASTNode;
@@ -26,10 +24,9 @@ import org.eclipse.jdt.core.dom.ASTNode;
 public class TreeConverter {
 
   public static CompilationUnit convertCompilationUnit(
-      org.eclipse.jdt.core.dom.CompilationUnit jdtUnit, InputFile inputFile, String source,
-      NameTable.Factory nameTableFactory) {
-    return new CompilationUnit(
-        jdtUnit, inputFile, FileUtil.getMainTypeName(inputFile), source, nameTableFactory);
+      org.eclipse.jdt.core.dom.CompilationUnit jdtUnit, String sourceFilePath, String mainTypeName,
+      String source, NameTable.Factory nameTableFactory) {
+    return new CompilationUnit(jdtUnit, sourceFilePath, mainTypeName, source, nameTableFactory);
   }
 
   public static Statement convertStatement(org.eclipse.jdt.core.dom.Statement jdtStatement) {

@@ -137,10 +137,7 @@ public abstract class GenerationTest extends TestCase {
    * @return the translated compilation unit
    */
   protected CompilationUnit translateType(String typeName, String source) {
-    String typePath = typeName.replace('.', '/');
-    org.eclipse.jdt.core.dom.CompilationUnit unit = compileType(typePath + ".java", source);
-    CompilationUnit newUnit = TreeConverter.convertCompilationUnit(
-        unit, new RegularInputFile(typePath + ".java"), source, NameTable.newFactory());
+    CompilationUnit newUnit = compileType(typeName, source);
     TranslationProcessor.applyMutations(newUnit, deadCodeMap, TimeTracker.noop());
     return newUnit;
   }
@@ -152,17 +149,20 @@ public abstract class GenerationTest extends TestCase {
    * @param source the source code
    * @return the parsed compilation unit
    */
-  protected org.eclipse.jdt.core.dom.CompilationUnit compileType(String name, String source) {
+  protected CompilationUnit compileType(String name, String source) {
+    String mainTypeName = name.substring(name.lastIndexOf('.') + 1);
+    String path = name.replace('.', '/') + ".java";
     int errors = ErrorUtil.errorCount();
     parser.setEnableDocComments(Options.docCommentsEnabled());
-    org.eclipse.jdt.core.dom.CompilationUnit unit = parser.parseWithBindings(name, source);
+    org.eclipse.jdt.core.dom.CompilationUnit unit = parser.parseWithBindings(path, source);
     if (ErrorUtil.errorCount() > errors) {
       int newErrorCount = ErrorUtil.errorCount() - errors;
       String info = String.format(
           "%d test compilation error%s", newErrorCount, (newErrorCount == 1 ? "" : "s"));
       failWithMessages(info, ErrorUtil.getErrorMessages().subList(errors, ErrorUtil.errorCount()));
     }
-    return unit;
+    return TreeConverter.convertCompilationUnit(
+        unit, path, mainTypeName, source, NameTable.newFactory());
   }
 
   protected static List<String> getComGoogleDevtoolsJ2objcPath() {
@@ -287,7 +287,7 @@ public abstract class GenerationTest extends TestCase {
    *                 which is either the Obj-C header or implementation file
    */
   protected String translateSourceFile(String typeName, String fileName) throws IOException {
-    String source = getTranslatedFile(typeName + ".java");
+    String source = getTranslatedFile(typeName.replace('.', '/') + ".java");
     return translateSourceFile(source, typeName, fileName);
   }
 
@@ -306,7 +306,7 @@ public abstract class GenerationTest extends TestCase {
   }
 
   protected String generateFromUnit(CompilationUnit unit, String filename) throws IOException {
-    GenerationUnit genUnit = GenerationUnit.newSingleFileUnit(unit.getInputFile());
+    GenerationUnit genUnit = new GenerationUnit(unit.getSourceFilePath(), 1);
     genUnit.addCompilationUnit(unit);
     TranslationProcessor.generateObjectiveCSource(genUnit, TimeTracker.noop());
     return getTranslatedFile(filename);
@@ -320,10 +320,10 @@ public abstract class GenerationTest extends TestCase {
     }
     GenerationBatch batch = new GenerationBatch();
     batch.addCombinedJar(outputPath + ".testfile", inputFiles);
+    List<ProcessingContext> inputs = batch.getInputs();
     parser.setEnableDocComments(Options.docCommentsEnabled());
-    new InputFilePreprocessor(batch, parser).process();
-    new TranslationProcessor(batch, parser, DeadCodeMap.builder().build())
-        .processFiles(batch.getInputFiles());
+    new InputFilePreprocessor(parser).processInputs(inputs);
+    new TranslationProcessor(parser, DeadCodeMap.builder().build()).processInputs(inputs);
     return getTranslatedFile(outputPath + extension);
   }
 
@@ -337,7 +337,7 @@ public abstract class GenerationTest extends TestCase {
       batch.addSource(new RegularInputFile(
           tempDir.getPath() + File.separatorChar + fileName, fileName));
     }
-    new InputFilePreprocessor(batch, parser).process();
+    new InputFilePreprocessor(parser).processInputs(batch.getInputs());
   }
 
   protected Map<String, String> writeAndReloadHeaderMappings() throws IOException {

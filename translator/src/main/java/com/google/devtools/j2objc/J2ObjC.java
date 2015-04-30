@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -96,14 +97,17 @@ public class J2ObjC {
     try {
       JdtParser parser = createParser();
 
+      List<ProcessingContext> inputs = Lists.newArrayList();
       GenerationBatch batch = new GenerationBatch();
       batch.processFileArgs(fileArgs);
+      inputs.addAll(batch.getInputs());
       if (ErrorUtil.errorCount() > 0) {
         return;
       }
 
-      AnnotationPreProcessor preProcessor = new AnnotationPreProcessor(batch);
+      AnnotationPreProcessor preProcessor = new AnnotationPreProcessor();
       preProcessor.process(fileArgs);
+      preProcessor.collectInputs(inputs);
       preProcessorTempDir = preProcessor.getTemporaryDirectory();
       if (ErrorUtil.errorCount() > 0) {
         return;
@@ -112,16 +116,16 @@ public class J2ObjC {
         parser.addSourcepathEntry(preProcessorTempDir.getAbsolutePath());
       }
 
-      InputFilePreprocessor inputFilePreprocessor = new InputFilePreprocessor(batch, parser);
-      inputFilePreprocessor.process();
+      InputFilePreprocessor inputFilePreprocessor = new InputFilePreprocessor(parser);
+      inputFilePreprocessor.processInputs(inputs);
       if (ErrorUtil.errorCount() > 0) {
         return;
       }
 
       TranslationProcessor.loadHeaderMappings();
-      TranslationProcessor translationProcessor
-          = new TranslationProcessor(batch, parser, loadDeadCodeMap());
-      translationProcessor.processFiles(batch.getInputFiles());
+      TranslationProcessor translationProcessor =
+          new TranslationProcessor(parser, loadDeadCodeMap());
+      translationProcessor.processInputs(inputs);
       translationProcessor.processBuildClosureDependencies();
       if (ErrorUtil.errorCount() > 0) {
         return;

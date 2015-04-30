@@ -36,14 +36,14 @@ public class ImplementationImportCollectorTest extends GenerationTest {
 
   // Verify that invoked method's return value has associated header.
   public void testMethodReturnHasHeader() throws IOException {
-    addSourceFile("class FooException extends Exception { AssertionError asAssertion() { " +
-        "return new AssertionError(this); }}", "FooException.java");
+    addSourceFile("class FooException extends Exception { AssertionError asAssertion() { "
+        + "return new AssertionError(this); }}", "FooException.java");
     addSourceFile(
         "class FooMaker { static FooException makeException() { return new FooException(); }}",
         "FooMaker.java");
     String translation = translateSourceFile(
-        "class A { void test() { " +
-        "throw FooMaker.makeException().asAssertion(); }}", "A", "A.m");
+        "class A { void test() { "
+        + "throw FooMaker.makeException().asAssertion(); }}", "A", "A.m");
     assertTranslation(translation, "#include \"FooException.h\"");
   }
 
@@ -91,11 +91,11 @@ public class ImplementationImportCollectorTest extends GenerationTest {
   }
 
   public void testEnhancedForMethodInvocation() throws IOException {
-    addSourceFile("import java.util.*; class A { " +
-        "final Map<String,String> map; }", "A.java");
+    addSourceFile("import java.util.*; class A { "
+        + "final Map<String,String> map; }", "A.java");
     String translation = translateSourceFile(
-        "import java.util.*; class B extends A { " +
-        "void test() { for (String s : map.keySet()) {}}}", "B", "B.m");
+        "import java.util.*; class B extends A { "
+        + "void test() { for (String s : map.keySet()) {}}}", "B", "B.m");
     assertTranslation(translation, "#include \"java/util/Map.h\"");
   }
 
@@ -138,9 +138,9 @@ public class ImplementationImportCollectorTest extends GenerationTest {
   // Verify that a multi-catch clause imports are all collected.
   public void testMultiCatchClauses() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test() {" +
-        "  try { System.out.println(); } catch (ArithmeticException | AssertionError | " +
-        "      ClassCastException | SecurityException e) {} }}",
+        "class Test { void test() {"
+        + "  try { System.out.println(); } catch (ArithmeticException | AssertionError | "
+        + "      ClassCastException | SecurityException e) {} }}",
         "Test", "Test.m");
     assertTranslation(translation, "#include \"java/lang/ArithmeticException.h\"");
     assertTranslation(translation, "#include \"java/lang/AssertionError.h\"");
@@ -152,10 +152,10 @@ public class ImplementationImportCollectorTest extends GenerationTest {
   public void testPlatformImports() throws IOException {
     Options.setOutputStyle(Options.OutputStyleOption.NONE);
     String translation = translateSourceFile(
-        "package foo.bar; import org.xml.sax.*; import org.xml.sax.helpers.*; " +
-        "class Test { XMLReader test() { " +
-        "  try { return XMLReaderFactory.createXMLReader(); } catch (SAXException e) {} " +
-        "  return null; }}",
+        "package foo.bar; import org.xml.sax.*; import org.xml.sax.helpers.*; "
+        + "class Test { XMLReader test() { "
+        + "  try { return XMLReaderFactory.createXMLReader(); } catch (SAXException e) {} "
+        + "  return null; }}",
         "Test", "Test.m");
 
     // Test file's import should not have package.
@@ -171,10 +171,10 @@ public class ImplementationImportCollectorTest extends GenerationTest {
   public void testPlatformImportsSourceDirs() throws IOException {
     Options.setOutputStyle(Options.OutputStyleOption.SOURCE);
     String translation = translateSourceFile(
-        "package foo.bar; import org.xml.sax.*; import org.xml.sax.helpers.*; " +
-        "class Test { XMLReader test() { " +
-        "  try { return XMLReaderFactory.createXMLReader(); } catch (SAXException e) {} " +
-        "  return null; }}",
+        "package foo.bar; import org.xml.sax.*; import org.xml.sax.helpers.*; "
+        + "class Test { XMLReader test() { "
+        + "  try { return XMLReaderFactory.createXMLReader(); } catch (SAXException e) {} "
+        + "  return null; }}",
         "Test", "Test.m");
 
     // Test file's import should not have package.
@@ -189,7 +189,7 @@ public class ImplementationImportCollectorTest extends GenerationTest {
   public void testAddsHeaderForRenamedMainType() throws IOException {
     String translation = translateSourceFile(
         "package foo; import com.google.j2objc.annotations.ObjectiveCName;"
-        + " @ObjectiveCName(\"Bar\") class Test {}", "foo/Test", "foo/Test.m");
+        + " @ObjectiveCName(\"Bar\") class Test {}", "foo.Test", "foo/Test.m");
     assertTranslation(translation, "#include \"foo/Test.h\"");
   }
 }

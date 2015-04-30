@@ -68,10 +68,9 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
     if (!types.isEmpty() || !packageInfos.isEmpty()) {
-      printStart(getGenerationUnit().getSourceName());
       printImports(packageInfos);
       for (CompilationUnit packageInfo : packageInfos) {
-        syncFilename(packageInfo.getInputFile().getPath());
+        syncFilename(packageInfo.getSourceFilePath());
         generatePackageInfo(packageInfo);
       }
 

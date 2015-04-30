@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc;
 
 import com.google.devtools.j2objc.file.InputFile;
-import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
@@ -33,50 +32,49 @@ import java.util.List;
  */
 public class InputFilePreprocessor {
 
-  private final GenerationBatch batch;
   private final JdtParser parser;
 
-  public InputFilePreprocessor(GenerationBatch batch, JdtParser parser) {
-    this.batch = batch;
+  public InputFilePreprocessor(JdtParser parser) {
     this.parser = parser;
   }
 
-  public void process() {
-    for (InputFile inputFile : batch.getInputFiles()) {
-      processFile(inputFile);
+  public void processInputs(Iterable<ProcessingContext> inputs) {
+    for (ProcessingContext input : inputs) {
+      processInput(input);
     }
   }
 
-  private void processFile(InputFile file) {
+  private void processInput(ProcessingContext input) {
     try {
-      if (file.getUnitName().endsWith("package-info.java")) {
-        processPackageInfoFile(file);
+      if (input.getFile().getUnitName().endsWith("package-info.java")) {
+        processPackageInfoSource(input);
       } else {
-        processSourceFile(file);
+        processRegularSource(input);
       }
     } catch (IOException e) {
       ErrorUtil.error(e.getMessage());
     }
   }
 
-  private void processSourceFile(InputFile file) throws IOException {
+  private void processRegularSource(ProcessingContext input) throws IOException {
     if (Options.shouldMapHeaders()) {
+      InputFile file = input.getFile();
       String source = FileUtil.readFile(file);
       CompilationUnit compilationUnit = parser.parseWithoutBindings(file.getUnitName(), source);
       if (compilationUnit != null) {
-        addHeaderMapping(file, compilationUnit);
+        addHeaderMapping(input, compilationUnit);
       }
     }
   }
 
-  private void addHeaderMapping(InputFile file, CompilationUnit compilationUnit) {
-    GenerationUnit generationUnit = batch.generationUnitForFile(file);
+  private void addHeaderMapping(ProcessingContext input, CompilationUnit compilationUnit) {
     Options.getHeaderMappings().put(
-        FileUtil.getQualifiedMainTypeName(file, compilationUnit),
-        generationUnit.getOutputPath() + ".h");
+        FileUtil.getQualifiedMainTypeName(input.getFile(), compilationUnit),
+        input.getGenerationUnit().getOutputPath() + ".h");
   }
 
-  private void processPackageInfoFile(InputFile file) throws IOException {
+  private void processPackageInfoSource(ProcessingContext input) throws IOException {
+    InputFile file = input.getFile();
     String source = FileUtil.readFile(file);
     CompilationUnit compilationUnit = parser.parseWithBindings(file.getUnitName(), source);
     if (compilationUnit != null) {

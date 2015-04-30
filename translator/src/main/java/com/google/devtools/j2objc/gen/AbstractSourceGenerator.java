@@ -82,10 +82,6 @@ public abstract class AbstractSourceGenerator {
     builder.syncFilename(filename);
   }
 
-  protected void printStart(String path) {
-    builder.printStart(path);
-  }
-
   protected String reindent(String code) {
     return builder.reindent(code);
   }

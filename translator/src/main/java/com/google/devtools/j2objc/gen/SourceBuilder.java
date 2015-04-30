@@ -191,17 +191,10 @@ public class SourceBuilder {
         // In the dominant usage pattern, the filename is synced right before the line is synced.
         // Emit 0 so readers don't think the line number is still meaningful.
         currentLine = 0;
-        buffer.append(String.format("\n#line %d \"%s\"\n", 0, fileName));
+        buffer.append(String.format("\n#line 0 \"%s\"\n", fileName));
       }
     }
     currentFile = fileName;
-  }
-
-  public void printStart(String path) {
-    currentFile = path;
-    if (emitLineDirectives) {
-      buffer.append(String.format("\n#line 1 \"%s\"\n", path));
-    }
   }
 
   /**

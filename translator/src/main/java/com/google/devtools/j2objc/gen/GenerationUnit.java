@@ -13,6 +13,8 @@
  */
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
@@ -21,8 +23,6 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.Nullable;
@@ -36,10 +36,11 @@ import javax.annotation.Nullable;
  * @author Mike Thvedt
  */
 public class GenerationUnit {
+
   private String name;
   private String outputPath;
-  private final List<InputFile> inputFiles = new ArrayList<InputFile>();
-  private List<CompilationUnit> compilationUnits = new ArrayList<CompilationUnit>();
+  private final int numUnits;
+  private List<CompilationUnit> compilationUnits = Lists.newArrayList();
   private final String sourceName;
   private State state = State.ACTIVE;
 
@@ -49,13 +50,14 @@ public class GenerationUnit {
     FINISHED  // Finished, object is now invalid.
   }
 
-  private GenerationUnit(String sourceName) {
+  @VisibleForTesting
+  public GenerationUnit(String sourceName, int numUnits) {
     this.sourceName = sourceName;
+    this.numUnits = numUnits;
   }
 
   public static GenerationUnit newSingleFileUnit(InputFile file) {
-    GenerationUnit unit = new GenerationUnit(file.getPath());
-    unit.inputFiles.add(file);
+    GenerationUnit unit = new GenerationUnit(file.getPath(), 1);
     if (Options.useSourceDirectories()) {
       String outputPath = file.getUnitName();
       outputPath = outputPath.substring(0, outputPath.lastIndexOf(".java"));
@@ -64,16 +66,14 @@ public class GenerationUnit {
     return unit;
   }
 
-  public static GenerationUnit newCombinedJarUnit(
-      String filename, Collection<? extends InputFile> inputFiles) {
+  public static GenerationUnit newCombinedJarUnit(String filename, int numInputs) {
     String outputPath = filename;
     if (outputPath.lastIndexOf(File.separatorChar) < outputPath.lastIndexOf(".")) {
       outputPath = outputPath.substring(0, outputPath.lastIndexOf("."));
     }
-    GenerationUnit unit = new GenerationUnit(filename);
+    GenerationUnit unit = new GenerationUnit(filename, numInputs);
     unit.outputPath = outputPath;
     unit.name = UnicodeUtils.asValidObjcIdentifier(NameTable.camelCasePath(outputPath));
-    unit.inputFiles.addAll(inputFiles);
     return unit;
   }
 
@@ -94,10 +94,6 @@ public class GenerationUnit {
     return name;
   }
 
-  public List<InputFile> getInputFiles() {
-    return inputFiles;
-  }
-
   /**
    * A list of CompilationUnits generated from the input files in this GenerationUnit.
    * This list is mildly stateful in that some processors might add to it.
@@ -113,22 +109,22 @@ public class GenerationUnit {
     if (state != State.ACTIVE) {
       return;  // Ignore any added units.
     }
-    assert compilationUnits.size() < inputFiles.size();
+    assert compilationUnits.size() < numUnits;
     compilationUnits.add(unit);
 
     if (name == null) {
-      assert inputFiles.size() == 1;
+      assert numUnits == 1;
       name = UnicodeUtils.asValidObjcIdentifier(NameTable.getMainTypeFullName(unit));
     }
     if (outputPath == null) {
       // We can only infer the output path if there's one compilation unit.
-      assert inputFiles.size() == 1;
+      assert numUnits == 1;
       outputPath = getDefaultOutputPath(unit);
     }
   }
 
   public boolean isFullyParsed() {
-    return compilationUnits.size() == inputFiles.size();
+    return compilationUnits.size() == numUnits;
   }
 
   /**

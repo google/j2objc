@@ -59,6 +59,7 @@ JAVA_SOURCES = \
 	J2ObjC.java \
 	Options.java \
 	Plugin.java \
+	ProcessingContext.java \
 	TranslationProcessor.java \
 	ast/AbstractTypeDeclaration.java \
 	ast/Annotation.java \

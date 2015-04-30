@@ -16,7 +16,6 @@ package com.google.devtools.j2objc;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
@@ -30,8 +29,6 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
@@ -49,24 +46,10 @@ public class GenerationBatch {
 
   private static final Logger logger = Logger.getLogger(GenerationBatch.class.getName());
 
-  private final Map<InputFile, GenerationUnit> unitMap = Maps.newLinkedHashMap();
+  private final List<ProcessingContext> inputs = Lists.newArrayList();
 
-  public GenerationBatch() {
-  }
-
-  @VisibleForTesting
-  public static GenerationBatch fromFile(InputFile file) {
-    GenerationBatch newBatch = new GenerationBatch();
-    newBatch.addSource(file);
-    return newBatch;
-  }
-
-  public Set<InputFile> getInputFiles() {
-    return unitMap.keySet();
-  }
-
-  public GenerationUnit generationUnitForFile(InputFile file) {
-    return unitMap.get(file);
+  public List<ProcessingContext> getInputs() {
+    return inputs;
   }
 
   public void processFileArgs(Iterable<String> args) {
@@ -179,9 +162,9 @@ public class GenerationBatch {
 
   @VisibleForTesting
   public void addCombinedJar(String filename, Collection<? extends InputFile> inputFiles) {
-    GenerationUnit unit = GenerationUnit.newCombinedJarUnit(filename, inputFiles);
+    GenerationUnit unit = GenerationUnit.newCombinedJarUnit(filename, inputFiles.size());
     for (InputFile file : inputFiles) {
-      unitMap.put(file, unit);
+      inputs.add(new ProcessingContext(file, unit));
     }
   }
 
@@ -190,6 +173,6 @@ public class GenerationBatch {
    * creating GenerationUnits and inferring unit names/output paths as necessary.
    */
   public void addSource(InputFile file) {
-    unitMap.put(file, GenerationUnit.newSingleFileUnit(file));
+    inputs.add(ProcessingContext.fromFile(file));
   }
 }

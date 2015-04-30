@@ -22,14 +22,11 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PostfixExpression;
-import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -140,9 +137,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
   }
 
   private void resolveSource(String name, String source) {
-    org.eclipse.jdt.core.dom.CompilationUnit jdtUnit = compileType(name + ".java", source);
-    CompilationUnit unit = TreeConverter.convertCompilationUnit(
-        jdtUnit, new RegularInputFile(name + ".java"), source, NameTable.newFactory());
+    CompilationUnit unit = compileType(name, source);
     OuterReferenceResolver.resolve(unit);
     findTypeDeclarations(unit);
   }

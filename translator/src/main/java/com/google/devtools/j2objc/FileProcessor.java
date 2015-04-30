@@ -15,6 +15,8 @@
 package com.google.devtools.j2objc;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.file.InputFile;
@@ -26,6 +28,8 @@ import com.google.devtools.j2objc.util.NameTable;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -43,7 +47,8 @@ abstract class FileProcessor {
   private final NameTable.Factory nameTableFactory = NameTable.newFactory();
 
   private final int batchSize = Options.batchTranslateMaximum();
-  private final Set<InputFile> batchFiles = Sets.newLinkedHashSetWithExpectedSize(batchSize);
+  private final Set<ProcessingContext> batchInputs =
+      Sets.newLinkedHashSetWithExpectedSize(batchSize);
 
   private final boolean doBatching = batchSize > 0;
 
@@ -58,9 +63,9 @@ abstract class FileProcessor {
     }
   }
 
-  public void processFiles(Iterable<? extends InputFile> files) {
-    for (InputFile inputFile : files) {
-      processInputFile(inputFile);
+  public void processInputs(Iterable<ProcessingContext> inputs) {
+    for (ProcessingContext input : inputs) {
+      processInput(input);
     }
     processBatch();
   }
@@ -76,15 +81,17 @@ abstract class FileProcessor {
         if (file == null) {
           break;
         }
-        processInputFile(file);
+        processInput(ProcessingContext.fromFile(file));
       }
     }
   }
 
-  private void processInputFile(InputFile file) {
+  private void processInput(ProcessingContext input) {
+    InputFile file = input.getFile();
+
     if (isBatchable(file)) {
-      batchFiles.add(file);
-      if (batchFiles.size() == batchSize) {
+      batchInputs.add(input);
+      if (batchInputs.size() == batchSize) {
         processBatch();
       }
       return;
@@ -102,11 +109,11 @@ abstract class FileProcessor {
     }
 
     if (compilationUnit == null) {
-      handleError(file);
+      handleError(input);
       return;
     }
 
-    processCompiledSource(file, source, compilationUnit);
+    processCompiledSource(input, source, compilationUnit);
   }
 
   protected boolean isBatchable(InputFile file) {
@@ -114,43 +121,57 @@ abstract class FileProcessor {
   }
 
   private void processBatch() {
-    if (batchFiles.isEmpty()) {
+    if (batchInputs.isEmpty()) {
       return;
+    }
+
+    List<String> paths = Lists.newArrayListWithCapacity(batchInputs.size());
+    final Map<String, ProcessingContext> inputMap =
+        Maps.newHashMapWithExpectedSize(batchInputs.size());
+    for (ProcessingContext input : batchInputs) {
+      String path = input.getFile().getPath();
+      paths.add(path);
+      inputMap.put(path, input);
     }
 
     JdtParser.Handler handler = new JdtParser.Handler() {
       @Override
-      public void handleParsedUnit(InputFile file, CompilationUnit unit) {
+      public void handleParsedUnit(String path, CompilationUnit unit) {
+        ProcessingContext input = inputMap.get(path);
         try {
-          String source = FileUtil.readFile(file);
-          processCompiledSource(file, source, unit);
-          batchFiles.remove(file);
+          String source = FileUtil.readFile(input.getFile());
+          processCompiledSource(input, source, unit);
+          batchInputs.remove(input);
         } catch (IOException e) {
           ErrorUtil.error(e.getMessage());
         }
       }
     };
-    logger.finest("Processing batch of size " + batchFiles.size());
-    parser.parseFiles(batchFiles, handler);
+    logger.finest("Processing batch of size " + batchInputs.size());
+    parser.parseFiles(paths, handler);
 
     // Any remaining files in batchFiles has some kind of error.
-    for (InputFile file : batchFiles) {
-      handleError(file);
+    for (ProcessingContext input : batchInputs) {
+      handleError(input);
     }
 
-    batchFiles.clear();
+    batchInputs.clear();
   }
 
-  private void processCompiledSource(InputFile file, String source, CompilationUnit unit) {
+  private void processCompiledSource(ProcessingContext input, String source, CompilationUnit unit) {
+    InputFile file = input.getFile();
     if (closureQueue != null) {
       closureQueue.addProcessedName(FileUtil.getQualifiedMainTypeName(file, unit));
     }
     com.google.devtools.j2objc.ast.CompilationUnit convertedUnit =
-        TreeConverter.convertCompilationUnit(unit, file, source, nameTableFactory);
-    processConvertedTree(convertedUnit);
+        TreeConverter.convertCompilationUnit(
+            unit, input.getOriginalSourcePath(), FileUtil.getMainTypeName(file), source,
+            nameTableFactory);
+    processConvertedTree(input, convertedUnit);
   }
 
-  protected abstract void processConvertedTree(com.google.devtools.j2objc.ast.CompilationUnit unit);
+  protected abstract void processConvertedTree(
+      ProcessingContext input, com.google.devtools.j2objc.ast.CompilationUnit unit);
 
-  protected abstract void handleError(InputFile file);
+  protected abstract void handleError(ProcessingContext input);
 }

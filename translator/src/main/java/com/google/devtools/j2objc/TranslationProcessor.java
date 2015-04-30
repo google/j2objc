@@ -16,7 +16,6 @@ package com.google.devtools.j2objc;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
@@ -85,25 +84,18 @@ class TranslationProcessor extends FileProcessor {
 
   private static final Logger logger = Logger.getLogger(TranslationProcessor.class.getName());
 
-  private final GenerationBatch batch;
   private final DeadCodeMap deadCodeMap;
 
   private int processedCount = 0;
 
-  public TranslationProcessor(GenerationBatch batch, JdtParser parser, DeadCodeMap deadCodeMap) {
+  public TranslationProcessor(JdtParser parser, DeadCodeMap deadCodeMap) {
     super(parser);
-    this.batch = batch;
     this.deadCodeMap = deadCodeMap;
   }
 
   @Override
-  protected void processConvertedTree(CompilationUnit unit) {
-    InputFile file = unit.getInputFile();
-    GenerationUnit genUnit = batch.generationUnitForFile(file);
-    // Possible with --build-closure and in testing.
-    if (genUnit == null) {
-      genUnit = GenerationUnit.newSingleFileUnit(file);
-    }
+  protected void processConvertedTree(ProcessingContext input, CompilationUnit unit) {
+    GenerationUnit genUnit = input.getGenerationUnit();
     genUnit.addCompilationUnit(unit);
 
     if (genUnit.isFullyParsed()) {
@@ -115,7 +107,7 @@ class TranslationProcessor extends FileProcessor {
 
   protected void processCompiledGenerationUnit(GenerationUnit unit) {
     assert unit.getOutputPath() != null;
-    assert unit.getCompilationUnits().size() == unit.getInputFiles().size();
+    assert unit.isFullyParsed();
     TimeTracker ticker = getTicker(unit.getOutputPath());
     ticker.push();
     try {
@@ -311,12 +303,9 @@ class TranslationProcessor extends FileProcessor {
     ticker.pop();
   }
 
-  protected void handleError(InputFile file) {
-    GenerationUnit generationUnit = batch.generationUnitForFile(file);
-    if (generationUnit != null) {
-      // Causes the generation unit to release any trees it was holding.
-      generationUnit.failed();
-    }
+  protected void handleError(ProcessingContext input) {
+    // Causes the generation unit to release any trees it was holding.
+    input.getGenerationUnit().failed();
   }
 
   public void postProcess() {

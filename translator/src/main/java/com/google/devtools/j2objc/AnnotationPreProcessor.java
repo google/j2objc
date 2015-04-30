@@ -27,6 +27,7 @@ import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -42,11 +43,6 @@ import javax.annotation.processing.Processor;
 class AnnotationPreProcessor {
 
   private File tmpDirectory;
-  private GenerationBatch batch;
-
-  AnnotationPreProcessor(GenerationBatch batch) {
-    this.batch = batch;
-  }
 
   File getTemporaryDirectory() {
     return tmpDirectory;
@@ -103,8 +99,6 @@ class AnnotationPreProcessor {
     if (!batchCompiler.compile(compileArgs.toArray(new String[0]))) {
       // Any compilation errors will already by displayed.
       ErrorUtil.error("failed batch processing sources");
-    } else {
-      addGeneratedSources(tmpDirectory, "");
     }
   }
 
@@ -120,15 +114,22 @@ class AnnotationPreProcessor {
     return iterator.hasNext();
   }
 
-  private void addGeneratedSources(File dir, String currentRelativePath) {
+  public void collectInputs(Collection<ProcessingContext> inputs) {
+    if (tmpDirectory != null) {
+      collectGeneratedInputs(tmpDirectory, "", inputs);
+    }
+  }
+
+  private void collectGeneratedInputs(
+      File dir, String currentRelativePath, Collection<ProcessingContext> inputs) {
     assert dir.exists() && dir.isDirectory();
     for (File f : dir.listFiles()) {
       String relativeName = currentRelativePath + File.separatorChar + f.getName();
       if (f.isDirectory()) {
-        addGeneratedSources(f, relativeName);
+        collectGeneratedInputs(f, relativeName, inputs);
       } else {
         if (f.getName().endsWith(".java")) {
-          batch.addSource(new RegularInputFile(f.getPath(), relativeName));
+          inputs.add(ProcessingContext.fromFile(new RegularInputFile(f.getPath(), relativeName)));
         }
       }
     }

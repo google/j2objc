@@ -16,7 +16,6 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.NameTable;
 
@@ -31,7 +30,7 @@ public class CompilationUnit extends TreeNode {
 
   private final Types typeEnv;
   private final NameTable nameTable;
-  private final InputFile inputFile;
+  private final String sourceFilePath;
   private final String mainTypeName;
   private final String source;
   private final int[] newlines;
@@ -46,12 +45,12 @@ public class CompilationUnit extends TreeNode {
       ChildList.create(AbstractTypeDeclaration.class, this);
 
   public CompilationUnit(
-      org.eclipse.jdt.core.dom.CompilationUnit jdtNode, InputFile inputFile,
+      org.eclipse.jdt.core.dom.CompilationUnit jdtNode, String sourceFilePath,
       String mainTypeName, String source, NameTable.Factory nameTableFactory) {
     super(jdtNode);
     typeEnv = new Types(jdtNode.getAST());
     nameTable = nameTableFactory == null ? null : nameTableFactory.newNameTable(typeEnv);
-    this.inputFile = Preconditions.checkNotNull(inputFile);
+    this.sourceFilePath = Preconditions.checkNotNull(sourceFilePath);
     Preconditions.checkNotNull(mainTypeName);
     if (mainTypeName.endsWith(NameTable.PACKAGE_INFO_FILE_NAME)) {
       mainTypeName =
@@ -87,7 +86,7 @@ public class CompilationUnit extends TreeNode {
     super(other);
     typeEnv = other.getTypeEnv();
     nameTable = other.getNameTable();
-    inputFile = other.getInputFile();
+    sourceFilePath = other.getSourceFilePath();
     mainTypeName = other.getMainTypeName();
     source = other.getSource();
     newlines = new int[other.newlines.length];
@@ -111,8 +110,8 @@ public class CompilationUnit extends TreeNode {
     return nameTable;
   }
 
-  public InputFile getInputFile() {
-    return inputFile;
+  public String getSourceFilePath() {
+    return sourceFilePath;
   }
 
   public String getMainTypeName() {
@@ -214,7 +213,7 @@ public class CompilationUnit extends TreeNode {
   @Override
   public void validateInner() {
     super.validateInner();
-    Preconditions.checkNotNull(inputFile);
+    Preconditions.checkNotNull(sourceFilePath);
     Preconditions.checkNotNull(mainTypeName);
     Preconditions.checkNotNull(source);
     Preconditions.checkNotNull(packageDeclaration);
