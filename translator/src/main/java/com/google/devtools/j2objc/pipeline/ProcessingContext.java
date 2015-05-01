@@ -47,6 +47,10 @@ public class ProcessingContext {
     return file;
   }
 
+  public void setFile(InputFile newFile) {
+    file = newFile;
+  }
+
   public GenerationUnit getGenerationUnit() {
     return generationUnit;
   }

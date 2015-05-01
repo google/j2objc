@@ -331,6 +331,16 @@ public abstract class GenerationTest extends TestCase {
     return getTranslatedFile(outputPath + extension);
   }
 
+  protected void runPipeline(String... files) {
+    List<String> fullFilePaths = Lists.newArrayList();
+    for (String file : files) {
+      fullFilePaths.add(getTempDir() + File.separatorChar + file);
+    }
+    J2ObjC.run(fullFilePaths);
+    assertErrorCount(0);
+    assertWarningCount(0);
+  }
+
   protected void loadHeaderMappings() {
     TranslationProcessor.loadHeaderMappings();
   }

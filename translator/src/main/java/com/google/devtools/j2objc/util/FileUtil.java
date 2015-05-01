@@ -155,7 +155,7 @@ public class FileUtil {
    */
   public static void deleteTempDir(File dir) {
     // TODO(cpovirk): try Directories.deleteRecursively if a c.g.c.unix dep is OK
-    if (dir.exists()) {
+    if (dir != null && dir.exists()) {
       for (File f : dir.listFiles()) {
         if (f.isDirectory()) {
           deleteTempDir(f);

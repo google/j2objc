@@ -178,6 +178,7 @@ JAVA_SOURCES = \
 	pipeline/FileProcessor.java \
 	pipeline/GenerationBatch.java \
 	pipeline/InputFilePreprocessor.java \
+	pipeline/J2ObjCIncompatibleStripper.java \
 	pipeline/ProcessingContext.java \
 	pipeline/TranslationProcessor.java \
 	translate/AbstractMethodRewriter.java \

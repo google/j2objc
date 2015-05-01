@@ -14,8 +14,10 @@
 
 package com.google.devtools.j2objc.pipeline;
 
+import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.InputFile;
+import com.google.devtools.j2objc.file.RegularInputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
@@ -25,15 +27,20 @@ import org.eclipse.jdt.core.dom.Annotation;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.SingleMemberAnnotation;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Preprocesses each input file in the batch.
  */
 public class InputFilePreprocessor {
 
+  private static final Logger logger = Logger.getLogger(InputFilePreprocessor.class.getName());
+
   private final JdtParser parser;
+  private File strippedSourcesDir;
 
   public InputFilePreprocessor(JdtParser parser) {
     this.parser = parser;
@@ -57,21 +64,45 @@ public class InputFilePreprocessor {
     }
   }
 
-  private void processRegularSource(ProcessingContext input) throws IOException {
-    if (Options.shouldMapHeaders()) {
-      InputFile file = input.getFile();
-      String source = FileUtil.readFile(file);
-      CompilationUnit compilationUnit = parser.parseWithoutBindings(file.getUnitName(), source);
-      if (compilationUnit != null) {
-        addHeaderMapping(input, compilationUnit);
-      }
-    }
+  public File getStrippedSourcesDir() {
+    return strippedSourcesDir;
   }
 
-  private void addHeaderMapping(ProcessingContext input, CompilationUnit compilationUnit) {
-    Options.getHeaderMappings().put(
-        FileUtil.getQualifiedMainTypeName(input.getFile(), compilationUnit),
-        input.getGenerationUnit().getOutputPath() + ".h");
+  private File getCreatedStrippedSourcesDir() {
+    if (strippedSourcesDir == null) {
+      strippedSourcesDir = Files.createTempDir();
+      logger.finest("Created temp dir for stripped sources: " + strippedSourcesDir.getPath());
+    }
+    return strippedSourcesDir;
+  }
+
+  private void processRegularSource(ProcessingContext input) throws IOException {
+    InputFile file = input.getFile();
+    String source = FileUtil.readFile(file);
+    boolean doIncompatibleStripping = source.contains("J2ObjCIncompatible");
+    if (!(Options.shouldMapHeaders() || doIncompatibleStripping)) {
+      // No need to parse.
+      return;
+    }
+    CompilationUnit compilationUnit = parser.parseWithoutBindings(file.getUnitName(), source);
+    if (compilationUnit == null) {
+      // An error occured, reported by the JdtParser.
+      return;
+    }
+    String qualifiedName = FileUtil.getQualifiedMainTypeName(file, compilationUnit);
+    if (Options.shouldMapHeaders()) {
+      Options.getHeaderMappings().put(
+          qualifiedName, input.getGenerationUnit().getOutputPath() + ".h");
+    }
+    if (doIncompatibleStripping) {
+      String newSource = J2ObjCIncompatibleStripper.strip(source, compilationUnit);
+      File strippedDir = getCreatedStrippedSourcesDir();
+      String relativePath = qualifiedName.replace('.', File.separatorChar) + ".java";
+      File strippedFile = new File(strippedDir, relativePath);
+      Files.createParentDirs(strippedFile);
+      Files.write(newSource, strippedFile, Options.getCharset());
+      input.setFile(new RegularInputFile(strippedFile.getPath(), relativePath));
+    }
   }
 
   private void processPackageInfoSource(ProcessingContext input) throws IOException {

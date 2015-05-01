@@ -99,6 +99,7 @@ public class J2ObjC {
    */
   public static void run(List<String> fileArgs) {
     File preProcessorTempDir = null;
+    File strippedSourcesDir = null;
     try {
       JdtParser parser = createParser();
 
@@ -126,6 +127,10 @@ public class J2ObjC {
       if (ErrorUtil.errorCount() > 0) {
         return;
       }
+      strippedSourcesDir = inputFilePreprocessor.getStrippedSourcesDir();
+      if (strippedSourcesDir != null) {
+        parser.prependSourcepathEntry(strippedSourcesDir.getPath());
+      }
 
       TranslationProcessor.loadHeaderMappings();
       TranslationProcessor translationProcessor =
@@ -137,9 +142,8 @@ public class J2ObjC {
       }
       translationProcessor.postProcess();
     } finally {
-      if (preProcessorTempDir != null) {
-        FileUtil.deleteTempDir(preProcessorTempDir);
-      }
+      FileUtil.deleteTempDir(preProcessorTempDir);
+      FileUtil.deleteTempDir(strippedSourcesDir);
     }
   }
 

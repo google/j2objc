@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.gen.SignatureGeneratorTest;
 import com.google.devtools.j2objc.gen.StatementGeneratorTest;
 import com.google.devtools.j2objc.gen.TypeDeclarationGeneratorTest;
 import com.google.devtools.j2objc.gen.TypeImplementationGeneratorTest;
+import com.google.devtools.j2objc.pipeline.J2ObjCIncompatibleStripperTest;
 import com.google.devtools.j2objc.pipeline.TranslationProcessorTest;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriterTest;
 import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
@@ -105,6 +106,7 @@ public class SmallTests {
     ImplementationImportCollectorTest.class,
     InitializationNormalizerTest.class,
     InnerClassExtractorTest.class,
+    J2ObjCIncompatibleStripperTest.class,
     J2ObjCTest.class,
     JavaCloneWriterTest.class,
     JavaToIOSMethodTranslatorTest.class,

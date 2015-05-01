@@ -80,6 +80,12 @@ public class JdtParser {
     }
   }
 
+  public void prependSourcepathEntry(String entry) {
+    if (isValidPathEntry(entry)) {
+      sourcepathEntries.add(0, entry);
+    }
+  }
+
   public void addSourcepathEntries(Iterable<String> entries) {
     for (String entry : entries) {
       addSourcepathEntry(entry);

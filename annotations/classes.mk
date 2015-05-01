@@ -12,6 +12,7 @@
 
 ANNOTATION_SOURCE_JAVA = \
     com/google/j2objc/annotations/AutoreleasePool.java \
+    com/google/j2objc/annotations/J2ObjCIncompatible.java \
     com/google/j2objc/annotations/LoopTranslation.java \
     com/google/j2objc/annotations/ObjectiveCName.java \
     com/google/j2objc/annotations/ReflectionSupport.java \
