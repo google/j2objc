@@ -37,6 +37,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -117,6 +118,11 @@ public class Options {
     Preconditions.checkNotNull(usageMessage);
     helpMessage = properties.getProperty(HELP_MSG_KEY);
     Preconditions.checkNotNull(helpMessage);
+
+    Logger rootLogger = Logger.getLogger("");
+    for (Handler handler : rootLogger.getHandlers()) {
+      handler.setLevel(Level.ALL);
+    }
   }
 
   /**
