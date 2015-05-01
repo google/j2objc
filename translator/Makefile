@@ -51,15 +51,8 @@ J2OBJC_SH = $(J2OBJC_ROOT)/scripts/j2objc.sh
 J2OBJC_SH_DIST = $(DIST_DIR)/j2objc
 
 JAVA_SOURCES = \
-	AnnotationPreProcessor.java \
-	BuildClosureQueue.java \
-	FileProcessor.java \
-	GenerationBatch.java \
-	InputFilePreprocessor.java \
 	J2ObjC.java \
 	Options.java \
-	ProcessingContext.java \
-	TranslationProcessor.java \
 	ast/AbstractTypeDeclaration.java \
 	ast/Annotation.java \
 	ast/AnnotationTypeDeclaration.java \
@@ -180,6 +173,13 @@ JAVA_SOURCES = \
 	gen/TypeGenerator.java \
 	gen/TypeImplementationGenerator.java \
 	gen/TypePrivateDeclarationGenerator.java \
+	pipeline/AnnotationPreProcessor.java \
+	pipeline/BuildClosureQueue.java \
+	pipeline/FileProcessor.java \
+	pipeline/GenerationBatch.java \
+	pipeline/InputFilePreprocessor.java \
+	pipeline/ProcessingContext.java \
+	pipeline/TranslationProcessor.java \
 	translate/AbstractMethodRewriter.java \
 	translate/AnonymousClassConverter.java \
 	translate/ArrayRewriter.java \

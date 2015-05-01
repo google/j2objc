@@ -12,9 +12,10 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc;
+package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;

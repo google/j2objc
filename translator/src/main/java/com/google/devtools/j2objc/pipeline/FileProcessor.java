@@ -12,12 +12,13 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc;
+package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.TreeConverter;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.ErrorUtil;

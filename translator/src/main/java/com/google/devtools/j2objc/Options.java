@@ -86,7 +86,7 @@ public class Options {
 
   private static File proGuardUsageFile = null;
 
-  static final String DEFAULT_HEADER_MAPPING_FILE = "mappings.j2objc";
+  public static final String DEFAULT_HEADER_MAPPING_FILE = "mappings.j2objc";
   // Null if not set (means we use the default). Can be empty also (means we use no mapping files).
 
   private static final String JRE_MAPPINGS_FILE = "JRE.mappings";

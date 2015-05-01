@@ -12,11 +12,12 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc;
+package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.file.JarredInputFile;
 import com.google.devtools.j2objc.file.RegularInputFile;

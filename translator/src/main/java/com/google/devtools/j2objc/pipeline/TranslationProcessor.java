@@ -12,9 +12,10 @@
  * limitations under the License.
  */
 
-package com.google.devtools.j2objc;
+package com.google.devtools.j2objc.pipeline;
 
 import com.google.common.annotations.VisibleForTesting;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
@@ -80,7 +81,7 @@ import java.util.logging.Logger;
  *
  * @author Tom Ball, Keith Stanger, Mike Thvedt
  */
-class TranslationProcessor extends FileProcessor {
+public class TranslationProcessor extends FileProcessor {
 
   private static final Logger logger = Logger.getLogger(TranslationProcessor.class.getName());
 
@@ -350,7 +351,8 @@ class TranslationProcessor extends FileProcessor {
     }
   }
 
-  static void printHeaderMappings() {
+  @VisibleForTesting
+  public static void printHeaderMappings() {
     if (Options.getOutputHeaderMappingFile() != null) {
       Map<String, String> headerMappings = Options.getHeaderMappings();
       File outputMappingFile = Options.getOutputHeaderMappingFile();
@@ -373,7 +375,7 @@ class TranslationProcessor extends FileProcessor {
     }
   }
 
-  static void loadHeaderMappings() {
+  public static void loadHeaderMappings() {
     Map<String, String> headerMappings = Options.getHeaderMappings();
 
     List<String> headerMappingFiles = Options.getHeaderMappingFiles();

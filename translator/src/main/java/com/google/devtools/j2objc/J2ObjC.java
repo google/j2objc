@@ -19,6 +19,11 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Lists;
 import com.google.common.io.Files;
+import com.google.devtools.j2objc.pipeline.AnnotationPreProcessor;
+import com.google.devtools.j2objc.pipeline.GenerationBatch;
+import com.google.devtools.j2objc.pipeline.InputFilePreprocessor;
+import com.google.devtools.j2objc.pipeline.ProcessingContext;
+import com.google.devtools.j2objc.pipeline.TranslationProcessor;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
@@ -65,7 +70,7 @@ public class J2ObjC {
   }
 
   @VisibleForTesting
-  static JdtParser createParser() {
+  public static JdtParser createParser() {
     JdtParser parser = new JdtParser();
     parser.addClasspathEntries(Options.getClassPathEntries());
     parser.addClasspathEntries(Options.getBootClasspath());
