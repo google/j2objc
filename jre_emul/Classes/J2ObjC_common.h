@@ -62,9 +62,11 @@
  #define J2OBJC_DISABLE_ARRAY_TYPE_CHECKS 1
 #endif
 
-// Typedefs for each of Java's primitive types.
+// Typedefs for each of Java's primitive types. (as defined in jni.h)
+// jboolean and jbyte are modified from jni.h to integrate better with
+// Objective-C code.
 typedef BOOL            jboolean;
-typedef int8_t          jbyte;          /* signed 8 bits */
+typedef char            jbyte;          /* signed 8 bits */
 typedef uint16_t        jchar;          /* unsigned 16 bits */
 typedef int16_t         jshort;         /* signed 16 bits */
 typedef int32_t         jint;           /* signed 32 bits */

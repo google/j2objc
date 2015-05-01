@@ -35,7 +35,7 @@
 @interface ComGoogleProtobufByteString : NSObject {
  @package
   int size_;
-  int8_t buffer_[0];
+  char buffer_[0];
 }
 
 + (ComGoogleProtobufByteString *)
