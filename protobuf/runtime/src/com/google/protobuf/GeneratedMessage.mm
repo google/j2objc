@@ -1955,10 +1955,10 @@ static BOOL MessageIsInitialized(id msg, CGPDescriptor *descriptor) {
 // Partially translated from com.google.protobuf.TextFormat.escapeBytes().
 static NSString *BytesToString(CGPByteString *byteString) {
   int length = byteString->size_;
-  char *buffer = byteString->buffer_;
+  int8_t *buffer = byteString->buffer_;
   JavaLangStringBuilder *builder = [[[JavaLangStringBuilder alloc] initWithInt:length] autorelease];
   for (int i = 0; i < length; i++) {
-    char b = buffer[i];
+    int8_t b = buffer[i];
     switch (b) {
       case (int) 0x07:
         [builder appendWithNSString:@"\\a"]; break;
