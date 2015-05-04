@@ -56,21 +56,11 @@ import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.TimeTracker;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -310,8 +300,6 @@ public class TranslationProcessor extends FileProcessor {
   }
 
   public void postProcess() {
-    printHeaderMappings();
-
     if (logger.isLoggable(Level.INFO)) {
       int nFiles = processedCount;
       System.out.println(String.format(
@@ -348,61 +336,6 @@ public class TranslationProcessor extends FileProcessor {
       return TimeTracker.start(name);
     } else {
       return TimeTracker.noop();
-    }
-  }
-
-  @VisibleForTesting
-  public static void printHeaderMappings() {
-    if (Options.getOutputHeaderMappingFile() != null) {
-      Map<String, String> headerMappings = Options.getHeaderMappings();
-      File outputMappingFile = Options.getOutputHeaderMappingFile();
-
-      try {
-        if (!outputMappingFile.exists()) {
-          outputMappingFile.getParentFile().mkdirs();
-          outputMappingFile.createNewFile();
-        }
-        PrintWriter writer = new PrintWriter(outputMappingFile);
-
-        for (String className : headerMappings.keySet()) {
-          writer.println(String.format("%s=%s", className, headerMappings.get(className)));
-        }
-
-        writer.close();
-      } catch (IOException e) {
-        ErrorUtil.error(e.getMessage());
-      }
-    }
-  }
-
-  public static void loadHeaderMappings() {
-    Map<String, String> headerMappings = Options.getHeaderMappings();
-
-    List<String> headerMappingFiles = Options.getHeaderMappingFiles();
-    List<Properties> headerMappingProps = new ArrayList<Properties>();
-
-    try {
-      if (headerMappingFiles == null) {
-        try {
-          headerMappingProps.add(FileUtil.loadProperties(Options.DEFAULT_HEADER_MAPPING_FILE));
-        } catch (FileNotFoundException e) {
-          // Don't fail if mappings aren't configured and the default mapping is absent.
-        }
-      } else {
-        for (String resourceName : headerMappingFiles) {
-          headerMappingProps.add(FileUtil.loadProperties(resourceName));
-        }
-      }
-    } catch (IOException e) {
-      ErrorUtil.error(e.getMessage());
-    }
-
-    for (Properties mappings : headerMappingProps) {
-      Enumeration<?> keyIterator = mappings.propertyNames();
-      while (keyIterator.hasMoreElements()) {
-        String key = (String) keyIterator.nextElement();
-        headerMappings.put(key, mappings.getProperty(key));
-      }
     }
   }
 }

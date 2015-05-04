@@ -228,6 +228,7 @@ JAVA_SOURCES = \
 	util/DeadCodeMap.java \
 	util/ErrorUtil.java \
 	util/FileUtil.java \
+	util/HeaderMap.java \
 	util/JdtParser.java \
 	util/NameTable.java \
 	util/ProGuardUsageParser.java \

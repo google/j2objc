@@ -132,7 +132,7 @@ public class J2ObjC {
         parser.prependSourcepathEntry(strippedSourcesDir.getPath());
       }
 
-      TranslationProcessor.loadHeaderMappings();
+      Options.getHeaderMap().loadMappings();
       TranslationProcessor translationProcessor =
           new TranslationProcessor(parser, loadDeadCodeMap());
       translationProcessor.processInputs(inputs);
@@ -141,6 +141,8 @@ public class J2ObjC {
         return;
       }
       translationProcessor.postProcess();
+
+      Options.getHeaderMap().printMappings();
     } finally {
       FileUtil.deleteTempDir(preProcessorTempDir);
       FileUtil.deleteTempDir(strippedSourcesDir);

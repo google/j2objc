@@ -19,11 +19,11 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.util.HeaderMap;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collections;
-import java.util.Map;
 
 /**
  * Tests for {@link ObjectiveCHeaderGenerator}.
@@ -176,11 +176,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "AnotherDummy", "AnotherDummy.h");
     assertTranslation(translation, "#include \"unit/test/Dummy.h\"");
 
-    Map<String, String> outputMapping = writeAndReloadHeaderMappings();
-    assertEquals(outputMapping.get("unit.test.Dummy"), "unit/test/Dummy.h");
-    assertEquals(outputMapping.get("unit.test.AnotherDummy"), "unit/test/AnotherDummy.h");
-    assertEquals(outputMapping.get("unit.mapping.custom.Test"), "my/mapping/custom/Test.h");
-    assertEquals(outputMapping.get("unit.mapping.custom.AnotherTest"), "my/mapping/custom/Test.h");
+    HeaderMap headerMap = Options.getHeaderMap();
+    assertEquals(headerMap.get("unit.test.Dummy"), "unit/test/Dummy.h");
+    assertEquals(headerMap.get("unit.test.AnotherDummy"), "unit/test/AnotherDummy.h");
+    assertEquals(headerMap.get("unit.mapping.custom.Test"), "my/mapping/custom/Test.h");
+    assertEquals(headerMap.get("unit.mapping.custom.AnotherTest"), "my/mapping/custom/Test.h");
   }
 
   public void testOutputHeaderFileMappingWithMultipleClassesInOneHeader() throws IOException {
@@ -213,11 +213,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translationForDummy, "#include \"my/mapping/custom/Test.h\"");
     assertTranslation(translationForAnotherDummy, "#include \"my/mapping/custom/Test.h\"");
 
-    Map<String, String> outputMapping = writeAndReloadHeaderMappings();
-    assertEquals(outputMapping.get("unit.test.Dummy"), "unit/test/Dummy.h");
-    assertEquals(outputMapping.get("unit.test.AnotherDummy"), "unit/test/AnotherDummy.h");
-    assertEquals(outputMapping.get("unit.mapping.custom.Test"), "my/mapping/custom/Test.h");
-    assertEquals(outputMapping.get("unit.mapping.custom.AnotherTest"), "my/mapping/custom/Test.h");
+    HeaderMap headerMap = Options.getHeaderMap();
+    assertEquals(headerMap.get("unit.test.Dummy"), "unit/test/Dummy.h");
+    assertEquals(headerMap.get("unit.test.AnotherDummy"), "unit/test/AnotherDummy.h");
+    assertEquals(headerMap.get("unit.mapping.custom.Test"), "my/mapping/custom/Test.h");
+    assertEquals(headerMap.get("unit.mapping.custom.AnotherTest"), "my/mapping/custom/Test.h");
   }
 
   public void testCombinedGeneration() throws IOException {
@@ -296,12 +296,12 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String header2 = translateCombinedFiles(
         "unit2/Foo", ".h", "unit2/AnotherTest.java", "unit2/YetAnotherTest.java");
 
-    Map<String, String> outputMapping = writeAndReloadHeaderMappings();
-    assertEquals("unit/Foo.h", outputMapping.get("unit.Test"));
-    assertEquals("unit/Foo.h", outputMapping.get("unit.AnotherTest"));
+    HeaderMap headerMap = Options.getHeaderMap();
+    assertEquals("unit/Foo.h", headerMap.get("unit.Test"));
+    assertEquals("unit/Foo.h", headerMap.get("unit.AnotherTest"));
     assertTranslation(header2, "#include \"unit/Foo.h\"");
-    assertEquals("unit2/Foo.h", outputMapping.get("unit2.AnotherTest"));
-    assertEquals("unit2/Foo.h", outputMapping.get("unit2.YetAnotherTest"));
+    assertEquals("unit2/Foo.h", headerMap.get("unit2.AnotherTest"));
+    assertEquals("unit2/Foo.h", headerMap.get("unit2.YetAnotherTest"));
   }
 
   public void testForwardDeclarationTranslation() throws IOException {

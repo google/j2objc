@@ -24,6 +24,7 @@ import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
+import com.google.devtools.j2objc.util.HeaderMap;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -65,8 +66,7 @@ public class Options {
   private boolean emitLineDirectives = false;
   private boolean warningsAsErrors = false;
   private boolean deprecatedDeclarations = false;
-  // Keys are class names, values are header paths (with a .h).
-  private Map<String, String> headerMappings = Maps.newLinkedHashMap();
+  private HeaderMap headerMap = new HeaderMap();
   private File outputHeaderMappingFile = null;
   private Map<String, String> classMappings = Maps.newLinkedHashMap();
   private Map<String, String> methodMappings = Maps.newLinkedHashMap();
@@ -566,8 +566,8 @@ public class Options {
     return instance.methodMappings;
   }
 
-  public static Map<String, String> getHeaderMappings() {
-    return instance.headerMappings;
+  public static HeaderMap getHeaderMap() {
+    return instance.headerMap;
   }
 
   @Nullable

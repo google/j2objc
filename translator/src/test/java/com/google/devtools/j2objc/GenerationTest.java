@@ -54,7 +54,6 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -342,7 +341,7 @@ public abstract class GenerationTest extends TestCase {
   }
 
   protected void loadHeaderMappings() {
-    TranslationProcessor.loadHeaderMappings();
+    Options.getHeaderMap().loadMappings();
   }
 
   protected void preprocessFiles(String... fileNames) {
@@ -352,18 +351,6 @@ public abstract class GenerationTest extends TestCase {
           tempDir.getPath() + File.separatorChar + fileName, fileName));
     }
     new InputFilePreprocessor(parser).processInputs(batch.getInputs());
-  }
-
-  protected Map<String, String> writeAndReloadHeaderMappings() throws IOException {
-    File outputHeaderMappingFile = new File(tempDir.getPath() + "/mappings.j2objc");
-    outputHeaderMappingFile.deleteOnExit();
-    Options.setOutputHeaderMappingFile(outputHeaderMappingFile);
-    TranslationProcessor.printHeaderMappings();
-    Options.getHeaderMappings().clear();
-    Options.setOutputHeaderMappingFile(null);
-    Options.setHeaderMappingFiles(Lists.newArrayList(outputHeaderMappingFile.getAbsolutePath()));
-    loadHeaderMappings();
-    return Options.getHeaderMappings();
   }
 
   protected void addSourceFile(String source, String fileName) throws IOException {

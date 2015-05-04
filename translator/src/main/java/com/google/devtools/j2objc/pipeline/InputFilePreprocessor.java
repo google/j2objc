@@ -91,8 +91,7 @@ public class InputFilePreprocessor {
     }
     String qualifiedName = FileUtil.getQualifiedMainTypeName(file, compilationUnit);
     if (Options.shouldMapHeaders()) {
-      Options.getHeaderMappings().put(
-          qualifiedName, input.getGenerationUnit().getOutputPath() + ".h");
+      Options.getHeaderMap().put(qualifiedName, input.getGenerationUnit().getOutputPath() + ".h");
     }
     if (doIncompatibleStripping) {
       String newSource = J2ObjCIncompatibleStripper.strip(source, compilationUnit);
