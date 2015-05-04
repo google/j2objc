@@ -29,10 +29,7 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.IExtendedModifier;
 import org.eclipse.jdt.core.dom.ImportDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.Name;
-import org.eclipse.jdt.core.dom.QualifiedName;
 import org.eclipse.jdt.core.dom.SimpleName;
-import org.eclipse.jdt.core.dom.SimpleType;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import java.util.Comparator;
@@ -42,12 +39,16 @@ import java.util.TreeSet;
 
 /**
  * Removes elements annotated as "J2ObjCIncompatible".
+ *
+ * TODO(kstanger): Handle import name collisions. Specifically, an unused import
+ * should be removed when another type of the same base name is used fully
+ * qualified within the source file.
+ * TODO(kstanger): Make sure static imports are handled correctly.
  */
 public class J2ObjCIncompatibleStripper extends ASTVisitor {
 
   private final TreeSet<ASTNode> nodesToStrip = Sets.newTreeSet(START_POS_COMPARATOR);
   private final Map<String, ImportDeclaration> unusedImports = Maps.newHashMap();
-  private final Map<String, ImportDeclaration> unusedStaticImports = Maps.newHashMap();
 
   private static final Comparator<ASTNode> START_POS_COMPARATOR = new Comparator<ASTNode>() {
     public int compare(ASTNode a, ASTNode b) {
@@ -59,12 +60,9 @@ public class J2ObjCIncompatibleStripper extends ASTVisitor {
     @SuppressWarnings("unchecked")
     List<ImportDeclaration> imports = unit.imports();
     for (ImportDeclaration importNode : imports) {
-      String name = getLastComponent(importNode.getName());
-      if (importNode.isStatic()) {
-        unusedStaticImports.put(name, importNode);
-      } else {
-        unusedImports.put(name, importNode);
-      }
+      String name = importNode.getName().getFullyQualifiedName();
+      name = name.substring(name.lastIndexOf('.') + 1);
+      unusedImports.put(name, importNode);
     }
   }
 
@@ -76,26 +74,11 @@ public class J2ObjCIncompatibleStripper extends ASTVisitor {
 
   private boolean isJ2ObjCIncompatible(IExtendedModifier modifier) {
     if (modifier instanceof Annotation) {
-      String name = getLastComponent(((Annotation) modifier).getTypeName());
+      String name = ((Annotation) modifier).getTypeName().getFullyQualifiedName();
+      name = name.substring(name.lastIndexOf('.') + 1);
       return name.equals("J2ObjCIncompatible");
     }
     return false;
-  }
-
-  private String getFirstComponent(Name name) {
-    if (name.isSimpleName()) {
-      return ((SimpleName) name).getIdentifier();
-    } else {
-      return getFirstComponent(((QualifiedName) name).getQualifier());
-    }
-  }
-
-  private String getLastComponent(Name name) {
-    if (name.isSimpleName()) {
-      return ((SimpleName) name).getIdentifier();
-    } else {
-      return ((QualifiedName) name).getName().getIdentifier();
-    }
   }
 
   private boolean visitBodyDeclaration(BodyDeclaration node) {
@@ -117,14 +100,8 @@ public class J2ObjCIncompatibleStripper extends ASTVisitor {
   }
 
   @Override
-  public boolean visit(SimpleType node) {
-    unusedImports.remove(getFirstComponent(node.getName()));
-    return false;
-  }
-
-  @Override
   public void endVisit(SimpleName node) {
-    unusedStaticImports.remove(node.getIdentifier());
+    unusedImports.remove(node.getIdentifier());
   }
 
   @Override
@@ -159,7 +136,6 @@ public class J2ObjCIncompatibleStripper extends ASTVisitor {
 
   private String stripSource(String source) {
     nodesToStrip.addAll(unusedImports.values());
-    nodesToStrip.addAll(unusedStaticImports.values());
     StringBuilder sb = new StringBuilder();
     int currentIdx = 0;
     for (ASTNode node : nodesToStrip) {
