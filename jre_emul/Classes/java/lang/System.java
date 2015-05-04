@@ -235,12 +235,12 @@ public class System {
     properties.remove(key);
     return result;
   }
-  
+
   public static native String getenv(String name) /*-[
     const char *value = getenv([name UTF8String]);
     return value ? [NSString stringWithUTF8String:value] : nil;
   ]-*/;
-  
+
   public static native Map<String,String> getenv() /*-[
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
     for (int i = 0; environ[i]; i++) {
@@ -273,6 +273,30 @@ public class System {
   public static String lineSeparator() {
       return "\n";   // Always return OSX/iOS value.
   }
+
+  /**
+   * See {@link Runtime#load}.
+   */
+  public static void load(String pathName) {
+      Runtime.getRuntime().load(pathName);
+  }
+
+  /**
+   * See {@link Runtime#loadLibrary}.
+   */
+  public static void loadLibrary(String libName) {
+      Runtime.getRuntime().loadLibrary(libName);
+  }
+
+  /**
+   * No-op on iOS, since it doesn't use garbage collection.
+   */
+  public static void runFinalization() {}
+
+  /**
+   * No-op on iOS, since it doesn't use garbage collection.
+   */
+  public static void runFinalizersOnExit(boolean b) {}
 
   // Android internal logging methods, rewritten to use Logger.
 

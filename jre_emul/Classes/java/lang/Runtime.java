@@ -15,11 +15,10 @@
 package java.lang;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /*-[
-#import "mach/mach.h" 
+#import "mach/mach.h"
 ]-*/
 
 /**
@@ -31,7 +30,7 @@ import java.util.List;
 public class Runtime {
 
   private List<Thread> shutdownHooks = new ArrayList<Thread>();
-  
+
   /**
    * Holds the Singleton global instance of Runtime.
    */
@@ -62,7 +61,7 @@ public class Runtime {
   public void gc() {
     // No garbage collector, so do nothing.
   }
-  
+
   public native long maxMemory() /*-[
     return (long long) [[NSProcessInfo processInfo] physicalMemory];
   ]-*/;
@@ -73,7 +72,7 @@ public class Runtime {
     kern_return_t kerr = task_info(mach_task_self(), TASK_BASIC_INFO, (task_info_t) &info, &size);
     return (long long) (kerr == KERN_SUCCESS) ? info.resident_size : 0;
   ]-*/;
-  
+
   public native long freeMemory() /*-[
     mach_port_t host_port = mach_host_self();
     mach_msg_type_number_t host_size = sizeof(vm_statistics_data_t) / sizeof(integer_t);
@@ -97,21 +96,46 @@ public class Runtime {
     }
     shutdownHooks.add(hook);
   }
-  
+
   public boolean removeShutdownHook(Thread hook) {
     return shutdownHooks.remove(hook);
   }
-  
+
   private void runShutdownHooks() {
     for (Thread t : shutdownHooks) {
       t.start();
     }
     shutdownHooks = null;  // Indicates the hooks were started.
   }
-  
+
   private native void registerShutdownHooks() /*-[
     atexit_b(^{
       [self runShutdownHooks];
     });
   ]-*/;
+
+  /**
+   * No-op on iOS, since all code must be linked into app bundle.
+   */
+  public void load(String absolutePath) {}
+
+  /**
+   * No-op on iOS, since all code must be linked into app bundle.
+   */
+  public void loadLibrary(String nickname) {}
+
+  /**
+   * No-op on iOS, since it doesn't use garbage collection.
+   */
+  public void runFinalization() {}
+
+  /**
+   * No-op on iOS.
+   */
+  public void traceInstructions(boolean enable) {}
+
+  /**
+   * No-op on iOS.
+   */
+  public void traceMethodCalls(boolean enable) {}
 }
