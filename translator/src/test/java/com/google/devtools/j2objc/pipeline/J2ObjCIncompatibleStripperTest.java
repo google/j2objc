@@ -39,7 +39,6 @@ public class J2ObjCIncompatibleStripperTest extends GenerationTest {
     assertNotInTranslation(translation, "strippedMethod");
   }
 
-  /* TODO(kstanger): Make this pass.
   public void testTypeNameCollision() throws IOException {
     addSourceFile(
         "import com.google.j2objc.annotations.J2ObjCIncompatible; "
@@ -50,5 +49,21 @@ public class J2ObjCIncompatibleStripperTest extends GenerationTest {
     runPipeline("Test.java");
     String translation = getTranslatedFile("Test.h");
     assertNotInTranslation(translation, "garbage");
-  }*/
+  }
+
+  public void testStaticImports() throws IOException {
+    addSourceFile(
+        "import com.google.j2objc.annotations.J2ObjCIncompatible; "
+        + "import static java.Garbage.foo; "
+        + "import static java.util.Arrays.asList; "
+        + "class Test {"
+        + " @J2ObjCIncompatible void test1() { foo(); }"
+        + " java.util.List<Object> test2(Object[] objs) { return asList(objs); } }", "Test.java");
+    runPipeline("Test.java");
+    String translation = getTranslatedFile("Test.h");
+    assertNotInTranslation(translation, "Garbage");
+    assertNotInTranslation(translation, "foo");
+    translation = getTranslatedFile("Test.m");
+    assertTranslation(translation, "return JavaUtilArrays_asListWithNSObjectArray_(objs);");
+  }
 }
