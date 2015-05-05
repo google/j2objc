@@ -26,8 +26,7 @@ import java.util.Comparator;
 import javax.annotation.Nullable;
 
 /**
- * A utility for performing a "lazy" chained comparison statement, which 
- * performs comparisons only until it finds a nonzero result. For example:
+ * A utility for performing a chained comparison statement. For example:
  * <pre>   {@code
  *
  *   public int compareTo(Foo that) {
@@ -38,13 +37,18 @@ import javax.annotation.Nullable;
  *         .result();
  *   }}</pre>
  *
- * The value of this expression will have the same sign as the <i>first
+ * <p>The value of this expression will have the same sign as the <i>first
  * nonzero</i> comparison result in the chain, or will be zero if every
  * comparison result was zero.
  *
- * <p>Once any comparison returns a nonzero value, remaining comparisons are
- * "short-circuited".
- * 
+ * <p>Performance note: Even though the {@code ComparisonChain} caller always
+ * invokes its {@code compare} methods unconditionally, the {@code
+ * ComparisonChain} implementation stops calling its inputs' {@link
+ * Comparable#compareTo compareTo} and {@link Comparator#compare compare}
+ * methods as soon as one of them returns a nonzero result. This optimization is
+ * typically important only in the presence of expensive {@code compareTo} and
+ * {@code compare} implementations.
+ *
  * <p>See the Guava User Guide article on <a href=
  * "http://code.google.com/p/guava-libraries/wiki/CommonObjectUtilitiesExplained#compare/compareTo">
  * {@code ComparisonChain}</a>.
@@ -202,19 +206,6 @@ public abstract class ComparisonChain {
    * @since 12.0 (present as {@code compare} since 2.0)
    */
   public abstract ComparisonChain compareFalseFirst(boolean left, boolean right);
-
-  /**
-   * Old name of {@link #compareFalseFirst}.
-   *
-   * @deprecated Use {@link #compareFalseFirst}; or, if the parameters passed
-   *     are being either negated or reversed, undo the negation or reversal and
-   *     use {@link #compareTrueFirst}. <b>This method is scheduled for deletion
-   *     in September 2013.</b>
-   */
-  @Deprecated
-  public final ComparisonChain compare(boolean left, boolean right) {
-    return compareFalseFirst(left, right);
-  }
 
   /**
    * Ends this comparison chain and returns its result: a value having the

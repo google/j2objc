@@ -137,7 +137,7 @@ public interface HashFunction {
    *   HashFunction hf = Hashing.md5();
    *   HashCode hc = hf.newHasher()
    *       .putLong(id)
-   *       .putString(name)
+   *       .putBoolean(isActive)
    *       .hash();}</pre>
    */
   Hasher newHasher();
@@ -184,13 +184,14 @@ public interface HashFunction {
   HashCode hashBytes(byte[] input, int off, int len);
 
   /**
-   * Shortcut for {@code newHasher().putString(input).hash()}. The implementation <i>might</i>
-   * perform better than its longhand equivalent, but should not perform worse. Note that no
-   * character encoding is performed; the low byte and high byte of each character are hashed
-   * directly (in that order). This is equivalent to using
-   * {@code hashString(input, Charsets.UTF_16LE)}.
+   * Shortcut for {@code newHasher().putUnencodedChars(input).hash()}. The implementation
+   * <i>might</i> perform better than its longhand equivalent, but should not perform worse.
+   * Note that no character encoding is performed; the low byte and high byte of each {@code char}
+   * are hashed directly (in that order).
+   *
+   * @since 15.0 (since 11.0 as hashString(CharSequence)).
    */
-  HashCode hashString(CharSequence input);
+  HashCode hashUnencodedChars(CharSequence input);
 
   /**
    * Shortcut for {@code newHasher().putString(input, charset).hash()}. Characters are encoded

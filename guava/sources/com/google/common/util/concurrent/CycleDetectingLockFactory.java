@@ -20,7 +20,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -36,6 +36,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -59,7 +60,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * <li>WARN
  * <li>THROW
  * </ul>
- * The locks created by a factory instance will detect lock acquisition cycles
+ * <p>The locks created by a factory instance will detect lock acquisition cycles
  * with locks created by other {@code CycleDetectingLockFactory} instances
  * (except those with {@code Policy.DISABLED}). A lock's behavior when a cycle
  * is detected, however, is defined by the {@code Policy} of the factory that
@@ -80,7 +81,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * Thread1: acquire(LockA) --X acquire(LockB)
  * Thread2: acquire(LockB) --X acquire(LockA)
  * </pre>
- * Neither thread will progress because each is waiting for the other. In more
+ * <p>Neither thread will progress because each is waiting for the other. In more
  * complex applications, cycles can arise from interactions among more than 2
  * locks:
  * <pre>
@@ -89,7 +90,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * ...
  * ThreadN: acquire(LockN) --X acquire(LockA)
  * </pre>
- * The implementation detects cycles by constructing a directed graph in which
+ * <p>The implementation detects cycles by constructing a directed graph in which
  * each lock represents a node and each edge represents an acquisition ordering
  * between two locks.
  * <ul>
@@ -105,7 +106,7 @@ import javax.annotation.concurrent.ThreadSafe;
  * <li>If a cycle is detected, an "unsafe" (cyclic) edge is created to represent
  *   a potential deadlock situation, and the appropriate Policy is executed.
  * </ul>
- * Note that detection of potential deadlock does not necessarily indicate that
+ * <p>Note that detection of potential deadlock does not necessarily indicate that
  * deadlock will happen, as it is possible that higher level application logic
  * prevents the cyclic lock acquisition from occurring. One example of a false
  * positive is:
@@ -154,7 +155,7 @@ import javax.annotation.concurrent.ThreadSafe;
  *   </ul>
  * </ul>
  *
- * As such, the CycleDetectingLockFactory may not be suitable for
+ * <p>As such, the CycleDetectingLockFactory may not be suitable for
  * performance-critical applications which involve tightly-looped or
  * deeply-nested locking algorithms.
  *
@@ -284,28 +285,79 @@ public class CycleDetectingLockFactory {
   }
 
   // A static mapping from an Enum type to its set of LockGraphNodes.
-  private static final Map<Class<? extends Enum>,
+  private static final ConcurrentMap<Class<? extends Enum>,
       Map<? extends Enum, LockGraphNode>> lockGraphNodesPerType =
-          new MapMaker().weakKeys().makeComputingMap(
-              new OrderedLockGraphNodesCreator());
+          new MapMaker().weakKeys().makeMap();
 
   /**
    * Creates a {@code CycleDetectingLockFactory.WithExplicitOrdering<E>}.
    */
   public static <E extends Enum<E>> WithExplicitOrdering<E>
       newInstanceWithExplicitOrdering(Class<E> enumClass, Policy policy) {
-    // OrderedLockGraphNodesCreator maps each enumClass to a Map with the
-    // corresponding enum key type.
+    // createNodes maps each enumClass to a Map with the corresponding enum key
+    // type.
     checkNotNull(enumClass);
     checkNotNull(policy);
     @SuppressWarnings("unchecked")
     Map<E, LockGraphNode> lockGraphNodes =
-        (Map<E, LockGraphNode>) lockGraphNodesPerType.get(enumClass);
+        (Map<E, LockGraphNode>) getOrCreateNodes(enumClass);
     return new WithExplicitOrdering<E>(policy, lockGraphNodes);
   }
 
+  private static Map<? extends Enum, LockGraphNode> getOrCreateNodes(
+      Class<? extends Enum> clazz) {
+    Map<? extends Enum, LockGraphNode> existing =
+        lockGraphNodesPerType.get(clazz);
+    if (existing != null) {
+      return existing;
+    }
+    Map<? extends Enum, LockGraphNode> created = createNodes(clazz);
+    existing = lockGraphNodesPerType.putIfAbsent(clazz, created);
+    return MoreObjects.firstNonNull(existing, created);
+  }
+
   /**
-   * A {@code CycleDetectingLockFactory.WithExplicitOrdering} provides the
+   * For a given Enum type, creates an immutable map from each of the Enum's
+   * values to a corresponding LockGraphNode, with the
+   * {@code allowedPriorLocks} and {@code disallowedPriorLocks} prepopulated
+   * with nodes according to the natural ordering of the associated Enum values.
+   */
+  @VisibleForTesting
+  static <E extends Enum<E>> Map<E, LockGraphNode> createNodes(Class<E> clazz) {
+    EnumMap<E, LockGraphNode> map = Maps.newEnumMap(clazz);
+    E[] keys = clazz.getEnumConstants();
+    final int numKeys = keys.length;
+    ArrayList<LockGraphNode> nodes =
+        Lists.newArrayListWithCapacity(numKeys);
+    // Create a LockGraphNode for each enum value.
+    for (E key : keys) {
+      LockGraphNode node = new LockGraphNode(getLockName(key));
+      nodes.add(node);
+      map.put(key, node);
+    }
+    // Pre-populate all allowedPriorLocks with nodes of smaller ordinal.
+    for (int i = 1; i < numKeys; i++) {
+      nodes.get(i).checkAcquiredLocks(Policies.THROW, nodes.subList(0, i));
+    }
+    // Pre-populate all disallowedPriorLocks with nodes of larger ordinal.
+    for (int i = 0; i < numKeys - 1; i++) {
+      nodes.get(i).checkAcquiredLocks(
+          Policies.DISABLED, nodes.subList(i + 1, numKeys));
+    }
+    return Collections.unmodifiableMap(map);
+  }
+
+  /**
+   * For the given Enum value {@code rank}, returns the value's
+   * {@code "EnumClass.name"}, which is used in exception and warning
+   * output.
+   */
+  private static String getLockName(Enum<?> rank) {
+    return rank.getDeclaringClass().getSimpleName() + "." + rank.name();
+  }
+
+  /**
+   * <p>A {@code CycleDetectingLockFactory.WithExplicitOrdering} provides the
    * additional enforcement of an application-specified ordering of lock
    * acquisitions. The application defines the allowed ordering with an
    * {@code Enum} whose values each correspond to a lock type. The order in
@@ -328,16 +380,15 @@ public class CycleDetectingLockFactory {
    *
    * lock1.lock();
    * lock3.lock();
-   * lock2.lock();  // will throw an IllegalStateException
-   * }</pre>
+   * lock2.lock();  // will throw an IllegalStateException}</pre>
    *
-   * As with all locks created by instances of {@code CycleDetectingLockFactory}
+   * <p>As with all locks created by instances of {@code CycleDetectingLockFactory}
    * explicitly ordered locks participate in general cycle detection with all
    * other cycle detecting locks, and a lock's behavior when detecting a cyclic
    * lock acquisition is defined by the {@code Policy} of the factory that
    * created it.
-   * <p>
-   * Note, however, that although multiple locks can be created for a given Enum
+   *
+   * <p>Note, however, that although multiple locks can be created for a given Enum
    * value, whether it be through separate factory instances or through multiple
    * calls to the same factory, attempting to acquire multiple locks with the
    * same Enum value (within the same thread) will result in an
@@ -358,10 +409,9 @@ public class CycleDetectingLockFactory {
    * lockB.lock();  // will throw an IllegalStateException
    * lockC.lock();  // will throw an IllegalStateException
    *
-   * lockA.lock();  // reentrant acquisition is okay
-   * }</pre>
+   * lockA.lock();  // reentrant acquisition is okay}</pre>
    *
-   * It is the responsibility of the application to ensure that multiple lock
+   * <p>It is the responsibility of the application to ensure that multiple lock
    * instances with the same rank are never acquired in the same thread.
    *
    * @param <E> The Enum type representing the explicit lock ordering.
@@ -422,60 +472,6 @@ public class CycleDetectingLockFactory {
       return policy == Policies.DISABLED ? new ReentrantReadWriteLock(fair)
           : new CycleDetectingReentrantReadWriteLock(
               lockGraphNodes.get(rank), fair);
-    }
-  }
-
-  /**
-   * For a given Enum type, creates an immutable map from each of the Enum's
-   * values to a corresponding LockGraphNode, with the
-   * {@code allowedPriorLocks} and {@code disallowedPriorLocks} prepopulated
-   * with nodes according to the natural ordering of the associated Enum values.
-   */
-  @VisibleForTesting
-  static class OrderedLockGraphNodesCreator
-      implements Function<Class<? extends Enum>,
-          Map<? extends Enum, LockGraphNode>> {
-
-    @Override
-    @SuppressWarnings("unchecked")  // There's no way to properly express with
-    // wildcards the recursive Enum type required by createNodesFor(), and the
-    // Map/Function types must use wildcards since they accept any Enum class.
-    public Map<? extends Enum, LockGraphNode> apply(
-        Class<? extends Enum> clazz) {
-      return createNodesFor(clazz);
-    }
-
-    <E extends Enum<E>> Map<E, LockGraphNode> createNodesFor(Class<E> clazz) {
-      EnumMap<E, LockGraphNode> map = Maps.newEnumMap(clazz);
-      E[] keys = clazz.getEnumConstants();
-      final int numKeys = keys.length;
-      ArrayList<LockGraphNode> nodes =
-          Lists.newArrayListWithCapacity(numKeys);
-      // Create a LockGraphNode for each enum value.
-      for (E key : keys) {
-        LockGraphNode node = new LockGraphNode(getLockName(key));
-        nodes.add(node);
-        map.put(key, node);
-      }
-      // Pre-populate all allowedPriorLocks with nodes of smaller ordinal.
-      for (int i = 1; i < numKeys; i++) {
-        nodes.get(i).checkAcquiredLocks(Policies.THROW, nodes.subList(0, i));
-      }
-      // Pre-populate all disallowedPriorLocks with nodes of larger ordinal.
-      for (int i = 0; i < numKeys - 1; i++) {
-        nodes.get(i).checkAcquiredLocks(
-            Policies.DISABLED, nodes.subList(i + 1, numKeys));
-      }
-      return Collections.unmodifiableMap(map);
-    }
-
-    /**
-     * For the given Enum value {@code rank}, returns the value's
-     * {@code "EnumClass.name"}, which is used in exception and warning
-     * output.
-     */
-    private String getLockName(Enum<?> rank) {
-      return rank.getDeclaringClass().getSimpleName() + "." + rank.name();
     }
   }
 
@@ -564,7 +560,7 @@ public class CycleDetectingLockFactory {
    *   at ...
    * </pre>
    *
-   * Instances are logged for the {@code Policies.WARN}, and thrown for
+   * <p>Instances are logged for the {@code Policies.WARN}, and thrown for
    * {@code Policies.THROW}.
    *
    * @since 13.0

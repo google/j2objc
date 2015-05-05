@@ -22,6 +22,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
 
+import sun.misc.Unsafe;
+
 import java.nio.ByteOrder;
 import java.util.Comparator;
 
@@ -35,9 +37,6 @@ import java.util.Comparator;
  * <p>See the Guava User Guide article on <a href=
  * "http://code.google.com/p/guava-libraries/wiki/PrimitivesExplained">
  * primitive utilities</a>.
- *
- * J2ObjC Modifications:
- * - removed lexicographicalComparator() due to dependency on sun.misc.Unsafe.
  *
  * @author Kevin Bourrillion
  * @author Martin Buchholz
@@ -87,7 +86,10 @@ public final class UnsignedBytes {
    *     than 255
    */
   public static byte checkedCast(long value) {
-    checkArgument(value >> Byte.SIZE == 0, "out of range: %s", value);
+    if ((value >> Byte.SIZE) != 0) {
+      // don't use checkArgument here, to avoid boxing
+      throw new IllegalArgumentException("Out of range: " + value);
+    }
     return (byte) value;
   }
 
@@ -251,5 +253,190 @@ public final class UnsignedBytes {
       builder.append(separator).append(toString(array[i]));
     }
     return builder.toString();
+  }
+
+  /**
+   * Returns a comparator that compares two {@code byte} arrays
+   * lexicographically. That is, it compares, using {@link
+   * #compare(byte, byte)}), the first pair of values that follow any common
+   * prefix, or when one array is a prefix of the other, treats the shorter
+   * array as the lesser. For example, {@code [] < [0x01] < [0x01, 0x7F] <
+   * [0x01, 0x80] < [0x02]}. Values are treated as unsigned.
+   *
+   * <p>The returned comparator is inconsistent with {@link
+   * Object#equals(Object)} (since arrays support only identity equality), but
+   * it is consistent with {@link java.util.Arrays#equals(byte[], byte[])}.
+   *
+   * @see <a href="http://en.wikipedia.org/wiki/Lexicographical_order">
+   *     Lexicographical order article at Wikipedia</a>
+   * @since 2.0
+   */
+  public static Comparator<byte[]> lexicographicalComparator() {
+    return LexicographicalComparatorHolder.BEST_COMPARATOR;
+  }
+
+  @VisibleForTesting
+  static Comparator<byte[]> lexicographicalComparatorJavaImpl() {
+    return LexicographicalComparatorHolder.PureJavaComparator.INSTANCE;
+  }
+
+  /**
+   * Provides a lexicographical comparator implementation; either a Java
+   * implementation or a faster implementation based on {@link Unsafe}.
+   *
+   * <p>Uses reflection to gracefully fall back to the Java implementation if
+   * {@code Unsafe} isn't available.
+   */
+  @VisibleForTesting
+  static class LexicographicalComparatorHolder {
+    static final String UNSAFE_COMPARATOR_NAME =
+        LexicographicalComparatorHolder.class.getName() + "$UnsafeComparator";
+
+    static final Comparator<byte[]> BEST_COMPARATOR = getBestComparator();
+
+    @VisibleForTesting
+    enum UnsafeComparator implements Comparator<byte[]> {
+      INSTANCE;
+
+      static final boolean BIG_ENDIAN =
+          ByteOrder.nativeOrder().equals(ByteOrder.BIG_ENDIAN);
+
+      /*
+       * The following static final fields exist for performance reasons.
+       *
+       * In UnsignedBytesBenchmark, accessing the following objects via static
+       * final fields is the fastest (more than twice as fast as the Java
+       * implementation, vs ~1.5x with non-final static fields, on x86_32)
+       * under the Hotspot server compiler. The reason is obviously that the
+       * non-final fields need to be reloaded inside the loop.
+       *
+       * And, no, defining (final or not) local variables out of the loop still
+       * isn't as good because the null check on the theUnsafe object remains
+       * inside the loop and BYTE_ARRAY_BASE_OFFSET doesn't get
+       * constant-folded.
+       *
+       * The compiler can treat static final fields as compile-time constants
+       * and can constant-fold them while (final or not) local variables are
+       * run time values.
+       */
+
+      static final Unsafe theUnsafe;
+
+      /** The offset to the first element in a byte array. */
+      static final int BYTE_ARRAY_BASE_OFFSET;
+
+      static {
+        theUnsafe = getUnsafe();
+
+        BYTE_ARRAY_BASE_OFFSET = theUnsafe.arrayBaseOffset(byte[].class);
+
+        // sanity check - this should never fail
+        if (theUnsafe.arrayIndexScale(byte[].class) != 1) {
+          throw new AssertionError();
+        }
+      }
+      
+      /**
+       * Returns a sun.misc.Unsafe.  Suitable for use in a 3rd party package.
+       * Replace with a simple call to Unsafe.getUnsafe when integrating
+       * into a jdk.
+       *
+       * @return a sun.misc.Unsafe
+       */
+      private static sun.misc.Unsafe getUnsafe() {
+          try {
+              return sun.misc.Unsafe.getUnsafe();
+          } catch (SecurityException tryReflectionInstead) {}
+          try {
+              return java.security.AccessController.doPrivileged
+              (new java.security.PrivilegedExceptionAction<sun.misc.Unsafe>() {
+                  public sun.misc.Unsafe run() throws Exception {
+                      Class<sun.misc.Unsafe> k = sun.misc.Unsafe.class;
+                      for (java.lang.reflect.Field f : k.getDeclaredFields()) {
+                          f.setAccessible(true);
+                          Object x = f.get(null);
+                          if (k.isInstance(x))
+                              return k.cast(x);
+                      }
+                      throw new NoSuchFieldError("the Unsafe");
+                  }});
+          } catch (java.security.PrivilegedActionException e) {
+              throw new RuntimeException("Could not initialize intrinsics",
+                                         e.getCause());
+          }
+      }
+
+      @Override public int compare(byte[] left, byte[] right) {
+        int minLength = Math.min(left.length, right.length);
+        int minWords = minLength / Longs.BYTES;
+
+        /*
+         * Compare 8 bytes at a time. Benchmarking shows comparing 8 bytes at a
+         * time is no slower than comparing 4 bytes at a time even on 32-bit.
+         * On the other hand, it is substantially faster on 64-bit.
+         */
+        for (int i = 0; i < minWords * Longs.BYTES; i += Longs.BYTES) {
+          long lw = theUnsafe.getLong(left, BYTE_ARRAY_BASE_OFFSET + (long) i);
+          long rw = theUnsafe.getLong(right, BYTE_ARRAY_BASE_OFFSET + (long) i);
+          if (lw != rw) {
+            if (BIG_ENDIAN) {
+              return UnsignedLongs.compare(lw, rw);
+            }
+
+            /*
+             * We want to compare only the first index where left[index] != right[index].
+             * This corresponds to the least significant nonzero byte in lw ^ rw, since lw
+             * and rw are little-endian.  Long.numberOfTrailingZeros(diff) tells us the least 
+             * significant nonzero bit, and zeroing out the first three bits of L.nTZ gives us the 
+             * shift to get that least significant nonzero byte.
+             */
+            int n = Long.numberOfTrailingZeros(lw ^ rw) & ~0x7;
+            return (int) (((lw >>> n) & UNSIGNED_MASK) - ((rw >>> n) & UNSIGNED_MASK));
+          }
+        }
+
+        // The epilogue to cover the last (minLength % 8) elements.
+        for (int i = minWords * Longs.BYTES; i < minLength; i++) {
+          int result = UnsignedBytes.compare(left[i], right[i]);
+          if (result != 0) {
+            return result;
+          }
+        }
+        return left.length - right.length;
+      }
+    }
+
+    enum PureJavaComparator implements Comparator<byte[]> {
+      INSTANCE;
+
+      @Override public int compare(byte[] left, byte[] right) {
+        int minLength = Math.min(left.length, right.length);
+        for (int i = 0; i < minLength; i++) {
+          int result = UnsignedBytes.compare(left[i], right[i]);
+          if (result != 0) {
+            return result;
+          }
+        }
+        return left.length - right.length;
+      }
+    }
+
+    /**
+     * Returns the Unsafe-using Comparator, or falls back to the pure-Java
+     * implementation if unable to do so.
+     */
+    static Comparator<byte[]> getBestComparator() {
+      try {
+        Class<?> theClass = Class.forName(UNSAFE_COMPARATOR_NAME);
+
+        // yes, UnsafeComparator does implement Comparator<byte[]>
+        @SuppressWarnings("unchecked")
+        Comparator<byte[]> comparator =
+            (Comparator<byte[]>) theClass.getEnumConstants()[0];
+        return comparator;
+      } catch (Throwable t) { // ensure we really catch *everything*
+        return lexicographicalComparatorJavaImpl();
+      }
+    }
   }
 }

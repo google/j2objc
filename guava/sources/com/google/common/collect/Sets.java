@@ -25,8 +25,6 @@ import com.google.common.base.Predicate;
 import com.google.common.base.Predicates;
 import com.google.common.collect.Collections2.FilteredCollection;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.AbstractSet;
 import java.util.Arrays;
@@ -44,6 +42,7 @@ import java.util.NoSuchElementException;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import javax.annotation.Nullable;
@@ -236,9 +235,43 @@ public final class Sets {
    */
   public static <E> HashSet<E> newHashSet(Iterator<? extends E> elements) {
     HashSet<E> set = newHashSet();
-    while (elements.hasNext()) {
-      set.add(elements.next());
-    }
+    Iterators.addAll(set, elements);
+    return set;
+  }
+
+  /**
+   * Creates a thread-safe set backed by a hash map. The set is backed by a
+   * {@link ConcurrentHashMap} instance, and thus carries the same concurrency
+   * guarantees.
+   *
+   * <p>Unlike {@code HashSet}, this class does NOT allow {@code null} to be
+   * used as an element. The set is serializable.
+   *
+   * @return a new, empty thread-safe {@code Set}
+   * @since 15.0
+   */
+  public static <E> Set<E> newConcurrentHashSet() {
+    return newSetFromMap(new ConcurrentHashMap<E, Boolean>());
+  }
+
+  /**
+   * Creates a thread-safe set backed by a hash map and containing the given
+   * elements. The set is backed by a {@link ConcurrentHashMap} instance, and
+   * thus carries the same concurrency guarantees.
+   *
+   * <p>Unlike {@code HashSet}, this class does NOT allow {@code null} to be
+   * used as an element. The set is serializable.
+   *
+   * @param elements the elements that the set should contain
+   * @return a new thread-safe set containing those elements (minus duplicates)
+   * @throws NullPointerException if {@code elements} or any of its contents is
+   *      null
+   * @since 15.0
+   */
+  public static <E> Set<E> newConcurrentHashSet(
+      Iterable<? extends E> elements) {
+    Set<E> set = newConcurrentHashSet();
+    Iterables.addAll(set, elements);
     return set;
   }
 
@@ -292,9 +325,7 @@ public final class Sets {
       return new LinkedHashSet<E>(Collections2.cast(elements));
     }
     LinkedHashSet<E> set = newLinkedHashSet();
-    for (E element : elements) {
-      set.add(element);
-    }
+    Iterables.addAll(set, elements);
     return set;
   }
 
@@ -331,9 +362,7 @@ public final class Sets {
   public static <E extends Comparable> TreeSet<E> newTreeSet(
       Iterable<? extends E> elements) {
     TreeSet<E> set = newTreeSet();
-    for (E element : elements) {
-      set.add(element);
-    }
+    Iterables.addAll(set, elements);
     return set;
   }
 
@@ -451,14 +480,6 @@ public final class Sets {
     return result;
   }
 
-  /*
-   * Regarding newSetForMap() and SetFromMap:
-   *
-   * Written by Doug Lea with assistance from members of JCP JSR-166
-   * Expert Group and released to the public domain, as explained at
-   * http://creativecommons.org/licenses/publicdomain
-   */
-
   /**
    * Returns a set backed by the specified map. The resulting set displays
    * the same ordering, concurrency, and performance characteristics as the
@@ -482,7 +503,7 @@ public final class Sets {
    *   Set<Object> identityHashSet = Sets.newSetFromMap(
    *       new IdentityHashMap<Object, Boolean>());}</pre>
    *
-   * This method has the same behavior as the JDK 6 method
+   * <p>This method has the same behavior as the JDK 6 method
    * {@code Collections.newSetFromMap()}. The returned set is serializable if
    * the backing map is.
    *
@@ -491,76 +512,7 @@ public final class Sets {
    * @throws IllegalArgumentException if {@code map} is not empty
    */
   public static <E> Set<E> newSetFromMap(Map<E, Boolean> map) {
-    return new SetFromMap<E>(map);
-  }
-
-  private static class SetFromMap<E> extends AbstractSet<E>
-      implements Set<E>, Serializable {
-    private final Map<E, Boolean> m; // The backing map
-    private transient Set<E> s; // Its keySet
-
-    SetFromMap(Map<E, Boolean> map) {
-      checkArgument(map.isEmpty(), "Map is non-empty");
-      m = map;
-      s = map.keySet();
-    }
-
-    @Override public void clear() {
-      m.clear();
-    }
-    @Override public int size() {
-      return m.size();
-    }
-    @Override public boolean isEmpty() {
-      return m.isEmpty();
-    }
-    @Override public boolean contains(Object o) {
-      return m.containsKey(o);
-    }
-    @Override public boolean remove(Object o) {
-      return m.remove(o) != null;
-    }
-    @Override public boolean add(E e) {
-      return m.put(e, Boolean.TRUE) == null;
-    }
-    @Override public Iterator<E> iterator() {
-      return s.iterator();
-    }
-    @Override public Object[] toArray() {
-      return s.toArray();
-    }
-    @Override public <T> T[] toArray(T[] a) {
-      return s.toArray(a);
-    }
-    @Override public String toString() {
-      return s.toString();
-    }
-    @Override public int hashCode() {
-      return s.hashCode();
-    }
-    @Override public boolean equals(@Nullable Object object) {
-      return this == object || this.s.equals(object);
-    }
-    @Override public boolean containsAll(Collection<?> c) {
-      return s.containsAll(c);
-    }
-    @Override public boolean removeAll(Collection<?> c) {
-      return s.removeAll(c);
-    }
-    @Override public boolean retainAll(Collection<?> c) {
-      return s.retainAll(c);
-    }
-
-    // addAll is the only inherited implementation
-    @GwtIncompatible("not needed in emulated source")
-    private static final long serialVersionUID = 0;
-
-    @GwtIncompatible("java.io.ObjectInputStream")
-    private void readObject(ObjectInputStream stream)
-        throws IOException, ClassNotFoundException {
-      stream.defaultReadObject();
-      s = m.keySet();
-    }
+    return Platform.newSetFromMap(map);
   }
 
   /**
@@ -681,7 +633,7 @@ public final class Sets {
    *   Set<String> badStrings = (Set) Sets.intersection(
    *       aFewBadObjects, manyBadStrings);}</pre>
    *
-   * This is unfortunate, but should come up only very rarely.
+   * <p>This is unfortunate, but should come up only very rarely.
    */
   public static <E> SetView<E> intersection(
       final Set<E> set1, final Set<?> set2) {
@@ -1002,28 +954,12 @@ public final class Sets {
 
     @Override
     public E pollFirst() {
-      Iterator<E> unfilteredIterator = unfiltered().iterator();
-      while (unfilteredIterator.hasNext()) {
-        E e = unfilteredIterator.next();
-        if (predicate.apply(e)) {
-          unfilteredIterator.remove();
-          return e;
-        }
-      }
-      return null;
+      return Iterables.removeFirstMatching(unfiltered(), predicate);
     }
 
     @Override
     public E pollLast() {
-      Iterator<E> unfilteredIterator = unfiltered().descendingIterator();
-      while (unfilteredIterator.hasNext()) {
-        E e = unfilteredIterator.next();
-        if (predicate.apply(e)) {
-          unfilteredIterator.remove();
-          return e;
-        }
-      }
-      return null;
+      return Iterables.removeFirstMatching(unfiltered().descendingSet(), predicate);
     }
 
     @Override
@@ -1069,7 +1005,7 @@ public final class Sets {
    *       ImmutableSet.of(1, 2),
    *       ImmutableSet.of("A", "B", "C")))}</pre>
    *
-   * returns a set containing six lists:
+   * <p>returns a set containing six lists:
    *
    * <ul>
    * <li>{@code ImmutableList.of(1, "A")}
@@ -1080,7 +1016,7 @@ public final class Sets {
    * <li>{@code ImmutableList.of(2, "C")}
    * </ul>
    *
-   * The result is guaranteed to be in the "traditional", lexicographical
+   * <p>The result is guaranteed to be in the "traditional", lexicographical
    * order for Cartesian products that you would get from nesting for loops:
    * <pre>   {@code
    *
@@ -1092,7 +1028,7 @@ public final class Sets {
    *     }
    *   }}</pre>
    *
-   * Note that if any input set is empty, the Cartesian product will also be
+   * <p>Note that if any input set is empty, the Cartesian product will also be
    * empty. If no sets at all are provided (an empty list), the resulting
    * Cartesian product has one element, an empty list (counter-intuitive, but
    * mathematically consistent).
@@ -1116,11 +1052,6 @@ public final class Sets {
    */
   public static <B> Set<List<B>> cartesianProduct(
       List<? extends Set<? extends B>> sets) {
-    for (Set<? extends B> set : sets) {
-      if (set.isEmpty()) {
-        return ImmutableSet.of();
-      }
-    }
     return CartesianSet.create(sets);
   }
 
@@ -1134,7 +1065,7 @@ public final class Sets {
    *       ImmutableSet.of(1, 2),
    *       ImmutableSet.of("A", "B", "C"))}</pre>
    *
-   * returns a set containing six lists:
+   * <p>returns a set containing six lists:
    *
    * <ul>
    * <li>{@code ImmutableList.of(1, "A")}
@@ -1145,7 +1076,7 @@ public final class Sets {
    * <li>{@code ImmutableList.of(2, "C")}
    * </ul>
    *
-   * The result is guaranteed to be in the "traditional", lexicographical
+   * <p>The result is guaranteed to be in the "traditional", lexicographical
    * order for Cartesian products that you would get from nesting for loops:
    * <pre>   {@code
    *
@@ -1157,7 +1088,7 @@ public final class Sets {
    *     }
    *   }}</pre>
    *
-   * Note that if any input set is empty, the Cartesian product will also be
+   * <p>Note that if any input set is empty, the Cartesian product will also be
    * empty. If no sets at all are provided (an empty list), the resulting
    * Cartesian product has one element, an empty list (counter-intuitive, but
    * mathematically consistent).
@@ -1282,7 +1213,7 @@ public final class Sets {
    * n} is of size {@code 2^n}, its memory usage is only {@code O(n)}. When the
    * power set is constructed, the input set is merely copied. Only as the
    * power set is iterated are the individual subsets created, and these subsets
-   * themselves occupy only a few bytes of memory regardless of their size.
+   * themselves occupy only a small constant amount of memory.
    *
    * @param set the set of elements to construct a power set from
    * @return the power set, as an immutable set of immutable sets
@@ -1295,25 +1226,69 @@ public final class Sets {
    */
   @GwtCompatible(serializable = false)
   public static <E> Set<Set<E>> powerSet(Set<E> set) {
-    ImmutableSet<E> input = ImmutableSet.copyOf(set);
-    checkArgument(input.size() <= 30,
-        "Too many elements to create power set: %s > 30", input.size());
-    return new PowerSet<E>(input);
+    return new PowerSet<E>(set);
+  }
+
+  private static final class SubSet<E> extends AbstractSet<E> {
+    private final ImmutableMap<E, Integer> inputSet;
+    private final int mask;
+
+    SubSet(ImmutableMap<E, Integer> inputSet, int mask) {
+      this.inputSet = inputSet;
+      this.mask = mask;
+    }
+
+    @Override
+    public Iterator<E> iterator() {
+      return new UnmodifiableIterator<E>() {
+        final ImmutableList<E> elements = inputSet.keySet().asList();
+        int remainingSetBits = mask;
+
+        @Override
+        public boolean hasNext() {
+          return remainingSetBits != 0;
+        }
+
+        @Override
+        public E next() {
+          int index = Integer.numberOfTrailingZeros(remainingSetBits);
+          if (index == 32) {
+            throw new NoSuchElementException();
+          }
+          remainingSetBits &= ~(1 << index);
+          return elements.get(index);
+        }
+      };
+    }
+
+    @Override
+    public int size() {
+      return Integer.bitCount(mask);
+    }
+
+    @Override
+    public boolean contains(@Nullable Object o) {
+      Integer index = inputSet.get(o);
+      return index != null && (mask & (1 << index)) != 0;
+    }
   }
 
   private static final class PowerSet<E> extends AbstractSet<Set<E>> {
-    final ImmutableSet<E> inputSet;
-    final ImmutableList<E> inputList;
-    final int powerSetSize;
+    final ImmutableMap<E, Integer> inputSet;
 
-    PowerSet(ImmutableSet<E> input) {
-      this.inputSet = input;
-      this.inputList = input.asList();
-      this.powerSetSize = 1 << input.size();
+    PowerSet(Set<E> input) {
+      ImmutableMap.Builder<E, Integer> builder = ImmutableMap.builder();
+      int i = 0;
+      for (E e : checkNotNull(input)) {
+        builder.put(e, i++);
+      }
+      this.inputSet = builder.build();
+      checkArgument(inputSet.size() <= 30,
+          "Too many elements to create power set: %s > 30", inputSet.size());
     }
 
     @Override public int size() {
-      return powerSetSize;
+      return 1 << inputSet.size();
     }
 
     @Override public boolean isEmpty() {
@@ -1321,50 +1296,17 @@ public final class Sets {
     }
 
     @Override public Iterator<Set<E>> iterator() {
-      return new AbstractIndexedListIterator<Set<E>>(powerSetSize) {
+      return new AbstractIndexedListIterator<Set<E>>(size()) {
         @Override protected Set<E> get(final int setBits) {
-          return new AbstractSet<E>() {
-            @Override public int size() {
-              return Integer.bitCount(setBits);
-            }
-            @Override public Iterator<E> iterator() {
-              return new BitFilteredSetIterator<E>(inputList, setBits);
-            }
-          };
+          return new SubSet<E>(inputSet, setBits);
         }
       };
-    }
-
-    private static final class BitFilteredSetIterator<E>
-        extends UnmodifiableIterator<E> {
-      final ImmutableList<E> input;
-      int remainingSetBits;
-
-      BitFilteredSetIterator(ImmutableList<E> input, int allSetBits) {
-        this.input = input;
-        this.remainingSetBits = allSetBits;
-      }
-
-      @Override public boolean hasNext() {
-        return remainingSetBits != 0;
-      }
-
-      @Override public E next() {
-        int index = Integer.numberOfTrailingZeros(remainingSetBits);
-        if (index == 32) {
-          throw new NoSuchElementException();
-        }
-
-        int currentElementMask = 1 << index;
-        remainingSetBits &= ~currentElementMask;
-        return input.get(index);
-      }
     }
 
     @Override public boolean contains(@Nullable Object obj) {
       if (obj instanceof Set) {
         Set<?> set = (Set<?>) obj;
-        return inputSet.containsAll(set);
+        return inputSet.keySet().containsAll(set);
       }
       return false;
     }
@@ -1383,7 +1325,7 @@ public final class Sets {
        * each input element's hash code times the number of sets that element
        * appears in. Each element appears in exactly half of the 2^n sets, so:
        */
-      return inputSet.hashCode() << (inputSet.size() - 1);
+      return inputSet.keySet().hashCode() << (inputSet.size() - 1);
     }
 
     @Override public String toString() {
@@ -1408,7 +1350,7 @@ public final class Sets {
   /**
    * An implementation for {@link Set#equals(Object)}.
    */
-  static boolean equalsImpl(Set<?> s, @Nullable Object object){
+  static boolean equalsImpl(Set<?> s, @Nullable Object object) {
     if (s == object) {
       return true;
     }
@@ -1556,12 +1498,12 @@ public final class Sets {
    *   synchronized (set) {
    *     // Must be in the synchronized block
    *     Iterator<E> it = set.iterator();
-   *     while (it.hasNext()){
+   *     while (it.hasNext()) {
    *       foo(it.next());
    *     }
    *   }}</pre>
    *
-   * or: <pre>   {@code
+   * <p>or: <pre>   {@code
    *
    *   NavigableSet<E> set = synchronizedNavigableSet(new TreeSet<E>());
    *   NavigableSet<E> set2 = set.descendingSet().headSet(foo);
@@ -1574,7 +1516,7 @@ public final class Sets {
    *     }
    *   }}</pre>
    *
-   * Failure to follow this advice may result in non-deterministic behavior.
+   * <p>Failure to follow this advice may result in non-deterministic behavior.
    *
    * <p>The returned navigable set will be serializable if the specified
    * navigable set is serializable.
@@ -1614,15 +1556,7 @@ public final class Sets {
      * http://code.google.com/p/guava-libraries/issues/detail?id=1013
      */
     if (collection instanceof Set && collection.size() > set.size()) {
-      Iterator<?> setIterator = set.iterator();
-      boolean changed = false;
-      while (setIterator.hasNext()) {
-        if (collection.contains(setIterator.next())) {
-          changed = true;
-          setIterator.remove();
-        }
-      }
-      return changed;
+      return Iterators.removeAll(set.iterator(), collection);
     } else {
       return removeAllImpl(set, collection.iterator());
     }
@@ -1760,12 +1694,5 @@ public final class Sets {
     public String toString() {
       return standardToString();
     }
-  }
-
-  /**
-   * Used to avoid http://bugs.sun.com/view_bug.do?bug_id=6558557
-   */
-  static <T> SortedSet<T> cast(Iterable<T> iterable) {
-    return (SortedSet<T>) iterable;
   }
 }

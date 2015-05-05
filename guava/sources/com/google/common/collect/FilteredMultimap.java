@@ -16,25 +16,19 @@
 
 package com.google.common.collect;
 
-import static com.google.common.base.Preconditions.checkNotNull;
-
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Predicate;
 
 import java.util.Map.Entry;
 
 /**
- * A superclass of all filtered multimap types.
+ * An interface for all filtered multimap types.
  * 
  * @author Louis Wasserman
  */
 @GwtCompatible
-abstract class FilteredMultimap<K, V> extends AbstractMultimap<K, V> {
-  final Multimap<K, V> unfiltered;
-  
-  FilteredMultimap(Multimap<K, V> unfiltered) {
-    this.unfiltered = checkNotNull(unfiltered);
-  }
+interface FilteredMultimap<K, V> extends Multimap<K, V> {  
+  Multimap<K, V> unfiltered();
 
-  abstract Predicate<? super Entry<K, V>> entryPredicate();
+  Predicate<? super Entry<K, V>> entryPredicate();
 }

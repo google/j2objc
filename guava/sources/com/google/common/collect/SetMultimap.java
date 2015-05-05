@@ -37,6 +37,12 @@ import javax.annotation.Nullable;
  * <p>If the values corresponding to a single key should be ordered according to
  * a {@link java.util.Comparator} (or the natural order), see the
  * {@link SortedSetMultimap} subinterface.
+ * 
+ * <p>Since the value collections are sets, the behavior of a {@code SetMultimap}
+ * is not specified if key <em>or value</em> objects already present in the 
+ * multimap change in a manner that affects {@code equals} comparisons.  
+ * Use caution if mutable objects are used as keys or values in a 
+ * {@code SetMultimap}.
  *
  * <p>See the Guava User Guide article on <a href=
  * "http://code.google.com/p/guava-libraries/wiki/NewCollectionTypesExplained#Multimap">
@@ -92,8 +98,9 @@ public interface SetMultimap<K, V> extends Multimap<K, V> {
   /**
    * {@inheritDoc}
    *
-   * <p>Though the method signature doesn't say so explicitly, the returned map
-   * has {@link Set} values.
+   * <p><b>Note:</b> The returned map's values are guaranteed to be of type
+   * {@link Set}. To obtain this map with the more specific generic type
+   * {@code Map<K, Set<V>>}, call {@link Multimaps#asMap(SetMultimap)} instead.
    */
   @Override
   Map<K, Collection<V>> asMap();

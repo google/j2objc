@@ -16,7 +16,6 @@
 
 package com.google.common.cache;
 
-import static com.google.common.base.Objects.firstNonNull;
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.base.Preconditions.checkState;
@@ -26,7 +25,7 @@ import com.google.common.annotations.GwtCompatible;
 import com.google.common.annotations.GwtIncompatible;
 import com.google.common.base.Ascii;
 import com.google.common.base.Equivalence;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Supplier;
 import com.google.common.base.Suppliers;
 import com.google.common.base.Ticker;
@@ -59,7 +58,7 @@ import javax.annotation.CheckReturnValue;
  * <li>accumulation of cache access statistics
  * </ul>
  *
- * These features are all optional; caches can be created using all or none of them. By default
+ * <p>These features are all optional; caches can be created using all or none of them. By default
  * cache instances created by {@code CacheBuilder} will not perform any type of eviction.
  *
  * <p>Usage example: <pre>   {@code
@@ -75,7 +74,7 @@ import javax.annotation.CheckReturnValue;
  *             }
  *           });}</pre>
  *
- * Or equivalently, <pre>   {@code
+ * <p>Or equivalently, <pre>   {@code
  *
  *   // In real life this would come from a command-line flag or config file
  *   String spec = "maximumSize=10000,expireAfterWrite=10m";
@@ -116,7 +115,7 @@ import javax.annotation.CheckReturnValue;
  * <p>If {@linkplain #expireAfterWrite expireAfterWrite} or
  * {@linkplain #expireAfterAccess expireAfterAccess} is requested entries may be evicted on each
  * cache modification, on occasional cache accesses, or on calls to {@link Cache#cleanUp}. Expired
- * entries may be counted in {@link Cache#size}, but will never be visible to read or write
+ * entries may be counted by {@link Cache#size}, but will never be visible to read or write
  * operations.
  *
  * <p>If {@linkplain #weakKeys weakKeys}, {@linkplain #weakValues weakValues}, or
@@ -127,7 +126,7 @@ import javax.annotation.CheckReturnValue;
  * visible to read or write operations.
  *
  * <p>Certain cache configurations will result in the accrual of periodic maintenance tasks which
- * will be performed during write operations, or during occasional read operations in the absense of
+ * will be performed during write operations, or during occasional read operations in the absence of
  * writes. The {@link Cache#cleanUp} method of the returned cache will also perform maintenance, but
  * calling it should not be necessary with a high throughput cache. Only caches built with
  * {@linkplain #removalListener removalListener}, {@linkplain #expireAfterWrite expireAfterWrite},
@@ -297,7 +296,7 @@ public final class CacheBuilder<K, V> {
   }
 
   Equivalence<Object> getKeyEquivalence() {
-    return firstNonNull(keyEquivalence, getKeyStrength().defaultEquivalence());
+    return MoreObjects.firstNonNull(keyEquivalence, getKeyStrength().defaultEquivalence());
   }
 
   /**
@@ -316,7 +315,7 @@ public final class CacheBuilder<K, V> {
   }
 
   Equivalence<Object> getValueEquivalence() {
-    return firstNonNull(valueEquivalence, getValueStrength().defaultEquivalence());
+    return MoreObjects.firstNonNull(valueEquivalence, getValueStrength().defaultEquivalence());
   }
 
   /**
@@ -498,7 +497,7 @@ public final class CacheBuilder<K, V> {
   // Make a safe contravariant cast now so we don't have to do it over and over.
   @SuppressWarnings("unchecked")
   <K1 extends K, V1 extends V> Weigher<K1, V1> getWeigher() {
-    return (Weigher<K1, V1>) Objects.firstNonNull(weigher, OneWeigher.INSTANCE);
+    return (Weigher<K1, V1>) MoreObjects.firstNonNull(weigher, OneWeigher.INSTANCE);
   }
 
   /**
@@ -526,7 +525,7 @@ public final class CacheBuilder<K, V> {
   }
 
   Strength getKeyStrength() {
-    return firstNonNull(keyStrength, Strength.STRONG);
+    return MoreObjects.firstNonNull(keyStrength, Strength.STRONG);
   }
 
   /**
@@ -581,7 +580,7 @@ public final class CacheBuilder<K, V> {
   }
 
   Strength getValueStrength() {
-    return firstNonNull(valueStrength, Strength.STRONG);
+    return MoreObjects.firstNonNull(valueStrength, Strength.STRONG);
   }
 
   /**
@@ -747,7 +746,8 @@ public final class CacheBuilder<K, V> {
   // Make a safe contravariant cast now so we don't have to do it over and over.
   @SuppressWarnings("unchecked")
   <K1 extends K, V1 extends V> RemovalListener<K1, V1> getRemovalListener() {
-    return (RemovalListener<K1, V1>) Objects.firstNonNull(removalListener, NullListener.INSTANCE);
+    return (RemovalListener<K1, V1>)
+        MoreObjects.firstNonNull(removalListener, NullListener.INSTANCE);
   }
 
   /**
@@ -761,6 +761,10 @@ public final class CacheBuilder<K, V> {
   public CacheBuilder<K, V> recordStats() {
     statsCounterSupplier = CACHE_STATS_COUNTER;
     return this;
+  }
+  
+  boolean isRecordingStats() {
+    return statsCounterSupplier == CACHE_STATS_COUNTER;
   }
 
   Supplier<? extends StatsCounter> getStatsCounterSupplier() {
@@ -827,7 +831,7 @@ public final class CacheBuilder<K, V> {
    */
   @Override
   public String toString() {
-    Objects.ToStringHelper s = Objects.toStringHelper(this);
+    MoreObjects.ToStringHelper s = MoreObjects.toStringHelper(this);
     if (initialCapacity != UNSET_INT) {
       s.add("initialCapacity", initialCapacity);
     }

@@ -19,16 +19,15 @@ package com.google.common.collect;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import com.google.common.annotations.GwtCompatible;
+import com.google.common.annotations.GwtIncompatible;
+import com.google.common.collect.Multiset.Entry;
 import com.google.common.primitives.Ints;
 import com.google.j2objc.annotations.WeakOuter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
 import javax.annotation.Nullable;
 
@@ -48,18 +47,21 @@ import javax.annotation.Nullable;
  * @author Louis Wasserman
  * @since 2.0 (imported from Google Collections Library)
  */
-@GwtCompatible(serializable = true)
+@GwtCompatible(serializable = true, emulated = true)
 @SuppressWarnings("serial") // we're overriding default serialization
 // TODO(user): write an efficient asList() implementation
 public abstract class ImmutableMultiset<E> extends ImmutableCollection<E>
     implements Multiset<E> {
+
+  private static final ImmutableMultiset<Object> EMPTY =
+      new RegularImmutableMultiset<Object>(ImmutableMap.<Object, Integer>of(), 0);
 
   /**
    * Returns the empty immutable multiset.
    */
   @SuppressWarnings("unchecked") // all supported methods are covariant
   public static <E> ImmutableMultiset<E> of() {
-    return (ImmutableMultiset<E>) EmptyImmutableMultiset.INSTANCE;
+    return (ImmutableMultiset<E>) EMPTY;
   }
 
   /**
@@ -126,11 +128,15 @@ public abstract class ImmutableMultiset<E> extends ImmutableCollection<E>
   @SuppressWarnings("unchecked") //
   public static <E> ImmutableMultiset<E> of(
       E e1, E e2, E e3, E e4, E e5, E e6, E... others) {
-    int size = others.length + 6;
-    List<E> all = new ArrayList<E>(size);
-    Collections.addAll(all, e1, e2, e3, e4, e5, e6);
-    Collections.addAll(all, others);
-    return copyOf(all);
+    return new Builder<E>()
+        .add(e1)
+        .add(e2)
+        .add(e3)
+        .add(e4)
+        .add(e5)
+        .add(e6)
+        .add(others)
+        .build();
   }
 
   /**
@@ -312,23 +318,18 @@ public abstract class ImmutableMultiset<E> extends ImmutableCollection<E>
     throw new UnsupportedOperationException();
   }
 
+  @GwtIncompatible("not present in emulated superclass")
+  @Override
+  int copyIntoArray(Object[] dst, int offset) {
+    for (Multiset.Entry<E> entry : entrySet()) {
+      Arrays.fill(dst, offset, offset + entry.getCount(), entry.getElement());
+      offset += entry.getCount();
+    }
+    return offset;
+  }
+
   @Override public boolean equals(@Nullable Object object) {
-    if (object == this) {
-      return true;
-    }
-    if (object instanceof Multiset) {
-      Multiset<?> that = (Multiset<?>) object;
-      if (this.size() != that.size()) {
-        return false;
-      }
-      for (Entry<?> entry : that.entrySet()) {
-        if (count(entry.getElement()) != entry.getCount()) {
-          return false;
-        }
-      }
-      return true;
-    }
-    return false;
+    return Multisets.equalsImpl(this, object);
   }
 
   @Override public int hashCode() {
@@ -347,13 +348,42 @@ public abstract class ImmutableMultiset<E> extends ImmutableCollection<E>
     return (es == null) ? (entrySet = createEntrySet()) : es;
   }
 
-  abstract ImmutableSet<Entry<E>> createEntrySet();
+  private final ImmutableSet<Entry<E>> createEntrySet() {
+    return isEmpty() ? ImmutableSet.<Entry<E>>of() : new EntrySet();
+  }
+
+  abstract Entry<E> getEntry(int index);
 
   @WeakOuter
-  abstract class EntrySet extends ImmutableSet<Entry<E>> {
+  private final class EntrySet extends ImmutableSet<Entry<E>> {
     @Override
     boolean isPartialView() {
       return ImmutableMultiset.this.isPartialView();
+    }
+
+    @Override
+    public UnmodifiableIterator<Entry<E>> iterator() {
+      return asList().iterator();
+    }
+
+    @Override
+    ImmutableList<Entry<E>> createAsList() {
+      return new ImmutableAsList<Entry<E>>() {
+        @Override
+        public Entry<E> get(int index) {
+          return getEntry(index);
+        }
+
+        @Override
+        ImmutableCollection<Entry<E>> delegateCollection() {
+          return EntrySet.this;
+        }
+      };
+    }
+
+    @Override
+    public int size() {
+      return elementSet().size();
     }
 
     @Override
@@ -367,38 +397,6 @@ public abstract class ImmutableMultiset<E> extends ImmutableCollection<E>
         return count == entry.getCount();
       }
       return false;
-    }
-
-    /*
-     * TODO(hhchan): Revert once we have a separate, manual emulation of this
-     * class.
-     */
-    @Override
-    public Object[] toArray() {
-      Object[] newArray = new Object[size()];
-      return toArray(newArray);
-    }
-
-    /*
-     * TODO(hhchan): Revert once we have a separate, manual emulation of this
-     * class.
-     */
-    @Override
-    public <T> T[] toArray(T[] other) {
-      int size = size();
-      if (other.length < size) {
-        other = ObjectArrays.newArray(other, size);
-      } else if (other.length > size) {
-        other[size] = null;
-      }
-
-      // Writes will produce ArrayStoreException when the toArray() doc requires
-      Object[] otherAsObjectArray = other;
-      int index = 0;
-      for (Entry<?> element : this) {
-        otherAsObjectArray[index++] = element;
-      }
-      return other;
     }
 
     @Override
@@ -483,7 +481,7 @@ public abstract class ImmutableMultiset<E> extends ImmutableCollection<E>
    *           .addCopies(Bean.BLACK_EYED, 10)
    *           .build();}</pre>
    *
-   * Builder instances can be reused; it is safe to call {@link #build} multiple
+   * <p>Builder instances can be reused; it is safe to call {@link #build} multiple
    * times to build multiple multisets in series.
    *
    * @since 2.0 (imported from Google Collections Library)

@@ -28,23 +28,23 @@ import javax.annotation.Nullable;
 @GwtCompatible(serializable = true)
 class ImmutableEntry<K, V> extends AbstractMapEntry<K, V>
     implements Serializable {
-  private final K key;
-  private final V value;
+  final K key;
+  final V value;
 
   ImmutableEntry(@Nullable K key, @Nullable V value) {
     this.key = key;
     this.value = value;
   }
 
-  @Nullable @Override public K getKey() {
+  @Nullable @Override public final K getKey() {
     return key;
   }
 
-  @Nullable @Override public V getValue() {
+  @Nullable @Override public final V getValue() {
     return value;
   }
 
-  @Override public final V setValue(V value){
+  @Override public final V setValue(V value) {
     throw new UnsupportedOperationException();
   }
 

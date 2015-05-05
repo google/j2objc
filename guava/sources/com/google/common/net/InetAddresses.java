@@ -17,7 +17,7 @@
 package com.google.common.net;
 
 import com.google.common.annotations.Beta;
-import com.google.common.base.Objects;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Preconditions;
 import com.google.common.hash.Hashing;
 import com.google.common.io.ByteStreams;
@@ -116,12 +116,6 @@ public final class InetAddresses {
   private static final int IPV6_PART_COUNT = 8;
   private static final Inet4Address LOOPBACK4 = (Inet4Address) forString("127.0.0.1");
   private static final Inet4Address ANY4 = (Inet4Address) forString("0.0.0.0");
-  
-  private static byte[] copy4(byte[] bytes, int offset) {
-    byte[] result = new byte[4];
-    System.arraycopy(bytes, offset, result, 0, 4);
-    return result;
-  }
 
   private InetAddresses() {}
 
@@ -134,7 +128,8 @@ public final class InetAddresses {
    */
   private static Inet4Address getInet4Address(byte[] bytes) {
     Preconditions.checkArgument(bytes.length == 4,
-        "Byte array has invalid length for an IPv4 address: %s != 4.", bytes.length);
+        "Byte array has invalid length for an IPv4 address: %s != 4.",
+        bytes.length);
 
     // Given a 4-byte array, this cast should always succeed.
     return (Inet4Address) bytesToInetAddress(bytes);
@@ -155,8 +150,8 @@ public final class InetAddresses {
 
     // The argument was malformed, i.e. not an IP string literal.
     if (addr == null) {
-      throw new IllegalArgumentException(String.format("'%s' is not an IP string literal.",
-          ipString));
+      throw new IllegalArgumentException(
+          String.format("'%s' is not an IP string literal.", ipString));
     }
 
     return bytesToInetAddress(addr);
@@ -183,11 +178,11 @@ public final class InetAddresses {
         hasDot = true;
       } else if (c == ':') {
         if (hasDot) {
-          return null; // Colons must not appear after dots.
+          return null;  // Colons must not appear after dots.
         }
         hasColon = true;
       } else if (Character.digit(c, 16) == -1) {
-        return null; // Everything else must be a decimal or hex digit.
+        return null;  // Everything else must be a decimal or hex digit.
       }
     }
 
@@ -237,23 +232,23 @@ public final class InetAddresses {
     for (int i = 1; i < parts.length - 1; i++) {
       if (parts[i].length() == 0) {
         if (skipIndex >= 0) {
-          return null; // Can't have more than one ::
+          return null;  // Can't have more than one ::
         }
         skipIndex = i;
       }
     }
 
-    int partsHi; // Number of parts to copy from above/before the "::"
-    int partsLo; // Number of parts to copy from below/after the "::"
+    int partsHi;  // Number of parts to copy from above/before the "::"
+    int partsLo;  // Number of parts to copy from below/after the "::"
     if (skipIndex >= 0) {
       // If we found a "::", then check if it also covers the endpoints.
       partsHi = skipIndex;
       partsLo = parts.length - skipIndex - 1;
       if (parts[0].length() == 0 && --partsHi != 0) {
-        return null; // ^: requires ^::
+        return null;  // ^: requires ^::
       }
       if (parts[parts.length - 1].length() == 0 && --partsLo != 0) {
-        return null; // :$ requires ::$
+        return null;  // :$ requires ::$
       }
     } else {
       // Otherwise, allocate the entire address to partsHi.  The endpoints
@@ -366,7 +361,8 @@ public final class InetAddresses {
     byte[] bytes = ip.getAddress();
     int[] hextets = new int[IPV6_PART_COUNT];
     for (int i = 0; i < hextets.length; i++) {
-      hextets[i] = Ints.fromBytes((byte) 0, (byte) 0, bytes[2 * i], bytes[2 * i + 1]);
+      hextets[i] = Ints.fromBytes(
+          (byte) 0, (byte) 0, bytes[2 * i], bytes[2 * i + 1]);
     }
     compressLongestRunOfZeroes(hextets);
     return hextetsToIPv6String(hextets);
@@ -571,10 +567,10 @@ public final class InetAddresses {
    * @throws IllegalArgumentException if the argument is not a valid IPv4 compatible address
    */
   public static Inet4Address getCompatIPv4Address(Inet6Address ip) {
-    Preconditions.checkArgument(isCompatIPv4Address(ip), "Address '%s' is not IPv4-compatible.",
-        toAddrString(ip));
+    Preconditions.checkArgument(isCompatIPv4Address(ip),
+        "Address '%s' is not IPv4-compatible.", toAddrString(ip));
 
-    return getInet4Address(copy4(ip.getAddress(), 12));
+    return getInet4Address(Arrays.copyOfRange(ip.getAddress(), 12, 16));
   }
 
   /**
@@ -604,10 +600,10 @@ public final class InetAddresses {
    * @throws IllegalArgumentException if the argument is not a valid IPv6 6to4 address
    */
   public static Inet4Address get6to4IPv4Address(Inet6Address ip) {
-    Preconditions.checkArgument(is6to4Address(ip), "Address '%s' is not a 6to4 address.",
-        toAddrString(ip));
+    Preconditions.checkArgument(is6to4Address(ip),
+        "Address '%s' is not a 6to4 address.", toAddrString(ip));
 
-    return getInet4Address(copy4(ip.getAddress(), 2));
+    return getInet4Address(Arrays.copyOfRange(ip.getAddress(), 2, 6));
   }
 
   /**
@@ -643,15 +639,15 @@ public final class InetAddresses {
      *     arguments are out of range of an unsigned short
      */
     // TODO: why is this public?
-    public TeredoInfo(@Nullable Inet4Address server, @Nullable Inet4Address client, int port,
-        int flags) {
+    public TeredoInfo(
+        @Nullable Inet4Address server, @Nullable Inet4Address client, int port, int flags) {
       Preconditions.checkArgument((port >= 0) && (port <= 0xffff),
           "port '%s' is out of range (0 <= port <= 0xffff)", port);
       Preconditions.checkArgument((flags >= 0) && (flags <= 0xffff),
           "flags '%s' is out of range (0 <= flags <= 0xffff)", flags);
 
-      this.server = Objects.firstNonNull(server, ANY4);
-      this.client = Objects.firstNonNull(client, ANY4);
+      this.server = MoreObjects.firstNonNull(server, ANY4);
+      this.client = MoreObjects.firstNonNull(client, ANY4);
       this.port = port;
       this.flags = flags;
     }
@@ -683,8 +679,8 @@ public final class InetAddresses {
    */
   public static boolean isTeredoAddress(Inet6Address ip) {
     byte[] bytes = ip.getAddress();
-    return (bytes[0] == (byte) 0x20) && (bytes[1] == (byte) 0x01) && (bytes[2] == 0)
-        && (bytes[3] == 0);
+    return (bytes[0] == (byte) 0x20) && (bytes[1] == (byte) 0x01)
+           && (bytes[2] == 0) && (bytes[3] == 0);
   }
 
   /**
@@ -695,17 +691,18 @@ public final class InetAddresses {
    * @throws IllegalArgumentException if the argument is not a valid IPv6 Teredo address
    */
   public static TeredoInfo getTeredoInfo(Inet6Address ip) {
-    Preconditions.checkArgument(isTeredoAddress(ip), "Address '%s' is not a Teredo address.",
-        toAddrString(ip));
+    Preconditions.checkArgument(isTeredoAddress(ip),
+        "Address '%s' is not a Teredo address.", toAddrString(ip));
 
     byte[] bytes = ip.getAddress();
-    Inet4Address server = getInet4Address(copy4(bytes, 4));
+    Inet4Address server = getInet4Address(Arrays.copyOfRange(bytes, 4, 8));
+
     int flags = ByteStreams.newDataInput(bytes, 8).readShort() & 0xffff;
 
     // Teredo obfuscates the mapped client port, per section 4 of the RFC.
     int port = ~ByteStreams.newDataInput(bytes, 10).readShort() & 0xffff;
 
-    byte[] clientBytes = copy4(bytes, 12);
+    byte[] clientBytes = Arrays.copyOfRange(bytes, 12, 16);
     for (int i = 0; i < clientBytes.length; i++) {
       // Teredo obfuscates the mapped client IP, per section 4 of the RFC.
       clientBytes[i] = (byte) ~clientBytes[i];
@@ -747,7 +744,8 @@ public final class InetAddresses {
       return false;
     }
 
-    return (bytes[9] == (byte) 0x00) && (bytes[10] == (byte) 0x5e) && (bytes[11] == (byte) 0xfe);
+    return (bytes[9] == (byte) 0x00) && (bytes[10] == (byte) 0x5e)
+           && (bytes[11] == (byte) 0xfe);
   }
 
   /**
@@ -758,10 +756,10 @@ public final class InetAddresses {
    * @throws IllegalArgumentException if the argument is not a valid IPv6 ISATAP address
    */
   public static Inet4Address getIsatapIPv4Address(Inet6Address ip) {
-    Preconditions.checkArgument(isIsatapAddress(ip), "Address '%s' is not an ISATAP address.",
-        toAddrString(ip));
+    Preconditions.checkArgument(isIsatapAddress(ip),
+        "Address '%s' is not an ISATAP address.", toAddrString(ip));
 
-    return getInet4Address(copy4(ip.getAddress(), 12));
+    return getInet4Address(Arrays.copyOfRange(ip.getAddress(), 12, 16));
   }
 
   /**
@@ -806,8 +804,8 @@ public final class InetAddresses {
       return getTeredoInfo(ip).getClient();
     }
 
-    throw new IllegalArgumentException(String.format("'%s' has no embedded IPv4 address.",
-        toAddrString(ip)));
+    throw new IllegalArgumentException(
+        String.format("'%s' has no embedded IPv4 address.", toAddrString(ip)));
   }
 
   /**
@@ -885,9 +883,9 @@ public final class InetAddresses {
       }
     }
     if (leadingBytesOfZero && (bytes[15] == 1)) {
-      return LOOPBACK4; // ::1
+      return LOOPBACK4;  // ::1
     } else if (leadingBytesOfZero && (bytes[15] == 0)) {
-      return ANY4; // ::0
+      return ANY4;  // ::0
     }
 
     Inet6Address ip6 = (Inet6Address) ip;
@@ -968,6 +966,29 @@ public final class InetAddresses {
       reversed[i] = addr[addr.length - i - 1];
     }
     return InetAddress.getByAddress(reversed);
+  }
+
+  /**
+   * Returns a new InetAddress that is one less than the passed in address.
+   * This method works for both IPv4 and IPv6 addresses.
+   *
+   * @param address the InetAddress to decrement
+   * @return a new InetAddress that is one less than the passed in address
+   * @throws IllegalArgumentException if InetAddress is at the beginning of its range
+   * @since 18.0
+   */
+  public static InetAddress decrement(InetAddress address) {
+    byte[] addr = address.getAddress();
+    int i = addr.length - 1;
+    while (i >= 0 && addr[i] == (byte) 0x00) {
+      addr[i] = (byte) 0xff;
+      i--;
+    }
+
+    Preconditions.checkArgument(i >= 0, "Decrementing %s would wrap.", address);
+
+    addr[i]--;
+    return bytesToInetAddress(addr);
   }
 
   /**

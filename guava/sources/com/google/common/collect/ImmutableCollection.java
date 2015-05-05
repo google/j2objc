@@ -16,10 +16,14 @@
 
 package com.google.common.collect;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.collect.CollectPreconditions.checkNonnegative;
+import static com.google.common.collect.ObjectArrays.checkElementsNotNull;
+
 import com.google.common.annotations.GwtCompatible;
-import com.google.common.annotations.VisibleForTesting;
 
 import java.io.Serializable;
+import java.util.AbstractCollection;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -40,10 +44,8 @@ import javax.annotation.Nullable;
  */
 @GwtCompatible(emulated = true)
 @SuppressWarnings("serial") // we're overriding default serialization
-public abstract class ImmutableCollection<E>
-    implements Collection<E>, Serializable {
-  static final ImmutableCollection<Object> EMPTY_IMMUTABLE_COLLECTION
-      = new EmptyImmutableCollection();
+public abstract class ImmutableCollection<E> extends AbstractCollection<E>
+    implements Serializable {
 
   ImmutableCollection() {}
 
@@ -54,32 +56,32 @@ public abstract class ImmutableCollection<E>
   public abstract UnmodifiableIterator<E> iterator();
 
   @Override
-  public Object[] toArray() {
-    return ObjectArrays.toArrayImpl(this);
+  public final Object[] toArray() {
+    int size = size();
+    if (size == 0) {
+      return ObjectArrays.EMPTY_ARRAY;
+    }
+    Object[] result = new Object[size];
+    copyIntoArray(result, 0);
+    return result;
   }
 
   @Override
-  public <T> T[] toArray(T[] other) {
-    return ObjectArrays.toArrayImpl(this, other);
+  public final <T> T[] toArray(T[] other) {
+    checkNotNull(other);
+    int size = size();
+    if (other.length < size) {
+      other = ObjectArrays.newArray(other, size);
+    } else if (other.length > size) {
+      other[size] = null;
+    }
+    copyIntoArray(other, 0);
+    return other;
   }
 
   @Override
   public boolean contains(@Nullable Object object) {
-    return object != null && Iterators.contains(iterator(), object);
-  }
-
-  @Override
-  public boolean containsAll(Collection<?> targets) {
-    return Collections2.containsAllImpl(this, targets);
-  }
-
-  @Override
-  public boolean isEmpty() {
-    return size() == 0;
-  }
-
-  @Override public String toString() {
-    return Collections2.toStringImpl(this);
+    return object != null && super.contains(object);
   }
 
   /**
@@ -181,102 +183,28 @@ public abstract class ImmutableCollection<E>
     }
   }
 
-  abstract boolean isPartialView();
-
-  private static class EmptyImmutableCollection
-      extends ImmutableCollection<Object> {
-    @Override
-    public int size() {
-      return 0;
-    }
-
-    @Override public boolean isEmpty() {
-      return true;
-    }
-
-    @Override public boolean contains(@Nullable Object object) {
-      return false;
-    }
-
-    @Override public UnmodifiableIterator<Object> iterator() {
-      return Iterators.EMPTY_LIST_ITERATOR;
-    }
-
-    private static final Object[] EMPTY_ARRAY = new Object[0];
-
-    @Override public Object[] toArray() {
-      return EMPTY_ARRAY;
-    }
-
-    @Override public <T> T[] toArray(T[] array) {
-      if (array.length > 0) {
-        array[0] = null;
-      }
-      return array;
-    }
-
-    @Override ImmutableList<Object> createAsList() {
-      return ImmutableList.of();
-    }
-
-    @Override boolean isPartialView() {
-      return false;
-    }
-  }
-
   /**
-   * Nonempty collection stored in an array.
+   * Returns {@code true} if this immutable collection's implementation contains references to
+   * user-created objects that aren't accessible via this collection's methods. This is generally
+   * used to determine whether {@code copyOf} implementations should make an explicit copy to avoid
+   * memory leaks.
    */
-  private static class ArrayImmutableCollection<E>
-      extends ImmutableCollection<E> {
-    private final E[] elements;
-
-    ArrayImmutableCollection(E[] elements) {
-      this.elements = elements;
-    }
-
-    @Override
-    public int size() {
-      return elements.length;
-    }
-
-    @Override public boolean isEmpty() {
-      return false;
-    }
-
-    @Override public UnmodifiableIterator<E> iterator() {
-      return Iterators.forArray(elements);
-    }
-
-    @Override ImmutableList<E> createAsList() {
-      return elements.length == 1 ? new SingletonImmutableList<E>(elements[0])
-          : new RegularImmutableList<E>(elements);
-    }
-
-    @Override boolean isPartialView() {
-      return false;
-    }
-  }
-
-  /*
-   * Serializes ImmutableCollections as their logical contents. This ensures
-   * that implementation types do not leak into the serialized representation.
+  abstract boolean isPartialView();
+  
+  /**
+   * Copies the contents of this immutable collection into the specified array at the specified
+   * offset.  Returns {@code offset + size()}.
    */
-  private static class SerializedForm implements Serializable {
-    final Object[] elements;
-    SerializedForm(Object[] elements) {
-      this.elements = elements;
+  int copyIntoArray(Object[] dst, int offset) {
+    for (E e : this) {
+      dst[offset++] = e;
     }
-    Object readResolve() {
-      return elements.length == 0
-          ? EMPTY_IMMUTABLE_COLLECTION
-          : new ArrayImmutableCollection<Object>(Platform.clone(elements));
-    }
-    private static final long serialVersionUID = 0;
+    return offset;
   }
 
   Object writeReplace() {
-    return new SerializedForm(toArray());
+    // We serialize by default to ImmutableList, the simplest thing that works.
+    return new ImmutableList.SerializedForm(toArray());
   }
 
   /**
@@ -287,7 +215,6 @@ public abstract class ImmutableCollection<E>
   public abstract static class Builder<E> {
     static final int DEFAULT_INITIAL_CAPACITY = 4;
 
-    @VisibleForTesting
     static int expandedCapacity(int oldCapacity, int minCapacity) {
       if (minCapacity < 0) {
         throw new AssertionError("cannot store more than MAX_VALUE elements");
@@ -384,5 +311,54 @@ public abstract class ImmutableCollection<E>
      * of {@code ImmutableCollection} from this method.
      */
     public abstract ImmutableCollection<E> build();
+  }
+  
+  abstract static class ArrayBasedBuilder<E> extends ImmutableCollection.Builder<E> {
+    Object[] contents;
+    int size;
+    
+    ArrayBasedBuilder(int initialCapacity) {
+      checkNonnegative(initialCapacity, "initialCapacity");
+      this.contents = new Object[initialCapacity];
+      this.size = 0;
+    }
+    
+    /**
+     * Expand the absolute capacity of the builder so it can accept at least
+     * the specified number of elements without being resized.
+     */
+    private void ensureCapacity(int minCapacity) {
+      if (contents.length < minCapacity) {
+        this.contents = ObjectArrays.arraysCopyOf(
+            this.contents, expandedCapacity(contents.length, minCapacity));
+      }
+    }
+
+    @Override
+    public ArrayBasedBuilder<E> add(E element) {
+      checkNotNull(element);
+      ensureCapacity(size + 1);
+      contents[size++] = element;
+      return this;
+    }
+
+    @Override
+    public Builder<E> add(E... elements) {
+      checkElementsNotNull(elements);
+      ensureCapacity(size + elements.length);
+      System.arraycopy(elements, 0, contents, size, elements.length);
+      size += elements.length;
+      return this;
+    }
+
+    @Override
+    public Builder<E> addAll(Iterable<? extends E> elements) {
+      if (elements instanceof Collection) {
+        Collection<?> collection = (Collection<?>) elements;
+        ensureCapacity(size + collection.size());
+      }
+      super.addAll(elements);
+      return this;
+    }
   }
 }

@@ -17,6 +17,7 @@
 package com.google.common.collect;
 
 import com.google.common.annotations.GwtCompatible;
+import com.google.common.annotations.GwtIncompatible;
 
 /**
  * An {@link ImmutableAsList} implementation specialized for when the delegate collection is
@@ -24,7 +25,7 @@ import com.google.common.annotations.GwtCompatible;
  *
  * @author Louis Wasserman
  */
-@GwtCompatible
+@GwtCompatible(emulated = true)
 @SuppressWarnings("serial") // uses writeReplace, not default serialization
 class RegularImmutableAsList<E> extends ImmutableAsList<E> {
   private final ImmutableCollection<E> delegate;
@@ -54,34 +55,10 @@ class RegularImmutableAsList<E> extends ImmutableAsList<E> {
     return (UnmodifiableListIterator<E>) delegateList.listIterator(index);
   }
 
+  @GwtIncompatible("not present in emulated superclass")
   @Override
-  public Object[] toArray() {
-    return delegateList.toArray();
-  }
-
-  @Override
-  public <T> T[] toArray(T[] other) {
-    return delegateList.toArray(other);
-  }
-
-  @Override
-  public int indexOf(Object object) {
-    return delegateList.indexOf(object);
-  }
-
-  @Override
-  public int lastIndexOf(Object object) {
-    return delegateList.lastIndexOf(object);
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    return delegateList.equals(obj);
-  }
-
-  @Override
-  public int hashCode() {
-    return delegateList.hashCode();
+  int copyIntoArray(Object[] dst, int offset) {
+    return delegateList.copyIntoArray(dst, offset);
   }
 
   @Override

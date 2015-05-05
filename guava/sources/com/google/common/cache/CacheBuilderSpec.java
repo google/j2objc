@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.MoreObjects;
 import com.google.common.base.Objects;
 import com.google.common.base.Splitter;
 import com.google.common.cache.LocalCache.Strength;
@@ -50,9 +51,10 @@ import javax.annotation.Nullable;
  * <li>{@code weakKeys}: sets {@link CacheBuilder#weakKeys}.
  * <li>{@code softValues}: sets {@link CacheBuilder#softValues}.
  * <li>{@code weakValues}: sets {@link CacheBuilder#weakValues}.
+ * <li>{@code recordStats}: sets {@link CacheBuilder#recordStats}.
  * </ul>
  *
- * The set of supported keys will grow as {@code CacheBuilder} evolves, but existing keys
+ * <p>The set of supported keys will grow as {@code CacheBuilder} evolves, but existing keys
  * will never be removed.
  *
  * <p>Durations are represented by an integer, followed by one of "d", "h", "m",
@@ -100,6 +102,7 @@ public final class CacheBuilderSpec {
           .put("weakKeys", new KeyStrengthParser(Strength.WEAK))
           .put("softValues", new ValueStrengthParser(Strength.SOFT))
           .put("weakValues", new ValueStrengthParser(Strength.WEAK))
+          .put("recordStats", new RecordStatsParser())
           .put("expireAfterAccess", new AccessDurationParser())
           .put("expireAfterWrite", new WriteDurationParser())
           .put("refreshAfterWrite", new RefreshDurationParser())
@@ -112,6 +115,7 @@ public final class CacheBuilderSpec {
   @VisibleForTesting Integer concurrencyLevel;
   @VisibleForTesting Strength keyStrength;
   @VisibleForTesting Strength valueStrength;
+  @VisibleForTesting Boolean recordStats;
   @VisibleForTesting long writeExpirationDuration;
   @VisibleForTesting TimeUnit writeExpirationTimeUnit;
   @VisibleForTesting long accessExpirationDuration;
@@ -198,6 +202,9 @@ public final class CacheBuilderSpec {
           throw new AssertionError();
       }
     }
+    if (recordStats != null && recordStats) {
+      builder.recordStats();
+    }
     if (writeExpirationTimeUnit != null) {
       builder.expireAfterWrite(writeExpirationDuration, writeExpirationTimeUnit);
     }
@@ -227,7 +234,7 @@ public final class CacheBuilderSpec {
    */
   @Override
   public String toString() {
-    return Objects.toStringHelper(this).addValue(toParsableString()).toString();
+    return MoreObjects.toStringHelper(this).addValue(toParsableString()).toString();
   }
 
   @Override
@@ -239,6 +246,7 @@ public final class CacheBuilderSpec {
         concurrencyLevel,
         keyStrength,
         valueStrength,
+        recordStats,
         durationInNanos(writeExpirationDuration, writeExpirationTimeUnit),
         durationInNanos(accessExpirationDuration, accessExpirationTimeUnit),
         durationInNanos(refreshDuration, refreshTimeUnit));
@@ -259,6 +267,7 @@ public final class CacheBuilderSpec {
         && Objects.equal(concurrencyLevel, that.concurrencyLevel)
         && Objects.equal(keyStrength, that.keyStrength)
         && Objects.equal(valueStrength, that.valueStrength)
+        && Objects.equal(recordStats, that.recordStats)
         && Objects.equal(durationInNanos(writeExpirationDuration, writeExpirationTimeUnit),
             durationInNanos(that.writeExpirationDuration, that.writeExpirationTimeUnit))
         && Objects.equal(durationInNanos(accessExpirationDuration, accessExpirationTimeUnit),
@@ -382,6 +391,17 @@ public final class CacheBuilderSpec {
         "%s was already set to %s", key, spec.valueStrength);
 
       spec.valueStrength = strength;
+    }
+  }
+
+  /** Parse recordStats */
+  static class RecordStatsParser implements ValueParser {
+
+    @Override
+    public void parse(CacheBuilderSpec spec, String key, @Nullable String value) {
+      checkArgument(value == null, "recordStats does not take values");
+      checkArgument(spec.recordStats == null, "recordStats already set");
+      spec.recordStats = true;
     }
   }
 

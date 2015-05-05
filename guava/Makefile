@@ -45,7 +45,7 @@ include ../make/translate.mk
 FAT_LIB_NAME = guava
 FAT_LIB_SOURCES_RELATIVE = $(TRANSLATE_SOURCES:$(GEN_OBJC_DIR)/%=%)
 FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
-FAT_LIB_COMPILE = $(J2OBJCC)
+FAT_LIB_COMPILE = $(J2OBJCC) -Wno-objc-designated-initializers
 include ../make/fat_lib.mk
 
 fat_lib_dependencies: jre_emul_dist jsr305_dist

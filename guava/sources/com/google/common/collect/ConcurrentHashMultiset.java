@@ -18,8 +18,8 @@ package com.google.common.collect;
 
 import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Multisets.checkNonnegative;
+import static com.google.common.collect.CollectPreconditions.checkNonnegative;
+import static com.google.common.collect.CollectPreconditions.checkRemove;
 
 import com.google.common.annotations.Beta;
 import com.google.common.annotations.VisibleForTesting;
@@ -51,10 +51,6 @@ import javax.annotation.Nullable;
  * "http://code.google.com/p/guava-libraries/wiki/NewCollectionTypesExplained#Multiset">
  * {@code Multiset}</a>.
  *
- * J2ObjC Modifications:
- * - Commented out static class FieldSettersHolder. (Used for serialization)
- * - Commented out readObject().
- *
  * @author Cliff L. Biffle
  * @author mike nonemacher
  * @since 2.0 (imported from Google Collections Library)
@@ -76,10 +72,10 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
 
   // This constant allows the deserialization code to set a final field. This holder class
   // makes sure it is not initialized unless an instance is deserialized.
-  /*private static class FieldSettersHolder {
+  private static class FieldSettersHolder {
     static final FieldSetter<ConcurrentHashMultiset> COUNT_MAP_FIELD_SETTER =
         Serialization.getFieldSetter(ConcurrentHashMultiset.class, "countMap");
-  }*/
+  }
 
   /**
    * Creates a new, empty {@code ConcurrentHashMultiset} using the default
@@ -124,11 +120,11 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
    * internally and not exposed externally, so no one else will have a strong reference to the
    * values. Weak keys on the other hand can be useful in some scenarios.
    *
-   * @since 7.0
+   * @since 15.0 (source compatible (accepting the since removed {@code GenericMapMaker} class)
+   *     since 7.0)
    */
   @Beta
-  public static <E> ConcurrentHashMultiset<E> create(
-      GenericMapMaker<? super E, ? super Number> mapMaker) {
+  public static <E> ConcurrentHashMultiset<E> create(MapMaker mapMaker) {
     return new ConcurrentHashMultiset<E>(mapMaker.<E, AtomicInteger>makeMap());
   }
 
@@ -477,14 +473,8 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
     };
   }
 
-  private transient EntrySet entrySet;
-
-  @Override public Set<Multiset.Entry<E>> entrySet() {
-    EntrySet result = entrySet;
-    if (result == null) {
-      entrySet = result = new EntrySet();
-    }
-    return result;
+  @Override public Set<Multiset.Entry<E>> createEntrySet() {
+    return new EntrySet();
   }
 
   @Override int distinctElements() {
@@ -529,7 +519,7 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
       }
 
       @Override public void remove() {
-        checkState(last != null);
+        checkRemove(last != null);
         ConcurrentHashMultiset.this.setCount(last.getElement(), 0);
         last = null;
       }
@@ -575,13 +565,13 @@ public final class ConcurrentHashMultiset<E> extends AbstractMultiset<E> impleme
     stream.writeObject(countMap);
   }
 
-  /*private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+  private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     @SuppressWarnings("unchecked") // reading data stored by writeObject
     ConcurrentMap<E, Integer> deserializedCountMap =
         (ConcurrentMap<E, Integer>) stream.readObject();
     FieldSettersHolder.COUNT_MAP_FIELD_SETTER.set(this, deserializedCountMap);
-  }*/
+  }
 
   private static final long serialVersionUID = 1;
 }

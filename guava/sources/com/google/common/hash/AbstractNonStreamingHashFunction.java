@@ -17,7 +17,6 @@
 package com.google.common.hash;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Throwables;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -46,7 +45,7 @@ abstract class AbstractNonStreamingHashFunction implements HashFunction {
     return newHasher().putObject(instance, funnel).hash();
   }
 
-  @Override public HashCode hashString(CharSequence input) {
+  @Override public HashCode hashUnencodedChars(CharSequence input) {
     int len = input.length();
     Hasher hasher = newHasher(len * 2);
     for (int i = 0; i < len; i++) {
@@ -93,7 +92,7 @@ abstract class AbstractNonStreamingHashFunction implements HashFunction {
       try {
         stream.write(bytes);
       } catch (IOException e) {
-        throw Throwables.propagate(e);
+        throw new RuntimeException(e);
       }
       return this;
     }

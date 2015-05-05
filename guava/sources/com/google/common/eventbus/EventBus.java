@@ -53,8 +53,9 @@ import java.util.logging.Logger;
  * nor is it intended for interprocess communication.
  *
  * <h2>Receiving Events</h2>
- * To receive events, an object should:<ol>
- * <li>Expose a public method, known as the <i>event handler</i>, which accepts
+ * <p>To receive events, an object should:
+ * <ol>
+ * <li>Expose a public method, known as the <i>event subscriber</i>, which accepts
  *     a single argument of the type of event desired;</li>
  * <li>Mark it with a {@link Subscribe} annotation;</li>
  * <li>Pass itself to an EventBus instance's {@link #register(Object)} method.
@@ -62,42 +63,42 @@ import java.util.logging.Logger;
  * </ol>
  *
  * <h2>Posting Events</h2>
- * To post an event, simply provide the event object to the
+ * <p>To post an event, simply provide the event object to the
  * {@link #post(Object)} method.  The EventBus instance will determine the type
  * of event and route it to all registered listeners.
  *
  * <p>Events are routed based on their type &mdash; an event will be delivered
- * to any handler for any type to which the event is <em>assignable.</em>  This
+ * to any subscriber for any type to which the event is <em>assignable.</em>  This
  * includes implemented interfaces, all superclasses, and all interfaces
  * implemented by superclasses.
  *
- * <p>When {@code post} is called, all registered handlers for an event are run
- * in sequence, so handlers should be reasonably quick.  If an event may trigger
+ * <p>When {@code post} is called, all registered subscribers for an event are run
+ * in sequence, so subscribers should be reasonably quick.  If an event may trigger
  * an extended process (such as a database load), spawn a thread or queue it for
  * later.  (For a convenient way to do this, use an {@link AsyncEventBus}.)
  *
- * <h2>Handler Methods</h2>
- * Event handler methods must accept only one argument: the event.
+ * <h2>Subscriber Methods</h2>
+ * <p>Event subscriber methods must accept only one argument: the event.
  *
- * <p>Handlers should not, in general, throw.  If they do, the EventBus will
+ * <p>Subscribers should not, in general, throw.  If they do, the EventBus will
  * catch and log the exception.  This is rarely the right solution for error
  * handling and should not be relied upon; it is intended solely to help find
  * problems during development.
  *
- * <p>The EventBus guarantees that it will not call a handler method from
+ * <p>The EventBus guarantees that it will not call a subscriber method from
  * multiple threads simultaneously, unless the method explicitly allows it by
  * bearing the {@link AllowConcurrentEvents} annotation.  If this annotation is
- * not present, handler methods need not worry about being reentrant, unless
+ * not present, subscriber methods need not worry about being reentrant, unless
  * also called from outside the EventBus.
  *
  * <h2>Dead Events</h2>
- * If an event is posted, but no registered handlers can accept it, it is
+ * <p>If an event is posted, but no registered subscribers can accept it, it is
  * considered "dead."  To give the system a second chance to handle dead events,
  * they are wrapped in an instance of {@link DeadEvent} and reposted.
  *
- * <p>If a handler for a supertype of all events (such as Object) is registered,
+ * <p>If a subscriber for a supertype of all events (such as Object) is registered,
  * no event will ever be considered dead, and no DeadEvents will be generated.
- * Accordingly, while DeadEvent extends {@link Object}, a handler registered to
+ * Accordingly, while DeadEvent extends {@link Object}, a subscriber registered to
  * receive any Object will never receive a DeadEvent.
  *
  * <p>This class is safe for concurrent use.
@@ -129,33 +130,27 @@ public class EventBus {
           });
 
   /**
-   * All registered event handlers, indexed by event type.
+   * All registered event subscribers, indexed by event type.
    *
    * <p>This SetMultimap is NOT safe for concurrent use; all access should be
-   * made after acquiring a read or write lock via {@link #handlersByTypeLock}.
+   * made after acquiring a read or write lock via {@link #subscribersByTypeLock}.
    */
-  private final SetMultimap<Class<?>, EventHandler> handlersByType =
+  private final SetMultimap<Class<?>, EventSubscriber> subscribersByType =
       HashMultimap.create();
-  private final ReadWriteLock handlersByTypeLock = new ReentrantReadWriteLock();
+  private final ReadWriteLock subscribersByTypeLock = new ReentrantReadWriteLock();
 
   /**
-   * Logger for event dispatch failures.  Named by the fully-qualified name of
-   * this class, followed by the identifier provided at construction.
-   */
-  private final Logger logger;
-
-  /**
-   * Strategy for finding handler methods in registered objects.  Currently,
-   * only the {@link AnnotatedHandlerFinder} is supported, but this is
+   * Strategy for finding subscriber methods in registered objects.  Currently,
+   * only the {@link AnnotatedSubscriberFinder} is supported, but this is
    * encapsulated for future expansion.
    */
-  private final HandlerFindingStrategy finder = new AnnotatedHandlerFinder();
+  private final SubscriberFindingStrategy finder = new AnnotatedSubscriberFinder();
 
   /** queues of events for the current thread to dispatch */
-  private final ThreadLocal<Queue<EventWithHandler>> eventsToDispatch =
-      new ThreadLocal<Queue<EventWithHandler>>() {
-    @Override protected Queue<EventWithHandler> initialValue() {
-      return new LinkedList<EventWithHandler>();
+  private final ThreadLocal<Queue<EventWithSubscriber>> eventsToDispatch =
+      new ThreadLocal<Queue<EventWithSubscriber>>() {
+    @Override protected Queue<EventWithSubscriber> initialValue() {
+      return new LinkedList<EventWithSubscriber>();
     }
   };
 
@@ -166,6 +161,8 @@ public class EventBus {
       return false;
     }
   };
+
+  private SubscriberExceptionHandler subscriberExceptionHandler;
 
   /**
    * Creates a new EventBus named "default".
@@ -181,60 +178,71 @@ public class EventBus {
    *                    be a valid Java identifier.
    */
   public EventBus(String identifier) {
-    logger = Logger.getLogger(EventBus.class.getName() + "." + checkNotNull(identifier));
+    this(new LoggingSubscriberExceptionHandler(identifier));
   }
 
   /**
-   * Registers all handler methods on {@code object} to receive events.
-   * Handler methods are selected and classified using this EventBus's
-   * {@link HandlerFindingStrategy}; the default strategy is the
-   * {@link AnnotatedHandlerFinder}.
+   * Creates a new EventBus with the given {@link SubscriberExceptionHandler}.
+   * 
+   * @param subscriberExceptionHandler Handler for subscriber exceptions.
+   * @since 16.0
+   */
+  public EventBus(SubscriberExceptionHandler subscriberExceptionHandler) {
+    this.subscriberExceptionHandler = checkNotNull(subscriberExceptionHandler);
+  }
+
+  /**
+   * Registers all subscriber methods on {@code object} to receive events.
+   * Subscriber methods are selected and classified using this EventBus's
+   * {@link SubscriberFindingStrategy}; the default strategy is the
+   * {@link AnnotatedSubscriberFinder}.
    *
-   * @param object  object whose handler methods should be registered.
+   * @param object  object whose subscriber methods should be registered.
    */
   public void register(Object object) {
-    Multimap<Class<?>, EventHandler> methodsInListener =
-        finder.findAllHandlers(object);
-    handlersByTypeLock.writeLock().lock();
+    Multimap<Class<?>, EventSubscriber> methodsInListener =
+        finder.findAllSubscribers(object);
+    subscribersByTypeLock.writeLock().lock();
     try {
-      handlersByType.putAll(methodsInListener);
+      subscribersByType.putAll(methodsInListener);
     } finally {
-      handlersByTypeLock.writeLock().unlock();
+      subscribersByTypeLock.writeLock().unlock();
     }
   }
 
   /**
-   * Unregisters all handler methods on a registered {@code object}.
+   * Unregisters all subscriber methods on a registered {@code object}.
    *
-   * @param object  object whose handler methods should be unregistered.
+   * @param object  object whose subscriber methods should be unregistered.
    * @throws IllegalArgumentException if the object was not previously registered.
    */
   public void unregister(Object object) {
-    Multimap<Class<?>, EventHandler> methodsInListener = finder.findAllHandlers(object);
-    for (Entry<Class<?>, Collection<EventHandler>> entry : methodsInListener.asMap().entrySet()) {
+    Multimap<Class<?>, EventSubscriber> methodsInListener = finder.findAllSubscribers(object);
+    for (Entry<Class<?>, Collection<EventSubscriber>> entry :
+          methodsInListener.asMap().entrySet()) {
       Class<?> eventType = entry.getKey();
-      Collection<EventHandler> eventMethodsInListener = entry.getValue();
+      Collection<EventSubscriber> eventMethodsInListener = entry.getValue();
 
-      handlersByTypeLock.writeLock().lock();
+      subscribersByTypeLock.writeLock().lock();
       try {
-        Set<EventHandler> currentHandlers = handlersByType.get(eventType);
-        if (!currentHandlers.containsAll(eventMethodsInListener)) {
+        Set<EventSubscriber> currentSubscribers = subscribersByType.get(eventType);
+        if (!currentSubscribers.containsAll(eventMethodsInListener)) {
           throw new IllegalArgumentException(
-              "missing event handler for an annotated method. Is " + object + " registered?");
+              "missing event subscriber for an annotated method. Is " + object + " registered?");
         }
-        currentHandlers.removeAll(eventMethodsInListener);
+        currentSubscribers.removeAll(eventMethodsInListener);
       } finally {
-        handlersByTypeLock.writeLock().unlock();
+        subscribersByTypeLock.writeLock().unlock();
       }
     }
   }
 
   /**
-   * Posts an event to all registered handlers.  This method will return
-   * successfully after the event has been posted to all handlers, and
-   * regardless of any exceptions thrown by handlers.
+   * Posts an event to all registered subscribers.  This method will return
+   * successfully after the event has been posted to all subscribers, and
+   * regardless of any exceptions thrown by subscribers.
    *
-   * <p>If no handlers have been subscribed for {@code event}'s class, and
+   * <p>If no subscribers have been subscribed for {@code event}'s class, and
    * {@code event} is not already a {@link DeadEvent}, it will be wrapped in a
    * DeadEvent and reposted.
    *
@@ -245,18 +253,18 @@ public class EventBus {
 
     boolean dispatched = false;
     for (Class<?> eventType : dispatchTypes) {
-      handlersByTypeLock.readLock().lock();
+      subscribersByTypeLock.readLock().lock();
       try {
-        Set<EventHandler> wrappers = handlersByType.get(eventType);
+        Set<EventSubscriber> wrappers = subscribersByType.get(eventType);
 
         if (!wrappers.isEmpty()) {
           dispatched = true;
-          for (EventHandler wrapper : wrappers) {
+          for (EventSubscriber wrapper : wrappers) {
             enqueueEvent(event, wrapper);
           }
         }
       } finally {
-        handlersByTypeLock.readLock().unlock();
+        subscribersByTypeLock.readLock().unlock();
       }
     }
 
@@ -272,8 +280,8 @@ public class EventBus {
    * {@link #dispatchQueuedEvents()}. Events are queued in-order of occurrence
    * so they can be dispatched in the same order.
    */
-  void enqueueEvent(Object event, EventHandler handler) {
-    eventsToDispatch.get().offer(new EventWithHandler(event, handler));
+  void enqueueEvent(Object event, EventSubscriber subscriber) {
+    eventsToDispatch.get().offer(new EventWithSubscriber(event, subscriber));
   }
 
   /**
@@ -290,10 +298,10 @@ public class EventBus {
 
     isDispatching.set(true);
     try {
-      Queue<EventWithHandler> events = eventsToDispatch.get();
-      EventWithHandler eventWithHandler;
-      while ((eventWithHandler = events.poll()) != null) {
-        dispatch(eventWithHandler.event, eventWithHandler.handler);
+      Queue<EventWithSubscriber> events = eventsToDispatch.get();
+      EventWithSubscriber eventWithSubscriber;
+      while ((eventWithSubscriber = events.poll()) != null) {
+        dispatch(eventWithSubscriber.event, eventWithSubscriber.subscriber);
       }
     } finally {
       isDispatching.remove();
@@ -302,19 +310,33 @@ public class EventBus {
   }
 
   /**
-   * Dispatches {@code event} to the handler in {@code wrapper}.  This method
+   * Dispatches {@code event} to the subscriber in {@code wrapper}.  This method
    * is an appropriate override point for subclasses that wish to make
    * event delivery asynchronous.
    *
    * @param event  event to dispatch.
-   * @param wrapper  wrapper that will call the handler.
+   * @param wrapper  wrapper that will call the subscriber.
    */
-  void dispatch(Object event, EventHandler wrapper) {
+  void dispatch(Object event, EventSubscriber wrapper) {
     try {
       wrapper.handleEvent(event);
     } catch (InvocationTargetException e) {
-      logger.log(Level.SEVERE,
-          "Could not dispatch event: " + event + " to handler " + wrapper, e);
+      try {
+        subscriberExceptionHandler.handleException(
+            e.getCause(),
+            new SubscriberExceptionContext(
+                this,
+                event,
+                wrapper.getSubscriber(),
+                wrapper.getMethod()));
+      } catch (Throwable t) {
+        // If the exception handler throws, log it. There isn't much else to do!
+        Logger.getLogger(EventBus.class.getName()).log(Level.SEVERE,
+             String.format(
+            "Exception %s thrown while handling exception: %s", t,
+            e.getCause()),
+            t);
+      }
     }
   }
 
@@ -335,13 +357,43 @@ public class EventBus {
     }
   }
 
-  /** simple struct representing an event and it's handler */
-  static class EventWithHandler {
+  /**
+   * Simple logging handler for subscriber exceptions.
+   */
+  private static final class LoggingSubscriberExceptionHandler
+      implements SubscriberExceptionHandler {
+
+    /**
+     * Logger for event dispatch failures.  Named by the fully-qualified name of
+     * this class, followed by the identifier provided at construction.
+     */
+    private final Logger logger;
+
+    /**
+     * @param identifier a brief name for this bus, for logging purposes. Should
+     *        be a valid Java identifier.
+     */
+    public LoggingSubscriberExceptionHandler(String identifier) {
+      logger = Logger.getLogger(
+          EventBus.class.getName() + "." + checkNotNull(identifier));
+    }
+
+    @Override
+    public void handleException(Throwable exception,
+        SubscriberExceptionContext context) {
+      logger.log(Level.SEVERE, "Could not dispatch event: " 
+          + context.getSubscriber() + " to " + context.getSubscriberMethod(),
+          exception.getCause());
+    }
+  }
+
+  /** simple struct representing an event and it's subscriber */
+  static class EventWithSubscriber {
     final Object event;
-    final EventHandler handler;
-    public EventWithHandler(Object event, EventHandler handler) {
+    final EventSubscriber subscriber;
+    public EventWithSubscriber(Object event, EventSubscriber subscriber) {
       this.event = checkNotNull(event);
-      this.handler = checkNotNull(handler);
+      this.subscriber = checkNotNull(subscriber);
     }
   }
 }
