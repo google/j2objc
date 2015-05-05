@@ -916,6 +916,7 @@ JAVA_SOURCES = \
 	javax/crypto/MacSpi.java \
 	javax/crypto/SecretKey.java \
 	javax/crypto/ShortBufferException.java \
+	javax/crypto/spec/SecretKeySpec.java \
 	javax/net/DefaultServerSocketFactory.java \
 	javax/net/DefaultSocketFactory.java \
 	javax/net/ServerSocketFactory.java \
