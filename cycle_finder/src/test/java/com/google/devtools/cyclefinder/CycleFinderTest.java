@@ -54,6 +54,11 @@ public class CycleFinderTest extends TestCase {
     blacklistEntries = Lists.newArrayList();
   }
 
+  @Override
+  protected void tearDown() {
+    ErrorUtil.reset();
+  }
+
   public void testEasyCycle() throws Exception {
     addSourceFile("A.java", "class A { B b; }");
     addSourceFile("B.java", "class B { A a; }");
@@ -296,6 +301,15 @@ public class CycleFinderTest extends TestCase {
         + " class Test { AbstractA a = new AbstractA() { void dummyA() {}"
         + " AbstractB b = new AbstractB() { void dummyB() { dummyA(); } }; }; }");
     whitelistEntries.add("NAMESPACE foo");
+    findCycles();
+    assertNoCycles();
+  }
+
+  public void testIncompatibleStripping() throws Exception {
+    addSourceFile("Test.java",
+        "import com.google.j2objc.annotations.J2ObjCIncompatible; "
+        + "import java.garbage.Foo; class Test { @J2ObjCIncompatible Foo foo; }");
+    // We just care that there are no compile errors.
     findCycles();
     assertNoCycles();
   }
