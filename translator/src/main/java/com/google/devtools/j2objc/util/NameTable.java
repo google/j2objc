@@ -669,6 +669,25 @@ public class NameTable {
   }
 
   /**
+   * Convert a Java type into the equivalent JNI type.
+   */
+  public String getJniType(ITypeBinding type) {
+    if (type.isPrimitive()) {
+      return getObjCType(type);
+    }
+    if (type.isArray()) {
+      return "jarray";
+    }
+    if (type.getQualifiedName().equals("java.lang.String")) {
+      return "jstring";
+    }
+    if (type.getQualifiedName().equals("java.lang.Class")) {
+      return "jclass";
+    }
+    return "jobject";
+  }
+
+  /**
    * Convert a Java type to an equivalent Objective-C type with type variables
    * converted to "id" regardless of their bounds.
    */

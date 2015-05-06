@@ -20,6 +20,7 @@
 #include "java/lang/Character.h"
 #include "java/lang/IntegralToString.h"
 #include "java/lang/StringBuilder.h"
+#include "jni.h"
 
 static int IntegralToString_intIntoCharArray(unichar *buf, int cursor, uint32_t n);
 
@@ -116,7 +117,8 @@ static NSString *IntegralToString_stringOf3(unichar c1, unichar c2, unichar c3) 
 /**
  * Equivalent to Integer.toString(i, radix).
  */
-NSString *JavaLangIntegralToString_intToStringWithInt_withInt_(jint i, jint radix) {
+jstring Java_java_lang_IntegralToString_intToString__II(
+    JNIEnv *env, jclass cls, jint i, jint radix) {
   if (radix < JavaLangCharacter_MIN_RADIX || radix > JavaLangCharacter_MAX_RADIX) {
     radix = 10;
   }
@@ -233,7 +235,8 @@ NSString *IntegralToString_convertInt(JreStringBuilder *sb, int i) {
 /**
  * Equivalent to Long.toString(v, radix).
  */
-NSString *JavaLangIntegralToString_longToStringWithLong_withInt_(jlong v, jint radix) {
+jstring Java_java_lang_IntegralToString_longToString__JI(
+    JNIEnv *env, jclass cls, jlong v, jint radix) {
   jint i = (jint) v;
   if (i == v) {
     return JavaLangIntegralToString_intToStringWithInt_withInt_(i, radix);
@@ -391,7 +394,7 @@ static int IntegralToString_intIntoCharArray(unichar *buf, int cursor, uint32_t 
   return cursor;
 }
 
-NSString *JavaLangIntegralToString_intToBinaryStringWithInt_(jint i) {
+jstring Java_java_lang_IntegralToString_intToBinaryString(JNIEnv *env, jclass cls, jint i) {
   jint bufLen = 32;  // Max number of binary digits in an int
   jchar buf[bufLen];
   jint cursor = bufLen;
@@ -403,7 +406,7 @@ NSString *JavaLangIntegralToString_intToBinaryStringWithInt_(jint i) {
   return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
 }
 
-NSString *JavaLangIntegralToString_longToBinaryStringWithLong_(jlong v) {
+jstring Java_java_lang_IntegralToString_longToBinaryString(JNIEnv *env, jclass cls, jlong v) {
   jint i = (jint) v;
   if (v >= 0 && i == v) {
     return JavaLangIntegralToString_intToBinaryStringWithInt_(i);
@@ -420,8 +423,7 @@ NSString *JavaLangIntegralToString_longToBinaryStringWithLong_(jlong v) {
   return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
 }
 
-JavaLangStringBuilder *
-    JavaLangIntegralToString_appendByteAsHexWithJavaLangStringBuilder_withByte_withBoolean_(
+jobject Java_java_lang_IntegralToString_appendByteAsHex(JNIEnv *env, jclass cls,
     JavaLangStringBuilder *sb, jbyte b, jboolean upperCase) {
   nil_chk(sb);
   const jchar *digits = upperCase ? IntegralToString_UPPER_CASE_DIGITS : IntegralToString_DIGITS;
@@ -430,7 +432,7 @@ JavaLangStringBuilder *
   return sb;
 }
 
-NSString *JavaLangIntegralToString_byteToHexStringWithByte_withBoolean_(
+jstring Java_java_lang_IntegralToString_byteToHexString(JNIEnv *env, jclass cls,
     jbyte b, jboolean upperCase) {
   const jchar *digits = upperCase ? IntegralToString_UPPER_CASE_DIGITS : IntegralToString_DIGITS;
   jchar buf[2];
@@ -439,7 +441,7 @@ NSString *JavaLangIntegralToString_byteToHexStringWithByte_withBoolean_(
   return [NSString stringWithCharacters:buf length:2];
 }
 
-NSString *JavaLangIntegralToString_bytesToHexStringWithByteArray_withBoolean_(
+jstring Java_java_lang_IntegralToString_bytesToHexString(JNIEnv *env, jclass cls,
     IOSByteArray *bytes, jboolean upperCase) {
   const jchar *digits = upperCase ? IntegralToString_UPPER_CASE_DIGITS : IntegralToString_DIGITS;
   jint size = bytes->size_;
@@ -453,8 +455,8 @@ NSString *JavaLangIntegralToString_bytesToHexStringWithByteArray_withBoolean_(
   return [NSString stringWithCharacters:buf length:size * 2];
 }
 
-NSString *JavaLangIntegralToString_intToHexStringWithInt_withBoolean_withInt_(
-    jint i, jboolean upperCase, jint minWidth) {
+jstring Java_java_lang_IntegralToString_intToHexString(
+    JNIEnv *env, jclass cls, jint i, jboolean upperCase, jint minWidth) {
   jint bufLen = 8;  // Max number of hex digits in an int
   jchar buf[bufLen];
   jint cursor = bufLen;
@@ -467,7 +469,7 @@ NSString *JavaLangIntegralToString_intToHexStringWithInt_withBoolean_withInt_(
   return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
 }
 
-NSString *JavaLangIntegralToString_longToHexStringWithLong_(jlong v) {
+jstring Java_java_lang_IntegralToString_longToHexString(JNIEnv *env, jclass cls, jlong v) {
   jint i = (jint) v;
   if (v >= 0 && i == v) {
     return JavaLangIntegralToString_intToHexStringWithInt_withBoolean_withInt_(i, false, 0);
@@ -484,7 +486,7 @@ NSString *JavaLangIntegralToString_longToHexStringWithLong_(jlong v) {
   return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
 }
 
-NSString *JavaLangIntegralToString_intToOctalStringWithInt_(jint i) {
+jstring Java_java_lang_IntegralToString_intToOctalString(JNIEnv *env, jclass cls, jint i) {
   jint bufLen = 11;  // Max number of octal digits in an int
   jchar buf[bufLen];
   jint cursor = bufLen;
@@ -496,7 +498,7 @@ NSString *JavaLangIntegralToString_intToOctalStringWithInt_(jint i) {
   return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
 }
 
-NSString *JavaLangIntegralToString_longToOctalStringWithLong_(jlong v) {
+jstring Java_java_lang_IntegralToString_longToOctalString(JNIEnv *env, jclass cls, jlong v) {
   jint i = (jint) v;
   if (v >= 0 && i == v) {
     return JavaLangIntegralToString_intToOctalStringWithInt_(i);

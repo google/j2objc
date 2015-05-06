@@ -15,6 +15,7 @@
  */
 
 #include "java/util/regex/PatternSyntaxException.h"
+#include "jni.h"
 #include "unicode/uregex.h"
 
 // ICU documentation: http://icu-project.org/apiref/icu4c/classRegexPattern.html
@@ -58,11 +59,12 @@ static void throwPatternSyntaxException(UErrorCode status, NSString *pattern, UP
                                                                 withInt:error.offset] autorelease];
 }
 
-void JavaUtilRegexPattern_closeImplWithLong_(jlong addr) {
+void Java_java_util_regex_Pattern_closeImpl(JNIEnv *env, jclass cls, jlong addr) {
   uregex_close((URegularExpression *)addr);
 }
 
-jlong JavaUtilRegexPattern_compileImplWithNSString_withInt_(NSString *regex, jint flags) {
+jlong Java_java_util_regex_Pattern_compileImpl(
+    JNIEnv *env, jclass cls, NSString *regex, jint flags) {
   flags |= UREGEX_ERROR_ON_UNKNOWN_ESCAPES;
 
   UErrorCode status = U_ZERO_ERROR;

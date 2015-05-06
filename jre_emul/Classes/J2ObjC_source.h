@@ -25,6 +25,7 @@
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
+#import "jni.h"
 #import <libkern/OSAtomic.h>  // OSMemoryBarrier used in initialize methods.
 
 // Only expose this function to ARC generated code.

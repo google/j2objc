@@ -21,6 +21,7 @@
 #include "java/lang/RuntimeException.h"
 #include "java/lang/UnsupportedOperationException.h"
 #include "unicode/uregex.h"
+#include "jni.h"
 
 // ICU documentation: http://icu-project.org/apiref/icu4c/classRegexMatcher.html
 
@@ -54,12 +55,12 @@ static void updateOffsets(URegularExpression *regex, IOSIntArray *offsets, UErro
   }
 }
 
-void JavaUtilRegexMatcher_closeImplWithLong_(jlong address) {
+void Java_java_util_regex_Matcher_closeImpl(JNIEnv *env, jclass cls, jlong address) {
   uregex_close((URegularExpression *)address);
 }
 
-jboolean JavaUtilRegexMatcher_findImplWithLong_withInt_withIntArray_(
-    jlong addr, jint startIndex, IOSIntArray *offsets) {
+jboolean Java_java_util_regex_Matcher_findImpl(
+    JNIEnv *env, jclass cls, jlong addr, jint startIndex, IOSIntArray *offsets) {
   URegularExpression *regex = (URegularExpression *)addr;
   UErrorCode status = U_ZERO_ERROR;
   jboolean result = uregex_find(regex, startIndex, &status);
@@ -70,7 +71,8 @@ jboolean JavaUtilRegexMatcher_findImplWithLong_withInt_withIntArray_(
   return result;
 }
 
-jboolean JavaUtilRegexMatcher_findNextImplWithLong_withIntArray_(jlong addr, IOSIntArray *offsets) {
+jboolean Java_java_util_regex_Matcher_findNextImpl(
+    JNIEnv *env, jclass cls, jlong addr, IOSIntArray *offsets) {
   URegularExpression *regex = (URegularExpression *)addr;
   UErrorCode status = U_ZERO_ERROR;
   jboolean result = uregex_findNext(regex, &status);
@@ -81,22 +83,22 @@ jboolean JavaUtilRegexMatcher_findNextImplWithLong_withIntArray_(jlong addr, IOS
   return result;
 }
 
-jint JavaUtilRegexMatcher_groupCountImplWithLong_(jlong addr) {
+jint Java_java_util_regex_Matcher_groupCountImpl(JNIEnv *env, jclass cls, jlong addr) {
   UErrorCode status = U_ZERO_ERROR;
   jint result = uregex_groupCount((URegularExpression *)addr, &status);
   maybeThrowIcuException("uregex_groupCount", status);
   return result;
 }
 
-jboolean JavaUtilRegexMatcher_hitEndImplWithLong_(jlong addr) {
+jboolean Java_java_util_regex_Matcher_hitEndImpl(JNIEnv *env, jclass cls, jlong addr) {
   UErrorCode status = U_ZERO_ERROR;
   jboolean result = uregex_hitEnd((URegularExpression *)addr, &status);
   maybeThrowIcuException("uregex_hitEnd", status);
   return result;
 }
 
-jboolean JavaUtilRegexMatcher_lookingAtImplWithLong_withIntArray_(
-    jlong addr, IOSIntArray *offsets) {
+jboolean Java_java_util_regex_Matcher_lookingAtImpl(
+    JNIEnv *env, jclass cls, jlong addr, IOSIntArray *offsets) {
   URegularExpression *regex = (URegularExpression *)addr;
   UErrorCode status = U_ZERO_ERROR;
   jboolean result = uregex_lookingAt(regex, -1, &status);
@@ -107,7 +109,8 @@ jboolean JavaUtilRegexMatcher_lookingAtImplWithLong_withIntArray_(
   return result;
 }
 
-jboolean JavaUtilRegexMatcher_matchesImplWithLong_withIntArray_(jlong addr, IOSIntArray *offsets) {
+jboolean Java_java_util_regex_Matcher_matchesImpl(
+    JNIEnv *env, jclass cls, jlong addr, IOSIntArray *offsets) {
   URegularExpression *regex = (URegularExpression *)addr;
   UErrorCode status = U_ZERO_ERROR;
   jboolean result = uregex_matches(regex, -1, &status);
@@ -118,22 +121,22 @@ jboolean JavaUtilRegexMatcher_matchesImplWithLong_withIntArray_(jlong addr, IOSI
   return result;
 }
 
-jlong JavaUtilRegexMatcher_openImplWithLong_(jlong patternAddr) {
+jlong Java_java_util_regex_Matcher_openImpl(JNIEnv *env, jclass cls, jlong patternAddr) {
   UErrorCode status = U_ZERO_ERROR;
   URegularExpression *result = uregex_clone((URegularExpression *)patternAddr, &status);
   maybeThrowIcuException("uregex_clone", status);
   return (jlong)result;
 }
 
-jboolean JavaUtilRegexMatcher_requireEndImplWithLong_(jlong addr) {
+jboolean Java_java_util_regex_Matcher_requireEndImpl(JNIEnv *env, jclass cls, jlong addr) {
   UErrorCode status = U_ZERO_ERROR;
   jboolean result = uregex_requireEnd((URegularExpression *)addr, &status);
   maybeThrowIcuException("uregex_requireEnd", status);
   return result;
 }
 
-void JavaUtilRegexMatcher_setInputImplWithLong_withCharArray_withInt_withInt_(
-    jlong addr, IOSCharArray *javaText, jint start, jint end) {
+void Java_java_util_regex_Matcher_setInputImpl(
+    JNIEnv *env, jclass cls, jlong addr, IOSCharArray *javaText, jint start, jint end) {
   URegularExpression *regex = (URegularExpression *)addr;
   UErrorCode status = U_ZERO_ERROR;
   uregex_setText(regex, javaText->buffer_, javaText->size_, &status);
@@ -141,14 +144,15 @@ void JavaUtilRegexMatcher_setInputImplWithLong_withCharArray_withInt_withInt_(
   maybeThrowIcuException("uregex_setText", status);
 }
 
-void JavaUtilRegexMatcher_useAnchoringBoundsImplWithLong_withBoolean_(jlong addr, jboolean value) {
+void Java_java_util_regex_Matcher_useAnchoringBoundsImpl(
+    JNIEnv *env, jclass cls, jlong addr, jboolean value) {
   UErrorCode status = U_ZERO_ERROR;
   uregex_useAnchoringBounds((URegularExpression *)addr, value, &status);
   maybeThrowIcuException("uregex_useAnchoringBounds", status);
 }
 
-void JavaUtilRegexMatcher_useTransparentBoundsImplWithLong_withBoolean_(
-    jlong addr, jboolean value) {
+void Java_java_util_regex_Matcher_useTransparentBoundsImpl(
+    JNIEnv *env, jclass cls, jlong addr, jboolean value) {
   UErrorCode status = U_ZERO_ERROR;
   uregex_useTransparentBounds((URegularExpression *)addr, value, &status);
   maybeThrowIcuException("uregex_useTransparentBounds", status);

@@ -413,8 +413,50 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslatedLines(translation, "- (void)foo {", "Test_foo(self);", "}");
     // class method wrapper for "bar".
     assertTranslatedLines(translation, "+ (void)bar {", "Test_bar();", "}");
-    // No implementation of the c-function for "bar".
-    assertNotInTranslation(translation, "void Test_bar()");
+    // JNI external function declarations
+    assertTranslation(translation, "JNIEXPORT void Java_Test_foo(JNIEnv *_env_, jobject self);");
+    assertTranslation(translation, "JNIEXPORT void Java_Test_bar(JNIEnv *_env_, jclass _cls_);");
+    // JNI wrapper functions
+    assertTranslatedLines(translation,
+        "void Test_foo(Test *self) {", "Java_Test_foo(&J2ObjC_JNIEnv, self);", "}");
+    assertTranslatedLines(translation,
+        "void Test_bar() {", "Java_Test_bar(&J2ObjC_JNIEnv, Test_class_());", "}");
+  }
+
+  public void testOverloadedNativeMethodsWithoutOcni() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { public native void foo(int i); public native static void foo(String s); }",
+        "Test", "Test.h");
+
+    // Public declaration for "foo" instance method, within "NativeMethods" category.
+    assertTranslation(translation, "- (void)fooWithInt:(jint)i;");
+    // Public declaration for "bar". both the class method and c-function.
+    assertTranslation(translation, "+ (void)fooWithNSString:(NSString *)s;");
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_fooWithNSString_(NSString *s);");
+
+    translation = getTranslatedFile("Test.m");
+    // Implementation for "foo" is functionized.
+    assertTranslation(translation, "void Test_fooWithInt_(Test *self, jint i);");
+    assertTranslatedLines(translation,
+        "- (void)fooWithInt:(jint)i {", "Test_fooWithInt_(self, i);", "}");
+    // class method wrapper for "bar".
+    assertTranslatedLines(translation,
+        "+ (void)fooWithNSString:(NSString *)s {", "Test_fooWithNSString_(s);", "}");
+    // JNI external function declarations
+    assertTranslation(translation,
+        "JNIEXPORT void Java_Test_foo__I(JNIEnv *_env_, jobject self, jint i);");
+    assertTranslation(translation,
+        "JNIEXPORT void Java_Test_foo__Ljava_lang_String_2("
+        + "JNIEnv *_env_, jclass _cls_, jstring s);");
+    // JNI wrapper functions
+    assertTranslatedLines(translation,
+        "void Test_fooWithInt_(Test *self, jint i) {",
+        "Java_Test_foo__I(&J2ObjC_JNIEnv, self, i);",
+        "}");
+    assertTranslatedLines(translation,
+        "void Test_fooWithNSString_(NSString *s) {",
+        "Java_Test_foo__Ljava_lang_String_2(&J2ObjC_JNIEnv, Test_class_(), s);",
+        "}");
   }
 
   public void testExtraSelectorsFromMultipleOverrides() throws IOException {

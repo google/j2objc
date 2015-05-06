@@ -1752,6 +1752,7 @@
 		068BA721180F5C270087BAF4 /* cbigint.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = cbigint.h; path = android/libcore/luni/src/main/native/cbigint.h; sourceTree = SOURCE_ROOT; };
 		068BA722180F5C270087BAF4 /* cbigint.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = cbigint.m; path = android/libcore/luni/src/main/native/cbigint.m; sourceTree = SOURCE_ROOT; };
 		068BA723180F5C270087BAF4 /* java_lang_RealToString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_lang_RealToString.m; path = android/libcore/luni/src/main/native/java_lang_RealToString.m; sourceTree = SOURCE_ROOT; };
+		0692DF5E1AE8560300C14F19 /* jni.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = jni.m; sourceTree = "<group>"; };
 		06934A0F1A40CE6400D2CD07 /* EventObjectTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EventObjectTest.h; path = libcore/java/util/EventObjectTest.h; sourceTree = "<group>"; };
 		06934A101A40CE6400D2CD07 /* EventObjectTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventObjectTest.m; path = libcore/java/util/EventObjectTest.m; sourceTree = "<group>"; };
 		06934A121A40CE8900D2CD07 /* TreeSetTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TreeSetTest.h; path = libcore/java/util/TreeSetTest.h; sourceTree = "<group>"; };
@@ -1801,6 +1802,9 @@
 		0699FF9518D7851500278029 /* ZipError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZipError.m; path = build_result/Classes/java/util/zip/ZipError.m; sourceTree = "<group>"; };
 		0699FF9618D7851500278029 /* ZipOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZipOutputStream.h; path = build_result/Classes/java/util/zip/ZipOutputStream.h; sourceTree = "<group>"; };
 		0699FF9718D7851500278029 /* ZipOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZipOutputStream.m; path = build_result/Classes/java/util/zip/ZipOutputStream.m; sourceTree = "<group>"; };
+		069FC49D1AF2A2290095A289 /* AbstractStringBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AbstractStringBuilder.h; path = java/lang/AbstractStringBuilder.h; sourceTree = "<group>"; };
+		069FC49E1AF2A9770095A289 /* java_util_regex_Matcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Matcher.m; path = android/libcore/luni/src/main/native/java_util_regex_Matcher.m; sourceTree = SOURCE_ROOT; };
+		069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Pattern.m; path = android/libcore/luni/src/main/native/java_util_regex_Pattern.m; sourceTree = SOURCE_ROOT; };
 		06AA054817E110D00017C34A /* CharacterCodingException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharacterCodingException.h; path = build_result/Classes/java/nio/charset/CharacterCodingException.h; sourceTree = "<group>"; };
 		06AA054917E110D00017C34A /* CharacterCodingException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharacterCodingException.m; path = build_result/Classes/java/nio/charset/CharacterCodingException.m; sourceTree = "<group>"; };
 		06AA054A17E110D00017C34A /* Charset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Charset.h; path = build_result/Classes/java/nio/charset/Charset.h; sourceTree = "<group>"; };
@@ -3959,6 +3963,7 @@
 		0661938A155848D70004DAFE /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				069FC49D1AF2A2290095A289 /* AbstractStringBuilder.h */,
 				0661AA7F19F848C800EFD1F5 /* AbstractStringBuilder.m */,
 				067228F9158FB0B3005318BD /* AccessibleObject.h */,
 				067228FA158FB0B3005318BD /* AccessibleObject.m */,
@@ -4010,12 +4015,15 @@
 				0661AA8219F848FF00EFD1F5 /* java_lang_RealToString.h */,
 				068BA723180F5C270087BAF4 /* java_lang_RealToString.m */,
 				0661AA8319F848FF00EFD1F5 /* java_lang_StringToReal.m */,
+				069FC49E1AF2A9770095A289 /* java_util_regex_Matcher.m */,
+				069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */,
 				0675061317F0C7A30015B7E8 /* JavaMetadata.h */,
 				0675061417F0C7A30015B7E8 /* JavaMetadata.m */,
 				066193B8155849BC0004DAFE /* JavaObject.h */,
 				06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */,
 				06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */,
 				062272AA1816DB0B009BB2A2 /* jni.h */,
+				0692DF5E1AE8560300C14F19 /* jni.m */,
 				0661938D155848D70004DAFE /* JreEmulation.h */,
 				066193B9155849BC0004DAFE /* JreEmulation.m */,
 				067228F1158FB002005318BD /* Method.h */,
@@ -7854,6 +7862,7 @@
 				TargetAttributes = {
 					06459FB01A4220AF00F5ED23 = {
 						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = EQHXZ8M8AV;
 					};
 				};
 			};

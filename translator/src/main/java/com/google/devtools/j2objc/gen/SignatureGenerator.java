@@ -15,8 +15,10 @@
 package com.google.devtools.j2objc.gen;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Generates signatures for classes, fields and methods, as defined by the JVM spec, 4.3.4,
@@ -90,6 +92,84 @@ public class SignatureGenerator {
     }
     SignatureGenerator builder = new SignatureGenerator();
     builder.genMethodTypeSignature(method);
+    return builder.toString();
+  }
+
+  public static String createJniFunctionSignature(IMethodBinding method) {
+    // Mangle function name as described in JNI specification.
+    // http://docs.oracle.com/javase/7/docs/technotes/guides/jni/spec/design.html#wp615
+    StringBuilder sb = new StringBuilder();
+    sb.append("Java_");
+
+    String methodName = method.getName();
+    ITypeBinding declaringClass = method.getDeclaringClass();
+    IPackageBinding pkg = declaringClass.getPackage();
+    if (pkg != null && !pkg.isUnnamed()) {
+      String pkgName = pkg.getName();
+      for (String part : pkgName.split("\\.")) {
+        sb.append(part);
+        sb.append('_');
+      }
+    }
+    jniMangleClass(declaringClass, sb);
+    sb.append('_');
+    sb.append(jniMangle(methodName));
+
+    // Check whether the method is overloaded.
+    int nameCount = 0;
+    for (IMethodBinding m : declaringClass.getDeclaredMethods()) {
+      if (methodName.equals(m.getName()) && Modifier.isNative(m.getModifiers())) {
+        nameCount++;
+      }
+    }
+    if (nameCount >= 2) {
+      // Overloaded native methods, append JNI-mangled parameter types.
+      sb.append("__");
+      ITypeBinding[] parameters = method.getParameterTypes();
+      for (int iParam = 0; iParam < parameters.length; iParam++) {
+        String type = createTypeSignature(parameters[iParam]);
+        sb.append(jniMangle(type));
+      }
+    }
+    return sb.toString();
+  }
+
+  private static void jniMangleClass(ITypeBinding clazz, StringBuilder sb) {
+    if (clazz.getDeclaringClass() != null) {
+      jniMangleClass(clazz.getDeclaringClass(), sb);
+      sb.append("_00024");   // $
+    }
+    sb.append(jniMangle(clazz.getName()));
+  }
+
+  private static String jniMangle(String s) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
+      switch (c) {
+        case '.': sb.append('_');  break;
+        case '/': sb.append('_');  break;
+        case '_': sb.append("_1"); break;
+        case ';': sb.append("_2"); break;
+        case '[': sb.append("_3"); break;
+        case '$': sb.append("_00024"); break;
+        default: {
+          Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
+          if (block != Character.UnicodeBlock.BASIC_LATIN) {
+            sb.append(String.format("_%05x", (int) c));
+          } else {
+            sb.append(c);
+          }
+          break;
+        }
+      }
+    }
+    return sb.toString();
+  }
+
+  private static String createTypeSignature(ITypeBinding type) {
+    SignatureGenerator builder = new SignatureGenerator();
+    builder.genTypeSignature(type.getErasure());
     return builder.toString();
   }
 

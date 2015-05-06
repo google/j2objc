@@ -29,6 +29,8 @@ public class FunctionDeclaration extends BodyDeclaration {
   private final ChildList<SingleVariableDeclaration> parameters =
       ChildList.create(SingleVariableDeclaration.class, this);
   private final ChildLink<Block> body = ChildLink.create(Block.class, this);
+  private final ITypeBinding declaringClass;
+  private String jniSignature = null;
 
   public FunctionDeclaration(FunctionDeclaration other) {
     super(other);
@@ -37,11 +39,14 @@ public class FunctionDeclaration extends BodyDeclaration {
     returnType.copyFrom(other.getReturnType());
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
+    declaringClass = other.declaringClass;
+    jniSignature = other.jniSignature;
   }
 
-  public FunctionDeclaration(String name, ITypeBinding returnType) {
+  public FunctionDeclaration(String name, ITypeBinding returnType, ITypeBinding declaringClass) {
     this.name = name;
     this.returnType.set(Type.newType(returnType));
+    this.declaringClass = declaringClass;
   }
 
   @Override
@@ -75,6 +80,18 @@ public class FunctionDeclaration extends BodyDeclaration {
 
   public void setBody(Block newBody) {
     body.set(newBody);
+  }
+
+  public String getJniSignature() {
+    return jniSignature;
+  }
+
+  public void setJniSignature(String s) {
+    this.jniSignature = s;
+  }
+
+  public ITypeBinding getDeclaringClass() {
+    return declaringClass;
   }
 
   @Override

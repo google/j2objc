@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -285,7 +286,8 @@ public class Functionizer extends TreeVisitor {
     boolean isInstanceMethod = !BindingUtil.isStatic(m) && !m.isConstructor();
 
     FunctionDeclaration function = new FunctionDeclaration(
-        nameTable.getFullFunctionName(m), m.getReturnType());
+        nameTable.getFullFunctionName(m), m.getReturnType(), declaringClass);
+    function.setJniSignature(SignatureGenerator.createJniFunctionSignature(m));
     function.setLineNumber(method.getName().getLineNumber());
 
     if (!BindingUtil.isStatic(m)) {
@@ -294,8 +296,8 @@ public class Functionizer extends TreeVisitor {
       function.getParameters().add(new SingleVariableDeclaration(var));
     }
     TreeUtil.copyList(method.getParameters(), function.getParameters());
-    function.setModifiers(
-        BindingUtil.isPrivate(m) || isInstanceMethod ? Modifier.PRIVATE : Modifier.PUBLIC);
+    function.setModifiers((method.getModifiers() & Modifier.STATIC) |
+        (BindingUtil.isPrivate(m) || isInstanceMethod ? Modifier.PRIVATE : Modifier.PUBLIC));
 
     if (Modifier.isNative(method.getModifiers())) {
       function.addModifiers(Modifier.NATIVE);
@@ -330,7 +332,7 @@ public class Functionizer extends TreeVisitor {
     ITypeBinding declaringClass = binding.getDeclaringClass();
 
     FunctionDeclaration function = new FunctionDeclaration(
-        nameTable.getAllocatingConstructorName(binding), declaringClass);
+        nameTable.getAllocatingConstructorName(binding), declaringClass, declaringClass);
     function.setLineNumber(method.getName().getLineNumber());
     function.setModifiers(BindingUtil.isPrivate(binding) ? Modifier.PRIVATE : Modifier.PUBLIC);
     function.setReturnsRetained(true);

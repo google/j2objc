@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -34,6 +35,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -134,13 +136,69 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   @Override
   protected void printFunctionDeclaration(FunctionDeclaration function) {
-    if (Modifier.isNative(function.getModifiers())) {
-      return;
-    }
     newline();
     syncLineNumbers(function);  // avoid doc-comment
-    String functionBody = generateStatement(function.getBody(), /* isFunction */ true);
-    println(getFunctionSignature(function) + " " + reindent(functionBody));
+    if (Modifier.isNative(function.getModifiers())) {
+      printJniFunctionAndWrapper(function);
+    } else {
+      String functionBody = generateStatement(function.getBody(), /* isFunction */ true);
+      println(getFunctionSignature(function) + " " + reindent(functionBody));
+    }
+  }
+
+  private String getJniFunctionSignature(FunctionDeclaration function) {
+    StringBuilder sb = new StringBuilder();
+    sb.append(nameTable.getJniType(function.getReturnType().getTypeBinding()));
+    sb.append(' ');
+    sb.append(function.getJniSignature()).append('(');
+    sb.append("JNIEnv *_env_");
+    if (Modifier.isStatic(function.getModifiers())) {
+      sb.append(", jclass _cls_");
+    }
+    if (!function.getParameters().isEmpty()) {
+      sb.append(", ");
+    }
+    for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
+         iter.hasNext(); ) {
+      IVariableBinding var = iter.next().getVariableBinding();
+      String paramType = nameTable.getJniType(var.getType());
+      sb.append(paramType + ' ' + nameTable.getVariableName(var));
+      if (iter.hasNext()) {
+        sb.append(", ");
+      }
+    }
+    sb.append(')');
+    return sb.toString();
+  }
+
+  private void printJniFunctionAndWrapper(FunctionDeclaration function) {
+    // Declare the matching JNI function.
+    print("JNIEXPORT ");
+    print(getJniFunctionSignature(function));
+    println(";\n");
+
+    // Generate a wrapper function that calls the matching JNI function.
+    print(getFunctionSignature(function));
+    println(" {");
+    print("  ");
+    ITypeBinding returnType = function.getReturnType().getTypeBinding();
+    if (!BindingUtil.isVoid(returnType)) {
+      if (returnType.isPrimitive()) {
+        print("return ");
+      } else {
+        printf("return (%s) ", nameTable.getSpecificObjCType(returnType));
+      }
+    }
+    print(function.getJniSignature());
+    print("(&J2ObjC_JNIEnv");
+    if (Modifier.isStatic(function.getModifiers())) {
+      printf(", %s_class_()", nameTable.getFullName(function.getDeclaringClass()));
+    }
+    for (SingleVariableDeclaration param : function.getParameters()) {
+      printf(", %s", nameTable.getVariableName(param.getVariableBinding()));
+    }
+    println(");");
+    println("}");
   }
 
   @Override

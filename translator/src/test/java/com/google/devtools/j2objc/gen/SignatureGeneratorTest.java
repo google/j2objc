@@ -124,4 +124,48 @@ public class SignatureGeneratorTest extends GenerationTest {
     assertEquals("<E:Ljava/lang/Object;>Ljava/lang/Object;Ljava/util/Collection<TE;>;",
         SignatureGenerator.createClassSignature(decls.get(0).getTypeBinding()));
   }
+
+  public void testJniSignatures() throws IOException {
+    CompilationUnit unit = translateType("D", "package foo.bar; class D {"
+        + "native void foo(int i, float f, String s);"
+        + "native void a_b$c();"
+        + "native void 你好世界();"
+        + "native void bar();"
+        + "native void bar(String s);"
+        + "native void bar(boolean b, String s);"
+        + "native void bar(String[] s); "
+        + "static class 测试 { native void mumble(); }}");
+    List<AbstractTypeDeclaration> decls = unit.getTypes();
+    assertEquals(2, decls.size());
+    IMethodBinding[] methods = decls.get(0).getTypeBinding().getDeclaredMethods();
+    assertEquals(8, methods.length); // methods[0] is the default constructor.
+
+    // Expected JNI signatures were copied from javah output.
+
+    // Verify no parameters, since foo isn't overloaded.
+    assertEquals("Java_foo_bar_D_foo", SignatureGenerator.createJniFunctionSignature(methods[6]));
+
+    // Verify underscores and dollar signs in names are mangled.
+    assertEquals("Java_foo_bar_D_a_1b_00024c",
+        SignatureGenerator.createJniFunctionSignature(methods[1]));
+
+    // Verify Unicode characters are mangled.
+    assertEquals("Java_foo_bar_D__04f60_0597d_04e16_0754c",
+        SignatureGenerator.createJniFunctionSignature(methods[7]));
+
+    // Verify overloaded methods have parameter suffixes.
+    assertEquals("Java_foo_bar_D_bar__", SignatureGenerator.createJniFunctionSignature(methods[2]));
+    assertEquals("Java_foo_bar_D_bar__Ljava_lang_String_2",
+        SignatureGenerator.createJniFunctionSignature(methods[3]));
+    assertEquals("Java_foo_bar_D_bar__ZLjava_lang_String_2",
+        SignatureGenerator.createJniFunctionSignature(methods[4]));
+    assertEquals("Java_foo_bar_D_bar___3Ljava_lang_String_2",
+        SignatureGenerator.createJniFunctionSignature(methods[5]));
+
+    // Check Unicode class name mangling.
+    methods = decls.get(1).getTypeBinding().getDeclaredMethods();
+    assertEquals(2, methods.length);
+    assertEquals("Java_foo_bar_D_00024_06d4b_08bd5_mumble",
+        SignatureGenerator.createJniFunctionSignature(methods[1]));
+  }
 }

@@ -55,7 +55,8 @@ IOS_OBJS = \
 	java_util_regex_Pattern.o \
 	java/lang/reflect/ExecutableMember.o \
 	java/lang/reflect/ParameterizedTypeImpl.o \
-	java/lang/reflect/TypeVariableImpl.o
+	java/lang/reflect/TypeVariableImpl.o \
+	jni.o
 
 APPLE_SRCS = \
 	objc-sync.m

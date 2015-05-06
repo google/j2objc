@@ -16,13 +16,14 @@
  */
 
 // Modified version of Android's java_lang_StringToReal.cpp, converted
-// to not use JNI calling convention.
+// to minimize JNI use.
 
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include "cbigint.h"
 #include "java/lang/OutOfMemoryError.h"
+#include "jni.h"
 
 /* ************************* Defines ************************* */
 #if defined(__linux__) || defined(__APPLE__)
@@ -988,7 +989,7 @@ OutOfMemory:
   return z;
 }
 
-jfloat JavaLangStringToReal_parseFltImplWithNSString_withInt_(NSString *s, jint e) {
+jfloat Java_java_lang_StringToReal_parseFltImpl(JNIEnv *env, jclass cls, NSString *s, jint e) {
     const char *str = [s UTF8String];
     if (!str) {
         return 0.0;
@@ -996,7 +997,7 @@ jfloat JavaLangStringToReal_parseFltImplWithNSString_withInt_(NSString *s, jint 
     return createFloat(str, e);
 }
 
-jdouble JavaLangStringToReal_parseDblImplWithNSString_withInt_(NSString *s, jint e) {
+jdouble Java_java_lang_StringToReal_parseDblImpl(JNIEnv *env, jclass cls, NSString *s, jint e) {
     const char *str = [s UTF8String];
     if (!str) {
         return 0.0;
