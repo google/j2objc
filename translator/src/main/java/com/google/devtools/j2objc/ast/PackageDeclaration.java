@@ -42,6 +42,9 @@ public class PackageDeclaration extends TreeNode {
 
   public PackageDeclaration(PackageDeclaration other) {
     super(other);
+    packageBinding = other.getPackageBinding();
+    javadoc.copyFrom(other.getJavadoc());
+    annotations.copyFrom(other.getAnnotations());
     name.copyFrom(other.getName());
   }
 

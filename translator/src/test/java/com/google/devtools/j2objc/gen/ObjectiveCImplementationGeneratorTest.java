@@ -333,7 +333,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Example { Bar bar; } class Bar {}",
         "Example", "Example.m");
-    assertFalse(translation.contains("#include \"Bar.h\""));
+    assertNotInTranslation(translation, "#include \"Bar.h\"");
   }
 
   public void testEnumWithStaticVar() throws IOException {
