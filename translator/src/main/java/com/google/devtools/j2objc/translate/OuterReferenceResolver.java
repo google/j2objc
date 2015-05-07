@@ -69,49 +69,32 @@ public class OuterReferenceResolver extends TreeVisitor {
   // parameter in a constructor.
   public static final IVariableBinding OUTER_PARAMETER = GeneratedVariableBinding.newPlaceholder();
 
-  private static OuterReferenceResolver instance;
-
   private Map<ITypeBinding, IVariableBinding> outerVars = Maps.newHashMap();
   private Set<ITypeBinding> usesOuterParam = Sets.newHashSet();
   private ListMultimap<ITypeBinding, Capture> captures = ArrayListMultimap.create();
   private Map<TreeNode.Key, List<IVariableBinding>> outerPaths = Maps.newHashMap();
   private ArrayList<Scope> scopeStack = Lists.newArrayList();
 
-  public static void cleanup() {
-    instance = null;
+  @Override
+  public void run(TreeNode node) {
+    assert scopeStack.isEmpty();
+    super.run(node);
   }
 
-  public static void initialize() {
-    if (instance == null) {
-      instance = new OuterReferenceResolver();
-    }
+  public boolean needsOuterReference(ITypeBinding type) {
+    return outerVars.containsKey(type);
   }
 
-  public static void resolve(TreeNode node) {
-    initialize();
-    assert instance.scopeStack.size() == 0;
-    node.accept(instance);
+  public boolean needsOuterParam(ITypeBinding type) {
+    return !type.isLocal() || outerVars.containsKey(type) || usesOuterParam.contains(type);
   }
 
-  public static boolean needsOuterReference(ITypeBinding type) {
-    assert instance != null;
-    return instance.outerVars.containsKey(type);
+  public IVariableBinding getOuterField(ITypeBinding type) {
+    return outerVars.get(type);
   }
 
-  public static boolean needsOuterParam(ITypeBinding type) {
-    assert instance != null;
-    return !type.isLocal() || instance.outerVars.containsKey(type)
-        || instance.usesOuterParam.contains(type);
-  }
-
-  public static IVariableBinding getOuterField(ITypeBinding type) {
-    assert instance != null;
-    return instance.outerVars.get(type);
-  }
-
-  public static List<IVariableBinding> getCapturedVars(ITypeBinding type) {
-    assert instance != null;
-    List<Capture> capturesForType = instance.captures.get(type);
+  public List<IVariableBinding> getCapturedVars(ITypeBinding type) {
+    List<Capture> capturesForType = captures.get(type);
     List<IVariableBinding> capturedVars = Lists.newArrayListWithCapacity(capturesForType.size());
     for (Capture capture : capturesForType) {
       capturedVars.add(capture.var);
@@ -119,9 +102,8 @@ public class OuterReferenceResolver extends TreeVisitor {
     return capturedVars;
   }
 
-  public static List<IVariableBinding> getInnerFields(ITypeBinding type) {
-    assert instance != null;
-    List<Capture> capturesForType = instance.captures.get(type);
+  public List<IVariableBinding> getInnerFields(ITypeBinding type) {
+    List<Capture> capturesForType = captures.get(type);
     List<IVariableBinding> innerFields = Lists.newArrayListWithCapacity(capturesForType.size());
     for (Capture capture : capturesForType) {
       innerFields.add(capture.field);
@@ -129,9 +111,8 @@ public class OuterReferenceResolver extends TreeVisitor {
     return innerFields;
   }
 
-  public static List<IVariableBinding> getPath(TreeNode node) {
-    assert instance != null;
-    return instance.outerPaths.get(node.getKey());
+  public List<IVariableBinding> getPath(TreeNode node) {
+    return outerPaths.get(node.getKey());
   }
 
   private static class Capture {

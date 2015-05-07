@@ -44,13 +44,17 @@ import java.util.Set;
 public class ReferenceGraph {
 
   private final Map<String, ITypeBinding> allTypes;
+  private final OuterReferenceResolver outerResolver;
   private final NameList whitelist;
   private final NameList blacklist;
   private SetMultimap<String, Edge> edges = HashMultimap.create();
   private List<List<Edge>> cycles = Lists.newArrayList();
 
-  public ReferenceGraph(TypeCollector typeCollector, NameList whitelist, NameList blacklist) {
+  public ReferenceGraph(
+      TypeCollector typeCollector, OuterReferenceResolver outerResolver, NameList whitelist,
+      NameList blacklist) {
     this.allTypes = typeCollector.getTypes();
+    this.outerResolver = outerResolver;
     this.whitelist = whitelist;
     this.blacklist = blacklist;
   }
@@ -152,7 +156,7 @@ public class ReferenceGraph {
 
   private void addOuterClassEdges() {
     for (ITypeBinding type : allTypes.values()) {
-      if (OuterReferenceResolver.needsOuterReference(type.getTypeDeclaration())
+      if (outerResolver.needsOuterReference(type.getTypeDeclaration())
           && !BindingUtil.hasNamedAnnotation(type, "WeakOuter")) {
         ITypeBinding declaringType = type.getDeclaringClass();
         if (declaringType != null && !whitelist.containsType(declaringType)
@@ -167,7 +171,7 @@ public class ReferenceGraph {
     for (ITypeBinding type : allTypes.values()) {
       if (type.isAnonymous()) {
         for (IVariableBinding capturedVar :
-             OuterReferenceResolver.getCapturedVars(type.getTypeDeclaration())) {
+             outerResolver.getCapturedVars(type.getTypeDeclaration())) {
           ITypeBinding targetType = getElementType(capturedVar.getType());
           if (!targetType.isPrimitive() && !whitelist.containsType(targetType)
               && !BindingUtil.isWeakReference(capturedVar)) {

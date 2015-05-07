@@ -120,6 +120,7 @@ public class CycleFinder {
   public List<List<Edge>> findCycles() throws IOException {
     final TypeCollector typeCollector = new TypeCollector();
     JdtParser parser = createParser(options);
+    final OuterReferenceResolver outerResolver = new OuterReferenceResolver();
 
     List<String> sourceFiles = options.getSourceFiles();
     File strippedDir = stripIncompatible(sourceFiles, parser);
@@ -137,7 +138,7 @@ public class CycleFinder {
         CompilationUnit unit = TreeConverter.convertCompilationUnit(
             jdtUnit, path, FileUtil.getMainTypeName(file), source, null);
         typeCollector.visitAST(unit);
-        OuterReferenceResolver.resolve(unit);
+        outerResolver.run(unit);
       }
     };
     parser.parseFiles(sourceFiles, handler);
@@ -150,7 +151,7 @@ public class CycleFinder {
 
     // Construct the graph and find cycles.
     ReferenceGraph graph = new ReferenceGraph(
-        typeCollector, NameList.createFromFiles(options.getWhitelistFiles()),
+        typeCollector, outerResolver, NameList.createFromFiles(options.getWhitelistFiles()),
         getBlacklist());
     return graph.findCycles();
   }

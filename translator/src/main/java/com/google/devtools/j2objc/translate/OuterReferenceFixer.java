@@ -44,7 +44,12 @@ import java.util.List;
  */
 public class OuterReferenceFixer extends TreeVisitor {
 
+  private final OuterReferenceResolver outerResolver;
   private IVariableBinding outerParam = null;
+
+  public OuterReferenceFixer(OuterReferenceResolver outerResolver) {
+    this.outerResolver = outerResolver;
+  }
 
   @Override
   public boolean visit(MethodDeclaration node) {
@@ -80,7 +85,7 @@ public class OuterReferenceFixer extends TreeVisitor {
 
     List<Expression> captureArgs = node.getArguments().subList(0, 0);
     List<ITypeBinding> captureParams = binding.getParameters().subList(0, 0);
-    if (OuterReferenceResolver.needsOuterParam(newType)) {
+    if (outerResolver.needsOuterParam(newType)) {
       captureArgs.add(getOuterArg(node, declaringClass));
       captureParams.add(declaringClass);
     }
@@ -99,9 +104,9 @@ public class OuterReferenceFixer extends TreeVisitor {
     ITypeBinding owningType = TreeUtil.getOwningType(node).getTypeBinding().getTypeDeclaration();
     // Test for the recursive construction of a local class.
     if (owningType.isEqualTo(newType)) {
-      return OuterReferenceResolver.getInnerFields(newType);
+      return outerResolver.getInnerFields(newType);
     }
-    return OuterReferenceResolver.getCapturedVars(newType);
+    return outerResolver.getCapturedVars(newType);
   }
 
   private Expression getOuterArg(ClassInstanceCreation node, ITypeBinding declaringClass) {
@@ -110,7 +115,7 @@ public class OuterReferenceFixer extends TreeVisitor {
       node.setExpression(null);
       return outerExpr;
     }
-    List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
+    List<IVariableBinding> path = outerResolver.getPath(node);
     if (path != null) {
       return Name.newName(fixPath(path));
     }
@@ -119,7 +124,7 @@ public class OuterReferenceFixer extends TreeVisitor {
 
   @Override
   public boolean visit(MethodInvocation node) {
-    List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
+    List<IVariableBinding> path = outerResolver.getPath(node);
     if (path != null) {
       node.setExpression(Name.newName(fixPath(path)));
     }
@@ -128,7 +133,7 @@ public class OuterReferenceFixer extends TreeVisitor {
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
+    List<IVariableBinding> path = outerResolver.getPath(node);
     if (path != null) {
       // We substitute the qualifying type name with the outer variable name.
       node.setQualifier(Name.newName(fixPath(path)));
@@ -139,7 +144,7 @@ public class OuterReferenceFixer extends TreeVisitor {
 
   @Override
   public boolean visit(SimpleName node) {
-    List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
+    List<IVariableBinding> path = outerResolver.getPath(node);
     if (path != null) {
       if (path.size() == 1 && path.get(0).getConstantValue() != null) {
         IVariableBinding var = path.get(0);
@@ -153,7 +158,7 @@ public class OuterReferenceFixer extends TreeVisitor {
 
   @Override
   public boolean visit(ThisExpression node) {
-    List<IVariableBinding> path = OuterReferenceResolver.getPath(node);
+    List<IVariableBinding> path = outerResolver.getPath(node);
     if (path != null) {
       node.replaceWith(Name.newName(fixPath(path)));
     } else {

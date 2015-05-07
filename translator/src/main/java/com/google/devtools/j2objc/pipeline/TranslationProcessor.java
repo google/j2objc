@@ -123,8 +123,6 @@ public class TranslationProcessor extends FileProcessor {
           checkDependencies(compilationUnit);
         }
       }
-
-      OuterReferenceResolver.cleanup();
     } finally {
       unit.finished();
       ticker.pop();
@@ -150,7 +148,8 @@ public class TranslationProcessor extends FileProcessor {
       ticker.tick("DeadCodeEliminator");
     }
 
-    OuterReferenceResolver.resolve(unit);
+    OuterReferenceResolver outerResolver = new OuterReferenceResolver();
+    outerResolver.run(unit);
     ticker.tick("OuterReferenceResolver");
 
     // Update code that has GWT references.
@@ -179,7 +178,8 @@ public class TranslationProcessor extends FileProcessor {
     // Extract inner and anonymous classes
     new AnonymousClassConverter().run(unit);
     ticker.tick("AnonymousClassConverter");
-    new InnerClassExtractor(unit).run(unit);
+
+    new InnerClassExtractor(outerResolver, unit).run(unit);
     ticker.tick("InnerClassExtractor");
 
     // Normalize init statements
@@ -187,7 +187,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("InitializationNormalizer");
 
     // Fix references to outer scope and captured variables.
-    new OuterReferenceFixer().run(unit);
+    new OuterReferenceFixer(outerResolver).run(unit);
     ticker.tick("OuterReferenceFixer");
 
     // Rewrites expressions that would cause unsequenced compile errors.
