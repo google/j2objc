@@ -86,48 +86,28 @@ public class TranslationProcessor extends FileProcessor {
 
   @Override
   protected void processConvertedTree(ProcessingContext input, CompilationUnit unit) {
+    String unitName = input.getOriginalSourcePath();
+    if (logger.isLoggable(Level.INFO)) {
+      System.out.println("translating " + unitName);
+    }
+    TimeTracker ticker = getTicker(unitName);
+    applyMutations(unit, deadCodeMap, ticker);
+    ticker.tick("Tree mutations");
+    ticker.printResults(System.out);
+    processedCount++;
+
     GenerationUnit genUnit = input.getGenerationUnit();
     genUnit.addCompilationUnit(unit);
+
+    // Add out-of-date dependencies to translation list.
+    if (closureQueue != null) {
+      checkDependencies(unit);
+    }
 
     if (genUnit.isFullyParsed()) {
       logger.finest("Processing compiled unit " + genUnit.getName()
           + " of size " + genUnit.getCompilationUnits().size());
-      processCompiledGenerationUnit(genUnit);
-    }
-  }
-
-  protected void processCompiledGenerationUnit(GenerationUnit unit) {
-    assert unit.getOutputPath() != null;
-    assert unit.isFullyParsed();
-    TimeTracker ticker = getTicker(unit.getOutputPath());
-    ticker.push();
-    try {
-      if (logger.isLoggable(Level.INFO)) {
-        System.out.println("translating " + unit.getSourceName());
-      }
-
-      for (CompilationUnit compUnit : unit.getCompilationUnits()) {
-        applyMutations(compUnit, deadCodeMap, ticker);
-        ticker.tick("Tree mutations for " + compUnit.getMainTypeName());
-        processedCount++;
-      }
-
-      logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
-
-      generateObjectiveCSource(unit, ticker);
-      ticker.tick("Source generation");
-
-      if (closureQueue != null) {
-        // Add out-of-date dependencies to translation list.
-        for (CompilationUnit compilationUnit : unit.getCompilationUnits()) {
-          checkDependencies(compilationUnit);
-        }
-      }
-    } finally {
-      unit.finished();
-      ticker.pop();
-      ticker.tick("Total processing time");
-      ticker.printResults(System.out);
+      generateObjectiveCSource(genUnit);
     }
   }
 
@@ -276,7 +256,11 @@ public class TranslationProcessor extends FileProcessor {
   }
 
   @VisibleForTesting
-  public static void generateObjectiveCSource(GenerationUnit unit, TimeTracker ticker) {
+  public static void generateObjectiveCSource(GenerationUnit unit) {
+    assert unit.getOutputPath() != null;
+    assert unit.isFullyParsed();
+    TimeTracker ticker = getTicker(unit.getOutputPath());
+    logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
     ticker.push();
 
     // write header
@@ -291,7 +275,10 @@ public class TranslationProcessor extends FileProcessor {
     ObjectiveCImplementationGenerator.generate(unit);
     ticker.tick("Implementation generation");
 
+    unit.finished();
     ticker.pop();
+    ticker.tick("Source generation");
+    ticker.printResults(System.out);
   }
 
   protected void handleError(ProcessingContext input) {
@@ -331,7 +318,7 @@ public class TranslationProcessor extends FileProcessor {
     }
   }
 
-  private TimeTracker getTicker(String name) {
+  private static TimeTracker getTicker(String name) {
     if (logger.isLoggable(Level.FINEST)) {
       return TimeTracker.start(name);
     } else {

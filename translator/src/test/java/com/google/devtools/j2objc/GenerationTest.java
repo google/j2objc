@@ -311,7 +311,7 @@ public abstract class GenerationTest extends TestCase {
   protected String generateFromUnit(CompilationUnit unit, String filename) throws IOException {
     GenerationUnit genUnit = new GenerationUnit(unit.getSourceFilePath(), 1);
     genUnit.addCompilationUnit(unit);
-    TranslationProcessor.generateObjectiveCSource(genUnit, TimeTracker.noop());
+    TranslationProcessor.generateObjectiveCSource(genUnit);
     return getTranslatedFile(filename);
   }
 
