@@ -81,12 +81,12 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     return orderedTypes;
   }
 
-  protected AbstractTypeDeclaration getLocalTypeNode(ITypeBinding type) {
-    return typesByKey.get(type.getKey());
+  protected AbstractTypeDeclaration getLocalTypeNode(String typeKey) {
+    return typesByKey.get(typeKey);
   }
 
-  protected boolean isLocalType(ITypeBinding type) {
-    return typesByKey.containsKey(type.getKey());
+  protected boolean isLocalType(String typeKey) {
+    return typesByKey.containsKey(typeKey);
   }
 
   protected void save(String path) {

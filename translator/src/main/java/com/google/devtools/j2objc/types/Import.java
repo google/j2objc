@@ -38,46 +38,61 @@ public class Import implements Comparable<Import> {
   private static final Set<String> FOUNDATION_TYPES =
       ImmutableSet.of("id", "NSObject", "NSString", "NSNumber", "NSCopying", "NSZone");
 
-  private final ITypeBinding type;
+  private final String typeKey;
   private final String typeName;
-  private final ITypeBinding mainType;
   private final String mainTypeName;
   private final String importFileName;
+  private final String javaQualifiedName;
+  private final boolean isInterface;
 
   private Import(ITypeBinding type, NameTable nameTable) {
-    this.type = type;
+    this.typeKey = type.getKey();
     this.typeName = nameTable.getFullName(type);
     ITypeBinding mainType = type;
     while (!mainType.isTopLevel()) {
       mainType = mainType.getDeclaringClass();
     }
-    this.mainType = mainType;
     this.mainTypeName = nameTable.getFullName(mainType);
     this.importFileName = Options.getHeaderMap().get(mainType);
+    this.javaQualifiedName =
+        mainType instanceof IOSTypeBinding ? null : mainType.getQualifiedName();
+    this.isInterface = type.isInterface();
   }
 
-  public ITypeBinding getType() {
-    return type;
+  /**
+   * Gets the key for the imported type, as provided by jdt's ITypeBinding.
+   */
+  public String getTypeKey() {
+    return typeKey;
   }
 
+  /**
+   * Gets the Objective-C name of the imported type.
+   */
   public String getTypeName() {
     return typeName;
-  }
-
-  public ITypeBinding getMainType() {
-    return mainType;
   }
 
   public String getMainTypeName() {
     return mainTypeName;
   }
 
+  /**
+   * Gets the header file to import for this type.
+   */
   public String getImportFileName() {
     return importFileName;
   }
 
+  /**
+   * Gets the Java qualified name of the type, or null if it's an IOS type.
+   */
+  public String getJavaQualifiedName() {
+    return javaQualifiedName;
+  }
+
   public boolean isInterface() {
-    return type.isInterface();
+    return isInterface;
   }
 
   @Override

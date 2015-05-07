@@ -168,7 +168,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     importFiles.add(getGenerationUnit().getOutputPath() + ".h");
     for (Import imp : imports) {
       // Local types are handled by including the current file's header.
-      if (!isLocalType(imp.getType())) {
+      if (!isLocalType(imp.getTypeKey())) {
         importFiles.add(imp.getImportFileName());
       }
     }
@@ -188,7 +188,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     for (Import imp : declarationCollector.getForwardDeclarations()) {
       // Only need to forward declare private local types. All else is handled
       // by imports.
-      AbstractTypeDeclaration localTypeNode = getLocalTypeNode(imp.getType());
+      AbstractTypeDeclaration localTypeNode = getLocalTypeNode(imp.getTypeKey());
       if (localTypeNode != null && localTypeNode.hasPrivateDeclaration()) {
         forwardDecls.add(imp);
       }

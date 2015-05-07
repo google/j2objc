@@ -51,15 +51,12 @@ import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriter;
 import com.google.devtools.j2objc.translate.VarargsRewriter;
 import com.google.devtools.j2objc.translate.VariableRenamer;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
-import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.TimeTracker;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.Set;
 import java.util.logging.Level;
@@ -310,10 +307,9 @@ public class TranslationProcessor extends FileProcessor {
     imports.addAll(hdrCollector.getSuperTypes());
     imports.addAll(implCollector.getImports());
     for (Import imp : imports) {
-      ITypeBinding type = imp.getMainType();
-      // Ignore core types.
-      if (!(type instanceof IOSTypeBinding)) {
-        closureQueue.addName(type.getErasure().getQualifiedName());
+      String qualifiedName = imp.getJavaQualifiedName();
+      if (qualifiedName != null) {
+        closureQueue.addName(qualifiedName);
       }
     }
   }

@@ -78,7 +78,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   private void printLocalIncludes(AbstractTypeDeclaration type, HeaderImportCollector collector) {
     List<Import> localImports = Lists.newArrayList();
     for (Import imp : collector.getSuperTypes()) {
-      if (isLocalType(imp.getType())) {
+      if (isLocalType(imp.getTypeKey())) {
         localImports.add(imp);
       }
     }
@@ -116,7 +116,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
     for (Import imp : collector.getSuperTypes()) {
       // Verify this import isn't declared in this source file.
-      if (isLocalType(imp.getType())) {
+      if (isLocalType(imp.getTypeKey())) {
         continue;
       }
       newline();
