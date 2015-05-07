@@ -17,6 +17,7 @@ package com.google.common.collect;
 import static com.google.common.base.Preconditions.checkArgument;
 
 import com.google.common.annotations.GwtCompatible;
+import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.Map;
 
@@ -122,7 +123,8 @@ final class DenseImmutableTable<R, C, V>
   
     @Override
     ImmutableSet<Entry<K, V>> createEntrySet() {
-      return new ImmutableMapEntrySet<K, V>() {
+      @WeakOuter
+      class ImmutableArrayMapEntrySet extends ImmutableMapEntrySet<K, V> {
         @Override ImmutableMap<K, V> map() {
           return ImmutableArrayMap.this;
         }
@@ -145,10 +147,12 @@ final class DenseImmutableTable<R, C, V>
             }
           };
         }
-      };
+      }
+      return new ImmutableArrayMapEntrySet();
     }
   }
 
+  @WeakOuter
   private final class Row extends ImmutableArrayMap<C, V> {
     private final int rowIndex;
 
@@ -173,6 +177,7 @@ final class DenseImmutableTable<R, C, V>
     }
   }
 
+  @WeakOuter
   private final class Column extends ImmutableArrayMap<R, V> {
     private final int columnIndex;
 
@@ -197,6 +202,7 @@ final class DenseImmutableTable<R, C, V>
     }
   }
 
+  @WeakOuter
   private final class RowMap extends ImmutableArrayMap<R, Map<C, V>> {
     private RowMap() {
       super(rowCounts.length);
@@ -218,6 +224,7 @@ final class DenseImmutableTable<R, C, V>
     }
   }
 
+  @WeakOuter
   private final class ColumnMap extends ImmutableArrayMap<C, Map<R, V>> {
     private ColumnMap() {
       super(columnCounts.length);

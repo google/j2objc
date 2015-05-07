@@ -92,6 +92,7 @@ abstract class RegularImmutableTable<R, C, V> extends ImmutableTable<R, C, V> {
     return isEmpty() ? ImmutableList.<V>of() : new Values();
   }
   
+  @WeakOuter
   private final class Values extends ImmutableList<V> {
     @Override
     public int size() {

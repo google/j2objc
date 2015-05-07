@@ -2803,6 +2803,7 @@ public final class Maps {
       return new SortedKeySet();
     }
 
+    @WeakOuter
     class SortedKeySet extends KeySet implements SortedSet<K> {
       @Override
       public Comparator<? super K> comparator() {
@@ -2910,7 +2911,13 @@ public final class Maps {
 
     @Override
     public NavigableSet<K> navigableKeySet() {
-      return new Maps.NavigableKeySet<K, V>(this) {
+      @WeakOuter
+      class FilteredEntryNavigableKeySet extends NavigableKeySet<K, V> {
+        FilteredEntryNavigableKeySet(NavigableMap<K, V> map) {
+          super(map);
+          // TODO Auto-generated constructor stub
+        }
+
         @Override
         public boolean removeAll(Collection<?> c) {
           return Iterators.removeIf(unfiltered.entrySet().iterator(),
@@ -2922,7 +2929,8 @@ public final class Maps {
           return Iterators.removeIf(unfiltered.entrySet().iterator(), Predicates.<Entry<K, V>>and(
               entryPredicate, Maps.<K>keyPredicateOnEntries(not(in(c)))));
         }
-      };
+      }
+      return new FilteredEntryNavigableKeySet(this);
     }
 
     @Override
@@ -3660,6 +3668,7 @@ public final class Maps {
   }
 
   static class Values<K, V> extends AbstractCollection<V> {
+    @Weak
     final Map<K, V> map;
 
     Values(Map<K, V> map) {

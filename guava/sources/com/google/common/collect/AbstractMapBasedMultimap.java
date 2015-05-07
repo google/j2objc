@@ -1317,6 +1317,7 @@ abstract class AbstractMapBasedMultimap<K, V> extends AbstractMultimap<K, V>
       return Maps.immutableEntry(key, wrapCollection(key, entry.getValue()));
     }
 
+    @WeakOuter
     class AsMapEntries extends Maps.EntrySet<K, Collection<V>> {
       @Override
       Map<K, Collection<V>> map() {

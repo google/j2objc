@@ -397,6 +397,7 @@ class StandardTable<R, C, V> extends AbstractTable<R, C, V> implements Serializa
     return new Column(columnKey);
   }
 
+  @WeakOuter
   private class Column extends ImprovedAbstractMap<R, V> {
     final C columnKey;
 

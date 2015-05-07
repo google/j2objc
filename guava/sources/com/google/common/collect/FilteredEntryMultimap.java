@@ -218,7 +218,13 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
     
     @Override
     Set<K> createKeySet() {
-      return new Maps.KeySet<K, Collection<V>>(this) {
+      @WeakOuter
+      class AsMapKeySet extends Maps.KeySet<K, Collection<V>> {
+        AsMapKeySet(Map<K, Collection<V>> map) {
+          super(map);
+          // TODO Auto-generated constructor stub
+        }
+
         @Override
         public boolean removeAll(Collection<?> c) {
           return removeEntriesIf(Maps.<K>keyPredicateOnEntries(in(c)));
@@ -233,12 +239,14 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
         public boolean remove(@Nullable Object o) {
           return AsMap.this.remove(o) != null;
         }
-      };
+      }
+      return new AsMapKeySet(this);
     }
 
     @Override
     Set<Entry<K, Collection<V>>> createEntrySet() {
-      return new Maps.EntrySet<K, Collection<V>>() {
+      @WeakOuter
+      class AsMapEntrySet extends Maps.EntrySet<K, Collection<V>> {
         @Override
         Map<K, Collection<V>> map() {
           return AsMap.this;
@@ -281,11 +289,17 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
           return Iterators.size(iterator());
         }
       };
+      return new AsMapEntrySet();
     }
     
     @Override
     Collection<Collection<V>> createValues() {
-      return new Maps.Values<K, Collection<V>>(AsMap.this) {
+      @WeakOuter
+      class AsMapValues extends Maps.Values<K, Collection<V>> {
+        AsMapValues(Map<K, Collection<V>> map) {
+          super(map);
+        }
+
         @Override
         public boolean remove(@Nullable Object o) {
           if (o instanceof Collection) {
@@ -319,7 +333,8 @@ class FilteredEntryMultimap<K, V> extends AbstractMultimap<K, V> implements Filt
         public boolean retainAll(Collection<?> c) {
           return removeEntriesIf(Maps.<Collection<V>>valuePredicateOnEntries(not(in(c))));
         }
-      };
+      }
+      return new AsMapValues(AsMap.this);
     }
   }
   

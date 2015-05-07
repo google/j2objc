@@ -29,16 +29,26 @@ FIELD java.util.concurrent.LinkedBlockingDeque.lock com.google.common.collect.Ma
 FIELD java.util.concurrent.LinkedBlockingQueue.putLock com.google.common.collect.MapMakerInternalMap.Segment
 FIELD java.util.concurrent.SynchronousQueue.qlock com.google.common.collect.MapMakerInternalMap.Segment
 
+TYPE com.google.common.util.concurrent.AbstractService.$
+TYPE com.google.common.util.concurrent.AbstractIdleService.$
+
 # TODO(kstanger): investigate these cycles:
 NAMESPACE com.google.common.cache
+NAMESPACE com.google.common.escape
 NAMESPACE com.google.common.hash
 NAMESPACE com.google.common.io
 NAMESPACE com.google.common.net
 
 # TODO(kstanger): investigate these Guava 18.0 cycles:
 FIELD com.google.common.collect.ConcurrentHashMultiset.countMap
+FIELD com.google.common.collect.Maps.KeySet.map
 FIELD com.google.common.collect.TreeTraverser.PreOrderIterator.stack
 FIELD com.google.common.collect.TreeTraverser.PostOrderIterator.stack
 FIELD com.google.common.collect.TreeTraverser.PostOrderNode.childIterator
 FIELD com.google.common.util.concurrent.Futures.WrappedCombiner.outputFuture
 FIELD com.google.common.util.concurrent.AbstractScheduledService.ServiceDelegate.executorService
+TYPE com.google.common.collect.LinkedListMultimap
+TYPE com.google.common.collect.Maps.FilteredEntryMap
+TYPE com.google.common.collect.Maps.FilteredMapValues
+TYPE com.google.common.collect.Maps.ImprovedAbstractMap
+TYPE com.google.common.collect.Maps.TransformedEntriesMap

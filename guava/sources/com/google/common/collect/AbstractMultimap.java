@@ -181,6 +181,7 @@ abstract class AbstractMultimap<K, V> implements Multimap<K, V> {
     return new Values();
   }
 
+  @WeakOuter
   class Values extends AbstractCollection<V> {
     @Override public Iterator<V> iterator() {
       return valueIterator();

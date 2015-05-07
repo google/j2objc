@@ -956,7 +956,8 @@ public final class Multimaps {
 
     @Override
     public Set<V> get(final K key) {
-      return new Sets.ImprovedAbstractSet<V>() {
+      @WeakOuter
+      class MapMultimapSet extends Sets.ImprovedAbstractSet<V> {
         @Override public Iterator<V> iterator() {
           return new Iterator<V>() {
             int i;
@@ -987,7 +988,8 @@ public final class Multimaps {
         @Override public int size() {
           return map.containsKey(key) ? 1 : 0;
         }
-      };
+      }
+      return new MapMultimapSet();
     }
 
     @Override

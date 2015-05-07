@@ -17,6 +17,7 @@
 package com.google.common.util.concurrent;
 
 import com.google.common.base.Preconditions;
+import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -126,6 +127,7 @@ final class SerializingExecutor implements Executor {
    * isThreadScheduled = false and returns.  This allows the current worker
    * thread to return to the original pool.
    */
+  @WeakOuter
   private class TaskRunner implements Runnable {
     @Override
     public void run() {
