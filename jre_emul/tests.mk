@@ -93,6 +93,8 @@ SUPPORT_SOURCES = \
     tests/util/CallVerificationStack.java \
     tests/util/SerializationTester.java
 
+NATIVE_SOURCES = dalvik_system_JniTest.cpp
+
 TEST_SOURCES := \
     AbstractExecutorServiceTest.java \
     AbstractQueuedSynchronizerTest.java \
@@ -144,6 +146,7 @@ TEST_SOURCES := \
     com/google/j2objc/PackageTest.java \
     com/google/j2objc/ThrowableTest.java \
     com/google/j2objc/security/IosSecureRandomImplTest.java \
+    dalvik/system/JniTest.java \
     java/lang/SystemTest.java \
     java/lang/ref/PhantomReferenceTest.java \
     java/lang/ref/SoftReferenceTest.java \
@@ -544,7 +547,7 @@ FAILING_MATH_TESTS = \
 TESTS_TO_RUN = $(filter-out $(TESTS_TO_SKIP),$(TEST_SOURCES))
 TESTS_TO_RUN := $(subst /,.,$(TESTS_TO_RUN:%.java=%))
 
-SUPPORT_OBJS = $(SUPPORT_SOURCES:%.java=$(TESTS_DIR)/%.o)
+SUPPORT_OBJS = $(SUPPORT_SOURCES:%.java=$(TESTS_DIR)/%.o) $(NATIVE_SOURCES:%.cpp=$(TESTS_DIR)/%.o)
 TEST_OBJS = \
     $(TEST_SOURCES:%.java=$(TESTS_DIR)/%.o) \
     $(SUITE_SOURCES:%.java=$(TESTS_DIR)/%.o)
@@ -698,6 +701,10 @@ $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	@echo j2objcc -c $?
 	@../dist/j2objcc -g -I$(TESTS_DIR) -c $? -o $@ \
 	  -Wno-objc-redundant-literal-use -Wno-format \
+	  -Werror -Wno-parentheses $(GCOV_FLAGS)
+
+$(TESTS_DIR)/%.o: $(ANDROID_NATIVE_TEST_DIR)/%.cpp | $(TESTS_DIR)
+	cc -g -I$(EMULATION_CLASS_DIR) -x objective-c++ -c $? -o $@ \
 	  -Werror -Wno-parentheses $(GCOV_FLAGS)
 
 $(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) $(ALL_TESTS_SOURCE:%.java=%.o) \

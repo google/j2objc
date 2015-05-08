@@ -52,7 +52,7 @@
  * @define PRIMITIVE_ARRAY_INTERFACE
  * @param L_NAME Lowercase name of the primitive type. (e.g. "char")
  * @param U_NAME Uppercase name of the primitive type. (e.g. "Char")
- * @param C_TYPE Objective-C type for the primitive type, (e.g. "unichar")
+ * @param C_TYPE Objective-C type for the primitive type, (e.g. "jchar")
  */
 #define PRIMITIVE_ARRAY_INTERFACE(L_NAME, U_NAME, C_TYPE) \
 + (instancetype)newArrayWithLength:(NSUInteger)length; \
@@ -65,13 +65,22 @@
 - (void)get##U_NAME##s:(C_TYPE *)buffer length:(NSUInteger)length; \
 
 /*!
- * Defines the C interface for the primitive array types. This macro is used
- * after the @end declaration for the @interface.
+ * Defines the C interface for the primitive array types. For example, this
+ * would declare the following for IOSIntArray:
+ *
+ * inline jint IOSIntArray_Get(IOSIntArray *array, NSUInteger index);
+ * inline jint *IOSIntArray_GetRef(IOSIntArray *array, NSUInteger index);
+ * inline void IOSIntArray_GetRange(
+ *     jint *buffer, IOSIntArray *array, jint offset, jint length);
+ * inline void IOSIntArray_PutRange(
+ *     IOSIntArray *array, jint *buffer, jint offset, jint length);
+ *
+ * This macro is used after the @end declaration for the @interface.
  *
  * @define PRIMITIVE_ARRAY_C_INTERFACE
  * @param L_NAME Lowercase name of the primitive type. (e.g. "char")
  * @param U_NAME Uppercase name of the primitive type. (e.g. "Char")
- * @param C_TYPE Objective-C type for the primitive type, (e.g. "unichar")
+ * @param C_TYPE Objective-C type for the primitive type, (e.g. "jchar")
  */
 #define PRIMITIVE_ARRAY_C_INTERFACE(L_NAME, U_NAME, C_TYPE) \
 \
@@ -85,6 +94,20 @@ __attribute__((always_inline)) inline C_TYPE *IOS##U_NAME##Array_GetRef( \
     __unsafe_unretained IOS##U_NAME##Array *array, NSUInteger index) { \
   IOSArray_checkIndex(array->size_, (jint)index); \
   return &array->buffer_[index]; \
+} \
+\
+__attribute__((always_inline)) inline void IOS##U_NAME##Array_GetRange( \
+    C_TYPE *buffer, __unsafe_unretained const IOS##U_NAME##Array *array, \
+    jint offset, jint length) { \
+  IOSArray_checkRange(array->size_, offset, length); \
+  memcpy(buffer, array->buffer_ + (offset * sizeof(C_TYPE)), length * sizeof(C_TYPE)); \
+} \
+\
+__attribute__((always_inline)) inline void IOS##U_NAME##Array_SetRange( \
+    __unsafe_unretained IOS##U_NAME##Array *array, const C_TYPE *buffer, \
+    jint offset, jint length) { \
+  IOSArray_checkRange(array->size_, offset, length); \
+  memcpy(array->buffer_ + (offset * sizeof(C_TYPE)), buffer, length * sizeof(C_TYPE)); \
 } \
 
 
