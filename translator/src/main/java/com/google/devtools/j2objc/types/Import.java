@@ -38,14 +38,12 @@ public class Import implements Comparable<Import> {
   private static final Set<String> FOUNDATION_TYPES =
       ImmutableSet.of("id", "NSObject", "NSString", "NSNumber", "NSCopying", "NSZone");
 
-  private final String typeKey;
   private final String typeName;
   private final String importFileName;
   private final String javaQualifiedName;
   private final boolean isInterface;
 
   private Import(ITypeBinding type, NameTable nameTable) {
-    this.typeKey = type.getKey();
     this.typeName = nameTable.getFullName(type);
     ITypeBinding mainType = type;
     while (!mainType.isTopLevel()) {
@@ -55,13 +53,6 @@ public class Import implements Comparable<Import> {
     this.javaQualifiedName =
         mainType instanceof IOSTypeBinding ? null : mainType.getQualifiedName();
     this.isInterface = type.isInterface();
-  }
-
-  /**
-   * Gets the key for the imported type, as provided by jdt's ITypeBinding.
-   */
-  public String getTypeKey() {
-    return typeKey;
   }
 
   /**

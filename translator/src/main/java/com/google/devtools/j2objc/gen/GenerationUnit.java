@@ -14,16 +14,22 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Maps;
+import com.google.common.collect.MultimapBuilder;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.io.File;
-import java.util.List;
+import java.util.Collection;
+import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
@@ -40,9 +46,18 @@ public class GenerationUnit {
   private String name;
   private String outputPath;
   private final int numUnits;
-  private List<CompilationUnit> compilationUnits = Lists.newArrayList();
+  private int receivedUnits = 0;
+  // It is useful for the generated code to be consistent. Therefore, the
+  // ordering of generated code within this unit should be consistent. For this
+  // we map units of generated code keyed by the Java class they come from,
+  // using map implementations with ordered keys.
+  private TreeMap<String, String> nativeImplementationBlocks = Maps.newTreeMap();
+  private ListMultimap<String, GeneratedType> generatedTypes =
+      MultimapBuilder.treeKeys().arrayListValues().build();
   private final String sourceName;
   private State state = State.ACTIVE;
+  private boolean hasIncompleteProtocol = false;
+  private boolean hasIncompleteImplementation = false;
 
   private enum State {
     ACTIVE,   // Initial state, still collecting CompilationUnits.
@@ -94,14 +109,20 @@ public class GenerationUnit {
     return name;
   }
 
-  /**
-   * A list of CompilationUnits generated from the input files in this GenerationUnit.
-   * This list is mildly stateful in that some processors might add to it.
-   * These should be later cleared with {@link #clear()}, to save memory and allow reuse
-   * of GenerationUnits.
-   */
-  public List<CompilationUnit> getCompilationUnits() {
-    return compilationUnits;
+  public boolean hasIncompleteProtocol() {
+    return hasIncompleteProtocol;
+  }
+
+  public boolean hasIncompleteImplementation() {
+    return hasIncompleteImplementation;
+  }
+
+  public Collection<String> getNativeImplementationBlocks() {
+    return nativeImplementationBlocks.values();
+  }
+
+  public Collection<GeneratedType> getGeneratedTypes() {
+    return generatedTypes.values();
   }
 
   public void addCompilationUnit(CompilationUnit unit) {
@@ -109,8 +130,8 @@ public class GenerationUnit {
     if (state != State.ACTIVE) {
       return;  // Ignore any added units.
     }
-    assert compilationUnits.size() < numUnits;
-    compilationUnits.add(unit);
+    assert receivedUnits < numUnits;
+    receivedUnits++;
 
     if (name == null) {
       assert numUnits == 1;
@@ -121,10 +142,33 @@ public class GenerationUnit {
       assert numUnits == 1;
       outputPath = getDefaultOutputPath(unit);
     }
+
+    hasIncompleteProtocol = hasIncompleteProtocol || unit.hasIncompleteProtocol();
+    hasIncompleteImplementation = hasIncompleteImplementation || unit.hasIncompleteImplementation();
+
+    String qualifiedMainType = TreeUtil.getQualifiedMainTypeName(unit);
+
+    SourceBuilder builder = new SourceBuilder(false);
+    for (NativeDeclaration decl : unit.getNativeBlocks()) {
+      String code = decl.getImplementationCode();
+      if (code != null) {
+        builder.newline();
+        builder.println(builder.reindent(code));
+      }
+    }
+    if (builder.length() > 0) {
+      nativeImplementationBlocks.put(qualifiedMainType, builder.toString());
+    }
+
+    generatedTypes.put(qualifiedMainType, GeneratedType.forPackageDeclaration(unit));
+
+    for (AbstractTypeDeclaration type : unit.getTypes()) {
+      generatedTypes.put(qualifiedMainType, GeneratedType.fromTypeDeclaration(type));
+    }
   }
 
   public boolean isFullyParsed() {
-    return compilationUnits.size() == numUnits;
+    return receivedUnits == numUnits;
   }
 
   /**
@@ -146,12 +190,10 @@ public class GenerationUnit {
   }
 
   public void failed() {
-    compilationUnits.clear();
     state = State.FAILED;
   }
 
   public void finished() {
-    compilationUnits.clear();
     state = State.FINISHED;
   }
 

@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
@@ -100,21 +99,5 @@ public class TranslationProcessorTest extends GenerationTest {
     String translation = getTranslatedFile("Foo.h");
     assertTranslation(translation, "- (void)foo2;");
     assertNotInTranslation(translation, "foo1");
-  }
-
-  public void testBatchReuse() throws IOException {
-    addSourceFile("class Test { }", "Test.java");
-
-    RegularInputFile inputFile = new RegularInputFile(getTempDir() + "/Test.java", "Test.java");
-    ProcessingContext input = ProcessingContext.fromFile(inputFile);
-    TranslationProcessor processor = new TranslationProcessor(J2ObjC.createParser(), null);
-    processor.processInputs(Collections.singletonList(input));
-    String header = getTranslatedFile("Test.h");
-    String impl = getTranslatedFile("Test.m");
-    assertTranslation(header, "@interface Test");
-    assertTranslation(impl, "@implementation Test");
-
-    // Test that the GenerationUnit no longer holds a reference to the tree.
-    assertEquals(0, input.getGenerationUnit().getCompilationUnits().size());
   }
 }

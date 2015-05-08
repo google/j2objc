@@ -270,8 +270,6 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String header = translateCombinedFiles(
         "unit/Foo", ".h",
         "unit/TestDependent.java", "unit/AnotherTest.java", "unit/Test.java");
-    assertTranslation(header, "@class UnitTest");
-    assertTranslation(header, "@class UnitAnotherTest");
     assert header.indexOf("@interface UnitTest") < header.indexOf("@interface UnitAnotherTest");
   }
 

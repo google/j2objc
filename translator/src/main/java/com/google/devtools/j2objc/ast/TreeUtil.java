@@ -236,17 +236,23 @@ public class TreeUtil {
   }
 
   /**
+   * Gets the fully qualified name of the main type in this compilation unit.
+   */
+  public static String getQualifiedMainTypeName(CompilationUnit unit) {
+    PackageDeclaration pkg = unit.getPackage();
+    if (pkg.isDefaultPackage()) {
+      return unit.getMainTypeName();
+    } else {
+      return pkg.getName().getFullyQualifiedName() + '.' + unit.getMainTypeName();
+    }
+  }
+
+  /**
    * Gets the relative file path of the source java file for this compilation
    * unit.
    */
   public static String getSourceFileName(CompilationUnit unit) {
-    PackageDeclaration pkg = unit.getPackage();
-    if (pkg.isDefaultPackage()) {
-      return unit.getMainTypeName() + ".java";
-    } else {
-      return pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)
-          + File.separatorChar + unit.getMainTypeName() + ".java";
-    }
+    return getQualifiedMainTypeName(unit).replace('.', File.separatorChar) + ".java";
   }
 
   /**

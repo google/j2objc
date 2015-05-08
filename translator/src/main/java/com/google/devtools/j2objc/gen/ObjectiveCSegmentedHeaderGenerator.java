@@ -15,17 +15,12 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**
@@ -37,7 +32,6 @@ import java.util.Set;
  */
 public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerator {
 
-  private Map<AbstractTypeDeclaration, HeaderImportCollector> importCollectors = Maps.newHashMap();
   // The prefix to use for preprocessor variable names. Derived from the path of
   // the generated file. For example if "my/pkg/Foo.h" is being generated the
   // prefix would be "MyPkgFoo".
@@ -64,32 +58,36 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     println("#endif");
     printf("#undef %s_RESTRICT\n", varPrefix);
 
-    for (AbstractTypeDeclaration type : Lists.reverse(getOrderedTypes())) {
-      HeaderImportCollector collector =
-          new HeaderImportCollector(HeaderImportCollector.Filter.PUBLIC_ONLY);
-      collector.collect(type);
-      importCollectors.put(type, collector);
-      printLocalIncludes(type, collector);
+    for (GeneratedType type : Lists.reverse(getOrderedTypes())) {
+      printLocalIncludes(type);
     }
     pushIgnoreDeprecatedDeclarationsPragma();
   }
 
   /**
-   * Given a {@link com.google.devtools.j2objc.ast.AbstractTypeDeclaration}
+   * Given a {@link com.google.devtools.j2objc.gen.GeneratedType}
    * and its collected {@link com.google.devtools.j2objc.types.Import}s,
    * print its 'local includes'; viz.,
-   * {@code INCLUDE} directives for all supertypes that are defined in the current segmented header.
+   * {@code INCLUDE} directives for all supertypes that are defined in the
+   * current segmented header.
    */
-  private void printLocalIncludes(AbstractTypeDeclaration type, HeaderImportCollector collector) {
+  private void printLocalIncludes(GeneratedType type) {
+    String typeName = type.getTypeName();
+    Set<Import> includes = type.getHeaderIncludes();
+    if (typeName == null) {
+      // Our type doesn't have a name, it's probably a package declaration.
+      // Our nameless type shouldn't have any includes.
+      assert includes.isEmpty();
+      return;
+    }
     List<Import> localImports = Lists.newArrayList();
-    for (Import imp : collector.getSuperTypes()) {
-      if (isLocalType(imp.getTypeKey())) {
+    for (Import imp : includes) {
+      if (isLocalType(imp.getTypeName())) {
         localImports.add(imp);
       }
     }
     if (!localImports.isEmpty()) {
-      NameTable nameTable = TreeUtil.getCompilationUnit(type).getNameTable();
-      printf("#if %s_INCLUDE\n", nameTable.getFullName(type.getTypeBinding()));
+      printf("#if %s_INCLUDE\n", typeName);
       for (Import imp : localImports) {
         printf("#define %s_INCLUDE 1\n", imp.getTypeName());
       }
@@ -100,27 +98,29 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   @Override
   protected void generateFileFooter() {
     // Don't need #endif for file-level header guard.
+    newline();
     popIgnoreDeprecatedDeclarationsPragma();
     printf("#pragma pop_macro(\"%s_INCLUDE_ALL\")\n", varPrefix);
   }
 
   @Override
-  public void generateType(AbstractTypeDeclaration node) {
-    NameTable nameTable = TreeUtil.getCompilationUnit(node).getNameTable();
-    String typeName = nameTable.getFullName(node.getTypeBinding());
+  protected void printTypeDeclaration(GeneratedType type) {
+    String typeName = type.getTypeName();
+    String code = type.getPublicDeclarationCode();
+    if (typeName == null || code.length() == 0) {
+      return;
+    }
+
     newline();
     printf("#if !defined (_%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, varPrefix,
            typeName);
     printf("#define _%s_\n", typeName);
 
-    HeaderImportCollector collector = importCollectors.get(node);
-    assert collector != null;
+    Set<Import> forwardDeclarations = Sets.newHashSet(type.getHeaderForwardDeclarations());
 
-    Set<Import> forwardDeclarations = Sets.newHashSet(collector.getForwardDeclarations());
-
-    for (Import imp : collector.getSuperTypes()) {
+    for (Import imp : type.getHeaderIncludes()) {
       // Verify this import isn't declared in this source file.
-      if (isLocalType(imp.getTypeKey())) {
+      if (isLocalType(imp.getTypeName())) {
         continue;
       }
       newline();
@@ -132,7 +132,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
     printForwardDeclarations(forwardDeclarations);
 
-    super.generateType(node);
+    print(code);
     newline();
     println("#endif");
   }

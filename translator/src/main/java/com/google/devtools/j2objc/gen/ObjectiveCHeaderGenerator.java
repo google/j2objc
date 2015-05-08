@@ -18,12 +18,6 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
-import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.PackageDeclaration;
-import com.google.devtools.j2objc.ast.TreeUtil;
-import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
 
 import java.util.Set;
@@ -53,48 +47,18 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   public void generate() {
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
-
-    Set<PackageDeclaration> packagesToDoc = Sets.newLinkedHashSet();
-
-    // First, gather everything we need to generate.
-    // We do this first because we'll be reordering it later.
-    for (CompilationUnit unit : getGenerationUnit().getCompilationUnits()) {
-      // It would be nice if we could put the PackageDeclarations and AbstractTypeDeclarations
-      // in the same list of 'things to generate'.
-      // TODO(mthvedt): Puzzle--figure out a way to do that in Java's type system
-      // that is worth the effort.
-      PackageDeclaration pkg = unit.getPackage();
-      if (pkg.getJavadoc() != null && Options.docCommentsEnabled()) {
-        packagesToDoc.add(pkg);
-      }
-    }
-
     generateFileHeader();
 
-    for (AbstractTypeDeclaration decl : getOrderedTypes()) {
-      CompilationUnit unit = TreeUtil.getCompilationUnit(decl);
-
-      // Print package docs before the first type in the package. (See above comments and TODO.)
-      if (Options.docCommentsEnabled() && packagesToDoc.contains(unit.getPackage())) {
-        newline();
-        JavadocGenerator.printDocComment(getBuilder(), unit.getPackage().getJavadoc());
-        packagesToDoc.remove(unit.getPackage());
-      }
-
-      generateType(decl);
-    }
-
-    for (PackageDeclaration pkg : packagesToDoc) {
-      newline();
-      JavadocGenerator.printDocComment(getBuilder(), pkg.getJavadoc());
+    for (GeneratedType generatedType : getOrderedTypes()) {
+      printTypeDeclaration(generatedType);
     }
 
     generateFileFooter();
     save(getOutputPath());
   }
 
-  protected void generateType(AbstractTypeDeclaration node) {
-    TypeDeclarationGenerator.generate(getBuilder(), node);
+  protected void printTypeDeclaration(GeneratedType generatedType) {
+    print(generatedType.getPublicDeclarationCode());
   }
 
   protected void generateFileHeader() {
@@ -102,16 +66,28 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     printf("#define _%s_H_\n", getGenerationUnit().getName());
     pushIgnoreDeprecatedDeclarationsPragma();
 
-    HeaderImportCollector collector =
-        new HeaderImportCollector(HeaderImportCollector.Filter.PUBLIC_ONLY);
-    // Order matters for finding forward declarations.
-    collector.collect(getOrderedTypes());
-
+    Set<String> seenTypes = Sets.newHashSet();
     Set<String> includeFiles = Sets.newTreeSet();
+    Set<Import> forwardDeclarations = Sets.newHashSet();
+
     includeFiles.add("J2ObjC_header.h");
-    for (Import imp : collector.getSuperTypes()) {
-      if (!isLocalType(imp.getTypeKey())) {
-        includeFiles.add(imp.getImportFileName());
+
+    for (GeneratedType type : getOrderedTypes()) {
+      String name = type.getTypeName();
+      if (!type.isPrivate() && name != null) {
+        seenTypes.add(name);
+      }
+      for (Import imp : type.getHeaderIncludes()) {
+        if (!isLocalType(imp.getTypeName())) {
+          includeFiles.add(imp.getImportFileName());
+        }
+      }
+      for (Import imp : type.getHeaderForwardDeclarations()) {
+        // Filter out any declarations that are resolved by an include.
+        if (!seenTypes.contains(imp.getTypeName())
+            && !includeFiles.contains(imp.getImportFileName())) {
+          forwardDeclarations.add(imp);
+        }
       }
     }
 
@@ -119,14 +95,6 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
     newline();
     for (String header : includeFiles) {
       printf("#include \"%s\"\n", header);
-    }
-
-    // Filter out any declarations that are resolved by an include.
-    Set<Import> forwardDeclarations = Sets.newHashSet();
-    for (Import imp : collector.getForwardDeclarations()) {
-      if (!includeFiles.contains(imp.getImportFileName())) {
-        forwardDeclarations.add(imp);
-      }
     }
     printForwardDeclarations(forwardDeclarations);
   }

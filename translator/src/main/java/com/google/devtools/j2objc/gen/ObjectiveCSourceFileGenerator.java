@@ -21,15 +21,12 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.ErrorUtil;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -45,8 +42,8 @@ import java.util.Set;
 public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenerator {
 
   private final GenerationUnit unit;
-  private final List<AbstractTypeDeclaration> orderedTypes;
-  private final Map<String, AbstractTypeDeclaration> typesByKey;
+  private final Map<String, GeneratedType> typesByName;
+  private final List<GeneratedType> orderedTypes;
 
   /**
    * Create a new generator.
@@ -57,10 +54,13 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
   protected ObjectiveCSourceFileGenerator(GenerationUnit unit, boolean emitLineDirectives) {
     super(new SourceBuilder(emitLineDirectives));
     this.unit = unit;
-    orderedTypes = getOrderedTypes(unit);
-    typesByKey = Maps.newHashMap();
-    for (AbstractTypeDeclaration typeNode : orderedTypes) {
-      typesByKey.put(typeNode.getTypeBinding().getKey(), typeNode);
+    orderedTypes = getOrderedGeneratedTypes(unit);
+    typesByName = Maps.newHashMap();
+    for (GeneratedType type : orderedTypes) {
+      String name = type.getTypeName();
+      if (name != null) {
+        typesByName.put(name, type);
+      }
     }
   }
 
@@ -77,16 +77,16 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     return unit;
   }
 
-  protected List<AbstractTypeDeclaration> getOrderedTypes() {
+  protected List<GeneratedType> getOrderedTypes() {
     return orderedTypes;
   }
 
-  protected AbstractTypeDeclaration getLocalTypeNode(String typeKey) {
-    return typesByKey.get(typeKey);
+  protected GeneratedType getLocalType(String name) {
+    return typesByName.get(name);
   }
 
-  protected boolean isLocalType(String typeKey) {
-    return typesByKey.containsKey(typeKey);
+  protected boolean isLocalType(String name) {
+    return typesByName.containsKey(name);
   }
 
   protected void save(String path) {
@@ -149,47 +149,35 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     return String.format("@%s %s;", isInterface ? "protocol" : "class", typeName);
   }
 
-  private static List<AbstractTypeDeclaration> getOrderedTypes(GenerationUnit generationUnit) {
+  private static List<GeneratedType> getOrderedGeneratedTypes(GenerationUnit generationUnit) {
     // Ordered map because we iterate over it below.
-    // We use binding keys because the binding objects are not guaranteed to be
-    // unique.
-    LinkedHashMap<String, AbstractTypeDeclaration> nodeMap = Maps.newLinkedHashMap();
-    for (CompilationUnit unit : generationUnit.getCompilationUnits()) {
-      for (AbstractTypeDeclaration node : unit.getTypes()) {
-        ITypeBinding typeBinding = node.getTypeBinding();
-        String key = typeBinding.getKey();
-        assert nodeMap.put(key, node) == null;
+    Collection<GeneratedType> generatedTypes = generationUnit.getGeneratedTypes();
+    LinkedHashMap<String, GeneratedType> typeMap = Maps.newLinkedHashMap();
+    for (GeneratedType generatedType : generatedTypes) {
+      String name = generatedType.getTypeName();
+      if (name != null) {
+        assert typeMap.put(name, generatedType) == null : "Duplicate type name: " + name;
       }
     }
 
-    LinkedHashSet<String> orderedKeys = Sets.newLinkedHashSet();
+    LinkedHashSet<GeneratedType> orderedTypes = Sets.newLinkedHashSet();
 
-    for (Map.Entry<String, AbstractTypeDeclaration> entry : nodeMap.entrySet()) {
-      collectType(entry.getValue().getTypeBinding(), orderedKeys, nodeMap);
+    for (GeneratedType generatedType : generatedTypes) {
+      collectType(generatedType, orderedTypes, typeMap);
     }
 
-    LinkedHashSet<AbstractTypeDeclaration> orderedTypes = Sets.newLinkedHashSet();
-    for (String key : orderedKeys) {
-      orderedTypes.add(nodeMap.get(key));
-    }
     return Lists.newArrayList(orderedTypes);
   }
 
   private static void collectType(
-      ITypeBinding typeBinding, LinkedHashSet<String> orderedKeys,
-      Map<String, AbstractTypeDeclaration> nodeMap) {
-    if (typeBinding == null) {
-      return;
+      GeneratedType generatedType, LinkedHashSet<GeneratedType> orderedTypes,
+      Map<String, GeneratedType> typeMap) {
+    for (String superType : generatedType.getSuperTypes()) {
+      GeneratedType requiredType = typeMap.get(superType);
+      if (requiredType != null) {
+        collectType(requiredType, orderedTypes, typeMap);
+      }
     }
-    typeBinding = typeBinding.getTypeDeclaration();
-    String key = typeBinding.getKey();
-    if (!nodeMap.containsKey(key)) {
-      return;
-    }
-    collectType(typeBinding.getSuperclass(), orderedKeys, nodeMap);
-    for (ITypeBinding superInterface : typeBinding.getInterfaces()) {
-      collectType(superInterface, orderedKeys, nodeMap);
-    }
-    orderedKeys.add(key);
+    orderedTypes.add(generatedType);
   }
 }

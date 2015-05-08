@@ -157,6 +157,7 @@ JAVA_SOURCES = \
 	file/JarredInputFile.java \
 	file/RegularInputFile.java \
 	gen/AbstractSourceGenerator.java \
+	gen/GeneratedType.java \
 	gen/GenerationUnit.java \
 	gen/JavadocGenerator.java \
 	gen/LiteralGenerator.java \
