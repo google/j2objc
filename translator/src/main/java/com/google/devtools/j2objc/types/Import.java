@@ -40,7 +40,6 @@ public class Import implements Comparable<Import> {
 
   private final String typeKey;
   private final String typeName;
-  private final String mainTypeName;
   private final String importFileName;
   private final String javaQualifiedName;
   private final boolean isInterface;
@@ -52,7 +51,6 @@ public class Import implements Comparable<Import> {
     while (!mainType.isTopLevel()) {
       mainType = mainType.getDeclaringClass();
     }
-    this.mainTypeName = nameTable.getFullName(mainType);
     this.importFileName = Options.getHeaderMap().get(mainType);
     this.javaQualifiedName =
         mainType instanceof IOSTypeBinding ? null : mainType.getQualifiedName();
@@ -71,10 +69,6 @@ public class Import implements Comparable<Import> {
    */
   public String getTypeName() {
     return typeName;
-  }
-
-  public String getMainTypeName() {
-    return mainTypeName;
   }
 
   /**

@@ -125,9 +125,28 @@ public class GenerationBatch {
     addSource(inputFile);
   }
 
-  private void processJarFile(String filename) {
+  private File findJarFile(String filename) {
     File f = new File(filename);
-    if (!f.exists() || !f.isFile()) {
+    if (f.exists() && f.isFile()) {
+      return f;
+    }
+    // Checking the sourcepath is helpful for our unit tests where the source
+    // jars aren't relative to the current working directory.
+    for (String path : Options.getSourcePathEntries()) {
+      File dir = new File(path);
+      if (dir.isDirectory()) {
+        f = new File(dir, filename);
+        if (f.exists() && f.isFile()) {
+          return f;
+        }
+      }
+    }
+    return null;
+  }
+
+  private void processJarFile(String filename) {
+    File f = findJarFile(filename);
+    if (f == null) {
       ErrorUtil.error("No such file: " + filename);
       return;
     }
@@ -140,7 +159,7 @@ public class GenerationBatch {
           ZipEntry entry = enumerator.nextElement();
           String internalPath = entry.getName();
           if (internalPath.endsWith(".java")) {
-            inputFiles.add(new JarredInputFile(filename, internalPath));
+            inputFiles.add(new JarredInputFile(f.getPath(), internalPath));
           }
         }
       } finally {

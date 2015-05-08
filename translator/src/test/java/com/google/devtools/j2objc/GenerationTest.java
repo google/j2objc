@@ -53,7 +53,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.net.URLDecoder;
+import java.util.Arrays;
 import java.util.List;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,6 +83,7 @@ public abstract class GenerationTest extends TestCase {
     tempDir = FileUtil.createTempDir("testout");
     Options.load(new String[]{
         "-d", tempDir.getAbsolutePath(),
+        "-sourcepath", tempDir.getAbsolutePath(),
         "-q", // Suppress console output.
         "--hide-private-members", // Future default, run tests with it now.
         "-encoding", "UTF-8" // Translate strings correctly when encodings are nonstandard.
@@ -331,11 +335,7 @@ public abstract class GenerationTest extends TestCase {
   }
 
   protected void runPipeline(String... files) {
-    List<String> fullFilePaths = Lists.newArrayList();
-    for (String file : files) {
-      fullFilePaths.add(getTempDir() + File.separatorChar + file);
-    }
-    J2ObjC.run(fullFilePaths);
+    J2ObjC.run(Arrays.asList(files));
     assertErrorCount(0);
     assertWarningCount(0);
   }
@@ -432,5 +432,24 @@ public abstract class GenerationTest extends TestCase {
 
   protected File getTempFile(String filename) {
     return new File(tempDir, filename);
+  }
+
+  protected void addJarFile(String jarFileName, String... sources) throws IOException {
+    File jarFile = getTempFile(jarFileName);
+    jarFile.getParentFile().mkdirs();
+    Options.appendSourcePath(jarFile.getPath());
+    JarOutputStream jar = new JarOutputStream(new FileOutputStream(jarFile));
+    try {
+      for (int i = 0; i < sources.length; i += 2) {
+        String name = sources[i];
+        String source = sources[i + 1];
+        JarEntry fooEntry = new JarEntry(name);
+        jar.putNextEntry(fooEntry);
+        jar.write(source.getBytes());
+        jar.closeEntry();
+      }
+    } finally {
+      jar.close();
+    }
   }
 }

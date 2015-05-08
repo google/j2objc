@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -37,9 +38,14 @@ import java.util.Set;
 public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerator {
 
   private Map<AbstractTypeDeclaration, HeaderImportCollector> importCollectors = Maps.newHashMap();
+  // The prefix to use for preprocessor variable names. Derived from the path of
+  // the generated file. For example if "my/pkg/Foo.h" is being generated the
+  // prefix would be "MyPkgFoo".
+  private final String varPrefix;
 
   protected ObjectiveCSegmentedHeaderGenerator(GenerationUnit unit) {
     super(unit);
+    varPrefix = getVarPrefix(unit.getOutputPath());
   }
 
   public static void generate(GenerationUnit unit) {
@@ -48,16 +54,15 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
 
   @Override
   protected void generateFileHeader() {
-    String mainGuardName = getGenerationUnit().getName();
     println("#include \"J2ObjC_header.h\"");
     newline();
-    printf("#pragma push_macro(\"%s_INCLUDE_ALL\")\n", mainGuardName);
-    printf("#if %s_RESTRICT\n", mainGuardName);
-    printf("#define %s_INCLUDE_ALL 0\n", mainGuardName);
+    printf("#pragma push_macro(\"%s_INCLUDE_ALL\")\n", varPrefix);
+    printf("#if %s_RESTRICT\n", varPrefix);
+    printf("#define %s_INCLUDE_ALL 0\n", varPrefix);
     println("#else");
-    printf("#define %s_INCLUDE_ALL 1\n", mainGuardName);
+    printf("#define %s_INCLUDE_ALL 1\n", varPrefix);
     println("#endif");
-    printf("#undef %s_RESTRICT\n", mainGuardName);
+    printf("#undef %s_RESTRICT\n", varPrefix);
 
     for (AbstractTypeDeclaration type : Lists.reverse(getOrderedTypes())) {
       HeaderImportCollector collector =
@@ -96,16 +101,15 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   protected void generateFileFooter() {
     // Don't need #endif for file-level header guard.
     popIgnoreDeprecatedDeclarationsPragma();
-    printf("#pragma pop_macro(\"%s_INCLUDE_ALL\")\n", getGenerationUnit().getName());
+    printf("#pragma pop_macro(\"%s_INCLUDE_ALL\")\n", varPrefix);
   }
 
   @Override
   public void generateType(AbstractTypeDeclaration node) {
     NameTable nameTable = TreeUtil.getCompilationUnit(node).getNameTable();
-    String mainGuardName = getGenerationUnit().getName();
     String typeName = nameTable.getFullName(node.getTypeBinding());
     newline();
-    printf("#if !defined (_%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, mainGuardName,
+    printf("#if !defined (_%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, varPrefix,
            typeName);
     printf("#define _%s_\n", typeName);
 
@@ -120,7 +124,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
         continue;
       }
       newline();
-      printf("#define %s_RESTRICT 1\n", imp.getMainTypeName());
+      printf("#define %s_RESTRICT 1\n", getVarPrefix(imp.getImportFileName()));
       printf("#define %s_INCLUDE 1\n", imp.getTypeName());
       printf("#include \"%s\"\n", imp.getImportFileName());
       forwardDeclarations.remove(imp);
@@ -131,5 +135,13 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     super.generateType(node);
     newline();
     println("#endif");
+  }
+
+  private static String getVarPrefix(String header) {
+    int idx = header.lastIndexOf('.');
+    if (idx != -1) {
+      header = header.substring(0, idx);
+    }
+    return UnicodeUtils.asValidObjcIdentifier(NameTable.camelCasePath(header));
   }
 }

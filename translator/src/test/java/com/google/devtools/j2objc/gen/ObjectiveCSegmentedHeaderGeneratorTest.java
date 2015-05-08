@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.Options.OutputStyleOption;
 
 import java.io.IOException;
 
@@ -110,5 +111,30 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     // Forward declaration for Foo_Bar is needed because the include of Foo.h
     // is restricted to only the Foo type.
     assertTranslation(translation, "@class Foo_Bar");
+  }
+
+  public void testCombinedJarVariableNames() throws IOException {
+    addJarFile("some/path/test.jar", "foo/Test.java",
+               "package foo; import abc.Bar; class Test extends Bar {}");
+    addJarFile("other/path/test2.jar", "abc/Bar.java", "package abc; public class Bar {}");
+    Options.setOutputStyle(OutputStyleOption.SOURCE_COMBINED);
+    runPipeline("some/path/test.jar", "other/path/test2.jar");
+    String translation = getTranslatedFile("some/path/test.h");
+    // Check that the RESTRICT and INCLUDE_ALL variables are prefixed with a
+    // name derived from the jar file path.
+    assertTranslatedLines(translation,
+        "#pragma push_macro(\"SomePathTest_INCLUDE_ALL\")",
+        "#if SomePathTest_RESTRICT",
+        "#define SomePathTest_INCLUDE_ALL 0",
+        "#else",
+        "#define SomePathTest_INCLUDE_ALL 1",
+        "#endif",
+        "#undef SomePathTest_RESTRICT");
+    // Check that the include of "Bar" uses the correct prefix on it's RESTRICT
+    // variable.
+    assertTranslatedLines(translation,
+        "#define OtherPathTest2_RESTRICT 1",
+        "#define AbcBar_INCLUDE 1",
+        "#include \"other/path/test2.h\"");
   }
 }
