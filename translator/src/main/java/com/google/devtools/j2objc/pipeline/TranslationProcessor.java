@@ -102,8 +102,6 @@ public class TranslationProcessor extends FileProcessor {
     }
 
     if (genUnit.isFullyParsed()) {
-      logger.finest("Processing compiled unit " + genUnit.getName()
-          + " of size " + genUnit.getCompilationUnits().size());
       generateObjectiveCSource(genUnit);
     }
   }
@@ -257,6 +255,7 @@ public class TranslationProcessor extends FileProcessor {
     assert unit.getOutputPath() != null;
     assert unit.isFullyParsed();
     TimeTracker ticker = getTicker(unit.getOutputPath());
+    logger.fine("Generating " + unit.getOutputPath());
     logger.finest("writing output file(s) to " + Options.getOutputDirectory().getAbsolutePath());
     ticker.push();
 
