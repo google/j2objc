@@ -12,6 +12,8 @@
 		061AA0D019FEF01800457D2B /* PackageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CE19FEF01800457D2B /* PackageTest.m */; };
 		061AA0D519FEF2E700457D2B /* TestAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D219FEF2E700457D2B /* TestAnnotation.m */; };
 		061AA0D619FEF2E700457D2B /* ThrowableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D319FEF2E700457D2B /* ThrowableTest.m */; };
+		062461821AFBF2AC003747CE /* MD5.check in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E83B197F25B2005DDE69 /* MD5.check */; };
+		062461831AFBF2AC003747CE /* MD5.data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E83C197F25B2005DDE69 /* MD5.data */; };
 		062463D41A000CE3006D52C9 /* JRETestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */; };
 		062463DA1A005995006D52C9 /* JRELogPaneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 062463D91A005995006D52C9 /* JRELogPaneViewController.m */; };
 		06459FB71A4220AF00F5ED23 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
@@ -98,7 +100,6 @@
 		06574AC21A8EB61D000A3616 /* EnumTest.golden.3.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ABD1A8EB61D000A3616 /* EnumTest.golden.3.ser */; };
 		06574AC31A8EB61D000A3616 /* EnumTest.harmony.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ABE1A8EB61D000A3616 /* EnumTest.harmony.ser */; };
 		06574AC71A8EB830000A3616 /* PatternSyntaxExceptionTest.golden.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574AC61A8EB812000A3616 /* PatternSyntaxExceptionTest.golden.ser */; };
-		06574AC81A8EB869000A3616 /* MD5.check in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E83B197F25B2005DDE69 /* MD5.check */; };
 		06574AC91A8EB899000A3616 /* testfile-utf8.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E837197F253D005DDE69 /* testfile-utf8.txt */; };
 		06574ACD1A8EB8F9000A3616 /* recipt.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ACA1A8EB8E2000A3616 /* recipt.xml */; };
 		06574ACE1A8EB8F9000A3616 /* simple.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ACB1A8EB8E2000A3616 /* simple.xml */; };
@@ -120,10 +121,32 @@
 		06C54AD41A40C7A4004B3ACD /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C54AD31A40C7A4004B3ACD /* libicucore.dylib */; };
 		06C54AD81A40C897004B3ACD /* ReflectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54AD71A40C897004B3ACD /* ReflectionTest.m */; };
 		06C54ADB1A40C9F0004B3ACD /* AnnotationTypeMismatchExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54ADA1A40C9F0004B3ACD /* AnnotationTypeMismatchExceptionTest.m */; };
-		06C54ADE1A40CA0F004B3ACD /* EnumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54ADD1A40CA0F004B3ACD /* EnumTest.m */; };
 		06C54AE11A40CA75004B3ACD /* AttributedCharacterIteratorAttributeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54AE01A40CA75004B3ACD /* AttributedCharacterIteratorAttributeTest.m */; };
 		06C73F5819180E64001D3CC8 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5719180E64001D3CC8 /* Security.framework */; };
 		06C73F5A19180E6D001D3CC8 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5919180E6D001D3CC8 /* libz.dylib */; };
+		06CBF5201AFBE88800CA582D /* JniTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF51E1AFBE88800CA582D /* JniTest.m */; };
+		06CBF5231AFBEB1E00CA582D /* dalvik_system_JniTest.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5221AFBEB1E00CA582D /* dalvik_system_JniTest.cpp */; settings = {COMPILER_FLAGS = "-x objective-c++"; }; };
+		06CBF5261AFBECF200CA582D /* ClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5251AFBECF200CA582D /* ClassTest.m */; };
+		06CBF5351AFBED6500CA582D /* EnumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF52C1AFBED6500CA582D /* EnumTest.m */; };
+		06CBF5371AFBED6500CA582D /* MethodTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5301AFBED6500CA582D /* MethodTest.m */; };
+		06CBF5381AFBED6500CA582D /* ReflectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5321AFBED6500CA582D /* ReflectionTest.m */; };
+		06CBF56D1AFBEE2400CA582D /* AccessibleObjectTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF53B1AFBEE2300CA582D /* AccessibleObjectTest.m */; };
+		06CBF56F1AFBEE2400CA582D /* ArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF53E1AFBEE2300CA582D /* ArrayTest.m */; };
+		06CBF5711AFBEE2400CA582D /* BoundedGenericMethodsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5411AFBEE2300CA582D /* BoundedGenericMethodsTests.m */; };
+		06CBF5731AFBEE2400CA582D /* ConstructorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5441AFBEE2300CA582D /* ConstructorTest.m */; };
+		06CBF5751AFBEE2400CA582D /* FieldTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5471AFBEE2300CA582D /* FieldTest.m */; };
+		06CBF5771AFBEE2400CA582D /* GenericArrayTypeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF54A1AFBEE2300CA582D /* GenericArrayTypeTest.m */; };
+		06CBF5791AFBEE2400CA582D /* GenericMethodsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF54D1AFBEE2300CA582D /* GenericMethodsTests.m */; };
+		06CBF57B1AFBEE2400CA582D /* GenericReflectionTestsBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5501AFBEE2300CA582D /* GenericReflectionTestsBase.m */; };
+		06CBF57D1AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5531AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTest.m */; };
+		06CBF57F1AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5561AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTests.m */; };
+		06CBF5811AFBEE2400CA582D /* MethodTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5591AFBEE2400CA582D /* MethodTest.m */; };
+		06CBF5831AFBEE2400CA582D /* ModifierTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF55C1AFBEE2400CA582D /* ModifierTest.m */; };
+		06CBF5851AFBEE2400CA582D /* ParameterizedTypeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF55F1AFBEE2400CA582D /* ParameterizedTypeTest.m */; };
+		06CBF5871AFBEE2400CA582D /* TypeVariableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5621AFBEE2400CA582D /* TypeVariableTest.m */; };
+		06CBF5891AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5651AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.m */; };
+		06CBF58B1AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5681AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m */; };
+		06CBF58D1AFBEE2400CA582D /* WildcardTypeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF56B1AFBEE2400CA582D /* WildcardTypeTest.m */; };
 		06E4E6B2197F1D47005DDE69 /* AbstractExecutorServiceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */; };
 		06E4E6B3197F1D47005DDE69 /* AbstractQueuedSynchronizerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E368197F1D46005DDE69 /* AbstractQueuedSynchronizerTest.m */; };
 		06E4E6B4197F1D47005DDE69 /* AbstractQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E36A197F1D46005DDE69 /* AbstractQueueTest.m */; };
@@ -237,7 +260,6 @@
 		06E4E723197F1D47005DDE69 /* OldStringWriterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E454197F1D46005DDE69 /* OldStringWriterTest.m */; };
 		06E4E724197F1D47005DDE69 /* OldWriterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E456197F1D46005DDE69 /* OldWriterTest.m */; };
 		06E4E725197F1D47005DDE69 /* OutputStreamWriterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E458197F1D46005DDE69 /* OutputStreamWriterTest.m */; };
-		06E4E726197F1D47005DDE69 /* RandomAccessFileTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E45A197F1D46005DDE69 /* RandomAccessFileTest.m */; };
 		06E4E727197F1D47005DDE69 /* SmallTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E45C197F1D46005DDE69 /* SmallTests.m */; };
 		06E4E728197F1D47005DDE69 /* StreamTokenizerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E45E197F1D46005DDE69 /* StreamTokenizerTest.m */; };
 		06E4E729197F1D47005DDE69 /* CharacterTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E461197F1D46005DDE69 /* CharacterTest.m */; };
@@ -506,7 +528,6 @@
 		06E4E835197F1E4E005DDE69 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87C219759EFF00633227 /* main.m */; };
 		06E4E843197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E842197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */; };
 		06E4E849197F267B005DDE69 /* test_resource.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E848197F267B005DDE69 /* test_resource.txt */; };
-		06E4E856197F26C6005DDE69 /* MD5.data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E84C197F26C6005DDE69 /* MD5.data */; };
 		06E4E857197F26C6005DDE69 /* SHA-1.check in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E84D197F26C6005DDE69 /* SHA-1.check */; };
 		06E4E858197F26C6005DDE69 /* SHA-1.data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E84E197F26C6005DDE69 /* SHA-1.data */; };
 		06E4E859197F26C6005DDE69 /* SHA-256.check in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E84F197F26C6005DDE69 /* SHA-256.check */; };
@@ -631,12 +652,12 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
+				062461821AFBF2AC003747CE /* MD5.check in CopyFiles */,
+				062461831AFBF2AC003747CE /* MD5.data in CopyFiles */,
 				06574AD11A8EB93D000A3616 /* wrong.xml in CopyFiles */,
 				06574ACD1A8EB8F9000A3616 /* recipt.xml in CopyFiles */,
 				06574ACE1A8EB8F9000A3616 /* simple.xml in CopyFiles */,
 				06574ACF1A8EB8F9000A3616 /* systemid.xml in CopyFiles */,
-				06574AC81A8EB869000A3616 /* MD5.check in CopyFiles */,
-				06E4E856197F26C6005DDE69 /* MD5.data in CopyFiles */,
 				06E4E857197F26C6005DDE69 /* SHA-1.check in CopyFiles */,
 				06E4E858197F26C6005DDE69 /* SHA-1.data in CopyFiles */,
 				06E4E859197F26C6005DDE69 /* SHA-256.check in CopyFiles */,
@@ -2352,6 +2373,55 @@
 		06C73F5519180DE8001D3CC8 /* DNParser.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = DNParser.m; path = build_result/Classes/org/apache/harmony/security/x509/DNParser.m; sourceTree = "<group>"; };
 		06C73F5719180E64001D3CC8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		06C73F5919180E6D001D3CC8 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		06CBF51D1AFBE88800CA582D /* JniTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JniTest.h; sourceTree = "<group>"; };
+		06CBF51E1AFBE88800CA582D /* JniTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JniTest.m; sourceTree = "<group>"; };
+		06CBF5221AFBEB1E00CA582D /* dalvik_system_JniTest.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = dalvik_system_JniTest.cpp; path = android/libcore/luni/src/test/native/dalvik_system_JniTest.cpp; sourceTree = SOURCE_ROOT; };
+		06CBF5241AFBECF200CA582D /* ClassTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassTest.h; sourceTree = "<group>"; };
+		06CBF5251AFBECF200CA582D /* ClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassTest.m; sourceTree = "<group>"; };
+		06CBF5281AFBED6500CA582D /* AnnotationTypeMismatchExceptionTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnnotationTypeMismatchExceptionTest.h; sourceTree = "<group>"; };
+		06CBF5291AFBED6500CA582D /* AnnotationTypeMismatchExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnnotationTypeMismatchExceptionTest.m; sourceTree = "<group>"; };
+		06CBF52B1AFBED6500CA582D /* EnumTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnumTest.h; path = build_result/tests/libcore/java/lang/EnumTest.h; sourceTree = SOURCE_ROOT; };
+		06CBF52C1AFBED6500CA582D /* EnumTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnumTest.m; path = build_result/tests/libcore/java/lang/EnumTest.m; sourceTree = SOURCE_ROOT; };
+		06CBF52D1AFBED6500CA582D /* ConstructorTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConstructorTest.h; sourceTree = "<group>"; };
+		06CBF52E1AFBED6500CA582D /* ConstructorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConstructorTest.m; sourceTree = "<group>"; };
+		06CBF52F1AFBED6500CA582D /* MethodTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodTest.h; sourceTree = "<group>"; };
+		06CBF5301AFBED6500CA582D /* MethodTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodTest.m; sourceTree = "<group>"; };
+		06CBF5311AFBED6500CA582D /* ReflectionTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReflectionTest.h; sourceTree = "<group>"; };
+		06CBF5321AFBED6500CA582D /* ReflectionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReflectionTest.m; sourceTree = "<group>"; };
+		06CBF53A1AFBEE2300CA582D /* AccessibleObjectTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccessibleObjectTest.h; sourceTree = "<group>"; };
+		06CBF53B1AFBEE2300CA582D /* AccessibleObjectTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccessibleObjectTest.m; sourceTree = "<group>"; };
+		06CBF53D1AFBEE2300CA582D /* ArrayTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ArrayTest.h; sourceTree = "<group>"; };
+		06CBF53E1AFBEE2300CA582D /* ArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ArrayTest.m; sourceTree = "<group>"; };
+		06CBF5401AFBEE2300CA582D /* BoundedGenericMethodsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoundedGenericMethodsTests.h; sourceTree = "<group>"; };
+		06CBF5411AFBEE2300CA582D /* BoundedGenericMethodsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BoundedGenericMethodsTests.m; sourceTree = "<group>"; };
+		06CBF5431AFBEE2300CA582D /* ConstructorTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConstructorTest.h; sourceTree = "<group>"; };
+		06CBF5441AFBEE2300CA582D /* ConstructorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConstructorTest.m; sourceTree = "<group>"; };
+		06CBF5461AFBEE2300CA582D /* FieldTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FieldTest.h; sourceTree = "<group>"; };
+		06CBF5471AFBEE2300CA582D /* FieldTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FieldTest.m; sourceTree = "<group>"; };
+		06CBF5491AFBEE2300CA582D /* GenericArrayTypeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericArrayTypeTest.h; sourceTree = "<group>"; };
+		06CBF54A1AFBEE2300CA582D /* GenericArrayTypeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericArrayTypeTest.m; sourceTree = "<group>"; };
+		06CBF54C1AFBEE2300CA582D /* GenericMethodsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericMethodsTests.h; sourceTree = "<group>"; };
+		06CBF54D1AFBEE2300CA582D /* GenericMethodsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericMethodsTests.m; sourceTree = "<group>"; };
+		06CBF54F1AFBEE2300CA582D /* GenericReflectionTestsBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericReflectionTestsBase.h; sourceTree = "<group>"; };
+		06CBF5501AFBEE2300CA582D /* GenericReflectionTestsBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericReflectionTestsBase.m; sourceTree = "<group>"; };
+		06CBF5521AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MalformedParameterizedTypeExceptionTest.h; sourceTree = "<group>"; };
+		06CBF5531AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MalformedParameterizedTypeExceptionTest.m; sourceTree = "<group>"; };
+		06CBF5551AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MalformedParameterizedTypeExceptionTests.h; sourceTree = "<group>"; };
+		06CBF5561AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MalformedParameterizedTypeExceptionTests.m; sourceTree = "<group>"; };
+		06CBF5581AFBEE2400CA582D /* MethodTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MethodTest.h; sourceTree = "<group>"; };
+		06CBF5591AFBEE2400CA582D /* MethodTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MethodTest.m; sourceTree = "<group>"; };
+		06CBF55B1AFBEE2400CA582D /* ModifierTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModifierTest.h; sourceTree = "<group>"; };
+		06CBF55C1AFBEE2400CA582D /* ModifierTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModifierTest.m; sourceTree = "<group>"; };
+		06CBF55E1AFBEE2400CA582D /* ParameterizedTypeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParameterizedTypeTest.h; sourceTree = "<group>"; };
+		06CBF55F1AFBEE2400CA582D /* ParameterizedTypeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParameterizedTypeTest.m; sourceTree = "<group>"; };
+		06CBF5611AFBEE2400CA582D /* TypeVariableTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TypeVariableTest.h; sourceTree = "<group>"; };
+		06CBF5621AFBEE2400CA582D /* TypeVariableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TypeVariableTest.m; sourceTree = "<group>"; };
+		06CBF5641AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UndeclaredThrowableExceptionTest.h; sourceTree = "<group>"; };
+		06CBF5651AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UndeclaredThrowableExceptionTest.m; sourceTree = "<group>"; };
+		06CBF5671AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UndeclaredThrowableExceptionTests.h; sourceTree = "<group>"; };
+		06CBF5681AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UndeclaredThrowableExceptionTests.m; sourceTree = "<group>"; };
+		06CBF56A1AFBEE2400CA582D /* WildcardTypeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WildcardTypeTest.h; sourceTree = "<group>"; };
+		06CBF56B1AFBEE2400CA582D /* WildcardTypeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WildcardTypeTest.m; sourceTree = "<group>"; };
 		06D7BDE917DE685C00329964 /* PhantomReference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PhantomReference.h; path = build_result/Classes/java/lang/ref/PhantomReference.h; sourceTree = "<group>"; };
 		06D7BDEA17DE685C00329964 /* PhantomReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PhantomReference.m; path = build_result/Classes/java/lang/ref/PhantomReference.m; sourceTree = "<group>"; };
 		06D7BDEB17DE685C00329964 /* Reference.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Reference.h; path = build_result/Classes/java/lang/ref/Reference.h; sourceTree = "<group>"; };
@@ -2664,8 +2734,6 @@
 		06E4E456197F1D46005DDE69 /* OldWriterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OldWriterTest.m; sourceTree = "<group>"; };
 		06E4E457197F1D46005DDE69 /* OutputStreamWriterTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OutputStreamWriterTest.h; sourceTree = "<group>"; };
 		06E4E458197F1D46005DDE69 /* OutputStreamWriterTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OutputStreamWriterTest.m; sourceTree = "<group>"; };
-		06E4E459197F1D46005DDE69 /* RandomAccessFileTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RandomAccessFileTest.h; sourceTree = "<group>"; };
-		06E4E45A197F1D46005DDE69 /* RandomAccessFileTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RandomAccessFileTest.m; sourceTree = "<group>"; };
 		06E4E45B197F1D46005DDE69 /* SmallTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SmallTests.h; sourceTree = "<group>"; };
 		06E4E45C197F1D46005DDE69 /* SmallTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SmallTests.m; sourceTree = "<group>"; };
 		06E4E45D197F1D46005DDE69 /* StreamTokenizerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StreamTokenizerTest.h; sourceTree = "<group>"; };
@@ -3197,7 +3265,6 @@
 		06E4E83D197F25B2005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */ = {isa = PBXFileReference; lastKnownFileType = text; name = libcore.java.util.ServiceLoaderTestInterface; path = "../build_result/tests/META-INF/services/libcore.java.util.ServiceLoaderTestInterface"; sourceTree = "<group>"; };
 		06E4E842197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */ = {isa = PBXFileReference; lastKnownFileType = text; name = libcore.java.util.ServiceLoaderTestInterface; path = "../build_result/tests/META-INF/services/libcore.java.util.ServiceLoaderTestInterface"; sourceTree = "<group>"; };
 		06E4E848197F267B005DDE69 /* test_resource.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = test_resource.txt; path = ../build_result/tests/org/apache/harmony/luni/tests/test_resource.txt; sourceTree = "<group>"; };
-		06E4E84C197F26C6005DDE69 /* MD5.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = MD5.data; path = ../build_result/tests/MD5.data; sourceTree = "<group>"; };
 		06E4E84D197F26C6005DDE69 /* SHA-1.check */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SHA-1.check"; path = "../build_result/tests/SHA-1.check"; sourceTree = "<group>"; };
 		06E4E84E197F26C6005DDE69 /* SHA-1.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-1.data"; path = "../build_result/tests/SHA-1.data"; sourceTree = "<group>"; };
 		06E4E84F197F26C6005DDE69 /* SHA-256.check */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-256.check"; path = "../build_result/tests/SHA-256.check"; sourceTree = "<group>"; };
@@ -6204,6 +6271,74 @@
 			name = "Transpiled Classes";
 			sourceTree = "<group>";
 		};
+		06CBF51B1AFBE88800CA582D /* dalvik */ = {
+			isa = PBXGroup;
+			children = (
+				06CBF51C1AFBE88800CA582D /* system */,
+			);
+			path = dalvik;
+			sourceTree = "<group>";
+		};
+		06CBF51C1AFBE88800CA582D /* system */ = {
+			isa = PBXGroup;
+			children = (
+				06CBF51D1AFBE88800CA582D /* JniTest.h */,
+				06CBF51E1AFBE88800CA582D /* JniTest.m */,
+			);
+			path = system;
+			sourceTree = "<group>";
+		};
+		06CBF5271AFBED6500CA582D /* annotation */ = {
+			isa = PBXGroup;
+			children = (
+				06CBF5281AFBED6500CA582D /* AnnotationTypeMismatchExceptionTest.h */,
+				06CBF5291AFBED6500CA582D /* AnnotationTypeMismatchExceptionTest.m */,
+			);
+			name = annotation;
+			path = build_result/tests/libcore/java/lang/annotation;
+			sourceTree = SOURCE_ROOT;
+		};
+		06CBF5391AFBEE2300CA582D /* reflect */ = {
+			isa = PBXGroup;
+			children = (
+				06CBF53A1AFBEE2300CA582D /* AccessibleObjectTest.h */,
+				06CBF53B1AFBEE2300CA582D /* AccessibleObjectTest.m */,
+				06CBF53D1AFBEE2300CA582D /* ArrayTest.h */,
+				06CBF53E1AFBEE2300CA582D /* ArrayTest.m */,
+				06CBF5401AFBEE2300CA582D /* BoundedGenericMethodsTests.h */,
+				06CBF5411AFBEE2300CA582D /* BoundedGenericMethodsTests.m */,
+				06CBF5431AFBEE2300CA582D /* ConstructorTest.h */,
+				06CBF5441AFBEE2300CA582D /* ConstructorTest.m */,
+				06CBF5461AFBEE2300CA582D /* FieldTest.h */,
+				06CBF5471AFBEE2300CA582D /* FieldTest.m */,
+				06CBF5491AFBEE2300CA582D /* GenericArrayTypeTest.h */,
+				06CBF54A1AFBEE2300CA582D /* GenericArrayTypeTest.m */,
+				06CBF54C1AFBEE2300CA582D /* GenericMethodsTests.h */,
+				06CBF54D1AFBEE2300CA582D /* GenericMethodsTests.m */,
+				06CBF54F1AFBEE2300CA582D /* GenericReflectionTestsBase.h */,
+				06CBF5501AFBEE2300CA582D /* GenericReflectionTestsBase.m */,
+				06CBF5521AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTest.h */,
+				06CBF5531AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTest.m */,
+				06CBF5551AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTests.h */,
+				06CBF5561AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTests.m */,
+				06CBF5581AFBEE2400CA582D /* MethodTest.h */,
+				06CBF5591AFBEE2400CA582D /* MethodTest.m */,
+				06CBF55B1AFBEE2400CA582D /* ModifierTest.h */,
+				06CBF55C1AFBEE2400CA582D /* ModifierTest.m */,
+				06CBF55E1AFBEE2400CA582D /* ParameterizedTypeTest.h */,
+				06CBF55F1AFBEE2400CA582D /* ParameterizedTypeTest.m */,
+				06CBF5611AFBEE2400CA582D /* TypeVariableTest.h */,
+				06CBF5621AFBEE2400CA582D /* TypeVariableTest.m */,
+				06CBF5641AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.h */,
+				06CBF5651AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.m */,
+				06CBF5671AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.h */,
+				06CBF5681AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m */,
+				06CBF56A1AFBEE2400CA582D /* WildcardTypeTest.h */,
+				06CBF56B1AFBEE2400CA582D /* WildcardTypeTest.m */,
+			);
+			path = reflect;
+			sourceTree = "<group>";
+		};
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
@@ -6267,6 +6402,7 @@
 				06E4E3A0197F1D46005DDE69 /* CountDownLatchTest.m */,
 				06E4E3A1197F1D46005DDE69 /* CyclicBarrierTest.h */,
 				06E4E3A2197F1D46005DDE69 /* CyclicBarrierTest.m */,
+				06CBF51B1AFBE88800CA582D /* dalvik */,
 				06E4E3A3197F1D46005DDE69 /* DelayQueueTest.h */,
 				06E4E3A4197F1D46005DDE69 /* DelayQueueTest.m */,
 				06574A351A8EB04A000A3616 /* DocumentBuilderFactoryTest.m */,
@@ -6688,8 +6824,6 @@
 				06E4E456197F1D46005DDE69 /* OldWriterTest.m */,
 				06E4E457197F1D46005DDE69 /* OutputStreamWriterTest.h */,
 				06E4E458197F1D46005DDE69 /* OutputStreamWriterTest.m */,
-				06E4E459197F1D46005DDE69 /* RandomAccessFileTest.h */,
-				06E4E45A197F1D46005DDE69 /* RandomAccessFileTest.m */,
 				06E4E45B197F1D46005DDE69 /* SmallTests.h */,
 				06E4E45C197F1D46005DDE69 /* SmallTests.m */,
 				06E4E45D197F1D46005DDE69 /* StreamTokenizerTest.h */,
@@ -6701,8 +6835,11 @@
 		06E4E45F197F1D46005DDE69 /* lang */ = {
 			isa = PBXGroup;
 			children = (
+				06CBF5271AFBED6500CA582D /* annotation */,
 				06E4E460197F1D46005DDE69 /* CharacterTest.h */,
 				06E4E461197F1D46005DDE69 /* CharacterTest.m */,
+				06CBF5241AFBECF200CA582D /* ClassTest.h */,
+				06CBF5251AFBECF200CA582D /* ClassTest.m */,
 				06E4E462197F1D46005DDE69 /* DoubleTest.h */,
 				06E4E463197F1D46005DDE69 /* DoubleTest.m */,
 				06E4E464197F1D46005DDE69 /* FloatTest.h */,
@@ -6723,10 +6860,18 @@
 				06E4E46A197F1D46005DDE69 /* AnnotationsTest.m */,
 				06E4E46B197F1D46005DDE69 /* ArrayTest.h */,
 				06E4E46C197F1D46005DDE69 /* ArrayTest.m */,
+				06CBF52D1AFBED6500CA582D /* ConstructorTest.h */,
 				06E4E46D197F1D46005DDE69 /* ConstructorTest.h */,
+				06CBF52E1AFBED6500CA582D /* ConstructorTest.m */,
 				06E4E46E197F1D46005DDE69 /* ConstructorTest.m */,
+				06CBF52B1AFBED6500CA582D /* EnumTest.h */,
+				06CBF52C1AFBED6500CA582D /* EnumTest.m */,
 				06E4E46F197F1D46005DDE69 /* FieldTest.h */,
 				06E4E470197F1D46005DDE69 /* FieldTest.m */,
+				06CBF52F1AFBED6500CA582D /* MethodTest.h */,
+				06CBF5301AFBED6500CA582D /* MethodTest.m */,
+				06CBF5311AFBED6500CA582D /* ReflectionTest.h */,
+				06CBF5321AFBED6500CA582D /* ReflectionTest.m */,
 			);
 			path = reflect;
 			sourceTree = "<group>";
@@ -7393,6 +7538,7 @@
 		06E4E5F6197F1D47005DDE69 /* lang */ = {
 			isa = PBXGroup;
 			children = (
+				06CBF5391AFBEE2300CA582D /* reflect */,
 				06E4E5F7197F1D47005DDE69 /* CharacterTest.h */,
 				06E4E5F8197F1D47005DDE69 /* CharacterTest.m */,
 				06E4E5F9197F1D47005DDE69 /* DoubleTest.h */,
@@ -7723,6 +7869,7 @@
 		06ED87BC19759EFF00633227 /* junit_tests */ = {
 			isa = PBXGroup;
 			children = (
+				06CBF5221AFBEB1E00CA582D /* dalvik_system_JniTest.cpp */,
 				06ED87C819759EFF00633227 /* Images.xcassets */,
 				06ED87C519759EFF00633227 /* JREAppDelegate.h */,
 				06ED87C619759EFF00633227 /* JREAppDelegate.m */,
@@ -7946,6 +8093,7 @@
 				06E4E7D2197F1D48005DDE69 /* Matcher2Test.m in Sources */,
 				06E4E6C4197F1D47005DDE69 /* AtomicMarkableReferenceTest.m in Sources */,
 				06E4E765197F1D47005DDE69 /* ZipEntryTest.m in Sources */,
+				06CBF5851AFBEE2400CA582D /* ParameterizedTypeTest.m in Sources */,
 				06E4E827197F1D48005DDE69 /* Support_UnmodifiableCollectionTest.m in Sources */,
 				06574A9A1A8EB150000A3616 /* Support_Configuration.m in Sources */,
 				06E4E7EC197F1D48005DDE69 /* ChoiceFormatTest.m in Sources */,
@@ -7959,9 +8107,11 @@
 				06E4E6BA197F1D47005DDE69 /* SpannableTest.m in Sources */,
 				06E4E6D0197F1D47005DDE69 /* DelayQueueTest.m in Sources */,
 				06E4E6D7197F1D47005DDE69 /* SoftReferenceTest.m in Sources */,
+				06CBF56D1AFBEE2400CA582D /* AccessibleObjectTest.m in Sources */,
 				06574A931A8EB150000A3616 /* RSAMultiPrimePrivateCrtKeySpecTest.m in Sources */,
 				06E4E6C9197F1D47005DDE69 /* ConcurrencyTests.m in Sources */,
 				06E4E725197F1D47005DDE69 /* OutputStreamWriterTest.m in Sources */,
+				06CBF5711AFBEE2400CA582D /* BoundedGenericMethodsTests.m in Sources */,
 				06E4E7F5197F1D48005DDE69 /* ParsingTest.m in Sources */,
 				06E4E789197F1D47005DDE69 /* CloneNotSupportedExceptionTest.m in Sources */,
 				06E4E718197F1D47005DDE69 /* OldOutputStreamTest.m in Sources */,
@@ -7995,6 +8145,7 @@
 				06E4E6E8197F1D47005DDE69 /* ObjectOutputStreamTest.m in Sources */,
 				06E4E82E197F1D48005DDE69 /* MessageDigestTestSHA512.m in Sources */,
 				06E4E713197F1D47005DDE69 /* OldLineNumberReaderTest.m in Sources */,
+				06CBF5371AFBED6500CA582D /* MethodTest.m in Sources */,
 				06E4E7B1197F1D48005DDE69 /* AbstractListTest.m in Sources */,
 				06E4E70B197F1D47005DDE69 /* OldFileWriterTest.m in Sources */,
 				06E4E7E0197F1D48005DDE69 /* FloatTest.m in Sources */,
@@ -8089,8 +8240,10 @@
 				06E4E73B197F1D47005DDE69 /* SocketTest.m in Sources */,
 				06E4E7C8197F1D48005DDE69 /* SimpleTimeZoneTest.m in Sources */,
 				06574A551A8EB04A000A3616 /* DocumentBuilderFactoryTest.m in Sources */,
+				06CBF57F1AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTests.m in Sources */,
 				06E4E80F197F1D48005DDE69 /* Support_CollectionTest.m in Sources */,
 				06E4E831197F1D48005DDE69 /* TimeUnitTest.m in Sources */,
+				06CBF5351AFBED6500CA582D /* EnumTest.m in Sources */,
 				06934A1B1A40D02B00D2CD07 /* HashMapTest.m in Sources */,
 				06E4E7BA197F1D48005DDE69 /* EnumSetTest.m in Sources */,
 				06E4E809197F1D48005DDE69 /* TimerTest.m in Sources */,
@@ -8112,6 +8265,7 @@
 				06E4E6E9197F1D47005DDE69 /* OldAndroidBufferedInputStreamTest.m in Sources */,
 				06C54AE11A40CA75004B3ACD /* AttributedCharacterIteratorAttributeTest.m in Sources */,
 				06E4E7AD197F1D48005DDE69 /* TypeNotPresentExceptionTest.m in Sources */,
+				06CBF5891AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.m in Sources */,
 				06E4E6B8197F1D47005DDE69 /* SpannableStringBuilderTest.m in Sources */,
 				06E4E6E2197F1D47005DDE69 /* DataOutputStreamTest.m in Sources */,
 				06E4E6C0197F1D47005DDE69 /* AtomicIntegerTest.m in Sources */,
@@ -8138,12 +8292,16 @@
 				06E4E6F8197F1D47005DDE69 /* OldAndroidPushbackReaderTest.m in Sources */,
 				06934A141A40CE8900D2CD07 /* TreeSetTest.m in Sources */,
 				06E4E74D197F1D47005DDE69 /* DecimalFormatTest.m in Sources */,
+				06CBF5831AFBEE2400CA582D /* ModifierTest.m in Sources */,
 				06E4E704197F1D47005DDE69 /* OldCharArrayWriterTest.m in Sources */,
+				06CBF5731AFBEE2400CA582D /* ConstructorTest.m in Sources */,
 				06E4E748197F1D47005DDE69 /* OldAndroidNIOTest.m in Sources */,
 				06E4E6D3197F1D47005DDE69 /* ExecutorsTest.m in Sources */,
+				06CBF5261AFBECF200CA582D /* ClassTest.m in Sources */,
 				06E4E72C197F1D47005DDE69 /* IntegralToStringTest.m in Sources */,
 				06E4E79D197F1D48005DDE69 /* NumberFormatExceptionTest.m in Sources */,
 				06E4E7BC197F1D48005DDE69 /* GregorianCalendarTest.m in Sources */,
+				06CBF5381AFBED6500CA582D /* ReflectionTest.m in Sources */,
 				06E4E77C197F1D47005DDE69 /* SimpleFormatterTest.m in Sources */,
 				06E4E72A197F1D47005DDE69 /* DoubleTest.m in Sources */,
 				06E4E7FC197F1D48005DDE69 /* ScheduledExecutorTest.m in Sources */,
@@ -8172,6 +8330,7 @@
 				06E4E80B197F1D48005DDE69 /* Support_ASimpleInputStream.m in Sources */,
 				06E4E7A7197F1D48005DDE69 /* String2Test.m in Sources */,
 				06E4E71D197F1D47005DDE69 /* OldRandomAccessFileTest.m in Sources */,
+				06CBF58B1AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m in Sources */,
 				06574A991A8EB150000A3616 /* Support_Resources.m in Sources */,
 				06574A571A8EB04A000A3616 /* ParserConfigurationExceptionTest.m in Sources */,
 				06E4E814197F1D48005DDE69 /* Support_ListTest.m in Sources */,
@@ -8230,6 +8389,7 @@
 				06E4E79F197F1D48005DDE69 /* ObjectTest.m in Sources */,
 				06574A3E1A8EB04A000A3616 /* AlgorithmParametersTest.m in Sources */,
 				06E4E740197F1D47005DDE69 /* BufferTest.m in Sources */,
+				06CBF5201AFBE88800CA582D /* JniTest.m in Sources */,
 				06E4E82B197F1D48005DDE69 /* MessageDigestTestSHA1.m in Sources */,
 				06574A4F1A8EB04A000A3616 /* MyKeyPairGeneratorSpi.m in Sources */,
 				06E4E74C197F1D47005DDE69 /* DecimalFormatSymbolsTest.m in Sources */,
@@ -8263,6 +8423,7 @@
 				06E4E7E6197F1D48005DDE69 /* BigIntegerDivideTest.m in Sources */,
 				06C54ADB1A40C9F0004B3ACD /* AnnotationTypeMismatchExceptionTest.m in Sources */,
 				06E4E787197F1D47005DDE69 /* ClassNotFoundExceptionTest.m in Sources */,
+				06CBF5791AFBEE2400CA582D /* GenericMethodsTests.m in Sources */,
 				06E4E6B3197F1D47005DDE69 /* AbstractQueuedSynchronizerTest.m in Sources */,
 				06574A5B1A8EB04A000A3616 /* MockResolver.m in Sources */,
 				06E4E81F197F1D48005DDE69 /* Support_StringWriter.m in Sources */,
@@ -8273,6 +8434,7 @@
 				06E4E7D3197F1D48005DDE69 /* ModeTest.m in Sources */,
 				06574A441A8EB04A000A3616 /* MessageDigest1Test.m in Sources */,
 				06E4E6C1197F1D47005DDE69 /* AtomicLongArrayTest.m in Sources */,
+				06CBF57D1AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTest.m in Sources */,
 				06E4E7A2197F1D48005DDE69 /* FieldTest.m in Sources */,
 				06574A971A8EB150000A3616 /* RSAPublicKeySpecTest.m in Sources */,
 				06574A8A1A8EB150000A3616 /* ECPrivateKeySpecTest.m in Sources */,
@@ -8282,12 +8444,14 @@
 				06E4E816197F1D48005DDE69 /* Support_MapTest2.m in Sources */,
 				0660B4AA1A02EA1C00B643F5 /* JRETestRunListener.m in Sources */,
 				06E4E6C7197F1D47005DDE69 /* AtomicReferenceTest.m in Sources */,
+				06CBF5811AFBEE2400CA582D /* MethodTest.m in Sources */,
 				06574A981A8EB150000A3616 /* X509EncodedKeySpecTest.m in Sources */,
 				06E4E7AF197F1D48005DDE69 /* VirtualMachineErrorTest.m in Sources */,
 				06E4E78B197F1D47005DDE69 /* ErrorTest.m in Sources */,
 				06E4E6E7197F1D47005DDE69 /* InputStreamReaderTest.m in Sources */,
 				06E4E6CE197F1D47005DDE69 /* CountDownLatchTest.m in Sources */,
 				06E4E729197F1D47005DDE69 /* CharacterTest.m in Sources */,
+				06CBF5771AFBEE2400CA582D /* GenericArrayTypeTest.m in Sources */,
 				06E4E700197F1D47005DDE69 /* OldBufferedWriterTest.m in Sources */,
 				06E4E75A197F1D47005DDE69 /* DeflaterTest.m in Sources */,
 				06E4E820197F1D48005DDE69 /* Support_TestResource.m in Sources */,
@@ -8305,10 +8469,12 @@
 				06E4E803197F1D48005DDE69 /* FormattableFlagsTest.m in Sources */,
 				06E4E716197F1D47005DDE69 /* OldObjectOutputStreamTest.m in Sources */,
 				06E4E7C7197F1D48005DDE69 /* RandomTest.m in Sources */,
+				06CBF56F1AFBEE2400CA582D /* ArrayTest.m in Sources */,
 				06E4E7CB197F1D48005DDE69 /* TimeZoneTest.m in Sources */,
 				06C54ACB1A40C0D8004B3ACD /* MathTest.m in Sources */,
 				06E4E7FE197F1D48005DDE69 /* SynchronousQueueTest.m in Sources */,
 				06E4E81E197F1D48005DDE69 /* Support_StringReader.m in Sources */,
+				06CBF5231AFBEB1E00CA582D /* dalvik_system_JniTest.cpp in Sources */,
 				06E4E70E197F1D47005DDE69 /* OldFilterReaderTest.m in Sources */,
 				06E4E799197F1D48005DDE69 /* NoSuchFieldExceptionTest.m in Sources */,
 				06E4E82C197F1D48005DDE69 /* MessageDigestTestSHA256.m in Sources */,
@@ -8341,7 +8507,6 @@
 				06574A611A8EB081000A3616 /* Example.m in Sources */,
 				06E4E7AB197F1D48005DDE69 /* ThreadDeathTest.m in Sources */,
 				06E4E717197F1D47005DDE69 /* OldObjectStreamFieldTest.m in Sources */,
-				06E4E726197F1D47005DDE69 /* RandomAccessFileTest.m in Sources */,
 				06E4E7B3197F1D48005DDE69 /* AbstractQueueTest.m in Sources */,
 				06E4E7F9197F1D48005DDE69 /* PriorityQueueTest.m in Sources */,
 				06E4E7E1197F1D48005DDE69 /* BigIntegerAddTest.m in Sources */,
@@ -8370,6 +8535,7 @@
 				06E4E778197F1D47005DDE69 /* LoggerTest.m in Sources */,
 				06E4E766197F1D47005DDE69 /* ZipFileTest.m in Sources */,
 				06E4E7A0197F1D48005DDE69 /* OutOfMemoryErrorTest.m in Sources */,
+				06CBF5871AFBEE2400CA582D /* TypeVariableTest.m in Sources */,
 				06E4E7B0197F1D48005DDE69 /* AbstractCollectionTest.m in Sources */,
 				06E4E733197F1D47005DDE69 /* DatagramSocketTest.m in Sources */,
 				06E4E815197F1D48005DDE69 /* Support_Locale.m in Sources */,
@@ -8383,11 +8549,12 @@
 				06574A561A8EB04A000A3616 /* FactoryConfigurationErrorTest.m in Sources */,
 				06574A8F1A8EB150000A3616 /* MGF1ParameterSpecTest.m in Sources */,
 				06E4E6F5197F1D47005DDE69 /* OldAndroidOutputStreamWriterTest.m in Sources */,
+				06CBF57B1AFBEE2400CA582D /* GenericReflectionTestsBase.m in Sources */,
 				06E4E744197F1D47005DDE69 /* CharsetDecoderTest.m in Sources */,
-				06C54ADE1A40CA0F004B3ACD /* EnumTest.m in Sources */,
 				06E4E6BF197F1D47005DDE69 /* AtomicIntegerFieldUpdaterTest.m in Sources */,
 				06E4E6BE197F1D47005DDE69 /* AtomicIntegerArrayTest.m in Sources */,
 				06E4E720197F1D47005DDE69 /* OldStreamTokenizerTest.m in Sources */,
+				06CBF5751AFBEE2400CA582D /* FieldTest.m in Sources */,
 				06E4E779197F1D47005DDE69 /* LogManagerTest.m in Sources */,
 				06E4E7B4197F1D48005DDE69 /* AbstractSequentialListTest.m in Sources */,
 				06E4E708197F1D47005DDE69 /* OldFileInputStreamTest.m in Sources */,
@@ -8403,6 +8570,7 @@
 				06E4E77B197F1D47005DDE69 /* MemoryHandlerTest.m in Sources */,
 				06E4E7EF197F1D48005DDE69 /* Support_Format.m in Sources */,
 				06574A961A8EB150000A3616 /* RSAPrivateKeySpecTest.m in Sources */,
+				06CBF58D1AFBEE2400CA582D /* WildcardTypeTest.m in Sources */,
 				06E4E781197F1D47005DDE69 /* ArrayIndexOutOfBoundsExceptionTest.m in Sources */,
 				06574A821A8EB150000A3616 /* RSAPrivateKeyTest.m in Sources */,
 				06E4E811197F1D48005DDE69 /* Support_GetPutFields.m in Sources */,
