@@ -171,6 +171,10 @@ public class System {
 #else
       [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"Mac OS X"];
       NSString *curDir = [[NSFileManager defaultManager] currentDirectoryPath];
+      if ([curDir isEqualToString:@"/"]) {
+        // Workaround for simulator bug.
+        curDir = [homeDirectory stringByAppendingString:@"/Documents"];
+      }
       [JavaLangSystem_props_ setPropertyWithNSString:@"user.dir" withNSString:curDir];
 #endif
 

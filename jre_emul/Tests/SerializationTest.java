@@ -99,29 +99,44 @@ public class SerializationTest extends TestCase {
   }
 
   // Regression test for https://github.com/google/j2objc/issues/496.
+  @SuppressWarnings("resource")
   public void testSerializingObjectClass() throws Exception {
-    String path = "/tmp/a.object";
-    FileOutputStream fileOut = new FileOutputStream(path);
-    new ObjectOutputStream(fileOut).writeObject(Object.class);
-    FileInputStream fileIn = new FileInputStream(path);
-    assertEquals(Object.class, new ObjectInputStream(fileIn).readObject());
+    File tmpFile = File.createTempFile("filea", "object");
+    try {
+      FileOutputStream fileOut = new FileOutputStream(tmpFile);
+      new ObjectOutputStream(fileOut).writeObject(Object.class);
+      FileInputStream fileIn = new FileInputStream(tmpFile);
+      assertEquals(Object.class, new ObjectInputStream(fileIn).readObject());
+    } finally {
+      tmpFile.delete();
+    }
   }
 
   // Regression test for https://github.com/google/j2objc/issues/496.
+  @SuppressWarnings("resource")
   public void testSerializingSerializableClass() throws Exception {
-    String path = "/tmp/b.object";
-    FileOutputStream fileOut = new FileOutputStream(path);
-    new ObjectOutputStream(fileOut).writeObject(SerializableClass.class);
-    FileInputStream fileIn = new FileInputStream(path);
-    assertEquals(SerializableClass.class, new ObjectInputStream(fileIn).readObject());
+    File tmpFile = File.createTempFile("fileb", "object");
+    try {
+      FileOutputStream fileOut = new FileOutputStream(tmpFile);
+      new ObjectOutputStream(fileOut).writeObject(SerializableClass.class);
+      FileInputStream fileIn = new FileInputStream(tmpFile);
+      assertEquals(SerializableClass.class, new ObjectInputStream(fileIn).readObject());
+    } finally {
+      tmpFile.delete();
+    }
   }
 
   // Regression test for https://github.com/google/j2objc/issues/496.
+  @SuppressWarnings("resource")
   public void testSerializingNotSerializableClass() throws Exception {
-    String path = "/tmp/c.object";
-    FileOutputStream fileOut = new FileOutputStream(path);
-    new ObjectOutputStream(fileOut).writeObject(NotSerializableClass.class);
-    FileInputStream fileIn = new FileInputStream(path);
-    assertEquals(NotSerializableClass.class, new ObjectInputStream(fileIn).readObject());
+    File tmpFile = File.createTempFile("filec", "object");
+    try {
+      FileOutputStream fileOut = new FileOutputStream(tmpFile);
+      new ObjectOutputStream(fileOut).writeObject(NotSerializableClass.class);
+      FileInputStream fileIn = new FileInputStream(tmpFile);
+      assertEquals(NotSerializableClass.class, new ObjectInputStream(fileIn).readObject());
+    } finally {
+      tmpFile.delete();
+    }
   }
 }
