@@ -17,8 +17,6 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.types.Import;
-import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.util.List;
 import java.util.Set;
@@ -32,14 +30,9 @@ import java.util.Set;
  */
 public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerator {
 
-  // The prefix to use for preprocessor variable names. Derived from the path of
-  // the generated file. For example if "my/pkg/Foo.h" is being generated the
-  // prefix would be "MyPkgFoo".
-  private final String varPrefix;
 
   protected ObjectiveCSegmentedHeaderGenerator(GenerationUnit unit) {
     super(unit);
-    varPrefix = getVarPrefix(unit.getOutputPath());
   }
 
   public static void generate(GenerationUnit unit) {
@@ -135,13 +128,5 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     print(code);
     newline();
     println("#endif");
-  }
-
-  private static String getVarPrefix(String header) {
-    int idx = header.lastIndexOf('.');
-    if (idx != -1) {
-      header = header.substring(0, idx);
-    }
-    return UnicodeUtils.asValidObjcIdentifier(NameTable.camelCasePath(header));
   }
 }

@@ -66,7 +66,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     // Egyptian heiroglyph letters outside UCS-2, requiring two UTF-16 chars
     translation = translateSourceFile(
         "public class egyptian\uD80C\uDC00 {}", "egyptian\uD80C\uDC00", "egyptian\uD80C\uDC00.h");
-    assertTranslation(translation, "#ifndef _egyptian\uD80C\uDC00_H");
+    assertTranslation(translation, "#ifndef _Egyptian\uD80C\uDC00_H");
   }
 
   public void testDeprecatedTypeNameTranslation() throws IOException {

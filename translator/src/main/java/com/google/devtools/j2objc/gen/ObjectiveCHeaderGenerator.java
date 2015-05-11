@@ -19,6 +19,8 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.types.Import;
+import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.util.Set;
 
@@ -29,6 +31,11 @@ import java.util.Set;
  */
 public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
+  // The prefix to use for preprocessor variable names. Derived from the path of
+  // the generated file. For example if "my/pkg/Foo.h" is being generated the
+  // prefix would be "MyPkgFoo".
+  protected final String varPrefix;
+
   /**
    * Generate an Objective-C header file for each type declared in the given {@link GenerationUnit}.
    */
@@ -38,6 +45,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   protected ObjectiveCHeaderGenerator(GenerationUnit unit) {
     super(unit, false);
+    varPrefix = getVarPrefix(unit.getOutputPath());
   }
 
   @Override
@@ -62,8 +70,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   protected void generateFileHeader() {
-    printf("#ifndef _%s_H_\n", getGenerationUnit().getName());
-    printf("#define _%s_H_\n", getGenerationUnit().getName());
+    printf("#ifndef _%s_H_\n", varPrefix);
+    printf("#define _%s_H_\n", varPrefix);
     pushIgnoreDeprecatedDeclarationsPragma();
 
     Set<String> seenTypes = Sets.newHashSet();
@@ -102,6 +110,13 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   protected void generateFileFooter() {
     newline();
     popIgnoreDeprecatedDeclarationsPragma();
-    printf("#endif // _%s_H_\n", getGenerationUnit().getName());
+    printf("#endif // _%s_H_\n", varPrefix);
+  }
+
+  protected static String getVarPrefix(String header) {
+    if (header.endsWith(".h")) {
+      header = header.substring(0, header.length() - 2);
+    }
+    return UnicodeUtils.asValidObjcIdentifier(NameTable.camelCasePath(header));
   }
 }

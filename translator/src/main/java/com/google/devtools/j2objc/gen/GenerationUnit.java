@@ -25,7 +25,6 @@ import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.io.File;
 import java.util.Collection;
@@ -43,7 +42,6 @@ import javax.annotation.Nullable;
  */
 public class GenerationUnit {
 
-  private String name;
   private String outputPath;
   private final int numUnits;
   private int receivedUnits = 0;
@@ -88,7 +86,6 @@ public class GenerationUnit {
     }
     GenerationUnit unit = new GenerationUnit(filename, numInputs);
     unit.outputPath = outputPath;
-    unit.name = UnicodeUtils.asValidObjcIdentifier(NameTable.camelCasePath(outputPath));
     return unit;
   }
 
@@ -98,15 +95,6 @@ public class GenerationUnit {
    */
   public String getSourceName() {
     return sourceName;
-  }
-
-  /**
-   * Gets the name of this GenerationUnit.
-   * This will be a name appropriate for use in Obj-C output code.
-   */
-  @Nullable
-  public String getName() {
-    return name;
   }
 
   public boolean hasIncompleteProtocol() {
@@ -133,10 +121,6 @@ public class GenerationUnit {
     assert receivedUnits < numUnits;
     receivedUnits++;
 
-    if (name == null) {
-      assert numUnits == 1;
-      name = UnicodeUtils.asValidObjcIdentifier(NameTable.getMainTypeFullName(unit));
-    }
     if (outputPath == null) {
       // We can only infer the output path if there's one compilation unit.
       assert numUnits == 1;
