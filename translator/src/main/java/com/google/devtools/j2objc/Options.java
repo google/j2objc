@@ -325,7 +325,7 @@ public class Options {
           || arg.equals("--no-final-methods-functions")
           || arg.equals("--hide-private-members")
           || arg.equals("--no-hide-private-members")) {
-        break;
+        // ignore
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else {
