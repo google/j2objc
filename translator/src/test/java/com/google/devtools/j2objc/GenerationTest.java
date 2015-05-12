@@ -85,7 +85,6 @@ public abstract class GenerationTest extends TestCase {
         "-d", tempDir.getAbsolutePath(),
         "-sourcepath", tempDir.getAbsolutePath(),
         "-q", // Suppress console output.
-        "--hide-private-members", // Future default, run tests with it now.
         "-encoding", "UTF-8" // Translate strings correctly when encodings are nonstandard.
     });
     parser = initializeParser(tempDir);

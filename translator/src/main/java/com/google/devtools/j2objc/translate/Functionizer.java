@@ -56,7 +56,6 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -83,9 +82,6 @@ public class Functionizer extends TreeVisitor {
    * are always functionized since there are no dynamic dispatch issues.
    */
   private Set<IMethodBinding> determineFunctionizableMethods(final CompilationUnit unit) {
-    if (!Options.finalMethodsAsFunctions()) {
-      return Collections.emptySet();
-    }
     final Set<IMethodBinding> functionizableDeclarations = Sets.newHashSet();
     final Set<IMethodBinding> invocations = Sets.newHashSet();
     unit.accept(new TreeVisitor() {
@@ -255,7 +251,7 @@ public class Functionizer extends TreeVisitor {
       // Static methods are only needed as an API for hand-written code, or for
       // reflection. So we can reduce the visibility of private static methods
       // or remove them if reflection is stripped.
-      boolean keepMethod = !BindingUtil.isStatic(binding) || !Options.hidePrivateMembers()
+      boolean keepMethod = !BindingUtil.isStatic(binding)
           || !(BindingUtil.isPrivateInnerType(declaringClass) || BindingUtil.isPrivate(binding))
           || TranslationUtil.needsReflection(declaringClass);
       if (keepMethod) {

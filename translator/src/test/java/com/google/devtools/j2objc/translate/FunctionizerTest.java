@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 
 import java.io.IOException;
 
@@ -25,12 +24,6 @@ import java.io.IOException;
  * @author Tom Ball
  */
 public class FunctionizerTest extends GenerationTest {
-
-  @Override
-  protected void setUp() throws IOException {
-    super.setUp();
-    Options.setFinalMethodsAsFunctions(true);
-  }
 
   public void testPrivateInstanceMethodNoArgs() throws IOException {
     String translation = translateSourceFile(

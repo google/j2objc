@@ -82,12 +82,6 @@ Add a method mapping file.
 Don't emit class methods for static Java methods.
 (static methods are converted to functions)
 .TP
-.BI \-\-no\-final\-methods\-as\-functions
-Disable generating functions for final methods.
-.TP
-.BI \-\-no\-hide\-private\-members
-Includes private fields and methods in header file.
-.TP
 .BI \-\-no\-package\-directories
 Generate output files to specified directory, without creating package sub-directories
 .TP
@@ -129,6 +123,9 @@ Boot path used by translation (not the tool itself).
 .TP
 .BI \-Xno\-jsni\-warnings
 Warn if JSNI (GWT) native code delimiters are used instead of OCNI delimiters.
+.TP
+.BI \-\J<flag>
+Pass <flag> directly to the Java runtime.
 
 .SH "SEE ALSO"
 .BR j2objcc (1)

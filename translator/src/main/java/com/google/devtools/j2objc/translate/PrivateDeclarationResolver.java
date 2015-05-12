@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -62,7 +61,7 @@ public class PrivateDeclarationResolver extends TreeVisitor {
     // Identify types that are public by their declaration.
     for (AbstractTypeDeclaration typeNode : node.getTypes()) {
       ITypeBinding typeBinding = typeNode.getTypeBinding();
-      if (!isPrivateType(typeBinding)) {
+      if (!BindingUtil.isPrivateInnerType(typeBinding)) {
         addPublicType(typeBinding);
       }
     }
@@ -116,13 +115,9 @@ public class PrivateDeclarationResolver extends TreeVisitor {
     }
   }
 
-  private boolean isPrivateType(ITypeBinding type) {
-    return Options.hidePrivateMembers() && BindingUtil.isPrivateInnerType(type);
-  }
-
   @Override
   public boolean visit(FieldDeclaration node) {
-    boolean isPrivate = Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers());
+    boolean isPrivate = Modifier.isPrivate(node.getModifiers());
     node.setHasPrivateDeclaration(isPrivate);
     if (!isPrivate) {
       addPublicType(node.getType());
@@ -142,7 +137,7 @@ public class PrivateDeclarationResolver extends TreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
-    boolean isPrivate = Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers());
+    boolean isPrivate = Modifier.isPrivate(node.getModifiers());
     node.setHasPrivateDeclaration(isPrivate);
     if (!isPrivate) {
       addPublicType(node.getReturnType());
@@ -152,7 +147,7 @@ public class PrivateDeclarationResolver extends TreeVisitor {
 
   @Override
   public boolean visit(NativeDeclaration node) {
-    boolean isPrivate = Options.hidePrivateMembers() && Modifier.isPrivate(node.getModifiers());
+    boolean isPrivate = Modifier.isPrivate(node.getModifiers());
     node.setHasPrivateDeclaration(isPrivate);
     return false;
   }

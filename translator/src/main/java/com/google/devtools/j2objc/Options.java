@@ -78,9 +78,7 @@ public class Options {
   private boolean stripReflection = false;
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
-  private boolean finalMethodsAsFunctions = true;
   private boolean removeClassMethods = false;
-  private boolean hidePrivateMembers = true;
   private int batchTranslateMaximum = 0;
   private List<String> headerMappingFiles = null;
   private Map<String, String> packagePrefixes = Maps.newHashMap();
@@ -313,23 +311,21 @@ public class Options {
       } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
         batchTranslateMaximum =
             Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
-      // TODO(tball): remove obsolete flag once projects stop using it.
-      } else if (arg.equals("--final-methods-as-functions")) {
-        finalMethodsAsFunctions = true;
-      } else if (arg.equals("--no-final-methods-functions")) {
-        finalMethodsAsFunctions = false;
+      }
       // TODO(kstanger): remove both "class-methods" flags once the behavior is standardized.
-      } else if (arg.equals("--no-class-methods")) {
+      else if (arg.equals("--no-class-methods")) {
         removeClassMethods = true;
       } else if (arg.equals("--keep-class-methods")) {
         removeClassMethods = false;
-      // TODO(tball): remove obsolete flag once projects stop using it.
-      } else if (arg.equals("--hide-private-members")) {
-        hidePrivateMembers = true;
-      } else if (arg.equals("--no-hide-private-members")) {
-        hidePrivateMembers = false;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
+      }
+      // TODO(tball): remove obsolete flags once projects stop using them.
+      else if (arg.equals("--final-methods-as-functions")
+          || arg.equals("--no-final-methods-functions")
+          || arg.equals("--hide-private-members")
+          || arg.equals("--no-hide-private-members")) {
+        break;
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else {
@@ -686,15 +682,6 @@ public class Options {
     instance.batchTranslateMaximum = max;
   }
 
-  public static boolean finalMethodsAsFunctions() {
-    return instance.finalMethodsAsFunctions;
-  }
-
-  @VisibleForTesting
-  public static void setFinalMethodsAsFunctions(boolean b) {
-    instance.finalMethodsAsFunctions = b;
-  }
-
   public static boolean removeClassMethods() {
     return instance.removeClassMethods;
   }
@@ -702,15 +689,6 @@ public class Options {
   @VisibleForTesting
   public static void setRemoveClassMethods(boolean b) {
     instance.removeClassMethods = b;
-  }
-
-  public static boolean hidePrivateMembers() {
-    return instance.hidePrivateMembers;
-  }
-
-  @VisibleForTesting
-  public static void setHidePrivateMembers(boolean b) {
-    instance.hidePrivateMembers = b;
   }
 
   public static boolean shouldMapHeaders() {
