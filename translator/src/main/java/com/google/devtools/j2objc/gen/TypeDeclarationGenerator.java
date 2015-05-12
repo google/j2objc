@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -109,21 +110,17 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void printConstantDefines() {
-    boolean needsNewline = true;
-    for (FieldDeclaration fieldDecl : getStaticFields()) {
-      for (VariableDeclarationFragment fragment : fieldDecl.getFragments()) {
-        IVariableBinding field = fragment.getVariableBinding();
-        if (BindingUtil.isPrimitiveConstant(field)) {
-          if (needsNewline) {
-            needsNewline = false;
-            newline();
-          }
-          printf("#define %s ", nameTable.getPrimitiveConstantName(field));
-          Object value = field.getConstantValue();
-          assert value != null;
-          println(LiteralGenerator.generate(value));
-        }
-      }
+    Iterable<VariableDeclarationFragment> constants = getPrimitiveConstants();
+    if (Iterables.isEmpty(constants)) {
+      return;
+    }
+    newline();
+    for (VariableDeclarationFragment fragment : getPrimitiveConstants()) {
+      IVariableBinding field = fragment.getVariableBinding();
+      printf("#define %s ", nameTable.getPrimitiveConstantName(field));
+      Object value = field.getConstantValue();
+      assert value != null;
+      println(LiteralGenerator.generate(value));
     }
   }
 
@@ -210,7 +207,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * Prints the list of instance variables in a type.
    */
   protected void printInstanceVariables() {
-    Iterable<FieldDeclaration> fields = getInstanceFields();
+    Iterable<VariableDeclarationFragment> fields = getInstanceFields();
     if (Iterables.isEmpty(fields)) {
       newline();
       return;
@@ -220,41 +217,43 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     println(" {");
     println(" @public");
     indent();
-    for (FieldDeclaration field : fields) {
-      List<VariableDeclarationFragment> vars = field.getFragments();
-      assert !vars.isEmpty();
-      IVariableBinding varBinding = vars.get(0).getVariableBinding();
-      ITypeBinding varType = varBinding.getType();
-      JavadocGenerator.printDocComment(getBuilder(), field.getJavadoc());
-      printIndent();
-      if (BindingUtil.isWeakReference(varBinding)) {
-        // We must add this even without -use-arc because the header may be
-        // included by a file compiled with ARC.
-        print("__weak ");
-      }
-      String objcType = nameTable.getSpecificObjCType(varType);
-      boolean needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
-      if (needsAsterisk && objcType.endsWith(" *")) {
-        // Strip pointer from type, as it will be added when appending fragment.
-        // This is necessary to create "Foo *one, *two;" declarations.
-        objcType = objcType.substring(0, objcType.length() - 2);
-      }
-      print(objcType);
-      print(' ');
-      for (Iterator<VariableDeclarationFragment> it = field.getFragments().iterator();
-           it.hasNext(); ) {
-        VariableDeclarationFragment f = it.next();
-        if (needsAsterisk) {
-          print('*');
+    FieldDeclaration lastDeclaration = null;
+    boolean needsAsterisk = false;
+    for (VariableDeclarationFragment fragment : fields) {
+      IVariableBinding varBinding = fragment.getVariableBinding();
+      FieldDeclaration declaration = (FieldDeclaration) fragment.getParent();
+      if (declaration != lastDeclaration) {
+        if (lastDeclaration != null) {
+          println(";");
         }
-        String name = nameTable.getVariableName(f.getVariableBinding());
-        print(NameTable.javaFieldToObjC(name));
-        if (it.hasNext()) {
-          print(", ");
+        lastDeclaration = declaration;
+        ITypeBinding varType = varBinding.getType();
+        JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
+        printIndent();
+        if (BindingUtil.isWeakReference(varBinding)) {
+          // We must add this even without -use-arc because the header may be
+          // included by a file compiled with ARC.
+          print("__weak ");
         }
+        String objcType = nameTable.getSpecificObjCType(varType);
+        needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
+        if (needsAsterisk && objcType.endsWith(" *")) {
+          // Strip pointer from type, as it will be added when appending fragment.
+          // This is necessary to create "Foo *one, *two;" declarations.
+          objcType = objcType.substring(0, objcType.length() - 2);
+        }
+        print(objcType);
+        print(' ');
+      } else {
+        print(", ");
       }
-      println(";");
+      if (needsAsterisk) {
+        print('*');
+      }
+      String name = nameTable.getVariableName(varBinding);
+      print(NameTable.javaFieldToObjC(name));
     }
+    println(";");
     unindent();
     println("}");
   }
@@ -318,31 +317,31 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
+  private static final Predicate<VariableDeclarationFragment> NEEDS_SETTER =
+      new Predicate<VariableDeclarationFragment>() {
+    public boolean apply(VariableDeclarationFragment fragment) {
+      IVariableBinding var = fragment.getVariableBinding();
+      return !var.getType().isPrimitive() && !BindingUtil.isWeakReference(var);
+    }
+  };
+
   protected void printFieldSetters() {
-    boolean newlinePrinted = false;
-    for (FieldDeclaration field : getInstanceFields()) {
-      ITypeBinding type = field.getType().getTypeBinding();
-      if (type.isPrimitive()) {
-        continue;
-      }
-      String typeStr = nameTable.getObjCType(type);
-      for (VariableDeclarationFragment var : field.getFragments()) {
-        if (BindingUtil.isWeakReference(var.getVariableBinding())) {
-          continue;
-        }
-        String fieldName = NameTable.javaFieldToObjC(
-            nameTable.getVariableName(var.getVariableBinding()));
-        if (!newlinePrinted) {
-          newlinePrinted = true;
-          newline();
-        }
-        println(String.format("J2OBJC_FIELD_SETTER(%s, %s, %s)", typeName, fieldName, typeStr));
-      }
+    Iterable<VariableDeclarationFragment> fields =
+        Iterables.filter(getInstanceFields(), NEEDS_SETTER);
+    if (Iterables.isEmpty(fields)) {
+      return;
+    }
+    newline();
+    for (VariableDeclarationFragment fragment : fields) {
+      IVariableBinding var = fragment.getVariableBinding();
+      String typeStr = nameTable.getObjCType(var.getType());
+      String fieldName = NameTable.javaFieldToObjC(nameTable.getVariableName(var));
+      println(String.format("J2OBJC_FIELD_SETTER(%s, %s, %s)", typeName, fieldName, typeStr));
     }
   }
 
   protected void printStaticFieldDeclarations() {
-    for (VariableDeclarationFragment fragment : TreeUtil.asFragments(getStaticFields())) {
+    for (VariableDeclarationFragment fragment : getStaticFields()) {
       printStaticFieldFullDeclaration(fragment);
     }
   }
@@ -360,12 +359,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     boolean isFinal = Modifier.isFinal(var.getModifiers());
     boolean isPrimitive = var.getType().isPrimitive();
     newline();
-    if (BindingUtil.isPrimitiveConstant(var)) {
-      name = var.getName();
-    } else {
-      printStaticFieldDeclaration(
-          fragment, String.format("%s%s_%s", typeWithSpace, typeName, name));
-    }
+    printStaticFieldDeclaration(fragment, String.format("%s%s_%s", typeWithSpace, typeName, name));
     printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s)\n", typeName, name, objcType);
     if (!isFinal) {
       if (isPrimitive) {

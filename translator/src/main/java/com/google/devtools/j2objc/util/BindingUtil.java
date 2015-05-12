@@ -63,12 +63,14 @@ public final class BindingUtil {
   }
 
   public static boolean isPrimitiveConstant(IVariableBinding binding) {
-    return isConstant(binding) && binding.getType().isPrimitive();
+    return isFinal(binding) && binding.getType().isPrimitive()
+        && binding.getConstantValue() != null
+        // Exclude local variables declared final.
+        && binding.getDeclaringClass() != null;
   }
 
-  public static boolean isConstant(IVariableBinding binding) {
-    return binding != null && isStatic(binding) && isFinal(binding)
-        && binding.getConstantValue() != null;
+  public static boolean isInstanceVar(IVariableBinding binding) {
+    return !isStatic(binding) && !isPrimitiveConstant(binding);
   }
 
   public static boolean isAbstract(IBinding binding) {

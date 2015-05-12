@@ -83,28 +83,22 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   private void printStaticVars() {
     boolean needsNewline = true;
-    for (FieldDeclaration field : getStaticFields()) {
-      if (field.hasPrivateDeclaration()) {
-        // Static var is defined in declaration.
+    for (VariableDeclarationFragment fragment : getStaticFields()) {
+      if (((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
         continue;
+      } else if (needsNewline) {
+        needsNewline = false;
+        newline();
       }
-      for (VariableDeclarationFragment var : field.getFragments()) {
-        IVariableBinding binding = var.getVariableBinding();
-        Expression initializer = var.getInitializer();
-        if (BindingUtil.isPrimitiveConstant(binding)) {
-          continue;
-        } else if (needsNewline) {
-          needsNewline = false;
-          newline();
-        }
-        String name = nameTable.getStaticVarQualifiedName(binding);
-        String objcType = nameTable.getObjCType(binding.getType());
-        objcType += objcType.endsWith("*") ? "" : " ";
-        if (initializer != null) {
-          printf("%s%s = %s;\n", objcType, name, generateExpression(initializer));
-        } else {
-          printf("%s%s;\n", objcType, name);
-        }
+      IVariableBinding varBinding = fragment.getVariableBinding();
+      Expression initializer = fragment.getInitializer();
+      String name = nameTable.getStaticVarQualifiedName(varBinding);
+      String objcType = nameTable.getObjCType(varBinding.getType());
+      objcType += objcType.endsWith("*") ? "" : " ";
+      if (initializer != null) {
+        printf("%s%s = %s;\n", objcType, name, generateExpression(initializer));
+      } else {
+        printf("%s%s;\n", objcType, name);
       }
     }
   }

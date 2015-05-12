@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
@@ -28,6 +27,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -87,13 +87,27 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     return filteredDecls;
   }
 
-  private static final Predicate<BodyDeclaration> IS_STATIC = new Predicate<BodyDeclaration>() {
-    public boolean apply(BodyDeclaration decl) {
-      return Modifier.isStatic(decl.getModifiers());
+  private static final Predicate<VariableDeclarationFragment> IS_STATIC_FIELD =
+      new Predicate<VariableDeclarationFragment>() {
+    public boolean apply(VariableDeclarationFragment frag) {
+      IVariableBinding var = frag.getVariableBinding();
+      return BindingUtil.isStatic(var) && !BindingUtil.isPrimitiveConstant(var);
     }
   };
 
-  private static final Predicate<BodyDeclaration> NOT_STATIC = Predicates.not(IS_STATIC);
+  private static final Predicate<VariableDeclarationFragment> IS_INSTANCE_FIELD =
+      new Predicate<VariableDeclarationFragment>() {
+    public boolean apply(VariableDeclarationFragment frag) {
+      return BindingUtil.isInstanceVar(frag.getVariableBinding());
+    }
+  };
+
+  private static final Predicate<VariableDeclarationFragment> IS_PRIMITIVE_CONSTANT =
+      new Predicate<VariableDeclarationFragment>() {
+    public boolean apply(VariableDeclarationFragment frag) {
+      return BindingUtil.isPrimitiveConstant(frag.getVariableBinding());
+    }
+  };
 
   private static final Predicate<BodyDeclaration> IS_OUTER_DECL = new Predicate<BodyDeclaration>() {
     public boolean apply(BodyDeclaration decl) {
@@ -142,20 +156,25 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     return typeBinding.isInterface();
   }
 
-  protected Iterable<FieldDeclaration> getInstanceFields() {
+  protected Iterable<VariableDeclarationFragment> getInstanceFields() {
     if (isInterfaceType()) {
       return Collections.emptyList();
     }
-    return Iterables.filter(Iterables.filter(declarations, FieldDeclaration.class), NOT_STATIC);
+    return Iterables.filter(
+        TreeUtil.asFragments(Iterables.filter(declarations, FieldDeclaration.class)),
+        IS_INSTANCE_FIELD);
   }
 
-  protected Iterable<FieldDeclaration> getStaticFields() {
-    Iterable<FieldDeclaration> fieldDecls = Iterables.filter(declarations, FieldDeclaration.class);
-    // All variables declared in interface types are static.
-    if (!isInterfaceType()) {
-      fieldDecls = Iterables.filter(fieldDecls, IS_STATIC);
-    }
-    return fieldDecls;
+  protected Iterable<VariableDeclarationFragment> getStaticFields() {
+    return Iterables.filter(
+        TreeUtil.asFragments(Iterables.filter(declarations, FieldDeclaration.class)),
+        IS_STATIC_FIELD);
+  }
+
+  protected Iterable<VariableDeclarationFragment> getPrimitiveConstants() {
+    return Iterables.filter(
+        TreeUtil.asFragments(Iterables.filter(declarations, FieldDeclaration.class)),
+        IS_PRIMITIVE_CONSTANT);
   }
 
   protected Iterable<BodyDeclaration> getInnerDeclarations() {

@@ -102,7 +102,7 @@ public class InitializationNormalizer extends TreeVisitor {
           iterator.remove();
           break;
         case FIELD_DECLARATION:
-          addFieldInitializer(member, binding.isInterface(), initStatements, classInitStatements);
+          addFieldInitializer(member, initStatements, classInitStatements);
           break;
         default:
           // Fall-through.
@@ -141,20 +141,16 @@ public class InitializationNormalizer extends TreeVisitor {
    * add them to the appropriate list of initialization statements.
    */
   private void addFieldInitializer(
-      BodyDeclaration member, boolean isInterface, List<Statement> initStatements,
-      List<Statement> classInitStatements) {
+      BodyDeclaration member, List<Statement> initStatements, List<Statement> classInitStatements) {
     FieldDeclaration field = (FieldDeclaration) member;
     for (VariableDeclarationFragment frag : field.getFragments()) {
       if (frag.getInitializer() != null) {
-        Statement assignStmt = makeAssignmentStatement(frag);
-        if (Modifier.isStatic(field.getModifiers()) || isInterface) {
-          if (requiresInitializer(frag)) {
-            classInitStatements.add(assignStmt);
-            frag.setInitializer(null);
-          }
-        } else {
+        if (BindingUtil.isInstanceVar(frag.getVariableBinding())) {
           // always initialize instance variables, since they can't be constants
-          initStatements.add(assignStmt);
+          initStatements.add(makeAssignmentStatement(frag));
+          frag.setInitializer(null);
+        } else if (requiresInitializer(frag)) {
+          classInitStatements.add(makeAssignmentStatement(frag));
           frag.setInitializer(null);
         }
       }

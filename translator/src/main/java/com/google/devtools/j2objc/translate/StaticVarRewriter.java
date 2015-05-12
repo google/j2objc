@@ -92,7 +92,7 @@ public class StaticVarRewriter extends TreeVisitor {
       return;
     }
     FieldAccess fieldAccess = (FieldAccess) maybeFieldAccess;
-    if (!BindingUtil.isStatic(fieldAccess.getVariableBinding())) {
+    if (BindingUtil.isInstanceVar(fieldAccess.getVariableBinding())) {
       return;
     }
     Expression expr = fieldAccess.getExpression();

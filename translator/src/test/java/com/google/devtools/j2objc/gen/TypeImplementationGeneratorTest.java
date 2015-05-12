@@ -59,4 +59,15 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
         "#line 3", "void A_test() {", "A_initialize();", "", "#line 4",
         "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithId:A_class_()];");
   }
+
+  // Regression for non-static constants used in switch statements.
+  // https://github.com/google/j2objc/issues/492
+  public void testNonStaticPrimitiveConstant() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { final int I = 1; void test(int i) { switch(i) { case I: return; } } }",
+        "Test", "Test.h");
+    assertTranslation(translation, "#define Test_I 1");
+    translation = getTranslatedFile("Test.m");
+    assertTranslation(translation, "case Test_I:");
+  }
 }

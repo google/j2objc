@@ -18,7 +18,6 @@ import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 
@@ -65,8 +64,7 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
     if (isInterfaceType()) {
       return;
     }
-    Iterable<FieldDeclaration> privateFields = getInstanceFields();
-    boolean hasPrivateFields = !Iterables.isEmpty(privateFields);
+    boolean hasPrivateFields = !Iterables.isEmpty(getInstanceFields());
     Iterable<BodyDeclaration> privateDecls = getInnerDeclarations();
     if (!Iterables.isEmpty(privateDecls) || hasPrivateFields) {
       newline();
