@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
@@ -81,15 +83,23 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
   }
 
+  private static final Predicate<VariableDeclarationFragment> NEEDS_DEFINITION =
+      new Predicate<VariableDeclarationFragment>() {
+    public boolean apply(VariableDeclarationFragment fragment) {
+      return !BindingUtil.isPrimitiveConstant(fragment.getVariableBinding())
+          // Private static vars are defined in the private declaration.
+          && !((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration();
+    }
+  };
+
   private void printStaticVars() {
-    boolean needsNewline = true;
-    for (VariableDeclarationFragment fragment : getStaticFields()) {
-      if (((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
-        continue;
-      } else if (needsNewline) {
-        needsNewline = false;
-        newline();
-      }
+    Iterable<VariableDeclarationFragment> fields =
+        Iterables.filter(getStaticFields(), NEEDS_DEFINITION);
+    if (Iterables.isEmpty(fields)) {
+      return;
+    }
+    newline();
+    for (VariableDeclarationFragment fragment : fields) {
       IVariableBinding varBinding = fragment.getVariableBinding();
       Expression initializer = fragment.getInitializer();
       String name = nameTable.getStaticVarQualifiedName(varBinding);

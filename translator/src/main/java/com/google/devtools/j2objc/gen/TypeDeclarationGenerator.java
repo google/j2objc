@@ -359,7 +359,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     boolean isFinal = Modifier.isFinal(var.getModifiers());
     boolean isPrimitive = var.getType().isPrimitive();
     newline();
-    printStaticFieldDeclaration(fragment, String.format("%s%s_%s", typeWithSpace, typeName, name));
+    if (BindingUtil.isPrimitiveConstant(var)) {
+      name = var.getName();
+    } else {
+      printStaticFieldDeclaration(
+          fragment, String.format("%s%s_%s", typeWithSpace, typeName, name));
+    }
     printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s)\n", typeName, name, objcType);
     if (!isFinal) {
       if (isPrimitive) {

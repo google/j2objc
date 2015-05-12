@@ -90,8 +90,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   private static final Predicate<VariableDeclarationFragment> IS_STATIC_FIELD =
       new Predicate<VariableDeclarationFragment>() {
     public boolean apply(VariableDeclarationFragment frag) {
-      IVariableBinding var = frag.getVariableBinding();
-      return BindingUtil.isStatic(var) && !BindingUtil.isPrimitiveConstant(var);
+      return BindingUtil.isStatic(frag.getVariableBinding());
     }
   };
 

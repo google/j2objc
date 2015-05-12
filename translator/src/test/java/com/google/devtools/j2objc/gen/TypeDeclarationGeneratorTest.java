@@ -46,4 +46,13 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "foo1WithId:(JavaLangInteger *)i");
   }
+
+  public void testAccessorForStaticPrimitiveConstant() throws IOException {
+    // Even though it's safe to access the define directly, we should add an
+    // accessor to be consistent with other static variables.
+    String translation = translateSourceFile(
+        "class Test { static final int FOO = 1; }", "Test", "Test.h");
+    assertTranslation(translation, "#define Test_FOO 1");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, FOO, jint)");
+  }
 }
