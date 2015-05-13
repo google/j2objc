@@ -31,8 +31,8 @@
 
 #if ! __has_feature(objc_arc)
 - (void)dealloc {
-  [dictionary_ autorelease];
-  [key_ autorelease];
+  [dictionary_ release];
+  [key_ release];
   [super dealloc];
 }
 #endif
@@ -68,7 +68,7 @@
 
 #if ! __has_feature(objc_arc)
 - (void)dealloc {
-  [dictionary_ autorelease];
+  [dictionary_ release];
   [super dealloc];
 }
 #endif
@@ -77,7 +77,7 @@
   if ((self = [super init])) {
     dictionary_ = dictionary ?
         [dictionary mutableCopy] :
-        [NSMutableDictionary dictionary];
+        [[NSMutableDictionary alloc] init];
   }
   return self;
 }
