@@ -38,7 +38,6 @@ import java.util.List;
  *
  * @author Tom Ball
  */
-@SuppressWarnings("unchecked")
 public class RewriterTest extends GenerationTest {
 
   public void testContinueAndBreakUsingSameLabel() throws IOException {

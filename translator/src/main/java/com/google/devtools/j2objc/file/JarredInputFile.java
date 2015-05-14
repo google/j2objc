@@ -45,16 +45,23 @@ public class JarredInputFile implements InputFile {
 
   @Override
   public boolean exists() throws IOException {
-    JarFile jarFile = new JarFile(jarPath);
-    ZipEntry entry = jarFile.getEntry(internalPath);
-    return entry != null;
+    try (JarFile jarFile = new JarFile(jarPath)) {
+      ZipEntry entry = jarFile.getEntry(internalPath);
+      return entry != null;
+    }
   }
 
   @Override
   public Reader openReader() throws IOException {
-    JarFile jarFile = new JarFile(jarPath);
+    final JarFile jarFile = new JarFile(jarPath);
     ZipEntry entry = jarFile.getEntry(internalPath);
-    return new InputStreamReader(jarFile.getInputStream(entry), Options.getCharset());
+    return new InputStreamReader(jarFile.getInputStream(entry), Options.getCharset()) {
+      @Override
+      public void close() throws IOException {
+        jarFile.close();
+        super.close();
+      }
+    };
   }
 
   @Override

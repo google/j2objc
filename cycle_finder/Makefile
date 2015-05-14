@@ -87,7 +87,7 @@ $(JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
 	@echo building cycle_finder jar
 	@javac -Xlint:unchecked -sourcepath $(JAVA_SOURCE_DIR):$(TRANSLATOR_SOURCE_DIR) \
 	    -classpath $(JAR_DEPS_PATH) -encoding UTF-8 \
-	    -d $(CLASS_DIR) -source 1.6 -target 1.6 -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
+	    -d $(CLASS_DIR) -source 1.7 -target 1.7 -nowarn $(JAVA_SOURCES:%=$(JAVA_SOURCE_DIR)/%)
 	@for lib in $(JAR_DEPS_DIST); do unzip -oq $$lib -d $(CLASS_DIR); done
 	@rm -rf $(UNUSED_JAR_CONTENTS)
 	@jar cfm $@-combined $(MANIFEST) -C $(CLASS_DIR) .
