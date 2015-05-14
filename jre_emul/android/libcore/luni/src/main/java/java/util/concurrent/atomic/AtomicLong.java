@@ -31,11 +31,6 @@ public class AtomicLong extends Number implements java.io.Serializable {
 
     private volatile long value;
 
-/*-[
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wobjc-designated-initializers"
-]-*/
-
     /**
      * Creates a new AtomicLong with the given initial value.
      *
@@ -44,10 +39,6 @@ public class AtomicLong extends Number implements java.io.Serializable {
     public AtomicLong(long initialValue) {
         value = initialValue;
     }
-
-/*-[
-#pragma clang diagnostic pop
-]-*/
 
     /**
      * Creates a new AtomicLong with initial value {@code 0}.
