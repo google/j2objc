@@ -79,6 +79,7 @@ public class Options {
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
   private boolean removeClassMethods = false;
+  private boolean staticAccessorMethods = false;
   private int batchTranslateMaximum = 0;
   private List<String> headerMappingFiles = null;
   private Map<String, String> packagePrefixes = Maps.newHashMap();
@@ -318,6 +319,8 @@ public class Options {
         removeClassMethods = true;
       } else if (arg.equals("--keep-class-methods")) {
         removeClassMethods = false;
+      } else if (arg.equals("--static-accessor-methods")) {
+        staticAccessorMethods = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       }
@@ -714,5 +717,14 @@ public class Options {
 
   public static String getSourceVersion(){
     return instance.sourceVersion;
+  }
+
+  public static boolean staticAccessorMethods() {
+    return instance.staticAccessorMethods;
+  }
+
+  @VisibleForTesting
+  public static void setStaticAccessorMethods(boolean b) {
+    instance.staticAccessorMethods = b;
   }
 }

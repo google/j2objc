@@ -86,7 +86,7 @@ Don't emit class methods for static Java methods.
 (static methods are converted to functions)
 .TP
 .BI \-\-no\-package\-directories
-Generate output files to specified directory, without creating package sub-directories
+Generate output files to specified directory, without creating package sub-directories.
 .TP
 .BI \-\-prefix " package=prefix "
 Substitute a specified prefix for a package name.
@@ -94,15 +94,18 @@ Substitute a specified prefix for a package name.
 .BI \-\-prefixes " file "
 Specify a properties file with prefix definitions.
 .TP
+\fB\-\-segmented\-headers\fR
+Generates headers with guards around each declared type. Useful for breaking import cycles.
+.TP
+.BI \-\-static\-accessor\-methods
+Generates accessor methods for static variables and enum constants.
+.TP
 .BI \-\-strip\-gwt\-incompatible
 Removes methods that are marked with a GwtIncompatible
 annotation, unless its value is known to be compatible.
 .TP
 .BI \-\-strip\-reflection
 Do not generate metadata needed for Java reflection.
-.TP
-\fB\-\-segmented\-headers\fR
-Generates headers with guards around each declared type. Useful for breaking import cycles.
 .TP
 \fB\-t\fR, \fB\-\-timing\-info\fR
 Print time spent in translation steps.

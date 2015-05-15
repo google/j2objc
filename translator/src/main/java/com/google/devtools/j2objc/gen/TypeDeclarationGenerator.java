@@ -93,6 +93,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
     printImplementedProtocols();
     printInstanceVariables();
+    printStaticAccessors();
     printAnnotationProperties();
     printInnerDeclarations();
     println("\n@end");
@@ -200,6 +201,29 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         print(name);
       }
       print(" >");
+    }
+  }
+
+  /**
+   * Prints the list of static variable and/or enum constant accessor methods.
+   */
+  protected void printStaticAccessors() {
+    if (Options.staticAccessorMethods() && !Modifier.isPrivate(typeBinding.getModifiers())) {
+      for (VariableDeclarationFragment fragment : getStaticFields()) {
+        IVariableBinding var = fragment.getVariableBinding();
+        String accessorName = nameTable.getVariableName(var);
+        String objcType = nameTable.getObjCType(var.getType());
+        printf("\n+ (%s)%s;\n", objcType, accessorName);
+        if (!Modifier.isFinal(var.getModifiers())) {
+          printf("\n+ (void)set%s:(%s)value;\n", NameTable.capitalize(accessorName), objcType);
+        }
+      }
+      if (typeNode instanceof EnumDeclaration) {
+        for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
+          String varName = nameTable.getStaticVarName(constant.getVariableBinding());
+          printf("\n+ (%s *)%s;\n", typeName, varName);
+        }
+      }
     }
   }
 
