@@ -82,6 +82,7 @@ public class Options {
   private int batchTranslateMaximum = 0;
   private List<String> headerMappingFiles = null;
   private Map<String, String> packagePrefixes = Maps.newHashMap();
+  private String sourceVersion = "1.7";
 
   private static File proGuardUsageFile = null;
 
@@ -325,6 +326,22 @@ public class Options {
           || arg.equals("--no-final-methods-functions")
           || arg.equals("--hide-private-members")
           || arg.equals("--no-hide-private-members")) {
+        // ignore
+      }  else if (arg.equals("-source")) {
+        if (++nArg == args.length) {
+          usage("-source requires an argument");
+        }
+        if (args[nArg].length() == 1) {
+          // Handle aliasing 5, 6, 7, and 8 to 1.5, 1.6, 1.7, and 1.8 as supported by javac.
+          sourceVersion = "1." + args[nArg];
+        } else {
+          sourceVersion = args[nArg];
+        }
+      }  else if (arg.equals("-target")) {
+        // Dummy out passed target argument, since we don't care about target.
+        if (++nArg == args.length) {
+          usage("-target requires an argument");
+        }
         // ignore
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
@@ -693,5 +710,9 @@ public class Options {
 
   public static boolean shouldMapHeaders() {
     return useSourceDirectories() || combineSourceJars();
+  }
+
+  public static String getSourceVersion(){
+    return instance.sourceVersion;
   }
 }

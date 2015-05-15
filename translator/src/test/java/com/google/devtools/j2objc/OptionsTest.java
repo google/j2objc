@@ -42,4 +42,38 @@ public class OptionsTest extends GenerationTest {
     assertEquals("JL", prefixMap.get("java.lang"));
     assertEquals("FB", prefixMap.get("foo.bar"));
   }
+
+  public void testSourceVersionFlags() throws IOException {
+    String [] argsJavaSource = "-source 1.6".split(" ");
+    // Check that version defaults to 1.7.
+    assertEquals("1.7", Options.getSourceVersion());
+    Options.load(argsJavaSource);
+    assertEquals("1.6", Options.getSourceVersion());
+
+    argsJavaSource = "-source 1.7".split(" ");
+    Options.load(argsJavaSource);
+    assertEquals("1.7", Options.getSourceVersion());
+
+    argsJavaSource = "-source 1.8".split(" ");
+    Options.load(argsJavaSource);
+    assertEquals("1.8", Options.getSourceVersion());
+
+    // Check that version aliases 6,7, and 8 work correctly.
+    argsJavaSource = "-source 8".split(" ");
+    Options.load(argsJavaSource);
+    assertEquals("1.8", Options.getSourceVersion());
+  }
+
+  public void testSourceVersionFlagAliases() throws IOException {
+    // Check that version aliases work correctly.
+    String[] argsJavaSource = "-source 8".split(" ");
+    Options.load(argsJavaSource);
+    assertEquals("1.8", Options.getSourceVersion());
+  }
+
+  public void testTargetVersionFlags() throws IOException {
+    String [] argsJavaTarget = "-target 1.6".split(" ");
+    // Passed target should be ignored.
+    Options.load(argsJavaTarget);
+  }
 }
