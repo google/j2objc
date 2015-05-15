@@ -158,7 +158,7 @@ bool CGPCodedInputStream::ReadLittleEndian32Fallback(uint32* value) {
   uint8 bytes[sizeof(*value)];
 
   const uint8* ptr;
-  if (BufferSize() >= sizeof(*value)) {
+  if ((unsigned)BufferSize() >= sizeof(*value)) {
     // Fast path:  Enough bytes in the buffer to read directly.
     ptr = buffer_;
     Advance(sizeof(*value));
@@ -175,7 +175,7 @@ bool CGPCodedInputStream::ReadLittleEndian64Fallback(uint64* value) {
   uint8 bytes[sizeof(*value)];
 
   const uint8* ptr;
-  if (BufferSize() >= sizeof(*value)) {
+  if ((unsigned)BufferSize() >= sizeof(*value)) {
     // Fast path:  Enough bytes in the buffer to read directly.
     ptr = buffer_;
     Advance(sizeof(*value));
@@ -395,7 +395,7 @@ bool CGPCodedInputStream::ReadRetainedNSString(NSString **value) {
   uint32 size;
   if (!ReadVarint32(&size)) return false;
 
-  if (BufferSize() >= size) {
+  if ((unsigned)BufferSize() >= size) {
     *value = (NSString *)CFStringCreateWithBytes(
         NULL, buffer_, size, kCFStringEncodingUTF8, false);
     Advance(size);
@@ -416,7 +416,7 @@ bool CGPCodedInputStream::ReadRetainedByteString(CGPByteString **value) {
   uint32 size;
   if (!ReadVarint32(&size)) return false;
 
-  if (BufferSize() >= size) {
+  if ((unsigned)BufferSize() >= size) {
     *value = CGPNewByteString(size);
     memcpy((*value)->buffer_, buffer_, size);
     Advance(size);

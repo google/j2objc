@@ -333,7 +333,7 @@ CGPDescriptor *CGPFieldGetContainingType(CGPFieldDescriptor *field) {
 CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumType, int value) {
   NSUInteger count = enumType->values_->size_;
   CGPEnumValueDescriptor **valuesBuf = enumType->values_->buffer_;
-  for (int i = 0; i < count; i++) {
+  for (NSUInteger i = 0; i < count; i++) {
     CGPEnumValueDescriptor *valueDescriptor = valuesBuf[i];
     if (valueDescriptor->number_ == value) {
       return valueDescriptor;

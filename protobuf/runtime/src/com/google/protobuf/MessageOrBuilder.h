@@ -41,11 +41,11 @@
 
 - (id<ComGoogleProtobufMessage>)getDefaultInstanceForType;
 
-- (int)getRepeatedFieldCountWithComGoogleProtobufDescriptors_FieldDescriptor:
+- (jint)getRepeatedFieldCountWithComGoogleProtobufDescriptors_FieldDescriptor:
     (ComGoogleProtobufDescriptors_FieldDescriptor *)descriptor;
 
 - (id)getRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
-    (ComGoogleProtobufDescriptors_FieldDescriptor *)descriptor withInt:(int)index;
+    (ComGoogleProtobufDescriptors_FieldDescriptor *)descriptor withInt:(jint)index;
 
 - (id<JavaUtilMap>)getAllFields;
 

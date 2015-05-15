@@ -48,7 +48,7 @@ void CGPRepeatedFieldReserve(CGPRepeatedField *field, uint32_t new_size, size_t 
     return;
   }
 
-  int32_t newTotalSize = MAX(MIN_REPEATED_FIELD_SIZE, MAX(data->total_size * 2, new_size));
+  uint32_t newTotalSize = MAX(MIN_REPEATED_FIELD_SIZE, MAX(data->total_size * 2, new_size));
   data->total_size = newTotalSize;
   data->buffer = realloc(data->buffer, newTotalSize * elemSize);
 }
@@ -125,7 +125,7 @@ void CGPRepeatedFieldClear(CGPRepeatedField *field, CGPFieldJavaType type) {
   field->data = NULL;
 }
 
-id CGPRepeatedFieldGet(CGPRepeatedField *field, int index, CGPFieldDescriptor *descriptor) {
+id CGPRepeatedFieldGet(CGPRepeatedField *field, jint index, CGPFieldDescriptor *descriptor) {
   CGPRepeatedFieldCheckBounds(field, index);
 
 #define REPEATED_GET_CASE(NAME) \
@@ -136,7 +136,7 @@ id CGPRepeatedFieldGet(CGPRepeatedField *field, int index, CGPFieldDescriptor *d
 #undef REPEATED_GET_CASE
 }
 
-void CGPRepeatedFieldSet(CGPRepeatedField *field, int index, id value, CGPFieldJavaType type) {
+void CGPRepeatedFieldSet(CGPRepeatedField *field, jint index, id value, CGPFieldJavaType type) {
   CGPRepeatedFieldCheckBounds(field, index);
 
 #define REPEATED_GET_CASE(NAME) \
@@ -164,7 +164,7 @@ static void CGPRepeatedFieldAddUnsafe(CGPRepeatedFieldData *data, id value, CGPF
 }
 
 void CGPRepeatedFieldAdd(CGPRepeatedField *field, id value, CGPFieldJavaType type) {
-  int32_t total_size = CGPRepeatedFieldTotalSize(field);
+  uint32_t total_size = CGPRepeatedFieldTotalSize(field);
   if (CGPRepeatedFieldSize(field) == total_size) {
     CGPRepeatedFieldReserve(field, total_size + 1, CGPGetTypeSize(type));
   }
@@ -203,8 +203,8 @@ id<JavaUtilList> CGPRepeatedFieldCopyList(CGPRepeatedField *field, CGPFieldDescr
 }
 
 BOOL CGPRepeatedFieldIsEqual(CGPRepeatedField *a, CGPRepeatedField *b, CGPFieldJavaType type) {
-  int32_t aSize = CGPRepeatedFieldSize(a);
-  int32_t bSize = CGPRepeatedFieldSize(b);
+  uint32_t aSize = CGPRepeatedFieldSize(a);
+  uint32_t bSize = CGPRepeatedFieldSize(b);
   if (aSize != bSize) {
     return NO;
   }
@@ -225,7 +225,7 @@ BOOL CGPRepeatedFieldIsEqual(CGPRepeatedField *a, CGPRepeatedField *b, CGPFieldJ
   }
 }
 
-void CGPRepeatedFieldOutOfBounds(int idx, uint32_t size) {
+void CGPRepeatedFieldOutOfBounds(jint idx, uint32_t size) {
   @throw [[[JavaLangIndexOutOfBoundsException alloc] initWithNSString:
       [NSString stringWithFormat:@"Repeated field index out-of-bounds. (index = %d, size = %d)",
           idx, (int)size]] autorelease];
@@ -244,7 +244,7 @@ CGPRepeatedFieldList *CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJ
 
 @implementation CGPRepeatedFieldList
 
-- (id)getWithInt:(int)index {
+- (id)getWithInt:(jint)index {
   CGPRepeatedFieldCheckBounds(&field_, index);
 
 #define REPEATED_LIST_GET_CASE(NAME) \
@@ -255,7 +255,7 @@ CGPRepeatedFieldList *CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJ
 #undef REPEATED_LIST_GET_CASE
 }
 
-- (int)size {
+- (jint)size {
   return CGPRepeatedFieldSize(&field_);
 }
 

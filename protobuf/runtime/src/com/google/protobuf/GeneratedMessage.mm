@@ -222,7 +222,7 @@ FOR_EACH_TYPE_NO_ENUM(SINGULAR_GETTER_IMP)
 
 #define REPEATED_GETTER_IMP(NAME) \
   static IMP GetRepeatedGetterImp##NAME(size_t offset) { \
-    return imp_implementationWithBlock(^TYPE_##NAME(id msg, int idx) { \
+    return imp_implementationWithBlock(^TYPE_##NAME(id msg, jint idx) { \
       return CGPRepeatedFieldGet##NAME(REPEATED_FIELD_PTR(msg, offset), idx); \
     }); \
   }
@@ -268,7 +268,7 @@ static BOOL AddHasMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
 
 static BOOL AddCountMethod(Class cls, SEL sel, CGPFieldDescriptor *field) {
   size_t offset = CGPFieldGetOffset(field, cls);
-  IMP imp = imp_implementationWithBlock(^int(id msg) {
+  IMP imp = imp_implementationWithBlock(^jint(id msg) {
     return CGPRepeatedFieldSize(REPEATED_FIELD_PTR(msg, offset));
   });
   char encoding[64];
@@ -330,7 +330,7 @@ FOR_EACH_TYPE_WITH_ENUM(GET_SINGULAR_SETTER_IMP)
 
 #define GET_REPEATED_SETTER_IMP(NAME) \
   static IMP GetRepeatedSetterImp##NAME(size_t offset) { \
-    return imp_implementationWithBlock(^id(id msg, int idx, TYPE_##NAME value) { \
+    return imp_implementationWithBlock(^id(id msg, jint idx, TYPE_##NAME value) { \
       NIL_CHECK_##NAME(value) \
       CGPRepeatedFieldSet##NAME(REPEATED_FIELD_PTR(msg, offset), idx, value); \
       return msg; \
@@ -686,7 +686,7 @@ static id<JavaUtilMap> GetAllFields(id msg) {
   CGPDescriptor *descriptor = [msgCls getDescriptor];
   NSUInteger fieldCount = descriptor->fields_->size_;
   CGPFieldDescriptor **fieldsBuf = descriptor->fields_->buffer_;
-  for (int i = 0; i < fieldCount; i++) {
+  for (NSUInteger i = 0; i < fieldCount; i++) {
     CGPFieldDescriptor *field = fieldsBuf[i];
     if (CGPFieldIsRepeated(field)) {
       size_t offset = CGPFieldGetOffset(field, msgCls);
@@ -710,13 +710,13 @@ static void CheckIsRepeated(CGPFieldDescriptor *descriptor) {
   }
 }
 
-static int GetRepeatedFieldCount(id msg, CGPFieldDescriptor *descriptor) {
+static jint GetRepeatedFieldCount(id msg, CGPFieldDescriptor *descriptor) {
   CheckIsRepeated(nil_chk(descriptor));
   size_t offset = CGPFieldGetOffset(descriptor, object_getClass(msg));
   return CGPRepeatedFieldSize(REPEATED_FIELD_PTR(msg, offset));
 }
 
-static id GetRepeatedField(id msg, CGPFieldDescriptor *descriptor, int index) {
+static id GetRepeatedField(id msg, CGPFieldDescriptor *descriptor, jint index) {
   CheckIsRepeated(nil_chk(descriptor));
   size_t offset = CGPFieldGetOffset(descriptor, object_getClass(msg));
   CGPRepeatedField *field = REPEATED_FIELD_PTR(msg, offset);
@@ -1102,7 +1102,7 @@ static BOOL ParseUnknownField(
     CGPCodedInputStream *stream, CGPDescriptor *descriptor, CGPExtensionRegistryLite *registry,
     CGPExtensionMap *extensionMap, uint32_t tag) {
   if (registry != nil && extensionMap != NULL) {
-    int32_t fieldNumber = CGPWireFormatGetTagFieldNumber(tag);
+    uint32_t fieldNumber = CGPWireFormatGetTagFieldNumber(tag);
     CGPFieldDescriptor *field = CGPExtensionRegistryFind(registry, descriptor, fieldNumber);
     if (field != nil && field->tag_ == tag) {
       return MergeExtensionFromStream(stream, field, registry, extensionMap);
@@ -1926,7 +1926,7 @@ static BOOL MessageIsInitialized(id msg, CGPDescriptor *descriptor) {
           uint32_t arraySize = data->size;
           id *arrayBuffer = (id *)data->buffer;
           CGPDescriptor *msgType = field->valueType_;
-          for (int i = 0; i < arraySize; i++) {
+          for (uint32_t i = 0; i < arraySize; i++) {
             if (!MessageIsInitialized(arrayBuffer[i], msgType)) return NO;
           }
         }
@@ -2173,7 +2173,7 @@ static BOOL MessageIsEqual(id msg, id other, CGPDescriptor *descriptor) {
   }
   NSUInteger count = descriptor->fields_->size_;
   CGPFieldDescriptor **fields = descriptor->fields_->buffer_;
-  for (int i = 0; i < count; i++) {
+  for (NSUInteger i = 0; i < count; i++) {
     CGPFieldDescriptor *field = fields[i];
     size_t offset = CGPFieldGetOffset(field, msgCls);
     CGPFieldJavaType type = CGPFieldGetJavaType(field);
@@ -2224,7 +2224,7 @@ static int RepeatedFieldHash(id msg, CGPFieldDescriptor *field, int hash) {
 #define REPEATED_FIELD_HASH_CASE(NAME) \
   { \
     TYPE_##NAME *buffer = (TYPE_##NAME *)repeatedField->data->buffer; \
-    for (int i = 0; i < length; i++) { \
+    for (uint32_t i = 0; i < length; i++) { \
       TYPE_##NAME value = buffer[i]; \
       hash = 31 * hash + HASH_##NAME(value); \
     } \
@@ -2268,7 +2268,7 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   hash = 19 * hash + (int)[descriptor hash];
   NSUInteger count = descriptor->fields_->size_;
   CGPFieldDescriptor **fields = descriptor->fields_->buffer_;
-  for (int i = 0; i < count; i++) {
+  for (NSUInteger i = 0; i < count; i++) {
     CGPFieldDescriptor *field = fields[i];
     if (CGPFieldIsRepeated(field)) {
       hash = RepeatedFieldHash(msg, field, hash);
@@ -2423,13 +2423,13 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
   return HasField(self, descriptor);
 }
 
-- (int)getRepeatedFieldCountWithComGoogleProtobufDescriptors_FieldDescriptor:
+- (jint)getRepeatedFieldCountWithComGoogleProtobufDescriptors_FieldDescriptor:
     (CGPFieldDescriptor *)descriptor {
   return GetRepeatedFieldCount(self, descriptor);
 }
 
 - (id)getRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
-    (CGPFieldDescriptor *)descriptor withInt:(int)index {
+    (CGPFieldDescriptor *)descriptor withInt:(jint)index {
   return GetRepeatedField(self, descriptor, index);
 }
 
@@ -2552,13 +2552,13 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
   return HasField(self, descriptor);
 }
 
-- (int)getRepeatedFieldCountWithComGoogleProtobufDescriptors_FieldDescriptor:
+- (jint)getRepeatedFieldCountWithComGoogleProtobufDescriptors_FieldDescriptor:
     (CGPFieldDescriptor *)descriptor {
   return GetRepeatedFieldCount(self, descriptor);
 }
 
 - (id)getRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
-    (CGPFieldDescriptor *)descriptor withInt:(int)index {
+    (CGPFieldDescriptor *)descriptor withInt:(jint)index {
   return GetRepeatedField(self, descriptor, index);
 }
 
@@ -2599,7 +2599,7 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage)
 
 - (id<ComGoogleProtobufMessage_Builder>)
     setRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
-    (CGPFieldDescriptor *)descriptor withInt:(int)index withId:(id)object {
+    (CGPFieldDescriptor *)descriptor withInt:(jint)index withId:(id)object {
   nil_chk(object);
   size_t offset = CGPFieldGetOffset(descriptor, object_getClass(self));
   CGPRepeatedField *field = REPEATED_FIELD_PTR(self, offset);

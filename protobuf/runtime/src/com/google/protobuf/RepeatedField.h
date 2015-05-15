@@ -59,11 +59,11 @@ typedef struct CGPRepeatedField {
 
 CF_EXTERN_C_BEGIN
 
-CGP_ALWAYS_INLINE inline int32_t CGPRepeatedFieldSize(CGPRepeatedField *field) {
+CGP_ALWAYS_INLINE inline uint32_t CGPRepeatedFieldSize(CGPRepeatedField *field) {
   return field->data != NULL ? field->data->size : 0;
 }
 
-CGP_ALWAYS_INLINE inline int32_t CGPRepeatedFieldTotalSize(CGPRepeatedField *field) {
+CGP_ALWAYS_INLINE inline uint32_t CGPRepeatedFieldTotalSize(CGPRepeatedField *field) {
   return field->data != NULL ? field->data->total_size : 0;
 }
 
@@ -84,18 +84,18 @@ void CGPRepeatedFieldAppendOther(
 
 void CGPRepeatedFieldClear(CGPRepeatedField *field, CGPFieldJavaType type);
 
-void CGPRepeatedFieldOutOfBounds(int idx, uint32_t size);
+void CGPRepeatedFieldOutOfBounds(jint idx, uint32_t size);
 
-CGP_ALWAYS_INLINE inline void CGPRepeatedFieldCheckBounds(CGPRepeatedField *field, int idx) {
-  int32_t size = CGPRepeatedFieldSize(field);
-  if (idx < 0 || size <= idx) {
+CGP_ALWAYS_INLINE inline void CGPRepeatedFieldCheckBounds(CGPRepeatedField *field, jint idx) {
+  uint32_t size = CGPRepeatedFieldSize(field);
+  if (idx < 0 || size <= (uint32_t)idx) {
     CGPRepeatedFieldOutOfBounds(idx, size);
   }
 }
 
 #define REPEATED_FIELD_GETTER_IMP(NAME) \
   CGP_ALWAYS_INLINE inline TYPE_##NAME CGPRepeatedFieldGet##NAME( \
-      CGPRepeatedField *field, int idx) { \
+      CGPRepeatedField *field, jint idx) { \
     CGPRepeatedFieldCheckBounds(field, idx); \
     return ((TYPE_##NAME *)field->data->buffer)[idx]; \
   }
@@ -128,7 +128,7 @@ CGP_ALWAYS_INLINE inline void CGPRepeatedFieldAddRetainedId(CGPRepeatedField *fi
 
 #define REPEATED_FIELD_SETTER_IMP(NAME) \
   CGP_ALWAYS_INLINE inline void CGPRepeatedFieldSet##NAME( \
-      CGPRepeatedField *field, int idx, TYPE_##NAME value) { \
+      CGPRepeatedField *field, jint idx, TYPE_##NAME value) { \
     CGPRepeatedFieldCheckBounds(field, idx); \
     TYPE_##NAME *ptr = &((TYPE_##NAME *)field->data->buffer)[idx]; \
     TYPE_ASSIGN_##NAME(*ptr, value); \
@@ -140,11 +140,11 @@ FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_SETTER_IMP)
 
 CGPRepeatedFieldList *CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaType type);
 
-id CGPRepeatedFieldGet(CGPRepeatedField *field, int index, CGPFieldDescriptor *descriptor);
+id CGPRepeatedFieldGet(CGPRepeatedField *field, jint index, CGPFieldDescriptor *descriptor);
 
 void CGPRepeatedFieldAdd(CGPRepeatedField *field, id value, CGPFieldJavaType type);
 
-void CGPRepeatedFieldSet(CGPRepeatedField *field, int index, id value, CGPFieldJavaType type);
+void CGPRepeatedFieldSet(CGPRepeatedField *field, jint index, id value, CGPFieldJavaType type);
 
 void CGPRepeatedFieldAssignFromList(
     CGPRepeatedField *field, id<JavaUtilList> list, CGPFieldJavaType type);

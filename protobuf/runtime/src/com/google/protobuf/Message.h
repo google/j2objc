@@ -62,7 +62,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessage)
 
 - (id<ComGoogleProtobufMessage_Builder>)
     setRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(id)descriptor
-                                                             withInt:(int)index
+                                                             withInt:(jint)index
                                                               withId:(id)object;
 
 - (id<ComGoogleProtobufMessage_Builder>)

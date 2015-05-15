@@ -99,7 +99,7 @@ void CGPCodedOutputStream::WriteRaw(const void* data, int size) {
 void CGPCodedOutputStream::WriteLittleEndian32(uint32 value) {
   uint8 bytes[sizeof(value)];
 
-  bool use_fast = buffer_size_ >= sizeof(value);
+  bool use_fast = buffer_size_ >= (int)sizeof(value);
   uint8* ptr = use_fast ? buffer_ : bytes;
 
   WriteLittleEndian32ToArray(value, ptr);
@@ -114,7 +114,7 @@ void CGPCodedOutputStream::WriteLittleEndian32(uint32 value) {
 void CGPCodedOutputStream::WriteLittleEndian64(uint64 value) {
   uint8 bytes[sizeof(value)];
 
-  bool use_fast = buffer_size_ >= sizeof(value);
+  bool use_fast = buffer_size_ >= (int)sizeof(value);
   uint8* ptr = use_fast ? buffer_ : bytes;
 
   WriteLittleEndian64ToArray(value, ptr);

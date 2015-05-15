@@ -34,11 +34,11 @@
 #import "com/google/protobuf/Descriptors.h"
 
 typedef union {
-  int valueInt;
-  long long valueLong;
-  float valueFloat;
-  double valueDouble;
-  BOOL valueBool;
+  jint valueInt;
+  jlong valueLong;
+  jfloat valueFloat;
+  jdouble valueDouble;
+  jboolean valueBool;
   id valueId;
   const void *valuePtr;
 } CGPValue;

@@ -74,7 +74,8 @@ ALL_SOURCES_FULL = $(HEADERS) $(SOURCES_FULL)
 J2OBJCC = $(ARCH_BIN_DIR)/j2objcc
 
 C_FLAGS = $(DEBUGFLAGS) -Werror -Wobjc-missing-property-synthesis -Wshorten-64-to-32 \
-  $(ARCH_FLAGS) $(SDK_FLAGS) -fobjc-abi-version=2 -fobjc-legacy-dispatch -stdlib=libc++
+  -Wsign-compare $(ARCH_FLAGS) $(SDK_FLAGS) -fobjc-abi-version=2 -fobjc-legacy-dispatch \
+  -stdlib=libc++
 INCLUDE_DIRS = src $(GEN_OBJC_DIR)
 
 FAT_LIB_NAME = protobuf_runtime
