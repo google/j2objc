@@ -1,0 +1,144 @@
+{% assign site_root = "" %}
+{% assign path_parts = page.url | split:"/" %}
+{% for part in path_parts offset:2 %}
+{% assign site_root = site_root | append:"../" %}
+{% endfor %}
+
+<html>
+<head>
+<meta charset="utf-8">
+<title>{{ page.title }}</title>
+<script>
+var current_url = window.location.href;
+var bad_url = new RegExp("^https?://google.github.io/j2objc/");
+if (bad_url.test(current_url)) {
+  window.location.replace(current_url.replace(bad_url, "http://j2objc.org/"));
+}
+(function() {
+  var cx = '016856942741735081092:pq0t6q223b4';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+<link href='//fonts.googleapis.com/css?family=Droid+Sans' rel='stylesheet' type='text/css' />
+<link rel="stylesheet" type="text/css" href="{{site_root}}styles/main.css" />
+<link rel="icon" type="image/png" href="{{site_root}}images/favicon.ico">
+<link ref="search" href="/opensearch.xml" title="J2ObjC" 
+    type="application/opensearchdescription+xml" />
+</head>
+<body>
+<div id="banner-panel">
+<div style="float: right; width: 400px;">
+  <gcse:search></gcse:search>
+</div>
+<div id="banner">
+  <a href="{{site_root}}">
+<span class="product-logo"><img src="{{site_root}}images/gear.png" /></span>
+<span class="product-name">J2ObjC</span>
+</a>
+</div>
+<div id="motto-panel">
+<div id="motto">
+Java to iOS Objective-C translation tool and runtime.
+</div>
+</div>
+<div id="download-panel">
+<div id="download">
+<a href="https://github.com/google/j2objc" target="_blank">GitHub</a>
+<a href="http://stackoverflow.com/questions/tagged/j2objc" target="_blank">Questions</a>
+<a href="{{site_root}}blog/index.html">Blog</a>
+<a href="mailto:j2objc-discuss@googlegroups.com">Contact</a>
+</div>
+</div>
+</div>
+<div id="content-panel">
+<div id="content">
+<div id="navbar">
+<a href="{{site_root}}docs/Users-Guide.html">User's Guide
+<ul>
+<li><a href="{{site_root}}docs/Getting-Started.html">Getting Started</a></li>
+<li><a href="{{site_root}}docs/Using-J2ObjC-with-Xcode.html">Using J2ObjC with Xcode</a>
+<ul>
+  <li><a href="{{site_root}}docs/External-Build-Projects.html">External Build Projects</a></li>
+  <li><a href="{{site_root}}docs/Xcode-Build-Rules.html">Xcode Build Rules</a></li>
+  <li><a href="{{site_root}}docs/Adding-the-JreEmulation-project-to-your-Xcode-project.html">The JreEmulation Project</a></li>
+</ul></li>
+<li><a href="{{site_root}}docs/Using-J2ObjC-with-Make.html">Using J2ObjC with Make</a></li>
+<li><a href="{{site_root}}docs/Using-J2ObjC-with-Eclipse.html">Using J2ObjC with Eclipse</a></li>
+<li><a href="{{site_root}}docs/Using-J2ObjC-with-Gradle.html">Using J2ObjC with Gradle</a></li>
+</ul>
+Developing with J2ObjC
+<ul>
+<li><a href="{{site_root}}docs/Required-Link-Flags.html">Required Link Flags</a></li>
+<li><a href="{{site_root}}docs/Reading-Generated-Sources.html">Reading Generated Sources</a></li>
+<li><a href="{{site_root}}docs/Changing-Method-Names.html">Changing Method Names</a></li>
+<li><a href="{{site_root}}docs/Writing-Native-Methods.html">Writing Native Methods</a></li>
+<li><a href="{{site_root}}docs/Translating-JUnit-Tests.html">Translating JUnit Tests</a></li>
+<li><a href="{{site_root}}docs/Memory-Management.html">Memory Management</a>
+<ul><li><a href="{{site_root}}docs/Cycle-Finder-Tool.html">Cycle Finder Tool</a></li>
+</ul></li>
+<li><a href="{{site_root}}docs/Dead-Code-Elimination.html">Dead Code Elimination</a></li>
+<li><a href="{{site_root}}docs/Package-Prefixes.html">Package Prefixes</a></li>
+<li><a href="{{site_root}}docs/FAQ.html">FAQ</a></li>
+<li><a href="{{site_root}}docs/Reporting-Issues.html">Reporting Issues</a></li>
+<li><a href="{{site_root}}docs/Building-J2ObjC.html">Building J2ObjC</a></li>
+<li><a href="{{site_root}}docs/Using-Protocol-Buffers.html">Using Protocol Buffers</a></li>
+<li><a href="{{site_root}}docs/Java-Resources.html">Java Resources</a></li>
+</ul>
+Reference Docs
+<ul>
+<li><a href="{{site_root}}docs/j2objc.html">j2objc</a></li>
+<li><a href="{{site_root}}docs/j2objcc.html">j2objcc</a></li>
+<li><a href="{{site_root}}docs/cycle_finder.html">cycle_finder</a></li>
+<li><a href="{{site_root}}docs/Jre-Emulation-Reference.html">JRE Emulation Reference</a></li>
+</ul>
+J2ObjC Annotations
+<ul>
+<li><a href="{{site_root}}docs/AutoreleasePool.html">AutoreleasePool</a></li>
+<li><a href="{{site_root}}docs/LoopTranslation.html">LoopTranslation</a></li>
+<li><a href="{{site_root}}docs/ObjectiveCIncompatible.html">ObjectiveCIncompatible</a></li>
+<li><a href="{{site_root}}docs/ObjectiveCName.html">ObjectiveCName</a></li>
+<li><a href="{{site_root}}docs/Weak.html">Weak</a></li>
+<li><a href="{{site_root}}docs/WeakOuter.html">WeakOuter</a></li>
+</ul>
+Community
+<ul>
+<li><a href="{{site_root}}docs/20%-Project-Ideas.html">20% Project Ideas</a></li>
+<li><a href="https://github.com/google/j2objc/blob/master/CONTRIBUTING.md">How to Contribute</a></li>
+<li><a href="{{site_root}}docs/Projects-that-use-J2ObjC.html">Projects that use J2ObjC</a></li>
+</ul>
+Design Docs
+<ul>
+<li><a href="{{site_root}}docs/Design-Overview.html">Design Overview</a></li>
+<li><a href="{{site_root}}docs/Java-Conversions.html">Java Conversions</a></li>
+</ul>
+</div>
+<div id="main">
+{{ content }}
+</div>
+</div>
+</div>
+<div id="footer-panel">
+<div id="footer">
+Copyright Google 2015
+</div>
+</div>
+<!-- Google Analytics tracking code -->
+<script type="text/javascript">
+  var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+  document.write(unescape("%3Cscript src='" + gaJsHost + 
+    "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+  try {
+    var pageTracker = _gat._getTracker("UA-34671662-2");
+    pageTracker._trackPageview();
+  } catch(err) {}
+</script>
+</body>
+</html>
