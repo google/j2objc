@@ -1,7 +1,17 @@
 # j2objc is a mixed-language project, but setting objective-c forces the OS to OSX.
 language: objective-c
-compiler: clang
 os: osx
+
+env:
+  - LATEST_JAVA=true
+  - LATEST_JAVA=false
+
+matrix:
+  allow_failures:
+    - env: LATEST_JAVA=true
+
+before_script:
+  - scripts/osx-set-java.sh
 
 # Travis-CI kills the build after 50 minutes, so break it up into
 # smaller commands.
@@ -11,5 +21,3 @@ after_script:
   - make test_cycle_finder
   - make test_jre_cycles
   - make test_guava_cycles
-  - cd jre_emul && make -j4 -f tests.mk link resources
-  - make test_jre_emul
