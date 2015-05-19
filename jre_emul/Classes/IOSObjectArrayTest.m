@@ -19,8 +19,7 @@
 //  Created by Tom Ball on 9/11/11.
 //
 
-#import "IOSClass.h"
-#import "IOSObjectArray.h"
+#include "J2ObjC_source.h"
 #import <XCTest/XCTest.h>
 
 // Unit tests for IOSObjectArray.

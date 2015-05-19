@@ -114,6 +114,7 @@
 		06934A1B1A40D02B00D2CD07 /* HashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06934A161A40D02B00D2CD07 /* HashMapTest.m */; };
 		06934A1C1A40D02B00D2CD07 /* HashtableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06934A181A40D02B00D2CD07 /* HashtableTest.m */; };
 		06934A1D1A40D02B00D2CD07 /* LinkedHashMapTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06934A1A1A40D02B00D2CD07 /* LinkedHashMapTest.m */; };
+		069AA6B71B053B730068A39B /* ChannelsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 069AA6B61B053B730068A39B /* ChannelsTest.m */; };
 		06C54ACB1A40C0D8004B3ACD /* MathTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54AC81A40C0D8004B3ACD /* MathTest.m */; };
 		06C54ACC1A40C0D8004B3ACD /* StrictMathTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54ACA1A40C0D8004B3ACD /* StrictMathTest.m */; };
 		06C54ACF1A40C67A004B3ACD /* Base64Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54ACE1A40C67A004B3ACD /* Base64Test.m */; };
@@ -1823,6 +1824,8 @@
 		0699FF9518D7851500278029 /* ZipError.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZipError.m; path = build_result/Classes/java/util/zip/ZipError.m; sourceTree = "<group>"; };
 		0699FF9618D7851500278029 /* ZipOutputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ZipOutputStream.h; path = build_result/Classes/java/util/zip/ZipOutputStream.h; sourceTree = "<group>"; };
 		0699FF9718D7851500278029 /* ZipOutputStream.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ZipOutputStream.m; path = build_result/Classes/java/util/zip/ZipOutputStream.m; sourceTree = "<group>"; };
+		069AA6B51B053B730068A39B /* ChannelsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ChannelsTest.h; path = org/apache/harmony/tests/java/nio/channels/ChannelsTest.h; sourceTree = "<group>"; };
+		069AA6B61B053B730068A39B /* ChannelsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ChannelsTest.m; path = org/apache/harmony/tests/java/nio/channels/ChannelsTest.m; sourceTree = "<group>"; };
 		069FC49D1AF2A2290095A289 /* AbstractStringBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AbstractStringBuilder.h; path = java/lang/AbstractStringBuilder.h; sourceTree = "<group>"; };
 		069FC49E1AF2A9770095A289 /* java_util_regex_Matcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Matcher.m; path = android/libcore/luni/src/main/native/java_util_regex_Matcher.m; sourceTree = SOURCE_ROOT; };
 		069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Pattern.m; path = android/libcore/luni/src/main/native/java_util_regex_Pattern.m; sourceTree = SOURCE_ROOT; };
@@ -6342,6 +6345,8 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				069AA6B51B053B730068A39B /* ChannelsTest.h */,
+				069AA6B61B053B730068A39B /* ChannelsTest.m */,
 				06E4E365197F1D46005DDE69 /* AbstractExecutorServiceTest.h */,
 				06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */,
 				06E4E367197F1D46005DDE69 /* AbstractQueuedSynchronizerTest.h */,
@@ -8141,6 +8146,7 @@
 				06C54AD21A40C78E004B3ACD /* SerializationTester.m in Sources */,
 				06E4E6CB197F1D47005DDE69 /* ConcurrentLinkedQueueTest.m in Sources */,
 				06E4E742197F1D47005DDE69 /* OldFileChannelTest.m in Sources */,
+				069AA6B71B053B730068A39B /* ChannelsTest.m in Sources */,
 				06574A511A8EB04A000A3616 /* MySignature1.m in Sources */,
 				06E4E6E8197F1D47005DDE69 /* ObjectOutputStreamTest.m in Sources */,
 				06E4E82E197F1D48005DDE69 /* MessageDigestTestSHA512.m in Sources */,
