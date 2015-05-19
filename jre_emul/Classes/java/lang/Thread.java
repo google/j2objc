@@ -55,6 +55,8 @@ public class Thread implements Runnable {
   boolean interrupted;
   private boolean running;
   private ClassLoader contextClassLoader;
+  ThreadLocal.Values localValues;
+  ThreadLocal.Values inheritableValues;
 
   /** The object the thread is waiting on (normally null). */
   Object blocker;
