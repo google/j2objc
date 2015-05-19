@@ -967,7 +967,6 @@ public final class Posix implements Os {
 
   private native int readBytes(FileDescriptor fd, Object buffer, int offset, int byteCount)
       throws ErrnoException /*-[
-    IOSArray_checkRange([(IOSArray *)buffer length], offset, byteCount);
     char *bytes = BytesRW(buffer);
     if (!bytes) {
       return -1;

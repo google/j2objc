@@ -449,6 +449,7 @@ TEST_SOURCES := \
     org/apache/harmony/tests/java/math/BigIntegerNotTest.java \
     org/apache/harmony/tests/java/math/BigIntegerOrTest.java \
     org/apache/harmony/tests/java/math/BigIntegerSubtractTest.java \
+    org/apache/harmony/tests/java/nio/channels/ChannelsTest.java \
     org/apache/harmony/tests/java/util/HashMapTest.java \
     org/apache/harmony/tests/java/util/HashtableTest.java \
     org/apache/harmony/tests/java/util/LinkedHashMapTest.java \
