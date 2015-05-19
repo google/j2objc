@@ -143,7 +143,9 @@ public class TypeImplementationGenerator extends TypeGenerator {
         if (!((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
           IVariableBinding varBinding = fragment.getVariableBinding();
           String accessorName = nameTable.getVariableName(varBinding);
-          String varName = nameTable.getStaticVarQualifiedName(varBinding);
+          String varName = BindingUtil.isPrimitiveConstant(varBinding)
+              ? nameTable.getPrimitiveConstantName(varBinding)
+              : nameTable.getStaticVarQualifiedName(varBinding);
           String objcType = nameTable.getObjCType(varBinding.getType());
           printf("\n+ (%s)%s {\n  return %s;\n}\n", objcType, accessorName, varName);
           int modifiers = varBinding.getModifiers();

@@ -92,10 +92,12 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     String source = "class Test { "
         + "static String ID; "
         + "private static int i; "
+        + "public static final int VERSION = 1; "
         + "static final Test DEFAULT = new Test(); }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslatedLines(translation, "+ (NSString *)ID {", "return Test_ID_;");
     assertTranslatedLines(translation, "+ (void)setID:(NSString *)value {", "Test_set_ID_(value);");
+    assertTranslatedLines(translation, "+ (jint)VERSION {", "return Test_VERSION;");
     assertTranslatedLines(translation, "+ (Test *)DEFAULT {", "return Test_DEFAULT_;");
     assertNotInTranslation(translation, "+ (void)setDEFAULT:(Test *)value"); // Read-only
     assertNotInTranslation(translation, "+ (jint)i");                        // Private
@@ -107,11 +109,13 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     String source = "class Test { "
         + "static String ID; "
         + "private static int i; "
+        + "public static final int VERSION = 1; "
         + "static final Test DEFAULT = new Test(); }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertNotInTranslation(translation, "+ (NSString *)ID");
     assertNotInTranslation(translation, "+ (void)setID:(NSString *)value");
     assertNotInTranslation(translation, "+ (void)setI:(jint)value");
+    assertNotInTranslation(translation, "+ (jint)VERSION");
     assertNotInTranslation(translation, "+ (Test *)DEFAULT");
   }
 
