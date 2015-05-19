@@ -26,11 +26,11 @@ body {
 .product-name {
   font-size: 52px;
   font-weight: bold;
-  color: #1353E9;
+  color: #2196F3;
 }
 #motto-panel {
   padding: 8px 0 8px 0;
-  background-color: #1757CE;
+  background-color: #1565C0;
 }
 #motto {
   width: 1200px;
@@ -41,7 +41,7 @@ body {
 }
 #download-panel {
   padding: 8px 0 8px 0;
-  background-color: #2B71F6;
+  background-color: #2196F3;
 }
 #download {
   width: 1200px;
