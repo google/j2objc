@@ -18,15 +18,15 @@ JAVA_DEPS_JAR_DIR = $(J2OBJC_ROOT)/java_deps/$(BUILD_DIR_NAME)
 JUNIT_JAR = j2objc_junit.jar
 
 ECLIPSE_JARS = \
-    org.eclipse.core.contenttype-3.4.200.v20130326-1255.jar \
-    org.eclipse.core.jobs-3.5.300.v20130429-1813.jar \
-    org.eclipse.core.resources-3.8.101.v20130717-0806.jar \
-    org.eclipse.core.runtime-3.9.0.v20130326-1255.jar \
+    org.eclipse.core.contenttype-3.4.200.v20140207-1251.jar \
+    org.eclipse.core.jobs-3.6.1.v20141014-1248.jar \
+    org.eclipse.core.resources-3.9.1.v20140825-1431.jar \
+    org.eclipse.core.runtime-3.10.0.v20140318-2214.jar \
     org.eclipse.equinox.common-3.6.200.v20130402-1505.jar \
-    org.eclipse.equinox.preferences-3.5.100.v20130422-1538.jar \
-    org.eclipse.jdt.compiler.apt-1.0.600.v20130530-1010.jar \
-    org.eclipse.jdt.core-3.9.1.v20130905-0837.jar \
-    org.eclipse.osgi-3.9.1.v20130814-1242.jar \
+    org.eclipse.equinox.preferences-3.5.200.v20140224-1527.jar \
+    org.eclipse.jdt.compiler.apt-1.1.0.v20140509-1235.jar \
+    org.eclipse.jdt.core-3.10.0.v20140604-1726.jar \
+    org.eclipse.osgi-3.10.2.v20150203-1939.jar \
     org.eclipse.text-3.5.101.jar
 
 GUAVA_JAR = guava-18.0.jar

@@ -44,9 +44,10 @@ public class OptionsTest extends GenerationTest {
   }
 
   public void testSourceVersionFlags() throws IOException {
-    String [] argsJavaSource = "-source 1.6".split(" ");
-    // Check that version defaults to 1.7.
+    // Check that version default is correct.
     assertEquals("1.7", Options.getSourceVersion());
+
+    String[] argsJavaSource = "-source 1.6".split(" ");
     Options.load(argsJavaSource);
     assertEquals("1.6", Options.getSourceVersion());
 
@@ -55,11 +56,6 @@ public class OptionsTest extends GenerationTest {
     assertEquals("1.7", Options.getSourceVersion());
 
     argsJavaSource = "-source 1.8".split(" ");
-    Options.load(argsJavaSource);
-    assertEquals("1.8", Options.getSourceVersion());
-
-    // Check that version aliases 6,7, and 8 work correctly.
-    argsJavaSource = "-source 8".split(" ");
     Options.load(argsJavaSource);
     assertEquals("1.8", Options.getSourceVersion());
   }

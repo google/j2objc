@@ -78,7 +78,7 @@ public class AnnotationPreProcessor {
     compileArgs.add("-encoding");
     compileArgs.add(Options.getCharset().name());
     compileArgs.add("-source");
-    compileArgs.add("1.7");
+    compileArgs.add(Options.getSourceVersion());
     compileArgs.add("-s");
     compileArgs.add(tmpDirPath);
     compileArgs.add("-d");

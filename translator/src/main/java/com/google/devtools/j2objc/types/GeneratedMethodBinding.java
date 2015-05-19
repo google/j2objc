@@ -283,4 +283,9 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
     sb.append(')');
     return sb.toString();
   }
+
+  @Override
+  public ITypeBinding getDeclaredReceiverType() {
+    return null;
+  }
 }

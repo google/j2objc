@@ -19,6 +19,7 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
+import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
@@ -38,6 +39,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -83,6 +85,10 @@ public class Options {
   private int batchTranslateMaximum = 0;
   private List<String> headerMappingFiles = null;
   private Map<String, String> packagePrefixes = Maps.newHashMap();
+
+  private static final Set<String> VALID_JAVA_VERSIONS = ImmutableSet.of("1.8", "1.7", "1.6",
+      "1.5");
+  // The default source version number if not passed with -source
   private String sourceVersion = "1.7";
 
   private static File proGuardUsageFile = null;
@@ -334,11 +340,16 @@ public class Options {
         if (++nArg == args.length) {
           usage("-source requires an argument");
         }
-        if (args[nArg].length() == 1) {
-          // Handle aliasing 5, 6, 7, and 8 to 1.5, 1.6, 1.7, and 1.8 as supported by javac.
+        // Handle aliasing of version numbers as supported by javac.
+        if(args[nArg].length() == 1){
           sourceVersion = "1." + args[nArg];
-        } else {
+        }
+        else{
           sourceVersion = args[nArg];
+        }
+        // Make sure that we were passed a valid release version.
+        if (!VALID_JAVA_VERSIONS.contains(sourceVersion)) {
+          usage("invalid source release: " + args[nArg]);
         }
       }  else if (arg.equals("-target")) {
         // Dummy out passed target argument, since we don't care about target.

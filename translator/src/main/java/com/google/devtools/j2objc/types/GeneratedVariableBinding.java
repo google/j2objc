@@ -216,4 +216,9 @@ public class GeneratedVariableBinding extends AbstractBinding implements IVariab
     sb.append((name != null) ? name : "<no name>");
     return sb.toString();
   }
+
+  @Override
+  public boolean isEffectivelyFinal() {
+    return false;
+  }
 }

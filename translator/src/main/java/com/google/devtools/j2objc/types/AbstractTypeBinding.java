@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.types;
 
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
@@ -256,5 +257,15 @@ public abstract class AbstractTypeBinding extends AbstractBinding implements ITy
   @Override
   public boolean isSubTypeCompatible(ITypeBinding type) {
     throw new AssertionError("not implemented");
+  }
+
+  @Override
+  public IMethodBinding getFunctionalInterfaceMethod() {
+    return null;
+  }
+
+  @Override
+  public IAnnotationBinding[] getTypeAnnotations() {
+    return null;
   }
 }

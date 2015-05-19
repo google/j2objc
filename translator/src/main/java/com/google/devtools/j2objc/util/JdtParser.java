@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.util;
 import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.Options;
 
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
@@ -49,10 +50,10 @@ public class JdtParser {
 
   private static Map<String, String> initCompilerOptions() {
     Map<String, String> compilerOptions = Maps.newHashMap();
-    // TODO(kstanger): Make the version configurable with -source like javac.
-    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, "1.7");
-    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, "1.7");
-    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, "1.7");
+    String version = Options.getSourceVersion();
+    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, version);
+    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, version);
+    compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, version);
     return compilerOptions;
   }
 
