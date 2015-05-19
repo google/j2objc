@@ -54,8 +54,6 @@ DIST_LIBRARY = $(ARCH_LIB_DIR)/libguava.a
 JAR = $(BUILD_DIR)/j2objc_guava.jar
 DIST_JAR = $(DIST_JAR_DIR)/j2objc_guava.jar
 
-JAR_STAGE_DIR = /tmp/j2objc_guava
-
 dist: $(DIST_LIBRARY) $(DIST_JAR)
 	@(cd $(GEN_OBJC_DIR) && tar cf - $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
 	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
@@ -71,12 +69,11 @@ java: $(DIST_JAR)
 # TODO(kstanger): Add -Xlint:unchecked once warnings are fixed.
 $(JAR): $(JAVA_SOURCES) | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo "building j2objc_guava.jar"
-	@rm -rf $(JAR_STAGE_DIR)
-	@mkdir $(JAR_STAGE_DIR)
-	@$(JAVAC) -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) -encoding UTF-8 \
-	    -d $(JAR_STAGE_DIR) -source 1.7 -target 1.7 \
-	    -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar $^
-	@jar cf $@ -C $(JAR_STAGE_DIR) .
+	@stage_dir=`mktemp -d -t j2objc-guava`; \
+	$(JAVAC) -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) -encoding UTF-8 \
+	    -d $$stage_dir -source 1.7 -target 1.7 -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar $^; \
+	jar cf $@ -C $$stage_dir .; \
+	rm -rf $$stage_dir
 
 $(DIST_JAR): $(JAR) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
