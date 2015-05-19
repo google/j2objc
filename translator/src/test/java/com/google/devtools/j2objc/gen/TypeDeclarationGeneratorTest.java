@@ -104,4 +104,13 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "+ (TestEnum *)ONE");
     assertNotInTranslation(translation, "+ (TestEnum *)TWO");
   }
+
+  public void testNoStaticFieldAccessorForPrivateInnerType() throws IOException {
+    Options.setStaticAccessorMethods(true);
+    String translation = translateSourceFile(
+        "class Test { private static class Inner1 { "
+        + "public static class Inner2 { static String ID; } } }", "Test", "Test.m");
+    assertNotInTranslation(translation, "+ (NSString *)ID");
+    assertNotInTranslation(translation, "+ (void)setID:");
+  }
 }

@@ -208,7 +208,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * Prints the list of static variable and/or enum constant accessor methods.
    */
   protected void printStaticAccessors() {
-    if (Options.staticAccessorMethods() && !Modifier.isPrivate(typeBinding.getModifiers())) {
+    if (Options.staticAccessorMethods()) {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         IVariableBinding var = fragment.getVariableBinding();
         String accessorName = nameTable.getVariableName(var);

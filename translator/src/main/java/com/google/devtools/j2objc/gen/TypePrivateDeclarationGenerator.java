@@ -76,6 +76,11 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
   }
 
   @Override
+  protected void printStaticAccessors() {
+    // Static accessors are only needed by the public API.
+  }
+
+  @Override
   protected void printStaticFieldDeclaration(
       VariableDeclarationFragment fragment, String baseDeclaration) {
     Expression initializer = fragment.getInitializer();
