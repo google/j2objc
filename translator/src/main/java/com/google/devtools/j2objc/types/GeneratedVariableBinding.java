@@ -217,7 +217,6 @@ public class GeneratedVariableBinding extends AbstractBinding implements IVariab
     return sb.toString();
   }
 
-  @Override
   public boolean isEffectivelyFinal() {
     return false;
   }

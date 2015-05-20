@@ -259,12 +259,10 @@ public abstract class AbstractTypeBinding extends AbstractBinding implements ITy
     throw new AssertionError("not implemented");
   }
 
-  @Override
   public IMethodBinding getFunctionalInterfaceMethod() {
     return null;
   }
 
-  @Override
   public IAnnotationBinding[] getTypeAnnotations() {
     return null;
   }
