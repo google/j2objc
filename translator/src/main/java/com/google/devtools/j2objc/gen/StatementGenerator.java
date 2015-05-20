@@ -965,6 +965,9 @@ public class StatementGenerator extends TreeVisitor {
 
   private static String getStringConstant(Expression expr) {
     Object constantValue = expr.getConstantValue();
+    if (constantValue == null) {
+      constantValue = TreeUtil.getVariableBinding(expr).getConstantValue();
+    }
     assert constantValue != null && constantValue instanceof String;
     return (String) constantValue;
   }
