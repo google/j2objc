@@ -98,7 +98,7 @@ void PrintForwardDeclarations(const set<string> &declarations,
 FileGenerator::FileGenerator(const FileDescriptor *file)
   : file_(file),
     classname_(FileClassName(file)) {
-  if (UseStaticOutputFile()) {
+  if (IsGenerateFileDirMapping()) {
     output_dir_ = FileParentDir(file);
   } else {
     output_dir_ = JavaPackageToDir(FileJavaPackage(file));
@@ -336,7 +336,7 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
 }
 
 string FileGenerator::GetFileName(string suffix) {
-  if (UseStaticOutputFile()) {
+  if (IsGenerateFileDirMapping()) {
     return StaticOutputFileName(file_, suffix);
   } else {
     return output_dir_ + classname_ + suffix;
@@ -347,7 +347,6 @@ void FileGenerator::Generate(GeneratorContext* context,
                              vector<string>* file_list) {
   GenerateHeader(context, file_list);
   GenerateSource(context, file_list);
-  printMapping(file_);
 }
 
 void FileGenerator::GenerateEnumHeader(GeneratorContext* context,
@@ -464,7 +463,7 @@ void FileGenerator::GenerateSiblings(GeneratorContext* context,
 }
 
 bool FileGenerator::GenerateMultipleFiles() {
-  return file_->options().java_multiple_files() && !UseStaticOutputFile();
+  return file_->options().java_multiple_files() && !IsGenerateFileDirMapping();
 }
 
 void PrintProperty(io::Printer* printer, const string& key, const string& value) {

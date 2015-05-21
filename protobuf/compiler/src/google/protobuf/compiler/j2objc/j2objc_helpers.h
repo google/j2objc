@@ -57,8 +57,6 @@ string FileBaseName(const FileDescriptor* file);
 // Returns the file's parent directory.
 string FileParentDir(const FileDescriptor* file);
 
-void printMapping(const FileDescriptor* file);
-
 // Gets the unqualified class name for the file.  Each .proto file becomes a
 // single Java class, with all its contents nested in that class.
 string FileClassName(const FileDescriptor* file);
@@ -119,10 +117,6 @@ void ParsePrefixFile(string prefix_file);
 string MappedInputName(const FileDescriptor* file);
 string StaticOutputFileName(const FileDescriptor* file, string suffix);
 string FileDirMappingOutputName(const FileDescriptor* file);
-// TODO(user): Remove this function once the single header mapping file is
-// no longer used.
-void SetFileDirMapping(string mapping_output_file);
-bool UseStaticOutputFile();
 void GenerateFileDirMapping();
 bool IsGenerateFileDirMapping();
 

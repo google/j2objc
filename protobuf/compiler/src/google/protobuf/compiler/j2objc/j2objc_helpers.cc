@@ -54,8 +54,6 @@ const char* kDefaultPackage = "";
 
 static map<string, string> prefixes;
 
-static string fileDirMappingFile = "";
-
 static bool generateFileDirMapping = false;
 
 const char* const kKeywordList[] = {
@@ -285,7 +283,7 @@ string JavaClassName(const FileDescriptor *descriptor) {
 }
 
 string GetHeader(const FileDescriptor *descriptor) {
-  if (UseStaticOutputFile()) {
+  if (IsGenerateFileDirMapping()) {
     return StaticOutputFileName(descriptor, ".h");
   } else {
     return JavaPackageToDir(FileJavaPackage(descriptor))
@@ -300,7 +298,7 @@ string GetHeader(const Descriptor *descriptor) {
     if (containing_type != NULL) {
       return GetHeader(containing_type);
     } else {
-      if (UseStaticOutputFile()) {
+      if (IsGenerateFileDirMapping()) {
         return StaticOutputFileName(file, ".h");
       } else {
         return JavaPackageToDir(FileJavaPackage(file))
@@ -319,7 +317,7 @@ string GetHeader(const EnumDescriptor *descriptor) {
     if (containing_type != NULL) {
       return GetHeader(containing_type);
     } else {
-      if (UseStaticOutputFile()) {
+      if (IsGenerateFileDirMapping()) {
         return StaticOutputFileName(file, ".h");
       } else {
         return JavaPackageToDir(FileJavaPackage(file))
@@ -613,50 +611,12 @@ string FileDirMappingOutputName(const FileDescriptor* file) {
   return MappedInputName(file) + ".j2objc.mapping";
 }
 
-// TODO(user): Remove this function once the single header mapping file is
-// no longer used.
-void SetFileDirMapping(string mapping_output_file) {
-  fileDirMappingFile = mapping_output_file;
-}
-
 void GenerateFileDirMapping() {
   generateFileDirMapping = true;
 }
 
 bool IsGenerateFileDirMapping() {
   return generateFileDirMapping;
-}
-
-// TODO(user): Remove this function once the single header mapping file is
-// no longer used.
-bool UseStaticOutputFile() {
-  return fileDirMappingFile != "" || IsGenerateFileDirMapping();
-}
-
-// TODO(user): Remove this function once the single header mapping file is
-// no longer used.
-void printMapping(const FileDescriptor* file) {
-  if (fileDirMappingFile != "") {
-    string headerFile = StaticOutputFileName(file, ".h");
-    ofstream ofs(fileDirMappingFile.c_str(),
-                 std::ofstream::out | std::ofstream::app);
-
-    if (ofs.is_open()) {
-      for (int i = 0; i < file->enum_type_count(); i++) {
-        ofs << JavaClassName(file->enum_type(i)) << "=" << headerFile
-            << std::endl;
-      }
-      for (int i = 0; i < file->message_type_count(); i++) {
-        string messageClassName = JavaClassName(file->message_type(i));
-        ofs << messageClassName << "=" << headerFile << std::endl;
-        ofs << messageClassName + "OrBuilder" << "=" << headerFile
-            << std::endl;
-      }
-
-      ofs << JavaClassName(file) << "=" << headerFile << std::endl;
-      ofs.close();
-    }
-  }
 }
 
 }  // namespace j2objc

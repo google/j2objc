@@ -65,10 +65,6 @@ bool J2ObjCGenerator::Generate(const FileDescriptor* file,
       ParsePrefixFile(options[i].second);
     } else if (options[i].first == "file_dir_mapping") {
       GenerateFileDirMapping();
-
-      // TODO(user): Remove this call once the single header mapping file is
-      // no longer used.
-      SetFileDirMapping(options[i].second);
     } else if (options[i].first == "generate_class_mappings") {
       generate_class_mappings = true;
     } else {
