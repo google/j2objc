@@ -180,6 +180,12 @@ void MessageGenerator::GenerateMessageHeader(io::Printer* printer) {
       "+ ($classname$ *)parseFromWithJavaIoInputStream:"
           "(JavaIoInputStream *)bytes "
           "withComGoogleProtobufExtensionRegistryLite:"
+          "(ComGoogleProtobufExtensionRegistryLite *)registry;\n"
+      "+ ($classname$ *)parseDelimitedFromWithJavaIoInputStream:"
+          "(JavaIoInputStream *)input;\n"
+      "+ ($classname$ *)parseDelimitedFromWithJavaIoInputStream:"
+          "(JavaIoInputStream *)bytes "
+          "withComGoogleProtobufExtensionRegistryLite:"
           "(ComGoogleProtobufExtensionRegistryLite *)registry;\n",
       "classname", ClassName(descriptor_),
       "superclassname", superclassName);
@@ -216,6 +222,15 @@ void MessageGenerator::GenerateMessageHeader(io::Printer* printer) {
           "JavaIoInputStream_(JavaIoInputStream *input) {\n"
       "  return $classname$_parseFromWithJavaIoInputStream_withComGoogle"
           "ProtobufExtensionRegistryLite_(input, nil);\n"
+      "}\n"
+      "FOUNDATION_EXPORT $classname$ *$classname$_parseDelimitedFromWithJavaIo"
+          "InputStream_withComGoogleProtobufExtensionRegistryLite_("
+          "JavaIoInputStream *input, "
+          "ComGoogleProtobufExtensionRegistryLite *registry);\n"
+      "CGP_ALWAYS_INLINE inline $classname$ *$classname$_parseDelimitedFromWith"
+          "JavaIoInputStream_(JavaIoInputStream *input) {\n"
+      "  return $classname$_parseDelimitedFromWithJavaIoInputStream_"
+          "withComGoogleProtobufExtensionRegistryLite_(input, nil);\n"
       "}\n"
       "\n"
       "J2OBJC_STATIC_INIT($classname$)\n"
@@ -372,6 +387,13 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
           "ComGoogleProtobufExtensionRegistryLite *registry) {\n"
       "  $classname$_initialize();\n"
       "  return ($classname$ *)CGPParseFromInputStream("
+          "$classname$_descriptor_, input, registry);\n"
+      "}\n"
+      "$classname$ *$classname$_parseDelimitedFromWithJavaIoInputStream_with"
+          "ComGoogleProtobufExtensionRegistryLite_(JavaIoInputStream *input,"
+          " ComGoogleProtobufExtensionRegistryLite *registry) {\n"
+      "  $classname$_initialize();\n"
+      "  return ($classname$ *)CGPParseDelimitedFromInputStream("
           "$classname$_descriptor_, input, registry);\n"
       "}\n",
       "classname", ClassName(descriptor_));

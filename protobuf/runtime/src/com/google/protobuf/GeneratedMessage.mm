@@ -1328,6 +1328,25 @@ ComGoogleProtobufGeneratedMessage *CGPParseFromInputStream(
   return msg;
 }
 
+ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
+    CGPDescriptor *descriptor, JavaIoInputStream *input, CGPExtensionRegistryLite *registry) {
+  int firstByte = [input read];
+  if (firstByte == -1) {
+    return nil;
+  }
+  uint32_t length;
+  if (!CGPCodedInputStream::ReadVarint32(firstByte, input, &length)) InvalidPB();
+  ComGoogleProtobufGeneratedMessage *msg = [CGPNewMessage(descriptor) autorelease];
+  CGPCodedInputStream codedStream(input, length);
+  BOOL success =
+      MergeFromStream(msg, descriptor, &codedStream, registry, MessageExtensionMap(msg, descriptor))
+      && codedStream.ConsumedEntireMessage();
+  if (!success) {
+    InvalidPB();
+  }
+  return msg;
+}
+
 
 // *****************************************************************************
 // ********** Computing serialized size ****************************************
@@ -2359,6 +2378,15 @@ static int MessageHash(ComGoogleProtobufGeneratedMessage *msg, CGPDescriptor *de
 + (id)parseFromWithJavaIoInputStream:(JavaIoInputStream *)input
     withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
   return CGPParseFromInputStream([self getDescriptor], input, registry);
+}
+
++ (id)parseDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input {
+  return CGPParseDelimitedFromInputStream([self getDescriptor], input, nil);
+}
+
++ (id)parseDelimitedFromWithJavaIoInputStream:(JavaIoInputStream *)input
+    withComGoogleProtobufExtensionRegistryLite:(CGPExtensionRegistryLite *)registry {
+  return CGPParseDelimitedFromInputStream([self getDescriptor], input, registry);
 }
 
 - (int)getSerializedSize {

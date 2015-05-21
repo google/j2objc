@@ -254,26 +254,23 @@ public class CompatibilityTest extends ProtobufTest {
     assertEquals(123, builder2.getMyInt());
   }
 
-  public void testMergeFromInputStream() throws Exception {
+  public void testMergeAndParseFromInputStream() throws Exception {
     ExtensionRegistry registry = ExtensionRegistry.newInstance();
     registry.add(Typical.myPrimitiveExtension);
     byte[] rawData = asBytes(new int[]{
         0x08, 0x06, 0x60, 0x01, 0x7A, 0x03, 0x62, 0x61, 0x72, 0xC8, 0x3E, 0x2D });
-    ByteArrayInputStream in = new ByteArrayInputStream(rawData);
-    TypicalData data = TypicalData.newBuilder().mergeFrom(in, registry).build();
-    assertEquals(6, data.getMyInt());
-    assertTrue(data.getMyBool());
-    assertEquals("bar", data.getMyString());
-    assertEquals(45, ((Integer) data.getExtension(Typical.myPrimitiveExtension)).intValue());
+    checkMergeAndParse(
+        TypicalData.newBuilder().mergeFrom(new ByteArrayInputStream(rawData), registry).build(),
+        true);
+    checkMergeAndParse(TypicalData.parseFrom(new ByteArrayInputStream(rawData), registry), true);
 
     // test API without ExtensionRegistry
-    data = TypicalData.newBuilder().mergeFrom(new ByteArrayInputStream(rawData)).build();
-    assertEquals(6, data.getMyInt());
-    assertTrue(data.getMyBool());
-    assertEquals("bar", data.getMyString());
+    checkMergeAndParse(
+        TypicalData.newBuilder().mergeFrom(new ByteArrayInputStream(rawData)).build(), false);
+    checkMergeAndParse(TypicalData.parseFrom(new ByteArrayInputStream(rawData)), false);
   }
 
-  public void testMergeDelimitedFromInputStream() throws Exception {
+  public void testMergeAndParseDelimitedFromInputStream() throws Exception {
     ExtensionRegistry registry = ExtensionRegistry.newInstance();
     registry.add(Typical.myPrimitiveExtension);
     byte[] rawData = asBytes(new int[]{
@@ -282,22 +279,32 @@ public class CompatibilityTest extends ProtobufTest {
     ByteArrayInputStream in = new ByteArrayInputStream(rawData);
     TypicalData.Builder dataBuilder = TypicalData.newBuilder();
     assertTrue(dataBuilder.mergeDelimitedFrom(in, registry));
+    checkMergeAndParse(dataBuilder.build(), true);
     // Test that the second message reads correctly.
     dataBuilder = TypicalData.newBuilder();
     assertTrue(dataBuilder.mergeDelimitedFrom(in, registry));
-    TypicalData data = dataBuilder.build();
-    assertEquals(6, data.getMyInt());
-    assertTrue(data.getMyBool());
-    assertEquals("bar", data.getMyString());
-    assertEquals(45, ((Integer) data.getExtension(Typical.myPrimitiveExtension)).intValue());
+    checkMergeAndParse(dataBuilder.build(), true);
+
+    // Test the parseDelimitedFrom API.
+    in = new ByteArrayInputStream(rawData);
+    checkMergeAndParse(TypicalData.parseDelimitedFrom(in, registry), true);
+    // Test that the second message reads correctly.
+    checkMergeAndParse(TypicalData.parseDelimitedFrom(in, registry), true);
 
     // test API without ExtensionRegistry
     dataBuilder = TypicalData.newBuilder();
     assertTrue(dataBuilder.mergeDelimitedFrom(new ByteArrayInputStream(rawData)));
-    data = dataBuilder.build();
+    checkMergeAndParse(dataBuilder.build(), false);
+    checkMergeAndParse(TypicalData.parseDelimitedFrom(new ByteArrayInputStream(rawData)), false);
+  }
+
+  private void checkMergeAndParse(TypicalData data, boolean withExtensions) {
     assertEquals(6, data.getMyInt());
     assertTrue(data.getMyBool());
     assertEquals("bar", data.getMyString());
+    if (withExtensions) {
+      assertEquals(45, ((Integer) data.getExtension(Typical.myPrimitiveExtension)).intValue());
+    }
   }
 
   public void testWriteToOutputStream() throws Exception {
@@ -356,6 +363,21 @@ public class CompatibilityTest extends ProtobufTest {
     } catch (InvalidProtocolBufferException e) {
       // Expected
     }
+  }
+
+  public void testParseDelimitedFromInvalidProtocolBufferException() throws Exception {
+    try {
+      ByteArrayInputStream in = new ByteArrayInputStream(new byte[]{ 0x03, 0x01, 0x02 });
+      TypicalData output = TypicalData.parseDelimitedFrom(in);
+      fail("Expected InvalidProtocolBufferException to be thrown.");
+    } catch (InvalidProtocolBufferException e) {
+      // Expected
+    }
+  }
+
+  public void testParseDelimitedFromEmptyStream() throws Exception {
+    TypicalData output = TypicalData.parseDelimitedFrom(new ByteArrayInputStream(new byte[0]));
+    assertNull(output);
   }
 
   public void testFindFieldByNumber() throws Exception {

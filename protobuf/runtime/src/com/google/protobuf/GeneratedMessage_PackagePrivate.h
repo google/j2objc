@@ -69,4 +69,7 @@ ComGoogleProtobufGeneratedMessage *CGPParseFromByteArray(
 ComGoogleProtobufGeneratedMessage *CGPParseFromInputStream(
     CGPDescriptor *descriptor, JavaIoInputStream *input, CGPExtensionRegistryLite *registry);
 
+ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
+    CGPDescriptor *descriptor, JavaIoInputStream *input, CGPExtensionRegistryLite *registry);
+
 CF_EXTERN_C_END
