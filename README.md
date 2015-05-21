@@ -12,7 +12,7 @@ To work on this site, clone it to a local repository, then follow the setup inst
 
     $ bundle exec jekyll serve
 
-This starts the Jekyll server, which can be viewed on http://localhost:4000/.
+This starts the Jekyll server, which can be viewed on [http://localhost:4000/](http://localhost:4000/).
 
 **Note**: it's important to configure Jekyll locally so it generates the same
 site as GitHub Pages will. Refer to the 
