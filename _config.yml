@@ -8,3 +8,4 @@ paginate: 10
 gems:
   - jekyll-mentions
   - jekyll-sitemap
+  - jekyll-redirect-from
