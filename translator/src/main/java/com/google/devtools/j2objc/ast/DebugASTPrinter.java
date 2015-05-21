@@ -832,6 +832,8 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(SwitchCase node) {
+    sb.unindent();
+    sb.printIndent();
     if (node.isDefault()) {
       sb.println("default :");
     } else {
@@ -845,15 +847,17 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(SwitchStatement node) {
+    sb.printIndent();
     sb.print("switch (");
     node.getExpression().accept(this);
     sb.print(") ");
     sb.println("{");
     sb.indent();
+    sb.indent();
     for (Iterator<Statement> it = node.getStatements().iterator(); it.hasNext(); ) {
       it.next().accept(this);
-      sb.unindent();
     }
+    sb.unindent();
     sb.unindent();
     sb.printIndent();
     sb.println("}");
