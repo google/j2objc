@@ -283,10 +283,6 @@ destinationBegin:(int)destinationBegin {
 }
 
 - (NSString *)substring:(int)beginIndex {
-  if (beginIndex < 0 || beginIndex >= (int) [self length]) {
-    @throw AUTORELEASE([[JavaLangStringIndexOutOfBoundsException alloc]
-                        initWithInt:beginIndex]);
-  }
   return [self substringFromIndex:(NSUInteger) beginIndex];
 }
 
