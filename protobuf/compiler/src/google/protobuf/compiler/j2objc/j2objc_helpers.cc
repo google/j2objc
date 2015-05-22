@@ -51,6 +51,7 @@ namespace j2objc {
 namespace {
 
 const char* kDefaultPackage = "";
+
 static map<string, string> prefixes;
 
 static bool generateFileDirMapping = false;
