@@ -1623,4 +1623,15 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (jlong)testLongWithDouble:(jdouble)d {", "return J2ObjCFpToLong(d);");
   }
+
+  // Verify that string constants used in switch statements can be generated after functionizing.
+  public void testFunctionalizedStringStringStatement() throws IOException {
+    String source = "class A { "
+        + "private static final String STR = \"\"; "
+        + "private void f(String s) { switch(s) { case STR: return; } } "
+        + "public void g() { f(\"\"); } }";
+    // Assertion was thrown in StatementGenerator.getStringConstant(), due to the QualifiedName
+    // node not having a constant value.
+    translateSourceFile(source, "A", "A.m");
+  }
 }
