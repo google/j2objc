@@ -725,11 +725,8 @@ public class StatementGenerator extends TreeVisitor {
     IBinding binding = node.getBinding();
     if (binding instanceof IVariableBinding) {
       IVariableBinding var = (IVariableBinding) binding;
-      if (BindingUtil.isPrimitiveConstant(var)) {
-        buffer.append(nameTable.getPrimitiveConstantName(var));
-        return false;
-      } else if (BindingUtil.isStatic(var)) {
-        buffer.append(nameTable.getStaticVarQualifiedName(var));
+      if (BindingUtil.isGlobalVar(var)) {
+        buffer.append(nameTable.getVariableQualifiedName(var));
         return false;
       }
     }
@@ -774,16 +771,7 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(SimpleName node) {
     IBinding binding = node.getBinding();
     if (binding instanceof IVariableBinding) {
-      IVariableBinding var = (IVariableBinding) binding;
-      if (BindingUtil.isPrimitiveConstant(var)) {
-        buffer.append(nameTable.getPrimitiveConstantName(var));
-      } else if (BindingUtil.isStatic(var)) {
-        buffer.append(nameTable.getStaticVarQualifiedName(var));
-      } else if (var.isField()) {
-        buffer.append(NameTable.javaFieldToObjC(nameTable.getVariableName(var)));
-      } else {
-        buffer.append(nameTable.getVariableName(var));
-      }
+      buffer.append(nameTable.getVariableQualifiedName((IVariableBinding) binding));
       return false;
     }
     if (binding instanceof ITypeBinding) {
@@ -848,7 +836,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(SuperFieldAccess node) {
-    buffer.append(NameTable.javaFieldToObjC(nameTable.getVariableName(node.getVariableBinding())));
+    buffer.append(nameTable.getVariableQualifiedName(node.getVariableBinding()));
     return false;
   }
 

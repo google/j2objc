@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.List;
@@ -63,16 +64,15 @@ public class EnumRewriter extends TreeVisitor {
     List<Statement> stmts = node.getClassInitStatements().subList(0, 0);
     int i = 0;
     for (EnumConstantDeclaration constant : node.getEnumConstants()) {
+      IVariableBinding varBinding = constant.getVariableBinding();
       IMethodBinding binding =
           addEnumConstructorParams(constant.getMethodBinding().getMethodDeclaration());
       ClassInstanceCreation creation = new ClassInstanceCreation(binding);
       TreeUtil.copyList(constant.getArguments(), creation.getArguments());
-      String name = nameTable.getVariableName(constant.getVariableBinding());
-      creation.getArguments().add(new StringLiteral(name, typeEnv));
+      creation.getArguments().add(new StringLiteral(varBinding.getName(), typeEnv));
       creation.getArguments().add(new NumberLiteral(i++, typeEnv));
       creation.setHasRetainedResult(true);
-      stmts.add(new ExpressionStatement(new Assignment(
-          new SimpleName(constant.getVariableBinding()), creation)));
+      stmts.add(new ExpressionStatement(new Assignment(new SimpleName(varBinding), creation)));
     }
 
     addExtraNativeDecls(node);

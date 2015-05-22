@@ -123,7 +123,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     for (VariableDeclarationFragment fragment : fields) {
       IVariableBinding varBinding = fragment.getVariableBinding();
       Expression initializer = fragment.getInitializer();
-      String name = nameTable.getStaticVarQualifiedName(varBinding);
+      String name = nameTable.getVariableQualifiedName(varBinding);
       String objcType = nameTable.getObjCType(varBinding.getType());
       objcType += objcType.endsWith("*") ? "" : " ";
       if (initializer != null) {
@@ -142,10 +142,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         if (!((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
           IVariableBinding varBinding = fragment.getVariableBinding();
-          String accessorName = nameTable.getVariableName(varBinding);
-          String varName = BindingUtil.isPrimitiveConstant(varBinding)
-              ? nameTable.getPrimitiveConstantName(varBinding)
-              : nameTable.getStaticVarQualifiedName(varBinding);
+          String accessorName = nameTable.getVariableBaseName(varBinding);
+          String varName = nameTable.getVariableQualifiedName(varBinding);
           String objcType = nameTable.getObjCType(varBinding.getType());
           printf("\n+ (%s)%s {\n  return %s;\n}\n", objcType, accessorName, varName);
           int modifiers = varBinding.getModifiers();
@@ -154,18 +152,19 @@ public class TypeImplementationGenerator extends TypeGenerator {
               printf("\n+ (void)set%s:(%s)value {\n  %s = value;\n}\n",
                   NameTable.capitalize(accessorName), objcType, varName);
             } else {
-              printf("\n+ (void)set%s:(%s)value {\n  %s_set_%s_(value);\n}\n",
+              printf("\n+ (void)set%s:(%s)value {\n  %s_set_%s(value);\n}\n",
                   NameTable.capitalize(accessorName), objcType,
-                  typeBinding.getName(), varBinding.getName());
+                  typeBinding.getName(), nameTable.getVariableShortName(varBinding));
             }
           }
         }
       }
       if (typeNode instanceof EnumDeclaration) {
         for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
-          String varName = nameTable.getVariableName(constant.getVariableBinding());
-          printf("\n+ (%s *)%s {\n  return %s_get_%s();\n}\n",
-              typeName, varName, typeName, varName);
+          IVariableBinding varBinding = constant.getVariableBinding();
+          printf("\n+ (%s *)%s {\n  return %s;\n}\n",
+              typeName, nameTable.getVariableBaseName(varBinding),
+              nameTable.getVariableQualifiedName(varBinding));
         }
       }
     }
@@ -248,7 +247,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
          iter.hasNext(); ) {
       IVariableBinding var = iter.next().getVariableBinding();
       String paramType = nameTable.getJniType(var.getType());
-      sb.append(paramType + ' ' + nameTable.getVariableName(var));
+      sb.append(paramType + ' ' + nameTable.getVariableBaseName(var));
       if (iter.hasNext()) {
         sb.append(", ");
       }
@@ -281,7 +280,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       printf(", %s_class_()", nameTable.getFullName(function.getDeclaringClass()));
     }
     for (SingleVariableDeclaration param : function.getParameters()) {
-      printf(", %s", nameTable.getVariableName(param.getVariableBinding()));
+      printf(", %s", nameTable.getVariableBaseName(param.getVariableBinding()));
     }
     println(");");
     println("}");

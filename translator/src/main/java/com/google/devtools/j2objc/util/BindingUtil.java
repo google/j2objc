@@ -69,8 +69,18 @@ public final class BindingUtil {
         && binding.getDeclaringClass() != null;
   }
 
+  /**
+   * Returns whether this variable will be declared in global scope in ObjC.
+   */
+  public static boolean isGlobalVar(IVariableBinding binding) {
+    return isStatic(binding) || isPrimitiveConstant(binding);
+  }
+
+  /**
+   * Returns whether this variable will be an ObjC instance variable.
+   */
   public static boolean isInstanceVar(IVariableBinding binding) {
-    return !isStatic(binding) && !isPrimitiveConstant(binding);
+    return binding.isField() && !isGlobalVar(binding);
   }
 
   public static boolean isAbstract(IBinding binding) {

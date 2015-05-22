@@ -118,7 +118,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     newline();
     for (VariableDeclarationFragment fragment : getPrimitiveConstants()) {
       IVariableBinding field = fragment.getVariableBinding();
-      printf("#define %s ", nameTable.getPrimitiveConstantName(field));
+      printf("#define %s ", nameTable.getVariableQualifiedName(field));
       Object value = field.getConstantValue();
       assert value != null;
       println(LiteralGenerator.generate(value));
@@ -211,7 +211,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (Options.staticAccessorMethods()) {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         IVariableBinding var = fragment.getVariableBinding();
-        String accessorName = nameTable.getVariableName(var);
+        String accessorName = nameTable.getVariableBaseName(var);
         String objcType = nameTable.getObjCType(var.getType());
         printf("\n+ (%s)%s;\n", objcType, accessorName);
         if (!Modifier.isFinal(var.getModifiers())) {
@@ -220,7 +220,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       if (typeNode instanceof EnumDeclaration) {
         for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
-          String varName = nameTable.getStaticVarName(constant.getVariableBinding());
+          String varName = nameTable.getVariableBaseName(constant.getVariableBinding());
           printf("\n+ (%s *)%s;\n", typeName, varName);
         }
       }
@@ -274,8 +274,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       if (needsAsterisk) {
         print('*');
       }
-      String name = nameTable.getVariableName(varBinding);
-      print(NameTable.javaFieldToObjC(name));
+      print(nameTable.getVariableShortName(varBinding));
     }
     println(";");
     unindent();
@@ -332,7 +331,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           typeName.endsWith("Enum") ? typeName.substring(0, typeName.length() - 4) : typeName;
       printf("\nFOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
       for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
-        String varName = nameTable.getStaticVarName(constant.getVariableBinding());
+        String varName = nameTable.getVariableBaseName(constant.getVariableBinding());
         String valueName = constant.getName().getIdentifier();
         printf("\n#define %s_%s %s_values_[%s_%s]\n",
             typeName, varName, typeName, bareTypeName, valueName);
@@ -359,7 +358,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     for (VariableDeclarationFragment fragment : fields) {
       IVariableBinding var = fragment.getVariableBinding();
       String typeStr = nameTable.getObjCType(var.getType());
-      String fieldName = NameTable.javaFieldToObjC(nameTable.getVariableName(var));
+      String fieldName = nameTable.getVariableShortName(var);
       println(String.format("J2OBJC_FIELD_SETTER(%s, %s, %s)", typeName, fieldName, typeStr));
     }
   }
@@ -379,7 +378,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     IVariableBinding var = fragment.getVariableBinding();
     String objcType = nameTable.getObjCType(var.getType());
     String typeWithSpace = objcType + (objcType.endsWith("*") ? "" : " ");
-    String name = nameTable.getStaticVarName(var);
+    String name = nameTable.getVariableShortName(var);
     boolean isFinal = Modifier.isFinal(var.getModifiers());
     boolean isPrimitive = var.getType().isPrimitive();
     newline();

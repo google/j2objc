@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -74,7 +73,7 @@ public class VariableRenamer extends TreeVisitor {
     collectAndRenameFields(type, fields);
     Set<String> fullFieldNames = Sets.newHashSet();
     for (IVariableBinding field : fields) {
-      fullFieldNames.add(NameTable.javaFieldToObjC(nameTable.getVariableName(field)));
+      fullFieldNames.add(nameTable.getVariableShortName(field));
     }
     fieldNameStack.add(fullFieldNames);
   }

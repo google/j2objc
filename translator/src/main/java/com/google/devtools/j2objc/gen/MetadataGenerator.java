@@ -192,15 +192,13 @@ public class MetadataGenerator {
 
   private void generateFieldsMetadata() {
     List<String> fieldMetadata = Lists.newArrayList();
-    String typeName = nameTable.getFullName(type);
     if (typeNode instanceof EnumDeclaration) {
       for (EnumConstantDeclaration decl : ((EnumDeclaration) typeNode).getEnumConstants()) {
-        fieldMetadata.add(
-            generateFieldMetadata(decl.getVariableBinding(), decl.getName(), typeName));
+        fieldMetadata.add(generateFieldMetadata(decl.getVariableBinding(), decl.getName()));
       }
     }
     for (VariableDeclarationFragment f : TreeUtil.getAllFields(typeNode)) {
-      fieldMetadata.add(generateFieldMetadata(f.getVariableBinding(), f.getName(), typeName));
+      fieldMetadata.add(generateFieldMetadata(f.getVariableBinding(), f.getName()));
     }
     if (fieldMetadata.size() > 0) {
       builder.append("  static const J2ObjcFieldInfo fields[] = {\n");
@@ -212,24 +210,21 @@ public class MetadataGenerator {
     fieldMetadataCount = fieldMetadata.size();
   }
 
-  private String generateFieldMetadata(IVariableBinding var, SimpleName name, String typeName) {
+  private String generateFieldMetadata(IVariableBinding var, SimpleName name) {
     int modifiers = getFieldModifiers(var);
     String javaName = name.getIdentifier();
-    String objcName = var.isEnumConstant() ? nameTable.getVariableName(var)
-        : NameTable.javaFieldToObjC(nameTable.getVariableName(var));
+    String objcName = nameTable.getVariableShortName(var);
     if (objcName.equals(javaName + '_')) {
       // Don't print Java name if it matches the default pattern, to conserve space.
       javaName = null;
     }
     String staticRef = "NULL";
     String constantValue = "";
-    if (BindingUtil.isStatic(var)) {
-      if (BindingUtil.isPrimitiveConstant(var)) {
-        constantValue = String.format(".constantValue.%s = %s",
-            getRawValueField(var), nameTable.getPrimitiveConstantName(var));
-      } else {
-        staticRef = String.format("&%s_%s", typeName, objcName);
-      }
+    if (BindingUtil.isPrimitiveConstant(var)) {
+      constantValue = String.format(".constantValue.%s = %s",
+          getRawValueField(var), nameTable.getVariableQualifiedName(var));
+    } else if (BindingUtil.isStatic(var)) {
+      staticRef = '&' + nameTable.getVariableQualifiedName(var);
     }
     return String.format(
         "    { \"%s\", %s, 0x%x, \"%s\", %s, %s, %s },\n",

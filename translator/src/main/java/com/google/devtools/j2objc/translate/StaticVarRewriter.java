@@ -176,7 +176,7 @@ public class StaticVarRewriter extends TreeVisitor {
 
   private Expression newGetterInvocation(IVariableBinding var, boolean assignable) {
     ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
-    String varName = nameTable.getStaticVarName(var);
+    String varName = nameTable.getVariableShortName(var);
     String getterName = "get";
     ITypeBinding type = var.getType();
     ITypeBinding returnType = type;
@@ -205,7 +205,7 @@ public class StaticVarRewriter extends TreeVisitor {
       }
     }
     String funcName = String.format(
-        funcFormat, nameTable.getFullName(declaringType), nameTable.getStaticVarName(var));
+        funcFormat, nameTable.getFullName(declaringType), nameTable.getVariableShortName(var));
     FunctionInvocation invocation = new FunctionInvocation(
         funcName, varType, varType, declaringType);
     invocation.getArguments().add(value);

@@ -317,21 +317,48 @@ public class NameTable {
     variableNames.put(var, name);
   }
 
-  public String getVariableName(IVariableBinding var) {
+  /**
+   * Gets the variable name without any qualifying class name or other prefix
+   * or suffix attached.
+   */
+  public String getVariableBaseName(IVariableBinding var) {
     var = var.getVariableDeclaration();
     String name = variableNames.get(var);
     if (name != null) {
       return name;
     }
     name = var.getName();
-    if (!var.isEnumConstant()) {
-      if (isReservedName(name)) {
-        name += "_";
-      } else if (var.isParameter() && badParameterNames.contains(name)) {
-        name += "Arg";
-      }
+    if (BindingUtil.isPrimitiveConstant(var) || var.isEnumConstant()) {
+      return name;
+    }
+    if (isReservedName(name)) {
+      name += '_';
+    } else if (var.isParameter() && badParameterNames.contains(name)) {
+      name += "Arg";
     }
     return name.equals(SELF_NAME) ? "self" : name;
+  }
+
+  /**
+   * Gets the non-qualified variable name, with underscore suffix.
+   */
+  public String getVariableShortName(IVariableBinding var) {
+    String baseName = getVariableBaseName(var);
+    if (var.isField() && !BindingUtil.isPrimitiveConstant(var) && !var.isEnumConstant()) {
+      return baseName + '_';
+    }
+    return baseName;
+  }
+
+  /**
+   * Gets the name of the variable as it is declared in ObjC, fully qualified.
+   */
+  public String getVariableQualifiedName(IVariableBinding var) {
+    String shortName = getVariableShortName(var);
+    if (BindingUtil.isGlobalVar(var)) {
+      return getFullName(var.getDeclaringClass()) + '_' + shortName;
+    }
+    return shortName;
   }
 
   /**
@@ -842,29 +869,6 @@ public class NameTable {
     } else {
       return unit.getNameTable().getPrefix(pkg.getPackageBinding()) + unit.getMainTypeName();
     }
-  }
-
-  public static String getStaticAccessorName(String varName) {
-    // follow the Obj-C style guide for reader names, unless it's an illegal name
-    return isReservedName(varName) ? "get" + capitalize(varName) : varName;
-  }
-
-  public String getStaticVarQualifiedName(IVariableBinding var) {
-    ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
-    return getFullName(declaringType) + "_" + getVariableName(var)
-        + (var.isEnumConstant() ? "" : "_");
-  }
-
-  public String getStaticVarName(IVariableBinding var) {
-    return getVariableName(var) + (var.isEnumConstant() ? "" : "_");
-  }
-
-  public String getPrimitiveConstantName(IVariableBinding constant) {
-    return String.format("%s_%s", getFullName(constant.getDeclaringClass()), constant.getName());
-  }
-
-  public static String javaFieldToObjC(String fieldName) {
-    return fieldName + "_";
   }
 
   @VisibleForTesting
