@@ -690,11 +690,15 @@ class SystemClassLoader extends ClassLoader {
 
   @Override
   protected native Class<?> findClass(String name) throws ClassNotFoundException /*-[
+    nil_chk(name);
     return [IOSClass forName:name initialize:YES classLoader:self];
   ]-*/;
 
   @Override
   protected native URL findResource(String name) /*-[
+    if (!name) {
+      return nil;
+    }
     NSBundle *bundle = [NSBundle mainBundle];
     NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
     return nativeURL ? AUTORELEASE([[JavaNetURL alloc] initWithNSString:[nativeURL description]])
@@ -703,6 +707,9 @@ class SystemClassLoader extends ClassLoader {
 
   @Override
   protected native Enumeration<URL> findResources(String name) throws IOException /*-[
+    if (!name) {
+      return [super findResourcesWithNSString:name];
+    }
     JavaUtilArrayList *urls = AUTORELEASE([[JavaUtilArrayList alloc] init]);
     for (NSBundle *bundle in [NSBundle allBundles]) {
       NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
