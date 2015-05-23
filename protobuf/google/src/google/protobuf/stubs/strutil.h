@@ -496,28 +496,30 @@ static const int kFloatToBufferSize = 24;
 
 namespace strings {
 
+enum PadSpec {
+  NO_PAD = 1,
+  ZERO_PAD_2,
+  ZERO_PAD_3,
+  ZERO_PAD_4,
+  ZERO_PAD_5,
+  ZERO_PAD_6,
+  ZERO_PAD_7,
+  ZERO_PAD_8,
+  ZERO_PAD_9,
+  ZERO_PAD_10,
+  ZERO_PAD_11,
+  ZERO_PAD_12,
+  ZERO_PAD_13,
+  ZERO_PAD_14,
+  ZERO_PAD_15,
+  ZERO_PAD_16,
+};
+
 struct Hex {
   uint64 value;
-  enum PadSpec {
-    NONE = 1,
-    ZERO_PAD_2,
-    ZERO_PAD_3,
-    ZERO_PAD_4,
-    ZERO_PAD_5,
-    ZERO_PAD_6,
-    ZERO_PAD_7,
-    ZERO_PAD_8,
-    ZERO_PAD_9,
-    ZERO_PAD_10,
-    ZERO_PAD_11,
-    ZERO_PAD_12,
-    ZERO_PAD_13,
-    ZERO_PAD_14,
-    ZERO_PAD_15,
-    ZERO_PAD_16,
-  } spec;
+  enum PadSpec spec;
   template <class Int>
-  explicit Hex(Int v, PadSpec s = NONE)
+  explicit Hex(Int v, PadSpec s = NO_PAD)
       : spec(s) {
     // Prevent sign-extension by casting integers to
     // their unsigned counterparts.
