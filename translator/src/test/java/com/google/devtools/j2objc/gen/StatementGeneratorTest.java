@@ -1208,6 +1208,17 @@ public class StatementGeneratorTest extends GenerationTest {
         "NSAssert(a < b, @\"Test.java:4 condition failed: assert a < b;\")");
   }
 
+  public void testAssertWithModulusOperator() throws IOException {
+    // Avoid format-invalid-specific warnings, caused when unescaped % characters are
+    // included in the description.
+    String translation = translateSourceFile(
+        "public class Test { void test(int i) {\n"
+        + "assert i % 5 == 0;\n}\n}\n",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "NSAssert(i % 5 == 0, @\"Test.java:2 condition failed: assert i %% 5 == 0;\");");
+  }
+
   public void testAssertWithDescription() throws IOException {
     String translation = translateSourceFile(
         "public class Test { void test() { "

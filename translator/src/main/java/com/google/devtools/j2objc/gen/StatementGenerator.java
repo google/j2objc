@@ -245,6 +245,8 @@ public class StatementGenerator extends TreeVisitor {
           unit.getSource().substring(startPos, startPos + node.getLength());
       assertStatementString = CharMatcher.WHITESPACE.trimFrom(assertStatementString);
       assertStatementString = makeQuotedString(assertStatementString);
+      // Avoid format-invalid-specific warnings.
+      assertStatementString = assertStatementString.replace("%", "%%");
       // Generates the following string:
       // filename.java:456 condition failed: foobar != fish.
       buffer.append("@\"" + TreeUtil.getSourceFileName(unit) + ":" + node.getLineNumber()
@@ -1133,7 +1135,7 @@ public class StatementGenerator extends TreeVisitor {
     throw new AssertionError("initializer node not converted");
   }
 
-  // Returns a string where all characters that will interfer in
+  // Returns a string where all characters that will interfere in
   // a valid Objective-C string are quoted.
   private static String makeQuotedString(String originalString) {
     int location = 0;
