@@ -143,7 +143,7 @@ nav#menu li {
 nav#menu li.active {
   background-color: #f2f2f2;
 }
-nav#menu li.group {
+nav#menu li.submenu {
     margin: 0;
   margin-left: -16px;
   position: relative;
@@ -151,7 +151,7 @@ nav#menu li.group {
   padding-bottom: 5px;
 
 }
-nav#menu li.group::before {
+nav#menu li.submenu::before {
   position: absolute;
   margin: 0.5em 0 0 1em;
   font-size: 75%;
@@ -160,7 +160,7 @@ nav#menu li.group::before {
   color: #828282;
   pointer-events: none;
 }
-nav#menu li.group.collapsed::before {
+nav#menu li.submenu.collapsed::before {
     content: "▶";
 }
 nav#menu a {
@@ -180,6 +180,6 @@ nav#menu ul ul a {
   overflow: hidden;
   transition: max-height 0.3s ease-in-out;
 }
-.js .dynamic {
+.dynamic {
   visibility: hidden;
 }
