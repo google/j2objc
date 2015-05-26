@@ -157,7 +157,7 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
  * @param CLASS The class for which the initialized flag is defined.
  */
 #define J2OBJC_INITIALIZED_DEFN(CLASS) \
-  _Atomic(BOOL) CLASS##_initialized = NO;
+  _Atomic(BOOL) CLASS##__initialized = NO;
 
 /*!
  * Defines the code to set a class's initialized flag. This should be used at
@@ -167,7 +167,7 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
  * @param CLASS The class who's flag is to be set.
  */
 #define J2OBJC_SET_INITIALIZED(CLASS) \
-  __c11_atomic_store(&CLASS##_initialized, YES, __ATOMIC_RELEASE);
+  __c11_atomic_store(&CLASS##__initialized, YES, __ATOMIC_RELEASE);
 
 /*!
  * Defines an init function for a class that will ensure that the class is
@@ -178,9 +178,9 @@ static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUM
  * @param CLASS The class to declare the init function for.
  */
 #define J2OBJC_STATIC_INIT(CLASS) \
-  FOUNDATION_EXPORT _Atomic(BOOL) CLASS##_initialized; \
+  FOUNDATION_EXPORT _Atomic(BOOL) CLASS##__initialized; \
   __attribute__((always_inline)) inline void CLASS##_initialize() { \
-    if (__builtin_expect(!__c11_atomic_load(&CLASS##_initialized, __ATOMIC_ACQUIRE), 0)) { \
+    if (__builtin_expect(!__c11_atomic_load(&CLASS##__initialized, __ATOMIC_ACQUIRE), 0)) { \
       [CLASS class]; \
     } \
   }

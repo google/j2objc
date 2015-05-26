@@ -318,9 +318,9 @@ FOUNDATION_EXPORT NSString *NSString_valueOf_(id o);
 @end
 
 // Use the category dummy to initialize static variables for the String class.
-FOUNDATION_EXPORT _Atomic(BOOL) NSString_initialized;
+FOUNDATION_EXPORT _Atomic(BOOL) NSString__initialized;
 __attribute__((always_inline)) inline void NSString_initialize() {
-  if (!__builtin_expect(NSString_initialized, YES)) {
+  if (!__builtin_expect(NSString__initialized, YES)) {
     [JreStringCategoryDummy class];
   }
 }
