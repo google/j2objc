@@ -251,7 +251,7 @@ public final class Sets {
    * @since 15.0
    */
   public static <E> Set<E> newConcurrentHashSet() {
-    return newSetFromMap(new ConcurrentHashMap<E, Boolean>());
+    return Collections.newSetFromMap(new ConcurrentHashMap<E, Boolean>());
   }
 
   /**
@@ -392,7 +392,7 @@ public final class Sets {
    * @since 8.0
    */
   public static <E> Set<E> newIdentityHashSet() {
-    return Sets.newSetFromMap(Maps.<E, Boolean>newIdentityHashMap());
+    return Collections.newSetFromMap(Maps.<E, Boolean>newIdentityHashMap());
   }
 
   /**
