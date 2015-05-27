@@ -14,20 +14,22 @@
 
 package com.google.devtools.j2objc.translate;
 
-import static com.google.devtools.j2objc.ast.InfixExpression.Operator.CONDITIONAL_AND;
-import static com.google.devtools.j2objc.ast.InfixExpression.Operator.CONDITIONAL_OR;
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
+import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.ReturnStatement;
+import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.ThrowStatement;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.WhileStatement;
+
+import java.util.List;
 
 /**
  * Removes branches that are tested with boolean constant expressions
@@ -38,8 +40,28 @@ import com.google.devtools.j2objc.ast.WhileStatement;
 public class ConstantBranchPruner extends TreeVisitor {
 
   @Override
+  public void endVisit(Block node) {
+    // Truncate statement list if constant pruning causes early return.
+    List<Statement> stmts = node.getStatements();
+    int iReturn = -1;
+    for (int i = 0; i < stmts.size(); i++) {
+      Statement s = stmts.get(i);
+      if (s instanceof ReturnStatement || s instanceof ThrowStatement) {
+        iReturn = i;
+        break;
+      }
+    }
+    if (iReturn >= 0 && iReturn < stmts.size() - 1) {
+      for (int i = iReturn + 1; i < stmts.size(); i++) {
+        stmts.get(i).remove();
+      }
+      assert iReturn == stmts.size() - 1;
+    }
+  }
+
+  @Override
   public void endVisit(DoStatement node) {
-    if (getValue(node.getExpression()) == FALSE) {
+    if (getValue(node.getExpression()) == Boolean.FALSE) {
       node.remove();
     }
   }
@@ -61,35 +83,51 @@ public class ConstantBranchPruner extends TreeVisitor {
   @Override
   public void endVisit(InfixExpression node) {
     InfixExpression.Operator operator = node.getOperator();
-    if (operator != CONDITIONAL_AND && operator != CONDITIONAL_OR) {
+    if (operator != Operator.CONDITIONAL_AND && operator != Operator.CONDITIONAL_OR) {
       return;
     }
-    Boolean left = getValue(node.getLeftOperand());
-    Boolean right = getValue(node.getRightOperand());
-    if (left != null && right != null) {
-      if (operator == CONDITIONAL_AND) {
-        node.replaceWith(new BooleanLiteral(left && right, typeEnv));
-      } else {
-        node.replaceWith(new BooleanLiteral(left || right, typeEnv));
-      }
-    } else if (left != null || right != null) {
-      if (operator == CONDITIONAL_AND) {
-        if (left == TRUE) {
-          node.replaceWith(node.getRightOperand().copy());
-        } else if (right == TRUE) {
-          node.replaceWith(node.getLeftOperand().copy());
-        } else {
-          node.replaceWith(new BooleanLiteral(false, typeEnv));
-        }
-      } else {
-        if (left == FALSE) {
-          node.replaceWith(node.getRightOperand().copy());
-        } else if (right == FALSE) {
-          node.replaceWith(node.getLeftOperand().copy());
-        } else {
+    List<Expression> operands = node.getOperands();
+    int i = 0;
+    boolean modified = false;
+    while (i < operands.size()) {
+      Boolean operand = getValue(operands.get(i));
+      if (operand != null) {
+        if (operand && operator == Operator.CONDITIONAL_OR) {
+          // Whole expression is true.
           node.replaceWith(new BooleanLiteral(true, typeEnv));
+          return;
         }
+        if (!operand && operator == Operator.CONDITIONAL_AND) {
+          // Whole expression is false.
+          node.replaceWith(new BooleanLiteral(false, typeEnv));
+          return;
+        }
+        else {
+          // Remove unnecessary constant value.
+          operands.remove(i);
+          modified = true;
+        }
+        if (operands.size() == 1) {
+          break;
+        }
+      } else {
+        i++;
       }
+    }
+    if (!modified) {
+      return;
+    }
+    assert !operands.isEmpty();
+
+    if (operands.size() == 1) {
+      Boolean b = getValue(operands.get(i));
+      if (b != null) {
+        node.replaceWith(new BooleanLiteral(b, typeEnv));
+      } else {
+        node.replaceWith(operands.get(i).copy());
+      }
+    } else {
+      node.setOperands(operands);
     }
   }
 
@@ -116,7 +154,7 @@ public class ConstantBranchPruner extends TreeVisitor {
 
   @Override
   public void endVisit(WhileStatement node) {
-    if (getValue(node.getExpression()) == FALSE) {
+    if (getValue(node.getExpression()) == Boolean.FALSE) {
       node.remove();
     }
   }

@@ -81,6 +81,7 @@ public class InfixExpression extends Expression {
   // but we'll keep it simple for now.
   private ITypeBinding typeBinding = null;
   private Operator operator = null;
+  // TODO(tball): merge these three fields into a single operands list.
   private ChildLink<Expression> leftOperand = ChildLink.create(Expression.class, this);
   private ChildLink<Expression> rightOperand = ChildLink.create(Expression.class, this);
   private ChildList<Expression> extendedOperands = ChildList.create(Expression.class, this);
@@ -115,9 +116,7 @@ public class InfixExpression extends Expression {
       }
       operands.add((Expression) TreeConverter.convert(child));
     }
-    leftOperand.set(operands.get(0));
-    rightOperand.set(operands.get(1));
-    extendedOperands.addAll(operands.subList(2, operands.size()));
+    setOperands(operands);
   }
 
   private static class StackState {
@@ -196,6 +195,28 @@ public class InfixExpression extends Expression {
 
   public List<Expression> getExtendedOperands() {
     return extendedOperands;
+  }
+
+  public List<Expression> getOperands() {
+    ChildList<Expression> operands = ChildList.create(Expression.class, this);
+    operands.add(leftOperand.get().copy());
+    operands.add(rightOperand.get().copy());
+    for (Expression e : extendedOperands) {
+      operands.add(e.copy());
+    }
+    return operands;
+  }
+
+  public void setOperands(List<Expression> operands) {
+    if (operands.size() < 2) {
+      throw new AssertionError("Cannot set fewer than two operands.");
+    }
+    leftOperand.set(operands.get(0).copy());
+    rightOperand.set(operands.get(1).copy());
+    extendedOperands.clear();
+    for (Expression e : operands.subList(2, operands.size())) {
+      extendedOperands.add(e.copy());
+    }
   }
 
   @Override
