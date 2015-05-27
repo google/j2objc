@@ -119,6 +119,8 @@ public class TreeConverter {
         return new Javadoc((org.eclipse.jdt.core.dom.Javadoc) jdtNode);
       case ASTNode.LABELED_STATEMENT:
         return new LabeledStatement((org.eclipse.jdt.core.dom.LabeledStatement) jdtNode);
+      case ASTNode.LAMBDA_EXPRESSION:
+        return new LambdaExpression((org.eclipse.jdt.core.dom.LambdaExpression) jdtNode);
       case ASTNode.LINE_COMMENT:
         return new LineComment((org.eclipse.jdt.core.dom.LineComment) jdtNode);
       case ASTNode.MARKER_ANNOTATION:

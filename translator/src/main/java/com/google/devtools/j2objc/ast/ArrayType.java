@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.Options;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -26,7 +28,13 @@ public class ArrayType extends Type {
 
   public ArrayType(org.eclipse.jdt.core.dom.ArrayType jdtNode) {
     super(jdtNode);
-    componentType.set((Type) TreeConverter.convert(jdtNode.getComponentType()));
+    // Temporary workaround for getComponentType deprecation in JLS8.
+    // TODO(kirbs): temporary
+    if (Options.getForceIncompleteJava8Support() && Options.getSourceVersion().equals("1.8")) {
+      componentType.set((Type) TreeConverter.convert(jdtNode.getElementType()));
+    } else {
+      componentType.set((Type) TreeConverter.convert(jdtNode.getComponentType()));
+    }
   }
 
   public ArrayType(ArrayType other) {

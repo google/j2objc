@@ -53,6 +53,7 @@ import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.LabeledStatement;
+import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MemberValuePair;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
@@ -581,6 +582,35 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(LabeledStatement node) {
     node.getLabel().accept(this);
     buffer.append(": ");
+    node.getBody().accept(this);
+    return false;
+  }
+
+  @Override
+  public boolean visit(LambdaExpression node) {
+    // A temporary stub to show pseudocode in place of Java 8 lambdas.
+    // TODO(kirbs): Implement correct conversion of Java 8 lambdas to Objective-C blocks.
+    if (!(Options.getForceIncompleteJava8Support() && Options.getSourceVersion().equals("1.8"))) {
+      assert false : "not implemented yet";
+    }
+    IMethodBinding methodBinding = node.getMethodBinding();
+    buffer.append(methodBinding.getReturnType().getName());
+    buffer.append(" ");
+    buffer.append(methodBinding.getName());
+    buffer.append(" (");
+    boolean delimiterFlag = false;
+    for (VariableDeclarationFragment x : node.parameters()) {
+      IVariableBinding variableBinding = x.getVariableBinding();
+      if (delimiterFlag) {
+        buffer.append(", ");
+      } else {
+        delimiterFlag = true;
+      }
+      buffer.append(variableBinding.getType().getName());
+      buffer.append(" val$");
+      buffer.append(variableBinding.getName());
+    }
+    buffer.append(") ");
     node.getBody().accept(this);
     return false;
   }

@@ -90,6 +90,9 @@ public class Options {
       "1.5");
   // The default source version number if not passed with -source
   private String sourceVersion = "1.7";
+  // Force JLS8 and conversion of JLS8 nodes.
+  // TODO(kirbs): Remove when Java 8 is fully supported.
+  private boolean forceIncompleteJava8Support = false;
 
   private static File proGuardUsageFile = null;
 
@@ -357,6 +360,10 @@ public class Options {
           usage("-target requires an argument");
         }
         // ignore
+      } else if (arg.equals("-Xforce-incomplete-java8")) {
+        // Override to allow usage of incomplete features, without breaking any builds that might
+        // blindly be passing in a -source 1.8 from javac.
+        forceIncompleteJava8Support = true;
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else {
@@ -728,6 +735,11 @@ public class Options {
 
   public static String getSourceVersion(){
     return instance.sourceVersion;
+  }
+
+  // TODO(kirbs): Remove when Java 8 is fully supported.
+  public static boolean getForceIncompleteJava8Support() {
+    return instance.forceIncompleteJava8Support;
   }
 
   public static boolean staticAccessorMethods() {

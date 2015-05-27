@@ -161,7 +161,13 @@ public class JdtParser {
   }
 
   private ASTParser newASTParser(boolean resolveBindings) {
-    ASTParser parser = ASTParser.newParser(AST.JLS4);
+    ASTParser parser;
+    if (Options.getForceIncompleteJava8Support() && Options.getSourceVersion().equals("1.8")) {
+      parser = ASTParser.newParser(AST.JLS8);
+    } else {
+      parser = ASTParser.newParser(AST.JLS4); // Java 7
+    }
+
     parser.setCompilerOptions(compilerOptions);
     parser.setResolveBindings(resolveBindings);
     parser.setEnvironment(

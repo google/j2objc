@@ -290,6 +290,12 @@ public class TreeVisitor {
 
   public void endVisit(LabeledStatement node) {}
 
+  public boolean visit(LambdaExpression node) {
+    return true;
+  }
+
+  public void endVisit(LambdaExpression node) {}
+
   public boolean visit(LineComment node) {
     return true;
   }

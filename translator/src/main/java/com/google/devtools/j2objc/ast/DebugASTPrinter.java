@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Iterator;
@@ -534,6 +535,30 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.printIndent();
     node.getLabel().accept(this);
     sb.print(": ");
+    node.getBody().accept(this);
+    return false;
+  }
+
+  @Override
+  public boolean visit(LambdaExpression node) {
+    IMethodBinding methodBinding = node.getMethodBinding();
+    sb.print(methodBinding.getReturnType().getName());
+    sb.print(" ");
+    sb.print(methodBinding.getName());
+    sb.print(" (");
+    boolean delimiterFlag = false;
+    for (VariableDeclarationFragment x : node.parameters()) {
+      IVariableBinding variableBinding = x.getVariableBinding();
+      if (delimiterFlag) {
+        sb.print(", ");
+      } else {
+        delimiterFlag = true;
+      }
+      sb.print(variableBinding.getType().getName());
+      sb.print(" ");
+      sb.print(variableBinding.getName());
+    }
+    sb.print(") -> ");
     node.getBody().accept(this);
     return false;
   }
