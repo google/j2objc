@@ -216,6 +216,12 @@ public class TreeVisitor {
 
   public void endVisit(EnumDeclaration node) {}
 
+  public boolean visit(ExpressionMethodReference node) {
+    return true;
+  }
+
+  public void endVisit(ExpressionMethodReference node) {}
+
   public boolean visit(ExpressionStatement node) {
     return true;
   }

@@ -378,6 +378,14 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(ExpressionMethodReference node) {
+    node.getExpression().accept(this);
+    sb.print("::");
+    node.getName().accept(this);
+    return false;
+  }
+
+  @Override
   public boolean visit(ExpressionStatement node) {
     sb.printIndent();
     node.getExpression().accept(this);

@@ -99,6 +99,9 @@ public class TreeConverter {
             (org.eclipse.jdt.core.dom.EnumConstantDeclaration) jdtNode);
       case ASTNode.ENUM_DECLARATION:
         return new EnumDeclaration((org.eclipse.jdt.core.dom.EnumDeclaration) jdtNode);
+      case ASTNode.EXPRESSION_METHOD_REFERENCE:
+        return new ExpressionMethodReference(
+            (org.eclipse.jdt.core.dom.ExpressionMethodReference) jdtNode);
       case ASTNode.EXPRESSION_STATEMENT:
         return new ExpressionStatement((org.eclipse.jdt.core.dom.ExpressionStatement) jdtNode);
       case ASTNode.FIELD_ACCESS:
