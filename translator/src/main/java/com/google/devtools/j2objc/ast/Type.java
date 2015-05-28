@@ -23,7 +23,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public abstract class Type extends TreeNode {
 
-  private ITypeBinding typeBinding;
+  protected ITypeBinding typeBinding;
 
   public Type(org.eclipse.jdt.core.dom.Type jdtNode) {
     super(jdtNode);
@@ -55,6 +55,10 @@ public abstract class Type extends TreeNode {
   }
 
   public boolean isPrimitiveType() {
+    return false;
+  }
+
+  public boolean isIntersectionType() {
     return false;
   }
 

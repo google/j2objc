@@ -53,6 +53,7 @@ import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
+import com.google.devtools.j2objc.ast.IntersectionType;
 import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
@@ -590,6 +591,12 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append(" class]]");
     }
     return false;
+  }
+
+  @Override
+  public boolean visit(IntersectionType node) {
+    throw new AssertionError(
+        "Intersection types should only occur in a cast expression, and are handled by CastResolver");
   }
 
   @Override
