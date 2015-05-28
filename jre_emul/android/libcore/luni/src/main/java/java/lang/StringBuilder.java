@@ -18,9 +18,11 @@
 package java.lang;
 
 import java.io.IOException;
+import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import libcore.util.EmptyArray;
 
 /*-[
 #import "java/lang/Character.h"
@@ -86,7 +88,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *            if {@code seq} is {@code null}.
      */
     public StringBuilder(CharSequence seq) {
-        super(seq.toString());
+        this(seq.toString());
     }
 
     /**
@@ -100,7 +102,8 @@ public final class StringBuilder extends AbstractStringBuilder implements
      *            if {@code str} is {@code null}.
      */
     public StringBuilder(String str) {
-        super(str);
+        super(str.length() + 16);
+        append(str);
     }
 
     /**
@@ -691,13 +694,14 @@ public final class StringBuilder extends AbstractStringBuilder implements
      * @throws ClassNotFoundException
      *             if the stream throws it during the read.
      */
-    private void readObject(ObjectInputStream in) throws IOException,
-            ClassNotFoundException {
-        in.defaultReadObject();
-        int count = in.readInt();
-        char[] value = (char[]) in.readObject();
-        set(value, count);
-    }
+    private native void readObject(ObjectInputStream in) throws IOException,
+            ClassNotFoundException /*-[
+      [((JavaIoObjectInputStream *) nil_chk(inArg)) defaultReadObject];
+      jint count = [inArg readInt];
+      IOSCharArray *value = (IOSCharArray *) check_class_cast(
+        [inArg readObject], [IOSCharArray class]);
+      [self setWithCharArray:value withInt:count];
+    ]-*/;
 
     /**
      * Writes the state of this object to the stream passed.
