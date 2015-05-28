@@ -20,6 +20,9 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
+/*
+ * Lambda expression AST node type (added in JLS8).
+ */
 public class LambdaExpression extends Expression {
   private final ITypeBinding typeBinding;
   private final IMethodBinding methodBinding;
