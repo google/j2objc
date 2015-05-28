@@ -82,7 +82,8 @@ public final class StringBuffer extends AbstractStringBuilder implements
      *            if {@code string} is {@code null}.
      */
     public StringBuffer(String string) {
-        super(string);
+        super(string.length() + 16);
+        append(string);
     }
 
     /**
@@ -97,7 +98,7 @@ public final class StringBuffer extends AbstractStringBuilder implements
      * @since 1.5
      */
     public StringBuffer(CharSequence cs) {
-        super(cs.toString());
+        this(cs.toString());
     }
 
     /**
