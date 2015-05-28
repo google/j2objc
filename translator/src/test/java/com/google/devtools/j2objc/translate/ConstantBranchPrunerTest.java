@@ -143,42 +143,4 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         "{", "result = 2;", "}",
         "{", "result = 3;", "}");
   }
-
-  public void testExpressionPruning() throws IOException {
-    String translation = translateSourceFile(
-        "class A { "
-        + "static final boolean DEBUG = true; "
-        + "static final boolean TEST = true; "
-        + "private static boolean nonConstant = false; "
-        + "boolean test() { "
-
-        // DEBUG and TEST constants should be pruned.
-        + "  if (DEBUG && TEST && nonConstant) return false; "
-        + "  return true; }}", "A", "A.m");
-    assertTranslatedLines(translation,
-        "- (jboolean)test {", "if (A_nonConstant_) return NO;", "return YES;", "}");
-  }
-
-  // Verify constant pruning doesn't result in two return statements in block.
-  public void testBlockPruning() throws IOException {
-    String translation = translateSourceFile(
-        "class A { "
-        + "static final boolean DEBUG = false; "
-        + "static final boolean TEST = true; "
-        + "private static boolean nonConstant = false; "
-        + "boolean test() { "
-
-        // If statement should be pruned.
-        + "  if (DEBUG && TEST && nonConstant) return false; "
-        + "  return true; }"
-        + "boolean test2() { "
-
-        // If statement should be replaced with its then statement.
-        + "  if (TEST || nonConstant) throw new AssertionError(); "
-        + "  return true; }}", "A", "A.m");
-    assertTranslatedLines(translation,
-        "- (jboolean)test {", "return YES;", "}");
-    assertTranslatedLines(translation,
-        "- (jboolean)test2 {", "@throw [new_JavaLangAssertionError_init() autorelease];", "}");
-  }
 }
