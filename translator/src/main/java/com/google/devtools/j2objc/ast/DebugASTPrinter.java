@@ -539,6 +539,22 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(IntersectionType node) {
+    sb.print('(');
+    boolean delimiterFlag = false;
+    for (Type t : node.types()) {
+      if (delimiterFlag) {
+        sb.print(" & ");
+      } else {
+        delimiterFlag = true;
+      }
+      t.accept(this);
+    }
+    sb.print(')');
+    return false;
+  }
+
+  @Override
   public boolean visit(LabeledStatement node) {
     sb.printIndent();
     node.getLabel().accept(this);

@@ -114,6 +114,8 @@ public class TreeConverter {
         return new IfStatement((org.eclipse.jdt.core.dom.IfStatement) jdtNode);
       case ASTNode.INFIX_EXPRESSION:
         return new InfixExpression((org.eclipse.jdt.core.dom.InfixExpression) jdtNode);
+      case ASTNode.INTERSECTION_TYPE:
+        return new IntersectionType((org.eclipse.jdt.core.dom.IntersectionType) jdtNode);
       case ASTNode.INITIALIZER:
         return new Initializer((org.eclipse.jdt.core.dom.Initializer) jdtNode);
       case ASTNode.INSTANCEOF_EXPRESSION:

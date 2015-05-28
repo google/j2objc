@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
@@ -55,6 +56,15 @@ public class CastResolver extends TreeVisitor {
     ITypeBinding type = node.getType().getTypeBinding();
     Expression expr = node.getExpression();
     ITypeBinding exprType = expr.getTypeBinding();
+
+    // TODO(kirbs): Implement correct conversion of Java 8 intersection types to Objective-C.
+    if (node.getType().isIntersectionType() && !(Options.getForceIncompleteJava8Support()
+        && Options.getSourceVersion().equals("1.8"))) {
+      // Technically we can't currently get here, but as we add support and change flags in the
+      // future this should alert us to implement intersection types.
+        assert false : "not implemented yet";
+    }
+
     if (BindingUtil.isFloatingPoint(exprType)) {
       assert type.isPrimitive();  // Java wouldn't allow a cast from primitive to non-primitive.
       switch (type.getBinaryName().charAt(0)) {
