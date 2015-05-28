@@ -44,6 +44,7 @@ import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EmptyStatement;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.ForStatement;
@@ -445,6 +446,19 @@ public class StatementGenerator extends TreeVisitor {
     node.getExpression().accept(this);
     buffer.append(") ");
     node.getBody().accept(this);
+    return false;
+  }
+
+  @Override
+  public boolean visit(ExpressionMethodReference node) {
+    // A temporary stub to show pseudocode in place of Java 8 Method References.
+    // TODO(kirbs): Implement correct conversion of Java 8 Method References to Objective-C.
+    if (!(Options.getForceIncompleteJava8Support() && Options.getSourceVersion().equals("1.8"))) {
+      assert false : "not implemented yet";
+    }
+    node.getExpression().accept(this);
+    buffer.append("::");
+    node.getName().accept(this);
     return false;
   }
 
