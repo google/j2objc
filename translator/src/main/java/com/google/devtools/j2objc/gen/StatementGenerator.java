@@ -40,6 +40,8 @@ import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.ContinueStatement;
+import com.google.devtools.j2objc.ast.CreationReference;
+import com.google.devtools.j2objc.ast.Dimension;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EmptyStatement;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
@@ -61,6 +63,7 @@ import com.google.devtools.j2objc.ast.MemberValuePair;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.NameQualifiedType;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
@@ -82,6 +85,7 @@ import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperFieldAccess;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.SynchronizedStatement;
@@ -93,6 +97,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeLiteral;
+import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnionType;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -159,6 +164,16 @@ public class StatementGenerator extends TreeVisitor {
         args.get(i).accept(this);
       }
     }
+  }
+
+  private boolean assertIncompleteJava8Support(TreeNode node) {
+    // A temporary stub to show pseudocode in place of Java 8 features.
+    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
+    if (!(Options.getForceIncompleteJava8Support() && Options.getSourceVersion().equals("1.8"))) {
+      assert false : "not implemented yet";
+    }
+    buffer.append(node.toString());
+    return false;
   }
 
   @Override
@@ -424,6 +439,18 @@ public class StatementGenerator extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(CreationReference node) {
+    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
+    return assertIncompleteJava8Support(node);
+  }
+
+  @Override
+  public boolean visit(Dimension node) {
+    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
+    return assertIncompleteJava8Support(node);
+  }
+
+  @Override
   public boolean visit(DoStatement node) {
     buffer.append("do ");
     node.getBody().accept(this);
@@ -432,6 +459,7 @@ public class StatementGenerator extends TreeVisitor {
     buffer.append(");\n");
     return false;
   }
+
 
   @Override
   public boolean visit(EmptyStatement node) {
@@ -452,15 +480,8 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(ExpressionMethodReference node) {
-    // A temporary stub to show pseudocode in place of Java 8 Method References.
-    // TODO(kirbs): Implement correct conversion of Java 8 Method References to Objective-C.
-    if (!(Options.getForceIncompleteJava8Support() && Options.getSourceVersion().equals("1.8"))) {
-      assert false : "not implemented yet";
-    }
-    node.getExpression().accept(this);
-    buffer.append("::");
-    node.getName().accept(this);
-    return false;
+    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
+    return assertIncompleteJava8Support(node);
   }
 
   @Override
@@ -664,6 +685,12 @@ public class StatementGenerator extends TreeVisitor {
     buffer.append(']');
 
     return false;
+  }
+
+  @Override
+  public boolean visit(NameQualifiedType node) {
+    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
+    return assertIncompleteJava8Support(node);
   }
 
   @Override
@@ -906,6 +933,12 @@ public class StatementGenerator extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(SuperMethodReference node) {
+    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
+    return assertIncompleteJava8Support(node);
+  }
+
+  @Override
   public boolean visit(SwitchCase node) {
     if (node.isDefault()) {
       buffer.append("  default:\n");
@@ -1108,6 +1141,12 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append("_class_()");
     }
     return false;
+  }
+
+  @Override
+  public boolean visit(TypeMethodReference node) {
+    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
+    return assertIncompleteJava8Support(node);
   }
 
   @Override

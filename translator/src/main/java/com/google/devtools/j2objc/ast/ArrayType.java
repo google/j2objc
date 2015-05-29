@@ -25,6 +25,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 public class ArrayType extends Type {
 
   private ChildLink<Type> componentType = ChildLink.create(Type.class, this);
+  // TODO(kirbs): Add dimensions into pipeline processing.
+  private ChildList<Dimension> dimensions = ChildList.create(Dimension.class, this);
 
   public ArrayType(org.eclipse.jdt.core.dom.ArrayType jdtNode) {
     super(jdtNode);
@@ -32,6 +34,9 @@ public class ArrayType extends Type {
     // TODO(kirbs): temporary
     if (Options.getForceIncompleteJava8Support() && Options.getSourceVersion().equals("1.8")) {
       componentType.set((Type) TreeConverter.convert(jdtNode.getElementType()));
+      for (Object x : jdtNode.dimensions()){
+        dimensions.add((Dimension) TreeConverter.convert(x));
+      }
     } else {
       componentType.set((Type) TreeConverter.convert(jdtNode.getComponentType()));
     }

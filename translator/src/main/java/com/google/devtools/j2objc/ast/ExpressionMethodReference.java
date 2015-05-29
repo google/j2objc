@@ -16,7 +16,7 @@ package com.google.devtools.j2objc.ast;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
- * Expression method reference node type (added in JLS8 API).
+ * Expression method reference node type (added in JLS8, section 15.13).
  */
 public class ExpressionMethodReference extends MethodReference {
   private final ITypeBinding typeBinding;

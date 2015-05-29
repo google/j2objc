@@ -13,15 +13,13 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import com.google.common.collect.Lists;
-
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
 /**
  * Abstract base class of all AST node types that represent a method reference expression (added in
- * JLS8).
+ * JLS8, section 15.13).
  *
  * <pre>
  * MethodReference:
@@ -32,13 +30,12 @@ import java.util.List;
  * </pre>
  */
 public abstract class MethodReference extends Expression {
-  private final ITypeBinding typeBinding;
-  private List<Type> typeArguments;
+  protected ITypeBinding typeBinding;
+  protected ChildList<Type> typeArguments = ChildList.create(Type.class, this);
 
   public MethodReference(org.eclipse.jdt.core.dom.MethodReference jdtNode) {
     super(jdtNode);
     typeBinding = jdtNode.resolveTypeBinding();
-    typeArguments = Lists.newArrayListWithExpectedSize(jdtNode.typeArguments().size());
     for (Object x : jdtNode.typeArguments()) {
       typeArguments.add((Type) TreeConverter.convert(x));
     }
@@ -47,7 +44,7 @@ public abstract class MethodReference extends Expression {
   public MethodReference(MethodReference other) {
     super(other);
     typeBinding = other.getTypeBinding();
-    typeArguments = other.typeArguments();
+    typeArguments.copyFrom(other.typeArguments());
   }
 
   @Override
@@ -58,5 +55,4 @@ public abstract class MethodReference extends Expression {
   public List<Type> typeArguments() {
     return typeArguments;
   }
-
 }

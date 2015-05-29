@@ -186,11 +186,23 @@ public class TreeVisitor {
 
   public void endVisit(ContinueStatement node) {}
 
+  public boolean visit(CreationReference node) {
+    return true;
+  }
+
+  public void endVisit(CreationReference node) {}
+
   public boolean visit(DoStatement node) {
     return true;
   }
 
   public void endVisit(DoStatement node) {}
+
+  public boolean visit(Dimension node) {
+    return true;
+  }
+
+  public void endVisit(Dimension node) {}
 
   public boolean visit(EmptyStatement node) {
     return true;
@@ -338,6 +350,12 @@ public class TreeVisitor {
 
   public void endVisit(MethodInvocation node) {}
 
+  public boolean visit(NameQualifiedType node) {
+    return true;
+  }
+
+  public void endVisit(NameQualifiedType node) {}
+
   public boolean visit(NativeDeclaration node) {
     return true;
   }
@@ -470,6 +488,12 @@ public class TreeVisitor {
 
   public void endVisit(SuperMethodInvocation node) {}
 
+  public boolean visit(SuperMethodReference node) {
+    return true;
+  }
+
+  public void endVisit(SuperMethodReference node) {}
+
   public boolean visit(SuperFieldAccess node) {
     return true;
   }
@@ -541,6 +565,12 @@ public class TreeVisitor {
   }
 
   public void endVisit(TypeLiteral node) {}
+
+  public boolean visit(TypeMethodReference node) {
+    return true;
+  }
+
+  public void endVisit(TypeMethodReference node) {}
 
   public boolean visit(UnionType node) {
     return true;
