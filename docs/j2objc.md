@@ -112,6 +112,7 @@ are objective-c (default) and objective-c++</dd>
 
 <dt>-Xbootclasspath:&lt;path&gt;</dt>
 <dd>Boot path used by translation (not the tool itself).</dd>
+</dl>
 
 ## See Also
 
