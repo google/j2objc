@@ -40,7 +40,6 @@ The following options are supported. For options that take a path, multiple dire
 <dt>-h, --help</dt>
 <dd>Print this message.</dd>
 </dl>
-</dl>
 
 #### Other options
 <dl>
