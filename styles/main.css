@@ -144,8 +144,7 @@ nav#menu li.active {
   background-color: #f2f2f2;
 }
 nav#menu li.submenu {
-    margin: 0;
-  margin-left: 0;
+  margin: 0;
   position: relative;
   padding-top: 5px;
   padding-bottom: 5px;
@@ -154,18 +153,14 @@ nav#menu li.submenu {
 nav#menu li.submenu::before {
   position: absolute;
   margin: 0.5em 0 0 1em;
-  background: url(images/open-triangle.png);
-  background-size: 16px 16px;
-  background-repeat: no-repeat;
+  font-size: 75%;
+  content: "▼";
   display: inline;
   color: #828282;
   pointer-events: none;
 }
 nav#menu li.submenu.collapsed::before {
-  margin: 0.5em 0 0 1em;
-  background: url(images/close-triangle.png);
-  background-size: 16px 16px;
-  background-repeat: no-repeat;
+    content: "▶";
 }
 nav#menu a {
   display: block;
