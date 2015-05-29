@@ -67,7 +67,7 @@ body {
   color: #000;
 }
 #main p, li, td, th {
-  font-size: 14px;
+  font-size: 16px;
   line-height: 1.5;
 }
 #main {
@@ -126,6 +126,13 @@ ul {
 li > ul,
 li > ol {
   margin-bottom: 0;
+}
+dt {
+  font-style: italic;
+  font-weight: bold;
+}
+dd {
+  margin-bottom: 16px;
 }
 nav#menu {
   float: left;

@@ -11,7 +11,7 @@ Objective-C++ sources for use in an iOS application.
 
 The following options are supported. For options that take a path, multiple directories and jar files are separated by a ':', like is done with the `java` and `javac` commands.
 
-#### Common options
+## Common options
 <dl>
 <dt>-sourcepath &lt;path&gt;</dt>
 <dd>Specify where to find input source files</dd>
@@ -41,7 +41,7 @@ The following options are supported. For options that take a path, multiple dire
 <dd>Print this message.</dd>
 </dl>
 
-#### Other options
+## Other options
 <dl>
 <dt>--batch-translate-max=&lt;n&gt;</dt>
 <dd>The maximum number of source files that are translated together. Batching speeds up translation, but
