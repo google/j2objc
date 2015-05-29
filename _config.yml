@@ -6,5 +6,5 @@ kramdown:
     smart_quotes: ["apos", "apos", "quot", "quot"]
 paginate: 10
 gems:
-  - jekyll-mentions
   - jekyll-sitemap
+  - jekyll-redirect-from

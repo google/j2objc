@@ -22,15 +22,16 @@ body {
 }
 .product-logo img {
   height: 72px;
+  vertical-align: bottom;
 }
 .product-name {
   font-size: 52px;
   font-weight: bold;
-  color: #1353E9;
+  color: #2196F3;
 }
 #motto-panel {
   padding: 8px 0 8px 0;
-  background-color: #1757CE;
+  background-color: #1565C0;
 }
 #motto {
   width: 1200px;
@@ -41,7 +42,7 @@ body {
 }
 #download-panel {
   padding: 8px 0 8px 0;
-  background-color: #2B71F6;
+  background-color: #2196F3;
 }
 #download {
   width: 1200px;
@@ -55,14 +56,7 @@ body {
   color: #fff;
   text-decoration: underline;
 }
-#content-panel {
-  margin: 0;
-  padding: 0;
-  background-color: #fff;
-}
 #content {
-  width: 1200px;
-  min-height: 1200px;
   margin: 0 auto 0 auto;
   padding: 32px 16px 32px 8px;
   color: #000;
@@ -76,17 +70,9 @@ body {
   font-size: 14px;
   line-height: 1.5;
 }
-#navbar {
-  float: left;
-  width: 200px;
-  padding: 10px 48px 0 0;
-}
-#navbar li {
-  font-size: 14px;
-}
 #main {
-  float: left;
-  width: 952px;
+  width: 80%;
+  float: right;
 }
 #footer-panel {
   margin: 64px 0 16px 0;
@@ -94,6 +80,7 @@ body {
   background-color: #fff;
 }
 #footer {
+  clear: both;
   width: 1200px;
   margin: 64px auto 0 auto;
   padding: 0px 16px 0 16px;
@@ -129,4 +116,74 @@ td, th {
 }
 .discouraged, .deprecated {
   text-decoration: line-through;
+}
+ul {
+  margin: 0;
+  margin-left: 30px;
+  margin-bottom: 15px;
+  padding: 0;
+}
+li > ul,
+li > ol {
+  margin-bottom: 0;
+}
+nav#menu {
+  float: left;
+  width: 240px;
+  margin: 0;
+  padding: 10px 0 0 0;
+  border-right: 1px solid #e8e8e8;
+}
+nav#menu ul {
+  list-style: none;
+  margin: 0; }
+nav#menu li {
+  line-height: 12px;
+}
+nav#menu li.active {
+  background-color: #f2f2f2;
+}
+nav#menu li.submenu {
+    margin: 0;
+  margin-left: -16px;
+  position: relative;
+  padding-top: 5px;
+  padding-bottom: 5px;
+
+}
+nav#menu li.submenu::before {
+  position: absolute;
+  margin: 0.5em 0 0 1em;
+  background: url(images/open-triangle.png);
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+  display: inline;
+  color: #828282;
+  pointer-events: none;
+}
+nav#menu li.submenu.collapsed::before {
+  margin: 0.5em 0 0 1em;
+  background: url(images/close-triangle.png);
+  background-size: 16px 16px;
+  background-repeat: no-repeat;
+}
+nav#menu a {
+  display: block;
+  padding: 0.5em 0em 0.5em 2em;
+  color: #484848;
+  cursor: pointer; }
+  nav#menu a:visited {
+    color: #484848; }
+  nav#menu a:hover {
+    text-decoration: none;
+    color: #007aff; }
+nav#menu ul ul a {
+  padding-left: 3.2em; }
+.animate ul {
+  visibility: visible;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+}
+.dynamic {
+  visibility: hidden;
 }
