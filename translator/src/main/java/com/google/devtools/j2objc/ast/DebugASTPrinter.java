@@ -300,6 +300,26 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(CreationReference node) {
+    node.getType().accept(this);
+    sb.print("::new");
+    return false;
+  }
+
+  @Override
+  public boolean visit(Dimension node) {
+    if (!node.annotations().isEmpty()) {
+      sb.append(' ');
+    }
+    for (Annotation x : node.annotations()) {
+      x.accept(this);
+      sb.append(' ');
+    }
+    sb.append("[]");
+    return false;
+  }
+
+  @Override
   public boolean visit(DoStatement node) {
     sb.printIndent();
     sb.print("do ");
@@ -662,6 +682,18 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(NameQualifiedType node) {
+    node.getQualifier().accept(this);
+    sb.print('.');
+    for (Annotation x : node.annotations()) {
+      x.accept(this);
+      sb.print(' ');
+    }
+    node.getName().accept(this);
+    return false;
+  }
+
+  @Override
   public boolean visit(NativeDeclaration node) {
     if (node.getImplementationCode() != null) {
       sb.println(node.getImplementationCode());
@@ -880,6 +912,17 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(SuperMethodReference node) {
+    if (node.getQualifier() != null) {
+      node.getQualifier().accept(this);
+      sb.print(".");
+    }
+    sb.print("super::");
+    sb.print(node.getName().toString());
+    return false;
+  }
+
+  @Override
   public boolean visit(SwitchCase node) {
     sb.unindent();
     sb.printIndent();
@@ -1008,6 +1051,27 @@ public class DebugASTPrinter extends TreeVisitor {
   public boolean visit(TypeLiteral node) {
     node.getType().accept(this);
     sb.print(".class");
+    return false;
+  }
+
+  @Override
+  public boolean visit(TypeMethodReference node) {
+    node.getType().accept(this);
+    sb.print("::");
+    if (!node.typeArguments().isEmpty()) {
+      sb.print('<');
+      boolean delimiterFlag = false;
+      for (Type t : node.typeArguments()) {
+        if (delimiterFlag) {
+          sb.print(", ");
+        } else {
+          delimiterFlag = true;
+        }
+        t.accept(this);
+      }
+      sb.print('>');
+    }
+    node.getName().accept(this);
     return false;
   }
 

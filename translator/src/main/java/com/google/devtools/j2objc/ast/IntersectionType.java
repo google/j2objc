@@ -14,20 +14,18 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 
 import java.util.List;
 
 /**
- * Type node for an intersection type in a cast expression (added in JLS8).
+ * Type node for an intersection type in a cast expression (added in JLS8, section 4.9).
  */
 public class IntersectionType extends Type {
-  private List<Type> types;
+  private ChildList<Type> types = ChildList.create(Type.class, this);
 
   public IntersectionType(org.eclipse.jdt.core.dom.IntersectionType jdtNode) {
     super(jdtNode);
     typeBinding = jdtNode.resolveBinding();
-    types = Lists.newArrayListWithExpectedSize(jdtNode.types().size());
     for (Object x : jdtNode.types()) {
       types.add((Type) TreeConverter.convert(x));
     }
@@ -36,7 +34,7 @@ public class IntersectionType extends Type {
   public IntersectionType(IntersectionType other) {
     super(other);
     typeBinding = other.getTypeBinding();
-    types = other.types;
+    types.copyFrom(other.types);
   }
 
   public List<Type> types() {

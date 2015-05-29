@@ -62,6 +62,10 @@ public abstract class Type extends TreeNode {
     return false;
   }
 
+  public boolean isAnnotatable() {
+    return false;
+  }
+
   @Override
   public abstract Type copy();
 

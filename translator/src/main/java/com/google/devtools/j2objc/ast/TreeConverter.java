@@ -88,6 +88,10 @@ public class TreeConverter {
         return new ConstructorInvocation((org.eclipse.jdt.core.dom.ConstructorInvocation) jdtNode);
       case ASTNode.CONTINUE_STATEMENT:
         return new ContinueStatement((org.eclipse.jdt.core.dom.ContinueStatement) jdtNode);
+      case ASTNode.CREATION_REFERENCE:
+        return new CreationReference((org.eclipse.jdt.core.dom.CreationReference) jdtNode);
+      case ASTNode.DIMENSION:
+        return new Dimension((org.eclipse.jdt.core.dom.Dimension) jdtNode);
       case ASTNode.DO_STATEMENT:
         return new DoStatement((org.eclipse.jdt.core.dom.DoStatement) jdtNode);
       case ASTNode.EMPTY_STATEMENT:
@@ -136,6 +140,8 @@ public class TreeConverter {
         return new MethodDeclaration((org.eclipse.jdt.core.dom.MethodDeclaration) jdtNode);
       case ASTNode.METHOD_INVOCATION:
         return new MethodInvocation((org.eclipse.jdt.core.dom.MethodInvocation) jdtNode);
+      case ASTNode.NAME_QUALIFIED_TYPE:
+        return new NameQualifiedType((org.eclipse.jdt.core.dom.NameQualifiedType) jdtNode);
       case ASTNode.NORMAL_ANNOTATION:
         return new NormalAnnotation((org.eclipse.jdt.core.dom.NormalAnnotation) jdtNode);
       case ASTNode.NULL_LITERAL:
@@ -180,6 +186,8 @@ public class TreeConverter {
         return new SuperFieldAccess((org.eclipse.jdt.core.dom.SuperFieldAccess) jdtNode);
       case ASTNode.SUPER_METHOD_INVOCATION:
         return new SuperMethodInvocation((org.eclipse.jdt.core.dom.SuperMethodInvocation) jdtNode);
+      case ASTNode.SUPER_METHOD_REFERENCE:
+        return new SuperMethodReference((org.eclipse.jdt.core.dom.SuperMethodReference) jdtNode);
       case ASTNode.SWITCH_CASE:
         return new SwitchCase((org.eclipse.jdt.core.dom.SwitchCase) jdtNode);
       case ASTNode.SWITCH_STATEMENT:
@@ -203,6 +211,8 @@ public class TreeConverter {
             (org.eclipse.jdt.core.dom.TypeDeclarationStatement) jdtNode);
       case ASTNode.TYPE_LITERAL:
         return new TypeLiteral((org.eclipse.jdt.core.dom.TypeLiteral) jdtNode);
+      case ASTNode.TYPE_METHOD_REFERENCE:
+        return new TypeMethodReference((org.eclipse.jdt.core.dom.TypeMethodReference) jdtNode);
       case ASTNode.UNION_TYPE:
         return new UnionType((org.eclipse.jdt.core.dom.UnionType) jdtNode);
       case ASTNode.VARIABLE_DECLARATION_EXPRESSION:

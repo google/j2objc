@@ -13,41 +13,37 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import com.google.common.collect.Lists;
-
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
 /*
- * Lambda expression AST node type (added in JLS8).
+ * Lambda expression AST node type (added in JLS8, section 15.27).
  */
 public class LambdaExpression extends Expression {
   private final ITypeBinding typeBinding;
   private final IMethodBinding methodBinding;
-  private List<VariableDeclarationFragment> parameters;
+  private ChildList<VariableDeclarationFragment> parameters = ChildList.create(
+      VariableDeclarationFragment.class, this);
   protected ChildLink<TreeNode> body = ChildLink.create(TreeNode.class, this);
 
   public LambdaExpression(org.eclipse.jdt.core.dom.LambdaExpression jdtNode) {
     super(jdtNode);
     typeBinding = jdtNode.resolveTypeBinding();
     methodBinding = jdtNode.resolveMethodBinding();
-    parameters = Lists.newArrayListWithExpectedSize(jdtNode.parameters().size());
     for (Object x : jdtNode.parameters()) {
-      parameters.add(new VariableDeclarationFragment(
-          (org.eclipse.jdt.core.dom.VariableDeclarationFragment) x));
+      parameters.add((VariableDeclarationFragment) TreeConverter.convert(x));
     }
     // Lambda bodies can either be a block or an expression, which forces a common root of TreeNode.
     body.set(TreeConverter.convert(jdtNode.getBody()));
-    // System.out.println(this);
   }
 
   public LambdaExpression(LambdaExpression other) {
     super(other);
     typeBinding = other.getTypeBinding();
     methodBinding = other.getMethodBinding();
-    parameters = other.parameters();
+    parameters.copyFrom(other.parameters());
     body.copyFrom(other.getBody());
   }
 
@@ -75,7 +71,6 @@ public class LambdaExpression extends Expression {
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
-
     if (visitor.visit(this)) {
       body.accept(visitor);
     }
