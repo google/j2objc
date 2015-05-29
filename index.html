@@ -1,13 +1,13 @@
 <!doctype html>
 <!-- The Time Machine GitHub pages theme was designed and developed by Jon Rohan, on Feb 7, 2012. -->
-<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on http://github.com/jonrohan -->
+<!-- Follow him for fun. http://twitter.com/jonrohan. Tail his code on https://github.com/jonrohan -->
 <html>
-<head profile="http://www.w3.org/2005/10/profile">
+<head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 
-  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen"/>
-  <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+  <link rel="stylesheet" href="stylesheets/stylesheet.css" media="screen">
+  <link rel="stylesheet" href="stylesheets/github-dark.css">
   <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script type="text/javascript" src="javascripts/script.js"></script>
 
@@ -15,9 +15,7 @@
   <meta name="description" content="A Java to iOS Objective-C translation tool and runtime.">
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="icon" type="image/png" href="images/favicon.png">
-  <link ref="search" href="/opensearch.xml" title="J2ObjC" type="application/opensearchdescription+xml" />
-  <meta name="google-translate-customization" content="8ba7023802f2aab7-b8aad274517a2230-gd484cfa83fa963da-1d"></meta>
+
 </head>
 
 <body>
@@ -31,21 +29,22 @@
       <div id="main" role="main">
         <div class="download-bar">
         <div class="inner">
-          <a href="https://github.com/google/j2objc/wiki/Getting-Started" class="download-button"><span>Get Started</span></a>
-          <a href="https://github.com/google/j2objc" class="code">View J2ObjC on GitHub</a>
+          <a href="https://github.com/tomball/j2objc/tarball/master" class="download-button tar"><span>Download</span></a>
+          <a href="https://github.com/tomball/j2objc/zipball/master" class="download-button zip"><span>Download</span></a>
+          <a href="https://github.com/tomball/j2objc" class="code">View J2ObjC on GitHub</a>
         </div>
         <span class="blc"></span><span class="trc"></span>
         </div>
         <article class="markdown-body">
+          <h1>
+<a id="j2objc-java-to-objective-c-translator-and-runtime" class="anchor" href="#j2objc-java-to-objective-c-translator-and-runtime" aria-hidden="true"><span class="octicon octicon-link"></span></a>J2ObjC: Java to Objective-C Translator and Runtime</h1>
 
-<div id="google_translate_element" style="float: right;"></div><script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE, gaTrack: true, gaId: 'UA-34671662-2'}, 'google_translate_element');
-}
-</script><script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<p><strong>Project site:</strong> <a href="http://j2objc.org">http://j2objc.org</a><br>
+<strong>J2ObjC blog:</strong> <a href="http://j2objc.blogspot.com">http://j2objc.blogspot.com</a><br>
+<strong>Questions and discussion:</strong> <a href="http://groups.google.com/group/j2objc-discuss">http://groups.google.com/group/j2objc-discuss</a></p>
 
 <h3>
-<a name="what-j2objc-is" class="anchor" href="#what-j2objc-is"><span class="octicon octicon-link"></span></a>What J2ObjC Is</h3>
+<a id="what-j2objc-is" class="anchor" href="#what-j2objc-is" aria-hidden="true"><span class="octicon octicon-link"></span></a>What J2ObjC Is</h3>
 
 <p>J2ObjC is an open-source command-line tool from Google that translates
 Java code to Objective-C for the iOS (iPhone/iPad) platform. This tool
@@ -59,68 +58,49 @@ client-side application developers, including exceptions, inner and
 anonymous classes, generic types, threads and reflection. JUnit test
 translation and execution is also supported.</p>
 
+<p>J2ObjC is currently between alpha and beta quality. Several Google projects
+rely on it, but when new projects first start working with it, they usually
+find new bugs to be fixed.</p>
+
 <h3>
-<a name="what-j2objc-isnt" class="anchor" href="#what-j2objc-isnt"><span class="octicon octicon-link"></span></a>What J2ObjC isn't</h3>
+<a id="what-j2objc-isnt" class="anchor" href="#what-j2objc-isnt" aria-hidden="true"><span class="octicon octicon-link"></span></a>What J2ObjC isn't</h3>
 
 <p>J2ObjC does not provide any sort of platform-independent UI toolkit, nor are
 there any plans to do so in the future. We believe that iOS UI code needs to
 be written in Objective-C or Objective-C++ using Apple's iOS SDK (Android UIs
 using Android's API, web app UIs using GWT, etc.).</p>
 
-<h3>
-<a name="requirements" class="anchor" href="#requirements"><span class="octicon octicon-link"></span></a>Requirements</h3>
+<h2>
+<a id="requirements" class="anchor" href="#requirements" aria-hidden="true"><span class="octicon octicon-link"></span></a>Requirements</h2>
 
 <ul>
-  <li>JDK 1.7 or higher</li>
-  <li>Xcode 5 or higher</li>
-  <li>Mac OS X 10.9 or higher</li>
+<li>JDK 1.6 or higher</li>
+<li>Xcode 4 or higher</li>
+<li>Mac OS X 10.7 or higher</li>
 </ul>
 
-<p>
-  <strong>Questions:</strong> <a href="http://stackoverflow.com/questions/tagged/j2objc">http://stackoverflow.com/questions/tagged/j2objc</a><br>
-  <strong>Discussion:</strong> <a href="http://groups.google.com/group/j2objc-discuss">http://groups.google.com/group/j2objc-discuss</a><br>
-  <strong>J2ObjC blog:</strong> <a href="http://j2objc.blogspot.com">http://j2objc.blogspot.com</a>
-</p>
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span class="octicon octicon-link"></span></a>License</h2>
 
+<p>This library is distributed under the Apache 2.0 license found in the
+<a href="./LICENSE">LICENSE</a> file.</p>
         </article>
-        <div class="search-bar">
-          <table>
-            <tr>
-              <td id="search-text"><strong>Search J2ObjC Project:</strong></td>
-              <td id="search-box">
-                <script>
-                  (function() {
-                    var cx = '016856942741735081092:pq0t6q223b4';
-                    var gcse = document.createElement('script');
-                    gcse.type = 'text/javascript';
-                    gcse.async = true;
-                    gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-                        '//www.google.com/cse/cse.js?cx=' + cx;
-                    var s = document.getElementsByTagName('script')[0];
-                    s.parentNode.insertBefore(gcse, s);
-                  })();
-                </script>
-                <gcse:search></gcse:search>
-              </td>
-            </tr>
-          </table>
-        </div>
       </div>
     </div>
     <footer>
       <div class="owner">
-      <p><a href="https://github.com/google" class="avatar"><img src="https://2.gravatar.com/avatar/24ba30616d2a20673f54c2aee36d159e?d=https%3A%2F%2Fidenticons.github.com%2Ffaac4cb508e248b07982aabe19e96059.png&amp;r=x&amp;s=60" width="48" height="48"/></a> <a href="https://github.com/google">google</a> maintains <a href="https://github.com/google/j2objc">J2ObjC</a></p>
+      <p><a href="https://github.com/tomball" class="avatar"><img src="https://avatars2.githubusercontent.com/u/2991279?v=3&amp;s=60" width="48" height="48"></a> <a href="https://github.com/tomball">tomball</a> maintains <a href="https://github.com/tomball/j2objc">J2ObjC</a></p>
 
 
       </div>
       <div class="creds">
-        <small>This page generated using <a href="http://pages.github.com/">GitHub Pages</a><br/>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
+        <small>This page generated using <a href="https://pages.github.com/">GitHub Pages</a><br>theme by <a href="https://twitter.com/jonrohan/">Jon Rohan</a></small>
       </div>
     </footer>
   </div>
   <div class="current-section">
     <a href="#top">Scroll to top</a>
-    <a href="https://github.com/google/j2objc/tarball/master" class="tar">tar</a><a href="https://github.com/google/j2objc/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
+    <a href="https://github.com/tomball/j2objc/tarball/master" class="tar">tar</a><a href="https://github.com/tomball/j2objc/zipball/master" class="zip">zip</a><a href="" class="code">source code</a>
     <p class="name"></p>
   </div>
 
