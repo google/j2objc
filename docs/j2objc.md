@@ -113,6 +113,6 @@ are objective-c (default) and objective-c++</dd>
 <dd>Boot path used by translation (not the tool itself).</dd>
 </dl>
 
-<h3>See Also</h3>
+<h2>See Also</h2>
 
 <dl><dd><a href="j2objcc.html">j2objcc</a></dd></dl>
