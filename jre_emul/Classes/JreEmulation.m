@@ -120,7 +120,8 @@ FOUNDATION_EXPORT NSString *JreStrcat(const char *pTypes, ...) {
       case '$':
         {
           NSString *str = va_arg(va, NSString *);
-          capacity += str ? CFStringGetLength((CFStringRef)str) : 4;
+          capacity += (str && [str isKindOfClass:[NSString class]]) ? CFStringGetLength((CFStringRef)str) : 4;
+          //there is a problem when the str as String is null in Java, it has NSNull class instead of being nil
         }
         break;
       case '@':
