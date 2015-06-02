@@ -17,19 +17,25 @@ package com.google.devtools.j2objc.ast;
  * Type method reference expression AST node type (added in JLS8, section 15.13).
  */
 public class TypeMethodReference extends MethodReference {
-  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
+  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
   public TypeMethodReference(org.eclipse.jdt.core.dom.TypeMethodReference jdtNode) {
     super(jdtNode);
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     type.set((Type) TreeConverter.convert(jdtNode.getType()));
+    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
   }
 
   public TypeMethodReference(TypeMethodReference other) {
     super(other);
-    name.set(other.getName());
     type.set(other.getType());
+    name.set(other.getName());
+  }
+
+  @Override
+  public Kind getKind() {
+    return Kind.TYPE_METHOD_REFERENCE;
   }
 
   public SimpleName getName() {
@@ -41,18 +47,17 @@ public class TypeMethodReference extends MethodReference {
   }
 
   @Override
+  protected void acceptInner(TreeVisitor visitor) {
+    if (visitor.visit(this)) {
+      type.accept(visitor);
+      typeArguments.accept(visitor);
+      name.accept(visitor);
+    }
+    visitor.endVisit(this);
+  }
+
+  @Override
   public TypeMethodReference copy() {
     return new TypeMethodReference(this);
-  }
-
-  @Override
-  public Kind getKind() {
-    return Kind.TYPE_METHOD_REFERENCE;
-  }
-
-  @Override
-  protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
-    visitor.endVisit(this);
   }
 }

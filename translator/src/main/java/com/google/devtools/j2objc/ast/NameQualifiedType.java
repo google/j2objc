@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.ast;
  * Node for a name-qualified type (added in JLS8, section 6.5.5.2).
  */
 public class NameQualifiedType extends AnnotatableType {
+
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
 
@@ -32,6 +33,11 @@ public class NameQualifiedType extends AnnotatableType {
     qualifier.copyFrom(other.getQualifier());
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.NAME_QUALIFIED_TYPE;
+  }
+
   public SimpleName getName() {
     return name.get();
   }
@@ -41,18 +47,17 @@ public class NameQualifiedType extends AnnotatableType {
   }
 
   @Override
-  public Type copy() {
-    return new NameQualifiedType(this);
-  }
-
-  @Override
-  public Kind getKind() {
-    return Kind.NAME_QUALIFIED_TYPE;
-  }
-
-  @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      name.accept(visitor);
+      annotations.accept(visitor);
+      qualifier.accept(visitor);
+    }
     visitor.endVisit(this);
+  }
+
+  @Override
+  public NameQualifiedType copy() {
+    return new NameQualifiedType(this);
   }
 }

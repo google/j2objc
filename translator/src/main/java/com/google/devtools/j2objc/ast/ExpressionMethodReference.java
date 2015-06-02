@@ -13,13 +13,11 @@
  */
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ITypeBinding;
-
 /**
  * Expression method reference node type (added in JLS8, section 15.13).
  */
 public class ExpressionMethodReference extends MethodReference {
-  private final ITypeBinding typeBinding;
+
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
@@ -27,24 +25,17 @@ public class ExpressionMethodReference extends MethodReference {
     super(jdtNode);
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
-    typeBinding = jdtNode.resolveTypeBinding();
   }
 
   public ExpressionMethodReference(ExpressionMethodReference other) {
     super(other);
     expression.copyFrom(other.getExpression());
     name.copyFrom(other.getName());
-    typeBinding = other.getTypeBinding();
   }
 
   @Override
   public Kind getKind() {
     return Kind.EXPRESSION_METHOD_REFERENCE;
-  }
-
-  @Override
-  public ITypeBinding getTypeBinding() {
-    return typeBinding;
   }
 
   public Expression getExpression() {
@@ -67,6 +58,8 @@ public class ExpressionMethodReference extends MethodReference {
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
       expression.accept(visitor);
+      typeArguments.accept(visitor);
+      name.accept(visitor);
     }
     visitor.endVisit(this);
   }

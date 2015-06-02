@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.ast;
  * Creation reference expression AST node type (added in JLS8, section 15.13).
  */
 public class CreationReference extends MethodReference {
+
   private ChildLink<Type> type = ChildLink.create(Type.class, this);
 
   public CreationReference(org.eclipse.jdt.core.dom.CreationReference jdtNode) {
@@ -29,23 +30,26 @@ public class CreationReference extends MethodReference {
     type.set(other.getType());
   }
 
-  public Type getType() {
-    return type.get();
-  }
-
-  @Override
-  public CreationReference copy() {
-    return new CreationReference(this);
-  }
-
   @Override
   public Kind getKind() {
     return Kind.CREATION_REFERENCE;
   }
 
+  public Type getType() {
+    return type.get();
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      type.accept(visitor);
+      typeArguments.accept(visitor);
+    }
     visitor.endVisit(this);
+  }
+
+  @Override
+  public CreationReference copy() {
+    return new CreationReference(this);
   }
 }

@@ -21,6 +21,7 @@ import java.util.List;
  */
 // TODO(kirbs): Clean up ad-hoc dimension support that we had to implement previously.
 public class Dimension extends TreeNode {
+
   protected ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
 
   public Dimension(org.eclipse.jdt.core.dom.Dimension jdtNode) {
@@ -37,18 +38,20 @@ public class Dimension extends TreeNode {
     annotations.copyFrom(other.annotations());
   }
 
-  public List<Annotation> annotations() {
-    return annotations;
-  }
-
   @Override
   public Kind getKind() {
     return Kind.DIMENSION;
   }
 
+  public List<Annotation> annotations() {
+    return annotations;
+  }
+
   @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      annotations.accept(visitor);
+    }
     visitor.endVisit(this);
   }
 

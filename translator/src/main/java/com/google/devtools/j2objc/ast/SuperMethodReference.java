@@ -17,25 +17,25 @@ package com.google.devtools.j2objc.ast;
  * Super method reference AST node type (added in JLS8, section 15.13).
  */
 public class SuperMethodReference extends MethodReference {
-  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
+
   private ChildLink<Name> qualifier = ChildLink.create(Name.class, this);
+  private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
 
   public SuperMethodReference(org.eclipse.jdt.core.dom.SuperMethodReference jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveTypeBinding();
-    for (Object x : jdtNode.typeArguments()) {
-      typeArguments.add((Type) TreeConverter.convert(x));
-    }
-    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     qualifier.set((Name) TreeConverter.convert(jdtNode.getQualifier()));
+    name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
   }
 
   public SuperMethodReference(SuperMethodReference other) {
     super(other);
-    typeBinding = other.getTypeBinding();
-    typeArguments.copyFrom(other.typeArguments());
-    name.copyFrom(other.getName());
     qualifier.copyFrom(other.getQualifier());
+    name.copyFrom(other.getName());
+  }
+
+  @Override
+  public Kind getKind() {
+    return Kind.SUPER_METHOD_REFERENCE;
   }
 
   public SimpleName getName() {
@@ -47,18 +47,17 @@ public class SuperMethodReference extends MethodReference {
   }
 
   @Override
-  public Expression copy() {
-    return new SuperMethodReference(this);
-  }
-
-  @Override
-  public Kind getKind() {
-    return Kind.SUPER_METHOD_REFERENCE;
-  }
-
-  @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      qualifier.accept(visitor);
+      typeArguments.accept(visitor);
+      name.accept(visitor);
+    }
     visitor.endVisit(this);
+  }
+
+  @Override
+  public SuperMethodReference copy() {
+    return new SuperMethodReference(this);
   }
 }

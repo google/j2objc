@@ -21,6 +21,7 @@ import java.util.List;
  * Type node for an intersection type in a cast expression (added in JLS8, section 4.9).
  */
 public class IntersectionType extends Type {
+
   private ChildList<Type> types = ChildList.create(Type.class, this);
 
   public IntersectionType(org.eclipse.jdt.core.dom.IntersectionType jdtNode) {
@@ -37,6 +38,11 @@ public class IntersectionType extends Type {
     types.copyFrom(other.types);
   }
 
+  @Override
+  public Kind getKind() {
+    return Kind.INTERSECTION_TYPE;
+  }
+
   public List<Type> types() {
     return types;
   }
@@ -45,6 +51,15 @@ public class IntersectionType extends Type {
     return true;
   }
 
+  @Override
+  protected void acceptInner(TreeVisitor visitor) {
+    if (visitor.visit(this)) {
+      types.accept(visitor);
+    }
+    visitor.endVisit(this);
+  }
+
+  @Override
   public IntersectionType copy() {
     return new IntersectionType(this);
   }
@@ -53,16 +68,5 @@ public class IntersectionType extends Type {
   public void validateInner() {
     super.validateInner();
     Preconditions.checkNotNull(typeBinding);
-  }
-
-  @Override
-  public Kind getKind() {
-    return Kind.INTERSECTION_TYPE;
-  }
-
-  @Override
-  protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
-    visitor.endVisit(this);
   }
 }

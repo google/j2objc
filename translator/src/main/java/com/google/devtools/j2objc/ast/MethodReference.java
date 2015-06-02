@@ -30,6 +30,7 @@ import java.util.List;
  * </pre>
  */
 public abstract class MethodReference extends Expression {
+
   protected ITypeBinding typeBinding;
   protected ChildList<Type> typeArguments = ChildList.create(Type.class, this);
 
@@ -55,4 +56,7 @@ public abstract class MethodReference extends Expression {
   public List<Type> typeArguments() {
     return typeArguments;
   }
+
+  @Override
+  public abstract MethodReference copy();
 }
