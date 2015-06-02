@@ -18,10 +18,11 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
 
-/*
+/**
  * Lambda expression AST node type (added in JLS8, section 15.27).
  */
 public class LambdaExpression extends Expression {
+
   private final ITypeBinding typeBinding;
   private final IMethodBinding methodBinding;
   private ChildList<VariableDeclarationFragment> parameters = ChildList.create(
@@ -72,6 +73,7 @@ public class LambdaExpression extends Expression {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      parameters.accept(visitor);
       body.accept(visitor);
     }
     visitor.endVisit(this);

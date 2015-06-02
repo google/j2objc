@@ -54,6 +54,7 @@ JAVA_SOURCES = \
 	J2ObjC.java \
 	Options.java \
 	ast/AbstractTypeDeclaration.java \
+	ast/AnnotatableType.java \
 	ast/Annotation.java \
 	ast/AnnotationTypeDeclaration.java \
 	ast/AnnotationTypeMemberDeclaration.java \
@@ -82,13 +83,16 @@ JAVA_SOURCES = \
 	ast/ConditionalExpression.java \
 	ast/ConstructorInvocation.java \
 	ast/ContinueStatement.java \
+	ast/CreationReference.java \
 	ast/DebugASTPrinter.java \
+	ast/Dimension.java \
 	ast/DoStatement.java \
 	ast/EmptyStatement.java \
 	ast/EnhancedForStatement.java \
 	ast/EnumConstantDeclaration.java \
 	ast/EnumDeclaration.java \
 	ast/Expression.java \
+	ast/ExpressionMethodReference.java \
 	ast/ExpressionStatement.java \
 	ast/FieldAccess.java \
 	ast/FieldDeclaration.java \
@@ -99,14 +103,18 @@ JAVA_SOURCES = \
 	ast/InfixExpression.java \
 	ast/Initializer.java \
 	ast/InstanceofExpression.java \
+	ast/IntersectionType.java \
 	ast/Javadoc.java \
 	ast/LabeledStatement.java \
+	ast/LambdaExpression.java \
 	ast/LineComment.java \
 	ast/MarkerAnnotation.java \
 	ast/MemberValuePair.java \
 	ast/MethodDeclaration.java \
 	ast/MethodInvocation.java \
+	ast/MethodReference.java \
 	ast/Name.java \
+	ast/NameQualifiedType.java \
 	ast/NativeDeclaration.java \
 	ast/NativeExpression.java \
 	ast/NativeStatement.java \
@@ -131,6 +139,7 @@ JAVA_SOURCES = \
 	ast/SuperConstructorInvocation.java \
 	ast/SuperFieldAccess.java \
 	ast/SuperMethodInvocation.java \
+	ast/SuperMethodReference.java \
 	ast/SwitchCase.java \
 	ast/SwitchStatement.java \
 	ast/SynchronizedStatement.java \
@@ -147,6 +156,7 @@ JAVA_SOURCES = \
 	ast/TypeDeclaration.java \
 	ast/TypeDeclarationStatement.java \
 	ast/TypeLiteral.java \
+	ast/TypeMethodReference.java \
 	ast/UnionType.java \
 	ast/VariableDeclaration.java \
 	ast/VariableDeclarationExpression.java \

@@ -24,12 +24,13 @@ import java.util.List;
 // TODO(kirbs): Migrate Simple, Primitive, Qualified, and Wildcard Types to extend this
 // type, as changed in JLS8.
 public abstract class AnnotatableType extends Type {
+
   protected ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
 
   public AnnotatableType(org.eclipse.jdt.core.dom.AnnotatableType jdtNode) {
     super(jdtNode);
     typeBinding = jdtNode.resolveBinding();
-    for(Object x : jdtNode.annotations()){
+    for (Object x : jdtNode.annotations()){
       annotations.add((Annotation) TreeConverter.convert(x));
     }
   }
@@ -51,4 +52,7 @@ public abstract class AnnotatableType extends Type {
   public boolean isAnnotatable() {
     return true;
   }
+
+  @Override
+  public abstract AnnotatableType copy();
 }
