@@ -526,19 +526,14 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(InfixExpression node) {
-    node.getLeftOperand().accept(this);
-    sb.print(' ');
-    sb.print(node.getOperator().toString());
-    sb.print(' ');
-    node.getRightOperand().accept(this);
-    final List<Expression> extendedOperands = node.getExtendedOperands();
-    if (!extendedOperands.isEmpty()) {
-      sb.print(' ');
-      for (Iterator<Expression> it = extendedOperands.iterator(); it.hasNext(); ) {
-        sb.print(node.getOperator().toString());
-        sb.print(' ');
-        it.next().accept(this);
+    boolean isFirst = true;
+    String op = ' ' + node.getOperator().toString() + ' ';
+    for (Expression operand : node.getOperands()) {
+      if (!isFirst) {
+        sb.print(op);
       }
+      isFirst = false;
+      operand.accept(this);
     }
     return false;
   }

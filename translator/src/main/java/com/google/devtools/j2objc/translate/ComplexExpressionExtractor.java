@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.annotations.VisibleForTesting;
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.Assignment;
@@ -116,7 +115,7 @@ public class ComplexExpressionExtractor extends TreeVisitor {
 
   @Override
   public void endVisit(InfixExpression node) {
-    handleNode(node, ImmutableList.of(node.getLeftOperand(), node.getRightOperand()));
+    handleNode(node, node.getOperands());
   }
 
   @Override

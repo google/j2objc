@@ -298,15 +298,13 @@ public class Autoboxer extends TreeVisitor {
   @Override
   public void endVisit(InfixExpression node) {
     ITypeBinding type = node.getTypeBinding();
-    Expression lhs = node.getLeftOperand();
-    ITypeBinding lhBinding = lhs.getTypeBinding();
-    Expression rhs = node.getRightOperand();
-    ITypeBinding rhBinding = rhs.getTypeBinding();
     InfixExpression.Operator op = node.getOperator();
+    List<Expression> operands = node.getOperands();
 
     // Don't unbox for equality tests where both operands are boxed types.
     if ((op == InfixExpression.Operator.EQUALS || op == InfixExpression.Operator.NOT_EQUALS)
-        && !lhBinding.isPrimitive() && !rhBinding.isPrimitive()) {
+        && !operands.get(0).getTypeBinding().isPrimitive()
+        && !operands.get(1).getTypeBinding().isPrimitive()) {
       return;
     }
     // Don't unbox for string concatenation.
@@ -314,17 +312,10 @@ public class Autoboxer extends TreeVisitor {
       return;
     }
 
-    if (!lhBinding.isPrimitive()) {
-      node.setLeftOperand(unbox(lhs));
-    }
-    if (!rhBinding.isPrimitive()) {
-      node.setRightOperand(unbox(rhs));
-    }
-    List<Expression> extendedOperands = node.getExtendedOperands();
-    for (int i = 0; i < extendedOperands.size(); i++) {
-      Expression expr = extendedOperands.get(i);
+    for (int i = 0; i < operands.size(); i++) {
+      Expression expr = operands.get(i);
       if (!expr.getTypeBinding().isPrimitive()) {
-        extendedOperands.set(i, unbox(expr));
+        operands.set(i, unbox(expr));
       }
     }
   }

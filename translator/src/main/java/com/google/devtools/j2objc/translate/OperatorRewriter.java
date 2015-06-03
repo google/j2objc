@@ -107,8 +107,7 @@ public class OperatorRewriter extends TreeVisitor {
     if (funcName != null) {
       FunctionInvocation invocation = new FunctionInvocation(funcName, nodeType, nodeType, null);
       List<Expression> args = invocation.getArguments();
-      args.add(TreeUtil.remove(node.getLeftOperand()));
-      args.add(TreeUtil.remove(node.getRightOperand()));
+      TreeUtil.moveList(node.getOperands(), args);
       node.replaceWith(invocation);
     } else if (op == InfixExpression.Operator.PLUS && typeEnv.isStringType(nodeType)) {
       rewriteStringConcatenation(node);
@@ -202,11 +201,9 @@ public class OperatorRewriter extends TreeVisitor {
   }
 
   private void rewriteStringConcatenation(InfixExpression node) {
-    List<Expression> extendedOperands = node.getExtendedOperands();
-    List<Expression> operands = Lists.newArrayListWithCapacity(extendedOperands.size() + 2);
-    operands.add(TreeUtil.remove(node.getLeftOperand()));
-    operands.add(TreeUtil.remove(node.getRightOperand()));
-    TreeUtil.moveList(extendedOperands, operands);
+    List<Expression> childOperands = node.getOperands();
+    List<Expression> operands = Lists.newArrayListWithCapacity(childOperands.size() + 2);
+    TreeUtil.moveList(childOperands, operands);
 
     operands = coalesceStringLiterals(operands);
     if (operands.size() == 1 && typeEnv.isStringType(operands.get(0).getTypeBinding())) {

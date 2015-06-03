@@ -143,4 +143,19 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         "{", "result = 2;", "}",
         "{", "result = 3;", "}");
   }
+
+  public void testExpressionPruning() throws IOException {
+    String translation = translateSourceFile(
+        "class A { "
+        + "static final boolean DEBUG = true; "
+        + "static final boolean TEST = true; "
+        + "private static boolean nonConstant = false; "
+        + "boolean test() { "
+
+        // DEBUG and TEST constants should be pruned.
+        + "  if (DEBUG && TEST && nonConstant) return false; "
+        + "  return true; }}", "A", "A.m");
+    assertTranslatedLines(translation,
+        "- (jboolean)test {", "if (A_nonConstant_) return NO;", "return YES;", "}");
+  }
 }

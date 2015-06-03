@@ -564,34 +564,34 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
-    Expression lhs = node.getLeftOperand();
-    Expression rhs = node.getRightOperand();
-    List<Expression> extendedOperands = node.getExtendedOperands();
+    List<Expression> operands = node.getOperands();
+    assert operands.size() >= 2;
     if ((op.equals(InfixExpression.Operator.EQUALS)
-        || op.equals(InfixExpression.Operator.NOT_EQUALS))
-        && (lhs instanceof StringLiteral || rhs instanceof StringLiteral)) {
-      Expression first = lhs;
-      Expression second = rhs;
-      if (!(lhs instanceof StringLiteral)) {
-        // In case the lhs can't call isEqual.
-        first = rhs;
-        second = lhs;
+        || op.equals(InfixExpression.Operator.NOT_EQUALS))) {
+      Expression lhs = operands.get(0);
+      Expression rhs = operands.get(1);
+      if (lhs instanceof StringLiteral || rhs instanceof StringLiteral) {
+        if (!(lhs instanceof StringLiteral)) {
+          // In case the lhs can't call isEqual.
+          lhs = operands.get(1);
+          rhs = operands.get(0);
+        }
+        buffer.append(op.equals(InfixExpression.Operator.NOT_EQUALS) ? "![" : "[");
+        lhs.accept(this);
+        buffer.append(" isEqual:");
+        rhs.accept(this);
+        buffer.append("]");
+        return false;
       }
-      buffer.append(op.equals(InfixExpression.Operator.NOT_EQUALS) ? "![" : "[");
-      first.accept(this);
-      buffer.append(" isEqual:");
-      second.accept(this);
-      buffer.append("]");
-    } else {
-      lhs.accept(this);
-      buffer.append(' ');
-      buffer.append(op.toString());
-      buffer.append(' ');
-      rhs.accept(this);
-      for (Iterator<Expression> it = extendedOperands.iterator(); it.hasNext(); ) {
-        buffer.append(' ').append(op.toString()).append(' ');
-        it.next().accept(this);
+    }
+    String opStr = ' ' + op.toString() + ' ';
+    boolean isFirst = true;
+    for (Expression operand : operands) {
+      if (!isFirst) {
+        buffer.append(opStr);
       }
+      isFirst = false;
+      operand.accept(this);
     }
     return false;
   }
@@ -617,7 +617,8 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(IntersectionType node) {
     throw new AssertionError(
-        "Intersection types should only occur in a cast expression, and are handled by CastResolver");
+        "Intersection types should only occur in a cast expression,"
+        + " and are handled by CastResolver");
   }
 
   @Override

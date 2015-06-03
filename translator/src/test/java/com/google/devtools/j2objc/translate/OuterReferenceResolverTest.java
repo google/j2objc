@@ -113,7 +113,7 @@ public class OuterReferenceResolverTest extends GenerationTest {
     assertEquals("val$i", innerFields.get(0).getName());
 
     InfixExpression addition = (InfixExpression) nodesByType.get(Kind.INFIX_EXPRESSION).get(0);
-    List<IVariableBinding> iPath = outerResolver.getPath(addition.getLeftOperand());
+    List<IVariableBinding> iPath = outerResolver.getPath(addition.getOperands().get(0));
     assertNotNull(iPath);
     assertEquals(1, iPath.size());
     assertEquals("val$i", iPath.get(0).getName());
