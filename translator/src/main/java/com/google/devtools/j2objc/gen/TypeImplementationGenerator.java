@@ -153,8 +153,8 @@ public class TypeImplementationGenerator extends TypeGenerator {
                   NameTable.capitalize(accessorName), objcType, varName);
             } else {
               printf("\n+ (void)set%s:(%s)value {\n  %s_set_%s(value);\n}\n",
-                  NameTable.capitalize(accessorName), objcType,
-                  typeBinding.getName(), nameTable.getVariableShortName(varBinding));
+                  NameTable.capitalize(accessorName), objcType, typeName,
+                  nameTable.getVariableShortName(varBinding));
             }
           }
         }
