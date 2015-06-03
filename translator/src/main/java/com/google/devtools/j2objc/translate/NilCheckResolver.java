@@ -57,6 +57,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Set;
 
 /**
@@ -306,8 +307,8 @@ public class NilCheckResolver extends TreeVisitor {
     boolean equals = op == InfixExpression.Operator.EQUALS;
     boolean notEquals = op == InfixExpression.Operator.NOT_EQUALS;
     if (equals || notEquals) {
-      Expression lhs = node.getLeftOperand();
-      Expression rhs = node.getRightOperand();
+      Expression lhs = node.getOperands().get(0);
+      Expression rhs = node.getOperands().get(1);
       IVariableBinding maybeNullVar = null;
       if (lhs instanceof NullLiteral) {
         maybeNullVar = TreeUtil.getVariableBinding(rhs);
@@ -328,33 +329,19 @@ public class NilCheckResolver extends TreeVisitor {
   private boolean handleConditionalOperator(InfixExpression node, boolean logicalAnd) {
     Set<IVariableBinding> newSafeVarsTrue = Sets.newHashSet();
     Set<IVariableBinding> newSafeVarsFalse = Sets.newHashSet();
-    clearConditionalSafeVars();
-    node.getLeftOperand().accept(this);
-    if (logicalAnd) {
-      newSafeVarsTrue.addAll(safeVarsTrue);
-    } else {
-      newSafeVarsFalse.addAll(safeVarsFalse);
-    }
-    pushScope();
-    addSafeVars(logicalAnd ? safeVarsTrue : safeVarsFalse);
-    int pushCount = 1;
-    clearConditionalSafeVars();
-    node.getRightOperand().accept(this);
-    if (logicalAnd) {
-      newSafeVarsTrue.addAll(safeVarsTrue);
-    } else {
-      newSafeVarsFalse.addAll(safeVarsFalse);
-    }
-    for (Expression extendedOperand : node.getExtendedOperands()) {
-      pushScope();
-      addSafeVars(logicalAnd ? safeVarsTrue : safeVarsFalse);
-      pushCount++;
+    int pushCount = 0;
+    for (Iterator<Expression> it = node.getOperands().iterator(); it.hasNext(); ) {
       clearConditionalSafeVars();
-      extendedOperand.accept(this);
+      it.next().accept(this);
       if (logicalAnd) {
         newSafeVarsTrue.addAll(safeVarsTrue);
       } else {
         newSafeVarsFalse.addAll(safeVarsFalse);
+      }
+      if (it.hasNext()) {
+        pushScope();
+        addSafeVars(logicalAnd ? safeVarsTrue : safeVarsFalse);
+        pushCount++;
       }
     }
     while (pushCount-- > 0) {

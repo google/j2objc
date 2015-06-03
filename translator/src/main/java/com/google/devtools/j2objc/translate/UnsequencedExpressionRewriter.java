@@ -272,7 +272,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
   private void extractInfixConditional(
       List<Statement> stmtList, InfixExpression conditional, List<VariableAccess> toExtract) {
     InfixExpression.Operator op = conditional.getOperator();
-    List<Expression> branches = getBranches(conditional);
+    List<Expression> branches = conditional.getOperands();
     int lastIfExtractIdx = 0;
     IVariableBinding conditionalVar = null;
     int lastExtracted = 0;
@@ -289,8 +289,6 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
       // Extract all accesses from the previous branch.
       if (lastBranch != null && branch != lastBranch) {
         extractOrderedAccesses(stmtList, lastBranch, toExtract.subList(lastExtracted, i));
-        // The recursive call might replace some of the children.
-        branches = getBranches(conditional);
         lastExtracted = i;
       }
       lastBranch = branch;
@@ -323,8 +321,6 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
     }
     extractOrderedAccesses(
         stmtList, lastBranch, toExtract.subList(lastExtracted, toExtract.size()));
-    // The recursive call might replace some of the children.
-    branches = getBranches(conditional);
     if (conditionalVar != null) {
       List<Expression> remainingBranches = Lists.newArrayList();
       remainingBranches.add(new SimpleName(conditionalVar));
@@ -334,25 +330,14 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
     }
   }
 
-  private List<Expression> getBranches(InfixExpression expr) {
-    List<Expression> result = Lists.newArrayList();
-    result.add(expr.getLeftOperand());
-    result.add(expr.getRightOperand());
-    result.addAll(expr.getExtendedOperands());
-    return result;
-  }
-
   private Expression conditionalFromSubBranches(
       List<Expression> branches, InfixExpression.Operator op) {
     assert branches.size() >= 1;
     if (branches.size() == 1) {
       return branches.get(0).copy();
     } else {
-      InfixExpression result = new InfixExpression(
-          typeEnv.resolveJavaType("boolean"), op, branches.get(0).copy(), branches.get(1).copy());
-      for (int i = 2; i < branches.size(); i++) {
-        result.getExtendedOperands().add(branches.get(i).copy());
-      }
+      InfixExpression result = new InfixExpression(typeEnv.resolveJavaType("boolean"), op);
+      TreeUtil.copyList(branches, result.getOperands());
       return result;
     }
   }
@@ -443,7 +428,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
 
   private Expression getConditionChild(TreeNode conditional) {
     if (conditional instanceof InfixExpression) {
-      return ((InfixExpression) conditional).getLeftOperand();
+      return ((InfixExpression) conditional).getOperands().get(0);
     } else if (conditional instanceof ConditionalExpression) {
       return ((ConditionalExpression) conditional).getExpression();
     } else {

@@ -81,9 +81,7 @@ public class InfixExpression extends Expression {
   // but we'll keep it simple for now.
   private ITypeBinding typeBinding = null;
   private Operator operator = null;
-  private ChildLink<Expression> leftOperand = ChildLink.create(Expression.class, this);
-  private ChildLink<Expression> rightOperand = ChildLink.create(Expression.class, this);
-  private ChildList<Expression> extendedOperands = ChildList.create(Expression.class, this);
+  private ChildList<Expression> operands = ChildList.create(Expression.class, this);
 
   public InfixExpression(org.eclipse.jdt.core.dom.InfixExpression jdtNode) {
     super(jdtNode);
@@ -95,7 +93,6 @@ public class InfixExpression extends Expression {
     // stack. This code traverses the subtree non-recursively and merges all
     // children that have the same operator into this node using extended
     // operands.
-    List<Expression> operands = Lists.newArrayList();
     List<StackState> stack = Lists.newArrayList();
     stack.add(new StackState(jdtNode));
     while (!stack.isEmpty()) {
@@ -115,9 +112,6 @@ public class InfixExpression extends Expression {
       }
       operands.add((Expression) TreeConverter.convert(child));
     }
-    leftOperand.set(operands.get(0));
-    rightOperand.set(operands.get(1));
-    extendedOperands.addAll(operands.subList(2, operands.size()));
   }
 
   private static class StackState {
@@ -146,18 +140,16 @@ public class InfixExpression extends Expression {
     super(other);
     typeBinding = other.getTypeBinding();
     operator = other.getOperator();
-    leftOperand.copyFrom(other.getLeftOperand());
-    rightOperand.copyFrom(other.getRightOperand());
-    extendedOperands.copyFrom(other.getExtendedOperands());
+    operands.copyFrom(other.getOperands());
   }
 
   public InfixExpression(
-      ITypeBinding typeBinding, Operator operator, Expression leftOperand,
-      Expression rightOperand) {
+      ITypeBinding typeBinding, Operator operator, Expression... operands) {
     this.typeBinding = typeBinding;
     this.operator = operator;
-    this.leftOperand.set(leftOperand);
-    this.rightOperand.set(rightOperand);
+    for (Expression operand : operands) {
+      this.operands.add(operand);
+    }
   }
 
   @Override
@@ -178,32 +170,14 @@ public class InfixExpression extends Expression {
     return operator;
   }
 
-  public Expression getLeftOperand() {
-    return leftOperand.get();
-  }
-
-  public void setLeftOperand(Expression newLeftOperand) {
-    leftOperand.set(newLeftOperand);
-  }
-
-  public Expression getRightOperand() {
-    return rightOperand.get();
-  }
-
-  public void setRightOperand(Expression newRightOperand) {
-    rightOperand.set(newRightOperand);
-  }
-
-  public List<Expression> getExtendedOperands() {
-    return extendedOperands;
+  public List<Expression> getOperands() {
+    return operands;
   }
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
-      leftOperand.accept(visitor);
-      rightOperand.accept(visitor);
-      extendedOperands.accept(visitor);
+      operands.accept(visitor);
     }
     visitor.endVisit(this);
   }

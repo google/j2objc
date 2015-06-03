@@ -17,7 +17,6 @@ package com.google.devtools.j2objc.translate;
 import static com.google.devtools.j2objc.ast.InfixExpression.Operator.CONDITIONAL_AND;
 import static com.google.devtools.j2objc.ast.InfixExpression.Operator.CONDITIONAL_OR;
 import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
 
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.DoStatement;
@@ -28,6 +27,9 @@ import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.WhileStatement;
+
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Removes branches that are tested with boolean constant expressions
@@ -64,32 +66,37 @@ public class ConstantBranchPruner extends TreeVisitor {
     if (operator != CONDITIONAL_AND && operator != CONDITIONAL_OR) {
       return;
     }
-    Boolean left = getValue(node.getLeftOperand());
-    Boolean right = getValue(node.getRightOperand());
-    if (left != null && right != null) {
-      if (operator == CONDITIONAL_AND) {
-        node.replaceWith(new BooleanLiteral(left && right, typeEnv));
-      } else {
-        node.replaceWith(new BooleanLiteral(left || right, typeEnv));
+    List<Expression> operands = node.getOperands();
+    for (Iterator<Expression> it = operands.iterator(); it.hasNext(); ) {
+      Boolean constantVal = getValue(it.next());
+      if (constantVal == null) {
+        continue;
       }
-    } else if (left != null || right != null) {
-      if (operator == CONDITIONAL_AND) {
-        if (left == TRUE) {
-          node.replaceWith(node.getRightOperand().copy());
-        } else if (right == TRUE) {
-          node.replaceWith(node.getLeftOperand().copy());
-        } else {
-          node.replaceWith(new BooleanLiteral(false, typeEnv));
-        }
-      } else {
-        if (left == FALSE) {
-          node.replaceWith(node.getRightOperand().copy());
-        } else if (right == FALSE) {
-          node.replaceWith(node.getLeftOperand().copy());
-        } else {
-          node.replaceWith(new BooleanLiteral(true, typeEnv));
-        }
+      if (constantVal && operator == CONDITIONAL_OR) {
+        // Whole expression is true.
+        node.replaceWith(new BooleanLiteral(true, typeEnv));
+        return;
       }
+      if (!constantVal && operator == CONDITIONAL_AND) {
+        // Whole expression is false.
+        node.replaceWith(new BooleanLiteral(false, typeEnv));
+        return;
+      }
+      // Else remove unnecessary constant value.
+      it.remove();
+    }
+
+    if (operands.size() == 0) {
+      if (operator == CONDITIONAL_OR) {
+        // All constants must have been false, because a true value would have
+        // caused us to return in the loop above.
+        node.replaceWith(new BooleanLiteral(false, typeEnv));
+      } else {
+        // Likewise, all constants must have been true.
+        node.replaceWith(new BooleanLiteral(true, typeEnv));
+      }
+    } else if (operands.size() == 1) {
+      node.replaceWith(operands.remove(0));
     }
   }
 

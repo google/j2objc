@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.LinkedListMultimap;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
@@ -212,40 +213,8 @@ public class Rewriter extends TreeVisitor {
   public void endVisit(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
     ITypeBinding type = node.getTypeBinding();
-    ITypeBinding lhsType = node.getLeftOperand().getTypeBinding();
-    ITypeBinding rhsType = node.getRightOperand().getTypeBinding();
-    if (typeEnv.isJavaStringType(type) && op == InfixExpression.Operator.PLUS
-        && !typeEnv.isJavaStringType(lhsType) && !typeEnv.isJavaStringType(rhsType)) {
-      // String concatenation where the first two operands are not strings.
-      // We move all the preceding non-string operands into a sub-expression.
-      ITypeBinding nonStringExprType = getAdditionType(lhsType, rhsType);
-      InfixExpression nonStringExpr = new InfixExpression(
-          nonStringExprType, InfixExpression.Operator.PLUS, TreeUtil.remove(node.getLeftOperand()),
-          TreeUtil.remove(node.getRightOperand()));
-      InfixExpression stringExpr = new InfixExpression(
-          typeEnv.resolveJavaType("java.lang.String"), InfixExpression.Operator.PLUS, nonStringExpr,
-          null);
-      List<Expression> extendedOperands = node.getExtendedOperands();
-      List<Expression> nonStringOperands = nonStringExpr.getExtendedOperands();
-      List<Expression> stringOperands = stringExpr.getExtendedOperands();
-      boolean foundStringType = false;
-      for (Expression expr : extendedOperands) {
-        Expression copiedExpr = expr.copy();
-        ITypeBinding exprType = expr.getTypeBinding();
-        if (foundStringType || typeEnv.isJavaStringType(exprType)) {
-          if (foundStringType) {
-            stringOperands.add(copiedExpr);
-          } else {
-            stringExpr.setRightOperand(copiedExpr);
-          }
-          foundStringType = true;
-        } else {
-          nonStringOperands.add(copiedExpr);
-          nonStringExprType = getAdditionType(nonStringExprType, exprType);
-        }
-      }
-      nonStringExpr.setTypeBinding(nonStringExprType);
-      node.replaceWith(stringExpr);
+    if (typeEnv.isJavaStringType(type) && op == InfixExpression.Operator.PLUS) {
+      rewriteStringConcat(node);
     } else if (op == InfixExpression.Operator.CONDITIONAL_AND) {
       // Avoid logical-op-parentheses compiler warnings.
       if (node.getParent() instanceof InfixExpression) {
@@ -264,13 +233,38 @@ public class Rewriter extends TreeVisitor {
 
     // Avoid lower precedence compiler warnings.
     if (op == InfixExpression.Operator.AND || op == InfixExpression.Operator.OR) {
-      if (node.getLeftOperand() instanceof InfixExpression) {
-        ParenthesizedExpression.parenthesizeAndReplace(node.getLeftOperand());
-      }
-      if (node.getRightOperand() instanceof InfixExpression) {
-        ParenthesizedExpression.parenthesizeAndReplace(node.getRightOperand());
+      for (Expression operand : node.getOperands()) {
+        if (operand instanceof InfixExpression) {
+          ParenthesizedExpression.parenthesizeAndReplace(operand);
+        }
       }
     }
+  }
+
+  private void rewriteStringConcat(InfixExpression node) {
+    // Collect all non-string operands that precede the first string operand.
+    // If there are multiple such operands, move them into a sub-expression.
+    List<Expression> nonStringOperands = Lists.newArrayList();
+    ITypeBinding nonStringExprType = null;
+    for (Expression operand : node.getOperands()) {
+      ITypeBinding operandType = operand.getTypeBinding();
+      if (typeEnv.isJavaStringType(operandType)) {
+        break;
+      }
+      nonStringOperands.add(operand);
+      nonStringExprType = getAdditionType(nonStringExprType, operandType);
+    }
+
+    if (nonStringOperands.size() < 2) {
+      return;
+    }
+
+    InfixExpression nonStringExpr =
+        new InfixExpression(nonStringExprType, InfixExpression.Operator.PLUS);
+    for (Expression operand : nonStringOperands) {
+      nonStringExpr.getOperands().add(TreeUtil.remove(operand));
+    }
+    node.getOperands().add(0, nonStringExpr);
   }
 
   private ITypeBinding getAdditionType(ITypeBinding aType, ITypeBinding bType) {
