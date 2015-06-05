@@ -30,6 +30,9 @@
 
 // Counterpart for com.google.protobuf.ByteString.
 
+#ifndef __ComGoogleProtobufByteString_H__
+#define __ComGoogleProtobufByteString_H__
+
 #import "JreEmulation.h"
 
 @interface ComGoogleProtobufByteString : NSObject {
@@ -59,3 +62,5 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufByteString)
 
 FOUNDATION_EXPORT ComGoogleProtobufByteString *ComGoogleProtobufByteString_EMPTY_;
 J2OBJC_STATIC_FIELD_GETTER(ComGoogleProtobufByteString, EMPTY_, ComGoogleProtobufByteString *)
+
+#endif // __ComGoogleProtobufByteString_H__

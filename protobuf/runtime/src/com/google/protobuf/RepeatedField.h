@@ -30,6 +30,9 @@
 
 // Defines the type used for repeated fields.
 
+#ifndef __ComGoogleProtobufRepeatedField_H__
+#define __ComGoogleProtobufRepeatedField_H__
+
 #import "JreEmulation.h"
 
 #import "com/google/protobuf/Descriptors.h"
@@ -154,3 +157,5 @@ id<JavaUtilList> CGPRepeatedFieldCopyList(CGPRepeatedField *field, CGPFieldDescr
 BOOL CGPRepeatedFieldIsEqual(CGPRepeatedField *a, CGPRepeatedField *b, CGPFieldJavaType type);
 
 CF_EXTERN_C_END
+
+#endif // __ComGoogleProtobufRepeatedField_H__

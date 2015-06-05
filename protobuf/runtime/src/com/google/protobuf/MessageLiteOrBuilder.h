@@ -32,6 +32,9 @@
 //
 //  Hand written counterpart of com.google.protobuf.MessageLiteOrBuilder.
 
+#ifndef __ComGoogleProtobufMessageLiteOrBuilder_H__
+#define __ComGoogleProtobufMessageLiteOrBuilder_H__
+
 #import "JreEmulation.h"
 
 @protocol ComGoogleProtobufMessageLiteOrBuilder<NSObject, JavaObject>
@@ -40,3 +43,5 @@
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessageLiteOrBuilder)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessageLiteOrBuilder)
+
+#endif // __ComGoogleProtobufMessageLiteOrBuilder_H__

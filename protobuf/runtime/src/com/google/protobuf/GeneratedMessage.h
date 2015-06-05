@@ -33,6 +33,9 @@
 //  Hand written counterpart for com.google.protobuf.GeneratedMessage and
 //  friends.
 
+#ifndef __ComGoogleProtobufGeneratedMessage_H__
+#define __ComGoogleProtobufGeneratedMessage_H__
+
 #import "JreEmulation.h"
 
 #import "com/google/protobuf/Extension.h"
@@ -135,3 +138,5 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableBuilder)
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_GeneratedExtension)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_GeneratedExtension)
+
+#endif // __ComGoogleProtobufGeneratedMessage_H__

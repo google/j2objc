@@ -32,6 +32,9 @@
 //  These are copied directly from the translation of
 //  com.google.protobuf.Descriptors.java.
 
+#ifndef __ComGoogleProtobufFieldTypes_H__
+#define __ComGoogleProtobufFieldTypes_H__
+
 #import "com/google/protobuf/ProtocolMessageEnum.h"
 #import "java/lang/Boolean.h"
 #import "java/lang/Double.h"
@@ -333,3 +336,5 @@ J2OBJC_ENUM_CONSTANT_GETTER(ComGoogleProtobufDescriptors_FieldDescriptor_JavaTyp
 J2OBJC_ENUM_CONSTANT_GETTER(ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum, MESSAGE)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum)
+
+#endif // __ComGoogleProtobufFieldTypes_H__

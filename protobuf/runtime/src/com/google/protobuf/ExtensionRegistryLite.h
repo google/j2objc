@@ -30,6 +30,9 @@
 
 //  Hand written counterpart for com.google.protobuf.ExtensionRegistryLite.
 
+#ifndef __ComGoogleProtobufExtensionRegistryLite_H__
+#define __ComGoogleProtobufExtensionRegistryLite_H__
+
 #import "JreEmulation.h"
 
 @class ComGoogleProtobufDescriptors_Descriptor;
@@ -59,3 +62,5 @@ ComGoogleProtobufDescriptors_FieldDescriptor *CGPExtensionRegistryFind(
     int fieldNumber);
 
 CF_EXTERN_C_END
+
+#endif // __ComGoogleProtobufExtensionRegistryLite_H__

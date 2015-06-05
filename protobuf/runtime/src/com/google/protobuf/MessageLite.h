@@ -30,6 +30,9 @@
 
 //  Hand written counterpart of com.google.protobuf.MessageLite.
 
+#ifndef __ComGoogleProtobufMessageLite_H__
+#define __ComGoogleProtobufMessageLite_H__
+
 #import "com/google/protobuf/MessageLiteOrBuilder.h"
 
 @class ComGoogleProtobufByteString;
@@ -86,3 +89,5 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessageLite)
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessageLite_Builder)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessageLite_Builder)
+
+#endif // __ComGoogleProtobufMessageLite_H__

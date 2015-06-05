@@ -31,6 +31,9 @@
 // DO NOT INCLUDE EXTERNALLY.
 // Contains declarations used within the runtime and generated protocol buffers.
 
+#ifndef __ComGoogleProtobufGeneratedMessage_PackagePrivate_H__
+#define __ComGoogleProtobufGeneratedMessage_PackagePrivate_H__
+
 #import "com/google/protobuf/GeneratedMessage.h"
 
 #import "com/google/protobuf/Descriptors_PackagePrivate.h"
@@ -73,3 +76,5 @@ ComGoogleProtobufGeneratedMessage *CGPParseDelimitedFromInputStream(
     CGPDescriptor *descriptor, JavaIoInputStream *input, CGPExtensionRegistryLite *registry);
 
 CF_EXTERN_C_END
+
+#endif // __ComGoogleProtobufGeneratedMessage_PackagePrivate_H__

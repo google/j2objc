@@ -30,6 +30,9 @@
 
 //  Hand written counterpart of com.google.protobuf.Descriptors.
 
+#ifndef __ComGoogleProtobufDescriptors_H__
+#define __ComGoogleProtobufDescriptors_H__
+
 #import "JreEmulation.h"
 
 #import "com/google/protobuf/FieldTypes.h"
@@ -114,3 +117,5 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_EnumDescriptor)
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors_EnumValueDescriptor)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_EnumValueDescriptor)
+
+#endif // __ComGoogleProtobufDescriptors_H__

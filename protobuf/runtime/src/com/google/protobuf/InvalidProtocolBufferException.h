@@ -32,6 +32,9 @@
 //
 // Counterpart for com.google.protobuf.InvalidProtocolBufferException.
 
+#ifndef __ComGoogleProtobufInvalidProtocolBufferException_H__
+#define __ComGoogleProtobufInvalidProtocolBufferException_H__
+
 #import "java/io/IOException.h"
 
 @interface ComGoogleProtobufInvalidProtocolBufferException : JavaIoIOException
@@ -40,3 +43,5 @@
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufInvalidProtocolBufferException)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufInvalidProtocolBufferException)
+
+#endif // __ComGoogleProtobufInvalidProtocolBufferException_H__
