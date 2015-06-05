@@ -30,6 +30,9 @@
 
 //  Hand written counterpart of com.google.protobuf.Message and friends.
 
+#ifndef __ComGoogleProtobufMessage_H__
+#define __ComGoogleProtobufMessage_H__
+
 #import "JreEmulation.h"
 
 #import "com/google/protobuf/MessageLite.h"
@@ -119,3 +122,5 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessage)
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessage_Builder)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessage_Builder)
+
+#endif // __ComGoogleProtobufMessage_H__

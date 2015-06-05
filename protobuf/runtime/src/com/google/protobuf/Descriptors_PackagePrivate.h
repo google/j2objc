@@ -31,6 +31,9 @@
 // DO NOT INCLUDE EXTERNALLY.
 // Contains declarations used within the runtime and generated protocol buffers.
 
+#ifndef __ComGoogleProtobufDescriptors_PackagePrivate_H__
+#define __ComGoogleProtobufDescriptors_PackagePrivate_H__
+
 #import "com/google/protobuf/Descriptors.h"
 
 typedef union {
@@ -238,3 +241,5 @@ J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum, javaT
 @end
 
 J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum, defaultDefault_, id)
+
+#endif // __ComGoogleProtobufDescriptors_PackagePrivate_H__

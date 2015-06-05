@@ -33,6 +33,9 @@
 //  Hand written counterpart for com.google.protobuf.GeneratedMessage and
 //  friends.
 
+#ifndef __ComGoogleProtobufExtensionLite_H__
+#define __ComGoogleProtobufExtensionLite_H__
+
 #import "com/google/protobuf/Descriptors.h"
 #import "com/google/protobuf/Message.h"
 
@@ -56,3 +59,5 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufExtensionLite)
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionLite)
 
 typedef ComGoogleProtobufExtensionLite CGPExtensionLite;
+
+#endif // __ComGoogleProtobufExtensionLite_H__

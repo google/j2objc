@@ -89,6 +89,9 @@
 // However, for practicality we set a limit at 64 bits.  The maximum encoded
 // length of a number is thus 10 bytes.
 
+#ifndef __ComGoogleProtobufCodedInputStream_H__
+#define __ComGoogleProtobufCodedInputStream_H__
+
 #import "JreEmulation.h"
 
 #include <string>
@@ -379,3 +382,5 @@ inline CGPCodedInputStream::CGPCodedInputStream(const void *buffer, int size)
     current_limit_(size),
     buffer_size_after_limit_(0) {
 }
+
+#endif // __ComGoogleProtobufCodedInputStream_H__

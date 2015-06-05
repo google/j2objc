@@ -28,6 +28,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#ifndef __ComGoogleProtobufCommon_H__
+#define __ComGoogleProtobufCommon_H__
+
 #define CGP_ALWAYS_INLINE __attribute__((always_inline))
 
 #define CGP_CODED_STREAM_BUFFER_SIZE (jint)NSPageSize()
@@ -42,3 +45,5 @@ typedef uint8_t  uint8;
 typedef uint16_t uint16;
 typedef uint32_t uint32;
 typedef uint64_t uint64;
+
+#endif // __ComGoogleProtobufCommon_H__

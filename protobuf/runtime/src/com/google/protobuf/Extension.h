@@ -33,9 +33,14 @@
 //  Hand written counterpart for com.google.protobuf.GeneratedMessage and
 //  friends.
 
+#ifndef __ComGoogleProtobufExtension_H__
+#define __ComGoogleProtobufExtension_H__
+
 #import "com/google/protobuf/ExtensionLite.h"
 
 @interface ComGoogleProtobufExtension : CGPExtensionLite
 @end
 
 typedef ComGoogleProtobufExtension CGPExtension;
+
+#endif // __ComGoogleProtobufExtension_H__

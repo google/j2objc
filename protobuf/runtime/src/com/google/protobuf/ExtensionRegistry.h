@@ -30,6 +30,9 @@
 
 //  Hand written counterpart for com.google.protobuf.ExtensionRegistry.
 
+#ifndef __ComGoogleProtobufExtensionRegistry_H__
+#define __ComGoogleProtobufExtensionRegistry_H__
+
 #import "JreEmulation.h"
 #import "com/google/protobuf/ExtensionRegistryLite.h"
 
@@ -86,3 +89,5 @@ ComGoogleProtobufExtensionRegistry *ComGoogleProtobufExtensionRegistry_newInstan
 ComGoogleProtobufExtensionRegistry *ComGoogleProtobufExtensionRegistry_getEmptyRegistry();
 
 CF_EXTERN_C_END
+
+#endif // __ComGoogleProtobufExtensionRegistry_H__

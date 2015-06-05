@@ -32,6 +32,9 @@
 //
 //  Hand written counterpart of com.google.protobuf.ProtocolMessageEnum
 
+#ifndef __ComGoogleProtobufProtocolMessageEnum_H__
+#define __ComGoogleProtobufProtocolMessageEnum_H__
+
 @class ComGoogleProtobufDescriptors_EnumValueDescriptor;
 
 @protocol ComGoogleProtobufProtocolMessageEnum
@@ -45,3 +48,5 @@
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufProtocolMessageEnum)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufProtocolMessageEnum)
+
+#endif // __ComGoogleProtobufProtocolMessageEnum_H__

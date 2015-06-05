@@ -28,6 +28,9 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+#ifndef __ComGoogleProtobufWireFormat_H__
+#define __ComGoogleProtobufWireFormat_H__
+
 #import "JreEmulation.h"
 
 #import "com/google/protobuf/ByteString.h"
@@ -251,3 +254,5 @@ void CGPWriteString(NSString *value, CGPCodedOutputStream *output);
 #endif
 
 CF_EXTERN_C_END
+
+#endif // __ComGoogleProtobufWireFormat_H__

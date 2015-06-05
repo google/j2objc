@@ -35,4 +35,9 @@
 // translation will generate includes for this header, but we can get away with
 // not defining this type as long as users don't call "asByteStringList".
 
+#ifndef __ComGoogleProtobufProtocolStringList_H__
+#define __ComGoogleProtobufProtocolStringList_H__
+
 #include "java/util/List.h"
+
+#endif // __ComGoogleProtobufProtocolStringList_H__

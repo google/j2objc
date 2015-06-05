@@ -82,6 +82,9 @@
 // However, for practicality we set a limit at 64 bits.  The maximum encoded
 // length of a number is thus 10 bytes.
 
+#ifndef __ComGoogleProtobufCodedOutputStream_H__
+#define __ComGoogleProtobufCodedOutputStream_H__
+
 #import "JreEmulation.h"
 
 #import "com/google/protobuf/common.h"
@@ -286,3 +289,5 @@ inline void CGPCodedOutputStream::Advance(int amount) {
   buffer_ += amount;
   buffer_size_ -= amount;
 }
+
+#endif // __ComGoogleProtobufCodedOutputStream_H__
