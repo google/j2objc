@@ -288,7 +288,7 @@ public class NameTableTest extends GenerationTest {
     String translation = translateSourceFile("foo.bar.Test", "foo/bar/Test.h");
     assertTranslation(translation, "@interface FBTest : NSObject");
     assertTranslation(translation, "J2OBJC_EMPTY_STATIC_INIT(FBTest)");
-    assertTranslation(translation, "@compatibility_alias FooBarTest FBTest;");
+    assertTranslation(translation, "typedef FBTest FooBarTest;");
 
     translation = getTranslatedFile("foo/bar/Test.m");
     assertTranslation(translation, "#include \"foo/bar/Test.h\""); // should be full path.
@@ -309,7 +309,7 @@ public class NameTableTest extends GenerationTest {
     assertTranslation(translation, "+ (FBTestEnum *)valueOfWithNSString:(NSString *)name;");
     assertTranslation(translation, "FBTestEnum *FBTestEnum_valueOfWithNSString_");
     assertTranslation(translation, "J2OBJC_STATIC_INIT(FBTestEnum");
-    assertTranslation(translation, "@compatibility_alias FooBarTestEnum FBTestEnum;");
+    assertTranslation(translation, "typedef FBTestEnum FooBarTestEnum;");
 
     translation = getTranslatedFile("foo/bar/Test.m");
     assertTranslation(translation, "#include \"foo/bar/Test.h\""); // should be full path.

@@ -425,11 +425,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       if (!unprefixedName.equals(typeName)) {
         if (typeBinding.isInterface()) {
-          // The technique Apple uses to alias a protocol is to define an
-          // alias protocol that extends the original protocol, unmodified.
-          printf("\n@protocol %s <%s> @end\n", unprefixedName, typeName);
+          // Protocols can't be used in typedefs.
+          printf("\n#define %s %s\n", unprefixedName, typeName);
         } else {
-          printf("\n@compatibility_alias %s %s;\n", unprefixedName, typeName);
+          printf("\ntypedef %s %s;\n", typeName, unprefixedName);
         }
       }
     }
