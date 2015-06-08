@@ -77,7 +77,6 @@ include ../make/j2objc_deps.mk
 include ../java_deps/jars.mk
 
 CLASS_DIR = $(BUILD_DIR)/Classes
-EMULATION_STAGE = /tmp/jre_emul
 EMULATION_JAR = $(BUILD_DIR)/jre_emul.jar
 EMULATION_JAR_DIST = $(DIST_JAR_DIR)/jre_emul.jar
 EMULATION_LIB_DIST = $(ARCH_LIB_DIR)/libjre_emul.a
