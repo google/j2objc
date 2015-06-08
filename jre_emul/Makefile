@@ -1354,12 +1354,12 @@ $(EMULATION_JAR_DIST): $(EMULATION_JAR) | $(DIST_JAR_DIR)
 
 $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
-	@rm -rf $(EMULATION_STAGE)
-	@mkdir $(EMULATION_STAGE)
-	@bash ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) -bootclasspath $(STUBS_DIR) \
+	@stage_dir=`mktemp -d -t j2objc-jre_emul`; \
+    ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) -bootclasspath $(STUBS_DIR) \
 	    -classpath $(ANNOTATIONS_JAR) \
-	    -d $(EMULATION_STAGE) -encoding UTF-8 -source 1.7 -target 1.7 -nowarn $^
-	@jar cf $(EMULATION_JAR) -C $(EMULATION_STAGE) .
+	    -d $$stage_dir -encoding UTF-8 -source 1.7 -target 1.7 -nowarn $^; \
+	jar cf $(EMULATION_JAR) -C $$stage_dir .; \
+	rm -rf $$stage_dir
 
 $(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building $$(basename $@)"
