@@ -144,33 +144,12 @@ static jboolean *GetBooleanArrayElements(JNIEnv *env, jbooleanArray array, jbool
   return GetPrimitiveArrayCritical(env, array, isCopy);
 }
 
-static void GetBooleanArrayRegion(JNIEnv *env, jbooleanArray array, jsize offset, jsize length,
-    jboolean *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSBooleanArray_GetRange(buffer, (IOSBooleanArray *)array, offset, length);
-}
-
 static jbyte *GetByteArrayElements(JNIEnv *env, jbyteArray array, jboolean *isCopy) {
   return GetPrimitiveArrayCritical(env, array, isCopy);
 }
 
-static void GetByteArrayRegion(JNIEnv *env, jbyteArray array, jsize offset, jsize length,
-    jbyte *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSByteArray_GetRange(buffer, (IOSByteArray *)array, offset, length);
-}
-
 static jchar *GetCharArrayElements(JNIEnv *env, jcharArray array, jboolean *isCopy) {
   return GetPrimitiveArrayCritical(env, array, isCopy);
-}
-
-static void GetCharArrayRegion(JNIEnv *env, jcharArray array, jsize offset, jsize length,
-    jchar *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSCharArray_GetRange(buffer, (IOSCharArray *)array, offset, length);
 }
 
 static void *GetDirectBufferAddress(JNIEnv *env, jobject buf) {
@@ -187,44 +166,16 @@ static jdouble *GetDoubleArrayElements(JNIEnv *env, jdoubleArray array, jboolean
   return GetPrimitiveArrayCritical(env, array, isCopy);
 }
 
-static void GetDoubleArrayRegion(JNIEnv *env, jdoubleArray array, jsize offset, jsize length,
-    jdouble *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSDoubleArray_GetRange(buffer, (IOSDoubleArray *)array, offset, length);
-}
-
 static jfloat *GetFloatArrayElements(JNIEnv *env, jfloatArray array, jboolean *isCopy) {
   return GetPrimitiveArrayCritical(env, array, isCopy);
-}
-
-static void GetFloatArrayRegion(JNIEnv *env, jfloatArray array, jsize offset, jsize length,
-    jfloat *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSFloatArray_GetRange(buffer, (IOSFloatArray *)array, offset, length);
 }
 
 static jint *GetIntArrayElements(JNIEnv *env, jintArray array, jboolean *isCopy) {
   return GetPrimitiveArrayCritical(env, array, isCopy);
 }
 
-static void GetIntArrayRegion(JNIEnv *env, jintArray array, jsize offset, jsize length,
-    jint *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSIntArray_GetRange(buffer, (IOSIntArray *)array, offset, length);
-}
-
 static jlong *GetLongArrayElements(JNIEnv *env, jlongArray array, jboolean *isCopy) {
   return GetPrimitiveArrayCritical(env, array, isCopy);
-}
-
-static void GetLongArrayRegion(JNIEnv *env, jlongArray array, jsize offset, jsize length,
-    jlong *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSLongArray_GetRange(buffer, (IOSLongArray *)array, offset, length);
 }
 
 static jobject GetObjectArrayElement(JNIEnv *env, jobjectArray array, jsize index) {
@@ -247,13 +198,6 @@ static void *GetPrimitiveArrayCritical(JNIEnv *env, jarray array, jboolean *isCo
 
 static jshort *GetShortArrayElements(JNIEnv *env, jshortArray array, jboolean *isCopy) {
   return GetPrimitiveArrayCritical(env, array, isCopy);
-}
-
-static void GetShortArrayRegion(JNIEnv *env, jshortArray array, jsize offset, jsize length,
-    jshort *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSShortArray_GetRange(buffer, (IOSShortArray *)array, offset, length);
 }
 
 static const jchar *GetStringChars(JNIEnv *env, jstring s, jboolean *isCopy) {
@@ -448,65 +392,49 @@ static void ReleaseStringUTFChars(JNIEnv *env, jstring string, const char *utf) 
   // no-op
 }
 
-static void SetBooleanArrayRegion(JNIEnv *env, jbooleanArray array, jsize offset, jsize length,
-    const jboolean *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSBooleanArray_SetRange((IOSBooleanArray *)array, buffer, offset, length);
-}
-
-static void SetByteArrayRegion(JNIEnv *env, jbyteArray array, jsize offset, jsize length,
-    const jbyte *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSByteArray_SetRange((IOSByteArray *)array, buffer, offset, length);
-}
-
-static void SetCharArrayRegion(JNIEnv *env, jcharArray array, jsize offset, jsize length,
-    const jchar *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSCharArray_SetRange((IOSCharArray *)array, buffer, offset, length);
-}
-
-static void SetDoubleArrayRegion(JNIEnv *env, jdoubleArray array, jsize offset, jsize length,
-    const jdouble *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSDoubleArray_SetRange((IOSDoubleArray *)array, buffer, offset, length);
-}
-
-static void SetFloatArrayRegion(JNIEnv *env, jfloatArray array, jsize offset, jsize length,
-    const jfloat *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSFloatArray_SetRange((IOSFloatArray *)array, buffer, offset, length);
-}
-
-static void SetIntArrayRegion(JNIEnv *env, jintArray array, jsize offset, jsize length,
-    const jint *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSIntArray_SetRange((IOSIntArray *)array, buffer, offset, length);
-}
-
-static void SetLongArrayRegion(JNIEnv *env, jlongArray array, jsize offset, jsize length,
-    const jlong *buffer) {
-  nil_chk(array);
-  null_chk((void*)buffer);
-  IOSLongArray_SetRange((IOSLongArray *)array, buffer, offset, length);
-}
-
 static void SetObjectArrayElement(JNIEnv *env, jobjectArray array, jsize index, jobject value) {
   IOSObjectArray_Set((IOSObjectArray *) array, index, value);
 }
 
-static void SetShortArrayRegion(JNIEnv *env, jshortArray array, jsize offset, jsize length,
-    const jshort *buffer) {
-  nil_chk(array);
-  null_chk((void*)(void*)buffer);
-  IOSShortArray_SetRange((IOSShortArray *)array, buffer, offset, length);
-}
+#define GET_ARRAY_REGION_IMPL(TYPE_NAME, JNI_TYPE) \
+  static void Get##TYPE_NAME##ArrayRegion( \
+      JNIEnv *env, JNI_TYPE##Array array, jsize offset, jsize length, JNI_TYPE *buffer) { \
+    nil_chk(array); \
+    null_chk((void*)buffer); \
+    IOSArray_checkRange(array->size_, offset, length); \
+    memcpy(buffer, array->buffer_ + offset, length * sizeof(JNI_TYPE)); \
+  }
+
+GET_ARRAY_REGION_IMPL(Boolean, jboolean)
+GET_ARRAY_REGION_IMPL(Byte, jbyte)
+GET_ARRAY_REGION_IMPL(Char, jchar)
+GET_ARRAY_REGION_IMPL(Short, jshort)
+GET_ARRAY_REGION_IMPL(Int, jint)
+GET_ARRAY_REGION_IMPL(Long, jlong)
+GET_ARRAY_REGION_IMPL(Float, jfloat)
+GET_ARRAY_REGION_IMPL(Double, jdouble)
+
+#undef GET_ARRAY_REGION_IMPL
+
+#define SET_ARRAY_REGION_IMPL(TYPE_NAME, JNI_TYPE) \
+  static void Set##TYPE_NAME##ArrayRegion( \
+      JNIEnv *env, JNI_TYPE##Array array, jsize offset, jsize length, const JNI_TYPE *buffer) { \
+    nil_chk(array); \
+    null_chk((void*)buffer); \
+    IOSArray_checkRange(array->size_, offset, length); \
+    memcpy(array->buffer_ + offset, buffer, length * sizeof(JNI_TYPE)); \
+  }
+
+SET_ARRAY_REGION_IMPL(Boolean, jboolean)
+SET_ARRAY_REGION_IMPL(Byte, jbyte)
+SET_ARRAY_REGION_IMPL(Char, jchar)
+SET_ARRAY_REGION_IMPL(Short, jshort)
+SET_ARRAY_REGION_IMPL(Int, jint)
+SET_ARRAY_REGION_IMPL(Long, jlong)
+SET_ARRAY_REGION_IMPL(Float, jfloat)
+SET_ARRAY_REGION_IMPL(Double, jdouble)
+
+#undef SET_ARRAY_REGION_IMPL
 
 static jint Throw(JNIEnv *env, jthrowable obj) {
   nil_chk(obj);
