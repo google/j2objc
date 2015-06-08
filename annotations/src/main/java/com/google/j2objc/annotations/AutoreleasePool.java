@@ -28,6 +28,6 @@ import java.lang.annotation.Target;
  * @author Pankaj Kakkar
  */
 @Target({ElementType.METHOD, ElementType.LOCAL_VARIABLE})
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.SOURCE)
 public @interface AutoreleasePool {
 }
