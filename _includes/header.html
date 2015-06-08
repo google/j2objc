@@ -1,0 +1,59 @@
+{% assign site_root = "" %}
+{% assign path_parts = page.url | split:"/" %}
+{% for part in path_parts offset:2 %}
+{% assign site_root = site_root | append:"../" %}
+{% endfor %}
+
+<html>
+<head>
+<meta charset="utf-8">
+<title>{{ page.title }}</title>
+<script>
+var current_url = window.location.href;
+var bad_url = new RegExp("^https?://google.github.io/j2objc/");
+if (bad_url.test(current_url)) {
+  window.location.replace(current_url.replace(bad_url, "http://j2objc.org/"));
+}
+(function() {
+  var cx = '016856942741735081092:pq0t6q223b4';
+  var gcse = document.createElement('script');
+  gcse.type = 'text/javascript';
+  gcse.async = true;
+  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
+      '//www.google.com/cse/cse.js?cx=' + cx;
+  var s = document.getElementsByTagName('script')[0];
+  s.parentNode.insertBefore(gcse, s);
+})();
+</script>
+<link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' />
+<link rel="stylesheet" type="text/css" href="{{site_root}}styles/main.css" />
+<link rel="icon" type="image/png" href="{{site_root}}images/favicon.ico">
+<link ref="search" href="/opensearch.xml" title="J2ObjC"
+    type="application/opensearchdescription+xml" />
+</head>
+<body>
+<div id="banner-panel">
+<div style="float: right; width: 400px;">
+  <gcse:search></gcse:search>
+</div>
+<div id="banner">
+  <a href="{{site_root}}">
+<span class="product-logo"><img src="{{site_root}}images/gear.png" /></span>
+<span class="product-name">J2ObjC</span>
+</a>
+</div>
+<div id="motto-panel">
+<div id="motto">
+Java to iOS Objective-C translation tool and runtime.
+</div>
+</div>
+<div id="download-panel">
+<div id="download">
+<a href="https://github.com/google/j2objc" target="_blank">GitHub</a>
+<a href="{{site_root}}docs/Users-Guide.html">Users Guide</a>
+<a href="{{site_root}}blog/">Blog</a>
+<a href="http://stackoverflow.com/questions/tagged/j2objc" target="_blank">Questions</a>
+<a href="mailto:j2objc-discuss@googlegroups.com">Contact</a>
+</div>
+</div>
+</div>
