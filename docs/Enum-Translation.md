@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 Java enums are like C enums in that they both have names and ordinal values, but Java enums are true types with visible methods, fields, and occasionally, separate inner classes per constant.  It was tempting to translate enums as a just special kind of type, but many Objective-C client apps use enums in efficient switch statements.  The decision was to therefore translate enums twice; one as a C enum typedef, and once as an Objective-C type.

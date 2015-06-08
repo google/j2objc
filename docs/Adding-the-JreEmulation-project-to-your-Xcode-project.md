@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 # Adding the JreEmulation Protect to Your Xcode Project

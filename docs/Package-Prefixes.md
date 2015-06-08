@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 # How to specify prefixes for package names.

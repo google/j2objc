@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 # Projects that use J2ObjC

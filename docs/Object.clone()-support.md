@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 The Foundation framework has a `NSCopying` protocol that is similar to `Object.clone()`, but different enough to be incompatible.  It's a useful protocol that used widely, however, so `Cloneable` classes should implement it.

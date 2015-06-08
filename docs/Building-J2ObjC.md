@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 # Building J2ObjC

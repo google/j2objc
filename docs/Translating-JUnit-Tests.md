@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 # Translating JUnit Tests

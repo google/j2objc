@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 The Inner Class Extractor pulls inner classes out of their containing class, and makes them top-level classes in the same compilation unit as their containing class.  This translation phase is run after the [[Anonymous Class Converter|Anonymous Class Converter]], so after execution all classes, interfaces, and enums are top-level classes.  

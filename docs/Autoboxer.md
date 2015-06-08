@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 The Autoboxer translation phase converts primitive references into their equivalent numeric wrappers (boxing), and vice versa (unboxing).  The converted AST is very similar to how javac modifies its AST, with the same performance.

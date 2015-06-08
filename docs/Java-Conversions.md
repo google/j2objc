@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 Here is a map of what J2ObjC translates from Java to Objective-C:

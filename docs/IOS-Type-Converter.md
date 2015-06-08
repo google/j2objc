@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 The JavaToIOSTypeConverter translates references to those types that are replaced by Foundation framework classes.  Array classes are also replaced with native replacements included with the JRE emulation library; these native classes have a "IOS" prefix.  This is the current list of mapped types:

@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 The IOS Method Translator is the translator that updates method references to refer to iOS replacements.  It does this using a mapping table, JRE.mappings, which declares the methods to replace and their replacement.  For example, the line to map `Object.equals()` to `NSObject.isEqual:` is:

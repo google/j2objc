@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 # How Java Resources map to iOS Resources

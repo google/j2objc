@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 The Anonymous Class Converter modifies anonymous classes to be inner classes.  This involves adding fields for the final variables referenced by that class, which are stored as final fields in the class.  If there are any final fields, a constructor is added to the class which has those fields as its parameters.  If there is an initialization block (not common), it's statements are added to the new constructor.

@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 # 20% Project Ideas

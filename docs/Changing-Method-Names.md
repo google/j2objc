@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 # Changing Method Names

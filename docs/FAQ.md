@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 # Frequently Asked Questions (FAQ)

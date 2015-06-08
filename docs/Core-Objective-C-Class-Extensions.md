@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 Objective-C has a feature alien to Java developers, categories.  A category is a kind of mix-in, which adds messages to an existing type without needing to modify it.  J2ObjC's JRE emulation library uses categories to make the core Foundation classes more supportive of Java applications.

@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 Tests, especially unit tests, should be a large part of a well-engineered source base.  It is therefore essential that JUnit tests can be translated and executed to verify that the code's intent hasn't been changed.

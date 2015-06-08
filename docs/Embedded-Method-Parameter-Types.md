@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 ## The problem with method overloading

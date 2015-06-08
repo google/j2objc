@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 The Initialization Normalizer moves initializer statements into constructors and class initialization methods.  This includes expressions used to initialize fields and static variables, as well as static and instance blocks.  

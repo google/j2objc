@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 The Destructor Generator creates memory management-specific destructor methods as needed.

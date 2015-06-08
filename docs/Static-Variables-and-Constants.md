@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 There is no notion of static variables in Objective-C; data is only associated with instances.  However, code that references static variables and constants can be translated to simulate static variables effectively.

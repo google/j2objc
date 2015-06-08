@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 # Using J2Objc with Xcode

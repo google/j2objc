@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: docs
 ---
 
 # JRE Emulation Reference
