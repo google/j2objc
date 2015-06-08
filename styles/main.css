@@ -145,7 +145,7 @@ nav#menu ul {
   list-style: none;
   margin: 0; }
 nav#menu li {
-  line-height: 12px;
+  line-height: 18px;
 }
 nav#menu li.active {
   background-color: #f2f2f2;
@@ -171,7 +171,7 @@ nav#menu li.submenu.collapsed::before {
 }
 nav#menu a {
   display: block;
-  padding: 0.5em 0em 0.5em 2em;
+  padding: 0.2em 0em 0.2em 2em;
   color: #484848;
   cursor: pointer; }
   nav#menu a:visited {
