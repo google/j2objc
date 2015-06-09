@@ -1566,6 +1566,13 @@ pre::-webkit-scrollbar-corner {
     margin: 0 auto;
     max-width: 1400px
 }
+
+.devsite-background {
+    margin: 0 auto;
+    width: 100%;
+    background: #0b8043
+}
+
 .devsite-top-logo-row-wrapper-wrapper {
     position: fixed;
     top: 0;
