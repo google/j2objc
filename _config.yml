@@ -4,7 +4,8 @@ kramdown:
     input: GFM
     hard_wrap: false
     smart_quotes: ["apos", "apos", "quot", "quot"]
-paginate: 10
+paginate_path: "blog/page/:num"
+paginate: 2
 gems:
   - jekyll-sitemap
   - jekyll-redirect-from

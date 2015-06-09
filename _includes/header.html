@@ -4,55 +4,144 @@
 {% assign site_root = site_root | append:"../" %}
 {% endfor %}
 
-<html>
-<head>
-<meta charset="utf-8">
-<title>{{ page.title }}</title>
-<script>
-var current_url = window.location.href;
-var bad_url = new RegExp("^https?://google.github.io/j2objc/");
-if (bad_url.test(current_url)) {
-  window.location.replace(current_url.replace(bad_url, "http://j2objc.org/"));
-}
-(function() {
-  var cx = '016856942741735081092:pq0t6q223b4';
-  var gcse = document.createElement('script');
-  gcse.type = 'text/javascript';
-  gcse.async = true;
-  gcse.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') +
-      '//www.google.com/cse/cse.js?cx=' + cx;
-  var s = document.getElementsByTagName('script')[0];
-  s.parentNode.insertBefore(gcse, s);
-})();
-</script>
-<link href='//fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css' />
-<link rel="stylesheet" type="text/css" href="{{site_root}}styles/main.css" />
-<link rel="icon" type="image/png" href="{{site_root}}images/favicon.ico">
-<link ref="search" href="/opensearch.xml" title="J2ObjC"
-    type="application/opensearchdescription+xml" />
-</head>
-<body>
-<div id="banner-panel">
-<div style="float: right; width: 400px;">
-  <gcse:search></gcse:search>
-</div>
-<div id="banner">
-  <a href="{{site_root}}">
-<span class="product-logo"><img src="{{site_root}}images/gear.png" /></span>
-<span class="product-name">J2ObjC</span>
-</a>
-</div>
-<div id="motto-panel">
-<div id="motto">
-Java to iOS Objective-C translation tool and runtime.
-</div>
-</div>
-<div id="download-panel">
-<div id="download">
-<a href="https://github.com/google/j2objc" target="_blank">GitHub</a>
-<a href="{{site_root}}docs/Users-Guide.html">Users Guide</a>
-<a href="{{site_root}}blog/">Blog</a>
-<a href="{{site_root}}contact/">Contact</a>
-</div>
-</div>
-</div>
+<html lang="en" class="devsite">
+   <head>
+      <script type="text/javascript" async="" src="https://www.google-analytics.com/analytics.js"></script><script type="text/javascript" async="" src="https://apis.google.com/js/platform.js?onload=gplusLoaded" gapi_processed="true"></script><script async="" src="//www.google-analytics.com/analytics.js"></script><script async="" src="//www.googletagmanager.com/gtm.js?id=GTM-W546ZN"></script><script>var a=window.devsite||{};window.devsite=a;a.readyCallbacks=[];window.devsite.readyCallbacks=a.readyCallbacks;a.ready=function(c){a.readyCallbacks.push(c)};window.devsite.ready=a.ready;a.timing={};window.devsite=a;window.devsite.timing=a.timing;a.timing.timers=[];a.timing.tick=function(c,b,g){for(var d=0;d<a.timing.timers.length;d++)a.timing.timers[d].tick(c,b,g)};window.devsite.timing.tick=a.timing.tick;a.timing.report=function(c){a.setTimeout(function(){for(var b=0;b<a.timing.timers.length;b++)window.jstiming.report(a.timing.timers[b],c)},500)};
+         a.timing.init=function(c){a.timing.timers.push(window.jstiming.load);if(c){var b=new window.jstiming.Timer;b.name=c;a.timing.timers.push(b)}document.addEventListener&&window.addEventListener&&(document.addEventListener("DOMContentLoaded",a.timing.handleDomContentLoaded,!1),window.addEventListener("load",a.timing.handleLoad,!1))};a.timing.handleDomContentLoaded=function(){a.timing.tick("ol");document.removeEventListener("DOMContentLoaded",a.timing.handleDomContentLoaded,!1)};
+         a.timing.handleLoad=function(){window.removeEventListener("load",a.timing.handleLoad,!1);var c=document.querySelector("#devsite-request-elapsed");c&&(c=parseInt(c.getAttribute("data-request-elapsed"),10))&&(a.timing.tick("_st_start",null,1),a.timing.tick("st","_st_start",1+c));a.timing.tick("prt");a.timing.report()};(function(){function c(b){this.t={};this.tick=function(b,c,d){var e=void 0!=d?d:(new Date).getTime();this.t[b]=[e,c];if(void 0==d)try{window.console.timeStamp("CSI/"+b)}catch(f){}};this.tick("start",null,b)}var b;window.performance&&(b=window.performance.timing);var g=b?new c(b.responseStart):new c;window.jstiming={Timer:c,load:g};if(b){var d=b.navigationStart,f=b.responseStart;0<d&&f>=d&&(window.jstiming.srt=f-d)}if(b){var e=window.jstiming.load;0<d&&f>=d&&(e.tick("_wtsrt",void 0,d),e.tick("wtsrt_",
+         "_wtsrt",f),e.tick("tbsd_","wtsrt_"))}try{b=null,window.chrome&&window.chrome.csi&&(b=Math.floor(window.chrome.csi().pageT),e&&0<d&&(e.tick("_tbnd",void 0,window.chrome.csi().startE),e.tick("tbnd_","_tbnd",d))),null==b&&window.gtbExternal&&(b=window.gtbExternal.pageT()),null==b&&window.external&&(b=window.external.pageT,e&&0<d&&(e.tick("_tbnd",void 0,window.external.startE),e.tick("tbnd_","_tbnd",d))),b&&(window.jstiming.pt=b)}catch(h){}})();
+         devsite.timing.init('DocPageDynamic');
+      </script>
+      <link href="https://developers.google.com/maps/documentation/ios/reference/index" rel="canonical">
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link href="https://plus.google.com/+GoogleDevelopers/" rel="publisher">
+      <meta name="xsrf_token" content="TZn9aIvlroEe6Hi79CCj1U2FmjSB24_KKAvtqDoNxZg6MTQzMzg3MDc3NjY3OTE1MA">
+      <link rel="stylesheet" href="https://developers.google.com/_static/b1cf276a6f/css/devsite-google-green.css">
+      <link href="//fonts.googleapis.com/css?family=Roboto:300,400,400italic,500,500italic,700,700italic|Roboto+Mono:400,700" rel="stylesheet">
+      <link rel="shortcut icon" href="//www.gstatic.com/images/icons/material/product/2x/developers_32dp.png">
+      <link rel="apple-touch-icon" href="//www.gstatic.com/images/icons/material/product/2x/developers_64dp.png">
+      <link rel="search" type="application/opensearchdescription+xml" href="/s/opensearch.xml" data-tooltip-align="b,c" data-tooltip="Google Developers" aria-label="Google Developers" data-title="Google Developers">
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script><script>
+         var ___gcfg = ___gcfg || {};
+         ___gcfg.lang = 'en';
+      </script>
+      <style></style>
+      <script>devsite.timing.tick('cl');</script>
+      <meta property="og:site_name" content="Google Developers">
+      <meta property="og:type" content="website">
+      <meta property="og:url" content="https://developers.google.com/maps/documentation/ios/reference/index">
+      <meta property="og:locale" content="en">
+      <script>
+         var ___gcfg = ___gcfg || {};
+         ___gcfg.lang = 'en';
+      </script>
+      <title>J2ObjC</title>
+      <meta property="og:title" content="Class List">
+      <link href="stylesheet.css" rel="stylesheet" type="text/css">
+      <link href="/maps/documentation/local_extensions.css" rel="stylesheet" type="text/css">
+      <link href="/maps/styles/common.css" rel="stylesheet" type="text/css">
+   </head>
+   <body class="devsite-doc-page
+      no-touch" id="top_of_page">
+      <!-- Google Tag Manager -->
+      <noscript>&lt;iframe src="//www.googletagmanager.com/ns.html?id=GTM-W546ZN"
+         height="0" width="0" style="display:none;visibility:hidden"&gt;&lt;/iframe&gt;
+      </noscript>
+      <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+         new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+         j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+         '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+         })(window,document,'script','dataLayer','GTM-W546ZN');
+      </script><!-- End Google Tag Manager -->
+      <div class="devsite-wrapper" style="margin-top: 0px;">
+         <header class="devsite-top-section
+            " style="position: static;">
+            <div class="devsite-collapsible-section" style="margin-top: 0px;">
+               <div class="devsite-header-background devsite-full-site-width">
+                  <div class="devsite-site-nav-row devsite-full-site-width" style="visibility: visible;">
+                     <nav class="devsite-site-nav devsite-nav">
+                        <ul class="devsite-site-nav-list">
+                           <li class="devsite-breadcrumb-wrapper
+                              devsite-breadcrumb-parent
+                              "><a href="/products/" class="devsite-breadcrumb gc-analytics-event" data-category="Site-Wide Custom Events" data-label="Breadcrumb: parent" data-value="1">
+                              Products
+                              </a>
+                           </li>
+                           <li class="devsite-breadcrumb-wrapper
+                              devsite-breadcrumb-parent
+                              ">
+                              <div class="devsite-breadcrumb-guillemet"></div>
+                              <a href="/maps/" class="devsite-breadcrumb gc-analytics-event" data-category="Site-Wide Custom Events" data-label="Breadcrumb: parent" data-value="2">
+                              Google Maps APIs
+                              </a>
+                           </li>
+                           <li class="devsite-breadcrumb-wrapper
+                              devsite-breadcrumb-project
+                              ">
+                              <div class="devsite-breadcrumb-guillemet"></div>
+                              <a href="{{site_root}}" class="devsite-breadcrumb gc-analytics-event" data-category="Site-Wide Custom Events" data-label="Breadcrumb: project" data-value="3">
+                              Google Maps SDK for iOS
+                              </a>
+                           </li>
+                        </ul>
+                     </nav>
+                  </div>
+                  <div class="devsite-product-id-row devsite-full-site-width" style="visibility: visible;">
+                     <div class="devsite-product-id-row-links-container">
+                        <a class="devsite-product-logo-link gc-analytics-event" href="{{site_root}}" data-category="Site-Wide Custom Events" data-label="Project logo (header)">
+                           <div class="devsite-product-logo-container"><img class="devsite-product-logo" src="/images/gear.png" alt="Google Maps SDK for iOS"></div>
+                        </a>
+                        <a class="devsite-product-name gc-analytics-event" href="{{site_root}}" data-category="Site-Wide Custom Events" data-label="Project name (header)">
+                        J2ObjC
+                        </a>
+                     </div>
+                     <div class="devsite-product-description-row">Java to iOS Objective-C translation tool and runtime.</div>
+                  </div>
+                  <div class="devsite-doc-set-nav-row devsite-full-site-width">
+                     <nav class="devsite-doc-set-nav devsite-nav">
+                        <ul class="devsite-doc-set-nav-tab-list">
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}" class="
+                              devsite-doc-set-nav-tab gc-analytics-event" data-category="Site-Wide Custom Events" data-label="Tab: Home">
+                              Home
+                              </a>
+                           </li>
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}docs/Users-Guide.html" class="
+                              devsite-doc-set-nav-tab gc-analytics-event" data-category="Site-Wide Custom Events" data-label="Tab: Guides">
+                              Guides
+                              </a>
+                           </li>
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}blog/" class="devsite-doc-set-nav-active
+                              devsite-doc-set-nav-tab gc-analytics-event" data-category="Site-Wide Custom Events" data-label="Tab: Blog">
+                              Blog
+                              </a>
+                           </li>
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}contact/" class="
+                              devsite-doc-set-nav-tab gc-analytics-event" data-category="Site-Wide Custom Events" data-label="Tab: Contact">
+                              Contact
+                              </a>
+                           </li>
+                        </ul>
+                     </nav>
+                     <button type="button" class="devsite-feedback-button devsite-top-button">
+                         Github
+
+                     </button>
+                  </div>
+               </div>
+            </div>
+         </header>
+         <script>
+            if (window.jQuery) {
+              $(document).ready(function() {
+                if (window.devsite && window.devsite.search) {
+
+                  window.devsite.search.init('en', false, null)
+                }
+              });
+            }
+         </script>
+         <div class="kd-butterbar"><span><span class="message"></span><a href="#" class="kd-butterbar-dismiss">Hide</a></span></div>
+         <div id="gc-wrapper" itemscope="" itemtype="http://schema.org/Article">
+            <div class="devsite-article-mask"></div>
+            <div class="devsite-site-mask"></div>

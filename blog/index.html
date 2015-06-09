@@ -1,0 +1,26 @@
+---
+layout: blog
+---
+
+<h2>J2ObjC Blog</h2>
+
+{% for post in paginator.posts  %}
+<h2><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title}}</a></h2>
+
+<p><em>{{ post.date | date_to_long_string }} by {{ post.author }}</p></em>
+
+{{ post.content }}
+
+{% endfor %}
+
+<p><a href="feed.xml">Subscribe</a></p>
+
+{{ paginator.next_page_path }}
+<div class="pagination">
+  {% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path }}" class="previous">Previous</a>
+  {% endif %}
+  {% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path }}" class="next">Next</a>
+  {% endif %}
+</div>

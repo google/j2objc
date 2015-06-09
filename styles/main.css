@@ -5,47 +5,53 @@ body {
   font-family: "Droid Sans", sans-serif;
   background-color: #fff;
 }
+#vertical-center {
+  display:table-cell;
+  vertical-align:middle;
+}
 #banner-panel {
+  background-color: #0f9d58;
+  display:block;
 }
 #banner {
   width: 1200px;
+  height: 10em;
   margin: 0 auto 0 auto;
-  padding: 4px 0 8px 16px;
+  padding: 4px 0 4px 0px;
   color: blue;
 }
 #banner a {
   text-decoration: none;
 }
 .product-logo {
-  margin: 0 0 0 -28px;
+  margin: 0 0 0 0px;
   padding: 0 4px 0 0;
+  float: left;
 }
 .product-logo img {
-  height: 72px;
   vertical-align: bottom;
+
 }
 .product-name {
-  font-size: 52px;
-  font-weight: bold;
-  color: #2196F3;
+  font-size: 54px;
+  padding: 8px 0px 8px 0px;
+  color: #fff;
 }
-#motto-panel {
-  padding: 8px 0 8px 0;
-  background-color: #1565C0;
-}
-#motto {
+.motto {
   width: 1200px;
   margin: 0 auto 0 auto;
-  padding: 0 16px 0 16px;
-  font-size: 16px;
+  padding: 8px 0px 8px 0px;
+  font-size: 14px;
   color: #fff;
+
 }
 #download-panel {
   padding: 8px 0 8px 0;
-  background-color: #2196F3;
+  background-color: #0a8450;
 }
 #download {
   width: 1200px;
+  height: 3em;
   margin: 0 auto 0 auto;
   padding: 0 16px 0 16px;
   font-size: 16px;
@@ -97,7 +103,7 @@ body {
 #footer-panel {
   margin: 16px 16px 16px 0px;
   padding: 16px 0 8px 0;
-  background-color: #fff;
+  background-color: #fafafa;
 }
 #footer {
   clear: both;

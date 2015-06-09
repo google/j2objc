@@ -1,19 +1,66 @@
-<div id="footer-panel">
-<div id="footer">
-Copyright Google 2015
 </div>
+<footer class="devsite-utility-footer">
+   <nav class="devsite-utility-footer-nav devsite-nav devsite-full-site-width">
+      <span class="devsite-utility-footer-links"><a href="/site-terms/">Terms</a>
+      &nbsp; | &nbsp;
+      <a href="https://www.google.com/intl/en/privacy/" class="gc-analytics-event" data-category="Site-Wide Custom Events" data-label="Footer Privacy Link">Privacy</a></span>
+      <form class="devsite-utility-footer-language" id="setlang" action="/i18n/setlang/" method="post">
+         <input type="hidden" name="xsrf_token" value="Rputhc_9_JEDOe-YXe45Xqlfq1q34-PzqE38CYQK1XU6MTQzMzg2OTY1MTgzMjIxMA" />
+         <select id="footer_language" name="language">
+            <option value="en"
+               selected="selected" >
+               English
+            </option>
+         </select>
+      </form>
+   </nav>
+</footer>
+<script>
+   $(document).ready(function() {
+     new devsite.feedback.Widget({
+         'product_id': '85209',
+         'bucket': '',
+         'context': '',
+         'version': 'devsite-20150608-r01-rc03.default'
+       },
+       document.querySelectorAll('.devsite-feedback-button'),
+       document.querySelector('.devsite-site-mask'),
+       document.querySelector('.devsite-feedback-dialog'),
+       document.querySelector('.devsite-feedback-cancel'),
+       document.querySelectorAll('.devsite-feedback-item a')
+     );
+   });
+</script>
 </div>
-<!-- Google Analytics tracking code -->
-<script type="text/javascript">
-  var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-  document.write(unescape("%3Cscript src='" + gaJsHost +
-    "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+<script async="" defer="" src="//www.gstatic.com/feedback/api.js"></script><script id="jqueryui" src="//ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.min.js"></script><script src="https://developers.google.com/_static2/b1cf276a6f/jsi18n/?hl=en"></script><script src="https://developers.google.com/_static/b1cf276a6f/js/script_foot_closure.js"></script><script src="https://developers.google.com/_static/b1cf276a6f/js/script_foot.js"></script><script>
+devsite.timing.tick('jl');
+(function($) {
+  devsite.devsite.Init($, 'devsite',
+      '[]', '',
+      'en', true,
+      'b1cf276a6f', 'kirbs@google.com',
+      true,
+      {"296e8173cd0024b4839dd7f3d7fa4387": true, "04f8c40014dc472fb1b95e175fb1b9fd": true, "6749dcb526ce9bde6993550c7d928d24": true, "993b1906435224595bd618f6f331ee45": true, "6e6d95ece619bf85cc1ea2c6da8a4690": true}, '/android-pay');
+})(jQuery);
+
+
+devsite.localInit = function() {
+
+};
+</script><script>
+$('#setlang select').each(function() {
+  if (navigator.userAgent.match(/msie/i)) {
+    $(this).change(function() {
+      $('#setlang').submit();
+    });
+  } else {
+    $(this).kdSelect({'change': function() {
+      $('#setlang').submit();
+    }});
+  }
+});
 </script>
-<script type="text/javascript">
-  try {
-    var pageTracker = _gat._getTracker("UA-34671662-2");
-    pageTracker._trackPageview();
-  } catch(err) {}
-</script>
+</div>
 </body>
+<span id="devsite-request-elapsed" data-request-elapsed="383.629798889"></span>
 </html>
