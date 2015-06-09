@@ -24,7 +24,7 @@ function getCollapseState() {
 document.onreadystatechange = function () {
   switch (document.readyState) {
     case 'interactive':
-      var menus = document.querySelectorAll('nav#menu .submenu');
+      var menus = document.querySelectorAll('nav#menu .devsite-nav-section');
       var nav_state = getCollapseState();
       Array.prototype.forEach.call(menus, function (menu, index) {
         var anchor = menu.querySelector('[name=subheader]');

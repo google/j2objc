@@ -9,8 +9,8 @@ def processLines(sidebarLines,firstFlag = False):
 		print '<li class="devsite-nav-item devsite-nav-item-section-expandable">'
 		print '<a class="devsite-nav-title devsite-nav-title-no-path " tabindex="0">'
 		print '<span>{}</span></a>'.format(sidebarLines[0])
-		print '<a class="devsite-nav-toggle devsite-nav-toggle-expandable"></a>'
-		print '<ul class="devsite-nav-section devsite-nav-section-expandable">'
+		print '<a class="devsite-nav-toggle devsite-nav-toggle-collapsed"></a>'
+		print '<ul class="devsite-nav-section devsite-nav-section-collapsed">'
 		processLines(sidebarLines[1:])
 	else:
 		link = sidebarLines[0].split()[0]
@@ -40,7 +40,7 @@ def removeBlankLines(ls):
 
 if __name__ == "__main__":
 	import sys
-	sys.stdout = open('sidebar.html', 'w')
+	sys.stdout = open('../_includes/sidebar.html', 'w')
 	sidebarLines = open("sidebar.txt").readlines()
 	sidebarLines = removeBlankLines(sidebarLines)
 	buildSidebar(sidebarLines)
