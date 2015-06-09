@@ -2039,16 +2039,16 @@ input.devsite-search-field:focus {
 .devsite-product-logo-container {
     background: #fff;
     border-radius: 50%;
-    box-shadow: none;
+    box-shadow: 0px 2px 5px #444;
     display: inline-block;
-    height: 56px;
+    height: 72px;
     margin-right: 20px;
     transition: box-shadow .2s;
-    width: 56px
+    width: 72px
 }
 .devsite-product-logo-white {
     height: 48px;
-    margin: 4px 28px 4px 0;
+    margin: 8px 28px 8px 0;
     transition: opacity .2s;
     width: 48px
 }
@@ -2060,9 +2060,9 @@ input.devsite-search-field:focus {
     box-shadow: 0 11px 7px rgba(0, 0, 0, .19), 0 13px 25px rgba(0, 0, 0, .3)
 }
 .devsite-product-logo {
-    height: 32px;
+    height: 48px;
     margin: 12px;
-    width: 32px
+    width: 48px
 }
 .devsite-product-name {
     color: #fff;
@@ -2095,7 +2095,7 @@ input.devsite-search-field:focus {
 }
 .devsite-product-description-row {
     color: #fff;
-    margin: 16px 0;
+    margin: 0px 99px 40px 99px;
     max-width: calc((100% - 40px)/2)
 }
 .devsite-product-button-row {
