@@ -1,11 +1,12 @@
 function saveCollapseState() {
-  var menus = document.querySelectorAll('nav#menu .submenu');
+  var menus = document.querySelectorAll('.devsite-nav-item-section-expandable');
   var expandedMenus = [];
-  Array.prototype.forEach.call(menus, function (menu, index) {
-    if (menu.className.indexOf('collapsed') == -1) {
+  var f = function (menu, index) {
+    if (menu.children[1].className.indexOf('devsite-nav-toggle-collapsed') == -1) {
       expandedMenus.push(index.toString());
     }
-  });
+  };
+  Array.prototype.forEach.call(menus, f);
   document.cookie = "nav_state=" + expandedMenus.join(',');
 }
 
@@ -23,30 +24,40 @@ function getCollapseState() {
 
 document.onreadystatechange = function () {
   switch (document.readyState) {
-    case 'interactive':
-      var menus = document.querySelectorAll('nav#menu .devsite-nav-section');
+    case 'complete':
+      // Rebuild page navigation links.
+      var menus = document.querySelectorAll('.devsite-nav-item-section-expandable');
       var nav_state = getCollapseState();
-      Array.prototype.forEach.call(menus, function (menu, index) {
-        var anchor = menu.querySelector('[name=subheader]');
-        var list = menu.querySelector('[name=list]');
-        if (nav_state.indexOf(index.toString()) > -1) {
-          menu.classList.toggle('collapsed', false);
-          var active = true;
-        } else {
-          var active = list.querySelector('.active');
-          menu.classList.toggle('collapsed', ! active);
+      console.log("Cookie");
+      console.log(nav_state);
+      var f = function (menu, index) {
+        if (nav_state.indexOf(index.toString()) != -1){
+          menu.children[1].className = menu.children[1].className.replace( /(?:^|\s)devsite-nav-toggle-collapsed(?!\S)/g , ' devsite-nav-toggle-expanded' )
+          menu.children[2].className = menu.children[2].className.replace( /(?:^|\s)devsite-nav-section-collapsed(?!\S)/g , ' devsite-nav-section-expanded' )
         }
-        list.dataset.height = list.clientHeight + 'px';
-        list.style.maxHeight = active ? list.dataset.height : '0px';
-        anchor.addEventListener('click', function() {
-          list.style.maxHeight = (list.style.maxHeight == '0px') ? list.dataset.height : '0px';
-          menu.classList.toggle('collapsed');
+        menu.addEventListener('click', function() {
           saveCollapseState();
         });
-      });
-      break;
-    case 'complete':
-      document.querySelector('nav#menu').classList.add('animate');
+      };
+      Array.prototype.forEach.call(menus, f);
+
+      // Mark current page in navigation.
+      var path = "{{page.url}}";
+      var nav_links = document.querySelectorAll('.devsite-nav-item');
+      var active_page_class = "devsite-nav-active";
+      console.log(path);
+      f = function(link, index){
+        if (link.classList.length != 1){
+          return;
+        }
+        var link_path = link.children[0].href
+        if(link_path.substring(link_path.length - path.length) == path) {
+          console.log(link.children[0].href);
+          link.className = link.className + " " + active_page_class;
+        }
+      };
+      Array.prototype.forEach.call(nav_links, f);
+
       break;
   }
 };

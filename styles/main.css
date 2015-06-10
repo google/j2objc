@@ -23,10 +23,11 @@
     width: 48px
 }
 .devsite-product-name {
-    font: 44px/56px Roboto, sans-serif
+    font: 44px/56px Roboto, sans-serif;
+    margin: -2px 0 0 0;
 }
 .devsite-product-description-row {
-    margin: 0px 99px 40px 99px
+    margin: -12px 99px 40px 99px
 }
 @media screen and (min-width: 1201px) {
   .devsite-landing-page .devsite-article {
