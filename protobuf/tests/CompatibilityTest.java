@@ -48,7 +48,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -61,23 +63,24 @@ import java.util.Map;
  */
 public class CompatibilityTest extends ProtobufTest {
 
-  private static final File TESTDATA = getTestdataDir();
-  private static final File LARGEPROTO = new File(TESTDATA, "largeproto");
-
-  private static File getTestdataDir() {
-    File dir = new File("");
-    dir = dir.getAbsoluteFile();
-    while (dir != null) {
-      if ("protobuf".equals(dir.getName())) {
-        return new File(dir, "tests/testdata");
-      }
-      dir = dir.getParentFile();
+  private static InputStream getResourceStream(String path) throws FileNotFoundException {
+    InputStream result = ClassLoader.getSystemResourceAsStream(path);
+    if (result == null) {
+      throw new FileNotFoundException(path);
     }
-    throw new AssertionError("Could not find testdata dir");
+    return result;
   }
 
-  private byte[] readFile(File file) throws IOException {
-    FileInputStream in = new FileInputStream(file);
+  private static InputStream getTestData(String name) throws FileNotFoundException {
+    String osName = System.getProperty("os.name");
+    if (osName.contains("iPhone")) {
+      return getResourceStream(name);
+    } else {
+      return new FileInputStream(new File("testdata/" + name));
+    }
+  }
+
+  private static byte[] readStream(InputStream in) throws IOException {
     try {
       ByteArrayOutputStream out = new ByteArrayOutputStream();
       byte[] buf = new byte[4096];
@@ -997,7 +1000,7 @@ public class CompatibilityTest extends ProtobufTest {
     builder2.build().writeDelimitedTo(out);
     builder3.build().writeDelimitedTo(out);
     byte[] bytes = out.toByteArray();
-    byte[] expected = readFile(LARGEPROTO);
+    byte[] expected = readStream(getTestData("largeproto"));
     checkBytes(expected, bytes);
   }
 
@@ -1005,7 +1008,7 @@ public class CompatibilityTest extends ProtobufTest {
     TypicalData.Builder builder1 = TypicalData.newBuilder();
     TypicalData.Builder builder2 = TypicalData.newBuilder();
     TypicalData.Builder builder3 = TypicalData.newBuilder();
-    FileInputStream in = new FileInputStream(LARGEPROTO);
+    InputStream in = getTestData("largeproto");
     try {
       assertTrue(builder1.mergeDelimitedFrom(in));
       assertTrue(builder2.mergeDelimitedFrom(in));
@@ -1194,6 +1197,7 @@ public class CompatibilityTest extends ProtobufTest {
 
     ExtensionRegistryLite registryLite = ExtensionRegistryLite.newInstance();
     ExtensionRegistryLite registryLite2 = registryLite.getUnmodifiable();
+    assertNotNull(registryLite2);
   }
 
   public void testMessageLiteToBuilderAndMergeFrom() throws Exception {

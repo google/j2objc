@@ -14,6 +14,7 @@ syntax = "proto2";
 
 package protos;
 
+option java_package = "protos";
 // The point of this .proto is to test java_multiple_files = false.
 option java_multiple_files = false;
 

@@ -12,8 +12,9 @@
 
 syntax = "proto2";
 
-package com.google.j2objc;
+package protos;
 
+option java_package = "com.google.j2objc";
 option java_multiple_files = true;
 
 message PrefixDummy {
