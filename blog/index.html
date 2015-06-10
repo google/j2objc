@@ -1,5 +1,7 @@
 ---
 layout: blog
+blog_nav: devsite-doc-set-nav-active
+page_type: landing-page
 ---
 
 <h2>J2ObjC Blog</h2>
@@ -13,12 +15,14 @@ layout: blog
 
 {% endfor %}
 
-<p><a href="feed.xml">Subscribe</a></p>
+<p><a href="feed.xml" class="subscribe">Subscribe</a></p>
 
-{{ paginator.next_page_path }}
 <div class="pagination">
   {% if paginator.previous_page %}
     <a href="{{ paginator.previous_page_path }}" class="previous">Previous</a>
+    {% if paginator.next_page %}
+    &nbsp;&nbsp;|&nbsp;&nbsp;
+    {% endif %}
   {% endif %}
   {% if paginator.next_page %}
     <a href="{{ paginator.next_page_path }}" class="next">Next</a>

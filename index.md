@@ -1,5 +1,7 @@
 ---
 layout: default
+root_nav: devsite-doc-set-nav-active
+page_type: landing-page
 ---
 
 ## What J2ObjC Is ##

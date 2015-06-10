@@ -1,5 +1,7 @@
 ---
 layout: default
+contact_nav: devsite-doc-set-nav-active
+page_type: landing-page
 ---
 
 ## Discussions ##

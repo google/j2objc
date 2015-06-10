@@ -14,6 +14,7 @@
       </script>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link href="https://developers.google.com/_static/758e0d6560/css/devsite-green.css" rel="stylesheet">
       <link rel="stylesheet" href="{{site_root}}styles/main.css">
       <link href="//fonts.googleapis.com/css?family=Roboto:300,400,400italic,500,500italic,700,700italic|Roboto+Mono:400,700" rel="stylesheet">
       <link rel="shortcut icon" href="//www.gstatic.com/images/icons/material/product/2x/developers_32dp.png">
@@ -32,7 +33,7 @@
       <title>J2ObjC</title>
       <meta property="og:title" content="Class List">
    </head>
-   <body class="devsite-doc-page
+   <body class="devsite-{{page.page_type}}
       no-touch" id="top_of_page">
       <div class="devsite-wrapper" style="margin-top: 0px;">
          <header class="devsite-top-section
@@ -58,21 +59,21 @@
                   <div class="devsite-doc-set-nav-row devsite-full-site-width">
                      <nav class="devsite-doc-set-nav devsite-nav">
                         <ul class="devsite-doc-set-nav-tab-list">
-                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}" class="
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}" class="{{page.root_nav}}
                               devsite-doc-set-nav-tab"  data-label="Tab: Home">
                               Home
                               </a>
                            </li>
-                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}docs/Users-Guide.html" class="devsite-doc-set-nav-active
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}docs/Users-Guide.html" class="{{page.doc_nav}}
                               devsite-doc-set-nav-tab"  data-label="Tab: Guides">
                               Guides
                               </a>
                            </li>
-                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}blog/" class="devsite-doc-set-nav-tab"  data-label="Tab: Blog">
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}blog/" class="{{page.blog_nav}} devsite-doc-set-nav-tab"  data-label="Tab: Blog">
                               Blog
                               </a>
                            </li>
-                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}contact/" class="
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}contact/" class="{{page.contact_nav}}
                               devsite-doc-set-nav-tab"  data-label="Tab: Contact">
                               Contact
                               </a>
