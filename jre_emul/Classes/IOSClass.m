@@ -822,7 +822,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
 
 - (id)getPackage {
   JavaClassMetadata *metadata = [self getMetadata];
-  if (metadata) {
+  if (metadata && metadata.packageName) {
     return AUTORELEASE([[JavaLangPackage alloc] initWithNSString:metadata.packageName
                                                     withNSString:nil
                                                     withNSString:nil
