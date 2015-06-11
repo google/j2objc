@@ -65,13 +65,13 @@
     visibility: visible;
     position:absolute;
     bottom:0;
-    right:10px;
+    right:11px;
 
 }
 .goog-te-gadget{
     position:absolute;
     width: 100%;
-    bottom:6px;
+    bottom:5px;
     left:0px;
     visibility: hidden;
 }
