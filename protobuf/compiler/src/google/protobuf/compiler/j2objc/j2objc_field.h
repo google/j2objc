@@ -71,6 +71,7 @@ class FieldGenerator {
   virtual void CollectMessageOrBuilderForwardDeclarations(
       set<string> &declarations) const;
   virtual void CollectSourceImports(set<string> &imports) const;
+  virtual void CollectMessageOrBuilderImports(set<string> &imports) const;
 
  protected:
   const FieldDescriptor* descriptor_;
@@ -117,6 +118,7 @@ class RepeatedFieldGenerator : public FieldGenerator {
   virtual void CollectForwardDeclarations(set<string> &declarations) const;
   virtual void CollectMessageOrBuilderForwardDeclarations(
       set<string> &declarations) const;
+  virtual void CollectMessageOrBuilderImports(set<string> &imports) const;
 
  private:
   GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(RepeatedFieldGenerator);

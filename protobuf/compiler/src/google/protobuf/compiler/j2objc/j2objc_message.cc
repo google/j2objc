@@ -111,6 +111,16 @@ void MessageGenerator::CollectMessageOrBuilderImports(set<string> &imports)
   } else {
     imports.insert("com/google/protobuf/MessageOrBuilder.h");
   }
+
+  for (int i = 0; i < descriptor_->field_count(); i++) {
+    field_generators_.get(descriptor_->field(i))
+        .CollectMessageOrBuilderImports(imports);
+  }
+
+  for (int i = 0; i < descriptor_->nested_type_count(); i++) {
+    MessageGenerator(descriptor_->nested_type(i))
+        .CollectMessageOrBuilderImports(imports);
+  }
 }
 
 void MessageGenerator::CollectMessageOrBuilderForwardDeclarations(

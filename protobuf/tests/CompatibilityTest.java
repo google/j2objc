@@ -167,6 +167,8 @@ public class CompatibilityTest extends ProtobufTest {
     TypicalData data = TypicalData.newBuilder().addRepeatedString("coin").build();
     assertEquals(1, data.getRepeatedStringCount());
     assertEquals("coin", data.getRepeatedString(0));
+    List<String> list = data.getRepeatedStringList();
+    assertEquals(1, list.size());
   }
 
   public void testSetAndGetRepeatedBytes() throws Exception {

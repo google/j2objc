@@ -181,6 +181,9 @@ void FieldGenerator::CollectMessageOrBuilderForwardDeclarations(
 void FieldGenerator::CollectSourceImports(set<string> &imports) const {
 }
 
+void FieldGenerator::CollectMessageOrBuilderImports(set<string> &imports) const {
+}
+
 void FieldGenerator::GenerateFieldHeader(io::Printer *printer) const {
   printer->Print(variables_,
       "#define $classname$_$constant_name$ $field_number$\n");
@@ -247,6 +250,14 @@ void RepeatedFieldGenerator::CollectMessageOrBuilderForwardDeclarations(
     set<string> &declarations) const {
   FieldGenerator::CollectMessageOrBuilderForwardDeclarations(declarations);
   declarations.insert("@protocol " + GetListType(descriptor_));
+}
+
+void RepeatedFieldGenerator::CollectMessageOrBuilderImports(set<string> &imports) const {
+  if (GetJavaType(descriptor_) == JAVATYPE_STRING) {
+    // When translated against an older Java protobuf runtime, the caller
+    // will need the full type info for ProtocolStringList.
+    imports.insert("com/google/protobuf/ProtocolStringList.h");
+  }
 }
 
 void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
