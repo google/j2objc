@@ -102,8 +102,7 @@
   }
 }
 .devsite-footer-wrapper{
-  width: calc(100% - 160px);
-  margin: 4px;
+  width: calc(100% - 160px)
 }
 .devsite-wrapper {
     min-height:100%;
@@ -119,8 +118,13 @@
 .goog-te-combo {
     visibility: visible;
     position:absolute;
-    bottom:4px;
-    right:15px
+    bottom:6px;
+    right:17px
+}
+@media screen and (max-width: 720px) {
+  .goog-te-combo {
+    bottom:9px;
+  }
 }
 .goog-te-gadget{
     position:absolute;
