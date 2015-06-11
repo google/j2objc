@@ -23,10 +23,13 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
+import com.google.devtools.j2objc.ast.IfStatement;
+import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TryStatement;
@@ -152,8 +155,21 @@ public class DestructorGenerator extends TreeVisitor {
           FunctionInvocation releaseInvocation = new FunctionInvocation(
               "RELEASE_", idType, idType, idType);
           releaseInvocation.getArguments().add(new SimpleName(field));
-          ExpressionStatement stmt = new ExpressionStatement(releaseInvocation);
-          statements.add(stmt);
+          ExpressionStatement releaseStmt = new ExpressionStatement(releaseInvocation);
+
+          // If field type is same as declaring class, check that field != this.
+          ITypeBinding declaringClassType = field.getDeclaringClass();
+          if (declaringClassType.isAssignmentCompatible(field.getType().getErasure())) {
+            InfixExpression condition = new InfixExpression(typeEnv.resolveJavaType("boolean"),
+                InfixExpression.Operator.NOT_EQUALS, new SimpleName(field),
+                new ThisExpression(declaringClassType));
+            IfStatement stmt = new IfStatement();
+            stmt.setExpression(condition);
+            stmt.setThenStatement(releaseStmt);
+            statements.add(stmt);
+          } else {
+            statements.add(releaseStmt);
+          }
         }
       }
       if (superFinalize == null) {
