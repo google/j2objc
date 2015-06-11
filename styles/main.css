@@ -36,6 +36,9 @@
     bottom: 10px;
     margin: 6px 2px 0 0
 }
+.no-nav-clearfix {
+  margin-top: 40px!important;
+}
 @media screen and (max-width: 1200px) {
   .no-nav-clearfix {
     margin-top: 1px!important;
