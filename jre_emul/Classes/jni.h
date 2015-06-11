@@ -115,6 +115,10 @@ struct JNINativeInterface {
   jboolean      (*IsAssignableFrom)(JNIEnv*, jclass, jclass);
   jint          (*Throw)(JNIEnv*, jthrowable);
   jint          (*ThrowNew)(JNIEnv *, jclass, const char *);
+  jobject       (*NewGlobalRef)(JNIEnv*, jobject);
+  jobject       (*NewLocalRef)(JNIEnv*, jobject);
+  void          (*DeleteGlobalRef)(JNIEnv*, jobject);
+  void          (*DeleteLocalRef)(JNIEnv*, jobject);
   jboolean      (*IsSameObject)(JNIEnv*, jobject, jobject);
   jclass        (*GetObjectClass)(JNIEnv*, jobject);
   jboolean      (*IsInstanceOf)(JNIEnv*, jobject, jclass);
@@ -219,6 +223,18 @@ struct _JNIEnv {
 
     jint ThrowNew(jclass clazz, const char* message)
     { return functions->ThrowNew(this, clazz, message); }
+
+    jobject NewGlobalRef(jobject obj)
+    { return functions->NewGlobalRef(this, obj); }
+
+    jobject NewLocalRef(jobject obj)
+    { return functions->NewLocalRef(this, obj); }
+
+    void DeleteGlobalRef(jobject globalRef)
+    { functions->DeleteGlobalRef(this, globalRef); }
+
+    void DeleteLocalRef(jobject localRef)
+    { functions->DeleteLocalRef(this, localRef); }
 
     jboolean IsSameObject(jobject ref1, jobject ref2)
     { return functions->IsSameObject(this, ref1, ref2); }
