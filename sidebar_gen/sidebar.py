@@ -15,11 +15,14 @@ def processLines(sidebarLines,firstFlag = False):
 	else:
 		link = sidebarLines[0].split()[0]
 		text = ' '.join(sidebarLines[0].split()[1:])
-		print '<li class="devsite-nav-item"><a href="{}" class="devsite-nav-title gc-analytics-event " data-category="Site-Wide Custom Events" data-label="Hamburger menu" data-action="Link Click">'.format(link)
+		print '<li class="devsite-nav-item"><a href="{}" class="devsite-nav-title gc-analytics-event">'.format(link)
 		print '<span>{}</span></a></li>'.format(text)
 		processLines(sidebarLines[1:])
 
 def buildSidebar(sidebarLines):
+	print '<script>'
+	print '{% include nav.js %}'
+	print '</script>'
 	print '<nav class="devsite-section-nav-responsive devsite-nav" tabindex="0" style="left: -256px;">'
 	print '<ul class="devsite-nav-expandable">'
 	processLines(sidebarLines,True)
@@ -40,7 +43,11 @@ def removeBlankLines(ls):
 
 if __name__ == "__main__":
 	import sys
-	sys.stdout = open('../_includes/sidebar.html', 'w')
+	sidebarLocation = '../_includes/sidebar.html'
+	oldStdout = sys.stdout
+	sys.stdout = open(sidebarLocation, 'w')
 	sidebarLines = open("sidebar.txt").readlines()
 	sidebarLines = removeBlankLines(sidebarLines)
 	buildSidebar(sidebarLines)
+	sys.stdout = oldStdout
+	print "New sidebar written to {}".format(sidebarLocation)

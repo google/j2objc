@@ -97,6 +97,13 @@
   .devsite-landing-page .devsite-article {
     max-width: 100%
   }
+  .test1 {
+    margin: -40px 0 0 0;
+  }
+}
+.devsite-footer-wrapper{
+  width: calc(100% - 160px);
+  margin: 4px;
 }
 .devsite-wrapper {
     min-height:100%;
@@ -112,16 +119,16 @@
 .goog-te-combo {
     visibility: visible;
     position:absolute;
-    bottom:0;
-    right:11px;
-
+    bottom:4px;
+    right:15px
 }
 .goog-te-gadget{
     position:absolute;
     width: 100%;
-    bottom:5px;
-    left:0px;
+    bottom:-1px;
+    left:7px;
     visibility: hidden;
+    margin: 0 0 0 0
 }
 .goog-te-menu-value{
   margin: -10px

@@ -1,5 +1,5 @@
 User's Guide
-  {{site_root}}docs/Users-Guide.html Why Use J2ObjC?
+  {{site_root}}docs/index.html Why Use J2ObjC?
   {{site_root}}docs/Getting-Started.html Getting Started
   {{site_root}}docs/Using-J2ObjC-with-Xcode.html Using J2ObjC with Xcode
   {{site_root}}docs/External-Build-Projects.html External Build Projects
