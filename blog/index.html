@@ -15,16 +15,15 @@ page_type: landing-page
 
 {% endfor %}
 
-<p><a href="feed.xml" class="subscribe">Subscribe</a></p>
-
 <div class="pagination">
+
   {% if paginator.previous_page %}
-    <a href="{{ paginator.previous_page_path }}" class="previous">Previous</a>
-    {% if paginator.next_page %}
-    &nbsp;&nbsp;|&nbsp;&nbsp;
-    {% endif %}
+    <a href="{{ paginator.previous_page_path }}" class="newer">Newer Posts</a>
   {% endif %}
   {% if paginator.next_page %}
-    <a href="{{ paginator.next_page_path }}" class="next">Next</a>
+    <a href="{{ paginator.next_page_path }}" class="older">Older Posts</a>
   {% endif %}
+  <div class="subscribe">
+  <a href="feed.xml" style="text-align: center;" class="subscribe">Subscribe</a>
+  </div>
 </div>

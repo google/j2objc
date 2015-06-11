@@ -1,8 +1,7 @@
 .subscribe{
-  float: right
-}
-.github{
-  float: right;
+  width: 100%;
+  text-align: center;
+  align: center
 }
 .github-logo {
     height: 52px;
@@ -12,6 +11,15 @@
     position: absolute;
     overflow: visible
 }
+.newer{
+  float: left;
+}
+.older{
+  float: right
+}
+.main_button{
+  margin: -25px 0 25px 106px;
+}
 
 .devsite-top-section {
     background-color: #0f9d58
@@ -19,26 +27,28 @@
 .devsite-background {
     margin: 0 auto;
     width: 100%;
-    background: #0b8043
+    background: #0a8450
 }
 .devsite-product-logo-container {
     box-shadow: 0px 2px 5px #444;
-    height: 72px;
-    width: 72px
+    margin: -18px 0 0 0;
+    height: 98px;
+    width: 98px
 }
 .devsite-product-logo-white {
     margin: 8px 28px 8px 0
 }
 .devsite-product-logo {
-    height: 48px;
-    width: 48px
+    height: 64px;
+    width: 64px;
+    margin: 17px;
 }
 .devsite-product-name {
     font: 44px/56px Roboto, sans-serif;
-    margin: -2px 0 0 0;
+    margin: -10px 0 0 2px;
 }
 .devsite-product-description-row {
-    margin: -12px 99px 40px 99px
+    margin: -20px 105px 40px 107px
 }
 @media screen and (min-width: 1201px) {
   .devsite-landing-page .devsite-article {
@@ -91,7 +101,4 @@
     overflow-y: auto;
     padding: 16px 12px 16px 16px;
     width: 256px
-}
-.unbound {
-  position: relative
 }

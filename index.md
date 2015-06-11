@@ -2,6 +2,7 @@
 layout: default
 root_nav: devsite-doc-set-nav-active
 page_type: landing-page
+main_button: <div class="devsite-product-button-row main_button"><a href="{{site_root}}docs/Getting-Started.html" class="button button-white button-raised button-text-black">Get Started</a></div>
 ---
 
 ## What J2ObjC Is ##
@@ -12,6 +13,8 @@ of the generated files is necessary. The goal is to write an app's non-UI
 code (such as application logic and data models) in Java, which is then
 shared by web apps (using [GWT](http://www.gwtproject.org/)), Android apps,
 and iOS apps.
+
+<div class="devsite-product-button-row"><a href="{{site_root}}docs/Getting-Started.html" class="button button-white button-raised button-text-black">Get Started</a></div>
 
 J2ObjC supports most Java language and runtime features required by
 client-side application developers, including exceptions, inner and
