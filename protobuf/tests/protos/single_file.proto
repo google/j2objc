@@ -26,4 +26,6 @@ message Data1 {
   }
 
   repeated Internal internal_repeated = 2;
+
+  repeated string repeated_string = 3;
 }

@@ -172,17 +172,19 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
 
   set<string> headers;
   AddHeaderImports(headers);
-  PrintImports(headers, &printer);
-
   set<string> declarations;
+  declarations.insert("@class ComGoogleProtobufExtensionRegistry");
+
   if (!GenerateMultipleFiles()) {
     for (int i = 0; i < file_->message_type_count(); i++) {
       MessageGenerator generator(file_->message_type(i));
+      generator.CollectMessageOrBuilderImports(headers);
       generator.CollectForwardDeclarations(declarations);
       generator.CollectMessageOrBuilderForwardDeclarations(declarations);
     }
   }
-  declarations.insert("@class ComGoogleProtobufExtensionRegistry");
+
+  PrintImports(headers, &printer);
   PrintForwardDeclarations(declarations, &printer);
 
   // need to write out all enums first

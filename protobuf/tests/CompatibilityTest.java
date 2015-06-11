@@ -582,9 +582,15 @@ public class CompatibilityTest extends ProtobufTest {
     SingleFile.Data1OrBuilder builder = SingleFile.Data1.newBuilder().setIntValue(42);
     assertTrue(builder.hasIntValue());
     assertEquals(42, builder.getIntValue());
-    SingleFile.Data1OrBuilder data = SingleFile.Data1.newBuilder().setIntValue(42).build();
+    SingleFile.Data1OrBuilder data = SingleFile.Data1.newBuilder()
+        .setIntValue(42)
+        .addRepeatedString("foo")
+        .build();
     assertTrue(data.hasIntValue());
     assertEquals(42, data.getIntValue());
+    List<String> strList = data.getRepeatedStringList();
+    assertEquals(1, strList.size());
+    assertEquals("foo", strList.get(0));
   }
 
   public void testSetAndGetFieldWithFieldDescriptor() throws Exception {
