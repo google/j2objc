@@ -1,3 +1,7 @@
+/* Hack to work around script_foot_closure.js breaking nav. */
+.devsite-search-form{
+  display: none
+}
 .subscribe{
   width: 100%;
   text-align: center;
@@ -10,10 +14,6 @@
 .github-button-small {
     float: right;
     display: none;
-    margin: 6px -4px 6px 0
-}
-.github-button-tiny {
-    float: right;
     margin: 6px -4px 6px 0
 }
 @media screen and (max-width: 1200px) {
