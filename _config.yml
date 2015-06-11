@@ -5,7 +5,7 @@ kramdown:
     hard_wrap: false
     smart_quotes: ["apos", "apos", "quot", "quot"]
 paginate_path: "blog/page/:num"
-paginate: 1
+paginate: 5
 gems:
   - jekyll-sitemap
   - jekyll-redirect-from

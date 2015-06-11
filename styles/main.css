@@ -4,13 +4,24 @@
   align: center
 }
 .github-logo {
-    height: 52px;
+    height: 32px;
     margin: -6px 0 0 0;
-    right: 3px;
-    width: 52px;
-    position: absolute;
-    overflow: visible
+    position: relative;
+    left: -2px;
+    width: 32px;
 }
+.github-text {
+    float: right;
+    position: absolute;
+    right: 6px;
+    margin: 6px 0px 6px 0
+}
+.github-inner {
+    position: relative;
+    bottom: 10px;
+    margin: 6px 2px 22px 0
+}
+
 .newer{
   float: left;
 }

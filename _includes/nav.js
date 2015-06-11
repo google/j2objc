@@ -22,6 +22,12 @@ function getCollapseState() {
   return [];
 }
 
+// Expands both children of devsite-nav-item-section-expandable.
+function expandMenu(menu){
+  menu.children[1].className = menu.children[1].className.replace( /(?:^|\s)devsite-nav-toggle-collapsed(?!\S)/g , ' devsite-nav-toggle-expanded' )
+  menu.children[2].className = menu.children[2].className.replace( /(?:^|\s)devsite-nav-section-collapsed(?!\S)/g , ' devsite-nav-section-expanded' )
+}
+
 document.onreadystatechange = function () {
   switch (document.readyState) {
     case 'complete':
@@ -30,10 +36,10 @@ document.onreadystatechange = function () {
       var nav_state = getCollapseState();
       console.log("Cookie");
       console.log(nav_state);
+
       var f = function (menu, index) {
         if (nav_state.indexOf(index.toString()) != -1){
-          menu.children[1].className = menu.children[1].className.replace( /(?:^|\s)devsite-nav-toggle-collapsed(?!\S)/g , ' devsite-nav-toggle-expanded' )
-          menu.children[2].className = menu.children[2].className.replace( /(?:^|\s)devsite-nav-section-collapsed(?!\S)/g , ' devsite-nav-section-expanded' )
+          expandMenu(menu);
         }
         menu.addEventListener('click', function() {
           saveCollapseState();
@@ -53,6 +59,8 @@ document.onreadystatechange = function () {
         var link_path = link.children[0].href
         if(link_path.substring(link_path.length - path.length) == path) {
           console.log(link.children[0].href);
+          // Expand element by getting the devsite-nav-item-section-expandable.
+          expandMenu(link.parentNode.parentNode)
           link.className = link.className + " " + active_page_class;
         }
       };

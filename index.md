@@ -2,7 +2,6 @@
 layout: default
 root_nav: devsite-doc-set-nav-active
 page_type: landing-page
-main_button: <div class="devsite-product-button-row main_button"><a href="{{site_root}}docs/Getting-Started.html" class="button button-white button-raised button-text-black">Get Started</a></div>
 ---
 
 ## What J2ObjC Is ##
