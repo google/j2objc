@@ -114,6 +114,13 @@ namespace {
     return hasBitIndex;
   }
 
+  string GetListType(const FieldDescriptor *descriptor) {
+    if (GetJavaType(descriptor) == JAVATYPE_STRING) {
+      return "ComGoogleProtobufProtocolStringList";
+    }
+    return "JavaUtilList";
+  }
+
   void SetCommonFieldVariables(const FieldDescriptor* descriptor,
       map<string, string>* variables) {
     (*variables)["classname"] = ClassName(descriptor->containing_type());
@@ -135,6 +142,7 @@ namespace {
     (*variables)["containing_type_name"] =
         ClassName(descriptor->containing_type());
     (*variables)["options_data"] = GetFieldOptionsData(descriptor);
+    (*variables)["list_type"] = GetListType(descriptor);
   }
 
   void CollectCommonForwardDeclarations(
@@ -238,7 +246,7 @@ void RepeatedFieldGenerator::CollectForwardDeclarations(
 void RepeatedFieldGenerator::CollectMessageOrBuilderForwardDeclarations(
     set<string> &declarations) const {
   FieldGenerator::CollectMessageOrBuilderForwardDeclarations(declarations);
-  declarations.insert("@protocol JavaUtilList");
+  declarations.insert("@protocol " + GetListType(descriptor_));
 }
 
 void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
@@ -264,7 +272,7 @@ void RepeatedFieldGenerator::GenerateMessageOrBuilderProtocol(
     io::Printer* printer) const {
   printer->Print(variables_, "\n"
     "- (int)get$capitalized_name$Count;\n"
-    "- (id<JavaUtilList>)get$capitalized_name$List;\n"
+    "- (id<$list_type$>)get$capitalized_name$List;\n"
     "- ($storage_type$)get$capitalized_name$WithInt:(int)index;\n"
   );
 }

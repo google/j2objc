@@ -30,14 +30,22 @@
 
 // Created by Keith Stanger on Apr. 10, 2015.
 //
-// ProtocolStringList is a type that extends List<String> and is returned for
-// repeated string fields in newer versions of the Java proto compiler. J2ObjC
-// translation will generate includes for this header, but we can get away with
-// not defining this type as long as users don't call "asByteStringList".
+// Hand written counterpart of com.google.protobuf.ProtocolStringList.
 
 #ifndef __ComGoogleProtobufProtocolStringList_H__
 #define __ComGoogleProtobufProtocolStringList_H__
 
+#include "J2ObjC_header.h"
 #include "java/util/List.h"
+
+@protocol ComGoogleProtobufProtocolStringList < JavaUtilList, NSObject, JavaObject >
+
+- (id<JavaUtilList>)asByteStringList;
+
+@end
+
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufProtocolStringList)
+
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufProtocolStringList)
 
 #endif // __ComGoogleProtobufProtocolStringList_H__

@@ -32,6 +32,7 @@ SRCS = \
   com/google/protobuf/ExtensionRegistryLite.mm \
   com/google/protobuf/GeneratedMessage.mm \
   com/google/protobuf/InvalidProtocolBufferException.m \
+  com/google/protobuf/ProtocolStringList.m \
   com/google/protobuf/RepeatedField.m \
   com/google/protobuf/WireFormat.mm
 

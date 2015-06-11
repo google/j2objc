@@ -32,8 +32,11 @@
 
 #include <libkern/OSAtomic.h>
 
+#import "com/google/protobuf/ByteString.h"
 #import "com/google/protobuf/Descriptors_PackagePrivate.h"
+#import "com/google/protobuf/ProtocolStringList.h"
 #import "java/lang/IndexOutOfBoundsException.h"
+#import "java/util/AbstractList.h"
 #import "java/util/ArrayList.h"
 
 #define MIN_REPEATED_FIELD_SIZE 4
@@ -231,8 +234,27 @@ void CGPRepeatedFieldOutOfBounds(jint idx, uint32_t size) {
           idx, (int)size]] autorelease];
 }
 
-CGPRepeatedFieldList *CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaType type) {
-  CGPRepeatedFieldList *list = [[CGPRepeatedFieldList alloc] init];
+@interface CGPRepeatedFieldList : JavaUtilAbstractList {
+ @package
+  CGPRepeatedField field_;
+  CGPFieldJavaType type_;
+}
+@end
+
+// We need a subclass for String fields which must implement the ProtocolStringList interface.
+@interface CGPRepeatedStringFieldList : CGPRepeatedFieldList < ComGoogleProtobufProtocolStringList >
+@end
+
+@interface CGPStringAsByteStringList : JavaUtilAbstractList {
+ @package
+  CGPRepeatedField field_;
+}
+@end
+
+id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaType type) {
+  CGPRepeatedFieldList *list =
+      type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_STRING ?
+      [[CGPRepeatedStringFieldList alloc] init] : [[CGPRepeatedFieldList alloc] init];
   CGPRepeatedFieldData *data = field->data;
   if (data != NULL) {
     list->field_.data = data;
@@ -261,6 +283,38 @@ CGPRepeatedFieldList *CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJ
 
 - (void)dealloc {
   ReleaseData(field_.data, type_);
+  [super dealloc];
+}
+
+@end
+
+@implementation CGPRepeatedStringFieldList
+
+- (id<JavaUtilList>)asByteStringList {
+  CGPStringAsByteStringList *list = [[[CGPStringAsByteStringList alloc] init] autorelease];
+  if (field_.data != NULL) {
+    list->field_.data = field_.data;
+    OSAtomicIncrement32((int32_t *)&field_.data->ref_count);
+  }
+  return list;
+}
+
+@end
+
+@implementation CGPStringAsByteStringList
+
+- (id)getWithInt:(jint)index {
+  CGPRepeatedFieldCheckBounds(&field_, index);
+  NSString *stringValue = ((id *)field_.data->buffer)[index];
+  return ComGoogleProtobufByteString_copyFromUtf8WithNSString_(stringValue);
+}
+
+- (jint)size {
+  return CGPRepeatedFieldSize(&field_);
+}
+
+- (void)dealloc {
+  ReleaseData(field_.data, ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_STRING);
   [super dealloc];
 }
 

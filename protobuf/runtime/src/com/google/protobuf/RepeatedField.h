@@ -36,7 +36,8 @@
 #import "JreEmulation.h"
 
 #import "com/google/protobuf/Descriptors.h"
-#import "java/util/AbstractList.h"
+
+@protocol JavaUtilList;
 
 // For compactness of empty repeated fields, the storage type of a repeated
 // field (CGPRepeatedField) is a single pointer. When the repeated field becomes
@@ -52,13 +53,6 @@ typedef struct CGPRepeatedFieldData {
 typedef struct CGPRepeatedField {
   CGPRepeatedFieldData *data;
 } CGPRepeatedField;
-
-@interface CGPRepeatedFieldList : JavaUtilAbstractList {
- @package
-  CGPRepeatedField field_;
-  CGPFieldJavaType type_;
-}
-@end
 
 CF_EXTERN_C_BEGIN
 
@@ -141,7 +135,7 @@ FOR_EACH_TYPE_WITH_ENUM(REPEATED_FIELD_SETTER_IMP)
 
 #undef REPEATED_FIELD_SETTER_IMP
 
-CGPRepeatedFieldList *CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaType type);
+id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaType type);
 
 id CGPRepeatedFieldGet(CGPRepeatedField *field, jint index, CGPFieldDescriptor *descriptor);
 

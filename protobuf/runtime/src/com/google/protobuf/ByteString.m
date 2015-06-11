@@ -34,11 +34,14 @@
 
 #import "com/google/protobuf/ByteString.h"
 
+#import "IOSPrimitiveArray.h"
+#import "J2ObjC_source.h"
+
 J2OBJC_INITIALIZED_DEFN(ComGoogleProtobufByteString)
 
 ComGoogleProtobufByteString *ComGoogleProtobufByteString_EMPTY_;
 
-ComGoogleProtobufByteString *CGPNewByteString(int len) {
+ComGoogleProtobufByteString *CGPNewByteString(jint len) {
   CGPByteString *byteString = NSAllocateObject([CGPByteString class], len, nil);
   byteString->size_ = len;
   return byteString;
@@ -47,8 +50,22 @@ ComGoogleProtobufByteString *CGPNewByteString(int len) {
 ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromWithByteArray_(
     IOSByteArray *bytes) {
   nil_chk(bytes);  // Ensure Java compatibility.
-  CGPByteString *byteString = CGPNewByteString((int)bytes->size_);
+  CGPByteString *byteString = CGPNewByteString(bytes->size_);
   memcpy(byteString->buffer_, bytes->buffer_, bytes->size_);
+  return [byteString autorelease];
+}
+
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSString_(NSString *text) {
+  nil_chk(text);  // Ensure Java compatibility.
+  NSUInteger length = [text lengthOfBytesUsingEncoding:NSUTF8StringEncoding];
+  CGPByteString *byteString = CGPNewByteString((jint)length);
+  [text getBytes:byteString->buffer_
+       maxLength:length
+      usedLength:NULL
+        encoding:NSUTF8StringEncoding
+         options:0
+           range:NSMakeRange(0, [text length])
+      remainingRange:NULL];
   return [byteString autorelease];
 }
 
@@ -92,8 +109,8 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromWithByteArray_(
 }
 
 - (NSUInteger)hash {
-  int h = size_;
-  for (int i = 0; i < size_; i++) {
+  jint h = size_;
+  for (jint i = 0; i < size_; i++) {
     h = h * 31 + buffer_[i];
   }
   return h;

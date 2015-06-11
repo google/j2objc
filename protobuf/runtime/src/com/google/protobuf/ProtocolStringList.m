@@ -28,44 +28,8 @@
 // (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-// Counterpart for com.google.protobuf.ByteString.
+#include "com/google/protobuf/ProtocolStringList.h"
 
-#ifndef __ComGoogleProtobufByteString_H__
-#define __ComGoogleProtobufByteString_H__
+#include "J2ObjC_source.h"
 
-#include "J2ObjC_header.h"
-
-@class IOSByteArray;
-
-@interface ComGoogleProtobufByteString : NSObject {
- @package
-  jint size_;
-  int8_t buffer_[0];
-}
-
-+ (ComGoogleProtobufByteString *)
-    copyFromWithByteArray:(IOSByteArray *)bytes OBJC_METHOD_FAMILY_NONE;
-- (IOSByteArray *)toByteArray;
-- (NSString *)toStringWithNSString:(NSString *)charsetName;
-- (NSString *)toStringUtf8;
-
-@end
-
-typedef ComGoogleProtobufByteString CGPByteString;
-
-FOUNDATION_EXPORT ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromWithByteArray_(
-    IOSByteArray *bytes);
-
-FOUNDATION_EXPORT ComGoogleProtobufByteString
-    *ComGoogleProtobufByteString_copyFromUtf8WithNSString_(NSString *text);
-
-FOUNDATION_EXPORT ComGoogleProtobufByteString *CGPNewByteString(jint len);
-
-J2OBJC_STATIC_INIT(ComGoogleProtobufByteString)
-
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufByteString)
-
-FOUNDATION_EXPORT ComGoogleProtobufByteString *ComGoogleProtobufByteString_EMPTY_;
-J2OBJC_STATIC_FIELD_GETTER(ComGoogleProtobufByteString, EMPTY_, ComGoogleProtobufByteString *)
-
-#endif // __ComGoogleProtobufByteString_H__
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufProtocolStringList)
