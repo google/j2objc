@@ -3,23 +3,38 @@
   text-align: center;
   align: center
 }
+.github-button-big {
+    float: right;
+    margin: 6px -4px 6px 0
+}
+.github-button-small {
+    float: right;
+    display: none;
+    margin: 6px -4px 6px 0
+}
+.github-button-tiny {
+    float: right;
+    margin: 6px -4px 6px 0
+}
+@media screen and (max-width: 1200px) {
+  .github-button-small {
+      display: inline
+  }
+  .github-button-big {
+      display: none
+  }
+}
 .github-logo {
     height: 32px;
     margin: -6px 0 0 0;
     position: relative;
-    left: -2px;
+    right: -2px;
     width: 32px;
 }
 .github-text {
-    float: right;
-    position: absolute;
-    right: 6px;
-    margin: 6px 0px 6px 0
-}
-.github-inner {
     position: relative;
     bottom: 10px;
-    margin: 6px 2px 22px 0
+    margin: 6px 2px 0 0
 }
 
 .newer{
