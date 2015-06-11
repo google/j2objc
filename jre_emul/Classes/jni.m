@@ -230,6 +230,22 @@ static jboolean IsInstanceOf(JNIEnv *env, jobject obj, jclass clazz) {
   return [(IOSClass *) clazz isInstance:obj];
 }
 
+static jobject NewGlobalRef(JNIEnv *env, jobject obj) {
+  return obj;
+}
+
+static jobject NewLocalRef(JNIEnv *env, jobject obj) {
+  return obj;
+}
+
+static void DeleteGlobalRef(JNIEnv *env, jobject globalRef) {
+  // no-op
+}
+
+static void DeleteLocalRef(JNIEnv *env, jobject localRef) {
+  // no-op
+}
+
 static jboolean IsSameObject(JNIEnv *env, jobject obj1, jobject obj2) {
   return obj1 == obj2;
 }
@@ -425,6 +441,10 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &IsAssignableFrom,
   &Throw,
   &ThrowNew,
+  &NewGlobalRef,
+  &NewLocalRef,
+  &DeleteGlobalRef,
+  &DeleteLocalRef,
   &IsSameObject,
   &GetObjectClass,
   &IsInstanceOf,
