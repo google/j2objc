@@ -88,12 +88,13 @@ typedef jobject         jweak;
 
 #endif /* not __cplusplus */
 
-typedef struct {
-    const char* name;
-    const char* signature;
-    void*       fnPtr;
-} JNINativeMethod;
+struct _jmethodID;
+typedef struct _jmethodID *jmethodID;
 
+struct _jfieldID;
+typedef struct _jfieldID *jfieldID;
+
+/* Forward declaration for JNIEnv */
 struct _JNIEnv;
 typedef const struct JNINativeInterface* C_JNIEnv;
 extern C_JNIEnv J2ObjC_JNIEnv;
@@ -104,8 +105,19 @@ typedef _JNIEnv JNIEnv;
 typedef const struct JNINativeInterface* JNIEnv;
 #endif
 
+/* Forward declaration for JavaVM */
+struct _JavaVM;
+typedef const struct JNIInvokeInterface* C_JavaVM;
+extern C_JavaVM J2ObjC_JavaVM;
+
+#if defined(__cplusplus)
+typedef _JavaVM JavaVM;
+#else
+typedef const struct JNIInvokeInterface* JavaVM;
+#endif
+
 /*
- * Table of interface function pointers.
+ * Table of interface function pointers for JNIEnv.
  */
 struct JNINativeInterface {
   jint          (*GetVersion)(JNIEnv *);
@@ -192,10 +204,12 @@ struct JNINativeInterface {
   jobject       (*NewDirectByteBuffer)(JNIEnv*, void*, jlong);
   void*         (*GetDirectBufferAddress)(JNIEnv*, jobject);
   jlong         (*GetDirectBufferCapacity)(JNIEnv*, jobject);
+
+  jint          (*GetJavaVM)(JNIEnv*, JavaVM**);
 };
 
 /*
- * C++ object wrapper.
+ * JNIEnv C++ object wrapper.
  *
  * This is usually overlaid on a C struct whose first element is a
  * JNINativeInterface*.  We rely somewhat on compiler behavior.
@@ -418,6 +432,49 @@ struct _JNIEnv {
 
     jlong GetDirectBufferCapacity(jobject buf)
     { return functions->GetDirectBufferCapacity(this, buf); }
+
+    jint GetJavaVM(JavaVM **vm)
+    { return functions->GetJavaVM(this, vm); }
+#endif /*__cplusplus*/
+};
+
+/*
+ * Table of interface function pointers for JavaVM.
+ */
+struct JNIInvokeInterface {
+  jint (*DestroyJavaVM)(JavaVM *vm);
+  jint (*AttachCurrentThread)(JavaVM *vm, void **penv, void *args);
+  jint (*DetachCurrentThread)(JavaVM *vm);
+  jint (*GetEnv)(JavaVM *vm, void **penv, jint version);
+  jint (*AttachCurrentThreadAsDaemon)(JavaVM *vm, void **penv, void *args);
+};
+
+/*
+ * JavaVM C++ object wrapper.
+ *
+ * This is usually overlaid on a C struct whose first element is a
+ * JNIInvokeInterface*.  We rely somewhat on compiler behavior.
+ */
+struct _JavaVM {
+    /* do not rename this; it does not seem to be entirely opaque */
+    const struct JNIInvokeInterface* functions;
+
+#if defined(__cplusplus)
+
+    jint DestroyJavaVM()
+    { return functions->DestroyJavaVM(this); }
+
+    jint AttachCurrentThread(void **penv, void *args)
+    { return functions->AttachCurrentThread(this, penv, args); }
+
+    jint DetachCurrentThread()
+    { return functions->DetachCurrentThread(this); }
+
+    jint GetEnv(void **penv, jint version)
+    { return functions->GetEnv(this, penv, version); }
+
+    jint AttachCurrentThreadAsDaemon(void **penv, void *args)
+    { return functions->AttachCurrentThreadAsDaemon(this, penv, args); }
 #endif /*__cplusplus*/
 };
 

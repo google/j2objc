@@ -433,6 +433,7 @@ static jint ThrowNew(JNIEnv *env, jclass clazz, const char *message) {
   return 0;
 }
 
+static jint GetJavaVM(JNIEnv *env, JavaVM **vm);
 
 static struct JNINativeInterface JNI_JNIEnvTable = {
   &GetVersion,
@@ -509,6 +510,45 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &NewDirectByteBuffer,
   &GetDirectBufferAddress,
   &GetDirectBufferCapacity,
+  &GetJavaVM,
 };
 
 C_JNIEnv J2ObjC_JNIEnv = &JNI_JNIEnvTable;
+
+static jint DestroyJavaVM(JavaVM *vm) {
+  return JNI_OK;
+}
+
+static jint AttachCurrentThread(JavaVM *vm, void **penv, void *args) {
+  *penv = (void *) J2ObjC_JNIEnv;
+  return JNI_OK;
+}
+
+static jint DetachCurrentThread(JavaVM *vm) {
+  return JNI_OK;
+}
+
+static jint GetEnv(JavaVM *vm, void **penv, jint version) {
+  *penv = (void *) J2ObjC_JNIEnv;
+  return JNI_OK;
+}
+
+static jint AttachCurrentThreadAsDaemon(JavaVM *vm, void **penv, void *args) {
+  *penv = (void *) J2ObjC_JNIEnv;
+  return JNI_OK;
+}
+
+static struct JNIInvokeInterface JNI_JavaVMTable = {
+  &DestroyJavaVM,
+  &AttachCurrentThread,
+  &DetachCurrentThread,
+  &GetEnv,
+  &AttachCurrentThreadAsDaemon,
+};
+
+C_JavaVM J2ObjC_JavaVM = &JNI_JavaVMTable;
+
+static jint GetJavaVM(JNIEnv *env, JavaVM **vm) {
+  *vm = (JavaVM *) J2ObjC_JavaVM;
+  return JNI_OK;
+}
