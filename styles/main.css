@@ -62,7 +62,7 @@
     display: none;
     margin: 6px -4px 6px 0
 }
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1000px) {
   .github-button-small {
       display: inline
   }
@@ -132,7 +132,7 @@
     margin: -10px 0 0 2px;
 }
 .devsite-product-description-row {
-    margin: -20px 105px 40px 107px
+    margin: -20px 0 40px 107px
 }
 @media screen and (min-width: 1201px) {
   .devsite-landing-page .devsite-article {
@@ -172,7 +172,7 @@
 }
 @media screen and (max-width: 720px) {
   .goog-te-combo {
-    bottom:9px;
+    bottom:11px;
     width: 140px
   }
   .devsite-utility-footer-links {
