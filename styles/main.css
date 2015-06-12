@@ -154,6 +154,9 @@
 .devsite-footer-wrapper{
   width: calc(100% - 160px)
 }
+.devsite-footer-wrapper a:hover{
+  text-decoration: underline
+}
 .devsite-wrapper {
     min-height:100%;
     position:relative;
