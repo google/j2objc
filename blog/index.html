@@ -1,0 +1,29 @@
+---
+layout: blog
+blog_nav: devsite-doc-set-nav-active
+page_type: landing-page
+---
+
+<h2>J2ObjC Blog</h2>
+
+{% for post in paginator.posts  %}
+<h2><a href="{{ BASE_PATH }}{{ post.url }}">{{ post.title}}</a></h2>
+
+<p><em>{{ post.date | date_to_long_string }} by {{ post.author }}</p></em>
+
+{{ post.content }}
+
+{% endfor %}
+
+<div class="pagination">
+
+  {% if paginator.previous_page %}
+    <a href="{{ paginator.previous_page_path }}" class="newer">Newer Posts</a>
+  {% endif %}
+  {% if paginator.next_page %}
+    <a href="{{ paginator.next_page_path }}" class="older">Older Posts</a>
+  {% endif %}
+  <div class="subscribe">
+  <a href="feed.xml" style="text-align: center;" class="subscribe">Subscribe</a>
+  </div>
+</div>
