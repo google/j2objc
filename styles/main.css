@@ -1,7 +1,4 @@
 /* Hack to work around script_foot_closure.js breaking nav. */
-/*.devsite-search-form{
-  display: none
-}*/
 /*.gsc-above-wrapper-area{
   display: none
 }*/
@@ -11,6 +8,9 @@ td {
 }
 tr {
   border-top: 0
+}
+.float-right{
+  float: right
 }
 .gsc-above-wrapper-area{
   padding: 0
@@ -46,11 +46,10 @@ tr {
 }
 .devsite-search-wrapper{
   width: 280px;
-  float: right;
   background: #33ac71
 }
-.devsite-search-button-dismissal{
-  float: right
+.devsite-search-button{
+  margin: 6px
 }
 .devsite-popout{
   display: none
