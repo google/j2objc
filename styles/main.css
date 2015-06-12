@@ -1,21 +1,3 @@
-/* Hack to work around script_foot_closure.js breaking nav. */
-/*.gsc-above-wrapper-area{
-  display: none
-}*/
-.gsc-above-wrapper-area-container td {
-    background-color: #fff;
-    padding: 0
-}
-.gsc-above-wrapper-area-container tr {
-  border-top: 0
-}
-.gsc-table-result{
-  background-color: #fff;
-  padding: 0
-}
-.gsc-table-result{
-  border-top: 0
-}
 .float-right{
   float: right
 }
