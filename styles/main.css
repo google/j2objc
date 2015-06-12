@@ -5,6 +5,16 @@
 /*.gsc-above-wrapper-area{
   display: none
 }*/
+td {
+    background-color: #fff;
+    padding: 0
+}
+tr {
+  border-top: 0
+}
+.gsc-above-wrapper-area{
+  padding: 0
+}
 .gsc-resultsHeader{
   display: none
 }
@@ -39,6 +49,9 @@
   float: right;
   background: #33ac71
 }
+.devsite-search-button-dismissal{
+  float: right
+}
 .devsite-popout{
   display: none
 }
@@ -47,6 +60,9 @@
 }
 .devsite-top-logo-row-wrapper{
   background-color: #0f9d58
+}
+.gsc-above-wrapper-area-container{
+  background-color: #fff
 }
 .subscribe{
   width: 100%;
