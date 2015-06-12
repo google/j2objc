@@ -2,11 +2,18 @@
 /*.gsc-above-wrapper-area{
   display: none
 }*/
-td {
+.gsc-above-wrapper-area-container td {
     background-color: #fff;
     padding: 0
 }
-tr {
+.gsc-above-wrapper-area-container tr {
+  border-top: 0
+}
+.gsc-table-result{
+  background-color: #fff;
+  padding: 0
+}
+.gsc-table-result{
   border-top: 0
 }
 .float-right{

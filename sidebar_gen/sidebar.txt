@@ -27,7 +27,7 @@ Reference Docs
   {{site_root}}docs/j2objc.html j2objc
   {{site_root}}docs/j2objcc.html j2objcc
   {{site_root}}docs/cycle_finder.html cycle_finder
-  {{site_root}}docs/Jre-Emulation-Reference.html JRE Emulation Reference
+  {{site_root}}docs/JRE-Emulation-Reference.html JRE Emulation Reference
 J2ObjC Annotations
   {{site_root}}docs/AutoreleasePool.html AutoreleasePool
   {{site_root}}docs/LoopTranslation.html LoopTranslation
