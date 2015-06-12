@@ -1,6 +1,52 @@
 /* Hack to work around script_foot_closure.js breaking nav. */
-.devsite-search-form{
+/*.devsite-search-form{
   display: none
+}*/
+/*.gsc-above-wrapper-area{
+  display: none
+}*/
+.gsc-resultsHeader{
+  display: none
+}
+.gsc-orderby-container{
+  display: none
+}
+.gsc-table-result{
+  margin: 0
+}
+.gsc-control-cse{
+  visibility: hidden;
+  margin: -30px -30px 0 0
+}
+.gsc-search-box{
+  visibility: hidden;
+  background-color: #0f9d58
+}
+.gsc-input{
+  visibility: visible;
+  background-color: #0f9d58
+}
+.gsc-search-button{
+  visibility: visible;
+  position: relative;
+  background-color: #0f9d58
+}
+.gsc-clear-button{
+  display: none
+}
+.devsite-search-wrapper{
+  width: 280px;
+  float: right;
+  background: #33ac71
+}
+.devsite-popout{
+  display: none
+}
+.devsite-search-image{
+  float: right
+}
+.devsite-top-logo-row-wrapper{
+  background-color: #0f9d58
 }
 .subscribe{
   width: 100%;
@@ -121,9 +167,19 @@
     bottom:6px;
     right:17px
 }
+.devsite-utility-footer-links-small {
+  display: none;
+}
 @media screen and (max-width: 720px) {
   .goog-te-combo {
     bottom:9px;
+    width: 140px
+  }
+  .devsite-utility-footer-links {
+    display: none;
+  }
+  .devsite-utility-footer-links-small {
+    display: inline;
   }
 }
 .goog-te-gadget{
