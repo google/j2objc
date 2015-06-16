@@ -42,6 +42,7 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -722,8 +723,7 @@ public class NameTable {
     return getObjCTypeInner(type, null, false);
   }
 
-  private String getObjCTypeInner(
-      ITypeBinding type, String qualifiers, boolean expandTypeVariables) {
+  private String getObjCTypeInner(ITypeBinding type, String qualifiers, boolean expandBounds) {
     String objCType;
     if (type instanceof PointerTypeBinding) {
       String pointeeQualifiers = null;
@@ -735,15 +735,12 @@ public class NameTable {
         }
       }
       objCType = getObjCTypeInner(
-          ((PointerTypeBinding) type).getPointeeType(), pointeeQualifiers, expandTypeVariables);
+          ((PointerTypeBinding) type).getPointeeType(), pointeeQualifiers, expandBounds);
       objCType = objCType.endsWith("*") ? objCType + "*" : objCType + " *";
-    } else if (type.isTypeVariable()) {
-      if (expandTypeVariables) {
-        ITypeBinding[] bounds = type.getTypeBounds();
-        while (bounds.length > 0 && bounds[0].isTypeVariable()) {
-          type = bounds[0];
-          bounds = type.getTypeBounds();
-        }
+    } else if (type.isTypeVariable() || type.isCapture()) {
+      if (expandBounds) {
+        List<ITypeBinding> bounds = Lists.newArrayList();
+        collectBounds(type, bounds);
         objCType = constructObjCType(bounds);
       } else {
         objCType = ID_TYPE;
@@ -751,7 +748,7 @@ public class NameTable {
     } else if (type.isPrimitive()) {
       objCType = getPrimitiveObjCType(type);
     } else {
-      objCType = constructObjCType(type.getErasure());
+      objCType = constructObjCType(Collections.singletonList(type));
     }
     if (qualifiers != null) {
       qualifiers = qualifiers.trim();
@@ -762,11 +759,25 @@ public class NameTable {
     return objCType;
   }
 
-  private String constructObjCType(ITypeBinding... types) {
+  private boolean collectBounds(ITypeBinding type, Collection<ITypeBinding> bounds) {
+    ITypeBinding[] boundsArr = type.getTypeBounds();
+    if (boundsArr.length == 0) {
+      return false;
+    }
+    for (ITypeBinding bound : boundsArr) {
+      if (!collectBounds(bound, bounds)) {
+        bounds.add(bound);
+      }
+    }
+    return true;
+  }
+
+  private String constructObjCType(Iterable<ITypeBinding> types) {
     String classType = null;
-    List<String> interfaces = Lists.newArrayListWithCapacity(types.length);
+    List<String> interfaces = Lists.newArrayList();
     for (ITypeBinding type : types) {
-      if (type == null || isIdType(type) || typeEnv.isJavaVoidType(type)) {
+      type = type.getErasure();
+      if (isIdType(type) || typeEnv.isJavaVoidType(type)) {
         continue;
       }
       if (type.isInterface()) {

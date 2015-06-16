@@ -112,4 +112,14 @@ public class CastResolverTest extends GenerationTest {
     // Verify that a cast can be added to a QualifiedName node.
     assertTranslation(translation, "return ((Test_DerivedFoo *) foo_)->myInt_;");
   }
+
+  public void testCapturedType() throws IOException {
+    String translation = translateSourceFile(
+        "class Test {"
+        + " interface Bar { void bar(); }"
+        + " static class Foo<T extends Bar> { T get() { return null; } }"
+        + " void test(Foo<?> foo) { foo.get().bar(); } }", "Test", "Test.m");
+    assertTranslation(translation,
+        "[((id<Test_Bar>) nil_chk([((Test_Foo *) nil_chk(foo)) get])) bar];");
+  }
 }
