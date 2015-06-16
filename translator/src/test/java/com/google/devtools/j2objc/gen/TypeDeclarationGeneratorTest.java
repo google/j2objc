@@ -113,4 +113,15 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "+ (NSString *)ID");
     assertNotInTranslation(translation, "+ (void)setID:");
   }
+
+  public void testStaticFieldAccessorInInterfaceType() throws IOException {
+    Options.setStaticAccessorMethods(true);
+    String translation = translateSourceFile(
+        "interface Test { public static final boolean FOO = true; }", "Test", "Test.h");
+    // The static accessor must go in the companion class, not the @protocol.
+    assertTranslatedLines(translation,
+        "@interface Test : NSObject",
+        "",
+        "+ (jboolean)FOO;");
+  }
 }

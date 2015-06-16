@@ -86,14 +86,16 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printNativeEnum();
 
     printTypeDocumentation();
-    if (isInterfaceType()) {
+    if (typeBinding.isInterface()) {
       printf("@protocol %s", typeName);
     } else {
       printf("@interface %s : %s", typeName, getSuperTypeName());
     }
     printImplementedProtocols();
     printInstanceVariables();
-    printStaticAccessors();
+    if (!typeBinding.isInterface()) {
+      printStaticAccessors();
+    }
     printAnnotationProperties();
     printInnerDeclarations();
     println("\n@end");
@@ -281,21 +283,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     println("}");
   }
 
-  private boolean needsCompanionClassDeclaration() {
-    if (!typeBinding.isInterface()) {
-      return false;
-    }
-    boolean needsPublicDeclaration = hasInitializeMethod()
-        || BindingUtil.isRuntimeAnnotation(typeBinding);
-    if (printPrivateDeclarations()) {
-      return needsImplementation() && !needsPublicDeclaration;
-    } else {
-      return needsPublicDeclaration;
-    }
-  }
-
   protected void printCompanionClassDeclaration() {
-    if (!needsCompanionClassDeclaration()) {
+    if (!typeBinding.isInterface() || !needsCompanionClass()
+        || printPrivateDeclarations() == needsPublicCompanionClass()) {
       return;
     }
     printf("\n@interface %s : NSObject", typeName);
@@ -312,7 +302,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       } else {
         newline();
       }
+    } else {
+      newline();
     }
+    printStaticAccessors();
     println("\n@end");
   }
 

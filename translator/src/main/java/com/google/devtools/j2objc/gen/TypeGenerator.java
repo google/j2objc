@@ -193,11 +193,27 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     printDeclarations(getOuterDeclarations());
   }
 
-  protected boolean needsImplementation() {
-    return !typeBinding.isInterface() || hasInitializeMethod() || typeNeedsReflection
-        || BindingUtil.isRuntimeAnnotation(typeBinding)
-        || (Options.staticAccessorMethods()
-            && (typeBinding.isEnum() || Iterables.isEmpty(getStaticFields())));
+  private boolean hasStaticAccessorMethods() {
+    if (!Options.staticAccessorMethods()) {
+      return false;
+    }
+    for (VariableDeclarationFragment fragment : TreeUtil.getAllFields(typeNode)) {
+      if (BindingUtil.isStatic(fragment.getVariableBinding())
+          && !((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  protected boolean needsPublicCompanionClass() {
+    return !typeNode.hasPrivateDeclaration()
+        && (hasInitializeMethod() || BindingUtil.isRuntimeAnnotation(typeBinding)
+            || hasStaticAccessorMethods());
+  }
+
+  protected boolean needsCompanionClass() {
+    return needsPublicCompanionClass() || typeNeedsReflection;
   }
 
   protected boolean hasInitializeMethod() {

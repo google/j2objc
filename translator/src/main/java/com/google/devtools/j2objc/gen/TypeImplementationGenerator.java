@@ -82,7 +82,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     printStaticVars();
     printEnumValuesArray();
 
-    if (needsImplementation()) {
+    if (!typeBinding.isInterface() || needsCompanionClass()) {
       newline();
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
@@ -138,34 +138,35 @@ public class TypeImplementationGenerator extends TypeGenerator {
    * Prints the list of static variable and/or enum constant accessor methods.
    */
   protected void printStaticAccessors() {
-    if (Options.staticAccessorMethods()) {
-      for (VariableDeclarationFragment fragment : getStaticFields()) {
-        if (!((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
-          IVariableBinding varBinding = fragment.getVariableBinding();
-          String accessorName = nameTable.getVariableBaseName(varBinding);
-          String varName = nameTable.getVariableQualifiedName(varBinding);
-          String objcType = nameTable.getObjCType(varBinding.getType());
-          printf("\n+ (%s)%s {\n  return %s;\n}\n", objcType, accessorName, varName);
-          int modifiers = varBinding.getModifiers();
-          if (!Modifier.isFinal(modifiers) && !Modifier.isPrivate(modifiers)) {
-            if (varBinding.getType().isPrimitive()) {
-              printf("\n+ (void)set%s:(%s)value {\n  %s = value;\n}\n",
-                  NameTable.capitalize(accessorName), objcType, varName);
-            } else {
-              printf("\n+ (void)set%s:(%s)value {\n  %s_set_%s(value);\n}\n",
-                  NameTable.capitalize(accessorName), objcType, typeName,
-                  nameTable.getVariableShortName(varBinding));
-            }
+    if (!Options.staticAccessorMethods()) {
+      return;
+    }
+    for (VariableDeclarationFragment fragment : getStaticFields()) {
+      if (!((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
+        IVariableBinding varBinding = fragment.getVariableBinding();
+        String accessorName = nameTable.getVariableBaseName(varBinding);
+        String varName = nameTable.getVariableQualifiedName(varBinding);
+        String objcType = nameTable.getObjCType(varBinding.getType());
+        printf("\n+ (%s)%s {\n  return %s;\n}\n", objcType, accessorName, varName);
+        int modifiers = varBinding.getModifiers();
+        if (!Modifier.isFinal(modifiers) && !Modifier.isPrivate(modifiers)) {
+          if (varBinding.getType().isPrimitive()) {
+            printf("\n+ (void)set%s:(%s)value {\n  %s = value;\n}\n",
+                NameTable.capitalize(accessorName), objcType, varName);
+          } else {
+            printf("\n+ (void)set%s:(%s)value {\n  %s_set_%s(value);\n}\n",
+                NameTable.capitalize(accessorName), objcType, typeName,
+                nameTable.getVariableShortName(varBinding));
           }
         }
       }
-      if (typeNode instanceof EnumDeclaration) {
-        for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
-          IVariableBinding varBinding = constant.getVariableBinding();
-          printf("\n+ (%s *)%s {\n  return %s;\n}\n",
-              typeName, nameTable.getVariableBaseName(varBinding),
-              nameTable.getVariableQualifiedName(varBinding));
-        }
+    }
+    if (typeNode instanceof EnumDeclaration) {
+      for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
+        IVariableBinding varBinding = constant.getVariableBinding();
+        printf("\n+ (%s *)%s {\n  return %s;\n}\n",
+            typeName, nameTable.getVariableBaseName(varBinding),
+            nameTable.getVariableQualifiedName(varBinding));
       }
     }
   }
