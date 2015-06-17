@@ -29,8 +29,6 @@ public class Dimension extends TreeNode {
     for (Object x : jdtNode.annotations()) {
       annotations.add((Annotation) TreeConverter.convert(x));
     }
-    System.out.println(jdtNode);
-    System.out.println(this);
   }
 
   public Dimension(Dimension other) {

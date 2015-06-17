@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import com.google.devtools.j2objc.Options;
-
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -24,22 +22,15 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  */
 public class ArrayType extends Type {
 
+  // TODO(kirbs): Add dimensions into pipeline processing for annotations support on dimensions.
   private ChildLink<Type> componentType = ChildLink.create(Type.class, this);
-  // TODO(kirbs): Add dimensions into pipeline processing.
-  private ChildList<Dimension> dimensions = ChildList.create(Dimension.class, this);
 
   public ArrayType(org.eclipse.jdt.core.dom.ArrayType jdtNode) {
     super(jdtNode);
-    // Temporary workaround for getComponentType deprecation in JLS8.
-    // TODO(kirbs): temporary
-    if (Options.getForceIncompleteJava8Support() && Options.getSourceVersion().equals("1.8")) {
-      componentType.set((Type) TreeConverter.convert(jdtNode.getElementType()));
-      for (Object x : jdtNode.dimensions()){
-        dimensions.add((Dimension) TreeConverter.convert(x));
-      }
-    } else {
-      componentType.set((Type) TreeConverter.convert(jdtNode.getComponentType()));
-    }
+    // This could also be implemented as an element type and dimensions for JLS8, but we mainly deal
+    // with ArrayTypes through the ArrayType(ITypeBinding) initializer, in the ArrayRewriter, for
+    // which we use ITypeBinding's componentType anyway.
+    componentType.set((Type) Type.newType(jdtNode.resolveBinding().getComponentType()));
   }
 
   public ArrayType(ArrayType other) {
