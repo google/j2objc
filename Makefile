@@ -48,7 +48,7 @@ protobuf_dist: protobuf_compiler_dist protobuf_runtime_dist
 all_dist: dist protobuf_dist
 
 clean:
-	@rm -rf $(DIST_DIR)
+	@rm -rf $(BUILD_DIR) $(DIST_DIR)
 	@cd annotations && $(MAKE) clean
 	@cd java_deps && $(MAKE) clean
 	@cd translator && $(MAKE) clean
