@@ -22,8 +22,8 @@ import java.lang.annotation.Target;
 /**
  * Marks a declaration to be stripped by the J2ObjC translator prior to
  * compilation. It is the developer's responsibility to ensure that any code
- * depending on an element marked with @J2ObjCIncompatible is also marked with
- * @J2ObjCIncompatible.
+ * depending on an element marked with {@literal @}J2ObjCIncompatible is also
+ * marked with {@literal @}J2ObjCIncompatible.
  *
  * @author Keith Stanger
  */
