@@ -25,8 +25,8 @@
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
-#import "java/lang/AssertionError.h"
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
+#import "java/lang/AssertionError.h"
 
 static id NewArrayWithDimensionsAndComponentTypes(
     Class self, NSUInteger dimensionCount, const jint *dimensionLengths,
@@ -37,7 +37,11 @@ static id NewArrayWithDimensionsAndComponentTypes(
   // If dimension of 1, just return a regular array.
   if (dimensionCount == 1) {
     if (componentType) {
-      return [IOSObjectArray newArrayWithLength:size type:componentType];
+      if ([componentType isPrimitive]) {
+        return [[componentType objcArrayClass] newArrayWithLength:size];
+      } else {
+        return [IOSObjectArray newArrayWithLength:size type:componentType];
+      }
     } else {
       return [self newArrayWithLength:size];
     }
