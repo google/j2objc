@@ -559,9 +559,9 @@ IOSClass *IOSClass_forName_(NSString *className) {
     NSString *iosName = IOSClass_JavaToIOSName(className);
     NSRange range = NSMakeRange(0, [iosName length]);
     NSString *s = [iosName stringByReplacingOccurrencesOfString:@"[_$]"
-                                                       withString:@"[_$]+"
-                                                          options:NSRegularExpressionSearch
-                                                            range:range];
+                                                     withString:@"[_$]+"
+                                                        options:NSRegularExpressionSearch
+                                                          range:range];
     NSString *regex = [NSString stringWithFormat:@"^%@$", s];
     UErrorCode status = U_ZERO_ERROR;
     UParseError error;
@@ -1237,7 +1237,6 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
          @"IOSClass",  @"java.lang.Class",
          @"NSNumber",  @"java.lang.Number",
          @"NSString",  @"java.lang.String",
-         @"NSString",  @"java.lang.CharSequence",
          @"NSCopying", @"java.lang.Cloneable", nil];
 
     IOSClass_byteClass = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];

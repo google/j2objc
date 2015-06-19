@@ -55,6 +55,10 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
   return ConformsToProtocol([object getClass], self);
 }
 
+- (NSString *)description {
+  return [NSString stringWithFormat:@"interface %@", [self getName]];
+}
+
 - (NSString *)getName {
   JavaClassMetadata *metadata = [self getMetadata];
   return metadata ? [metadata qualifiedName] : NSStringFromProtocol(protocol_);

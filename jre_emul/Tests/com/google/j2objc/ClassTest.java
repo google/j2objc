@@ -305,6 +305,12 @@ public class ClassTest extends TestCase {
     assertTrue(protocol.isAssignableFrom(protocol));
   }
 
+  public void testCharSequenceClass() throws Exception {
+    Class<?> cls = CharSequence.class;
+    assertEquals("interface java.lang.CharSequence", cls.toString());
+    assertEquals(CharSequence.class, Class.forName("java.lang.CharSequence"));
+  }
+
   static class InnerClass {
   }
 
