@@ -335,6 +335,9 @@ public class TreeUtil {
    * Replaces (in place) a QualifiedName node with an equivalent FieldAccess
    * node. This is helpful when a mutation needs to replace the qualifier with
    * a node that has Expression type but not Name type.
+   * CAUTION: It is strongly recommended that this method be used within a
+   * "visit", and not a "endVisit" because it will rewrite all QualifiedNode
+   * ancestors.
    */
   public static FieldAccess convertToFieldAccess(QualifiedName node) {
     TreeNode parent = node.getParent();

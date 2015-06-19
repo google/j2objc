@@ -122,4 +122,21 @@ public class CastResolverTest extends GenerationTest {
     assertTranslation(translation,
         "[((id<Test_Bar>) nil_chk([((Test_Foo *) nil_chk(foo)) get])) bar];");
   }
+
+  public void testChainedFieldLookup() throws IOException {
+    String translation = translateSourceFile(
+        "class Test {"
+        + " static class Foo { Bar bar; }"
+        + " static class Bar { int baz; }"
+        + " static class GenericImpl<T> { T foo; }"
+        + " static class Impl extends GenericImpl<Foo> {"
+        + " int test() {"
+        // Need to call "foo.bar.baz" twice so that the second expression is
+        // free of nil_chk's.
+        + " int i = foo.bar.baz;"
+        + " return foo.bar.baz; } } }", "Test", "Test.m");
+    // This is actually a regression for a NPE in the translator, but we may as
+    // well check the output.
+    assertTranslation(translation, "return ((Test_Foo *) foo_)->bar_->baz_;");
+  }
 }

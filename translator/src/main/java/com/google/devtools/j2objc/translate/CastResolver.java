@@ -304,10 +304,15 @@ public class CastResolver extends TreeVisitor {
   }
 
   @Override
-  public void endVisit(QualifiedName node) {
+  public boolean visit(QualifiedName node) {
     if (needsCast(node.getQualifier(), true)) {
-      maybeAddCast(TreeUtil.convertToFieldAccess(node).getExpression(), true);
+      // The qualifier child has type Name and can't be replaced with a
+      // CastExpression, so we must convert to a FieldAccess.
+      FieldAccess newNode = TreeUtil.convertToFieldAccess(node);
+      newNode.accept(this);
+      return false;
     }
+    return true;
   }
 
   @Override
