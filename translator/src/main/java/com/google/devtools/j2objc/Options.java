@@ -80,7 +80,6 @@ public class Options {
   private boolean stripReflection = false;
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
-  private boolean removeClassMethods = false;
   private boolean staticAccessorMethods = false;
   private int batchTranslateMaximum = 0;
   private List<String> headerMappingFiles = null;
@@ -322,12 +321,6 @@ public class Options {
       } else if (arg.startsWith(BATCH_PROCESSING_MAX_FLAG)) {
         batchTranslateMaximum =
             Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
-      }
-      // TODO(kstanger): remove both "class-methods" flags once the behavior is standardized.
-      else if (arg.equals("--no-class-methods")) {
-        removeClassMethods = true;
-      } else if (arg.equals("--keep-class-methods")) {
-        removeClassMethods = false;
       } else if (arg.equals("--static-accessor-methods")) {
         staticAccessorMethods = true;
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -344,17 +337,16 @@ public class Options {
           usage("-source requires an argument");
         }
         // Handle aliasing of version numbers as supported by javac.
-        if(args[nArg].length() == 1){
+        if (args[nArg].length() == 1){
           sourceVersion = "1." + args[nArg];
-        }
-        else{
+        } else {
           sourceVersion = args[nArg];
         }
         // Make sure that we were passed a valid release version.
         if (!VALID_JAVA_VERSIONS.contains(sourceVersion)) {
           usage("invalid source release: " + args[nArg]);
         }
-      }  else if (arg.equals("-target")) {
+      } else if (arg.equals("-target")) {
         // Dummy out passed target argument, since we don't care about target.
         if (++nArg == args.length) {
           usage("-target requires an argument");
@@ -718,15 +710,6 @@ public class Options {
   @VisibleForTesting
   public static void setBatchTranslateMaximum(int max) {
     instance.batchTranslateMaximum = max;
-  }
-
-  public static boolean removeClassMethods() {
-    return instance.removeClassMethods;
-  }
-
-  @VisibleForTesting
-  public static void setRemoveClassMethods(boolean b) {
-    instance.removeClassMethods = b;
   }
 
   public static boolean shouldMapHeaders() {

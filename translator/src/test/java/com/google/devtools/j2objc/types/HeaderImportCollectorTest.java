@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.Options;
 
 import java.io.IOException;
 
@@ -29,18 +28,6 @@ public class HeaderImportCollectorTest extends GenerationTest {
   public void testVarargsDeclarations() throws IOException {
     String translation = translateSourceFile(
         "class Test { void test1(double... values) {} void test2(Runnable... values) {} }",
-        "Test", "Test.h");
-    assertTranslation(translation, "@class IOSDoubleArray");
-    assertTranslation(translation, "@class IOSObjectArray");
-    assertNotInTranslation(translation, "@protocol JavaLangRunnable");
-  }
-
-  // Same as above but with static methods and class methods removed.
-  public void testVarargsDeclarationsNoClassMethods() throws IOException {
-    Options.setRemoveClassMethods(true);
-    String translation = translateSourceFile(
-        "class Test { static void test1(double... values) {}"
-        + " static void test2(Runnable... values) {} }",
         "Test", "Test.h");
     assertTranslation(translation, "@class IOSDoubleArray");
     assertTranslation(translation, "@class IOSObjectArray");
