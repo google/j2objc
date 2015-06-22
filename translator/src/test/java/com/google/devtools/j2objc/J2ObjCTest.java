@@ -181,6 +181,10 @@ public class J2ObjCTest extends GenerationTest {
 
   // Test a simple annotation processor on the classpath.
   public void testAnnotationProcessing() throws Exception {
+    if (runningInEclipse()) {
+      // Eclipse doesn't copy resources ending in .java into its build.
+      return;
+    }
     String processorPath = getResourceAsFile("annotations/Processor.jar");
     Options.getClassPathEntries().add(processorPath);
 
@@ -198,5 +202,11 @@ public class J2ObjCTest extends GenerationTest {
     assertTranslation(translatedAnnotationHeader, "- (NSString *)getResult;");
     assertTranslation(translatedAnnotationImpl, "@implementation ProcessingResult");
     assertTranslation(translatedAnnotationImpl, "return @\"ObjectiveCName\"");
+  }
+
+  private boolean runningInEclipse() {
+    Throwable t = new Throwable();
+    StackTraceElement[] trace = t.getStackTrace();
+    return trace[trace.length - 1].getClassName().startsWith("org.eclipse");
   }
 }
