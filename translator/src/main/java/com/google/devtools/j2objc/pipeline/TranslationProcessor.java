@@ -32,6 +32,7 @@ import com.google.devtools.j2objc.translate.DeadCodeEliminator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
 import com.google.devtools.j2objc.translate.EnumRewriter;
+import com.google.devtools.j2objc.translate.FunctionalAnonymousClassConverter;
 import com.google.devtools.j2objc.translate.Functionizer;
 import com.google.devtools.j2objc.translate.GwtConverter;
 import com.google.devtools.j2objc.translate.InitializationNormalizer;
@@ -134,6 +135,13 @@ public class TranslationProcessor extends FileProcessor {
     // Modify AST to be more compatible with Objective C
     new Rewriter().run(unit);
     ticker.tick("Rewriter");
+
+
+    if (Options.isJava8Translator()) {
+      // Convert AnonymousClasses to lambdas types.
+      new FunctionalAnonymousClassConverter().run(unit);
+      ticker.tick("FunctionalAnonymousClassConverter");
+    }
 
     // Add abstract method stubs.
     new AbstractMethodRewriter(unit).run(unit);

@@ -60,7 +60,6 @@ import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MemberValuePair;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NameQualifiedType;
@@ -99,6 +98,7 @@ import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.UnionType;
+import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
@@ -169,7 +169,7 @@ public class StatementGenerator extends TreeVisitor {
   private boolean assertIncompleteJava8Support(TreeNode node) {
     // A temporary stub to show pseudocode in place of Java 8 features.
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
-    if (!(Options.getForceIncompleteJava8Support() && Options.getSourceVersion().equals("1.8"))) {
+    if (!Options.isJava8Translator()) {
       assert false : "not implemented yet";
     }
     buffer.append(node.toString());
@@ -633,27 +633,33 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(LambdaExpression node) {
     // A temporary stub to show pseudocode in place of Java 8 lambdas.
     // TODO(kirbs): Implement correct conversion of Java 8 lambdas to Objective-C blocks.
-    if (!(Options.getForceIncompleteJava8Support() && Options.getSourceVersion().equals("1.8"))) {
+    if (!Options.isJava8Translator()) {
       assert false : "not implemented yet";
     }
-    IMethodBinding methodBinding = node.getMethodBinding();
-    buffer.append(methodBinding.getReturnType().getName());
-    buffer.append(" ");
-    buffer.append(methodBinding.getName());
-    buffer.append(" (");
+
+    buffer.append("^");
+    buffer.append(
+        nameTable.getSpecificObjCType(node.getFunctionalInterfaceMethod().getReturnType()));
+    buffer.append("(");
     boolean delimiterFlag = false;
-    for (VariableDeclarationFragment x : node.parameters()) {
+    for (VariableDeclaration x : node.parameters()) {
       IVariableBinding variableBinding = x.getVariableBinding();
       if (delimiterFlag) {
         buffer.append(", ");
       } else {
         delimiterFlag = true;
       }
-      buffer.append(variableBinding.getType().getName());
-      buffer.append(" val$");
-      buffer.append(variableBinding.getName());
+      buffer.append(nameTable.getSpecificObjCType(x.getVariableBinding().getType()));
+      buffer.append(' ');
+      if (!node.fromAnonClass) {
+        buffer.append("val$");
+      }
+      buffer.append(nameTable.getVariableQualifiedName(variableBinding.getVariableDeclaration()));
+      if (!node.fromAnonClass) {
+        buffer.append('_');
+      }
     }
-    buffer.append(") ");
+    buffer.append(")");
     node.getBody().accept(this);
     return false;
   }
@@ -671,20 +677,34 @@ public class StatementGenerator extends TreeVisitor {
 
     // Object receiving the message, or null if it's a method in this class.
     Expression receiver = node.getExpression();
-
-    buffer.append('[');
-
-    if (BindingUtil.isStatic(binding)) {
-      buffer.append(nameTable.getFullName(binding.getDeclaringClass()));
-    } else if (receiver != null) {
+    if (Options.isJava8Translator()
+        && binding.getDeclaringClass().getFunctionalInterfaceMethod() != null) {
+      if (receiver == null) {
+        // Static methods can't be functional interface methods, and self should never be a block.
+        throw new AssertionError("No receiver for MethodInvocation.");
+      }
       receiver.accept(this);
+      buffer.append('(');
+      for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext();) {
+        Expression next = it.next();
+        next.accept(this);
+        if (it.hasNext()) {
+          buffer.append(", ");
+        }
+      }
+      buffer.append(')');
     } else {
-      buffer.append("self");
+      buffer.append('[');
+      if (BindingUtil.isStatic(binding)) {
+        buffer.append(nameTable.getFullName(binding.getDeclaringClass()));
+      } else if (receiver != null) {
+        receiver.accept(this);
+      } else {
+        buffer.append("self");
+      }
+      printMethodInvocationNameAndArgs(nameTable.getMethodSelector(binding), node.getArguments());
+      buffer.append(']');
     }
-
-    printMethodInvocationNameAndArgs(nameTable.getMethodSelector(binding), node.getArguments());
-    buffer.append(']');
-
     return false;
   }
 
@@ -836,11 +856,11 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(ReturnStatement node) {
     buffer.append("return");
     Expression expr = node.getExpression();
-    MethodDeclaration method = TreeUtil.getOwningMethod(node);
+    IMethodBinding methodBinding = TreeUtil.getOwningMethodBinding(node);
     if (expr != null) {
       buffer.append(' ');
       expr.accept(this);
-    } else if (method != null && method.getMethodBinding().isConstructor()) {
+    } else if (methodBinding != null && methodBinding.isConstructor()) {
       // A return statement without any expression is allowed in constructors.
       buffer.append(" self");
     }
@@ -1197,16 +1217,56 @@ public class StatementGenerator extends TreeVisitor {
       objcTypePointers = objcType.substring(idx);
       objcType = objcType.substring(0, idx);
     }
-    buffer.append(objcType);
-    for (Iterator<VariableDeclarationFragment> it = vars.iterator(); it.hasNext(); ) {
-      VariableDeclarationFragment f = it.next();
-      buffer.append(objcTypePointers);
-      f.accept(this);
-      if (it.hasNext()) {
-        buffer.append(",");
+    IMethodBinding functionalInterface = binding.getType().getFunctionalInterfaceMethod();
+    if (Options.isJava8Translator() && functionalInterface != null) {
+      buffer.append(nameTable.getSpecificObjCType(functionalInterface.getReturnType()));
+      for (Iterator<VariableDeclarationFragment> it = vars.iterator(); it.hasNext();) {
+        VariableDeclarationFragment f = it.next();
+        buffer.append(objcTypePointers);
+        buffer.append("(^");
+        f.getName().accept(this);
+        if (it.hasNext()) {
+          buffer.append(",");
+        }
+        buffer.append(")");
       }
+      buffer.append("(");
+      boolean delimiterFlag = false;
+      for (ITypeBinding it : functionalInterface.getParameterTypes()) {
+        if (delimiterFlag) {
+          buffer.append(", ");
+        } else {
+          delimiterFlag = true;
+        }
+        buffer.append(nameTable.getSpecificObjCType(it));
+      }
+      buffer.append(")");
+      for (Iterator<VariableDeclarationFragment> it = vars.iterator(); it.hasNext();) {
+        VariableDeclarationFragment f = it.next();
+        if (f.getInitializer() != null) {
+          buffer.append(" = ");
+          if (!(f.getInitializer() instanceof LambdaExpression)) {
+            // TODO(kirbs): Test Java cases of functional interface assignment, to make sure that
+            // all functional interface assigned Objects can be converted to blocks.
+            throw new AssertionError(
+                "Assignment of non-LambdaExpression to functional interface (block).");
+          }
+          f.getInitializer().accept(this);
+        }
+      }
+      buffer.append(";\n");
+    } else {
+      buffer.append(objcType);
+      for (Iterator<VariableDeclarationFragment> it = vars.iterator(); it.hasNext();) {
+        VariableDeclarationFragment f = it.next();
+        buffer.append(objcTypePointers);
+        f.accept(this);
+        if (it.hasNext()) {
+          buffer.append(",");
+        }
+      }
+      buffer.append(";\n");
     }
-    buffer.append(";\n");
     return false;
   }
 

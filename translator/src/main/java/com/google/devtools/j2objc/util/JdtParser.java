@@ -162,7 +162,7 @@ public class JdtParser {
 
   private ASTParser newASTParser(boolean resolveBindings) {
     ASTParser parser;
-    if (Options.getForceIncompleteJava8Support() && Options.getSourceVersion().equals("1.8")) {
+    if (Options.isJava8Translator()) {
       parser = ASTParser.newParser(AST.JLS8);
     } else {
       parser = ASTParser.newParser(AST.JLS4); // Java 7

@@ -732,8 +732,8 @@ public class Options {
   }
 
   // TODO(kirbs): Remove when Java 8 is fully supported.
-  public static boolean getForceIncompleteJava8Support() {
-    return instance.forceIncompleteJava8Support;
+  public static boolean isJava8Translator() {
+    return instance.forceIncompleteJava8Support && instance.sourceVersion.equals("1.8");
   }
 
   public static boolean staticAccessorMethods() {

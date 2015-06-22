@@ -106,10 +106,19 @@ public class TreeUtil {
   }
 
   /**
-   * Returns the method which is the parent of the specified node.
+   * Returns the method binding which is the parent of the specified node, as a node may be parented
+   * by a lambda or a method.
    */
-  public static MethodDeclaration getOwningMethod(TreeNode node) {
-    return getNearestAncestorWithType(MethodDeclaration.class, node);
+  public static IMethodBinding getOwningMethodBinding(TreeNode node) {
+    while (node != null) {
+      if (node instanceof MethodDeclaration) {
+        return ((MethodDeclaration) node).getMethodBinding();
+      } else if (node instanceof LambdaExpression) {
+        return ((LambdaExpression) node).getMethodBinding();
+      }
+      node = node.getParent();
+    }
+    return null;
   }
 
   /**
@@ -169,7 +178,15 @@ public class TreeUtil {
   }
 
   public static Iterable<MethodDeclaration> getMethodDeclarations(AbstractTypeDeclaration node) {
-    return Iterables.filter(node.getBodyDeclarations(), MethodDeclaration.class);
+    return getMethodDeclarations(node.getBodyDeclarations());
+  }
+
+  public static Iterable<MethodDeclaration> getMethodDeclarations(AnonymousClassDeclaration node) {
+    return getMethodDeclarations(node.getBodyDeclarations());
+  }
+
+  private static Iterable<MethodDeclaration> getMethodDeclarations(List<BodyDeclaration> nodes) {
+    return Iterables.filter(nodes, MethodDeclaration.class);
   }
 
   public static List<MethodDeclaration> getMethodDeclarationsList(AbstractTypeDeclaration node) {

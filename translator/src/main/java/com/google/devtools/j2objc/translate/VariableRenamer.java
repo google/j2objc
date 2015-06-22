@@ -19,6 +19,7 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -144,6 +145,17 @@ public class VariableRenamer extends TreeVisitor {
 
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
+    popType();
+  }
+
+  @Override
+  public boolean visit(LambdaExpression node) {
+    pushType(node.getTypeBinding());
+    return true;
+  }
+
+  @Override
+  public void endVisit(LambdaExpression node) {
     popType();
   }
 }

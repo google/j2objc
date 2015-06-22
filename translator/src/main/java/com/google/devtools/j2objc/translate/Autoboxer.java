@@ -30,7 +30,6 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
@@ -366,8 +365,8 @@ public class Autoboxer extends TreeVisitor {
   public void endVisit(ReturnStatement node) {
     Expression expr = node.getExpression();
     if (expr != null) {
-      MethodDeclaration methodDecl = TreeUtil.getOwningMethod(node);
-      ITypeBinding returnType = methodDecl.getMethodBinding().getReturnType();
+      IMethodBinding methodBinding = TreeUtil.getOwningMethodBinding(node);
+      ITypeBinding returnType = methodBinding.getReturnType();
       ITypeBinding exprType = expr.getTypeBinding();
       if (returnType.isPrimitive() && !exprType.isPrimitive()) {
         node.setExpression(unbox(expr));

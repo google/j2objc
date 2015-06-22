@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.PrefixExpression;
@@ -40,6 +39,7 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -96,8 +96,8 @@ public class OperatorRewriter extends TreeVisitor {
   }
 
   private boolean inDeallocMethod(TreeNode node) {
-    MethodDeclaration method = TreeUtil.getOwningMethod(node);
-    return method != null && BindingUtil.isDestructor(method.getMethodBinding());
+    IMethodBinding methodBinding = TreeUtil.getOwningMethodBinding(node);
+    return methodBinding != null && BindingUtil.isDestructor(methodBinding);
   }
 
   public void endVisit(InfixExpression node) {
