@@ -20,6 +20,7 @@
 #import "java/lang/Iterable.h"
 
 #import "J2ObjC_source.h"
+#import "java/util/Iterator.h"
 
 @interface JavaLangIterable : NSObject
 @end
