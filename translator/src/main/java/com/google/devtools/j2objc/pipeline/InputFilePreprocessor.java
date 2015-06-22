@@ -128,11 +128,7 @@ public class InputFilePreprocessor {
           String key = unit.getPackage().getName().getFullyQualifiedName();
           String val = (String) ((SingleMemberAnnotation) annotation).getValue()
               .resolveConstantExpressionValue();
-          String previousVal = Options.addPackagePrefix(key, val);
-          if (previousVal != null && !previousVal.equals(val)) {
-            ErrorUtil.error(String.format("Package %s has name %s defined in file %s, but"
-                + "is already named %s", key, val, file.getPath(), previousVal));
-          }
+          Options.addPackagePrefix(key, val);
         }
       }
     }

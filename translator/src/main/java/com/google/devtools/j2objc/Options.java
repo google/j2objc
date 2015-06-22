@@ -439,11 +439,22 @@ public class Options {
       if (key.indexOf('(') > 0) {
         // All method mappings have parentheses characters, classes don't.
         String iosMethod = mappings.getProperty(key);
-        methodMappings.put(key, iosMethod);
+        addMapping(methodMappings, key, iosMethod, "method mapping");
       } else {
         String iosClass = mappings.getProperty(key);
-        classMappings.put(key, iosClass);
+        addMapping(classMappings, key, iosClass, "class mapping");
       }
+    }
+  }
+
+  /**
+   * Adds a class, method or package-prefix property to its map, reporting an error
+   * if that mapping was previously specified.
+   */
+  private static void addMapping(Map<String, String> map, String key, String value, String kind) {
+    String oldValue = map.put(key,  value);
+    if (oldValue != null && !oldValue.equals(value)) {
+      ErrorUtil.error(kind + " redefined; was \"" + oldValue + ", now " + value);
     }
   }
 
@@ -638,8 +649,8 @@ public class Options {
     return instance.packagePrefixes;
   }
 
-  public static String addPackagePrefix(String pkg, String prefix) {
-    return instance.packagePrefixes.put(pkg, prefix);
+  public static void addPackagePrefix(String pkg, String prefix) {
+    addMapping(instance.packagePrefixes, pkg, prefix, "package prefix");
   }
 
   public static String fileEncoding() {
