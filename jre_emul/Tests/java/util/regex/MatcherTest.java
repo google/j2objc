@@ -84,4 +84,10 @@ public class MatcherTest extends TestCase {
     assertEquals("abcdfoo", m.group(1));
     assertNull(m.group(2));
   }
+
+  public void testEmptyPattern() {
+    Pattern p = Pattern.compile("");
+    Matcher m = p.matcher("");
+    assertTrue(m.matches());
+  }
 }

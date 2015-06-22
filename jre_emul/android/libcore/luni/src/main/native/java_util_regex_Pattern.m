@@ -72,9 +72,17 @@ jlong Java_java_util_regex_Pattern_compileImpl(
   error.offset = -1;
 
   jint patLen = (jint)[regex length];
-  jchar buffer[patLen];
-  [regex getCharacters:buffer range:NSMakeRange(0, patLen)];
-  URegularExpression *result = uregex_open(buffer, patLen, flags, &error, &status);
+  URegularExpression *result;
+  if (patLen == 0) {
+    // uregex_open rejects a zero pattern length argument value, but accepts an
+    // empty pattern when it is null-terminated.
+    jchar pattern = 0;
+    result = uregex_open(&pattern, -1, flags, &error, &status);
+  } else {
+    jchar buffer[patLen];
+    [regex getCharacters:buffer range:NSMakeRange(0, patLen)];
+    result = uregex_open(buffer, patLen, flags, &error, &status);
+  }
 
   if (!U_SUCCESS(status)) {
     throwPatternSyntaxException(status, regex, error);
