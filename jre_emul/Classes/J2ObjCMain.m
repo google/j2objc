@@ -53,6 +53,12 @@ void installSignalHandler() {
   signal(SIGPIPE, signalHandler);
 }
 
+void handleUncaughtException(JavaLangThrowable *t) {
+  JavaLangThread *currentThread = JavaLangThread_currentThread();
+  id uncaughtHandler = [currentThread getUncaughtExceptionHandler];
+  [uncaughtHandler uncaughtExceptionWithJavaLangThread:currentThread withJavaLangThrowable:t];
+}
+
 int main( int argc, const char *argv[] ) {
   if (argc < 2) {
     printf("Usage: %s class [args...]\n", *argv);
@@ -99,21 +105,15 @@ int main( int argc, const char *argv[] ) {
       (void) [mainMethod invokeWithId:nil withNSObjectArray:params];
     }
     @catch (JavaLangReflectInvocationTargetException *e) {
-      [JavaLangSystem_get_err_() printlnWithId:e];
+      handleUncaughtException([e getCause]);
       return 1;
     }
     @catch (JavaLangIllegalAccessException *e) {
-      [JavaLangSystem_get_err_() printlnWithId:e];
+      handleUncaughtException(e);
       return 1;
     }
     @catch (JavaLangThrowable *e) {
-      JavaLangThread *current = JavaLangThread_currentThread();
-      id uncaughtHandler = [current getUncaughtExceptionHandler];
-      JavaLangThrowable *cause = [e getCause];
-      if (!cause) {
-        cause = e;
-      }
-      [uncaughtHandler uncaughtExceptionWithJavaLangThread:current withJavaLangThrowable:cause];
+      handleUncaughtException(e);
     }
   }
   return 0;
