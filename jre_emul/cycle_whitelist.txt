@@ -18,6 +18,11 @@ FIELD java.util.concurrent.ThreadPoolExecutor.workQueue
 
 FIELD java.util.logging.Logger.children
 
+FIELD android.os.AsyncTask.mFuture
+FIELD android.os.AsyncTask.mWorker
+FIELD android.os.AsyncTask.SerialExecutor.mActive
+FIELD android.os.AsyncTask.SerialExecutor.mTasks
+
 # This thread field is cleared when the thread finishes, regardless of any exceptions.
 FIELD java.lang.Thread.interruptActions
 

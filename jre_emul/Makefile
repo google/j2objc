@@ -80,6 +80,7 @@ JAR_ONLY_SOURCES = \
 
 # Java sources to be translated normally.
 JAVA_SOURCES = \
+	android/os/AsyncTask.java \
 	android/os/SystemClock.java \
 	android/test/suitebuilder/annotation/LargeTest.java \
 	android/test/suitebuilder/annotation/MediumTest.java \
