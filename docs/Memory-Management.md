@@ -20,9 +20,11 @@ There is also runtime and tool support to detect memory leaks.  The Objective-C 
 
 ## Automatic Reference Counting (ARC)
 
-[ARC](http://developer.apple.com/library/mac/#releasenotes/ObjectiveC/RN-TransitioningToARC/_index.html#//apple_ref/doc/uid/TP40011226) is Apple's recommended memory management method.  It moves the responsibility for reference counting to the compiler, which adds the appropriate retain, release and autorelease methods during compilation.  ARC supports weak references for devices running iOS 5 and later. 
+[ARC](http://developer.apple.com/library/mac/#releasenotes/ObjectiveC/RN-TransitioningToARC/_index.html#//apple_ref/doc/uid/TP40011226) is Apple's recommended memory management method. It moves the responsibility for reference counting to the compiler, which adds the appropriate retain, release and autorelease methods during compilation.  ARC supports weak references for devices running iOS 5 and later. 
 
-Not all projects use ARC, though, as it is sometimes slower than hand-written code. We recommend that new projects use ARC, and only fall-back to manual reference counting if profiling data shows a real performance issue.
+Not all projects use ARC, though, as it is sometimes slower than hand-written code. This is the case with translated code. Since J2ObjC translated output is not intended to be modified, there is no benefit to translating into ARC code, there is only a performance cost. We therefore recommend that projects avoid using ARC for translated code. Note that we do support the option to generate ARC code with the "-use-arc" flag for projects that prefer to build their entire apps with ARC.
+
+Contrary to translated code we do recommend that new projects use ARC for their platform-specific Objective-C code, and only fall-back to manual reference counting if profiling data shows a real performance issue. Both ARC and non-ARC code can be compiled and linked into the same app without issue.
 
 ## Weak References
 
