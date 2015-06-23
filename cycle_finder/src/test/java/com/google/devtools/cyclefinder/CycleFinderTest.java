@@ -314,6 +314,13 @@ public class CycleFinderTest extends TestCase {
     assertNoCycles();
   }
 
+  public void testIgnoreRawTypes() throws Exception {
+    addSourceFile("A.java", "class A<T> { B b; }");
+    addSourceFile("B.java", "class B<T> { A a; }");
+    findCycles();
+    assertNoCycles();
+  }
+
   private void assertContains(String substr, String str) {
     assertTrue("Expected \"" + substr + "\" within \"" + str + "\"", str.contains(substr));
   }

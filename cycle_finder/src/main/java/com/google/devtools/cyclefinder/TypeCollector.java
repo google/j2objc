@@ -59,7 +59,7 @@ class TypeCollector {
       return;
     }
     type = getElementType(type);
-    if (allTypes.containsKey(type.getKey()) || type.isPrimitive()) {
+    if (allTypes.containsKey(type.getKey()) || type.isPrimitive() || type.isRawType()) {
       return;
     }
     if (hasNestedWildcard(type)) {
