@@ -139,6 +139,7 @@ TEST_SOURCES := \
     ThreadPoolExecutorTest.java \
     TimeUnitTest.java \
     UTF16EncodingTest.java \
+    android/os/AsyncTaskTest.java \
     android/text/SpannableStringBuilderTest.java \
     android/text/SpannableStringTest.java \
     android/text/TextUtilsTest.java \
