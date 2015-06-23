@@ -42,9 +42,8 @@ $ ./hello Hello
 hello, world
 ```
 
-j2objcc is a wrapper script that adds the JRE emulation library's include and
-library paths to whatever options you specify for the Objective-C compiler.
-For example, to translate and build multiple sources with debugging symbols:
+j2objcc forwards whatever options you specify for the Objective-C compiler.
+For example, to translate and build multiple sources with debugging symbols, use the `-g` flag:
 
 ```bash
 $ j2objcc -g -o test Test.m Foo.m Bar.m
@@ -58,9 +57,7 @@ If compilation fails because Foundation/Foundation.h isn't found, the problem
 is that the iOS SDK wasn't found (that's where that header is).
 
 1. Make sure you have Xcode installed.
-1. Install the command line tools:
- - Xcode 5: run `xcode-select --install`.
- - Previous versions: in Xcode's Downloads Preferences, check that the Command Line Tools are installed. \
+1. Install the command line tools by running `xcode-select --install`.
 1. Run `xcodebuild -showsdks`, which should show at least one SDK for OS X, iOS,
 and iOS Simulator. 
 1. If that fails, delete the Xcode application and go to step 1.
