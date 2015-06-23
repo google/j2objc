@@ -515,6 +515,17 @@ SUITE_SOURCES = \
     org/apache/harmony/logging/tests/java/util/logging/AllTests.java \
     org/json/SmallTests.java \
 
+JAVA8_TEST_SOURCES := \
+    com/google/j2objc/java8/LambdaTest.java \
+
+JAVA8_SUITE_SOURCES = \
+    com/google/j2objc/java8/SmallTests.java \
+
+# We need the java 8 sources to run normally for everything except translate.mk, where they are
+# filtered into java 8 and non-java 8 j2objc calls.
+TEST_SOURCES += $(JAVA8_TEST_SOURCES)
+SUITE_SOURCES += $(JAVA8_SUITE_SOURCES)
+
 # These tests fail when run on Travis-CI continuous build, probably due to VM sandbox restrictions.
 # The java.net SmallTests is also skipped, since it refers to these classes; SmallTests isn't
 # run in a continuous build, just from the command-line.
@@ -617,11 +628,14 @@ TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 GEN_OBJC_DIR = $(TESTS_DIR)
 TRANSLATE_JAVA_FULL = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
+TRANSLATE_JAVA8 = $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES)
 TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
     --extract-unsequenced -encoding UTF-8
+# Translates TRANSLATE_JAVA_FULL .java files into .m files.
 include ../make/translate.mk
 
 ALL_TESTS_CLASS = AllJreTests
+# Creathes a test suit that includes all classes in TEST_SOURCES.
 ALL_TESTS_SOURCE = $(RELATIVE_TESTS_DIR)/AllJreTests.java
 
 ifdef GENERATE_TEST_COVERAGE
@@ -670,6 +684,9 @@ run-io-tests: link resources $(TEST_BIN)
 
 run-json-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore org.json.SmallTests
+
+run-java8-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore com.google.j2objc.java8.SmallTests
 
 run-logging-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore \

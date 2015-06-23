@@ -15,6 +15,7 @@
 # The including makefile may define the variables:
 #   TRANSLATE_JAVA_FULL
 #   TRANSLATE_JAVA_RELATIVE
+#   TRANSLATE_JAVA8
 # And optional variables:
 #   TRANSLATE_NAME
 #   TRANSLATE_ARGS
@@ -34,6 +35,7 @@ TRANSLATE_SOURCES = $(TRANSLATE_HEADERS:.h=.m)
 TRANSLATE_OBJC = $(TRANSLATE_SOURCES) $(TRANSLATE_HEADERS)
 TRANSLATE_TARGET = $(GEN_OBJC_DIR)/.translate_mark
 TRANSLATE_LIST = $(GEN_OBJC_DIR)/.translate_list
+TRANSLATE_JAVA8_LIST = $(GEN_OBJC_DIR)/.translate_java8_list
 TRANSLATE_EXE = $(DIST_DIR)/j2objc
 TRANSLATE_CMD = $(TRANSLATE_EXE) -d $(GEN_OBJC_DIR) $(TRANSLATE_ARGS)
 TRANSLATE_EXE_DEP = translator_dist
@@ -66,8 +68,13 @@ TRANSLATE_JAVA_PREREQ = $(filter-out $(TRANSLATE_NON_JAVA_PREREQ) translate_forc
 TRANSLATE_LAST_FILES := $(shell if [ -e $(TRANSLATE_TARGET) ]; then cat $(TRANSLATE_TARGET); fi)
 TRANSLATE_NEW_FILES = $(filter-out $(TRANSLATE_LAST_FILES),$(TRANSLATE_JAVA_PREREQ))
 
-TRANSLATE_MAKE_LIST = $(if $(filter $(TRANSLATE_NON_JAVA_PREREQ),$?),\
+TRANSLATE_MAKE_FULL_LIST = $(if $(filter $(TRANSLATE_NON_JAVA_PREREQ),$?),\
     $(TRANSLATE_JAVA_PREREQ),$(filter $? $(TRANSLATE_NEW_FILES),$(TRANSLATE_JAVA_PREREQ)))
+
+JAVA8_WILDCARDS := $(foreach file,$(TRANSLATE_JAVA8),%$(file))
+
+TRANSLATE_MAKE_LIST = $(filter-out $(JAVA8_WILDCARDS),$(TRANSLATE_MAKE_FULL_LIST))
+TRANSLATE_JAVA8_MAKE_LIST = $(filter $(JAVA8_WILDCARDS),$(TRANSLATE_MAKE_FULL_LIST))
 
 $(TRANSLATE_TARGET): $(TRANSLATE_JAVA_FULL) $(TRANSLATE_NON_JAVA_PREREQ) | translate_dependencies
 	@mkdir -p $(GEN_OBJC_DIR)
@@ -75,6 +82,12 @@ $(TRANSLATE_TARGET): $(TRANSLATE_JAVA_FULL) $(TRANSLATE_NON_JAVA_PREREQ) | trans
 	@if [ -s $(TRANSLATE_LIST) ]; then \
 	  echo translating $(TRANSLATE_NAME) sources; \
 	  $(TRANSLATE_CMD) @$(TRANSLATE_LIST); \
+	fi
+	$(call long_list_to_file,$(TRANSLATE_JAVA8_LIST),$(TRANSLATE_JAVA8_MAKE_LIST))
+	@if [ -s $(TRANSLATE_JAVA8_LIST) ]; then \
+	  echo translating $(TRANSLATE_NAME) java8 sources; \
+	  echo translating $(TRANSLATE_JAVA8_LIST); \
+	  $(TRANSLATE_CMD) -source 8 -Xforce-incomplete-java8 @$(TRANSLATE_JAVA8_LIST); \
 	fi
 	$(call long_list_to_file,$@,$(TRANSLATE_JAVA_PREREQ))
 
