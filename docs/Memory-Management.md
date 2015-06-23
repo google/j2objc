@@ -36,6 +36,6 @@ In some cases, an inner class instance gets in a reference cycle with its outer 
 
 ## Memory Management Tools
 
-- [[Cycle Finder Tool]] - analyzes Java source files for strong object reference cycles.
+- [Cycle Finder Tool](Cycle-Finder-Tool.html) - analyzes Java source files for strong object reference cycles.
 - [Xcode Instruments](https://developer.apple.com/library/mac/documentation/DeveloperTools/Conceptual/InstrumentsUserGuide/InstrumentsQuickStart/InstrumentsQuickStart.html) - Xcode's suite of profiling tools.
 - [Xcode Memory Diagnostics](https://developer.apple.com/library/mac/recipes/xcode_help-scheme_editor/Articles/SchemeDiagnostics.html) - build options for running with memory diagnostics and logging. 
