@@ -811,7 +811,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
             + "public class Test {}",
         "foo.bar.mumble.Test", "foo/bar/mumble/Test.h");
     assertTranslation(translation, "@interface FBMTest");
-    assertTranslation(translation, "typedef FBMTest FooBarMumbleTest;");
+    assertTranslation(translation, "@compatibility_alias FooBarMumbleTest FBMTest;");
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertNotInTranslation(translation, "FooBarMumbleTest");
@@ -828,7 +828,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "public class Test {}",
         "foo.bar.mumble.Test", "foo/bar/mumble/Test.h");
     assertTranslation(translation, "@interface FBMTest");
-    assertTranslation(translation, "typedef FBMTest FooBarMumbleTest;");
+    assertTranslation(translation, "@compatibility_alias FooBarMumbleTest FBMTest;");
     translation = getTranslatedFile("foo/bar/mumble/Test.m");
     assertTranslation(translation, "@implementation FBMTest");
     assertNotInTranslation(translation, "FooBarMumbleTest");
@@ -861,7 +861,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
           + "public class Test {}",
           "foo.bar.mumble.Test", "foo/bar/mumble/Test.h");
       assertTranslation(translation, "@interface FBMTest");
-      assertTranslation(translation, "typedef FBMTest FooBarMumbleTest;");
+      assertTranslation(translation, "@compatibility_alias FooBarMumbleTest FBMTest;");
       translation = getTranslatedFile("foo/bar/mumble/Test.m");
       assertTranslation(translation, "@implementation FBMTest");
       assertNotInTranslation(translation, "FooBarMumbleTest");

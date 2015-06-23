@@ -428,7 +428,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           // Protocols can't be used in typedefs.
           printf("\n#define %s %s\n", unprefixedName, typeName);
         } else {
-          printf("\ntypedef %s %s;\n", typeName, unprefixedName);
+          printf("\n@compatibility_alias %s %s;\n", unprefixedName, typeName);
         }
       }
     }

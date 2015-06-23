@@ -65,7 +65,6 @@ public class J2ObjCTest extends GenerationTest {
     assertTranslation(exampleH, "interface CBTExample : NSObject");
     assertTranslation(exampleH, "- (instancetype)init;");
     assertTranslation(exampleH, "J2OBJC_EMPTY_STATIC_INIT(CBTExample)");
-    assertTranslation(exampleH, "typedef CBTExample");
     assertTranslation(exampleH, "J2OBJC_TYPE_LITERAL_HEADER(CBTExample)");
     assertTranslation(exampleM, "@implementation CBTExample");
     assertTranslation(exampleM, "- (instancetype)init {");
