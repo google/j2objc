@@ -42,7 +42,7 @@ $ ./hello Hello
 hello, world
 ```
 
-j2obcc is a wrapper script that adds the JRE emulation library's include and
+j2objcc is a wrapper script that adds the JRE emulation library's include and
 library paths to whatever options you specify for the Objective-C compiler.
 For example, to translate and build multiple sources with debugging symbols:
 
