@@ -879,8 +879,10 @@ public final class Posix implements Os {
     struct pollfd *pollFds = (struct pollfd *)calloc(count, sizeof(struct pollfd));
     for (jint i = 0; i < count; i++) {
       LibcoreIoStructPollfd *javaPollFd = [fds objectAtIndex:i];
-      pollFds[i].fd = [javaPollFd->fd_ getInt$];
-      pollFds[i].events = javaPollFd->events_;
+      if (javaPollFd) {
+        pollFds[i].fd = [javaPollFd->fd_ getInt$];
+        pollFds[i].events = javaPollFd->events_;
+      }
     }
     int rc = poll(pollFds, count, timeoutMs);
     if (rc == -1) {
@@ -889,7 +891,9 @@ public final class Posix implements Os {
     }
     for (jint i = 0; i < count; i++) {
       LibcoreIoStructPollfd *javaPollFd = [fds objectAtIndex:i];
-      javaPollFd->revents_ = pollFds[i].revents;
+      if (javaPollFd) {
+        javaPollFd->revents_ = pollFds[i].revents;
+      }
     }
     free(pollFds);
     return rc;
