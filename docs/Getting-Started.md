@@ -43,10 +43,10 @@ hello, world
 ```
 
 j2objcc forwards whatever options you specify for the Objective-C compiler.
-For example, to translate and build multiple sources with debugging symbols, use the `-g` flag:
+For example, to translate and build with debugging symbols, use the `-g` flag:
 
 ```bash
-$ j2objcc -g -o test Test.m Foo.m Bar.m
+$ j2objcc -g -o hello Hello.m
 ```
 
 ## Frequently Asked Questions
