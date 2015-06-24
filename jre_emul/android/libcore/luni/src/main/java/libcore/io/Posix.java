@@ -916,7 +916,7 @@ public final class Posix implements Os {
         return -1;
     }
     int rc =
-      TEMP_FAILURE_RETRY(pwrite64([fd getInt$], bytes + bufferOffset, byteCount, offset));
+      TEMP_FAILURE_RETRY(pread64([fd getInt$], bytes + bufferOffset, byteCount, offset));
     return LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"pread", rc);
   ]-*/;
 
