@@ -902,36 +902,14 @@ Ivar FindIvar(IOSClass *cls, NSString *name) {
   return NULL;
 }
 
-- (JavaLangReflectField *)getDeclaredField:(NSString *)name {
-  nil_chk(name);
-  Class cls = self.objcClass;
+JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, BOOL publicOnly) {
+  Class cls = iosClass.objcClass;
   if (cls) {
-    JavaClassMetadata *metadata = [self getMetadata];
-    if (metadata) {
-      JavaFieldMetadata *fieldMeta = [metadata findFieldMetadata:[name UTF8String]];
-      if (fieldMeta) {
-        Ivar ivar = class_getInstanceVariable(cls, [[fieldMeta iosName] UTF8String]);
-        return [JavaLangReflectField fieldWithIvar:ivar
-                                         withClass:self
-                                      withMetadata:fieldMeta];
-      }
-    } else {
-      Ivar ivar = FindIvar(self, name);
-      if (ivar) {
-        return [JavaLangReflectField fieldWithIvar:ivar withClass:self withMetadata:nil];
-      }
-    }
-  }
-  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
-}
-
-JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
-  while (iosClass) {
-    Class cls = iosClass.objcClass;
     JavaClassMetadata *metadata = [iosClass getMetadata];
     if (metadata) {
       JavaFieldMetadata *fieldMeta = [metadata findFieldMetadata:[name UTF8String]];
-      if (([fieldMeta modifiers] & JavaLangReflectModifier_PUBLIC) > 0) {
+      if (fieldMeta &&
+          (!publicOnly || ([fieldMeta modifiers] & JavaLangReflectModifier_PUBLIC) != 0)) {
         Ivar ivar = class_getInstanceVariable(cls, [[fieldMeta iosName] UTF8String]);
         return [JavaLangReflectField fieldWithIvar:ivar
                                          withClass:iosClass
@@ -943,8 +921,18 @@ JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
         return [JavaLangReflectField fieldWithIvar:ivar withClass:iosClass withMetadata:nil];
       }
     }
+  }
+  return nil;
+}
+
+JavaLangReflectField *findField(IOSClass *iosClass, NSString *name, BOOL publicOnly) {
+  while (iosClass) {
+    JavaLangReflectField *field = findDeclaredField(iosClass, name, publicOnly);
+    if (field) {
+      return field;
+    }
     for (IOSClass *p in [iosClass getInterfacesInternal]) {
-      JavaLangReflectField *field = findField(p, name);
+      JavaLangReflectField *field = findField(p, name, publicOnly);
       if (field) {
         return field;
       }
@@ -954,9 +942,18 @@ JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
   return nil;
 }
 
+- (JavaLangReflectField *)getDeclaredField:(NSString *)name {
+  nil_chk(name);
+  JavaLangReflectField *field = findDeclaredField(self, name, NO);
+  if (field) {
+    return field;
+  }
+  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
+}
+
 - (JavaLangReflectField *)getField:(NSString *)name {
   nil_chk(name);
-  JavaLangReflectField *field = findField(self, name);
+  JavaLangReflectField *field = findField(self, name, YES);
   if (field) {
     return field;
   }

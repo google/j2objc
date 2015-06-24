@@ -139,7 +139,7 @@
 }
 
 - (id)invokeWithId:(id)object
-       withNSObjectArray:(IOSObjectArray *)arguments {
+    withNSObjectArray:(IOSObjectArray *)arguments {
   if (!isStatic_ && object == nil) {
     @throw AUTORELEASE([[JavaLangNullPointerException alloc] initWithNSString:
       @"null object specified for non-final method"]);
@@ -152,9 +152,7 @@
         @"wrong number of arguments"]);
   }
 
-  NSInvocation *invocation =
-      [NSInvocation invocationWithMethodSignature:methodSignature_];
-  [invocation setSelector:selector_];
+  NSInvocation *invocation = [self invocationForTarget:object];
   for (jint i = 0; i < nArgs; i++) {
     J2ObjcRawValue arg;
     if (![paramTypes->buffer_[i] __unboxValue:arguments->buffer_[i] toRawValue:&arg]) {
@@ -163,12 +161,46 @@
     }
     [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
   }
+
+  [self invoke:invocation object:object];
+
+  IOSClass *returnType = [self getReturnType];
+  if (returnType == [IOSClass voidClass]) {
+    return nil;
+  }
+  J2ObjcRawValue returnValue;
+  [invocation getReturnValue:&returnValue];
+  return [returnType __boxValue:&returnValue];
+}
+
+- (void)jniInvokeWithId:(id)object
+                   args:(const J2ObjcRawValue *)args
+                 result:(J2ObjcRawValue *)result {
+  NSInvocation *invocation = [self invocationForTarget:object];
+  for (int i = 0; i < [self getNumParams]; i++) {
+    [invocation setArgument:(void *)&args[i] atIndex:i + SKIPPED_ARGUMENTS];
+  }
+
+  [self invoke:invocation object:object];
+
+  if (result) {
+    [invocation getReturnValue:result];
+  }
+}
+
+- (NSInvocation *)invocationForTarget:(id)object {
+  NSInvocation *invocation =
+      [NSInvocation invocationWithMethodSignature:methodSignature_];
+  [invocation setSelector:selector_];
   if (object == nil || [object isKindOfClass:[IOSClass class]]) {
     [invocation setTarget:class_.objcClass];
   } else {
     [invocation setTarget:object];
   }
+  return invocation;
+}
 
+- (void)invoke:(NSInvocation *)invocation object:(id)object {
   IOSClass *declaringClass = [self getDeclaringClass];
   JavaLangThrowable *exception = nil;
   if (object &&
@@ -196,13 +228,6 @@
     @throw AUTORELEASE([[JavaLangReflectInvocationTargetException alloc]
                         initWithJavaLangThrowable:exception]);
   }
-  IOSClass *returnType = [self getReturnType];
-  if (returnType == [IOSClass voidClass]) {
-    return nil;
-  }
-  J2ObjcRawValue returnValue;
-  [invocation getReturnValue:&returnValue];
-  return [returnType __boxValue:&returnValue];
 }
 
 - (NSString *)description {

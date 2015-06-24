@@ -89,6 +89,11 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
   return JavaLangReflectModifier_PUBLIC;
 }
 
+- (jint)getNumParams {
+  // First two slots are class and SEL.
+  return (jint)([methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS);
+}
+
 static IOSClass *DecodePrimitiveParamKeyword(NSString *keyword) {
   if ([keyword isEqualToString:@"Byte"]) {
     return [IOSClass byteClass];
@@ -141,8 +146,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (IOSObjectArray *)getParameterTypes {
-  // First two slots are class and SEL.
-  jint nArgs = (jint)[methodSignature_ numberOfArguments] - SKIPPED_ARGUMENTS;
+  jint nArgs = [self getNumParams];
   IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:nArgs type:IOSClass_class_()];
 
   NSString *selectorStr = NSStringFromSelector(selector_);
@@ -168,6 +172,22 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
     [parameters replaceObjectAtIndex:i withObject:paramType];
   }
   return parameters;
+}
+
+- (const char *)getBinaryParameterTypes {
+  if (!binaryParameterTypes_) {
+    IOSObjectArray *paramTypes = [self getParameterTypes];
+    jint numArgs = paramTypes.length;
+    char *binaryParamTypes = malloc((numArgs + 1) * sizeof(char));
+    char *p = binaryParamTypes;
+    for (jint i = 0; i < numArgs; i++) {
+      IOSClass *paramType = [paramTypes objectAtIndex:i];
+      *p++ = [[paramType binaryName] UTF8String][0];
+    }
+    *p = 0;
+    binaryParameterTypes_ = binaryParamTypes;
+  }
+  return binaryParameterTypes_;
 }
 
 // Returns the class this executable is a member of.
@@ -327,13 +347,14 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   return [[class_ getName] hash] ^ [NSStringFromSelector(selector_) hash];
 }
 
-#if ! __has_feature(objc_arc)
 - (void)dealloc {
+  free((void *)binaryParameterTypes_);
+#if ! __has_feature(objc_arc)
   [methodSignature_ release];
   [metadata_ release];
   [super dealloc];
-}
 #endif
+}
 
 @end
 

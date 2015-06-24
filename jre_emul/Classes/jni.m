@@ -26,10 +26,100 @@
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
+#include "java/lang/ClassNotFoundException.h"
 #include "java/lang/Throwable.h"
+#include "java/lang/reflect/Constructor.h"
+#include "java/lang/reflect/Field.h"
+#include "java/lang/reflect/Method.h"
 #include "java/nio/Buffer.h"
 #include "java/nio/DirectByteBuffer.h"
 #include "java/nio/NIOAccess.h"
+
+static IOSClass *IOSClass_forName(const char *name) {
+  NSString *nameString = [NSString stringWithUTF8String:name];
+  nameString = [nameString stringByReplacingOccurrencesOfString:@"/" withString:@"."];
+  return [IOSClass forName:nameString];
+}
+
+typedef struct _JNIMethodSignature {
+  IOSClass *returnType;
+  IOSObjectArray *paramTypes;
+} JNIMethodSignature;
+
+static IOSClass *JNIParseTypeSignature(const char *sig, const char **next) {
+  IOSClass *result = nil;
+  *next = sig + 1;
+  char c = *sig;
+  int array_dim = 0;
+  while (c == '[') {
+    array_dim++;
+    sig++;
+    c = *sig;
+  }
+  if (array_dim) {
+    IOSClass *componentType = JNIParseTypeSignature(sig, next);
+    result = IOSClass_arrayType(componentType, array_dim);
+  } else {
+    if (c == 'L') {
+      const char *end = strchr(sig + 1, ';');
+      if (end) {
+        const char *begin = sig + 1;
+        size_t length = end - begin;
+        char *buffer = malloc(length + 1);
+        strncpy(buffer, begin, length);
+        buffer[length] = 0;
+        result = IOSClass_forName(buffer);
+        free(buffer);
+        *next = end + 1;
+      }
+    } else {
+      result = [IOSClass primitiveClassForChar:c];
+    }
+  }
+  if (!result) {
+    @throw AUTORELEASE([[JavaLangClassNotFoundException alloc]
+        initWithNSString:[NSString stringWithUTF8String:sig]]);
+  }
+  return result;
+}
+
+JNIMethodSignature JNIParseMethodSignature(const char *sig) {
+  JNIMethodSignature result;
+  result.returnType = nil;
+  result.paramTypes = nil;
+  const char *p = sig;
+  if (*p != '(') {
+    return result;
+  }
+  p++;
+  NSMutableArray *paramTypes = [NSMutableArray array];
+  while (*p != ')') {
+    id paramType = JNIParseTypeSignature(p, &p);
+    [paramTypes addObject:paramType];
+  }
+  result.paramTypes = [IOSObjectArray arrayWithLength:paramTypes.count type:IOSClass_class_()];
+  for (NSUInteger i = 0; i < paramTypes.count; i++) {
+    [result.paramTypes replaceObjectAtIndex:i withObject:paramTypes[i]];
+  }
+  p++;
+  result.returnType = JNIParseTypeSignature(p, &p);
+  return result;
+}
+
+NSString *JNIFormatMethodSignature(JNIMethodSignature sig) {
+  NSString *result = [sig.returnType getName];
+  result = [result stringByAppendingString:@"("];
+  for (jint i = 0; i < sig.paramTypes.length; i++) {
+    IOSClass *paramType = [sig.paramTypes objectAtIndex:i];
+    NSString *paramTypeString = [paramType getName];
+    result = [result stringByAppendingString:paramTypeString];
+    if (i < sig.paramTypes.length - 1) {
+      result = [result stringByAppendingString:@", "];
+    }
+  }
+  result = [result stringByAppendingString:@")"];
+  return result;
+}
 
 __attribute__ ((unused)) static inline id null_chk(void *p) {
 #if !defined(J2OBJC_DISABLE_NIL_CHECKS)
@@ -43,7 +133,7 @@ __attribute__ ((unused)) static inline id null_chk(void *p) {
 static void *GetPrimitiveArrayCritical(JNIEnv *, jarray, jboolean *);
 
 static jclass FindClass(JNIEnv *env, const char *name) {
-  return [IOSClass forName:[NSString stringWithUTF8String:name]];
+  return IOSClass_forName(name);
 }
 
 static jsize GetArrayLength(JNIEnv *env, jarray array) {
@@ -433,6 +523,341 @@ static jint ThrowNew(JNIEnv *env, jclass clazz, const char *message) {
   return 0;
 }
 
+static jfieldID GetFieldID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
+  IOSClass *iosClass = (IOSClass *) clazz;
+  JavaLangReflectField *field = [iosClass getDeclaredField:[NSString stringWithUTF8String:name]];
+  return (jfieldID) field;
+}
+
+static jfieldID GetStaticFieldID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
+  return GetFieldID(env, clazz, name, sig);
+}
+
+static jmethodID GetMethodID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
+  IOSClass *iosClass = (IOSClass *) clazz;
+  JNIMethodSignature methodSig = JNIParseMethodSignature(sig);
+  ExecutableMember *result = nil;
+  if (strcmp(name, "<init>") == 0) {
+    result = [iosClass getConstructor:methodSig.paramTypes];
+  } else {
+    result = [iosClass getDeclaredMethod:[NSString stringWithUTF8String:name]
+                          parameterTypes:methodSig.paramTypes];
+  }
+  return (jmethodID) result;
+}
+
+static jmethodID GetStaticMethodID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
+  return GetMethodID(env, clazz, name, sig);
+}
+
+#define ALLOC_JARGS(JARGS, NUM_ARGS)           \
+  const size_t _max_stack_args = 16;           \
+  jvalue _stack_args[_max_stack_args];         \
+  jvalue *JARGS;                               \
+  BOOL _free_jargs = NO;                       \
+  if (NUM_ARGS <= _max_stack_args) {           \
+    JARGS = _stack_args;                       \
+  } else {                                     \
+    JARGS = malloc(NUM_ARGS * sizeof(jvalue)); \
+    _free_jargs = YES;                         \
+  }
+
+#define DEALLOC_JARGS(JARGS) \
+  if (_free_jargs) {         \
+    free(JARGS);             \
+  }
+
+#define FORWARD_VARGS(RESULT_TYPE, METHOD_CALL) \
+  RESULT_TYPE result;                           \
+  va_list args;                                 \
+  va_start(args, methodID);                     \
+  result = METHOD_CALL;                         \
+  va_end(args);                                 \
+  return result
+
+static void ToArgsArray(const char *paramTypes, jvalue *jargs, va_list args) {
+  const char *paramType = paramTypes;
+  jvalue *value = jargs;
+  while (*paramType) {
+    switch (*paramType) {
+      // On 32 bit architectures, each var arg size is promoted to at least
+      // sizeof(int) for integral types, or sizeof(double) for float types.
+      // TODO: verify this works for 64 bit architectures.
+      case 'B': value->b = (jbyte) va_arg(args, int); break;
+      case 'C': value->c = (jchar) va_arg(args, unsigned int); break;
+      case 'S': value->s = (jshort) va_arg(args, int); break;
+      case 'I': value->i = (jint) va_arg(args, int); break;
+      case 'J': value->j = (jlong) va_arg(args, jlong); break;
+      case 'F': value->f = (jfloat) va_arg(args, double); break;
+      case 'D': value->d = (jdouble) va_arg(args, double); break;
+      case 'Z': value->z = (jboolean) va_arg(args, int); break;
+      default: value->l = (jobject) va_arg(args, jobject); break;
+    }
+    paramType++;
+    value++;
+  }
+}
+
+static jobject NewObjectA(JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) {
+  return (jobject) [(JavaLangReflectConstructor *)methodID
+      jniNewInstance:(const J2ObjcRawValue *)args];
+}
+
+static jobject NewObjectV(JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) {
+  const char *paramTypes = [(JavaLangReflectMethod *)methodID getBinaryParameterTypes];
+  size_t numArgs = strlen(paramTypes);
+
+  ALLOC_JARGS(jargs, numArgs);
+  ToArgsArray(paramTypes, jargs, args);
+  jobject result = NewObjectA(env, clazz, methodID, jargs);
+  DEALLOC_JARGS(jargs);
+
+  return result;
+}
+
+static jobject NewObject(JNIEnv *env, jclass clazz, jmethodID methodID, ...) {
+  FORWARD_VARGS(jobject, NewObjectV(env, clazz, methodID, args));
+}
+
+static void CallMethodA(JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args, jvalue *result) {
+  [(JavaLangReflectMethod *)methodID
+      jniInvokeWithId:obj args:(const J2ObjcRawValue *)args result:(J2ObjcRawValue *)result];
+}
+
+static void CallMethodV(JNIEnv *env, jobject obj, jmethodID methodID, va_list args, jvalue *result) {
+  const char *paramTypes = [(JavaLangReflectMethod *)methodID getBinaryParameterTypes];
+  size_t numArgs = strlen(paramTypes);
+
+  ALLOC_JARGS(jargs, numArgs);
+  ToArgsArray(paramTypes, jargs, args);
+  CallMethodA(env, obj, methodID, jargs, result);
+  DEALLOC_JARGS(jargs);
+}
+
+#define DEFINE_CALL_METHOD_VARIANTS(RESULT_NAME, RESULT_TYPE, RESULT_CODE) \
+  RESULT_TYPE Call##RESULT_NAME##MethodV(JNIEnv *env, jobject obj, jmethodID methodID, va_list args) { \
+    jvalue result; \
+    CallMethodV(env, obj, methodID, args, &result); \
+    return result.RESULT_CODE; \
+  } \
+  RESULT_TYPE Call##RESULT_NAME##MethodA(JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args) { \
+    jvalue result; \
+    CallMethodA(env, obj, methodID, args, &result); \
+    return result.RESULT_CODE; \
+  } \
+  RESULT_TYPE Call##RESULT_NAME##Method(JNIEnv *env, jobject obj, jmethodID methodID, ...) { \
+    FORWARD_VARGS(RESULT_TYPE, Call##RESULT_NAME##MethodV(env, obj, methodID, args)); \
+  }
+
+DEFINE_CALL_METHOD_VARIANTS(Object, jobject, l)
+DEFINE_CALL_METHOD_VARIANTS(Boolean, jboolean, z)
+DEFINE_CALL_METHOD_VARIANTS(Byte, jbyte, b)
+DEFINE_CALL_METHOD_VARIANTS(Char, jchar, c)
+DEFINE_CALL_METHOD_VARIANTS(Short, jshort, s)
+DEFINE_CALL_METHOD_VARIANTS(Int, jint, i)
+DEFINE_CALL_METHOD_VARIANTS(Long, jlong, j)
+DEFINE_CALL_METHOD_VARIANTS(Float, jfloat, f)
+DEFINE_CALL_METHOD_VARIANTS(Double, jdouble, d)
+
+void CallVoidMethodV(JNIEnv *env, jobject obj, jmethodID methodID, va_list args) {
+  CallMethodV(env, obj, methodID, args, NULL);
+}
+
+void CallVoidMethodA(JNIEnv *env, jobject obj, jmethodID methodID, const jvalue *args) {
+  CallMethodA(env, obj, methodID, args, NULL);
+}
+
+void CallVoidMethod(JNIEnv *env, jobject obj, jmethodID methodID, ...) {
+  va_list args;
+  va_start(args, methodID);
+  CallVoidMethodV(env, obj, methodID, args);
+  va_end(args);
+}
+
+jobject GetObjectField(JNIEnv *env, jobject obj, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getWithId:obj];
+}
+
+jboolean GetBooleanField(JNIEnv *env, jobject obj, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getBooleanWithId:obj];
+}
+
+jbyte GetByteField(JNIEnv *env, jobject obj, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getByteWithId:obj];
+}
+
+jchar GetCharField(JNIEnv *env, jobject obj, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getCharWithId:obj];
+}
+
+jshort GetShortField(JNIEnv *env, jobject obj, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getShortWithId:obj];
+}
+
+jint GetIntField(JNIEnv *env, jobject obj, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getIntWithId:obj];
+}
+
+jlong GetLongField(JNIEnv *env, jobject obj, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getLongWithId:obj];
+}
+
+jfloat GetFloatField(JNIEnv *env, jobject obj, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getFloatWithId:obj];
+}
+
+jdouble GetDoubleField(JNIEnv *env, jobject obj, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getDoubleWithId:obj];
+}
+
+void SetObjectField(JNIEnv *env, jobject obj, jfieldID fieldID, jobject value) {
+  [(JavaLangReflectField *)fieldID setWithId:obj withId:value];
+}
+
+void SetBooleanField(JNIEnv *env, jobject obj, jfieldID fieldID, jboolean value) {
+  [(JavaLangReflectField *)fieldID setBooleanWithId:obj withBoolean:value];
+}
+
+void SetByteField(JNIEnv *env, jobject obj, jfieldID fieldID, jbyte value) {
+  [(JavaLangReflectField *)fieldID setByteWithId:obj withByte:value];
+}
+
+void SetCharField(JNIEnv *env, jobject obj, jfieldID fieldID, jchar value) {
+  [(JavaLangReflectField *)fieldID setCharWithId:obj withChar:value];
+}
+
+void SetShortField(JNIEnv *env, jobject obj, jfieldID fieldID, jshort value) {
+  [(JavaLangReflectField *)fieldID setShortWithId:obj withShort:value];
+}
+
+void SetIntField(JNIEnv *env, jobject obj, jfieldID fieldID, jint value) {
+  [(JavaLangReflectField *)fieldID setIntWithId:obj withInt:value];
+}
+
+void SetLongField(JNIEnv *env, jobject obj, jfieldID fieldID, jlong value) {
+  [(JavaLangReflectField *)fieldID setLongWithId:obj withLong:value];
+}
+
+void SetFloatField(JNIEnv *env, jobject obj, jfieldID fieldID, jfloat value) {
+  [(JavaLangReflectField *)fieldID setFloatWithId:obj withFloat:value];
+}
+
+void SetDoubleField(JNIEnv *env, jobject obj, jfieldID fieldID, jdouble value) {
+  [(JavaLangReflectField *)fieldID setDoubleWithId:obj withDouble:value];
+}
+
+#define DEFINE_CALL_STATIC_METHOD_VARIANTS(RESULT_NAME, RESULT_TYPE, RESULT_CODE) \
+  RESULT_TYPE CallStatic##RESULT_NAME##MethodV(JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) { \
+    jvalue result; \
+    CallMethodV(env, nil, methodID, args, &result); \
+    return result.RESULT_CODE; \
+  } \
+  RESULT_TYPE CallStatic##RESULT_NAME##MethodA(JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) { \
+    jvalue result; \
+    CallMethodA(env, nil, methodID, args, &result); \
+    return result.RESULT_CODE; \
+  } \
+  RESULT_TYPE CallStatic##RESULT_NAME##Method(JNIEnv *env, jclass clazz, jmethodID methodID, ...) { \
+    FORWARD_VARGS(RESULT_TYPE, Call##RESULT_NAME##MethodV(env, nil, methodID, args)); \
+  }
+
+DEFINE_CALL_STATIC_METHOD_VARIANTS(Object, jobject, l)
+DEFINE_CALL_STATIC_METHOD_VARIANTS(Boolean, jboolean, z)
+DEFINE_CALL_STATIC_METHOD_VARIANTS(Byte, jbyte, b)
+DEFINE_CALL_STATIC_METHOD_VARIANTS(Char, jchar, c)
+DEFINE_CALL_STATIC_METHOD_VARIANTS(Short, jshort, s)
+DEFINE_CALL_STATIC_METHOD_VARIANTS(Int, jint, i)
+DEFINE_CALL_STATIC_METHOD_VARIANTS(Long, jlong, j)
+DEFINE_CALL_STATIC_METHOD_VARIANTS(Float, jfloat, f)
+DEFINE_CALL_STATIC_METHOD_VARIANTS(Double, jdouble, d)
+
+void CallStaticVoidMethodV(JNIEnv *env, jclass clazz, jmethodID methodID, va_list args) {
+  CallMethodV(env, nil, methodID, args, NULL);
+}
+
+void CallStaticVoidMethodA(JNIEnv *env, jclass clazz, jmethodID methodID, const jvalue *args) {
+  CallMethodA(env, nil, methodID, args, NULL);
+}
+
+void CallStaticVoidMethod(JNIEnv *env, jclass clazz, jmethodID methodID, ...) {
+  va_list args;
+  va_start(args, methodID);
+  CallStaticVoidMethodV(env, nil, methodID, args);
+  va_end(args);
+}
+
+jobject GetStaticObjectField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getWithId:nil];
+}
+
+jboolean GetStaticBooleanField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getBooleanWithId:nil];
+}
+
+jbyte GetStaticByteField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getByteWithId:nil];
+}
+
+jchar GetStaticCharField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getCharWithId:nil];
+}
+
+jshort GetStaticShortField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getShortWithId:nil];
+}
+
+jint GetStaticIntField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getIntWithId:nil];
+}
+
+jlong GetStaticLongField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getLongWithId:nil];
+}
+
+jfloat GetStaticFloatField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getFloatWithId:nil];
+}
+
+jdouble GetStaticDoubleField(JNIEnv *env, jclass clazz, jfieldID fieldID) {
+  return [(JavaLangReflectField *)fieldID getDoubleWithId:nil];
+}
+
+void SetStaticObjectField(JNIEnv *env, jclass clazz, jfieldID fieldID, jobject value) {
+  [(JavaLangReflectField *)fieldID setWithId:nil withId:value];
+}
+
+void SetStaticBooleanField(JNIEnv *env, jclass clazz, jfieldID fieldID, jboolean value) {
+  [(JavaLangReflectField *)fieldID setBooleanWithId:nil withBoolean:value];
+}
+
+void SetStaticByteField(JNIEnv *env, jclass clazz, jfieldID fieldID, jbyte value) {
+  [(JavaLangReflectField *)fieldID setByteWithId:nil withByte:value];
+}
+
+void SetStaticCharField(JNIEnv *env, jclass clazz, jfieldID fieldID, jchar value) {
+  [(JavaLangReflectField *)fieldID setCharWithId:nil withChar:value];
+}
+
+void SetStaticShortField(JNIEnv *env, jclass clazz, jfieldID fieldID, jshort value) {
+  [(JavaLangReflectField *)fieldID setShortWithId:nil withShort:value];
+}
+
+void SetStaticIntField(JNIEnv *env, jclass clazz, jfieldID fieldID, jint value) {
+  [(JavaLangReflectField *)fieldID setIntWithId:nil withInt:value];
+}
+
+void SetStaticLongField(JNIEnv *env, jclass clazz, jfieldID fieldID, jlong value) {
+  [(JavaLangReflectField *)fieldID setLongWithId:nil withLong:value];
+}
+
+void SetStaticFloatField(JNIEnv *env, jclass clazz, jfieldID fieldID, jfloat value) {
+  [(JavaLangReflectField *)fieldID setFloatWithId:nil withFloat:value];
+}
+
+void SetStaticDoubleField(JNIEnv *env, jclass clazz, jfieldID fieldID, jdouble value) {
+  [(JavaLangReflectField *)fieldID setDoubleWithId:nil withDouble:value];
+}
+
 static jint GetJavaVM(JNIEnv *env, JavaVM **vm);
 
 static struct JNINativeInterface JNI_JNIEnvTable = {
@@ -510,6 +935,109 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &NewDirectByteBuffer,
   &GetDirectBufferAddress,
   &GetDirectBufferCapacity,
+  &GetFieldID,
+  &GetStaticFieldID,
+  &GetMethodID,
+  &GetStaticMethodID,
+  &NewObject,
+  &NewObjectV,
+  &NewObjectA,
+  &CallObjectMethod,
+  &CallObjectMethodV,
+  &CallObjectMethodA,
+  &CallBooleanMethod,
+  &CallBooleanMethodV,
+  &CallBooleanMethodA,
+  &CallByteMethod,
+  &CallByteMethodV,
+  &CallByteMethodA,
+  &CallCharMethod,
+  &CallCharMethodV,
+  &CallCharMethodA,
+  &CallShortMethod,
+  &CallShortMethodV,
+  &CallShortMethodA,
+  &CallIntMethod,
+  &CallIntMethodV,
+  &CallIntMethodA,
+  &CallLongMethod,
+  &CallLongMethodV,
+  &CallLongMethodA,
+  &CallFloatMethod,
+  &CallFloatMethodV,
+  &CallFloatMethodA,
+  &CallDoubleMethod,
+  &CallDoubleMethodV,
+  &CallDoubleMethodA,
+  &CallVoidMethod,
+  &CallVoidMethodV,
+  &CallVoidMethodA,
+  &GetObjectField,
+  &GetBooleanField,
+  &GetByteField,
+  &GetCharField,
+  &GetShortField,
+  &GetIntField,
+  &GetLongField,
+  &GetFloatField,
+  &GetDoubleField,
+  &SetObjectField,
+  &SetBooleanField,
+  &SetByteField,
+  &SetCharField,
+  &SetShortField,
+  &SetIntField,
+  &SetLongField,
+  &SetFloatField,
+  &SetDoubleField,
+  &CallStaticObjectMethod,
+  &CallStaticObjectMethodV,
+  &CallStaticObjectMethodA,
+  &CallStaticBooleanMethod,
+  &CallStaticBooleanMethodV,
+  &CallStaticBooleanMethodA,
+  &CallStaticByteMethod,
+  &CallStaticByteMethodV,
+  &CallStaticByteMethodA,
+  &CallStaticCharMethod,
+  &CallStaticCharMethodV,
+  &CallStaticCharMethodA,
+  &CallStaticShortMethod,
+  &CallStaticShortMethodV,
+  &CallStaticShortMethodA,
+  &CallStaticIntMethod,
+  &CallStaticIntMethodV,
+  &CallStaticIntMethodA,
+  &CallStaticLongMethod,
+  &CallStaticLongMethodV,
+  &CallStaticLongMethodA,
+  &CallStaticFloatMethod,
+  &CallStaticFloatMethodV,
+  &CallStaticFloatMethodA,
+  &CallStaticDoubleMethod,
+  &CallStaticDoubleMethodV,
+  &CallStaticDoubleMethodA,
+  &CallStaticVoidMethod,
+  &CallStaticVoidMethodV,
+  &CallStaticVoidMethodA,
+  &GetStaticObjectField,
+  &GetStaticBooleanField,
+  &GetStaticByteField,
+  &GetStaticCharField,
+  &GetStaticShortField,
+  &GetStaticIntField,
+  &GetStaticLongField,
+  &GetStaticFloatField,
+  &GetStaticDoubleField,
+  &SetStaticObjectField,
+  &SetStaticBooleanField,
+  &SetStaticByteField,
+  &SetStaticCharField,
+  &SetStaticShortField,
+  &SetStaticIntField,
+  &SetStaticLongField,
+  &SetStaticFloatField,
+  &SetStaticDoubleField,
   &GetJavaVM,
 };
 

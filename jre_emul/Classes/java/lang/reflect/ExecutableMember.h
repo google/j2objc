@@ -43,6 +43,7 @@
   SEL selector_;
   NSMethodSignature *methodSignature_;
   JavaMethodMetadata *metadata_;
+  const char *binaryParameterTypes_;
 }
 
 @property (readonly) NSMethodSignature *signature;
@@ -87,8 +88,10 @@
 // Returns true if this method was added by j2objc.
 - (BOOL)isSynthetic;
 
-// Protected methods.
+// Internal methods.
 - (NSString *)internalName;
+- (jint)getNumParams;
+- (const char *)getBinaryParameterTypes;
 
 @end
 

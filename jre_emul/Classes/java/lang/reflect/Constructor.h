@@ -42,6 +42,10 @@
 // Create a new instance using this constructor.
 - (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs OBJC_METHOD_FAMILY_NONE;
 
+// Faster version of Constructor.newInstance() for JNI code. This does not
+// require boxing arguments.
+- (id)jniNewInstance:(const J2ObjcRawValue *)args;
+
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(JavaLangReflectConstructor)

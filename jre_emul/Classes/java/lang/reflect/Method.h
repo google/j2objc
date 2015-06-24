@@ -57,7 +57,14 @@
 // @return the result of this invocation; if a primitive type is returned,
 //     it is wrapped in a Foundation wrapper class instance.
 - (NSObject *)invokeWithId:(id)object
-               withNSObjectArray:(IOSObjectArray *)arguments;
+         withNSObjectArray:(IOSObjectArray *)arguments;
+
+// Faster version of Method.invoke() for JNI code. This does not require
+// boxing arguments or unboxing the result. Methods that return void must pass
+// NULL as the result pointer.
+- (void)jniInvokeWithId:(id)object
+                   args:(const J2ObjcRawValue *)args
+                 result:(J2ObjcRawValue *)result;
 
 // Returns default value.
 - (id)getDefaultValue;

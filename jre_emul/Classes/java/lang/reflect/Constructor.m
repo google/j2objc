@@ -45,18 +45,8 @@
 }
 
 - (id)newInstanceWithNSObjectArray:(IOSObjectArray *)initArgs {
-  id newInstance;
-  @try {
-    newInstance = AUTORELEASE([class_.objcClass alloc]);
-  }
-  @catch (JavaLangThrowable *e) {
-    @throw AUTORELEASE([[JavaLangExceptionInInitializerError alloc] initWithJavaLangThrowable:e]);
-  }
-
-  NSInvocation *invocation =
-      [NSInvocation invocationWithMethodSignature:methodSignature_];
-  [invocation setTarget:newInstance];
-  [invocation setSelector:selector_];
+  id newInstance = [self allocInstance];
+  NSInvocation *invocation = [self invocationForTarget:newInstance];
 
   jint argCount = initArgs ? initArgs->size_ : 0;
   IOSObjectArray *parameterTypes = [self getParameterTypes];
@@ -74,6 +64,41 @@
     [invocation setArgument:&arg atIndex:i + SKIPPED_ARGUMENTS];
   }
 
+  [self invoke:invocation];
+
+  return newInstance;
+}
+
+- (id)jniNewInstance:(const J2ObjcRawValue *)args {
+  id newInstance = [self allocInstance];
+  NSInvocation *invocation = [self invocationForTarget:newInstance];
+  for (int i = 0; i < [self getNumParams]; i++) {
+    [invocation setArgument:(void *)&args[i] atIndex:i + SKIPPED_ARGUMENTS];
+  }
+  [self invoke:invocation];
+  return newInstance;
+}
+
+- (id)allocInstance {
+  id newInstance;
+  @try {
+    newInstance = AUTORELEASE([class_.objcClass alloc]);
+  }
+  @catch (JavaLangThrowable *e) {
+    @throw AUTORELEASE([[JavaLangExceptionInInitializerError alloc] initWithJavaLangThrowable:e]);
+  }
+  return newInstance;
+}
+
+- (NSInvocation *)invocationForTarget:(id)object {
+  NSInvocation *invocation =
+      [NSInvocation invocationWithMethodSignature:methodSignature_];
+  [invocation setSelector:selector_];
+  [invocation setTarget:object];
+  return invocation;
+}
+
+- (void)invoke:(NSInvocation *)invocation {
   @try {
     [invocation invoke];
   }
@@ -81,8 +106,6 @@
     @throw AUTORELEASE(
         [[JavaLangReflectInvocationTargetException alloc] initWithJavaLangThrowable:e]);
   }
-
-  return newInstance;
 }
 
 // Returns the class name, like java.lang.reflect.Constructor does.
