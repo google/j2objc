@@ -20,17 +20,24 @@ import com.google.common.collect.ListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
+import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
@@ -405,5 +412,30 @@ public class OuterReferenceResolver extends TreeVisitor {
     if (!binding.isConstructor()) {
       peekScope().initializingContext = true;
     }
+  }
+
+  @Override
+  public boolean visit(LambdaExpression node) {
+    // We shouldn't be able to reach this if we aren't in a Java 8 translator, as we are in a
+    // LambdaExpression, but this will help to highlight Java 8 specific additions in the future.
+    if (Options.isJava8Translator()) {
+      if (node.getBody() instanceof Block) {
+        return true;
+      }
+      // Add explicit blocks for lambdas with expression bodies. Implicit blocks cause the
+      // innerField to resolve as null, and additionally Objective-C doesn't support implicit
+      // blocks.
+      Block block = new Block();
+      Statement statement;
+      Expression expression = (Expression) TreeUtil.remove(node.getBody());
+      if (BindingUtil.isVoid(node.getFunctionalInterfaceMethod().getReturnType())) {
+        statement = new ExpressionStatement(expression);
+      } else {
+        statement = new ReturnStatement(expression);
+      }
+      block.getStatements().add(statement);
+      node.setBody(block);
+    }
+    return true;
   }
 }

@@ -36,17 +36,14 @@ import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.LabeledStatement;
-import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
-import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SwitchStatement;
-import com.google.devtools.j2objc.ast.TreeNode.Kind;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
@@ -80,28 +77,6 @@ import java.util.Map;
 public class Rewriter extends TreeVisitor {
 
   private Map<IVariableBinding, IVariableBinding> localRefs = Maps.newHashMap();
-
-  /**
-   * Adds explicit blocks for lambdas with expression bodies.
-   */
-  @Override
-  public boolean visit(LambdaExpression node) {
-    if (node.getBody().getKind() == Kind.BLOCK) {
-      return true;
-    }
-    Block block = new Block();
-    Statement statement;
-    Expression expression = (Expression) TreeUtil.remove(node.getBody());
-    if (BindingUtil.isVoid(node.getFunctionalInterfaceMethod().getReturnType())) {
-      statement = new ExpressionStatement(expression);
-    } else {
-      statement = new ReturnStatement(expression);
-    }
-    block.getStatements().add(statement);
-    node.setBody(block);
-
-    return true;
-  }
 
   @Override
   public boolean visit(MethodDeclaration node) {

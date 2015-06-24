@@ -97,6 +97,7 @@ public class LambdaExpression extends Expression {
   @Override
   protected void acceptInner(TreeVisitor visitor) {
     if (visitor.visit(this)) {
+      parameters.accept(visitor);
       body.accept(visitor);
     }
     visitor.endVisit(this);

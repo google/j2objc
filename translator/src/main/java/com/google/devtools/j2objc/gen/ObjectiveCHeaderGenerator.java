@@ -18,6 +18,7 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.J2ObjC;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -56,6 +57,13 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   public void generate() {
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
     generateFileHeader();
+
+    // TODO(kirbs): TEMPORARY
+    // TODO(kirbs): Only output block_type sugar in header if code contains a block_type reference.
+    if (Options.isJava8Translator()) {
+      println("\n// Temporary sugar for block support.");
+      println("typedef id " + NameTable.BLOCK_TYPE + ';');
+    }
 
     for (GeneratedType generatedType : getOrderedTypes()) {
       printTypeDeclaration(generatedType);

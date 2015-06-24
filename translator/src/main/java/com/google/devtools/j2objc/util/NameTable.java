@@ -81,6 +81,9 @@ public class NameTable {
   public static final String SELF_NAME = "$$self$$";
 
   public static final String ID_TYPE = "id";
+  // This is syntactic sugar for blocks. All block are typed as ids, but we add a block_type typedef
+  // for source clarity.
+  public static final String BLOCK_TYPE = "block_type";
 
   private static final Logger logger = Logger.getLogger(NameTable.class.getName());
 
@@ -240,7 +243,10 @@ public class NameTable {
       "DEBUG", "NDEBUG",
 
       // Foundation methods with conflicting return types
-      "scale");
+      "scale",
+
+      // Syntactic sugar for Objective-C block types
+      "block_type");
 
   private static final Set<String> badParameterNames = Sets.newHashSet(
       // Objective-C type qualifier keywords.
@@ -725,7 +731,9 @@ public class NameTable {
 
   private String getObjCTypeInner(ITypeBinding type, String qualifiers, boolean expandBounds) {
     String objCType;
-    if (type instanceof PointerTypeBinding) {
+    if (Options.isJava8Translator() && type.getFunctionalInterfaceMethod() != null) {
+      objCType = BLOCK_TYPE;
+    } else if (type instanceof PointerTypeBinding) {
       String pointeeQualifiers = null;
       if (qualifiers != null) {
         int idx = qualifiers.indexOf('*');

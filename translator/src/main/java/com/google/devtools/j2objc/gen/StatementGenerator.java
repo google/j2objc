@@ -651,13 +651,7 @@ public class StatementGenerator extends TreeVisitor {
       }
       buffer.append(nameTable.getSpecificObjCType(x.getVariableBinding().getType()));
       buffer.append(' ');
-      if (!node.fromAnonClass) {
-        buffer.append("val$");
-      }
       buffer.append(nameTable.getVariableQualifiedName(variableBinding.getVariableDeclaration()));
-      if (!node.fromAnonClass) {
-        buffer.append('_');
-      }
     }
     buffer.append(")");
     node.getBody().accept(this);
@@ -668,6 +662,23 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(MarkerAnnotation node) {
     printAnnotationCreation(node);
     return false;
+  }
+
+  // TODO(kirbs): Move the inner cast logic to NameTable, and remove this method.
+  private void blockCast(IMethodBinding binding) {
+    buffer.append('(');
+    buffer.append(nameTable.getObjCType(binding.getReturnType()));
+    buffer.append("(^)(");
+    boolean delimiterFlag = false;
+    for (ITypeBinding type : binding.getParameterTypes()) {
+      buffer.append(nameTable.getObjCType(type));
+      if (delimiterFlag) {
+        buffer.append(", ");
+      } else {
+        delimiterFlag = true;
+      }
+    }
+    buffer.append("))");
   }
 
   @Override
@@ -683,7 +694,29 @@ public class StatementGenerator extends TreeVisitor {
         // Static methods can't be functional interface methods, and self should never be a block.
         throw new AssertionError("No receiver for MethodInvocation.");
       }
+      /**
+       * We are typing all blocks as id types until we need to do otherwise, specifically on
+       * invocation. At invocation then we need to coerce the receiver to the correct block type. We
+       * can't do this recursively, as then a block could not take or return its own block type,
+       * Instead we only resolve one level at a time.
+       *
+       * Take the following:
+       *  Supplier s = () -> () -> () -> 1;
+       *
+       * This will start out with an Objective-C type of id, until we invoke the outer lambda, at
+       * which point we resolve the next level:
+       *  // () -> () -> 1;
+       *  Supplier t = s.get();
+       *  id t = ((void(^)id) s)();
+       *
+       * Since we don't need to resolve the type until invocation, we avoid recursive typedefs.
+       */
+      // TODO(kirbs): Determine when casts are needed, rather than always casting
+      buffer.append('(');
+      blockCast(binding.getDeclaringClass().getFunctionalInterfaceMethod());
       receiver.accept(this);
+
+      buffer.append(')');
       buffer.append('(');
       for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext();) {
         Expression next = it.next();
