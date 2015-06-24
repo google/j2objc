@@ -32,7 +32,6 @@
 
 package java.lang;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -74,12 +73,12 @@ public abstract class ClassLoader {
     /**
      * The parent ClassLoader.
      */
-    private ClassLoader parent;
+    private final ClassLoader parent;
 
     /**
      * The packages known to the class loader.
      */
-    private Map<String, Package> packages = new HashMap<String, Package>();
+    private final Map<String, Package> packages = new HashMap<String, Package>();
 
     /**
      * Returns the system class loader. This is the parent for new
@@ -367,11 +366,10 @@ public abstract class ClassLoader {
      * @throws IOException
      *             if an I/O error occurs.
      */
-    @SuppressWarnings("unchecked")
     public Enumeration<URL> getResources(String resName) throws IOException {
 
-        Enumeration first = parent.getResources(resName);
-        Enumeration second = findResources(resName);
+        Enumeration<URL> first = parent.getResources(resName);
+        Enumeration<URL> second = findResources(resName);
 
         return new TwoEnumerationsInOne(first, second);
     }
