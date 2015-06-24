@@ -92,7 +92,6 @@ static Store *Resize(FastPointerLookup_t *lookup, Store *oldStore) {
 
   // Once the new store is fully initialized, we can swap it with the old store
   // using an atomic store with a barrier.
-  //lookup->store = newStore;
   __c11_atomic_store(&lookup->store, newStore, __ATOMIC_RELEASE);
 
   // We need to busy wait until there are no lock-free readers before it is safe
@@ -106,12 +105,10 @@ static Store *Resize(FastPointerLookup_t *lookup, Store *oldStore) {
 static Store *InitStore(FastPointerLookup_t *lookup) {
   pthread_mutex_lock(&lookup->mutex);
   // Double check that store is still null.
-  //Store *store = lookup->store;
   Store *store = __c11_atomic_load(&lookup->store, __ATOMIC_ACQUIRE);
   if (!store) {
     store = NewStore(lookup, INITIAL_CAPACITY);
     // Atomic store with a barrier.
-    //lookup->store = store;
     __c11_atomic_store(&lookup->store, store, __ATOMIC_RELEASE);
   }
   pthread_mutex_unlock(&lookup->mutex);
@@ -135,7 +132,6 @@ static Entry *Put(FastPointerLookup_t *lookup, Store *store, void *key, uint32_t
 
 static void *LockedLookup(FastPointerLookup_t *lookup, void *key, uint32_t hash) {
   pthread_mutex_lock(&lookup->mutex);
-  //Store *store = lookup->store;
   Store *store = __c11_atomic_load(&lookup->store, __ATOMIC_RELAXED);
   size_t idx = hash & (store->size - 1);
   Entry *entry = __c11_atomic_load(&store->table[idx], __ATOMIC_RELAXED);
@@ -156,7 +152,7 @@ static void *LockedLookup(FastPointerLookup_t *lookup, void *key, uint32_t hash)
 void *FastPointerLookup(FastPointerLookup_t *lookup, void *key) {
   uint32_t hash = Hash(key);
   __c11_atomic_fetch_add(&lookup->readers, 1, __ATOMIC_ACQUIRE);
-  //Store *store = lookup->store;  // Atomic load with barrier.
+  // Atomic load with barrier.
   Store *store = __c11_atomic_load(&lookup->store, __ATOMIC_ACQUIRE);
 
   if (!store) {
