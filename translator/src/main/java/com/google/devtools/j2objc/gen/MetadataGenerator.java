@@ -219,12 +219,16 @@ public class MetadataGenerator {
       javaName = null;
     }
     String staticRef = "NULL";
-    String constantValue = "";
+    String constantValue;
     if (BindingUtil.isPrimitiveConstant(var)) {
       constantValue = String.format(".constantValue.%s = %s",
           getRawValueField(var), nameTable.getVariableQualifiedName(var));
-    } else if (BindingUtil.isStatic(var)) {
-      staticRef = '&' + nameTable.getVariableQualifiedName(var);
+    } else {
+      // Explicit 0-initializer to avoid Clang warning.
+      constantValue = ".constantValue.asLong = 0";
+      if (BindingUtil.isStatic(var)) {
+        staticRef = '&' + nameTable.getVariableQualifiedName(var);
+      }
     }
     return String.format(
         "    { \"%s\", %s, 0x%x, \"%s\", %s, %s, %s },\n",
