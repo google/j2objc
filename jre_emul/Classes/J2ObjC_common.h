@@ -117,27 +117,8 @@ __attribute__ ((unused)) static inline id check_protocol_cast(id __unsafe_unreta
 
 // Should only be used with manual reference counting.
 #if !__has_feature(objc_arc)
-static inline id JreStrongAssignInner(id *pIvar, id self, NS_RELEASES_ARGUMENT id value) {
-  if (*pIvar != self) {
-    [*pIvar autorelease];
-  }
-  *pIvar = value;
-  return value;
-}
-
-static inline id JreStrongAssign(id *pIvar, id self, id value) {
-  if (value != self) {
-    [value retain];
-  }
-  return JreStrongAssignInner(pIvar, self, value);
-}
-
-static inline id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUMENT id value) {
-  if (value == self) {
-    [value autorelease];
-  }
-  return JreStrongAssignInner(pIvar, self, value);
-}
+FOUNDATION_EXPORT id JreStrongAssign(id *pIvar, id self, id value);
+FOUNDATION_EXPORT id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUMENT id value);
 #endif
 
 /*!

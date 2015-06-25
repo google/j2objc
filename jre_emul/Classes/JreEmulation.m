@@ -50,6 +50,28 @@ void JrePrintNilChkCountAtExit() {
   atexit(JrePrintNilChkCount);
 }
 
+static inline id JreStrongAssignInner(id *pIvar, id self, NS_RELEASES_ARGUMENT id value) {
+  if (*pIvar != self) {
+    [*pIvar autorelease];
+  }
+  *pIvar = value;
+  return value;
+}
+
+id JreStrongAssign(id *pIvar, id self, id value) {
+  if (value != self) {
+    [value retain];
+  }
+  return JreStrongAssignInner(pIvar, self, value);
+}
+
+id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUMENT id value) {
+  if (value == self) {
+    [value autorelease];
+  }
+  return JreStrongAssignInner(pIvar, self, value);
+}
+
 // Converts main() arguments into an IOSObjectArray of NSStrings.  The first
 // argument, the program name, is skipped so the returned array matches what
 // is passed to a Java main method.
