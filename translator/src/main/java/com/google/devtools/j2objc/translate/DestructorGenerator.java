@@ -44,6 +44,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -58,45 +59,32 @@ public class DestructorGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    final List<IVariableBinding> releaseableFields = Lists.newArrayList();
-    for (final FieldDeclaration field : TreeUtil.getFieldDeclarations(node)) {
-      if (!field.getType().isPrimitiveType() && !isStatic(field)) {
-        TreeVisitor varFinder = new TreeVisitor() {
-          @Override
-          public boolean visit(VariableDeclarationFragment node) {
-            IVariableBinding binding = node.getVariableBinding();
-            if (!Modifier.isStatic(field.getModifiers())) {
-              releaseableFields.add(binding);
-            }
-            return true;
-          }
-        };
-        varFinder.run(field);
-      }
+    if (node.isInterface()) {
+      return true;
     }
-    // We always generate a destructor method except if the type is an interface.
-    if (!node.isInterface()) {
-      boolean foundDestructor = false;
-
-      // If a destructor method already exists, append release statements.
-      for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
-        if (BindingUtil.isDestructor(method.getMethodBinding())) {
-          if (Options.useARC()) {
-            removeSuperFinalizeStatement(method.getBody());
-          }
-          addReleaseStatements(method, releaseableFields);
-          foundDestructor = true;
-        }
-      }
-
+    MethodDeclaration destructor = findDestructor(node);
+    if (destructor != null && Options.useARC()) {
+      removeSuperFinalizeStatement(destructor.getBody());
+    }
+    List<Statement> releaseStatements = createReleaseStatements(node);
+    if (destructor == null && !releaseStatements.isEmpty()) {
       // No destructor, so create a new one if there are releasable fields.
-      if (!foundDestructor && !Options.useARC() && !releaseableFields.isEmpty()) {
-        MethodDeclaration finalizeMethod =
-            buildFinalizeMethod(node.getTypeBinding(), releaseableFields);
-        node.getBodyDeclarations().add(finalizeMethod);
-      }
+      destructor = buildFinalizeMethod(node.getTypeBinding());
+      node.getBodyDeclarations().add(destructor);
+    }
+    if (destructor != null) {
+      addReleaseStatements(destructor, releaseStatements);
     }
     return true;
+  }
+
+  private MethodDeclaration findDestructor(TypeDeclaration node) {
+    for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
+      if (BindingUtil.isDestructor(method.getMethodBinding())) {
+        return method;
+      }
+    }
+    return null;
   }
 
   private void removeSuperFinalizeStatement(Block body) {
@@ -134,7 +122,41 @@ public class DestructorGenerator extends TreeVisitor {
     return superFinalize[0];
   }
 
-  private void addReleaseStatements(MethodDeclaration method, List<IVariableBinding> fields) {
+  private List<Statement> createReleaseStatements(TypeDeclaration node) {
+    if (Options.useARC()) {
+      return Collections.emptyList();
+    }
+    List<Statement> statements = Lists.newArrayList();
+    for (VariableDeclarationFragment fragment : TreeUtil.getAllFields(node)) {
+      IVariableBinding var = fragment.getVariableBinding();
+      ITypeBinding type = var.getType();
+      if (BindingUtil.isStatic(var) || type.isPrimitive() || BindingUtil.isWeakReference(var)) {
+        continue;
+      }
+      ITypeBinding idType = typeEnv.resolveIOSType("id");
+      FunctionInvocation releaseInvocation = new FunctionInvocation(
+          "RELEASE_", idType, idType, idType);
+      releaseInvocation.getArguments().add(new SimpleName(var));
+      ExpressionStatement releaseStmt = new ExpressionStatement(releaseInvocation);
+
+      // If field type is same as declaring class, check that field != this.
+      ITypeBinding declaringClassType = var.getDeclaringClass();
+      if (declaringClassType.isAssignmentCompatible(type.getErasure())) {
+        InfixExpression condition = new InfixExpression(typeEnv.resolveJavaType("boolean"),
+            InfixExpression.Operator.NOT_EQUALS, new SimpleName(var),
+            new ThisExpression(declaringClassType));
+        IfStatement stmt = new IfStatement();
+        stmt.setExpression(condition);
+        stmt.setThenStatement(releaseStmt);
+        statements.add(stmt);
+      } else {
+        statements.add(releaseStmt);
+      }
+    }
+    return statements;
+  }
+
+  private void addReleaseStatements(MethodDeclaration method, List<Statement> releaseStatements) {
     SuperMethodInvocation superFinalize = findSuperFinalizeInvocation(method);
 
     List<Statement> statements = method.getBody().getStatements();
@@ -148,51 +170,27 @@ public class DestructorGenerator extends TreeVisitor {
         statements = tryStatement.getBody().getStatements();
       }
     }
-    if (Options.useReferenceCounting()) {
-      for (IVariableBinding field : fields) {
-        if (!field.getType().isPrimitive() && !BindingUtil.isWeakReference(field)) {
-          ITypeBinding idType = typeEnv.resolveIOSType("id");
-          FunctionInvocation releaseInvocation = new FunctionInvocation(
-              "RELEASE_", idType, idType, idType);
-          releaseInvocation.getArguments().add(new SimpleName(field));
-          ExpressionStatement releaseStmt = new ExpressionStatement(releaseInvocation);
 
-          // If field type is same as declaring class, check that field != this.
-          ITypeBinding declaringClassType = field.getDeclaringClass();
-          if (declaringClassType.isAssignmentCompatible(field.getType().getErasure())) {
-            InfixExpression condition = new InfixExpression(typeEnv.resolveJavaType("boolean"),
-                InfixExpression.Operator.NOT_EQUALS, new SimpleName(field),
-                new ThisExpression(declaringClassType));
-            IfStatement stmt = new IfStatement();
-            stmt.setExpression(condition);
-            stmt.setThenStatement(releaseStmt);
-            statements.add(stmt);
-          } else {
-            statements.add(releaseStmt);
-          }
-        }
-      }
-      if (superFinalize == null) {
-        IMethodBinding methodBinding = method.getMethodBinding();
-        GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
-            NameTable.DEALLOC_METHOD, Modifier.PUBLIC, typeEnv.mapTypeName("void"),
-            methodBinding.getDeclaringClass());
-        SuperMethodInvocation call = new SuperMethodInvocation(binding);
-        ExpressionStatement stmt = new ExpressionStatement(call);
-        statements.add(stmt);
-      }
+    statements.addAll(releaseStatements);
+
+    if (Options.useReferenceCounting() && superFinalize == null) {
+      IMethodBinding methodBinding = method.getMethodBinding();
+      GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
+          NameTable.DEALLOC_METHOD, Modifier.PUBLIC, typeEnv.mapTypeName("void"),
+          methodBinding.getDeclaringClass());
+      SuperMethodInvocation call = new SuperMethodInvocation(binding);
+      ExpressionStatement stmt = new ExpressionStatement(call);
+      statements.add(stmt);
     }
   }
 
-  private MethodDeclaration buildFinalizeMethod(
-      ITypeBinding declaringClass, List<IVariableBinding> fields) {
+  private MethodDeclaration buildFinalizeMethod(ITypeBinding declaringClass) {
     ITypeBinding voidType = typeEnv.mapTypeName("void");
     int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
     GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
         NameTable.DEALLOC_METHOD, modifiers, voidType, declaringClass);
     MethodDeclaration method = new MethodDeclaration(binding);
     method.setBody(new Block());
-    addReleaseStatements(method, fields);
     return method;
   }
 }
