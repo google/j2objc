@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -36,10 +37,12 @@ import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.LabeledStatement;
+import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
@@ -481,5 +484,28 @@ public class Rewriter extends TreeVisitor {
       node.setRightHandSide(new InfixExpression(
           lhsType, InfixExpression.Operator.PLUS, lhs.copy(), rhs.copy()));
     }
+  }
+
+  @Override
+  public boolean visit(LambdaExpression node) {
+    // We shouldn't be able to reach this if we aren't in a Java 8 translator, as we are in a
+    // LambdaExpression, but this will help to highlight Java 8 specific additions in the future.
+    if (Options.isJava8Translator()) {
+      if (node.getBody() instanceof Block) {
+        return true;
+      }
+      // Add explicit blocks for lambdas with expression bodies.
+      Block block = new Block();
+      Statement statement;
+      Expression expression = (Expression) TreeUtil.remove(node.getBody());
+      if (BindingUtil.isVoid(node.getFunctionalInterfaceMethod().getReturnType())) {
+        statement = new ExpressionStatement(expression);
+      } else {
+        statement = new ReturnStatement(expression);
+      }
+      block.getStatements().add(statement);
+      node.setBody(block);
+    }
+    return true;
   }
 }
