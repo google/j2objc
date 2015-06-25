@@ -59,4 +59,24 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslation(translation, "return fmod(one, two);");
     assertTranslation(translation, "return fmodf(three, four);");
   }
+
+  public void testLShift32WithExtendedOperands() throws IOException {
+    String source = "int a; a = 1 << 2; a = 1 << 2 << 3; a = 1 << 2 << 3 << 4;";
+    List<Statement> stmts = translateStatements(source);
+    assertEquals(4, stmts.size());
+    assertEquals("a = LShift32(1, 2);", generateStatement(stmts.get(1)));
+    assertEquals("a = LShift32(LShift32(1, 2), 3);", generateStatement(stmts.get(2)));
+    assertEquals("a = LShift32(LShift32(LShift32(1, 2), 3), 4);", generateStatement(stmts.get(3)));
+  }
+
+  public void testURShift64WithExtendedOperands() throws IOException {
+    String source = "long a; a = 65535L >>> 2; a = 65535L >>> 2 >>> 3; " +
+            "a = 65535L >>> 2 >>> 3 >>> 4;";
+    List<Statement> stmts = translateStatements(source);
+    assertEquals(4, stmts.size());
+    assertEquals("a = URShift64(65535LL, 2);", generateStatement(stmts.get(1)));
+    assertEquals("a = URShift64(URShift64(65535LL, 2), 3);", generateStatement(stmts.get(2)));
+    assertEquals("a = URShift64(URShift64(URShift64(65535LL, 2), 3), 4);",
+            generateStatement(stmts.get(3)));
+  }
 }
