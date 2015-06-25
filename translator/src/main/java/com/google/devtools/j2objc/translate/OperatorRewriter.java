@@ -43,6 +43,7 @@ import com.google.devtools.j2objc.util.UnicodeUtils;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -105,10 +106,24 @@ public class OperatorRewriter extends TreeVisitor {
     ITypeBinding nodeType = node.getTypeBinding();
     String funcName = getInfixFunction(op, nodeType);
     if (funcName != null) {
-      FunctionInvocation invocation = new FunctionInvocation(funcName, nodeType, nodeType, null);
-      List<Expression> args = invocation.getArguments();
-      TreeUtil.moveList(node.getOperands(), args);
-      node.replaceWith(invocation);
+      Iterator<Expression> operandIter = node.getOperands().iterator();
+      Expression leftOperand = operandIter.next();
+      operandIter.remove();
+
+      // This takes extended operands into consideration. If a node has three operands, o1 o2 o3,
+      // the function invocations should be like f(f(o1, o2), o3), given that the infix operators
+      // translated here are all left-associative.
+      while (operandIter.hasNext()) {
+        Expression rightOperand = operandIter.next();
+        operandIter.remove();
+        FunctionInvocation invocation = new FunctionInvocation(funcName, nodeType, nodeType, null);
+        List<Expression> args = invocation.getArguments();
+        args.add(leftOperand);
+        args.add(rightOperand);
+        leftOperand = invocation;
+      }
+
+      node.replaceWith(leftOperand);
     } else if (op == InfixExpression.Operator.PLUS && typeEnv.isStringType(nodeType)) {
       rewriteStringConcatenation(node);
     }
