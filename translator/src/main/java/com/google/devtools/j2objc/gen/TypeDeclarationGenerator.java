@@ -15,7 +15,6 @@
 package com.google.devtools.j2objc.gen;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
@@ -41,7 +40,6 @@ import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Base class for generating type declarations, either public or private.
@@ -107,7 +105,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printStaticFieldDeclarations();
     printOuterDeclarations();
     printTypeLiteralDeclaration();
-    printIncrementAndDecrementFunctions();
+    printBoxedOperators();
 
     printUnprefixedAlias();
   }
@@ -396,15 +394,18 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", typeName);
   }
 
-  private static final Set<String> NEEDS_INC_AND_DEC = ImmutableSet.of(
-      "int", "long", "double", "float", "short", "byte", "char");
-
-  private void printIncrementAndDecrementFunctions() {
+  private void printBoxedOperators() {
     ITypeBinding primitiveType = typeEnv.getPrimitiveType(typeBinding);
-    if (primitiveType == null || !NEEDS_INC_AND_DEC.contains(primitiveType.getName())) {
+    if (primitiveType == null) {
       return;
     }
+    char binaryName = primitiveType.getBinaryName().charAt(0);
+    if ("ZV".indexOf(binaryName) >= 0) {
+      return; // No special operators are needed for java.lang.Boolean or java.lang.Void.
+    }
     String primitiveName = primitiveType.getName();
+    String capName = NameTable.capitalize(primitiveName);
+    String primitiveTypeName = NameTable.getPrimitiveObjCType(primitiveType);
     String valueMethod = primitiveName + "Value";
     if (primitiveName.equals("long")) {
       valueMethod = "longLongValue";
@@ -412,8 +413,32 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       valueMethod = "charValue";
     }
     newline();
-    printf("BOXED_INC_AND_DEC(%s, %s, %s)\n",
-        NameTable.capitalize(primitiveName), valueMethod, typeName);
+    printf("BOXED_INC_AND_DEC(%s, %s, %s)\n", capName, valueMethod, typeName);
+
+    if ("DFIJ".indexOf(binaryName) >= 0) {
+      printf("BOXED_COMPOUND_ASSIGN_ARITHMETIC(%s, %s, %s, %s)\n",
+          capName, valueMethod, primitiveTypeName, typeName);
+    }
+    if ("IJ".indexOf(binaryName) >= 0) {
+      printf("BOXED_COMPOUND_ASSIGN_MOD(%s, %s, %s, %s)\n",
+          capName, valueMethod, primitiveTypeName, typeName);
+    }
+    if ("DF".indexOf(binaryName) >= 0) {
+      printf("BOXED_COMPOUND_ASSIGN_FPMOD(%s, %s, %s, %s)\n",
+          capName, valueMethod, primitiveTypeName, typeName);
+    }
+    if ("IJ".indexOf(binaryName) >= 0) {
+      printf("BOXED_COMPOUND_ASSIGN_BITWISE(%s, %s, %s, %s)\n",
+          capName, valueMethod, primitiveTypeName, typeName);
+    }
+    if ("I".indexOf(binaryName) >= 0) {
+      printf("BOXED_SHIFT_ASSIGN_32(%s, %s, %s, %s)\n",
+          capName, valueMethod, primitiveTypeName, typeName);
+    }
+    if ("J".indexOf(binaryName) >= 0) {
+      printf("BOXED_SHIFT_ASSIGN_64(%s, %s, %s, %s)\n",
+          capName, valueMethod, primitiveTypeName, typeName);
+    }
   }
 
   private void printUnprefixedAlias() {

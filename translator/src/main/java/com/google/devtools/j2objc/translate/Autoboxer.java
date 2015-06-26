@@ -51,6 +51,7 @@ import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.util.List;
 
@@ -132,51 +133,64 @@ public class Autoboxer extends TreeVisitor {
     Expression rhs = node.getRightHandSide();
     ITypeBinding rhType = rhs.getTypeBinding();
     Assignment.Operator op = node.getOperator();
-    if (op != Assignment.Operator.ASSIGN && !lhType.isPrimitive()
-        && !lhType.equals(typeEnv.resolveJavaType("java.lang.String"))) {
-      // Not a simple assignment; need to break the <operation>-WITH_ASSIGN
-      // assignment apart.
-      node.setOperator(Assignment.Operator.ASSIGN);
-      node.setRightHandSide(box(newInfixExpression(lhs, rhs, op, lhType)));
-    } else {
-      if (lhType.isPrimitive() && !rhType.isPrimitive()) {
-        node.setRightHandSide(unbox(rhs));
-      } else if (!lhType.isPrimitive() && rhType.isPrimitive()) {
-        node.setRightHandSide(boxWithType(rhs, lhType));
-      }
+    if (op != Assignment.Operator.ASSIGN && !lhType.isPrimitive()) {
+      rewriteBoxedAssignment(node);
+    } else if (lhType.isPrimitive() && !rhType.isPrimitive()) {
+      node.setRightHandSide(unbox(rhs));
+    } else if (!lhType.isPrimitive() && rhType.isPrimitive()) {
+      node.setRightHandSide(boxWithType(rhs, lhType));
     }
   }
 
-  private InfixExpression newInfixExpression(
-      Expression lhs, Expression rhs, Assignment.Operator op, ITypeBinding lhType) {
-    InfixExpression.Operator infixOp;
-    // op isn't an enum, so this can't be a switch.
-    if (op == Assignment.Operator.PLUS_ASSIGN) {
-      infixOp = InfixExpression.Operator.PLUS;
-    } else if (op == Assignment.Operator.MINUS_ASSIGN) {
-      infixOp = InfixExpression.Operator.MINUS;
-    } else if (op == Assignment.Operator.TIMES_ASSIGN) {
-      infixOp = InfixExpression.Operator.TIMES;
-    } else if (op == Assignment.Operator.DIVIDE_ASSIGN) {
-      infixOp = InfixExpression.Operator.DIVIDE;
-    } else if (op == Assignment.Operator.BIT_AND_ASSIGN) {
-      infixOp = InfixExpression.Operator.AND;
-    } else if (op == Assignment.Operator.BIT_OR_ASSIGN) {
-      infixOp = InfixExpression.Operator.OR;
-    } else if (op == Assignment.Operator.BIT_XOR_ASSIGN) {
-      infixOp = InfixExpression.Operator.XOR;
-    } else if (op == Assignment.Operator.REMAINDER_ASSIGN) {
-      infixOp = InfixExpression.Operator.REMAINDER;
-    } else if (op == Assignment.Operator.LEFT_SHIFT_ASSIGN) {
-      infixOp = InfixExpression.Operator.LEFT_SHIFT;
-    } else if (op == Assignment.Operator.RIGHT_SHIFT_SIGNED_ASSIGN) {
-      infixOp = InfixExpression.Operator.RIGHT_SHIFT_SIGNED;
-    } else if (op == Assignment.Operator.RIGHT_SHIFT_UNSIGNED_ASSIGN) {
-      infixOp = InfixExpression.Operator.RIGHT_SHIFT_UNSIGNED;
-    } else {
-      throw new IllegalArgumentException();
+  private void rewriteBoxedAssignment(Assignment node) {
+    Expression lhs = node.getLeftHandSide();
+    Expression rhs = node.getRightHandSide();
+    ITypeBinding type = lhs.getTypeBinding();
+    if (!typeEnv.isBoxedPrimitive(type)) {
+      return;
     }
-    return new InfixExpression(typeEnv.getPrimitiveType(lhType), infixOp, unbox(lhs), unbox(rhs));
+    ITypeBinding primitiveType = typeEnv.getPrimitiveType(type);
+    IVariableBinding var = TreeUtil.getVariableBinding(lhs);
+    assert var != null : "No variable binding for lhs of assignment.";
+    String funcName = "Boxed" + getAssignFunctionName(node.getOperator());
+    if (var.isField() && !BindingUtil.isWeakReference(var)) {
+      funcName += "Strong";
+    }
+    funcName += NameTable.capitalize(primitiveType.getName());
+    FunctionInvocation invocation = new FunctionInvocation(funcName, type, type, type);
+    invocation.getArguments().add(new PrefixExpression(
+        typeEnv.getPointerType(type), PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
+    invocation.getArguments().add(unbox(rhs));
+    node.replaceWith(invocation);
+  }
+
+  private static String getAssignFunctionName(Assignment.Operator op) {
+    switch (op) {
+      case PLUS_ASSIGN:
+        return "PlusAssign";
+      case MINUS_ASSIGN:
+        return "MinusAssign";
+      case TIMES_ASSIGN:
+        return "TimesAssign";
+      case DIVIDE_ASSIGN:
+        return "DivideAssign";
+      case BIT_AND_ASSIGN:
+        return "BitAndAssign";
+      case BIT_OR_ASSIGN:
+        return "BitOrAssign";
+      case BIT_XOR_ASSIGN:
+        return "BitXorAssign";
+      case REMAINDER_ASSIGN:
+        return "ModAssign";
+      case LEFT_SHIFT_ASSIGN:
+        return "LShiftAssign";
+      case RIGHT_SHIFT_SIGNED_ASSIGN:
+        return "RShiftAssign";
+      case RIGHT_SHIFT_UNSIGNED_ASSIGN:
+        return "URShiftAssign";
+      default:
+        throw new IllegalArgumentException();
+    }
   }
 
   @Override
@@ -329,9 +343,9 @@ public class Autoboxer extends TreeVisitor {
     PrefixExpression.Operator op = node.getOperator();
     Expression operand = node.getOperand();
     if (op == PrefixExpression.Operator.INCREMENT) {
-      rewriteBoxedPrefixOrPostfix(node, operand, "PreIncr");
+      rewriteBoxedPrefixOrPostfix(node, operand, "BoxedPreIncr");
     } else if (op == PrefixExpression.Operator.DECREMENT) {
-      rewriteBoxedPrefixOrPostfix(node, operand, "PreDecr");
+      rewriteBoxedPrefixOrPostfix(node, operand, "BoxedPreDecr");
     } else if (!operand.getTypeBinding().isPrimitive()) {
       node.setOperand(unbox(operand));
     }
@@ -341,19 +355,23 @@ public class Autoboxer extends TreeVisitor {
   public void endVisit(PostfixExpression node) {
     PostfixExpression.Operator op = node.getOperator();
     if (op == PostfixExpression.Operator.INCREMENT) {
-      rewriteBoxedPrefixOrPostfix(node, node.getOperand(), "PostIncr");
+      rewriteBoxedPrefixOrPostfix(node, node.getOperand(), "BoxedPostIncr");
     } else if (op == PostfixExpression.Operator.DECREMENT) {
-      rewriteBoxedPrefixOrPostfix(node, node.getOperand(), "PostDecr");
+      rewriteBoxedPrefixOrPostfix(node, node.getOperand(), "BoxedPostDecr");
     }
   }
 
-  private void rewriteBoxedPrefixOrPostfix(
-      TreeNode node, Expression operand, String methodPrefix) {
+  private void rewriteBoxedPrefixOrPostfix(TreeNode node, Expression operand, String funcName) {
     ITypeBinding type = operand.getTypeBinding();
     if (!typeEnv.isBoxedPrimitive(type)) {
       return;
     }
-    String funcName = methodPrefix + NameTable.capitalize(typeEnv.getPrimitiveType(type).getName());
+    IVariableBinding var = TreeUtil.getVariableBinding(operand);
+    assert var != null : "No variable binding on prefix or postfix operand.";
+    if (var.isField() && !BindingUtil.isWeakReference(var)) {
+      funcName += "Strong";
+    }
+    funcName += NameTable.capitalize(typeEnv.getPrimitiveType(type).getName());
     FunctionInvocation invocation = new FunctionInvocation(funcName, type, type, type);
     invocation.getArguments().add(new PrefixExpression(
         typeEnv.getPointerType(type), PrefixExpression.Operator.ADDRESS_OF,

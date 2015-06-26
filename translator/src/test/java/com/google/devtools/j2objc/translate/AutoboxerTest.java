@@ -286,9 +286,7 @@ public class AutoboxerTest extends GenerationTest {
   public void testBoxedLhsOperatorAssignment() throws IOException {
     String source = "public class Test { Integer i = 1; void foo() { i *= 2; } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation,
-        "Test_set_i_(self, "
-        + "JavaLangInteger_valueOfWithInt_([((JavaLangInteger *) nil_chk(i_)) intValue] * 2));");
+    assertTranslation(translation, "BoxedTimesAssignStrongInt(&i_, 2);");
   }
 
   public void testBoxedEnumConstructorArgs() throws IOException {
@@ -457,5 +455,31 @@ public class AutoboxerTest extends GenerationTest {
     // matches the primitive cast type.
     assertTranslation(translation,
         "return [((JavaLangInteger *) nil_chk(i)) intValue];");
+  }
+
+  public void testBoxedOperators() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { Integer si; Long sl; Float sf; Double sd;"
+        + " void test(Integer wi, Long wl, Float wf, Double wd) {"
+        + " si++; wi++; ++sl; ++wl; sf--; wf--; --sd; --wd;"
+        + " si += 5; wi += 5; sl &= 6l; wl &= 6l;"
+        + " si <<= 2; wi <<= 2; sl >>>= 3; wl >>>= 3; } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "BoxedPostIncrStrongInt(&si_);",
+        "BoxedPostIncrInt(&wi);",
+        "BoxedPreIncrStrongLong(&sl_);",
+        "BoxedPreIncrLong(&wl);",
+        "BoxedPostDecrStrongFloat(&sf_);",
+        "BoxedPostDecrFloat(&wf);",
+        "BoxedPreDecrStrongDouble(&sd_);",
+        "BoxedPreDecrDouble(&wd);",
+        "BoxedPlusAssignStrongInt(&si_, 5);",
+        "BoxedPlusAssignInt(&wi, 5);",
+        "BoxedBitAndAssignStrongLong(&sl_, 6l);",
+        "BoxedBitAndAssignLong(&wl, 6l);",
+        "BoxedLShiftAssignStrongInt(&si_, 2);",
+        "BoxedLShiftAssignInt(&wi, 2);",
+        "BoxedURShiftAssignStrongLong(&sl_, 3);",
+        "BoxedURShiftAssignLong(&wl, 3);");
   }
 }
