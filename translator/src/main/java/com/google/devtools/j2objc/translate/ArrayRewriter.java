@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NumberLiteral;
+import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
@@ -237,6 +238,11 @@ public class ArrayRewriter extends TreeVisitor {
 
   private static boolean needsAssignableAccess(ArrayAccess node) {
     TreeNode parent = node.getParent();
+
+    while (parent instanceof ParenthesizedExpression) {
+        parent = parent.getParent();
+    }
+
     if (parent instanceof PostfixExpression) {
       PostfixExpression.Operator op = ((PostfixExpression) parent).getOperator();
       if (op == PostfixExpression.Operator.INCREMENT
