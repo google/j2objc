@@ -320,14 +320,19 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   @Override
-  public boolean visit(SimpleName node) {
-    TreeNode parent = node.getParent();
-    if (parent instanceof FieldAccess
-        || (parent instanceof QualifiedName && node == ((QualifiedName) parent).getName())) {
-      // Already a qualified node.
-      return false;
-    }
+  public boolean visit(FieldAccess node) {
+    node.getExpression().accept(this);
+    return false;
+  }
 
+  @Override
+  public boolean visit(QualifiedName node) {
+    node.getQualifier().accept(this);
+    return false;
+  }
+
+  @Override
+  public boolean visit(SimpleName node) {
     IVariableBinding var = TreeUtil.getVariableBinding(node);
     if (var != null) {
       if (var.isField() && !Modifier.isStatic(var.getModifiers())) {

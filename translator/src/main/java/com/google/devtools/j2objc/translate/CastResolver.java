@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
-import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
@@ -300,18 +299,6 @@ public class CastResolver extends TreeVisitor {
     if (returnValueNeedsIntCast(node)) {
       addCast(node);
     }
-  }
-
-  @Override
-  public boolean visit(QualifiedName node) {
-    if (needsCast(node.getQualifier(), true)) {
-      // The qualifier child has type Name and can't be replaced with a
-      // CastExpression, so we must convert to a FieldAccess.
-      FieldAccess newNode = TreeUtil.convertToFieldAccess(node);
-      newNode.accept(this);
-      return false;
-    }
-    return true;
   }
 
   @Override

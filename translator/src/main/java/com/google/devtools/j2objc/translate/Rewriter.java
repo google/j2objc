@@ -39,7 +39,6 @@ import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -60,7 +59,6 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.RetainedLocalRef;
 
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -407,22 +405,14 @@ public class Rewriter extends TreeVisitor {
 
   @Override
   public boolean visit(QualifiedName node) {
-    // Check for ScopedLocalRefs.
-    IBinding var = node.getBinding();
-    if (var instanceof IVariableBinding) {
-      IVariableBinding localRef = localRefs.get(node.getQualifier().getBinding());
-      if (localRef != null) {
-        IVariableBinding localRefFieldBinding = typeEnv.getLocalRefType().getDeclaredFields()[0];
-        Name newQualifier = node.getQualifier().copy();
-        newQualifier.setBinding(localRef);
-        FieldAccess localRefAccess = new FieldAccess(localRefFieldBinding, newQualifier);
-        CastExpression newCast = new CastExpression(
-            node.getQualifier().getTypeBinding(), localRefAccess);
-        ParenthesizedExpression newParens = ParenthesizedExpression.parenthesize(newCast);
-        FieldAccess access = new FieldAccess((IVariableBinding) var, newParens);
-        node.replaceWith(access);
-        return false;
-      }
+    IVariableBinding var = TreeUtil.getVariableBinding(node);
+    Expression qualifier = node.getQualifier();
+    if (var != null && var.isField() && TreeUtil.getVariableBinding(qualifier) != null) {
+      // FieldAccess nodes are more easily mutated than QualifiedName.
+      FieldAccess fieldAccess = new FieldAccess(var, TreeUtil.remove(qualifier));
+      node.replaceWith(fieldAccess);
+      fieldAccess.accept(this);
+      return false;
     }
     return true;
   }

@@ -348,29 +348,6 @@ public class TreeUtil {
     asStatementList(node).add(0, toInsert);
   }
 
-  /**
-   * Replaces (in place) a QualifiedName node with an equivalent FieldAccess
-   * node. This is helpful when a mutation needs to replace the qualifier with
-   * a node that has Expression type but not Name type.
-   * CAUTION: It is strongly recommended that this method be used within a
-   * "visit", and not a "endVisit" because it will rewrite all QualifiedNode
-   * ancestors.
-   */
-  public static FieldAccess convertToFieldAccess(QualifiedName node) {
-    TreeNode parent = node.getParent();
-    if (parent instanceof QualifiedName) {
-      FieldAccess newParent = convertToFieldAccess((QualifiedName) parent);
-      Expression expr = newParent.getExpression();
-      assert expr instanceof QualifiedName;
-      node = (QualifiedName) expr;
-    }
-    IVariableBinding variableBinding = getVariableBinding(node);
-    assert variableBinding != null : "node must be a variable";
-    FieldAccess newNode = new FieldAccess(variableBinding, remove(node.getQualifier()));
-    node.replaceWith(newNode);
-    return newNode;
-  }
-
   public static Expression newLiteral(Object value, Types typeEnv) {
     if (value instanceof Boolean) {
       return new BooleanLiteral((Boolean) value, typeEnv);

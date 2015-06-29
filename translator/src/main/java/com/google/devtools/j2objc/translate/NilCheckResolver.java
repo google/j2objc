@@ -38,7 +38,6 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
-import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SwitchCase;
 import com.google.devtools.j2objc.ast.SwitchStatement;
@@ -189,29 +188,6 @@ public class NilCheckResolver extends TreeVisitor {
     if (!BindingUtil.isStatic(node.getVariableBinding())) {
       addNilCheck(node.getExpression());
     }
-  }
-
-  @Override
-  public boolean visit(QualifiedName node) {
-    if (!needsNilCheck(node.getQualifier())) {
-      return true;
-    }
-
-    // Instance references to static fields don't need to be nil-checked.
-    // This is true in Java (surprisingly), where instance.FIELD returns
-    // FIELD even when instance is null.
-    IVariableBinding var = TreeUtil.getVariableBinding(node);
-    IVariableBinding qualifierVar = TreeUtil.getVariableBinding(node.getQualifier());
-    if (var != null && qualifierVar != null && BindingUtil.isStatic(var)
-        && !BindingUtil.isStatic(qualifierVar)) {
-      return true;
-    }
-
-    // We can't substitute the qualifier with a nil_chk because it must have a
-    // Name type, so we have to convert to a FieldAccess node.
-    FieldAccess newNode = TreeUtil.convertToFieldAccess(node);
-    newNode.accept(this);
-    return false;
   }
 
   @Override

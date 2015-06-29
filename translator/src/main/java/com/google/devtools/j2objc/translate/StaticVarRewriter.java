@@ -105,6 +105,9 @@ public class StaticVarRewriter extends TreeVisitor {
       expr.accept(this);
     } else {
       fieldAccess.replaceWith(TreeUtil.remove(name));
+      if (fieldAccess == node) {
+        name.accept(this);
+      }
     }
   }
 
@@ -127,13 +130,6 @@ public class StaticVarRewriter extends TreeVisitor {
   private boolean visitName(Name node) {
     IVariableBinding var = TreeUtil.getVariableBinding(node);
     if (var != null && useAccessor(node, var)) {
-      TreeNode parent = node.getParent();
-      if (parent instanceof QualifiedName && node == ((QualifiedName) parent).getQualifier()) {
-        // QualifiedName nodes can only have qualifier children of type Name, so
-        // we must convert QualifiedName parents to FieldAccess nodes.
-        FieldAccess newParent = TreeUtil.convertToFieldAccess((QualifiedName) parent);
-        node = (Name) newParent.getExpression();
-      }
       node.replaceWith(newGetterInvocation(var, false));
       return false;
     }
