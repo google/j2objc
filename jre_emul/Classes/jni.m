@@ -321,15 +321,15 @@ static jboolean IsInstanceOf(JNIEnv *env, jobject obj, jclass clazz) {
 }
 
 static jobject NewGlobalRef(JNIEnv *env, jobject obj) {
-  return obj;
+  return [(__bridge id)obj retain];
 }
 
 static jobject NewLocalRef(JNIEnv *env, jobject obj) {
-  return obj;
+  return obj;  // no-op
 }
 
 static void DeleteGlobalRef(JNIEnv *env, jobject globalRef) {
-  // no-op
+  [(__bridge id)globalRef autorelease];
 }
 
 static void DeleteLocalRef(JNIEnv *env, jobject localRef) {
@@ -1043,12 +1043,14 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
 
 C_JNIEnv J2ObjC_JNIEnv = &JNI_JNIEnvTable;
 
+static jint GetEnv(JavaVM *vm, void **penv, jint version);
+
 static jint DestroyJavaVM(JavaVM *vm) {
   return JNI_OK;
 }
 
 static jint AttachCurrentThread(JavaVM *vm, void **penv, void *args) {
-  *penv = (void *) J2ObjC_JNIEnv;
+  GetEnv(vm, penv, 0);
   return JNI_OK;
 }
 
@@ -1057,12 +1059,18 @@ static jint DetachCurrentThread(JavaVM *vm) {
 }
 
 static jint GetEnv(JavaVM *vm, void **penv, jint version) {
-  *penv = (void *) J2ObjC_JNIEnv;
+  static JNIEnv *env_ = NULL;
+  if (!env_) {
+    env_ = (JNIEnv *) malloc(sizeof(JNIEnv));
+    *env_ = J2ObjC_JNIEnv;
+  }
+  JNIEnv **result = (JNIEnv **) penv;
+  *result = env_;
   return JNI_OK;
 }
 
 static jint AttachCurrentThreadAsDaemon(JavaVM *vm, void **penv, void *args) {
-  *penv = (void *) J2ObjC_JNIEnv;
+  GetEnv(vm, penv, 0);
   return JNI_OK;
 }
 
@@ -1077,6 +1085,11 @@ static struct JNIInvokeInterface JNI_JavaVMTable = {
 C_JavaVM J2ObjC_JavaVM = &JNI_JavaVMTable;
 
 static jint GetJavaVM(JNIEnv *env, JavaVM **vm) {
-  *vm = (JavaVM *) J2ObjC_JavaVM;
+  static JavaVM *jvm_ = NULL;
+  if (!jvm_) {
+    jvm_ = (JavaVM *) malloc(sizeof(JavaVM));
+    *jvm_ = J2ObjC_JavaVM;
+  }
+  *vm = jvm_;
   return JNI_OK;
 }

@@ -24,6 +24,7 @@
 #ifndef JNI_H_
 #define JNI_H_
 
+#include <stdarg.h>
 #include "J2ObjC_types.h"
 
 /* "cardinal indices and sizes" */
