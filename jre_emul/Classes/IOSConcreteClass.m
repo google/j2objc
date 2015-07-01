@@ -81,14 +81,6 @@
   return class_ == [NSObject class] ? ![cls isPrimitive] : [cls.objcClass isSubclassOfClass:class_];
 }
 
-- (IOSClass *)asSubclass:(IOSClass *)cls {
-  Class otherClass = cls.objcClass;
-  if (otherClass == nil || ![class_ isSubclassOfClass:otherClass]) {
-    @throw AUTORELEASE([[JavaLangClassCastException alloc] init]);
-  }
-  return self;
-}
-
 - (BOOL)isEnum {
   JavaClassMetadata *metadata = [self getMetadata];
   if (metadata) {
