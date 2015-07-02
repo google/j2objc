@@ -72,7 +72,7 @@ public class DestructorGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (void)dealloc {",
-        "if (o_ != self) RELEASE_(o_);",
+        "RELEASE_(o_);",
         "RELEASE_(r_);",
         "[super dealloc];",
         "}");
@@ -99,7 +99,7 @@ public class DestructorGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (void)dealloc {",
         "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithId:self];",
-        "if (o_ != self) RELEASE_(o_);",
+        "RELEASE_(o_);",
         "RELEASE_(r_);",
         "[super dealloc];",
         "}");

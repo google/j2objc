@@ -50,25 +50,17 @@ void JrePrintNilChkCountAtExit() {
   atexit(JrePrintNilChkCount);
 }
 
+// TODO(kstanger): Eliminate "self" parameter.
 static inline id JreStrongAssignInner(id *pIvar, id self, NS_RELEASES_ARGUMENT id value) {
-  if (*pIvar != self) {
-    [*pIvar autorelease];
-  }
-  *pIvar = value;
-  return value;
+  [*pIvar autorelease];
+  return *pIvar = value;
 }
 
 id JreStrongAssign(id *pIvar, id self, id value) {
-  if (value != self) {
-    [value retain];
-  }
-  return JreStrongAssignInner(pIvar, self, value);
+  return JreStrongAssignInner(pIvar, self, [value retain]);
 }
 
 id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUMENT id value) {
-  if (value == self) {
-    [value autorelease];
-  }
   return JreStrongAssignInner(pIvar, self, value);
 }
 
