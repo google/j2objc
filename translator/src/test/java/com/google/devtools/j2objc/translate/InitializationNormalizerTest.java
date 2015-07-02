@@ -122,7 +122,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "+ (void)initialize {",
         "if (self == [Test class]) {",
         "{",
-        "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) "
+        "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out_))) "
             + "printlnWithNSString:@\"foo\"];");
   }
 
@@ -143,7 +143,8 @@ public class InitializationNormalizerTest extends GenerationTest {
         "  {",
         "    Test_setAndConsume_date_(self, new_JavaUtilDate_init());",
         "  }",
-        "  [((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithInt:i];",
+        "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out_))) "
+          + "printlnWithInt:i];",
         "}");
   }
 

@@ -164,8 +164,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile("public class Example { "
         + "void test() { Bar.FOO=2; } } class Bar { public static int FOO=1; }",
        "Example", "Example.m");
-    assertTranslation(translation, "int Bar_FOO_ = 1;");
-    assertTranslation(translation, "*Bar_getRef_FOO_() = 2;");
+    assertTranslation(translation, "jint Bar_FOO_ = 1;");
+    assertTranslation(translation, "*JreLoadStaticRef(Bar, FOO_) = 2;");
   }
 
   public void testNSObjectMessageRename() throws IOException {
@@ -396,7 +396,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertFalse(impl.contains("\n  return NO;\n  [super initWithTest_TypeEnum:arg$0]}"));
     assertTranslation(impl,
         "Test_FieldEnum_STRING = new_Test_Field_$1Enum_initWithTest_TypeEnum_withNSString_withInt_("
-        + "Test_TypeEnum_get_STRING(), @\"STRING\", 2);");
+        + "JreLoadStatic(Test_TypeEnum, STRING), @\"STRING\", 2);");
   }
 
   public void testAutoreleasePoolMethod() throws IOException {

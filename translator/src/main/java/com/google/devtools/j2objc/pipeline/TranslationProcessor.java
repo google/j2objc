@@ -225,11 +225,13 @@ public class TranslationProcessor extends FileProcessor {
     new SuperMethodInvocationRewriter().run(unit);
     ticker.tick("SuperMethodInvocationRewriter");
 
-    new StaticVarRewriter().run(unit);
-    ticker.tick("StaticVarRewriter");
-
     new OperatorRewriter().run(unit);
     ticker.tick("OperatorRewriter");
+
+    // After: OperatorRewriter - Static load rewriting needs to happen after
+    //   operator rewriting.
+    new StaticVarRewriter().run(unit);
+    ticker.tick("StaticVarRewriter");
 
     // After: StaticVarRewriter, OperatorRewriter - They set the
     //   hasRetainedResult on ArrayCreation nodes.

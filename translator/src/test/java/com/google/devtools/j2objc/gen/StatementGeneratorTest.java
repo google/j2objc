@@ -205,7 +205,7 @@ public class StatementGeneratorTest extends GenerationTest {
       "public class Example { static class Bar { public static final String FOO=\"Mumble\"; } "
       + "String foo; { foo = Bar.FOO; } }",
       "Example", "Example.m");
-    assertTranslation(translation, "Example_set_foo_(self, Example_Bar_get_FOO_())");
+    assertTranslation(translation, "Example_set_foo_(self, JreLoadStatic(Example_Bar, FOO_))");
     assertTranslation(translation, "NSString *Example_Bar_FOO_ = @\"Mumble\";");
     translation = getTranslatedFile("Example.h");
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_Bar_FOO_;");
@@ -232,9 +232,9 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Example { Boolean b1 = Boolean.TRUE; Boolean b2 = Boolean.FALSE; }",
         "Example", "Example.m");
     assertTranslation(translation,
-        "Example_set_b1_(self, JavaLangBoolean_get_TRUE__())");
+        "Example_set_b1_(self, JreLoadStatic(JavaLangBoolean, TRUE__))");
     assertTranslation(translation,
-        "Example_set_b2_(self, JavaLangBoolean_get_FALSE__())");
+        "Example_set_b2_(self, JreLoadStatic(JavaLangBoolean, FALSE__))");
   }
 
   public void testStringConcatenation() throws IOException {
@@ -333,7 +333,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { public static final Object FOO = new Object(); "
         + "static class Inner { Object test() { return FOO; }}}",
         "Test", "Test.m");
-    assertTranslation(translation, "return Test_get_FOO_();");
+    assertTranslation(translation, "return JreLoadStatic(Test, FOO_);");
   }
 
   public void testReservedIdentifierReference() throws IOException {
@@ -449,7 +449,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { enum TicTacToe { X, Y } "
         + "boolean isX(TicTacToe ttt) { return ttt == TicTacToe.X; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "return ttt == Test_TicTacToeEnum_get_X();");
+    assertTranslation(translation, "return ttt == JreLoadStatic(Test_TicTacToeEnum, X);");
   }
 
   public void testArrayLocalVariable() throws IOException {
@@ -773,7 +773,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "class Foo { public static final int DEFAULT = 1; "
         + "public static final Object LOCK = null; }", "Test", "Test.m");
     assertTranslation(translation, "int i = Foo_DEFAULT;");
-    assertTranslation(translation, "id lock = Foo_get_LOCK_();");
+    assertTranslation(translation, "id lock = JreLoadStatic(Foo, LOCK_);");
   }
 
   public void testCastGenericReturnType() throws IOException {
@@ -855,7 +855,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today; }"
         + "class Test { void test(java.util.Date now) { Example.today = now; }}",
         "Example", "Example.m");
-    assertTranslation(translation, "Example_set_today_(now);");
+    assertTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Example, today_), nil, now);");
   }
 
   // b/5872533: reserved method name not renamed correctly in super invocation.
@@ -951,7 +951,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "arrayWithObjects:(id[]){ NSString_class_() } count:1 type:IOSClass_class_()]];");
     assertTranslation(translation,
         "c3 = [Test_class_() getConstructor:[IOSObjectArray arrayWithObjects:"
-        + "(id[]){ NSString_class_(), JavaLangByte_get_TYPE_() } count:2 "
+        + "(id[]){ NSString_class_(), JreLoadStatic(JavaLangByte, TYPE_) } count:2 "
         + "type:IOSClass_class_()]];");
 
     // Array contents should be expanded.
@@ -1035,7 +1035,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "public class A { String prefix(Object o) { return new String(o + B.separator); }}",
         "A", "A.m");
     assertTranslation(translation,
-        "[NSString stringWithString:JreStrcat(\"@$\", o, B_get_separator_())]");
+        "[NSString stringWithString:JreStrcat(\"@$\", o, JreLoadStatic(B, separator_))]");
   }
 
   public void testStringConcatWithBoolean() throws IOException {
@@ -1110,7 +1110,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "interface Assigner { void assign(String s); } static { "
         + "new Assigner() { public void assign(String s) { foo = s; }}; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "Test_set_foo_(s);");
+    assertTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Test, foo_), nil, s);");
   }
 
   public void testNoAutoreleasePoolForStatement() throws IOException {
@@ -1556,7 +1556,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { enum Type { TYPE_BOOL; } Type test() { return Type.TYPE_BOOL; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "return Test_TypeEnum_get_TYPE_BOOL();");
+    assertTranslation(translation, "return JreLoadStatic(Test_TypeEnum, TYPE_BOOL);");
   }
 
   public void testMakeQuotedStringHang() throws IOException {

@@ -119,6 +119,17 @@ FOUNDATION_EXPORT id JreStrongAssign(id *pIvar, id self, id value);
 FOUNDATION_EXPORT id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUMENT id value);
 
 /*!
+ * Macros that simplify the syntax for loading of static fields.
+ *
+ * @define JreLoadStatic
+ * @define JreLoadStaticRef
+ * @param CLASS The Objective-C class name of the containing class.
+ * @param FIELD The name of the static field.
+ */
+#define JreLoadStatic(CLASS, FIELD) (CLASS##_initialize(), CLASS##_##FIELD)
+#define JreLoadStaticRef(CLASS, FIELD) (CLASS##_initialize(), &CLASS##_##FIELD)
+
+/*!
  * Defines the initialized flag for a class.
  *
  * @define J2OBJC_INITIALIZED_DEFN

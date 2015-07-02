@@ -14,7 +14,11 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.common.collect.Lists;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
+
+import java.util.List;
 
 /**
  * Native expression node type.
@@ -23,11 +27,13 @@ public class NativeExpression extends Expression {
 
   private String code = null;
   private ITypeBinding typeBinding = null;
+  private List<ITypeBinding> importTypes = Lists.newArrayList();
 
   public NativeExpression(NativeExpression other) {
     super(other);
     code = other.getCode();
     typeBinding = other.getTypeBinding();
+    importTypes.addAll(other.getImportTypes());
   }
 
   public NativeExpression(String code, ITypeBinding type) {
@@ -47,6 +53,10 @@ public class NativeExpression extends Expression {
   @Override
   public ITypeBinding getTypeBinding() {
     return typeBinding;
+  }
+
+  public List<ITypeBinding> getImportTypes() {
+    return importTypes;
   }
 
   @Override

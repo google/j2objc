@@ -34,6 +34,7 @@ import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.QualifiedName;
@@ -250,6 +251,14 @@ public class ImplementationImportCollector extends TreeVisitor {
       } else {
         break;
       }
+    }
+    return true;
+  }
+
+  @Override
+  public boolean visit(NativeExpression node) {
+    for (ITypeBinding importType : node.getImportTypes()) {
+      addImports(importType);
     }
     return true;
   }

@@ -218,7 +218,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "  }}}";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
-        "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithNSString:val$s_];");
+        "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out_))) "
+        + "printlnWithNSString:val$s_];");
   }
 
   public void testMethodVarInNestedAnonymousClass() throws IOException {

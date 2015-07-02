@@ -397,7 +397,7 @@ public class RewriterTest extends GenerationTest {
     assertNotInTranslation(translation, "RetainedLocalRef");
     assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *c = "
         + "[new_ComGoogleJ2objcUtilScopedLocalRef_initWithId_("
-        + "NSString_get_CASE_INSENSITIVE_ORDER_()) autorelease];");
+        + "JreLoadStatic(NSString, CASE_INSENSITIVE_ORDER_)) autorelease];");
     assertTranslation(translation,
         "return [((id<JavaUtilComparator>) nil_chk(((id<JavaUtilComparator>) "
         + "check_protocol_cast(c->var_, @protocol(JavaUtilComparator))))) "

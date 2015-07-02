@@ -57,7 +57,8 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
         + "  }}", "A", "A.m");
     assertTranslatedLines(translation,
         "#line 3", "void A_test() {", "A_initialize();", "", "#line 4",
-        "[((JavaIoPrintStream *) nil_chk(JavaLangSystem_get_out_())) printlnWithId:A_class_()];");
+        "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out_))) "
+          + "printlnWithId:A_class_()];");
   }
 
   // Regression for non-static constants used in switch statements.
