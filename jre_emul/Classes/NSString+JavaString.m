@@ -1026,9 +1026,9 @@ IOSObjectArray *NSString_serialPersistentFields_;
 
 + (void)initialize {
   if (self == [JreStringCategoryDummy class]) {
-    JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER_, nil,
-                              [[JavaLangString_CaseInsensitiveComparator alloc] init]);
-    JreStrongAssignAndConsume(&NSString_serialPersistentFields_, nil,
+    JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER_,
+        [[JavaLangString_CaseInsensitiveComparator alloc] init]);
+    JreStrongAssignAndConsume(&NSString_serialPersistentFields_,
         [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
     J2OBJC_SET_INITIALIZED(NSString)
   }

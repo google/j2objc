@@ -50,18 +50,17 @@ void JrePrintNilChkCountAtExit() {
   atexit(JrePrintNilChkCount);
 }
 
-// TODO(kstanger): Eliminate "self" parameter.
-static inline id JreStrongAssignInner(id *pIvar, id self, NS_RELEASES_ARGUMENT id value) {
+static inline id JreStrongAssignInner(id *pIvar, NS_RELEASES_ARGUMENT id value) {
   [*pIvar autorelease];
   return *pIvar = value;
 }
 
-id JreStrongAssign(id *pIvar, id self, id value) {
-  return JreStrongAssignInner(pIvar, self, [value retain]);
+id JreStrongAssign(id *pIvar, id value) {
+  return JreStrongAssignInner(pIvar, [value retain]);
 }
 
-id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUMENT id value) {
-  return JreStrongAssignInner(pIvar, self, value);
+id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT id value) {
+  return JreStrongAssignInner(pIvar, value);
 }
 
 // Converts main() arguments into an IOSObjectArray of NSStrings.  The first

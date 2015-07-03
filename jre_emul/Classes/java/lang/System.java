@@ -78,7 +78,7 @@ public class System {
 #if __has_feature(objc_arc)
     JavaLangSystem_in_ = newIn;
 #else
-    JreStrongAssign(&JavaLangSystem_in_, nil, newIn);
+    JreStrongAssign(&JavaLangSystem_in_, newIn);
 #endif
   ]-*/;
 
@@ -86,7 +86,7 @@ public class System {
 #if __has_feature(objc_arc)
     JavaLangSystem_out_ = newOut;
 #else
-    JreStrongAssign(&JavaLangSystem_out_, nil, newOut);
+    JreStrongAssign(&JavaLangSystem_out_, newOut);
 #endif
   ]-*/;
 
@@ -94,7 +94,7 @@ public class System {
 #if __has_feature(objc_arc)
     JavaLangSystem_err_ = newErr;
 #else
-    JreStrongAssign(&JavaLangSystem_err_, nil, newErr);
+    JreStrongAssign(&JavaLangSystem_err_, newErr);
 #endif
   ]-*/;
 
@@ -146,7 +146,7 @@ public class System {
   public native static Properties getProperties() /*-[
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-      JreStrongAssignAndConsume(&JavaLangSystem_props_, nil, [[JavaUtilProperties alloc] init]);
+      JreStrongAssignAndConsume(&JavaLangSystem_props_, [[JavaUtilProperties alloc] init]);
 
       [JavaLangSystem_props_ setPropertyWithNSString:@"file.separator" withNSString:@"/"];
       [JavaLangSystem_props_ setPropertyWithNSString:@"line.separator" withNSString:@"\n"];

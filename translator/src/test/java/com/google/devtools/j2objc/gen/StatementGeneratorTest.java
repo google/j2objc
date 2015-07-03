@@ -531,10 +531,10 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { static int[] a = { 1, 2, 3 }; static char b[] = { '4', '5' }; }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreStrongAssignAndConsume(&Test_a_, nil, "
+        "JreStrongAssignAndConsume(&Test_a_, "
         + "[IOSIntArray newArrayWithInts:(jint[]){ 1, 2, 3 } count:3]);");
     assertTranslation(translation,
-        "JreStrongAssignAndConsume(&Test_b_, nil, "
+        "JreStrongAssignAndConsume(&Test_b_, "
         + "[IOSCharArray newArrayWithChars:(jchar[]){ '4', '5' } count:2]);");
   }
 
@@ -855,7 +855,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today; }"
         + "class Test { void test(java.util.Date now) { Example.today = now; }}",
         "Example", "Example.m");
-    assertTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Example, today_), nil, now);");
+    assertTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Example, today_), now);");
   }
 
   // b/5872533: reserved method name not renamed correctly in super invocation.
@@ -1110,7 +1110,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "interface Assigner { void assign(String s); } static { "
         + "new Assigner() { public void assign(String s) { foo = s; }}; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Test, foo_), nil, s);");
+    assertTranslation(translation, "JreStrongAssign(JreLoadStaticRef(Test, foo_), s);");
   }
 
   public void testNoAutoreleasePoolForStatement() throws IOException {

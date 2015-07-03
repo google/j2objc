@@ -52,6 +52,6 @@ public class SuperMethodInvocationRewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "Test_super$_description = (id (*)(id, SEL))"
           + "[NSObject instanceMethodForSelector:@selector(description)];",
-        "JreStrongAssignAndConsume(&Test_instance_, nil, new_Test_init());");
+        "JreStrongAssignAndConsume(&Test_instance_, new_Test_init());");
   }
 }

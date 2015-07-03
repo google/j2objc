@@ -115,8 +115,8 @@ __attribute__ ((unused)) static inline id check_protocol_cast(id __unsafe_unreta
   return p;
 }
 
-FOUNDATION_EXPORT id JreStrongAssign(id *pIvar, id self, id value);
-FOUNDATION_EXPORT id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_ARGUMENT id value);
+FOUNDATION_EXPORT id JreStrongAssign(id *pIvar, id value);
+FOUNDATION_EXPORT id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT id value);
 
 /*!
  * Macros that simplify the syntax for loading of static fields.
@@ -223,11 +223,11 @@ FOUNDATION_EXPORT id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_A
 #else
 #define J2OBJC_FIELD_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
-    return JreStrongAssign(&instance->FIELD, instance, value); \
+    return JreStrongAssign(&instance->FIELD, value); \
   }\
   __attribute__((unused)) static inline TYPE CLASS##_setAndConsume_##FIELD( \
         CLASS *instance, NS_RELEASES_ARGUMENT TYPE value) { \
-    return JreStrongAssignAndConsume(&instance->FIELD, instance, value); \
+    return JreStrongAssignAndConsume(&instance->FIELD, value); \
   }
 #endif
 
@@ -284,11 +284,11 @@ FOUNDATION_EXPORT id JreStrongAssignAndConsume(id *pIvar, id self, NS_RELEASES_A
 #define J2OBJC_STATIC_FIELD_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_set_##FIELD(TYPE value) { \
     CLASS##_initialize(); \
-    return JreStrongAssign(&CLASS##_##FIELD, nil, value); \
+    return JreStrongAssign(&CLASS##_##FIELD, value); \
   } \
   __attribute__((always_inline)) inline TYPE CLASS##_setAndConsume_##FIELD(TYPE value) { \
     CLASS##_initialize(); \
-    return JreStrongAssignAndConsume(&CLASS##_##FIELD, nil, value); \
+    return JreStrongAssignAndConsume(&CLASS##_##FIELD, value); \
   }
 #endif
 
@@ -404,7 +404,7 @@ __attribute__((always_inline)) inline unichar J2ObjCFpToUnichar(double d) {
   } \
   __attribute__((always_inline)) inline TYPE *BoxedPreIncrStrong##CNAME(TYPE **value) { \
     nil_chk(*value); \
-    return JreStrongAssign(value, nil, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] + 1)); \
+    return JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] + 1)); \
   } \
   __attribute__((always_inline)) inline TYPE *BoxedPostIncr##CNAME(TYPE **value) { \
     nil_chk(*value); \
@@ -415,7 +415,7 @@ __attribute__((always_inline)) inline unichar J2ObjCFpToUnichar(double d) {
   __attribute__((always_inline)) inline TYPE *BoxedPostIncrStrong##CNAME(TYPE **value) { \
     nil_chk(*value); \
     TYPE *original = *value; \
-    JreStrongAssign(value, nil, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] + 1)); \
+    JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] + 1)); \
     return original; \
   } \
   __attribute__((always_inline)) inline TYPE *BoxedPreDecr##CNAME(TYPE **value) { \
@@ -424,7 +424,7 @@ __attribute__((always_inline)) inline unichar J2ObjCFpToUnichar(double d) {
   } \
   __attribute__((always_inline)) inline TYPE *BoxedPreDecrStrong##CNAME(TYPE **value) { \
     nil_chk(*value); \
-    return JreStrongAssign(value, nil, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] - 1)); \
+    return JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] - 1)); \
   } \
   __attribute__((always_inline)) inline TYPE *BoxedPostDecr##CNAME(TYPE **value) { \
     nil_chk(*value); \
@@ -435,7 +435,7 @@ __attribute__((always_inline)) inline unichar J2ObjCFpToUnichar(double d) {
   __attribute__((always_inline)) inline TYPE *BoxedPostDecrStrong##CNAME(TYPE **value) { \
     nil_chk(*value); \
     TYPE *original = *value; \
-    JreStrongAssign(value, nil, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] - 1)); \
+    JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] - 1)); \
     return original; \
   }
 
@@ -477,7 +477,7 @@ __attribute__((always_inline)) inline unichar J2ObjCFpToUnichar(double d) {
   __attribute__((always_inline)) inline BOXED_TYPE *Boxed##OPNAME##AssignStrong##CNAME( \
       BOXED_TYPE **lhs, RTYPE rhs) { \
     nil_chk(*lhs); \
-    return JreStrongAssign(lhs, nil, \
+    return JreStrongAssign(lhs, \
         BOXED_TYPE##_valueOfWith##CNAME##_((TYPE)(OP((OP_LTYPE)[*lhs VALUE_METHOD], rhs)))); \
   }
 

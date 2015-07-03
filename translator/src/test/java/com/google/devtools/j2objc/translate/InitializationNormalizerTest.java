@@ -84,7 +84,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_date_, nil, new_JavaUtilDate_init());");
+        "JreStrongAssignAndConsume(&Test_date_, new_JavaUtilDate_init());");
   }
 
   public void testFieldInitializer() throws IOException {
@@ -174,7 +174,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "NSString *Test_foo_;");
     assertTranslation(translation,
-        "JreStrongAssign(&Test_foo_, nil, [NSString stringWithCharacters:(jchar[]) { "
+        "JreStrongAssign(&Test_foo_, [NSString stringWithCharacters:(jchar[]) { "
         + "(int) 0xffff } length:1]);");
   }
 
@@ -183,7 +183,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "NSString *Test_foo_;");
     assertTranslation(translation,
-        "JreStrongAssign(&Test_foo_, nil, JreStrcat(\"$$\", @\"hello\", "
+        "JreStrongAssign(&Test_foo_, JreStrcat(\"$$\", @\"hello\", "
         + "[NSString stringWithCharacters:(jchar[]) { (int) 0xffff } length:1]));");
   }
 
@@ -206,7 +206,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         + "  static { iSet.add(I); } "
         + "  public static final int iSetSize = iSet.size(); }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    String setInit = "JreStrongAssignAndConsume(&Test_iSet_, nil, new_JavaUtilHashSet_init())";
+    String setInit = "JreStrongAssignAndConsume(&Test_iSet_, new_JavaUtilHashSet_init())";
     String setAdd = "[Test_iSet_ addWithId:JavaLangInteger_valueOfWithInt_(Test_I)]";
     String setSize = "Test_iSetSize_ = [Test_iSet_ size]";
     assertTranslation(translation, setInit);

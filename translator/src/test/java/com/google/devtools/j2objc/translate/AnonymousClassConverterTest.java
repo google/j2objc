@@ -103,7 +103,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_t_, nil, new_Test_$1_initWithIOSClass_(Test_class_()));");
+        "JreStrongAssignAndConsume(&Test_t_, new_Test_$1_initWithIOSClass_(Test_class_()));");
   }
 
   public void testFinalParameter() throws IOException {
@@ -162,7 +162,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_EMPTY_ENUMERATION_, nil, new_Test_$1_init());");
+        "JreStrongAssignAndConsume(&Test_EMPTY_ENUMERATION_, new_Test_$1_init());");
   }
 
   public void testFinalParameterAccess() throws IOException {

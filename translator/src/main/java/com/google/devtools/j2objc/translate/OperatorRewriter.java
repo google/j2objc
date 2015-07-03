@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.NullLiteral;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
@@ -142,7 +141,6 @@ public class OperatorRewriter extends TreeVisitor {
     args.add(new PrefixExpression(
         typeEnv.getPointerType(var.getType()), PrefixExpression.Operator.ADDRESS_OF,
         new SimpleName(var)));
-    args.add(new NullLiteral());
     args.add(TreeUtil.remove(value));
     return invocation;
   }

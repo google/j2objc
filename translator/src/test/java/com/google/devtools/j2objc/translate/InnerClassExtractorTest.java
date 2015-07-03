@@ -583,7 +583,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     translation = getTranslatedFile("A.m");
     assertFalse(translation.contains("this$0_"));
     assertTranslation(translation,
-        "JreStrongAssignAndConsume(&A_test_, nil, new_A_$1_init());");
+        "JreStrongAssignAndConsume(&A_test_, new_A_$1_init());");
   }
 
   // Verify that an anonymous class in a static method does not reference
