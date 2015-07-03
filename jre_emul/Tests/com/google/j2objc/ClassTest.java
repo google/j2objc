@@ -327,24 +327,24 @@ public class ClassTest extends TestCase {
 
   public void testAsSubclassCalls() throws Exception {
     assertTrue(canCallAsSubclass(Integer.class, Object.class));
-    assertTrue(!canCallAsSubclass(Long.class, Integer.class));
+    assertFalse(canCallAsSubclass(Long.class, Integer.class));
     assertTrue(canCallAsSubclass(Integer[].class, Object[].class));
     assertTrue(canCallAsSubclass(Integer[].class, Object.class));
-    assertTrue(!canCallAsSubclass(int.class, Object.class));
-    assertTrue(!canCallAsSubclass(int.class, long.class));
+    assertFalse(canCallAsSubclass(int.class, Object.class));
+    assertFalse(canCallAsSubclass(int.class, long.class));
     assertTrue(canCallAsSubclass(int[].class, Object.class));
-    assertTrue(!canCallAsSubclass(int[].class, Object[].class));
+    assertFalse(canCallAsSubclass(int[].class, Object[].class));
 
     assertTrue(canCallAsSubclass(InterfaceP.class, Object.class));
-    assertTrue(!canCallAsSubclass(InterfaceP.class, InterfaceQ.class));
+    assertFalse(canCallAsSubclass(InterfaceP.class, InterfaceQ.class));
     assertTrue(canCallAsSubclass(InterfaceP[].class, Object.class));
     assertTrue(canCallAsSubclass(InterfaceP[].class, Object[].class));
     assertTrue(canCallAsSubclass(InterfaceR.class, InterfaceP.class));
-    assertTrue(!canCallAsSubclass(InterfaceR.class, InterfaceQ.class));
+    assertFalse(canCallAsSubclass(InterfaceR.class, InterfaceQ.class));
     assertTrue(canCallAsSubclass(InterfaceR.class, InterfaceR.class));
 
     assertTrue(canCallAsSubclass(AbstractClassX.class, Object.class));
-    assertTrue(!canCallAsSubclass(AbstractClassX.class, AbstractClassY.class));
+    assertFalse(canCallAsSubclass(AbstractClassX.class, AbstractClassY.class));
     assertTrue(canCallAsSubclass(AbstractClassX[].class, Object.class));
     assertTrue(canCallAsSubclass(AbstractClassX[].class, Object[].class));
 
@@ -352,20 +352,20 @@ public class ClassTest extends TestCase {
     assertTrue(canCallAsSubclass(AbstractClassY.class, InterfaceP.class));
     assertTrue(canCallAsSubclass(AbstractClassY[].class, Object.class));
     assertTrue(canCallAsSubclass(AbstractClassY[].class, Object[].class));
-    assertTrue(!canCallAsSubclass(AbstractClassY[].class, InterfaceP.class));
+    assertFalse(canCallAsSubclass(AbstractClassY[].class, InterfaceP.class));
     assertTrue(canCallAsSubclass(AbstractClassY[].class, InterfaceP[].class));
 
     assertTrue(canCallAsSubclass(ConcreteClassA.class, AbstractClassX.class));
-    assertTrue(!canCallAsSubclass(ConcreteClassA.class, AbstractClassY.class));
+    assertFalse(canCallAsSubclass(ConcreteClassA.class, AbstractClassY.class));
     assertTrue(canCallAsSubclass(ConcreteClassA[].class, AbstractClassX[].class));
 
     assertTrue(canCallAsSubclass(ConcreteClassB.class, AbstractClassY.class));
     assertTrue(canCallAsSubclass(ConcreteClassB.class, InterfaceP.class));
-    assertTrue(!canCallAsSubclass(ConcreteClassB.class, InterfaceQ.class));
+    assertFalse(canCallAsSubclass(ConcreteClassB.class, InterfaceQ.class));
     assertTrue(canCallAsSubclass(ConcreteClassB[].class, AbstractClassY[].class));
     assertTrue(canCallAsSubclass(ConcreteClassB[].class, InterfaceP[].class));
 
-    assertTrue(!canCallAsSubclass(ConcreteClassC.class, ConcreteClassA.class));
+    assertFalse(canCallAsSubclass(ConcreteClassC.class, ConcreteClassA.class));
     assertTrue(canCallAsSubclass(ConcreteClassC.class, ConcreteClassB.class));
     assertTrue(canCallAsSubclass(ConcreteClassC.class, InterfaceQ.class));
     assertTrue(canCallAsSubclass(ConcreteClassC[].class, ConcreteClassB[].class));
@@ -375,7 +375,7 @@ public class ClassTest extends TestCase {
     assertTrue(canCallAsSubclass(ConcreteClassD.class, InterfaceQ.class));
 
     assertTrue(canCallAsSubclass(ConcreteClassE.class, AbstractClassX.class));
-    assertTrue(!canCallAsSubclass(ConcreteClassE.class, AbstractClassY.class));
+    assertFalse(canCallAsSubclass(ConcreteClassE.class, AbstractClassY.class));
     assertTrue(canCallAsSubclass(ConcreteClassE.class, InterfaceP.class));
     assertTrue(canCallAsSubclass(ConcreteClassE.class, InterfaceQ.class));
   }
