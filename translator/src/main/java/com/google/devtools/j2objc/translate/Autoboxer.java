@@ -367,9 +367,14 @@ public class Autoboxer extends TreeVisitor {
       return;
     }
     IVariableBinding var = TreeUtil.getVariableBinding(operand);
-    assert var != null : "No variable binding on prefix or postfix operand.";
-    if (var.isField() && !BindingUtil.isWeakReference(var)) {
-      funcName += "Strong";
+    if (var != null) {
+      if (var.isField() && !BindingUtil.isWeakReference(var)) {
+        funcName += "Strong";
+      }
+    } else {
+      assert TreeUtil.trimParentheses(operand) instanceof ArrayAccess
+          : "Operand cannot be resolved to a variable or array access.";
+      funcName += "Array";
     }
     funcName += NameTable.capitalize(typeEnv.getPrimitiveType(type).getName());
     FunctionInvocation invocation = new FunctionInvocation(funcName, type, type, type);

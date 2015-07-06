@@ -388,57 +388,6 @@ __attribute__((always_inline)) inline unichar J2ObjCFpToUnichar(double d) {
   return tmp > 0xFFFF || (tmp == 0 && d > 0) ? 0xFFFF : (unichar) tmp;
 }
 
-/*!
- * Defines increment and decrement operators on boxed types. The translator will
- * use this macro to add these operators to the headers of the boxed types.
- *
- * @define BOXED_INC_AND_DEC
- * @param CNAME The capitalized name of the primitive type (eg. "Int").
- * @param VALUE_METHOD The method on the boxed type that returns the value.
- * @param TYPE The boxed type name (eg. "JavaLangInteger").
- */
-#define BOXED_INC_AND_DEC(CNAME, VALUE_METHOD, TYPE) \
-  __attribute__((always_inline)) inline TYPE *BoxedPreIncr##CNAME(TYPE **value) { \
-    nil_chk(*value); \
-    return *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] + 1); \
-  } \
-  __attribute__((always_inline)) inline TYPE *BoxedPreIncrStrong##CNAME(TYPE **value) { \
-    nil_chk(*value); \
-    return JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] + 1)); \
-  } \
-  __attribute__((always_inline)) inline TYPE *BoxedPostIncr##CNAME(TYPE **value) { \
-    nil_chk(*value); \
-    TYPE *original = *value; \
-    *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] + 1); \
-    return original; \
-  } \
-  __attribute__((always_inline)) inline TYPE *BoxedPostIncrStrong##CNAME(TYPE **value) { \
-    nil_chk(*value); \
-    TYPE *original = *value; \
-    JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] + 1)); \
-    return original; \
-  } \
-  __attribute__((always_inline)) inline TYPE *BoxedPreDecr##CNAME(TYPE **value) { \
-    nil_chk(*value); \
-    return *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] - 1); \
-  } \
-  __attribute__((always_inline)) inline TYPE *BoxedPreDecrStrong##CNAME(TYPE **value) { \
-    nil_chk(*value); \
-    return JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] - 1)); \
-  } \
-  __attribute__((always_inline)) inline TYPE *BoxedPostDecr##CNAME(TYPE **value) { \
-    nil_chk(*value); \
-    TYPE *original = *value; \
-    *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] - 1); \
-    return original; \
-  } \
-  __attribute__((always_inline)) inline TYPE *BoxedPostDecrStrong##CNAME(TYPE **value) { \
-    nil_chk(*value); \
-    TYPE *original = *value; \
-    JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] - 1)); \
-    return original; \
-  }
-
 #define ADD_OP(a, b) a + b
 #define MINUS_OP(a, b) a - b
 #define TIMES_OP(a, b) a * b

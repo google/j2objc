@@ -458,12 +458,15 @@ public class AutoboxerTest extends GenerationTest {
   }
 
   public void testBoxedOperators() throws IOException {
+    // TODO(kstanger): Fix compound assign on array access.
     String translation = translateSourceFile(
         "class Test { Integer si; Long sl; Float sf; Double sd;"
+        + " Integer[] ai; Long[] al; Float[] af; Double ad;"
         + " void test(Integer wi, Long wl, Float wf, Double wd) {"
         + " si++; wi++; ++sl; ++wl; sf--; wf--; --sd; --wd;"
         + " si += 5; wi += 5; sl &= 6l; wl &= 6l;"
-        + " si <<= 2; wi <<= 2; sl >>>= 3; wl >>>= 3; } }", "Test", "Test.m");
+        + " si <<= 2; wi <<= 2; sl >>>= 3; wl >>>= 3;"
+        + " ai[0]++; --al[1]; } }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "BoxedPostIncrStrongInt(&si_);",
         "BoxedPostIncrInt(&wi);",
@@ -480,6 +483,8 @@ public class AutoboxerTest extends GenerationTest {
         "BoxedLShiftAssignStrongInt(&si_, 2);",
         "BoxedLShiftAssignInt(&wi, 2);",
         "BoxedURShiftAssignStrongLong(&sl_, 3);",
-        "BoxedURShiftAssignLong(&wl, 3);");
+        "BoxedURShiftAssignLong(&wl, 3);",
+        "BoxedPostIncrArrayInt(IOSObjectArray_GetRef(nil_chk(ai_), 0));",
+        "BoxedPreDecrArrayLong(IOSObjectArray_GetRef(nil_chk(al_), 1));");
   }
 }

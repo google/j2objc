@@ -25,6 +25,14 @@
 #import "IOSArray.h"
 
 @class IOSClass;
+@class IOSObjectArray;
+
+// Internal only. Provides a pointer to an element with the array itself.
+// Used for translating certain compound expressions.
+typedef struct JreArrayRef {
+  IOSObjectArray *arr;
+  id *pValue;
+} JreArrayRef;
 
 // An emulation class that represents a Java object array.  Like a Java array,
 // an IOSObjectArray is fixed-size but its elements are mutable.
@@ -84,5 +92,13 @@ __attribute__((always_inline)) inline id IOSObjectArray_Get(
   IOSArray_checkIndex(array->size_, (jint)index);
   return array->buffer_[index];
 }
+
+// Internal functions.
+__attribute__((always_inline)) inline JreArrayRef IOSObjectArray_GetRef(
+    __unsafe_unretained IOSObjectArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return (JreArrayRef){ .arr = array, .pValue = &array->buffer_[index] };
+}
+FOUNDATION_EXPORT id IOSObjectArray_SetRef(JreArrayRef ref, id value);
 
 #endif // _IOSObjectArray_H_

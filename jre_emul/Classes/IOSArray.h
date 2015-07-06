@@ -24,13 +24,12 @@
 
 #import "J2ObjC_common.h"
 #import "NSObject+JavaObject.h"
-#import "java/io/Serializable.h"
 
 @class IOSClass;
 
 // An abstract class that represents a Java array.  Like a Java array,
 // an IOSArray is fixed-size but its elements are mutable.
-@interface IOSArray : NSObject < NSCopying, JavaIoSerializable > {
+@interface IOSArray : NSObject < NSCopying > {
  @public
   jint size_;
 }
