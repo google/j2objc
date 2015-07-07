@@ -150,18 +150,26 @@ public class Autoboxer extends TreeVisitor {
       return;
     }
     ITypeBinding primitiveType = typeEnv.getPrimitiveType(type);
-    IVariableBinding var = TreeUtil.getVariableBinding(lhs);
-    assert var != null : "No variable binding for lhs of assignment.";
-    String funcName = "Boxed" + getAssignFunctionName(node.getOperator());
-    if (var.isField() && !BindingUtil.isWeakReference(var)) {
-      funcName += "Strong";
-    }
-    funcName += NameTable.capitalize(primitiveType.getName());
+    String funcName = "Boxed" + getAssignFunctionName(node.getOperator())
+        + getOperatorFunctionModifier(lhs) + NameTable.capitalize(primitiveType.getName());
     FunctionInvocation invocation = new FunctionInvocation(funcName, type, type, type);
     invocation.getArguments().add(new PrefixExpression(
         typeEnv.getPointerType(type), PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
     invocation.getArguments().add(unbox(rhs));
     node.replaceWith(invocation);
+  }
+
+  private static String getOperatorFunctionModifier(Expression expr) {
+    IVariableBinding var = TreeUtil.getVariableBinding(expr);
+    if (var == null) {
+      assert TreeUtil.trimParentheses(expr) instanceof ArrayAccess
+          : "Expression cannot be resolved to a variable or array access.";
+      return "Array";
+    }
+    if (var.isField() && !BindingUtil.isWeakReference(var)) {
+      return "Strong";
+    }
+    return "";
   }
 
   private static String getAssignFunctionName(Assignment.Operator op) {
@@ -366,17 +374,8 @@ public class Autoboxer extends TreeVisitor {
     if (!typeEnv.isBoxedPrimitive(type)) {
       return;
     }
-    IVariableBinding var = TreeUtil.getVariableBinding(operand);
-    if (var != null) {
-      if (var.isField() && !BindingUtil.isWeakReference(var)) {
-        funcName += "Strong";
-      }
-    } else {
-      assert TreeUtil.trimParentheses(operand) instanceof ArrayAccess
-          : "Operand cannot be resolved to a variable or array access.";
-      funcName += "Array";
-    }
-    funcName += NameTable.capitalize(typeEnv.getPrimitiveType(type).getName());
+    funcName += getOperatorFunctionModifier(operand)
+        + NameTable.capitalize(typeEnv.getPrimitiveType(type).getName());
     FunctionInvocation invocation = new FunctionInvocation(funcName, type, type, type);
     invocation.getArguments().add(new PrefixExpression(
         typeEnv.getPointerType(type), PrefixExpression.Operator.ADDRESS_OF,
