@@ -18,10 +18,15 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.ArrayCreation;
+import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
+import com.google.devtools.j2objc.ast.ParenthesizedExpression;
+import com.google.devtools.j2objc.ast.PostfixExpression;
+import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -146,5 +151,30 @@ public final class TranslationUtil {
     // Sometimes there won't be a default constructor (eg. enums), so just
     // create our own binding.
     return GeneratedMethodBinding.newConstructor(type, type.getModifiers(), typeEnv);
+  }
+
+  public static boolean isAssigned(Expression node) {
+    TreeNode parent = node.getParent();
+
+    while (parent instanceof ParenthesizedExpression) {
+        parent = parent.getParent();
+    }
+
+    if (parent instanceof PostfixExpression) {
+      PostfixExpression.Operator op = ((PostfixExpression) parent).getOperator();
+      if (op == PostfixExpression.Operator.INCREMENT
+          || op == PostfixExpression.Operator.DECREMENT) {
+        return true;
+      }
+    } else if (parent instanceof PrefixExpression) {
+      PrefixExpression.Operator op = ((PrefixExpression) parent).getOperator();
+      if (op == PrefixExpression.Operator.INCREMENT || op == PrefixExpression.Operator.DECREMENT
+          || op == PrefixExpression.Operator.ADDRESS_OF) {
+        return true;
+      }
+    } else if (parent instanceof Assignment) {
+      return node == ((Assignment) parent).getLeftHandSide();
+    }
+    return false;
   }
 }

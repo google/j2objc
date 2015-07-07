@@ -67,4 +67,15 @@ public class StaticVarRewriterTest extends GenerationTest {
         "jint c = (*(Test_Inner_getTest(), JreLoadStaticRef(Test, i_)))++;",
         "jint d = *(Test_Inner_getTest(), JreLoadStaticRef(Test, i_)) = 6;");
   }
+
+  public void testStaticLoadWithArrayAccess() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static class Inner { static int[] ints; } "
+        + " int test() { Inner.ints[0] = 1; Inner.ints[0] += 2; return Inner.ints[0]; } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "*IOSIntArray_GetRef(nil_chk(JreLoadStatic(Test_Inner, ints_)), 0) = 1;",
+        "*IOSIntArray_GetRef(JreLoadStatic(Test_Inner, ints_), 0) += 2;",
+        "return IOSIntArray_Get(JreLoadStatic(Test_Inner, ints_), 0);");
+  }
 }

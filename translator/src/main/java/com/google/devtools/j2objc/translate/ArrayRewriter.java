@@ -25,12 +25,9 @@ import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NumberLiteral;
-import com.google.devtools.j2objc.ast.ParenthesizedExpression;
-import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
-import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeLiteral;
@@ -232,33 +229,8 @@ public class ArrayRewriter extends TreeVisitor {
     ITypeBinding componentType = node.getTypeBinding();
     IOSTypeBinding iosArrayBinding = typeEnv.resolveArrayType(componentType);
 
-    boolean assignable = needsAssignableAccess(node);
-    node.replaceWith(newArrayAccess(node, componentType, iosArrayBinding, assignable));
-  }
-
-  private static boolean needsAssignableAccess(ArrayAccess node) {
-    TreeNode parent = node.getParent();
-
-    while (parent instanceof ParenthesizedExpression) {
-        parent = parent.getParent();
-    }
-
-    if (parent instanceof PostfixExpression) {
-      PostfixExpression.Operator op = ((PostfixExpression) parent).getOperator();
-      if (op == PostfixExpression.Operator.INCREMENT
-          || op == PostfixExpression.Operator.DECREMENT) {
-        return true;
-      }
-    } else if (parent instanceof PrefixExpression) {
-      PrefixExpression.Operator op = ((PrefixExpression) parent).getOperator();
-      if (op == PrefixExpression.Operator.INCREMENT || op == PrefixExpression.Operator.DECREMENT
-          || op == PrefixExpression.Operator.ADDRESS_OF) {
-        return true;
-      }
-    } else if (parent instanceof Assignment) {
-      return node == ((Assignment) parent).getLeftHandSide();
-    }
-    return false;
+    node.replaceWith(newArrayAccess(
+        node, componentType, iosArrayBinding, TranslationUtil.isAssigned(node)));
   }
 
   private Expression newArrayAccess(
