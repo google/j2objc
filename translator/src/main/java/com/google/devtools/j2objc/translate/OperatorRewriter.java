@@ -42,6 +42,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -81,6 +82,8 @@ public class OperatorRewriter extends TreeVisitor {
         Expression target = getTarget(lhs, var);
         node.replaceWith(newFieldSetterInvocation(var, target, rhs));
       }
+    } else if (isStringAppend(node)) {
+      rewriteStringAppend(node);
     } else {
       String funcName = getOperatorAssignFunction(op, lhsType, rhsType);
       if (funcName != null) {
@@ -93,6 +96,16 @@ public class OperatorRewriter extends TreeVisitor {
         node.replaceWith(invocation);
       }
     }
+  }
+
+  private boolean isStringAppend(TreeNode node) {
+    if (!(node instanceof Assignment)) {
+      return false;
+    }
+    Assignment assignment = (Assignment) node;
+    return assignment.getOperator() == Assignment.Operator.PLUS_ASSIGN
+        && typeEnv.resolveJavaType("java.lang.String").isAssignmentCompatible(
+            assignment.getLeftHandSide().getTypeBinding());
   }
 
   private boolean inDeallocMethod(TreeNode node) {
@@ -123,7 +136,8 @@ public class OperatorRewriter extends TreeVisitor {
       }
 
       node.replaceWith(leftOperand);
-    } else if (op == InfixExpression.Operator.PLUS && typeEnv.isStringType(nodeType)) {
+    } else if (op == InfixExpression.Operator.PLUS && typeEnv.isStringType(nodeType)
+        && !isStringAppend(node.getParent())) {
       rewriteStringConcatenation(node);
     }
   }
@@ -213,9 +227,17 @@ public class OperatorRewriter extends TreeVisitor {
     }
   }
 
+  private CStringLiteral getStrcatTypesCString(List<Expression> operands) {
+    StringBuilder typeArg = new StringBuilder();
+    for (Expression expr : operands) {
+      typeArg.append(getStringConcatenationTypeCharacter(expr));
+    }
+    return new CStringLiteral(typeArg.toString(), typeEnv);
+  }
+
   private void rewriteStringConcatenation(InfixExpression node) {
     List<Expression> childOperands = node.getOperands();
-    List<Expression> operands = Lists.newArrayListWithCapacity(childOperands.size() + 2);
+    List<Expression> operands = Lists.newArrayListWithCapacity(childOperands.size());
     TreeUtil.moveList(childOperands, operands);
 
     operands = coalesceStringLiterals(operands);
@@ -228,14 +250,38 @@ public class OperatorRewriter extends TreeVisitor {
     FunctionInvocation invocation =
         new FunctionInvocation("JreStrcat", stringType, stringType, null);
     List<Expression> args = invocation.getArguments();
-    StringBuilder typeArg = new StringBuilder();
-    for (Expression expr : operands) {
-      typeArg.append(getStringConcatenationTypeCharacter(expr));
+    args.add(getStrcatTypesCString(operands));
+    args.addAll(operands);
+    node.replaceWith(invocation);
+  }
+
+  private List<Expression> getStringAppendOperands(Assignment node) {
+    Expression rhs = node.getRightHandSide();
+    if (rhs instanceof InfixExpression) {
+      InfixExpression infixExpr = (InfixExpression) rhs;
+      if (infixExpr.getOperator() == InfixExpression.Operator.PLUS) {
+        List<Expression> operands = infixExpr.getOperands();
+        List<Expression> result = Lists.newArrayListWithCapacity(operands.size());
+        TreeUtil.moveList(operands, result);
+        return coalesceStringLiterals(result);
+      }
     }
-    args.add(new CStringLiteral(typeArg.toString(), typeEnv));
-    for (Expression expr : operands) {
-      args.add(expr);
-    }
+    return Collections.singletonList(TreeUtil.remove(rhs));
+  }
+
+  private void rewriteStringAppend(Assignment node) {
+    List<Expression> operands = getStringAppendOperands(node);
+    Expression lhs = node.getLeftHandSide();
+    ITypeBinding lhsType = lhs.getTypeBinding();
+    ITypeBinding idType = typeEnv.resolveIOSType("id");
+    String funcName = "JreStrAppend" + TranslationUtil.getOperatorFunctionModifier(lhs);
+    FunctionInvocation invocation = new FunctionInvocation(funcName, lhsType, idType, null);
+    List<Expression> args = invocation.getArguments();
+    args.add(new PrefixExpression(
+        typeEnv.getPointerType(lhsType), PrefixExpression.Operator.ADDRESS_OF,
+        TreeUtil.remove(lhs)));
+    args.add(getStrcatTypesCString(operands));
+    args.addAll(operands);
     node.replaceWith(invocation);
   }
 

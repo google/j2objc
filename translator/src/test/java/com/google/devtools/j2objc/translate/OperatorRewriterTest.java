@@ -70,13 +70,25 @@ public class OperatorRewriterTest extends GenerationTest {
   }
 
   public void testURShift64WithExtendedOperands() throws IOException {
-    String source = "long a; a = 65535L >>> 2; a = 65535L >>> 2 >>> 3; " +
-            "a = 65535L >>> 2 >>> 3 >>> 4;";
+    String source = "long a; a = 65535L >>> 2; a = 65535L >>> 2 >>> 3; "
+        + "a = 65535L >>> 2 >>> 3 >>> 4;";
     List<Statement> stmts = translateStatements(source);
     assertEquals(4, stmts.size());
     assertEquals("a = URShift64(65535LL, 2);", generateStatement(stmts.get(1)));
     assertEquals("a = URShift64(URShift64(65535LL, 2), 3);", generateStatement(stmts.get(2)));
     assertEquals("a = URShift64(URShift64(URShift64(65535LL, 2), 3), 4);",
             generateStatement(stmts.get(3)));
+  }
+
+  public void testStringAppendOperator() throws IOException {
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.Weak;"
+        + " class Test { String ss; @Weak String ws; String[] as;"
+        + " void test() { ss += \"foo\"; ws += \"bar\"; as[0] += \"baz\"; } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "JreStrAppendStrong(&ss_, \"$\", @\"foo\");",
+        "JreStrAppend(&ws_, \"$\", @\"bar\");",
+        "JreStrAppendArray(IOSObjectArray_GetRef(nil_chk(as_), 0), \"$\", @\"baz\");");
   }
 }

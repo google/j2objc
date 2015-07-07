@@ -17,6 +17,7 @@ package com.google.devtools.j2objc.util;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
+import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -176,5 +177,24 @@ public final class TranslationUtil {
       return node == ((Assignment) parent).getLeftHandSide();
     }
     return false;
+  }
+
+  /**
+   * Returns the modifier for an assignment expression being converted to a
+   * function. The result will be "Array" if the lhs is an array access,
+   * "Strong" if the lhs is a field with a strong reference, and an empty string
+   * for local variables and weak fields.
+   */
+  public static String getOperatorFunctionModifier(Expression expr) {
+    IVariableBinding var = TreeUtil.getVariableBinding(expr);
+    if (var == null) {
+      assert TreeUtil.trimParentheses(expr) instanceof ArrayAccess
+          : "Expression cannot be resolved to a variable or array access.";
+      return "Array";
+    }
+    if (var.isField() && !BindingUtil.isWeakReference(var)) {
+      return "Strong";
+    }
+    return "";
   }
 }

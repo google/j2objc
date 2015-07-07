@@ -642,8 +642,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "import java.util.*; public class A { String myString;"
         + "  A() { myString = \"Foo\"; myString += \"Bar\"; }}",
         "A", "A.m");
-    assertTranslation(translation,
-        "A_set_myString_(self, JreStrcat(\"$$\", self->myString_, @\"Bar\"));");
+    assertTranslation(translation, "JreStrAppendStrong(&self->myString_, \"$\", @\"Bar\");");
   }
 
   public void testPrimitiveConstantInSwitchCase() throws IOException {

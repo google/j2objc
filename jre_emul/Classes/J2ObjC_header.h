@@ -20,6 +20,14 @@
 #import "JavaObject.h"
 #import "NSObject+JavaObject.h"
 
+CF_EXTERN_C_BEGIN
+
+id JreStrAppend(id *lhs, const char *types, ...);
+id JreStrAppendStrong(id *lhs, const char *types, ...);
+id JreStrAppendArray(JreArrayRef lhs, const char *types, ...);
+
+CF_EXTERN_C_END
+
 #define BOXED_INC_AND_DEC_INNER(CNAME, VALUE_METHOD, TYPE, OPNAME, OP) \
   __attribute__((always_inline)) inline TYPE *BoxedPre##OPNAME##CNAME(TYPE **value) { \
     nil_chk(*value); \

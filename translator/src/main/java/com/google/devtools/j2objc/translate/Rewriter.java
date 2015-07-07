@@ -463,20 +463,6 @@ public class Rewriter extends TreeVisitor {
   }
 
   @Override
-  public void endVisit(Assignment node) {
-    Assignment.Operator op = node.getOperator();
-    Expression lhs = node.getLeftHandSide();
-    Expression rhs = node.getRightHandSide();
-    ITypeBinding lhsType = lhs.getTypeBinding();
-    if (op == Assignment.Operator.PLUS_ASSIGN && typeEnv.isJavaStringType(lhsType)) {
-      // Change "str1 += str2" to "str1 = str1 + str2".
-      node.setOperator(Assignment.Operator.ASSIGN);
-      node.setRightHandSide(new InfixExpression(
-          lhsType, InfixExpression.Operator.PLUS, lhs.copy(), rhs.copy()));
-    }
-  }
-
-  @Override
   public boolean visit(LambdaExpression node) {
     // We shouldn't be able to reach this if we aren't in a Java 8 translator, as we are in a
     // LambdaExpression, but this will help to highlight Java 8 specific additions in the future.

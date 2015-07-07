@@ -48,10 +48,10 @@ import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.util.List;
 
@@ -151,25 +151,13 @@ public class Autoboxer extends TreeVisitor {
     }
     ITypeBinding primitiveType = typeEnv.getPrimitiveType(type);
     String funcName = "Boxed" + getAssignFunctionName(node.getOperator())
-        + getOperatorFunctionModifier(lhs) + NameTable.capitalize(primitiveType.getName());
+        + TranslationUtil.getOperatorFunctionModifier(lhs)
+        + NameTable.capitalize(primitiveType.getName());
     FunctionInvocation invocation = new FunctionInvocation(funcName, type, type, type);
     invocation.getArguments().add(new PrefixExpression(
         typeEnv.getPointerType(type), PrefixExpression.Operator.ADDRESS_OF, TreeUtil.remove(lhs)));
     invocation.getArguments().add(unbox(rhs));
     node.replaceWith(invocation);
-  }
-
-  private static String getOperatorFunctionModifier(Expression expr) {
-    IVariableBinding var = TreeUtil.getVariableBinding(expr);
-    if (var == null) {
-      assert TreeUtil.trimParentheses(expr) instanceof ArrayAccess
-          : "Expression cannot be resolved to a variable or array access.";
-      return "Array";
-    }
-    if (var.isField() && !BindingUtil.isWeakReference(var)) {
-      return "Strong";
-    }
-    return "";
   }
 
   private static String getAssignFunctionName(Assignment.Operator op) {
@@ -374,7 +362,7 @@ public class Autoboxer extends TreeVisitor {
     if (!typeEnv.isBoxedPrimitive(type)) {
       return;
     }
-    funcName += getOperatorFunctionModifier(operand)
+    funcName += TranslationUtil.getOperatorFunctionModifier(operand)
         + NameTable.capitalize(typeEnv.getPrimitiveType(type).getName());
     FunctionInvocation invocation = new FunctionInvocation(funcName, type, type, type);
     invocation.getArguments().add(new PrefixExpression(

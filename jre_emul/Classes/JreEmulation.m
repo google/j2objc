@@ -21,6 +21,7 @@
 //  Implements definitions from both J2ObjC_common.h and JreEmulation.h.
 
 #import "JreEmulation.h"
+
 #import "IOSClass.h"
 #import "java/lang/AbstractStringBuilder.h"
 #import "java/lang/ClassCastException.h"
@@ -82,21 +83,18 @@ FOUNDATION_EXPORT
   return args;
 }
 
-FOUNDATION_EXPORT NSString *JreStrcat(const char *pTypes, ...) {
-  // Count number of object arguments.
-  unsigned int numObjs = 0;
-  const char *types = pTypes;
+// Counts the number of object types in a string concatenation.
+static NSUInteger CountObjectArgs(const char *types) {
+  NSUInteger numObjs = 0;
   while (*types) {
     if (*(types++) == '@') numObjs++;
   }
-  NSString *objDescriptions[numObjs];
+  return numObjs;
+}
 
-  // Compute the capacity for the buffer.
+// Computes the capacity for the buffer.
+static jint ComputeCapacity(const char *types, va_list va, NSString **objDescriptions) {
   jint capacity = 0;
-  unsigned int objIdx = 0;
-  va_list va;
-  va_start(va, pTypes);
-  types = pTypes;
   while (*types) {
     switch(*types) {
       case 'C':
@@ -141,10 +139,10 @@ FOUNDATION_EXPORT NSString *JreStrcat(const char *pTypes, ...) {
           id obj = va_arg(va, id);
           if (obj) {
             NSString *description = [obj description];
-            objDescriptions[objIdx++] = description;
+            *(objDescriptions++) = description;
             capacity += CFStringGetLength((CFStringRef)description);
           } else {
-            objDescriptions[objIdx++] = nil;
+            *(objDescriptions++) = nil;
             capacity += 4;
           }
         }
@@ -152,51 +150,107 @@ FOUNDATION_EXPORT NSString *JreStrcat(const char *pTypes, ...) {
     }
     types++;
   }
-  va_end(va);
+  return capacity;
+}
 
-  // Create a string builder and fill it.
-  va_start(va, pTypes);
-  JreStringBuilder sb;
-  JreStringBuilder_initWithCapacity(&sb, capacity);
-  types = pTypes;
-  objIdx = 0;
+static void AppendArgs(
+    const char *types, va_list va, NSString **objDescriptions, JreStringBuilder *sb) {
   while (*types) {
     switch (*types) {
       case 'C':
-        JreStringBuilder_appendChar(&sb, (jchar)va_arg(va, jint));
+        JreStringBuilder_appendChar(sb, (jchar)va_arg(va, jint));
         break;
       case 'D':
-        RealToString_appendDouble(&sb, va_arg(va, jdouble));
+        RealToString_appendDouble(sb, va_arg(va, jdouble));
         break;
       case 'F':
-        RealToString_appendFloat(&sb, (jfloat)va_arg(va, jdouble));
+        RealToString_appendFloat(sb, (jfloat)va_arg(va, jdouble));
         break;
       case 'B':
       case 'I':
       case 'S':
-        IntegralToString_convertInt(&sb, va_arg(va, jint));
+        IntegralToString_convertInt(sb, va_arg(va, jint));
         break;
       case 'J':
-        IntegralToString_convertLong(&sb, va_arg(va, jlong));
+        IntegralToString_convertLong(sb, va_arg(va, jlong));
         break;
       case 'Z':
-        JreStringBuilder_appendString(&sb, (jboolean)va_arg(va, jint) ? @"true" : @"false");
+        JreStringBuilder_appendString(sb, (jboolean)va_arg(va, jint) ? @"true" : @"false");
         break;
       case '$':
-        JreStringBuilder_appendString(&sb, va_arg(va, NSString *));
+        JreStringBuilder_appendString(sb, va_arg(va, NSString *));
         break;
       case '@':
-        {
-          va_arg(va, id);
-          NSString *str = objDescriptions[objIdx++];
-          JreStringBuilder_appendString(&sb, str);
-        }
+        va_arg(va, id);
+        JreStringBuilder_appendString(sb, *(objDescriptions++));
         break;
     }
     types++;
   }
+}
+
+NSString *JreStrcat(const char *types, ...) {
+  NSString *objDescriptions[CountObjectArgs(types)];
+  va_list va;
+  va_start(va, types);
+  jint capacity = ComputeCapacity(types, va, objDescriptions);
+  va_end(va);
+
+  // Create a string builder and fill it.
+  JreStringBuilder sb;
+  JreStringBuilder_initWithCapacity(&sb, capacity);
+  va_start(va, types);
+  AppendArgs(types, va, objDescriptions, &sb);
   va_end(va);
   return JreStringBuilder_toStringAndDealloc(&sb);
+}
+
+id JreStrAppendInner(id lhs, const char *types, va_list va) {
+  va_list va_capacity;
+  va_copy(va_capacity, va);
+  NSString *objDescriptions[CountObjectArgs(types)];
+
+  jint capacity = ComputeCapacity(types, va_capacity, objDescriptions);
+  va_end(va_capacity);
+
+  NSString *lhsDescription = nil;
+  if (lhs) {
+    lhsDescription = [lhs description];
+    capacity += CFStringGetLength((CFStringRef)lhsDescription);
+  } else {
+    capacity += 4;
+  }
+
+  JreStringBuilder sb;
+  JreStringBuilder_initWithCapacity(&sb, capacity);
+  JreStringBuilder_appendString(&sb, lhsDescription);
+  AppendArgs(types, va, objDescriptions, &sb);
+
+  return JreStringBuilder_toStringAndDealloc(&sb);
+}
+
+id JreStrAppend(id *lhs, const char *types, ...) {
+  va_list va;
+  va_start(va, types);
+  NSString *result = JreStrAppendInner(*lhs, types, va);
+  va_end(va);
+  return *lhs = result;
+}
+
+id JreStrAppendStrong(id *lhs, const char *types, ...) {
+  va_list va;
+  va_start(va, types);
+  NSString *result = JreStrAppendInner(*lhs, types, va);
+  va_end(va);
+  return JreStrongAssign(lhs, result);
+}
+
+id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) {
+  va_list va;
+  va_start(va, types);
+  NSString *result = JreStrAppendInner(*lhs.pValue, types, va);
+  va_end(va);
+  return IOSObjectArray_SetRef(lhs, result);
 }
 
 FOUNDATION_EXPORT void JreRelease(id obj) {
