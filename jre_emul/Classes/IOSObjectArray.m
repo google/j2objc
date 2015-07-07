@@ -20,6 +20,7 @@
 //
 
 #import "IOSObjectArray.h"
+
 #import "IOSClass.h"
 #import "java/lang/ArrayStoreException.h"
 #import "java/lang/AssertionError.h"
@@ -177,6 +178,16 @@ id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id valu
     [value autorelease];
   }
   return array->buffer_[index] = value;
+}
+
+id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
+  // Index is checked when accessing the JreArrayRef.
+  IOSObjectArray_checkValue(ref.arr, value);
+  if (ref.arr->isRetained_) {
+    [*ref.pValue autorelease];
+    [value retain];
+  }
+  return *ref.pValue = value;
 }
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {

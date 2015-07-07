@@ -106,6 +106,16 @@ public class TreeUtil {
   }
 
   /**
+   * Returns the first descendant of the given node that is not a ParenthesizedExpression.
+   */
+  public static TreeNode trimParentheses(TreeNode node) {
+    while (node instanceof ParenthesizedExpression) {
+      node = ((ParenthesizedExpression) node).getExpression();
+    }
+    return node;
+  }
+
+  /**
    * Returns the method binding which is the parent of the specified node, as a node may be parented
    * by a lambda or a method.
    */

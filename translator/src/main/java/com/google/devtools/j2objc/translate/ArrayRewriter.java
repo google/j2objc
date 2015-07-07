@@ -269,7 +269,6 @@ public class ArrayRewriter extends TreeVisitor {
     ITypeBinding declaredReturnType =
         componentType.isPrimitive() ? componentType : typeEnv.resolveIOSType("id");
     if (assignable) {
-      assert componentType.isPrimitive();
       funcName += "Ref";
       returnType = declaredReturnType = typeEnv.getPointerType(componentType);
     }
