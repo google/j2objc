@@ -375,7 +375,11 @@ NSString *IOSClass_GetTranslatedMethodName(IOSClass *cls, NSString *name,
 }
 
 - (IOSClass *)asSubclass:(IOSClass *)cls {
-  @throw AUTORELEASE([[JavaLangClassCastException alloc] init]);
+  if ([cls isAssignableFrom:self]) {
+    return self;
+  }
+
+  @throw AUTORELEASE([[JavaLangClassCastException alloc] initWithNSString:[self description]]);
 }
 
 - (NSString *)description {

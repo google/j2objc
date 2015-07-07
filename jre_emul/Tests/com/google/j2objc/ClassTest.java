@@ -311,6 +311,75 @@ public class ClassTest extends TestCase {
     assertEquals(CharSequence.class, Class.forName("java.lang.CharSequence"));
   }
 
+  boolean canCallAsSubclass(Class<?> x, Class<?> y) {
+    boolean callSuccessful;
+    try {
+      Class<?> z = x.asSubclass(y);
+      callSuccessful = true;
+    } catch (ClassCastException e) {
+      callSuccessful = false;
+    }
+
+    boolean assignable = y.isAssignableFrom(x);
+    assertEquals(assignable, callSuccessful);
+    return callSuccessful;
+  }
+
+  public void testAsSubclassCalls() throws Exception {
+    assertTrue(canCallAsSubclass(Integer.class, Object.class));
+    assertFalse(canCallAsSubclass(Long.class, Integer.class));
+    assertTrue(canCallAsSubclass(Integer[].class, Object[].class));
+    assertTrue(canCallAsSubclass(Integer[].class, Object.class));
+    assertFalse(canCallAsSubclass(int.class, Object.class));
+    assertFalse(canCallAsSubclass(int.class, long.class));
+    assertTrue(canCallAsSubclass(int[].class, Object.class));
+    assertFalse(canCallAsSubclass(int[].class, Object[].class));
+
+    assertTrue(canCallAsSubclass(InterfaceP.class, Object.class));
+    assertFalse(canCallAsSubclass(InterfaceP.class, InterfaceQ.class));
+    assertTrue(canCallAsSubclass(InterfaceP[].class, Object.class));
+    assertTrue(canCallAsSubclass(InterfaceP[].class, Object[].class));
+    assertTrue(canCallAsSubclass(InterfaceR.class, InterfaceP.class));
+    assertFalse(canCallAsSubclass(InterfaceR.class, InterfaceQ.class));
+    assertTrue(canCallAsSubclass(InterfaceR.class, InterfaceR.class));
+
+    assertTrue(canCallAsSubclass(AbstractClassX.class, Object.class));
+    assertFalse(canCallAsSubclass(AbstractClassX.class, AbstractClassY.class));
+    assertTrue(canCallAsSubclass(AbstractClassX[].class, Object.class));
+    assertTrue(canCallAsSubclass(AbstractClassX[].class, Object[].class));
+
+    assertTrue(canCallAsSubclass(AbstractClassY.class, Object.class));
+    assertTrue(canCallAsSubclass(AbstractClassY.class, InterfaceP.class));
+    assertTrue(canCallAsSubclass(AbstractClassY[].class, Object.class));
+    assertTrue(canCallAsSubclass(AbstractClassY[].class, Object[].class));
+    assertFalse(canCallAsSubclass(AbstractClassY[].class, InterfaceP.class));
+    assertTrue(canCallAsSubclass(AbstractClassY[].class, InterfaceP[].class));
+
+    assertTrue(canCallAsSubclass(ConcreteClassA.class, AbstractClassX.class));
+    assertFalse(canCallAsSubclass(ConcreteClassA.class, AbstractClassY.class));
+    assertTrue(canCallAsSubclass(ConcreteClassA[].class, AbstractClassX[].class));
+
+    assertTrue(canCallAsSubclass(ConcreteClassB.class, AbstractClassY.class));
+    assertTrue(canCallAsSubclass(ConcreteClassB.class, InterfaceP.class));
+    assertFalse(canCallAsSubclass(ConcreteClassB.class, InterfaceQ.class));
+    assertTrue(canCallAsSubclass(ConcreteClassB[].class, AbstractClassY[].class));
+    assertTrue(canCallAsSubclass(ConcreteClassB[].class, InterfaceP[].class));
+
+    assertFalse(canCallAsSubclass(ConcreteClassC.class, ConcreteClassA.class));
+    assertTrue(canCallAsSubclass(ConcreteClassC.class, ConcreteClassB.class));
+    assertTrue(canCallAsSubclass(ConcreteClassC.class, InterfaceQ.class));
+    assertTrue(canCallAsSubclass(ConcreteClassC[].class, ConcreteClassB[].class));
+    assertTrue(canCallAsSubclass(ConcreteClassC[].class, InterfaceQ[].class));
+
+    assertTrue(canCallAsSubclass(ConcreteClassD.class, InterfaceP.class));
+    assertTrue(canCallAsSubclass(ConcreteClassD.class, InterfaceQ.class));
+
+    assertTrue(canCallAsSubclass(ConcreteClassE.class, AbstractClassX.class));
+    assertFalse(canCallAsSubclass(ConcreteClassE.class, AbstractClassY.class));
+    assertTrue(canCallAsSubclass(ConcreteClassE.class, InterfaceP.class));
+    assertTrue(canCallAsSubclass(ConcreteClassE.class, InterfaceQ.class));
+  }
+
   static class InnerClass {
   }
 
@@ -325,6 +394,36 @@ public class ClassTest extends TestCase {
 
   static enum InnerEnum {
     A, B, C;
+  }
+
+  interface InterfaceP {
+  }
+
+  interface InterfaceQ {
+
+  }
+  interface InterfaceR extends InterfaceP {
+  }
+
+  static abstract class AbstractClassX {
+  }
+
+  static abstract class AbstractClassY implements InterfaceP {
+  }
+
+  class ConcreteClassA extends AbstractClassX {
+  }
+
+  class ConcreteClassB extends AbstractClassY {
+  }
+
+  class ConcreteClassC extends ConcreteClassB implements InterfaceQ {
+  }
+
+  class ConcreteClassD implements InterfaceP, InterfaceQ {
+  }
+
+  class ConcreteClassE extends AbstractClassX implements InterfaceP, InterfaceQ {
   }
 }
 
