@@ -443,9 +443,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     boolean isPrimitive = var.getType().isPrimitive();
     String volatileStr = isVolatile ? "_VOLATILE" + (isPrimitive ? "" : "_OBJ") : "";
     newline();
-    if (BindingUtil.isPrimitiveConstant(var)) {
-      name = var.getName();
-    } else {
+    if (!BindingUtil.isPrimitiveConstant(var)) {
       printStaticFieldDeclaration(fragment, String.format("%s%s_%s", declType, typeName, name));
     }
     printf("J2OBJC_STATIC%s_FIELD_GETTER(%s, %s, %s)\n", volatileStr, typeName, name, objcType);

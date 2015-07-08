@@ -63,6 +63,7 @@ public class VariableRenamerTest extends GenerationTest {
         "public class Test { static final int foo = 3; static void foo() {}}", "Test", "Test.h");
     // The variable is renamed.
     assertTranslation(translation, "#define Test_foo_ 3");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, foo_, jint)");
     // The functionized static method is unchanged.
     assertTranslation(translation, "void Test_foo();");
   }
