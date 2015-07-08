@@ -190,6 +190,8 @@ public class CastResolver extends TreeVisitor {
               : method.getDeclaringClass();
           return getDeclaredReturnType(method, receiverType);
         }
+      case PARENTHESIZED_EXPRESSION:
+        return getDeclaredType(((ParenthesizedExpression) expr).getExpression());
       case SUPER_METHOD_INVOCATION:
         {
           SuperMethodInvocation invocation = (SuperMethodInvocation) expr;

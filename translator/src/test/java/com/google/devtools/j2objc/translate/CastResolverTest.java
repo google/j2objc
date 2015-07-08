@@ -139,4 +139,13 @@ public class CastResolverTest extends GenerationTest {
     // well check the output.
     assertTranslation(translation, "return ((Test_Foo *) foo_)->bar_->baz_;");
   }
+
+  public void testCastOfParenthesizedExpression() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static class Node { int key; } static Node next;"
+        + " Node getNext() { return null; }"
+        + " int test() { return (next = getNext()).key; } }", "Test", "Test.m");
+    assertTranslation(translation,
+        "return ((Test_Node *) (JreStrongAssign(&Test_next_, [self getNext])))->key_;");
+  }
 }
