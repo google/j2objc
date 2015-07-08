@@ -95,7 +95,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void Test_init(Test *self) {",
         "  NSObject_init(self);",
-        "  JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
+        "  Test_setAndConsume_date_(self, new_JavaUtilDate_init());",
         "}");
   }
 
@@ -108,7 +108,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "void Test_init(Test *self) {",
         "  NSObject_init(self);",
         "  {",
-        "    JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
+        "    Test_setAndConsume_date_(self, new_JavaUtilDate_init());",
         "  }",
         "}");
   }
@@ -141,7 +141,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "void Test_initWithInt_(Test *self, jint i) {",
         "  NSObject_init(self);",
         "  {",
-        "    JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
+        "    Test_setAndConsume_date_(self, new_JavaUtilDate_init());",
         "  }",
         "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out_))) "
           + "printlnWithInt:i];",
@@ -155,7 +155,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void Test_init(Test *self) {",
         "  NSObject_init(self);",
-        "  JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
+        "  Test_setAndConsume_date_(self, new_JavaUtilDate_init());",
         "}");
   }
 
@@ -192,9 +192,9 @@ public class InitializationNormalizerTest extends GenerationTest {
          + "  int outerVar = 1; "
          + "  class Inner { int innerVar = outerVar; void test() { outerVar++; } } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->this$0_, outer$);");
+    assertTranslation(translation, "Test_Inner_set_this$0_(self, outer$);");
     assertTranslation(translation, "innerVar_ = outer$->outerVar_;");
-    assertTrue(translation.indexOf("JreStrongAssign(&self->this$0_, outer$);")
+    assertTrue(translation.indexOf("Test_Inner_set_this$0_(self, outer$);")
                < translation.indexOf("innerVar_ = outer$->outerVar_;"));
   }
 

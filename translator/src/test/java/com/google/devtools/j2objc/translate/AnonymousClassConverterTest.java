@@ -117,7 +117,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "id<JavaLangRunnable> r = [new_Test_$1_initWithId_(test) autorelease];");
     assertTranslatedLines(translation,
         "void Test_$1_initWithId_(Test_$1 *self, id capture$0) {",
-        "  JreStrongAssign(&self->val$test_, capture$0);",
+        "  Test_$1_set_val$test_(self, capture$0);",
         "  NSObject_init(self);",
         "}");
     assertTranslation(translation, "[nil_chk(val$test_) description]");
@@ -135,7 +135,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "id<JavaLangRunnable> r = [new_Test_$1_initWithId_(foo) autorelease];");
     assertTranslatedLines(translation,
         "void Test_$1_initWithId_(Test_$1 *self, id capture$0) {",
-        "  JreStrongAssign(&self->val$foo_, capture$0);",
+        "  Test_$1_set_val$foo_(self, capture$0);",
         "  NSObject_init(self);",
         "}");
     assertTranslation(translation, "[nil_chk(val$foo_) description]");
@@ -180,7 +180,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     // Test_$: since bar_ is an unshadowed field, the parameter name is
     // unchanged.
     assertTranslation(translation, "Test_logWithInt_withId_(this$0_, 1, val$bar__);");
-    assertTranslation(translation, "JreStrongAssign(&self->val$bar__, capture$0);");
+    assertTranslation(translation, "Test_$1_set_val$bar__(self, capture$0);");
   }
 
   public void testExternalReferenceAsQualifier() throws IOException {
@@ -365,8 +365,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "void Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_("
           + "Test_A_$1 *self, Test_A *outer$, Test_B *capture$0, Test_B *superOuter$, "
           + "jint arg$0) {",
-        "  JreStrongAssign(&self->this$1_, outer$);",
-        "  JreStrongAssign(&self->val$b_, capture$0);",
+        "  Test_A_$1_set_this$1_(self, outer$);",
+        "  Test_A_$1_set_val$b_(self, capture$0);",
         "  Test_B_Inner_initWithTest_B_withInt_(self, superOuter$, arg$0);",
         "}");
   }
@@ -450,7 +450,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "  A(String foo) {} }",
         "A", "A.m");
     assertOccurrences(impl, "@implementation A_$1", 1);
-    assertOccurrences(impl, "JreStrongAssignAndConsume(&self->my_i_, new_A_$1_init());", 2);
+    assertOccurrences(impl, "A_setAndConsume_my_i_(self, new_A_$1_init());", 2);
   }
 
   public void testNestedAnonymousClasses() throws IOException {

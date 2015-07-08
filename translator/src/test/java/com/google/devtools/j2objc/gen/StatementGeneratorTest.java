@@ -202,11 +202,10 @@ public class StatementGeneratorTest extends GenerationTest {
 
   public void testAccessExternalStringConstant() throws IOException {
     String translation = translateSourceFile(
-        "public class Example { static class Bar { public static final String FOO=\"Mumble\"; } "
-        + "String foo; { foo = Bar.FOO; } }",
-        "Example", "Example.m");
-    assertTranslation(translation,
-        "JreStrongAssign(&self->foo_, JreLoadStatic(Example_Bar, FOO_))");
+      "public class Example { static class Bar { public static final String FOO=\"Mumble\"; } "
+      + "String foo; { foo = Bar.FOO; } }",
+      "Example", "Example.m");
+    assertTranslation(translation, "Example_set_foo_(self, JreLoadStatic(Example_Bar, FOO_))");
     assertTranslation(translation, "NSString *Example_Bar_FOO_ = @\"Mumble\";");
     translation = getTranslatedFile("Example.h");
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_Bar_FOO_;");
@@ -233,9 +232,9 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Example { Boolean b1 = Boolean.TRUE; Boolean b2 = Boolean.FALSE; }",
         "Example", "Example.m");
     assertTranslation(translation,
-        "JreStrongAssign(&self->b1_, JreLoadStatic(JavaLangBoolean, TRUE__))");
+        "Example_set_b1_(self, JreLoadStatic(JavaLangBoolean, TRUE__))");
     assertTranslation(translation,
-        "JreStrongAssign(&self->b2_, JreLoadStatic(JavaLangBoolean, FALSE__))");
+        "Example_set_b2_(self, JreLoadStatic(JavaLangBoolean, FALSE__))");
   }
 
   public void testStringConcatenation() throws IOException {
@@ -283,7 +282,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Example<K,V> { String s = \"hello, \" + 50 + \"% of the world\\n\"; }",
         "Example", "Example.m");
     assertTranslation(translation,
-        "JreStrongAssign(&self->s_, @\"hello, 50% of the world\\n\");");
+        "Example_set_s_(self, @\"hello, 50% of the world\\n\");");
   }
 
   public void testStringConcatenationMethodInvocation() throws IOException {
@@ -365,7 +364,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  }"
         + "}",
         "Test", "Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->i_, otherI);");
+    assertTranslation(translation, "Test_set_i_(self, otherI);");
     assertTranslation(translation, "j_ = otherJ;");
     assertTranslation(translation, "RELEASE_(i_);");
   }
@@ -635,7 +634,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "import java.util.*; public class A { Map map; A() { map = new HashMap(); }}",
         "A", "A.m");
     assertTranslation(translation,
-        "JreStrongAssignAndConsume(&self->map_, new_JavaUtilHashMap_init())");
+        "A_setAndConsume_map_(self, new_JavaUtilHashMap_init())");
   }
 
   public void testStringAddOperator() throws IOException {
@@ -786,7 +785,7 @@ public class StatementGeneratorTest extends GenerationTest {
     // field in its superclass.
     assertTranslation(translation, "Test_B *other_B_;");
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "JreStrongAssign(&self->other_B_, [self getOther])");
+    assertTranslation(translation, "Test_B_set_other_B_(self, [self getOther])");
   }
 
   public void testArrayInstanceOfTranslation() throws IOException {

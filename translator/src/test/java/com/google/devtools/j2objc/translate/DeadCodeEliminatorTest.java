@@ -99,7 +99,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertTranslation(translation, "#define A_foo 1");
     assertTranslation(translation, "NSString *A_bar_ = @\"bar\";");
     assertTranslation(translation, "abc_ = 9;");
-    assertTranslation(translation, "JreStrongAssign(&self->bah_, @\"123\");");
+    assertTranslation(translation, "A_set_bah_(self, @\"123\");");
     assertNotInTranslation(translation, "baz");
   }
 

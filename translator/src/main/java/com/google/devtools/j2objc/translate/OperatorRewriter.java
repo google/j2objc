@@ -21,11 +21,15 @@ import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CStringLiteral;
 import com.google.devtools.j2objc.ast.CharacterLiteral;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.StringLiteral;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -34,6 +38,7 @@ import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
@@ -49,6 +54,15 @@ import java.util.List;
  */
 public class OperatorRewriter extends TreeVisitor {
 
+  private static Expression getTarget(Expression node, IVariableBinding var) {
+    if (node instanceof QualifiedName) {
+      return ((QualifiedName) node).getQualifier();
+    } else if (node instanceof FieldAccess) {
+      return ((FieldAccess) node).getExpression();
+    }
+    return new ThisExpression(var.getDeclaringClass());
+  }
+
   @Override
   public void endVisit(Assignment node) {
     Assignment.Operator op = node.getOperator();
@@ -57,7 +71,17 @@ public class OperatorRewriter extends TreeVisitor {
     ITypeBinding lhsType = lhs.getTypeBinding();
     ITypeBinding rhsType = rhs.getTypeBinding();
     if (op == Assignment.Operator.ASSIGN) {
-      rewriteRegularAssignment(node);
+      IVariableBinding var = TreeUtil.getVariableBinding(lhs);
+      if (var == null || var.getType().isPrimitive() || !Options.useReferenceCounting()
+          || var.isEnumConstant()) {
+        return;
+      }
+      if (BindingUtil.isStatic(var)) {
+        node.replaceWith(newStaticAssignInvocation(var, rhs));
+      } else if (var.isField() && !BindingUtil.isWeakReference(var) && !inDeallocMethod(lhs)) {
+        Expression target = getTarget(lhs, var);
+        node.replaceWith(newFieldSetterInvocation(var, target, rhs));
+      }
     } else if (isStringAppend(node)) {
       rewriteStringAppend(node);
     } else {
@@ -82,6 +106,11 @@ public class OperatorRewriter extends TreeVisitor {
     return assignment.getOperator() == Assignment.Operator.PLUS_ASSIGN
         && typeEnv.resolveJavaType("java.lang.String").isAssignmentCompatible(
             assignment.getLeftHandSide().getTypeBinding());
+  }
+
+  private boolean inDeallocMethod(TreeNode node) {
+    IMethodBinding methodBinding = TreeUtil.getOwningMethodBinding(node);
+    return methodBinding != null && BindingUtil.isDestructor(methodBinding);
   }
 
   public void endVisit(InfixExpression node) {
@@ -113,30 +142,40 @@ public class OperatorRewriter extends TreeVisitor {
     }
   }
 
-  private void rewriteRegularAssignment(Assignment node) {
-    Expression lhs = node.getLeftHandSide();
-    IVariableBinding var = TreeUtil.getVariableBinding(lhs);
-    if (var == null || var.getType().isPrimitive() || !var.isField()
-        || BindingUtil.isWeakReference(var) || !Options.useReferenceCounting()
-        || var.isEnumConstant()) {
-      return;
-    }
-
-    Expression rhs = node.getRightHandSide();
+  private FunctionInvocation newStaticAssignInvocation(IVariableBinding var, Expression value) {
     String assignFunc = "JreStrongAssign";
-    Expression retainedRhs = TranslationUtil.retainResult(rhs);
-    if (retainedRhs != null) {
+    Expression retainedValue = TranslationUtil.retainResult(value);
+    if (retainedValue != null) {
       assignFunc = "JreStrongAssignAndConsume";
-      rhs = retainedRhs;
+      value = retainedValue;
     }
     FunctionInvocation invocation = new FunctionInvocation(
-        assignFunc, rhs.getTypeBinding(), typeEnv.resolveIOSType("id"), null);
+        assignFunc, value.getTypeBinding(), typeEnv.resolveIOSType("id"), null);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(
         typeEnv.getPointerType(var.getType()), PrefixExpression.Operator.ADDRESS_OF,
-        TreeUtil.remove(lhs)));
-    args.add(TreeUtil.remove(rhs));
-    node.replaceWith(invocation);
+        new SimpleName(var)));
+    args.add(TreeUtil.remove(value));
+    return invocation;
+  }
+
+  private FunctionInvocation newFieldSetterInvocation(
+      IVariableBinding var, Expression instance, Expression value) {
+    ITypeBinding varType = var.getType();
+    ITypeBinding declaringType = var.getDeclaringClass().getTypeDeclaration();
+    String setterFormat = "%s_set_%s";
+    Expression retainedValue = TranslationUtil.retainResult(value);
+    if (retainedValue != null) {
+      setterFormat = "%s_setAndConsume_%s";
+      value = retainedValue;
+    }
+    String setterName = String.format(
+        setterFormat, nameTable.getFullName(declaringType), nameTable.getVariableShortName(var));
+    FunctionInvocation invocation = new FunctionInvocation(
+        setterName, varType, varType, declaringType);
+    invocation.getArguments().add(TreeUtil.remove(instance));
+    invocation.getArguments().add(TreeUtil.remove(value));
+    return invocation;
   }
 
   private static String intOrLong(ITypeBinding type) {
