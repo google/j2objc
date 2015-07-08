@@ -108,7 +108,7 @@ public class TreeUtil {
   /**
    * Returns the first descendant of the given node that is not a ParenthesizedExpression.
    */
-  public static TreeNode trimParentheses(TreeNode node) {
+  public static Expression trimParentheses(Expression node) {
     while (node instanceof ParenthesizedExpression) {
       node = ((ParenthesizedExpression) node).getExpression();
     }
@@ -231,6 +231,7 @@ public class TreeUtil {
    * represents a variable. Returns null otherwise.
    */
   public static IVariableBinding getVariableBinding(Expression node) {
+    node = trimParentheses(node);
     switch (node.getKind()) {
       case FIELD_ACCESS:
         return ((FieldAccess) node).getVariableBinding();

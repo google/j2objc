@@ -91,4 +91,10 @@ public class OperatorRewriterTest extends GenerationTest {
         "JreStrAppend(&ws_, \"$\", @\"bar\");",
         "JreStrAppendArray(IOSObjectArray_GetRef(nil_chk(as_), 0), \"$\", @\"baz\");");
   }
+
+  public void testParenthesizedLeftHandSide() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
+    assertTranslation(translation, "JreStrongAssign(&(s_), s2);");
+  }
 }
