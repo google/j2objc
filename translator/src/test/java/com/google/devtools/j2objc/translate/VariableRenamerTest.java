@@ -35,7 +35,7 @@ public class VariableRenamerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation,
         "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)c_Arg {");
-    assertTranslation(translation, "Test_CheckedCollection_set_c_(self, c_Arg);");
+    assertTranslation(translation, "JreStrongAssign(&self->c_, c_Arg);");
   }
 
   public void testOverriddenFieldTranslation() throws IOException {
