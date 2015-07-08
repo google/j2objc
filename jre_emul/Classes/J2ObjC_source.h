@@ -33,4 +33,8 @@
 FOUNDATION_EXPORT void JreRelease(id obj);
 #endif
 
+// Defined in JreEmulation.m
+FOUNDATION_EXPORT id GetNonCapturingBlock(Class baseClass, NSString * blockClassName,
+    SEL methodSelector, id block);
+
 #endif  // _J2OBJC_SOURCE_H_

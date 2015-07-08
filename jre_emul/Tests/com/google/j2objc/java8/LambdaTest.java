@@ -16,8 +16,6 @@ package com.google.j2objc.java8;
 
 import junit.framework.TestCase;
 
-import java.util.concurrent.Callable;
-
 interface Function<F, T> {
   T apply(F input);
 }
@@ -30,13 +28,17 @@ interface Consumer<R> {
   void accept(R input);
 }
 
-// interface UnaryOperator<T> {
-// public T apply(T t);
-// }
+interface FourToOne<F, G, H, I, T> {
+  T apply(F f, G g, H h, I i);
+}
+
+//interface UnaryOperator<T> {
+//  public T apply(T t);
+//}
 //
-// interface UOToUO<T> {
-// UnaryOperator<T> apply(UOToUO<T> x);
-// }
+//interface UOToUO<T> {
+//  UnaryOperator<T> apply(UOToUO<T> x);
+//}
 
 /**
  * Command-line tests for Lambda support.
@@ -47,25 +49,34 @@ public class LambdaTest extends TestCase {
 
   public LambdaTest() {}
 
-  // public static <T> UnaryOperator<T> yComb(UnaryOperator<UnaryOperator<T>> r) {
-  // return ((UOToUO<T>) f -> f.apply(f)).apply(
-  // f -> r.apply(x -> f.apply(f).apply(x)));
-  // }
+//  public static <T> UnaryOperator<T> yComb(UnaryOperator<UnaryOperator<T>> r) {
+//    return ((UOToUO<T>) f -> f.apply(f)).apply(f -> r.apply(x -> f.apply(f).apply(x)));
+//  }
+//
+//  public void testYCombinator() throws Exception {
+//    UnaryOperator<UnaryOperator<String>> a = (UnaryOperator<String> f) -> {
+//      return (String x) -> {
+//        if (x.equals("1111")) {
+//          return x;
+//        } else {
+//          return f.apply(x + "1");
+//        }
+//      };
+//    };
+//    assertEquals("1111", yComb(a).apply(""));
+//  }
 
-  // public void testYCombinator() throws Exception {
-  //
-  // UnaryOperator<UnaryOperator<String>> a = (UnaryOperator<String> f) -> {
-  // return (String x) -> {
-  // if (x.equals("1111")) {
-  // return x;
-  // } else {
-  // return f.apply(x + "1");
-  // }
-  // };
-  // };
-  //
-  // assertEquals("1111", yComb(a).apply(""));
-  // }
+//  Function outerF = (x) -> x;
+//
+//  public void testOuterFunctions() throws Exception {
+//    assertEquals(42, outerF.apply(42));
+//  }
+
+  static Function staticF = (x) -> x;
+
+  public void testStaticFunctions() throws Exception {
+    assertEquals(42, staticF.apply(42));
+  }
 
   public void testNestedLambdas() throws Exception {
     Function<String, Function<String, String>> f = (x) -> (y) -> x;
@@ -78,8 +89,8 @@ public class LambdaTest extends TestCase {
     assertEquals(f4.apply("42").apply("43"), Integer.valueOf(42));
     Function<String, Function<Integer, Integer>> f5 = (x) -> (y) -> Integer.parseInt(x);
     assertEquals(f5.apply("42").apply(43), Integer.valueOf(42));
-    Callable<Callable> c2 = () -> () -> 42;
-    assertEquals(c2.call().call(), 42);
+    // Callable<Callable> c2 = () -> () -> 42;
+    // assertEquals(c2.call().call(), 42);
     Supplier<Supplier> s2 = () -> () -> 42;
     assertEquals(s2.get().get(), 42);
   }
@@ -122,6 +133,8 @@ public class LambdaTest extends TestCase {
       return y;
     };
     assertEquals(42, f3.apply(null));
+    FourToOne<String, Double, Integer, Boolean, String> appendFour = (a, b, c, d) -> a + b + c + d;
+    assertEquals("Foo4.214true", appendFour.apply("Foo", 4.2, 14, true));
   }
 
   public void testBasicSupplier() throws Exception {
@@ -135,9 +148,9 @@ public class LambdaTest extends TestCase {
     c.accept(42);
     assertEquals(42, ls[0]);
   }
-
-  public void testBasicCallable() throws Exception {
-    Callable c = () -> 42;
-    assertEquals(42, c.call());
-  }
 }
+
+//  public void testBasicCallable() throws Exception {
+//    Callable c = () -> 42;
+//    assertEquals(42, c.call());
+//  }

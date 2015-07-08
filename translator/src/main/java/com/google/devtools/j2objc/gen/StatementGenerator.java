@@ -631,30 +631,32 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(LambdaExpression node) {
-    // A temporary stub to show pseudocode in place of Java 8 lambdas.
     // TODO(kirbs): Implement correct conversion of Java 8 lambdas to Objective-C blocks.
-    if (!Options.isJava8Translator()) {
-      assert false : "not implemented yet";
-    }
-
-    buffer.append("^");
-    buffer.append(
-        nameTable.getSpecificObjCType(node.getFunctionalInterfaceMethod().getReturnType()));
-    buffer.append("(");
-    boolean delimiterFlag = false;
+    assert Options.isJava8Translator() :
+      "Lambda expression in translator with -source less than 8.";
+    IMethodBinding functionalInterface = node.getFunctionalInterfaceMethod();
+    String superClassName = nameTable.getFullName(node.getTypeBinding());
+    buffer.append("GetNonCapturingBlock([");
+    buffer.append(superClassName);
+    buffer.append(" class], @\"");
+    buffer.append(superClassName);
+    buffer.append("_");
+    buffer.append(node.getMethodBinding().getName());
+    buffer.append("\", @selector(");
+    buffer.append(nameTable.getMethodSelector(functionalInterface));
+    buffer.append("), ^");
+    buffer.append(nameTable.getSpecificObjCType(functionalInterface.getReturnType()));
+    buffer.append("(id _block_self");
     for (VariableDeclaration x : node.parameters()) {
       IVariableBinding variableBinding = x.getVariableBinding();
-      if (delimiterFlag) {
-        buffer.append(", ");
-      } else {
-        delimiterFlag = true;
-      }
+      buffer.append(", ");
       buffer.append(nameTable.getSpecificObjCType(x.getVariableBinding().getType()));
       buffer.append(' ');
       buffer.append(nameTable.getVariableQualifiedName(variableBinding.getVariableDeclaration()));
     }
     buffer.append(")");
     node.getBody().accept(this);
+    buffer.append(")");
     return false;
   }
 
@@ -664,23 +666,6 @@ public class StatementGenerator extends TreeVisitor {
     return false;
   }
 
-  // TODO(kirbs): Move the inner cast logic to NameTable, and remove this method.
-  private void blockCast(IMethodBinding binding) {
-    buffer.append('(');
-    buffer.append(nameTable.getObjCType(binding.getReturnType()));
-    buffer.append("(^)(");
-    boolean delimiterFlag = false;
-    for (ITypeBinding type : binding.getParameterTypes()) {
-      buffer.append(nameTable.getObjCType(type));
-      if (delimiterFlag) {
-        buffer.append(", ");
-      } else {
-        delimiterFlag = true;
-      }
-    }
-    buffer.append("))");
-  }
-
   @Override
   public boolean visit(MethodInvocation node) {
     IMethodBinding binding = node.getMethodBinding();
@@ -688,56 +673,16 @@ public class StatementGenerator extends TreeVisitor {
 
     // Object receiving the message, or null if it's a method in this class.
     Expression receiver = node.getExpression();
-    if (Options.isJava8Translator()
-        && binding.getDeclaringClass().getFunctionalInterfaceMethod() != null) {
-      if (receiver == null) {
-        // Static methods can't be functional interface methods, and self should never be a block.
-        throw new AssertionError("No receiver for MethodInvocation.");
-      }
-      /**
-       * We are typing all blocks as id types until we need to do otherwise, specifically on
-       * invocation. At invocation then we need to coerce the receiver to the correct block type. We
-       * can't do this recursively, as then a block could not take or return its own block type,
-       * Instead we only resolve one level at a time.
-       *
-       * Take the following:
-       *  Supplier s = () -> () -> () -> 1;
-       *
-       * This will start out with an Objective-C type of id, until we invoke the outer lambda, at
-       * which point we resolve the next level:
-       *  // () -> () -> 1;
-       *  Supplier t = s.get();
-       *  id t = ((void(^)id) s)();
-       *
-       * Since we don't need to resolve the type until invocation, we avoid recursive typedefs.
-       */
-      // TODO(kirbs): Determine when casts are needed, rather than always casting
-      buffer.append('(');
-      blockCast(binding.getDeclaringClass().getFunctionalInterfaceMethod());
+    buffer.append('[');
+    if (BindingUtil.isStatic(binding)) {
+      buffer.append(nameTable.getFullName(binding.getDeclaringClass()));
+    } else if (receiver != null) {
       receiver.accept(this);
-
-      buffer.append(')');
-      buffer.append('(');
-      for (Iterator<Expression> it = node.getArguments().iterator(); it.hasNext();) {
-        Expression next = it.next();
-        next.accept(this);
-        if (it.hasNext()) {
-          buffer.append(", ");
-        }
-      }
-      buffer.append(')');
     } else {
-      buffer.append('[');
-      if (BindingUtil.isStatic(binding)) {
-        buffer.append(nameTable.getFullName(binding.getDeclaringClass()));
-      } else if (receiver != null) {
-        receiver.accept(this);
-      } else {
-        buffer.append("self");
-      }
-      printMethodInvocationNameAndArgs(nameTable.getMethodSelector(binding), node.getArguments());
-      buffer.append(']');
+      buffer.append("self");
     }
+    printMethodInvocationNameAndArgs(nameTable.getMethodSelector(binding), node.getArguments());
+    buffer.append(']');
     return false;
   }
 
@@ -1250,56 +1195,16 @@ public class StatementGenerator extends TreeVisitor {
       objcTypePointers = objcType.substring(idx);
       objcType = objcType.substring(0, idx);
     }
-    IMethodBinding functionalInterface = binding.getType().getFunctionalInterfaceMethod();
-    if (Options.isJava8Translator() && functionalInterface != null) {
-      buffer.append(nameTable.getSpecificObjCType(functionalInterface.getReturnType()));
-      for (Iterator<VariableDeclarationFragment> it = vars.iterator(); it.hasNext();) {
-        VariableDeclarationFragment f = it.next();
-        buffer.append(objcTypePointers);
-        buffer.append("(^");
-        f.getName().accept(this);
-        if (it.hasNext()) {
-          buffer.append(",");
-        }
-        buffer.append(")");
+    buffer.append(objcType);
+    for (Iterator<VariableDeclarationFragment> it = vars.iterator(); it.hasNext();) {
+      VariableDeclarationFragment f = it.next();
+      buffer.append(objcTypePointers);
+      f.accept(this);
+      if (it.hasNext()) {
+        buffer.append(",");
       }
-      buffer.append("(");
-      boolean delimiterFlag = false;
-      for (ITypeBinding it : functionalInterface.getParameterTypes()) {
-        if (delimiterFlag) {
-          buffer.append(", ");
-        } else {
-          delimiterFlag = true;
-        }
-        buffer.append(nameTable.getSpecificObjCType(it));
-      }
-      buffer.append(")");
-      for (Iterator<VariableDeclarationFragment> it = vars.iterator(); it.hasNext();) {
-        VariableDeclarationFragment f = it.next();
-        if (f.getInitializer() != null) {
-          buffer.append(" = ");
-          if (!(f.getInitializer() instanceof LambdaExpression)) {
-            // TODO(kirbs): Test Java cases of functional interface assignment, to make sure that
-            // all functional interface assigned Objects can be converted to blocks.
-            throw new AssertionError(
-                "Assignment of non-LambdaExpression to functional interface (block).");
-          }
-          f.getInitializer().accept(this);
-        }
-      }
-      buffer.append(";\n");
-    } else {
-      buffer.append(objcType);
-      for (Iterator<VariableDeclarationFragment> it = vars.iterator(); it.hasNext();) {
-        VariableDeclarationFragment f = it.next();
-        buffer.append(objcTypePointers);
-        f.accept(this);
-        if (it.hasNext()) {
-          buffer.append(",");
-        }
-      }
-      buffer.append(";\n");
     }
+    buffer.append(";\n");
     return false;
   }
 

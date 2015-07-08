@@ -41,7 +41,7 @@ import java.util.List;
  * @author Seth Kirby
  */
 public class FunctionalAnonymousClassConverter extends TreeVisitor {
-
+  // TODO(kirbs): Consider deleting if translation of anonymous classes to lambdas isn't performant.
   private boolean isFunctionalAnonymous(ClassInstanceCreation node) {
     ITypeBinding typeBinding = node.getTypeBinding();
     if (typeBinding == null) {

@@ -64,6 +64,24 @@ id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT id value) {
   return JreStrongAssignInner(pIvar, value);
 }
 
+// Method to handle dynamic creation of class wrappers surrounding blocks. Currently only works
+// for non-capturing lambdas, and the first instance of a capturing lambda.
+// TODO(kirbs): Implement block instance generator for capturing lambdas.
+// TODO(kirbs): Implement singleton for non-capturing lambdas.
+id GetNonCapturingBlock(Class baseClass, NSString *blockClassName, SEL methodSelector, id block) {
+    Class blockClass = NSClassFromString(blockClassName);
+    if (blockClass != nil) {
+      return [[blockClass alloc] init];
+    }
+    blockClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
+    Method method = class_getInstanceMethod(baseClass, methodSelector);
+    const char *types = method_getTypeEncoding(method);
+    IMP implementation = imp_implementationWithBlock(block);
+    class_addMethod(blockClass, methodSelector, implementation, types);
+    objc_registerClassPair(blockClass);
+    return [[blockClass alloc] init];
+}
+
 // Converts main() arguments into an IOSObjectArray of NSStrings.  The first
 // argument, the program name, is skipped so the returned array matches what
 // is passed to a Java main method.

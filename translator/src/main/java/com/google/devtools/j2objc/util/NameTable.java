@@ -731,9 +731,7 @@ public class NameTable {
 
   private String getObjCTypeInner(ITypeBinding type, String qualifiers, boolean expandBounds) {
     String objCType;
-    if (Options.isJava8Translator() && type.getFunctionalInterfaceMethod() != null) {
-      objCType = BLOCK_TYPE;
-    } else if (type instanceof PointerTypeBinding) {
+    if (type instanceof PointerTypeBinding) {
       String pointeeQualifiers = null;
       if (qualifiers != null) {
         int idx = qualifiers.indexOf('*');
