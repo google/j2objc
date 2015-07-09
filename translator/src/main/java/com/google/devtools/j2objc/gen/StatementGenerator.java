@@ -636,7 +636,9 @@ public class StatementGenerator extends TreeVisitor {
       "Lambda expression in translator with -source less than 8.";
     IMethodBinding functionalInterface = node.getFunctionalInterfaceMethod();
     String superClassName = nameTable.getFullName(node.getTypeBinding());
-    buffer.append("GetNonCapturingBlock([");
+    // TODO(kirbs): Add detection of capturing and non-capturing lambdas, and route calls to
+    // non-capturing lambdas to GetNonCapturingBlock.
+    buffer.append("GetCapturingLambda([");
     buffer.append(superClassName);
     buffer.append(" class], @\"");
     buffer.append(superClassName);

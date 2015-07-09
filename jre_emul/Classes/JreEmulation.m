@@ -64,22 +64,62 @@ id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT id value) {
   return JreStrongAssignInner(pIvar, value);
 }
 
-// Method to handle dynamic creation of class wrappers surrounding blocks. Currently only works
-// for non-capturing lambdas, and the first instance of a capturing lambda.
-// TODO(kirbs): Implement block instance generator for capturing lambdas.
-// TODO(kirbs): Implement singleton for non-capturing lambdas.
-id GetNonCapturingBlock(Class baseClass, NSString *blockClassName, SEL methodSelector, id block) {
-    Class blockClass = NSClassFromString(blockClassName);
-    if (blockClass != nil) {
-      return [[blockClass alloc] init];
-    }
-    blockClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
-    Method method = class_getInstanceMethod(baseClass, methodSelector);
-    const char *types = method_getTypeEncoding(method);
-    IMP implementation = imp_implementationWithBlock(block);
-    class_addMethod(blockClass, methodSelector, implementation, types);
-    objc_registerClassPair(blockClass);
-    return [[blockClass alloc] init];
+// Method to handle dynamic creation of class wrappers surrounding blocks which come from lambdas
+// not requiring a capture.
+id GetNonCapturingLambda(Class baseClass, NSString *blockClassName, SEL methodSelector, id block) {
+  // Ideally we would solve this with a singleton instead of a lookup, but Objective-C doesn't have
+  // class variables, and we can't define static C variables dynamically.
+  // TODO(kirbs): Refactor GetNonCapturingLambda for thread safety.  Right now dictionary
+  // access is not threadsafe, but we will probably be moving away from a dictionary for lambda
+  // lookup and storage.
+  static NSMutableDictionary *nonCapturingBlockLookup = nil;
+  static dispatch_once_t once;
+  dispatch_once(&once, ^{
+    nonCapturingBlockLookup = [[NSMutableDictionary alloc] init];
+  });
+  id lambdaObj = [nonCapturingBlockLookup objectForKey:blockClassName];
+  if (lambdaObj != nil) {
+    return lambdaObj;
+  }
+  Class blockClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
+  Method method = class_getInstanceMethod(baseClass, methodSelector);
+  const char *types = method_getTypeEncoding(method);
+  IMP block_implementation = imp_implementationWithBlock(block);
+  class_addMethod(blockClass, methodSelector, block_implementation, types);
+  objc_registerClassPair(blockClass);
+  lambdaObj = [[blockClass alloc] init];
+  [nonCapturingBlockLookup setObject:lambdaObj forKeyedSubscript:blockClassName];
+  return lambdaObj;
+}
+
+// Method to handle dynamic creation of class wrappers surrounding blocks from lambdas requiring
+// a capture.
+id GetCapturingLambda(Class baseClass, NSString *blockClassName, SEL methodSelector, id block) {
+  // Ideally we would solve this by creating a variadic block or method which wraps an
+  // underlying block instance variable, and creating instances of classes rather than entirely
+  // new classes.  There are workarounds, but as far as I can tell this is going to have the
+  // least code footprint, though it may be less performant.
+  //
+  // Alternatives
+  // Create methods for each selector we need to use from a lambda.
+  //  Comes with code cruft in the generated code.
+  // Call all blocks with one array arg, and then unpack the array into variables.
+  //  Comes with cruft in the generated blocks.
+  //  Comes with memory overhead.
+  //  Awkward handling of non-id types.
+  // We could lookup the number of arguments in the functional method, and have an array of
+  // matching block wrappers.
+  //  Need explicit blocks for all distinct argument lengths we support.
+  //  Probably more performant than creating a new class for every lambda instance.
+  static int lambdaCount = 0;
+  blockClassName = [NSString stringWithFormat:@"%@_%d",blockClassName,lambdaCount++];
+  Class blockClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
+  IMP block_implementation = imp_implementationWithBlock(block);
+  Method method = class_getInstanceMethod(baseClass, methodSelector);
+  const char *types = method_getTypeEncoding(method);
+  class_addMethod(blockClass, methodSelector, block_implementation, types);
+  objc_registerClassPair(blockClass);
+  return [[blockClass alloc] init];
 }
 
 // Converts main() arguments into an IOSObjectArray of NSStrings.  The first
