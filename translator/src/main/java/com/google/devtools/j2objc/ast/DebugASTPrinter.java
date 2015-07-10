@@ -62,6 +62,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(AnnotationTypeMemberDeclaration node) {
     sb.printIndent();
+    printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
     node.getType().accept(this);
     sb.print(' ');
@@ -307,6 +308,12 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(CStringLiteral node) {
+    sb.print(node.getLiteralValue());
+    return false;
+  }
+
+  @Override
   public boolean visit(Dimension node) {
     if (!node.annotations().isEmpty()) {
       sb.append(' ');
@@ -352,6 +359,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(EnumConstantDeclaration node) {
     sb.printIndent();
+    printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
     node.getName().accept(this);
     if (!node.getArguments().isEmpty()) {
@@ -374,6 +382,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(EnumDeclaration node) {
     sb.printIndent();
+    printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
     sb.print("enum ");
     node.getName().accept(this);
@@ -427,6 +436,7 @@ public class DebugASTPrinter extends TreeVisitor {
       node.getJavadoc().accept(this);
     }
     sb.printIndent();
+    printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
     node.getType().accept(this);
     sb.print(' ');
@@ -470,6 +480,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(FunctionDeclaration node) {
     sb.printIndent();
+    printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
     node.getReturnType().accept(this);
     sb.print(' ');
@@ -540,6 +551,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(Initializer node) {
+    printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
     node.getBody().accept(this);
     return false;
@@ -620,6 +632,7 @@ public class DebugASTPrinter extends TreeVisitor {
   @Override
   public boolean visit(MethodDeclaration node) {
     sb.printIndent();
+    printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
     IMethodBinding meth = node.getMethodBinding();
     printTypeParameters(meth.getTypeParameters());
@@ -1011,6 +1024,7 @@ public class DebugASTPrinter extends TreeVisitor {
     if (node.getJavadoc() != null) {
       node.getJavadoc().accept(this);
     }
+    printAnnotations(node.getAnnotations());
     printModifiers(node.getModifiers());
     sb.print(node.isInterface() ? "interface " : "class ");
     node.getName().accept(this);
