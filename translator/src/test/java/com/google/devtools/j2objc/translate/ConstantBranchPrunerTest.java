@@ -44,6 +44,19 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     assertTranslatedLines(translation, "do {", "[self tick];", "}", "while (b);");
   }
 
+  // Verify body replaces do statement when false.
+  public void testFalseDoExpression() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { int test() { foo: do { return 1; } while (false); }}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation, "- (jint)test {", "foo: {", "return 1;", "}", "}");
+    translation = translateSourceFile(
+        "class Test { static final boolean debug = false;"
+            + "  int test() { foo: do { return 1; } while (debug); }}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation, "- (jint)test {", "foo: {", "return 1;", "}", "}");
+  }
+
   // Verify then block replaces if statement when true.
   public void testTrueIfExpression() throws IOException {
     String translation = translateSourceFile(

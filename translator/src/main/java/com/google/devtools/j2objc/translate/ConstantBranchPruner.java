@@ -42,7 +42,7 @@ public class ConstantBranchPruner extends TreeVisitor {
   @Override
   public void endVisit(DoStatement node) {
     if (getValue(node.getExpression()) == FALSE) {
-      node.remove();
+      node.replaceWith(node.getBody().copy());
     }
   }
 
