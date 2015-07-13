@@ -17,6 +17,10 @@
 package java.lang;
 
 /*-[
+#if TARGET_OS_IPHONE || TARGET_OS_IPHONE_SIMULATOR
+#import <UIKit/UIKit.h>
+#endif
+
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
 #import "NSDictionaryMap.h"
@@ -147,6 +151,95 @@ public class System {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
       JreStrongAssignAndConsume(&JavaLangSystem_props_, [[JavaUtilProperties alloc] init]);
+
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.class.path" withNSString:@""];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.class.version" withNSString:@"0"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.compiler" withNSString:@""];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.ext.dirs" withNSString:@""];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.library.path" withNSString:@""];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.specification.name"
+                                        withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.specification.vendor"
+                                        withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.specification.version"
+                                        withNSString:@"0"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vendor" withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vendor.url"
+                                        withNSString:@"http://j2objc.org/"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.version" withNSString:@"0"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.name" withNSString:@""];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.specification.name"
+                                        withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.specification.vendor"
+                                        withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.specification.version"
+                                        withNSString:@"0"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.vendor" withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.version" withNSString:@"0"];
+
+      // Get os.arch from J2OBJC_BUILD_ARCH defined in fat_lib.mk.
+      #define J2OBJC_BUILD_ARCH_STRINGIFY(x) #x
+      #define J2OBJC_BUILD_ARCH_CSTR(x) J2OBJC_BUILD_ARCH_STRINGIFY(x)
+      #define J2OBJC_BUILD_ARCH_NSSTR ([NSString stringWithUTF8String: \
+                                        J2OBJC_BUILD_ARCH_CSTR(J2OBJC_BUILD_ARCH)])
+      [JavaLangSystem_props_ setPropertyWithNSString:@"os.arch"
+                                        withNSString:J2OBJC_BUILD_ARCH_NSSTR];
+      #undef J2OBJC_BUILD_ARCH_NSSTR
+      #undef J2OBJC_BUILD_ARCH_CSTR
+      #undef J2OBJC_BUILD_ARCH_STRINGIFY
+
+      NSString *versionString;
+
+      // During compile time, see if [NSProcessInfo processInfo].operatingSystemVersion is available
+      // in the SDK.
+#if (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && (__MAC_OS_X_VERSION_MAX_ALLOWED > __MAC_10_9)) \
+    || (defined(__IPHONE_OS_VERSION_MAX_ALLOWED) \
+        && (__IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_8_0))
+
+      // Then we check if the method is actually available on the running device.
+      if ([NSProcessInfo instancesRespondToSelector:@selector(operatingSystemVersion)]) {
+        NSOperatingSystemVersion version = [NSProcessInfo processInfo].operatingSystemVersion;
+
+        // This matches the format of [UIDevice currentDevice].systemVersion.
+        if (version.patchVersion) {
+          versionString = [NSString stringWithFormat:@"%ld.%ld.%ld",
+                                                     (long) version.majorVersion,
+                                                     (long) version.minorVersion,
+                                                     (long) version.patchVersion];
+        } else {
+          versionString = [NSString stringWithFormat:@"%ld.%ld",
+                                                     (long) version.majorVersion,
+                                                     (long) version.minorVersion];
+        }
+      } else {
+#else
+      {
+#endif  // #if (defined(...))
+
+#if TARGET_OS_IPHONE || TARGET_OS_IPHONE_SIMULATOR
+        // If [NSProcessInfo processInfo].operatingSystemVersion is not available in the SDK and
+        // this is iOS SDK, use [UIDevice currentDevice].
+        versionString = [UIDevice currentDevice].systemVersion;
+#else
+        // If we arrive here, we want to try again to see if [UIDevice currentDevice] is
+        // available. This is because the code may be running in a 64-bit iOS Simulator, but
+        // the x86_64 portion of the fat library is built as a Mac library.
+        Class uiDeviceClass = NSClassFromString(@"UIDevice");
+        SEL currentDeviceSel = NSSelectorFromString(@"currentDevice");
+        SEL systemVersionSel = NSSelectorFromString(@"systemVersion");
+        id currentDevice = [uiDeviceClass performSelector:currentDeviceSel];
+        versionString = (NSString *)[currentDevice performSelector:systemVersionSel];
+
+        // Ok, this is OS X. We use operatingSystemVersionString which gives us a localized
+        // version not suitable for parsing. Given the use case of this property, it's not worth
+        // doing more than just reporting this back verbatim.
+        if (!versionString) {
+          versionString = [NSProcessInfo processInfo].operatingSystemVersionString;
+        }
+#endif  // #if TARGET_OS_IPHONE || TARGET_OS_IPHONE_SIMULATOR
+      }
+
+      [JavaLangSystem_props_ setPropertyWithNSString:@"os.version" withNSString:versionString];
 
       [JavaLangSystem_props_ setPropertyWithNSString:@"file.separator" withNSString:@"/"];
       [JavaLangSystem_props_ setPropertyWithNSString:@"line.separator" withNSString:@"\n"];

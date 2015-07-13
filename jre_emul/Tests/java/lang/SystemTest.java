@@ -40,6 +40,63 @@ import java.util.Map;
  */
 public class SystemTest extends TestCase {
 
+  static final String[] NOT_NULL_PROPERTIES = {
+      "file.separator",
+      "java.class.path",
+      "java.class.version",
+      "java.compiler",
+      "java.ext.dirs",
+      "java.home",
+      "java.io.tmpdir",
+      "java.library.path",
+      "java.specification.name",
+      "java.specification.vendor",
+      "java.specification.version",
+      "java.vendor",
+      "java.vendor.url",
+      "java.version",
+      "java.vm.name",
+      "java.vm.specification.name",
+      "java.vm.specification.vendor",
+      "java.vm.specification.version",
+      "java.vm.vendor",
+      "java.vm.version",
+      "line.separator",
+      "os.arch",
+      "os.name",
+      "os.version",
+      "path.separator",
+      "user.dir",
+      "user.home",
+      "user.name",
+  };
+
+  static final String[] NOT_EMPTY_PROPERTIES = {
+      "file.separator",
+      "java.class.version",
+      "java.home",
+      "java.io.tmpdir",
+      "java.specification.name",
+      "java.specification.vendor",
+      "java.specification.version",
+      "java.vendor",
+      "java.vendor.url",
+      "java.version",
+      "java.vm.specification.name",
+      "java.vm.specification.vendor",
+      "java.vm.specification.version",
+      "java.vm.vendor",
+      "java.vm.version",
+      "line.separator",
+      "os.arch",
+      "os.name",
+      "os.version",
+      "path.separator",
+      "user.dir",
+      "user.home",
+      "user.name",
+  };
+
   public void testGetenvKey() {
     assertNotNull(System.getenv("HOME"));
     assertNull(System.getenv("SOME_VARIABLE_THAT_SHOULD_NOT_EXIST"));
@@ -56,6 +113,18 @@ public class SystemTest extends TestCase {
       fail("Should throw UnsupportedOperationException");
     } catch (UnsupportedOperationException e) {
       // expected
+    }
+  }
+
+  public void testSystemProperties() {
+    for (String key : NOT_NULL_PROPERTIES) {
+      assertNotNull(System.getProperty(key));
+    }
+
+    assertNull(System.getProperty("non.existent.property"));
+
+    for (String key : NOT_EMPTY_PROPERTIES) {
+      assertTrue(System.getProperty(key).length() > 0);
     }
   }
 }

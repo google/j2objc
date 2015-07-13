@@ -40,12 +40,18 @@ FAT_LIB_MACOSX_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh)
 FAT_LIB_IPHONE_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphoneos)
 FAT_LIB_SIMULATOR_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphonesimulator)
 
-FAT_LIB_MACOSX_FLAGS = $(FAT_LIB_OSX_FLAGS) -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
-FAT_LIB_IPHONE_FLAGS = -arch armv7 -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
-FAT_LIB_IPHONE64_FLAGS = -arch arm64 -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
-FAT_LIB_IPHONEV7S_FLAGS = -arch armv7s -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
-FAT_LIB_SIMULATOR_FLAGS = -arch i386 -miphoneos-version-min=5.0 -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
-FAT_LIB_XCODE_FLAGS = $(ARCH_FLAGS) -miphoneos-version-min=5.0 -isysroot $(SDKROOT)
+FAT_LIB_MACOSX_FLAGS = $(FAT_LIB_OSX_FLAGS) -DJ2OBJC_BUILD_ARCH=x86_64 \
+  -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
+FAT_LIB_IPHONE_FLAGS = -arch armv7 -DJ2OBJC_BUILD_ARCH=armv7 -miphoneos-version-min=5.0 \
+  -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
+FAT_LIB_IPHONE64_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -miphoneos-version-min=5.0 \
+  -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
+FAT_LIB_IPHONEV7S_FLAGS = -arch armv7s -DJ2OBJC_BUILD_ARCH=armv7s -miphoneos-version-min=5.0 \
+  -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
+FAT_LIB_SIMULATOR_FLAGS = -arch i386 -DJ2OBJC_BUILD_ARCH=i386 -miphoneos-version-min=5.0 \
+  -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
+FAT_LIB_XCODE_FLAGS = $(ARCH_FLAGS) -DJ2OBJC_BUILD_ARCH=$(CURRENT_ARCH) -miphoneos-version-min=5.0 \
+  -isysroot $(SDKROOT)
 
 ifdef FAT_LIB_PRECOMPILED_HEADER
 ifndef CONFIGURATION_BUILD_DIR
