@@ -67,16 +67,16 @@ public class CastResolver extends TreeVisitor {
       assert type.isPrimitive();  // Java wouldn't allow a cast from primitive to non-primitive.
       switch (type.getBinaryName().charAt(0)) {
         case 'J':
-          node.replaceWith(rewriteFloatToIntegralCast(type, expr, "J2ObjCFpToLong", type));
+          node.replaceWith(rewriteFloatToIntegralCast(type, expr, "JreFpToLong", type));
           return;
         case 'C':
-          node.replaceWith(rewriteFloatToIntegralCast(type, expr, "J2ObjCFpToUnichar", type));
+          node.replaceWith(rewriteFloatToIntegralCast(type, expr, "JreFpToChar", type));
           return;
         case 'B':
         case 'S':
         case 'I':
           node.replaceWith(rewriteFloatToIntegralCast(
-              type, expr, "J2ObjCFpToInt", typeEnv.resolveJavaType("int")));
+              type, expr, "JreFpToInt", typeEnv.resolveJavaType("int")));
           return;
       }
       // else fall-through.

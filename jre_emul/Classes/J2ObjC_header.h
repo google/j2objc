@@ -29,32 +29,32 @@ id JreStrAppendArray(JreArrayRef lhs, const char *types, ...);
 CF_EXTERN_C_END
 
 #define BOXED_INC_AND_DEC_INNER(CNAME, VALUE_METHOD, TYPE, OPNAME, OP) \
-  __attribute__((always_inline)) inline TYPE *BoxedPre##OPNAME##CNAME(TYPE **value) { \
+  __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##CNAME(TYPE **value) { \
     nil_chk(*value); \
     return *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] OP 1); \
   } \
-  __attribute__((always_inline)) inline TYPE *BoxedPre##OPNAME##Strong##CNAME(TYPE **value) { \
+  __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##Strong##CNAME(TYPE **value) { \
     nil_chk(*value); \
     return JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] OP 1)); \
   } \
-  __attribute__((always_inline)) inline TYPE *BoxedPre##OPNAME##Array##CNAME(JreArrayRef ref) { \
+  __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##Array##CNAME(JreArrayRef ref) { \
     nil_chk(*ref.pValue); \
     return IOSObjectArray_SetRef( \
         ref, TYPE##_valueOfWith##CNAME##_([*((TYPE **)ref.pValue) VALUE_METHOD] OP 1)); \
   } \
-  __attribute__((always_inline)) inline TYPE *BoxedPost##OPNAME##CNAME(TYPE **value) { \
+  __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##CNAME(TYPE **value) { \
     nil_chk(*value); \
     TYPE *original = *value; \
     *value = TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] OP 1); \
     return original; \
   } \
-  __attribute__((always_inline)) inline TYPE *BoxedPost##OPNAME##Strong##CNAME(TYPE **value) { \
+  __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##Strong##CNAME(TYPE **value) { \
     nil_chk(*value); \
     TYPE *original = *value; \
     JreStrongAssign(value, TYPE##_valueOfWith##CNAME##_([*value VALUE_METHOD] OP 1)); \
     return original; \
   } \
-  __attribute__((always_inline)) inline TYPE *BoxedPost##OPNAME##Array##CNAME(JreArrayRef ref) { \
+  __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##Array##CNAME(JreArrayRef ref) { \
     nil_chk(*ref.pValue); \
     TYPE *original = *ref.pValue; \
     IOSObjectArray_SetRef( \
@@ -104,19 +104,19 @@ CF_EXTERN_C_END
  */
 #define BOXED_COMPOUND_ASSIGN( \
     CNAME, VALUE_METHOD, TYPE, BOXED_TYPE, RTYPE, OPNAME, OP, OP_LTYPE) \
-  __attribute__((always_inline)) inline BOXED_TYPE *Boxed##OPNAME##Assign##CNAME( \
+  __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##Assign##CNAME( \
       BOXED_TYPE **lhs, RTYPE rhs) { \
     nil_chk(*lhs); \
     return *lhs = BOXED_TYPE##_valueOfWith##CNAME##_( \
         (TYPE)(OP((OP_LTYPE)[*lhs VALUE_METHOD], rhs))); \
   } \
-  __attribute__((always_inline)) inline BOXED_TYPE *Boxed##OPNAME##AssignStrong##CNAME( \
+  __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##AssignStrong##CNAME( \
       BOXED_TYPE **lhs, RTYPE rhs) { \
     nil_chk(*lhs); \
     return JreStrongAssign(lhs, \
         BOXED_TYPE##_valueOfWith##CNAME##_((TYPE)(OP((OP_LTYPE)[*lhs VALUE_METHOD], rhs)))); \
   } \
-  __attribute__((always_inline)) inline BOXED_TYPE *Boxed##OPNAME##AssignArray##CNAME( \
+  __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##AssignArray##CNAME( \
       JreArrayRef lhs, RTYPE rhs) { \
     nil_chk(*lhs.pValue); \
     return IOSObjectArray_SetRef(lhs, BOXED_TYPE##_valueOfWith##CNAME##_( \

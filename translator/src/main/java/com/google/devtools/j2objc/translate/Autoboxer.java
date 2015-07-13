@@ -150,7 +150,7 @@ public class Autoboxer extends TreeVisitor {
       return;
     }
     ITypeBinding primitiveType = typeEnv.getPrimitiveType(type);
-    String funcName = "Boxed" + getAssignFunctionName(node.getOperator())
+    String funcName = "JreBoxed" + getAssignFunctionName(node.getOperator())
         + TranslationUtil.getOperatorFunctionModifier(lhs)
         + NameTable.capitalize(primitiveType.getName());
     FunctionInvocation invocation = new FunctionInvocation(funcName, type, type, type);
@@ -339,9 +339,9 @@ public class Autoboxer extends TreeVisitor {
     PrefixExpression.Operator op = node.getOperator();
     Expression operand = node.getOperand();
     if (op == PrefixExpression.Operator.INCREMENT) {
-      rewriteBoxedPrefixOrPostfix(node, operand, "BoxedPreIncr");
+      rewriteBoxedPrefixOrPostfix(node, operand, "PreIncr");
     } else if (op == PrefixExpression.Operator.DECREMENT) {
-      rewriteBoxedPrefixOrPostfix(node, operand, "BoxedPreDecr");
+      rewriteBoxedPrefixOrPostfix(node, operand, "PreDecr");
     } else if (!operand.getTypeBinding().isPrimitive()) {
       node.setOperand(unbox(operand));
     }
@@ -351,9 +351,9 @@ public class Autoboxer extends TreeVisitor {
   public void endVisit(PostfixExpression node) {
     PostfixExpression.Operator op = node.getOperator();
     if (op == PostfixExpression.Operator.INCREMENT) {
-      rewriteBoxedPrefixOrPostfix(node, node.getOperand(), "BoxedPostIncr");
+      rewriteBoxedPrefixOrPostfix(node, node.getOperand(), "PostIncr");
     } else if (op == PostfixExpression.Operator.DECREMENT) {
-      rewriteBoxedPrefixOrPostfix(node, node.getOperand(), "BoxedPostDecr");
+      rewriteBoxedPrefixOrPostfix(node, node.getOperand(), "PostDecr");
     }
   }
 
@@ -362,7 +362,7 @@ public class Autoboxer extends TreeVisitor {
     if (!typeEnv.isBoxedPrimitive(type)) {
       return;
     }
-    funcName += TranslationUtil.getOperatorFunctionModifier(operand)
+    funcName = "JreBoxed" + funcName + TranslationUtil.getOperatorFunctionModifier(operand)
         + NameTable.capitalize(typeEnv.getPrimitiveType(type).getName());
     FunctionInvocation invocation = new FunctionInvocation(funcName, type, type, type);
     invocation.getArguments().add(new PrefixExpression(

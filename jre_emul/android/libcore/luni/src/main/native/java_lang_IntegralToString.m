@@ -16,6 +16,7 @@
 
 #include "java_lang_IntegralToString.h"
 
+#include "J2ObjC_source.h"
 #include "java/lang/AbstractStringBuilder.h"
 #include "java/lang/Character.h"
 #include "java/lang/IntegralToString.h"
@@ -401,7 +402,7 @@ jstring Java_java_lang_IntegralToString_intToBinaryString(JNIEnv *env, jclass cl
 
   do {
     buf[--cursor] = IntegralToString_DIGITS[i & 1];
-  } while ((URShiftAssignInt(&i, 1)) != 0);
+  } while ((JreURShiftAssignInt(&i, 1)) != 0);
 
   return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
 }
@@ -418,7 +419,7 @@ jstring Java_java_lang_IntegralToString_longToBinaryString(JNIEnv *env, jclass c
 
   do {
     buf[--cursor] = IntegralToString_DIGITS[((jint) v) & 1];
-  } while ((URShiftAssignLong(&v, 1)) != 0);
+  } while ((JreURShiftAssignLong(&v, 1)) != 0);
 
   return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
 }
@@ -464,7 +465,7 @@ jstring Java_java_lang_IntegralToString_intToHexString(
   const jchar *digits = upperCase ? IntegralToString_UPPER_CASE_DIGITS : IntegralToString_DIGITS;
   do {
     buf[--cursor] = digits[i & 0xf];
-  } while ((URShiftAssignInt(&i, 4)) != 0 || (bufLen - cursor < minWidth));
+  } while ((JreURShiftAssignInt(&i, 4)) != 0 || (bufLen - cursor < minWidth));
 
   return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
 }
@@ -481,7 +482,7 @@ jstring Java_java_lang_IntegralToString_longToHexString(JNIEnv *env, jclass cls,
 
   do {
     buf[--cursor] = IntegralToString_DIGITS[((jint) v) & 0xF];
-  } while ((URShiftAssignLong(&v, 4)) != 0);
+  } while ((JreURShiftAssignLong(&v, 4)) != 0);
 
   return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
 }
@@ -493,7 +494,7 @@ jstring Java_java_lang_IntegralToString_intToOctalString(JNIEnv *env, jclass cls
 
   do {
     buf[--cursor] = IntegralToString_DIGITS[i & 7];
-  } while ((URShiftAssignInt(&i, 3)) != 0);
+  } while ((JreURShiftAssignInt(&i, 3)) != 0);
 
   return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
 }
@@ -509,7 +510,7 @@ jstring Java_java_lang_IntegralToString_longToOctalString(JNIEnv *env, jclass cl
 
   do {
     buf[--cursor] = IntegralToString_DIGITS[((jint) v) & 7];
-  } while ((URShiftAssignLong(&v, 3)) != 0);
+  } while ((JreURShiftAssignLong(&v, 3)) != 0);
 
   return [NSString stringWithCharacters:buf + cursor length:bufLen - cursor];
 }

@@ -1193,10 +1193,10 @@ public class StatementGeneratorTest extends GenerationTest {
         + "array[1] >>= 4;"
         + "array[2] <<= 5;}}",
         "Test", "Test.m");
-    assertTranslation(translation, "URShiftAssignInt(IOSIntArray_GetRef(nil_chk(array), 0), 2)");
-    assertTranslation(translation, "URShiftAssignInt(IOSIntArray_GetRef(array, i - 1), 3)");
-    assertTranslation(translation, "RShiftAssignInt(IOSIntArray_GetRef(array, 1), 4)");
-    assertTranslation(translation, "LShiftAssignInt(IOSIntArray_GetRef(array, 2), 5)");
+    assertTranslation(translation, "JreURShiftAssignInt(IOSIntArray_GetRef(nil_chk(array), 0), 2)");
+    assertTranslation(translation, "JreURShiftAssignInt(IOSIntArray_GetRef(array, i - 1), 3)");
+    assertTranslation(translation, "JreRShiftAssignInt(IOSIntArray_GetRef(array, 1), 4)");
+    assertTranslation(translation, "JreLShiftAssignInt(IOSIntArray_GetRef(array, 2), 5)");
   }
 
   public void testAssertWithoutDescription() throws IOException {
@@ -1270,11 +1270,11 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { void test(int a, long b, char c, byte d, short e) { "
         + "long r; r = a >>> 1; r = b >>> 2; r = c >>> 3; r = d >>> 4; r = e >>> 5; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "r = URShift32(a, 1);");
-    assertTranslation(translation, "r = URShift64(b, 2);");
-    assertTranslation(translation, "r = URShift32(c, 3);");
-    assertTranslation(translation, "r = URShift32(d, 4);");
-    assertTranslation(translation, "r = URShift32(e, 5);");
+    assertTranslation(translation, "r = JreURShift32(a, 1);");
+    assertTranslation(translation, "r = JreURShift64(b, 2);");
+    assertTranslation(translation, "r = JreURShift32(c, 3);");
+    assertTranslation(translation, "r = JreURShift32(d, 4);");
+    assertTranslation(translation, "r = JreURShift32(e, 5);");
   }
 
   public void testUnsignedRightShiftAssign() throws IOException {
@@ -1282,11 +1282,11 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { void test(int a, long b, char c, byte d, short e) { "
         + "a >>>= 1; b >>>= 2; c >>>= 3; d >>>= 4; e >>>= 5; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "URShiftAssignInt(&a, 1);");
-    assertTranslation(translation, "URShiftAssignLong(&b, 2);");
-    assertTranslation(translation, "URShiftAssignChar(&c, 3);");
-    assertTranslation(translation, "URShiftAssignByte(&d, 4);");
-    assertTranslation(translation, "URShiftAssignShort(&e, 5);");
+    assertTranslation(translation, "JreURShiftAssignInt(&a, 1);");
+    assertTranslation(translation, "JreURShiftAssignLong(&b, 2);");
+    assertTranslation(translation, "JreURShiftAssignChar(&c, 3);");
+    assertTranslation(translation, "JreURShiftAssignByte(&d, 4);");
+    assertTranslation(translation, "JreURShiftAssignShort(&e, 5);");
   }
 
   public void testUnsignedShiftRightAssignCharArray() throws IOException {
@@ -1294,7 +1294,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { void test(char[] array) { "
         + "array[0] >>>= 2; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "URShiftAssignChar(IOSCharArray_GetRef(nil_chk(array), 0), 2)");
+    assertTranslation(translation,
+        "JreURShiftAssignChar(IOSCharArray_GetRef(nil_chk(array), 0), 2)");
   }
 
   public void testDoubleQuoteConcatenation() throws IOException {
@@ -1614,25 +1615,25 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     // Verify referenced return value is cast.
     assertTranslatedLines(translation,
-        "- (jbyte)testByteWithFloat:(jfloat)f {", "return (jbyte) J2ObjCFpToInt(f);");
+        "- (jbyte)testByteWithFloat:(jfloat)f {", "return (jbyte) JreFpToInt(f);");
     assertTranslatedLines(translation,
-        "- (jchar)testCharWithFloat:(jfloat)f {", "return J2ObjCFpToUnichar(f);");
+        "- (jchar)testCharWithFloat:(jfloat)f {", "return JreFpToChar(f);");
     assertTranslatedLines(translation,
-        "- (jshort)testShortWithFloat:(jfloat)f {", "return (jshort) J2ObjCFpToInt(f);");
+        "- (jshort)testShortWithFloat:(jfloat)f {", "return (jshort) JreFpToInt(f);");
     assertTranslatedLines(translation,
-        "- (jint)testIntWithFloat:(jfloat)f {", "return J2ObjCFpToInt(f);");
+        "- (jint)testIntWithFloat:(jfloat)f {", "return JreFpToInt(f);");
     assertTranslatedLines(translation,
-        "- (jlong)testLongWithFloat:(jfloat)f {", "return J2ObjCFpToLong(f);");
+        "- (jlong)testLongWithFloat:(jfloat)f {", "return JreFpToLong(f);");
     assertTranslatedLines(translation,
-        "- (jbyte)testByteWithDouble:(jdouble)d {", "return (jbyte) J2ObjCFpToInt(d);");
+        "- (jbyte)testByteWithDouble:(jdouble)d {", "return (jbyte) JreFpToInt(d);");
     assertTranslatedLines(translation,
-        "- (jchar)testCharWithDouble:(jdouble)d {", "return J2ObjCFpToUnichar(d);");
+        "- (jchar)testCharWithDouble:(jdouble)d {", "return JreFpToChar(d);");
     assertTranslatedLines(translation,
-        "- (jshort)testShortWithDouble:(jdouble)d {", "return (jshort) J2ObjCFpToInt(d);");
+        "- (jshort)testShortWithDouble:(jdouble)d {", "return (jshort) JreFpToInt(d);");
     assertTranslatedLines(translation,
-        "- (jint)testIntWithDouble:(jdouble)d {", "return J2ObjCFpToInt(d);");
+        "- (jint)testIntWithDouble:(jdouble)d {", "return JreFpToInt(d);");
     assertTranslatedLines(translation,
-        "- (jlong)testLongWithDouble:(jdouble)d {", "return J2ObjCFpToLong(d);");
+        "- (jlong)testLongWithDouble:(jdouble)d {", "return JreFpToLong(d);");
   }
 
   // Verify that string constants used in switch statements can be generated after functionizing.

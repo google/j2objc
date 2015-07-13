@@ -286,7 +286,7 @@ public class AutoboxerTest extends GenerationTest {
   public void testBoxedLhsOperatorAssignment() throws IOException {
     String source = "public class Test { Integer i = 1; void foo() { i *= 2; } }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "BoxedTimesAssignStrongInt(&i_, 2);");
+    assertTranslation(translation, "JreBoxedTimesAssignStrongInt(&i_, 2);");
   }
 
   public void testBoxedEnumConstructorArgs() throws IOException {
@@ -467,25 +467,25 @@ public class AutoboxerTest extends GenerationTest {
         + " si <<= 2; wi <<= 2; sl >>>= 3; wl >>>= 3;"
         + " ai[0]++; --al[1]; af[2] += 9; ad[3] -= 8; } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "BoxedPostIncrStrongInt(&si_);",
-        "BoxedPostIncrInt(&wi);",
-        "BoxedPreIncrStrongLong(&sl_);",
-        "BoxedPreIncrLong(&wl);",
-        "BoxedPostDecrStrongFloat(&sf_);",
-        "BoxedPostDecrFloat(&wf);",
-        "BoxedPreDecrStrongDouble(&sd_);",
-        "BoxedPreDecrDouble(&wd);",
-        "BoxedPlusAssignStrongInt(&si_, 5);",
-        "BoxedPlusAssignInt(&wi, 5);",
-        "BoxedBitAndAssignStrongLong(&sl_, 6l);",
-        "BoxedBitAndAssignLong(&wl, 6l);",
-        "BoxedLShiftAssignStrongInt(&si_, 2);",
-        "BoxedLShiftAssignInt(&wi, 2);",
-        "BoxedURShiftAssignStrongLong(&sl_, 3);",
-        "BoxedURShiftAssignLong(&wl, 3);",
-        "BoxedPostIncrArrayInt(IOSObjectArray_GetRef(nil_chk(ai_), 0));",
-        "BoxedPreDecrArrayLong(IOSObjectArray_GetRef(nil_chk(al_), 1));",
-        "BoxedPlusAssignArrayFloat(IOSObjectArray_GetRef(nil_chk(af_), 2), 9);",
-        "BoxedMinusAssignArrayDouble(IOSObjectArray_GetRef(nil_chk(ad_), 3), 8);");
+        "JreBoxedPostIncrStrongInt(&si_);",
+        "JreBoxedPostIncrInt(&wi);",
+        "JreBoxedPreIncrStrongLong(&sl_);",
+        "JreBoxedPreIncrLong(&wl);",
+        "JreBoxedPostDecrStrongFloat(&sf_);",
+        "JreBoxedPostDecrFloat(&wf);",
+        "JreBoxedPreDecrStrongDouble(&sd_);",
+        "JreBoxedPreDecrDouble(&wd);",
+        "JreBoxedPlusAssignStrongInt(&si_, 5);",
+        "JreBoxedPlusAssignInt(&wi, 5);",
+        "JreBoxedBitAndAssignStrongLong(&sl_, 6l);",
+        "JreBoxedBitAndAssignLong(&wl, 6l);",
+        "JreBoxedLShiftAssignStrongInt(&si_, 2);",
+        "JreBoxedLShiftAssignInt(&wi, 2);",
+        "JreBoxedURShiftAssignStrongLong(&sl_, 3);",
+        "JreBoxedURShiftAssignLong(&wl, 3);",
+        "JreBoxedPostIncrArrayInt(IOSObjectArray_GetRef(nil_chk(ai_), 0));",
+        "JreBoxedPreDecrArrayLong(IOSObjectArray_GetRef(nil_chk(al_), 1));",
+        "JreBoxedPlusAssignArrayFloat(IOSObjectArray_GetRef(nil_chk(af_), 2), 9);",
+        "JreBoxedMinusAssignArrayDouble(IOSObjectArray_GetRef(nil_chk(ad_), 3), 8);");
   }
 }

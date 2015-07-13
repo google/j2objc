@@ -158,11 +158,11 @@ public class OperatorRewriter extends TreeVisitor {
         }
         return null;
       case LEFT_SHIFT:
-        return "LShift" + intOrLong(nodeType);
+        return "JreLShift" + intOrLong(nodeType);
       case RIGHT_SHIFT_SIGNED:
-        return "RShift" + intOrLong(nodeType);
+        return "JreRShift" + intOrLong(nodeType);
       case RIGHT_SHIFT_UNSIGNED:
-        return "URShift" + intOrLong(nodeType);
+        return "JreURShift" + intOrLong(nodeType);
       default:
         return null;
     }
@@ -173,14 +173,14 @@ public class OperatorRewriter extends TreeVisitor {
     String lhsName = NameTable.capitalize(lhsType.getName());
     switch (op) {
       case LEFT_SHIFT_ASSIGN:
-        return "LShiftAssign" + lhsName;
+        return "JreLShiftAssign" + lhsName;
       case RIGHT_SHIFT_SIGNED_ASSIGN:
-        return "RShiftAssign" + lhsName;
+        return "JreRShiftAssign" + lhsName;
       case RIGHT_SHIFT_UNSIGNED_ASSIGN:
-        return "URShiftAssign" + lhsName;
+        return "JreURShiftAssign" + lhsName;
       case REMAINDER_ASSIGN:
         if (BindingUtil.isFloatingPoint(lhsType) || BindingUtil.isFloatingPoint(rhsType)) {
-          return "ModAssign" + lhsName;
+          return "JreModAssign" + lhsName;
         }
         return null;
       default:

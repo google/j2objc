@@ -41,13 +41,13 @@ public class OperatorRewriterTest extends GenerationTest {
         + "g %= 6.7;";
     List<Statement> stmts = translateStatements(source);
     assertEquals(14, stmts.size());
-    assertEquals("ModAssignFloat(&a, 2.1f);", generateStatement(stmts.get(1)));
-    assertEquals("ModAssignDouble(&b, 1.2);", generateStatement(stmts.get(3)));
-    assertEquals("ModAssignByte(&c, 2.3);", generateStatement(stmts.get(5)));
-    assertEquals("ModAssignShort(&d, 3.4);", generateStatement(stmts.get(7)));
-    assertEquals("ModAssignInt(&e, 4.5);", generateStatement(stmts.get(9)));
-    assertEquals("ModAssignLong(&f, 5.6);", generateStatement(stmts.get(11)));
-    assertEquals("ModAssignChar(&g, 6.7);", generateStatement(stmts.get(13)));
+    assertEquals("JreModAssignFloat(&a, 2.1f);", generateStatement(stmts.get(1)));
+    assertEquals("JreModAssignDouble(&b, 1.2);", generateStatement(stmts.get(3)));
+    assertEquals("JreModAssignByte(&c, 2.3);", generateStatement(stmts.get(5)));
+    assertEquals("JreModAssignShort(&d, 3.4);", generateStatement(stmts.get(7)));
+    assertEquals("JreModAssignInt(&e, 4.5);", generateStatement(stmts.get(9)));
+    assertEquals("JreModAssignLong(&f, 5.6);", generateStatement(stmts.get(11)));
+    assertEquals("JreModAssignChar(&g, 6.7);", generateStatement(stmts.get(13)));
   }
 
   public void testDoubleModulo() throws IOException {
@@ -64,9 +64,10 @@ public class OperatorRewriterTest extends GenerationTest {
     String source = "int a; a = 1 << 2; a = 1 << 2 << 3; a = 1 << 2 << 3 << 4;";
     List<Statement> stmts = translateStatements(source);
     assertEquals(4, stmts.size());
-    assertEquals("a = LShift32(1, 2);", generateStatement(stmts.get(1)));
-    assertEquals("a = LShift32(LShift32(1, 2), 3);", generateStatement(stmts.get(2)));
-    assertEquals("a = LShift32(LShift32(LShift32(1, 2), 3), 4);", generateStatement(stmts.get(3)));
+    assertEquals("a = JreLShift32(1, 2);", generateStatement(stmts.get(1)));
+    assertEquals("a = JreLShift32(JreLShift32(1, 2), 3);", generateStatement(stmts.get(2)));
+    assertEquals("a = JreLShift32(JreLShift32(JreLShift32(1, 2), 3), 4);",
+                 generateStatement(stmts.get(3)));
   }
 
   public void testURShift64WithExtendedOperands() throws IOException {
@@ -74,9 +75,9 @@ public class OperatorRewriterTest extends GenerationTest {
         + "a = 65535L >>> 2 >>> 3 >>> 4;";
     List<Statement> stmts = translateStatements(source);
     assertEquals(4, stmts.size());
-    assertEquals("a = URShift64(65535LL, 2);", generateStatement(stmts.get(1)));
-    assertEquals("a = URShift64(URShift64(65535LL, 2), 3);", generateStatement(stmts.get(2)));
-    assertEquals("a = URShift64(URShift64(URShift64(65535LL, 2), 3), 4);",
+    assertEquals("a = JreURShift64(65535LL, 2);", generateStatement(stmts.get(1)));
+    assertEquals("a = JreURShift64(JreURShift64(65535LL, 2), 3);", generateStatement(stmts.get(2)));
+    assertEquals("a = JreURShift64(JreURShift64(JreURShift64(65535LL, 2), 3), 4);",
             generateStatement(stmts.get(3)));
   }
 
