@@ -13,7 +13,10 @@
  */
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.LambdaTypeBinding;
+
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
@@ -23,37 +26,50 @@ import java.util.List;
  */
 public class LambdaExpression extends Expression {
 
-  private final ITypeBinding typeBinding;
+  private final ITypeBinding resolvedTypeBinding;
+  // Unique type binding that can be used as a key.
+  private final ITypeBinding generatedTypeBinding;
   private final IMethodBinding methodBinding;
   private ChildList<VariableDeclaration> parameters = ChildList.create(VariableDeclaration.class,
       this);
   protected ChildLink<TreeNode> body = ChildLink.create(TreeNode.class, this);
   // TODO(kirbs) Remove when no longer needed for debugging.
   public boolean fromAnonClass = false;
+  private boolean isCapturing = false;
 
   public LambdaExpression(org.eclipse.jdt.core.dom.LambdaExpression jdtNode) {
     super(jdtNode);
-    typeBinding = jdtNode.resolveTypeBinding();
+    resolvedTypeBinding = jdtNode.resolveTypeBinding();
     methodBinding = jdtNode.resolveMethodBinding();
     for (Object x : jdtNode.parameters()) {
       parameters.add((VariableDeclaration) TreeConverter.convert(x));
     }
     // Lambda bodies can either be a block or an expression, which forces a common root of TreeNode.
     body.set(TreeConverter.convert(jdtNode.getBody()));
+    // Generate a type binding which is unique to the lambda, as resolveTypeBinding gives us a
+    // generic raw type of the implemented class.
+    String name = jdtNode.resolveMethodBinding().getName();
+    IPackageBinding packageBinding = methodBinding.getDeclaringClass().getPackage();
+    this.generatedTypeBinding = new LambdaTypeBinding(name, packageBinding,
+        resolvedTypeBinding.getFunctionalInterfaceMethod());
   }
 
   public LambdaExpression(LambdaExpression other) {
     super(other);
-    typeBinding = other.getTypeBinding();
+    generatedTypeBinding = other.getTypeBinding();
+    resolvedTypeBinding = other.functionalTypeBinding();
     methodBinding = other.getMethodBinding();
-    parameters.copyFrom(other.parameters());
+    parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
+    isCapturing = other.isCapturing();
   }
 
   // Added for conversion of Anonymous Classes to Lambda Expressions.
-  public LambdaExpression(ITypeBinding typeBinding, IMethodBinding methodBinding,
-      List<VariableDeclarationFragment> parameters, Block body, boolean fromAnonClass) {
-    this.typeBinding = typeBinding;
+  public LambdaExpression(ITypeBinding typeBinding, ITypeBinding generatedTypeBinding,
+      IMethodBinding methodBinding, List<VariableDeclarationFragment> parameters, Block body,
+      boolean fromAnonClass) {
+    this.resolvedTypeBinding = typeBinding;
+    this.generatedTypeBinding = generatedTypeBinding;
     this.methodBinding = methodBinding;
     this.parameters.addAll(parameters);
     this.body.set(body);
@@ -61,9 +77,11 @@ public class LambdaExpression extends Expression {
   }
 
   // Added for conversion of Anonymous Classes to Lambda Expressions.
-  public LambdaExpression(ITypeBinding typeBinding, IMethodBinding methodBinding,
+  public LambdaExpression(ITypeBinding typeBinding, ITypeBinding generatedTypeBinding,
+      IMethodBinding methodBinding,
       boolean fromAnonClass) {
-    this.typeBinding = typeBinding;
+    this.resolvedTypeBinding = typeBinding;
+    this.generatedTypeBinding = generatedTypeBinding;
     this.methodBinding = methodBinding;
     this.fromAnonClass = fromAnonClass;
   }
@@ -73,16 +91,20 @@ public class LambdaExpression extends Expression {
     return Kind.LAMBDA_EXPRESSION;
   }
 
+  public ITypeBinding functionalTypeBinding() {
+    return resolvedTypeBinding;
+  }
+
   @Override
   public ITypeBinding getTypeBinding() {
-    return typeBinding;
+    return generatedTypeBinding;
   }
 
   public IMethodBinding getMethodBinding() {
     return methodBinding;
   }
 
-  public List<VariableDeclaration> parameters() {
+  public List<VariableDeclaration> getParameters() {
     return parameters;
   }
 
@@ -106,8 +128,8 @@ public class LambdaExpression extends Expression {
   // For retrieving functionalInterfaceMethod of Anonymous Classes.
   // TODO(kirbs): Handle this more naturally.
   public IMethodBinding getFunctionalInterfaceMethod() {
-    if (typeBinding.getFunctionalInterfaceMethod() != null) {
-      return typeBinding.getFunctionalInterfaceMethod();
+    if (resolvedTypeBinding.getFunctionalInterfaceMethod() != null) {
+      return resolvedTypeBinding.getFunctionalInterfaceMethod();
     }
     return methodBinding;
   }
@@ -115,5 +137,13 @@ public class LambdaExpression extends Expression {
   @Override
   public LambdaExpression copy() {
     return new LambdaExpression(this);
+  }
+
+  public boolean isCapturing() {
+    return isCapturing;
+  }
+
+  public void setIsCapturing(boolean isCapturing) {
+    this.isCapturing = isCapturing;
   }
 }

@@ -92,8 +92,8 @@ public class FunctionalAnonymousClassConverter extends TreeVisitor {
       }
     }
     LambdaExpression lambdaExpression = new LambdaExpression(node.getTypeBinding(),
-        methodDecl.getMethodBinding(), true);
-    List<VariableDeclaration> lambdaParameters = lambdaExpression.parameters();
+        node.getTypeBinding(), methodDecl.getMethodBinding(), true);
+    List<VariableDeclaration> lambdaParameters = lambdaExpression.getParameters();
     for (SingleVariableDeclaration x : methodDecl.getParameters()) {
       VariableDeclarationFragment lambdaParameter = new VariableDeclarationFragment(
           x.getVariableBinding(), x.getInitializer());

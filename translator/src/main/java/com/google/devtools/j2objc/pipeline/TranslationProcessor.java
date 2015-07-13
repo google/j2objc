@@ -132,7 +132,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("GwtConverter");
 
     // Modify AST to be more compatible with Objective C
-    new Rewriter().run(unit);
+    new Rewriter(outerResolver).run(unit);
     ticker.tick("Rewriter");
 
     // Add abstract method stubs.

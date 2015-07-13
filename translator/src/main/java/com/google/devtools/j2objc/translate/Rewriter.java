@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -80,6 +79,11 @@ import java.util.Map;
 public class Rewriter extends TreeVisitor {
 
   private Map<IVariableBinding, IVariableBinding> localRefs = Maps.newHashMap();
+  private final OuterReferenceResolver outerResolver;
+
+  public Rewriter(OuterReferenceResolver outerResolver) {
+    this.outerResolver = outerResolver;
+  }
 
   @Override
   public boolean visit(MethodDeclaration node) {
@@ -468,10 +472,8 @@ public class Rewriter extends TreeVisitor {
   public boolean visit(LambdaExpression node) {
     // We shouldn't be able to reach this if we aren't in a Java 8 translator, as we are in a
     // LambdaExpression, but this will help to highlight Java 8 specific additions in the future.
-    if (Options.isJava8Translator()) {
-      if (node.getBody() instanceof Block) {
-        return true;
-      }
+    // if (Options.isJava8Translator()) {
+    if (!(node.getBody() instanceof Block)) {
       // Add explicit blocks for lambdas with expression bodies.
       Block block = new Block();
       Statement statement;
@@ -484,6 +486,8 @@ public class Rewriter extends TreeVisitor {
       block.getStatements().add(statement);
       node.setBody(block);
     }
+    // Resolve whether a lambda captures variables from the enclosing scope.
+    node.setIsCapturing(!outerResolver.getCapturedVars(node.getTypeBinding()).isEmpty());
     return true;
   }
 

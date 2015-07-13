@@ -23,6 +23,7 @@
 #import "JreEmulation.h"
 
 #import "IOSClass.h"
+#import "FastPointerLookup.h"
 #import "java/lang/AbstractStringBuilder.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/NullPointerException.h"
@@ -89,62 +90,119 @@ id JreRetainVolatile(volatile_id *pVar) {
   return [value retain];
 }
 
+typedef struct {
+  void *id;
+} LambdaHolder;
+
+static void *LambdaLookup(void *ptr) {
+  LambdaHolder *lh = malloc(sizeof(LambdaHolder));
+  lh->id = nil;
+  return lh;
+}
+
+static FastPointerLookup_t lambdaLookup = FAST_POINTER_LOOKUP_INIT(&LambdaLookup);
+
 // Method to handle dynamic creation of class wrappers surrounding blocks which come from lambdas
 // not requiring a capture.
-id GetNonCapturingLambda(Class baseClass, NSString *blockClassName, SEL methodSelector, id block) {
-  // Ideally we would solve this with a singleton instead of a lookup, but Objective-C doesn't have
-  // class variables, and we can't define static C variables dynamically.
-  // TODO(kirbs): Refactor GetNonCapturingLambda for thread safety.  Right now dictionary
-  // access is not threadsafe, but we will probably be moving away from a dictionary for lambda
-  // lookup and storage.
-  static NSMutableDictionary *nonCapturingBlockLookup = nil;
-  static dispatch_once_t once;
-  dispatch_once(&once, ^{
-    nonCapturingBlockLookup = [[NSMutableDictionary alloc] init];
-  });
-  id lambdaObj = [nonCapturingBlockLookup objectForKey:blockClassName];
-  if (lambdaObj != nil) {
-    return lambdaObj;
+id GetNonCapturingLambda(Class baseClass, NSString *blockClassName,
+    SEL methodSelector, id block) {
+
+  // Relies on lambda names being constant strings with matching pointers for matching names.
+  // This should happen as a clang optimization, as all string constants are kept on the stack for
+  // the program duration.
+  LambdaHolder *lambdaHolder = FastPointerLookup(&lambdaLookup, (__bridge void*) blockClassName);
+  @synchronized(baseClass) {
+    if (lambdaHolder->id == nil) {
+      Class blockClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
+      Method method = class_getInstanceMethod(baseClass, methodSelector);
+      const char *types = method_getTypeEncoding(method);
+      IMP block_implementation = imp_implementationWithBlock(block);
+      class_addMethod(blockClass, methodSelector, block_implementation, types);
+      objc_registerClassPair(blockClass);
+      lambdaHolder->id = (void*)[[blockClass alloc] init];
+    }
   }
-  Class blockClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
-  Method method = class_getInstanceMethod(baseClass, methodSelector);
-  const char *types = method_getTypeEncoding(method);
-  IMP block_implementation = imp_implementationWithBlock(block);
-  class_addMethod(blockClass, methodSelector, block_implementation, types);
-  objc_registerClassPair(blockClass);
-  lambdaObj = [[blockClass alloc] init];
-  [nonCapturingBlockLookup setObject:lambdaObj forKeyedSubscript:blockClassName];
-  return lambdaObj;
+  return (__bridge id) lambdaHolder->id;
 }
+
+// Having this hardcoded is definitely not ideal, and I would love a dynamic solution to generated
+// capturingLambdaBlockCallers that doesn't rely on packing and unpacking arrays for each lambda.
+id capturingLambdaBlockCallers[10];
+char *capturingLambdaBlockTypes[10];
 
 // Method to handle dynamic creation of class wrappers surrounding blocks from lambdas requiring
 // a capture.
-id GetCapturingLambda(Class baseClass, NSString *blockClassName, SEL methodSelector, id block) {
-  // Ideally we would solve this by creating a variadic block or method which wraps an
-  // underlying block instance variable, and creating instances of classes rather than entirely
-  // new classes.  There are workarounds, but as far as I can tell this is going to have the
-  // least code footprint, though it may be less performant.
-  //
-  // Alternatives
-  // Create methods for each selector we need to use from a lambda.
-  //  Comes with code cruft in the generated code.
-  // Call all blocks with one array arg, and then unpack the array into variables.
-  //  Comes with cruft in the generated blocks.
-  //  Comes with memory overhead.
-  //  Awkward handling of non-id types.
-  // We could lookup the number of arguments in the functional method, and have an array of
-  // matching block wrappers.
-  //  Need explicit blocks for all distinct argument lengths we support.
-  //  Probably more performant than creating a new class for every lambda instance.
-  static int lambdaCount = 0;
-  blockClassName = [NSString stringWithFormat:@"%@_%d",blockClassName,lambdaCount++];
-  Class blockClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
-  IMP block_implementation = imp_implementationWithBlock(block);
-  Method method = class_getInstanceMethod(baseClass, methodSelector);
-  const char *types = method_getTypeEncoding(method);
-  class_addMethod(blockClass, methodSelector, block_implementation, types);
-  objc_registerClassPair(blockClass);
-  return [[blockClass alloc] init];
+id GetCapturingLambda(int argumentCount, Class baseClass, NSString *blockClassName,
+    SEL methodSelector, id block) {
+  static dispatch_once_t once;
+  dispatch_once(&once, ^{
+    char typeHolder[10];
+    for(int i = 0; i < 10; i++) {
+      if (i) {
+        typeHolder[i - 1] = '@';
+      }
+      typeHolder[i] = 0;
+      // strcpy returns the address of the destination string, so we can use one call for writing
+      // and assignment.
+      capturingLambdaBlockTypes[i] = strcpy(malloc(i + 1), typeHolder);
+    }
+
+    capturingLambdaBlockCallers[0] = ^id(id _self){
+      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
+      return block(_self);
+    };
+    capturingLambdaBlockCallers[1] = ^id(id _self, id a){
+      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
+      return block(_self, a);
+    };
+    capturingLambdaBlockCallers[2] = ^id(id _self, id a, id b){
+      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
+      return block(_self, a, b);
+    };
+    capturingLambdaBlockCallers[3] = ^id(id _self, id a, id b, id c){
+      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
+      return block(_self, a, b, c);
+    };
+    capturingLambdaBlockCallers[4] = ^id(id _self, id a, id b, id c, id d){
+      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
+      return block(_self, a, b, c, d);
+    };
+    capturingLambdaBlockCallers[5] = ^id(id _self, id a, id b, id c, id d, id e){
+      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
+      return block(_self, a, b, c, d, e);
+    };
+    capturingLambdaBlockCallers[6] = ^id(id _self, id a, id b, id c, id d, id e, id f){
+      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
+      return block(_self, a, b, c, d, e, f);
+    };
+    capturingLambdaBlockCallers[7] = ^id(id _self, id a, id b, id c, id d, id e, id f, id g){
+      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
+      return block(_self, a, b, c, d, e, f, g);
+    };
+    capturingLambdaBlockCallers[8] = ^id(id _self, id a, id b, id c, id d, id e, id f, id g, id h, id i){
+      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
+      return block(_self, a, b, c, d, e, f, g, h);
+    };
+    capturingLambdaBlockCallers[9] = ^id(id _self, id a, id b, id c, id d, id e, id f, id g, id h, id i){
+      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
+      return block(_self, a, b, c, d, e, f, g, h, i);
+    };
+  });
+
+  LambdaHolder *lambdaHolder = FastPointerLookup(&lambdaLookup, (__bridge void*) blockClassName);
+  @synchronized(baseClass) {
+    if (lambdaHolder->id == nil) {
+      Class lambdaClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], sizeof(id));
+      IMP block_implementation = imp_implementationWithBlock(capturingLambdaBlockCallers[argumentCount]);
+      class_addMethod([lambdaClass class], methodSelector, block_implementation,
+          capturingLambdaBlockTypes[argumentCount]);
+      objc_registerClassPair(lambdaClass);
+      lambdaHolder->id = (void*)[lambdaClass class];
+    }
+  }
+  id instance = [[(id) lambdaHolder->id alloc] init];
+  objc_setAssociatedObject(instance, (void*) 'b', [block copy], OBJC_ASSOCIATION_ASSIGN);
+  return instance;
 }
 
 // Converts main() arguments into an IOSObjectArray of NSStrings.  The first

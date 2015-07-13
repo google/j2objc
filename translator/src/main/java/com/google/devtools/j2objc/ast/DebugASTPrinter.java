@@ -598,7 +598,7 @@ public class DebugASTPrinter extends TreeVisitor {
     sb.print(methodBinding.getName());
     sb.print(" (");
     boolean delimiterFlag = false;
-    for (VariableDeclaration x : node.parameters()) {
+    for (VariableDeclaration x : node.getParameters()) {
       IVariableBinding variableBinding = x.getVariableBinding();
       if (delimiterFlag) {
         sb.print(", ");

@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
@@ -170,9 +171,8 @@ public class OuterReferenceResolver extends TreeVisitor {
     ITypeBinding type = scope.type;
     IVariableBinding outerField = outerVars.get(type);
     if (outerField == null) {
-      outerField = new GeneratedVariableBinding(
-        getOuterFieldName(type), Modifier.PRIVATE | Modifier.FINAL, type.getDeclaringClass(),
-        true, false, type, null);
+      outerField = new GeneratedVariableBinding(getOuterFieldName(type),
+          Modifier.PRIVATE | Modifier.FINAL, type.getDeclaringClass(), true, false, type, null);
       outerVars.put(type, outerField);
     }
     return outerField;
@@ -188,12 +188,18 @@ public class OuterReferenceResolver extends TreeVisitor {
       }
     }
     if (innerField == null) {
-      GeneratedVariableBinding newField = new GeneratedVariableBinding(
-          "val$" + var.getName(), Modifier.PRIVATE | Modifier.FINAL, var.getType(), true, false,
-          declaringType, null);
-      newField.addAnnotations(var);
-      innerField = newField;
-      captures.put(declaringType, new Capture(var, innerField));
+      if (BindingUtil.isLambda(declaringType)) {
+        // Lambdas are converted to blocks, which perform capturing for us, so we don't need to do
+        // the initialization rewrite.
+        captures.put(declaringType, new Capture(var, var));
+        return var;
+      } else {
+        GeneratedVariableBinding newField = new GeneratedVariableBinding("val$" + var.getName(),
+            Modifier.PRIVATE | Modifier.FINAL, var.getType(), true, false, declaringType, null);
+        newField.addAnnotations(var);
+        innerField = newField;
+        captures.put(declaringType, new Capture(var, innerField));
+      }
     }
     return innerField;
   }
@@ -206,7 +212,10 @@ public class OuterReferenceResolver extends TreeVisitor {
       if (type.equals(scope.type)) {
         break;
       }
-      path.add(getOrCreateOuterField(scope));
+      // TODO(kirbs): Test instance method calls from containing class for lambdas.
+      if (!(BindingUtil.isLambda(scope.type))) {
+        path.add(getOrCreateOuterField(scope));
+      }
     }
     return path;
   }
@@ -219,7 +228,9 @@ public class OuterReferenceResolver extends TreeVisitor {
       if (scope.inheritedScope.contains(type)) {
         break;
       }
-      path.add(getOrCreateOuterField(scope));
+      if (!(BindingUtil.isLambda(scope.type))) {
+        path.add(getOrCreateOuterField(scope));
+      }
     }
     return path;
   }
@@ -242,7 +253,9 @@ public class OuterReferenceResolver extends TreeVisitor {
         break;
       }
       if (lastScope != null && !isConstant) {
-        path.add(getOrCreateOuterField(lastScope));
+        if (!(BindingUtil.isLambda(scope.type))) {
+          path.add(getOrCreateOuterField(lastScope));
+        }
       }
       lastScope = scope;
     }
@@ -316,6 +329,17 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
+    popType(node.getTypeBinding());
+  }
+
+  @Override
+  public boolean visit(LambdaExpression node) {
+    pushType(node, node.getTypeBinding());
+    return true;
+  }
+
+  @Override
+  public void endVisit(LambdaExpression node) {
     popType(node.getTypeBinding());
   }
 

@@ -635,21 +635,25 @@ public class StatementGenerator extends TreeVisitor {
     assert Options.isJava8Translator() :
       "Lambda expression in translator with -source less than 8.";
     IMethodBinding functionalInterface = node.getFunctionalInterfaceMethod();
-    String superClassName = nameTable.getFullName(node.getTypeBinding());
-    // TODO(kirbs): Add detection of capturing and non-capturing lambdas, and route calls to
-    // non-capturing lambdas to GetNonCapturingBlock.
-    buffer.append("GetCapturingLambda([");
-    buffer.append(superClassName);
+    String functionalClassName = nameTable.getFullName(node.functionalTypeBinding());
+    if (node.isCapturing()) {
+      buffer.append("GetCapturingLambda(");
+      buffer.append(node.getParameters().size());
+      buffer.append(", ");
+    } else {
+      buffer.append("GetNonCapturingLambda(");
+    }
+    buffer.append('[');
+    buffer.append(functionalClassName);
     buffer.append(" class], @\"");
-    buffer.append(superClassName);
-    buffer.append("_");
-    buffer.append(node.getMethodBinding().getName());
+    buffer.append(nameTable.getFullName(node.getTypeBinding()));
     buffer.append("\", @selector(");
     buffer.append(nameTable.getMethodSelector(functionalInterface));
     buffer.append("), ^");
     buffer.append(nameTable.getSpecificObjCType(functionalInterface.getReturnType()));
-    buffer.append("(id _block_self");
-    for (VariableDeclaration x : node.parameters()) {
+    // Required argument for imp_implementationWithBlock.
+    buffer.append("(id _self");
+    for (VariableDeclaration x : node.getParameters()) {
       IVariableBinding variableBinding = x.getVariableBinding();
       buffer.append(", ");
       buffer.append(nameTable.getSpecificObjCType(x.getVariableBinding().getType()));

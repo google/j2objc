@@ -16,8 +16,15 @@ package com.google.j2objc.java8;
 
 import junit.framework.TestCase;
 
+import java.util.ArrayList;
+import java.util.List;
+
 interface Function<F, T> {
   T apply(F input);
+}
+
+interface Callable<T> {
+  T call();
 }
 
 interface Supplier<T> {
@@ -28,17 +35,17 @@ interface Consumer<R> {
   void accept(R input);
 }
 
-interface FourToOne<F, G, H, I, T> {
-  T apply(F f, G g, H h, I i);
+interface FourToOne<F, G, H, I, R> {
+  R apply(F f, G g, H h, I i);
 }
 
-//interface UnaryOperator<T> {
-//  public T apply(T t);
-//}
-//
-//interface UOToUO<T> {
-//  UnaryOperator<T> apply(UOToUO<T> x);
-//}
+interface UnaryOperator<T> {
+  public T apply(T t);
+}
+
+interface UOToUO<T> {
+  UnaryOperator<T> apply(UOToUO<T> x);
+}
 
 /**
  * Command-line tests for Lambda support.
@@ -49,28 +56,72 @@ public class LambdaTest extends TestCase {
 
   public LambdaTest() {}
 
-//  public static <T> UnaryOperator<T> yComb(UnaryOperator<UnaryOperator<T>> r) {
-//    return ((UOToUO<T>) f -> f.apply(f)).apply(f -> r.apply(x -> f.apply(f).apply(x)));
-//  }
-//
-//  public void testYCombinator() throws Exception {
-//    UnaryOperator<UnaryOperator<String>> a = (UnaryOperator<String> f) -> {
-//      return (String x) -> {
-//        if (x.equals("1111")) {
-//          return x;
-//        } else {
-//          return f.apply(x + "1");
-//        }
-//      };
-//    };
-//    assertEquals("1111", yComb(a).apply(""));
-//  }
+  Integer outerX = 0;
+  int outerY = 0;
 
-//  Function outerF = (x) -> x;
-//
-//  public void testOuterFunctions() throws Exception {
-//    assertEquals(42, outerF.apply(42));
-//  }
+  public void testOuterVarCapture() {
+    Supplier<Integer> s = () -> outerX;
+    Supplier<Integer> s2 = () -> outerY;
+    assertEquals((Integer) 0, s.get());
+    assertEquals((Integer) 0, s2.get());
+    outerX += 42;
+    outerY += 42;
+    assertEquals((Integer) 42, s.get());
+    assertEquals((Integer) 42, s2.get());
+    outerX++;
+    outerY++;
+    assertEquals((Integer) 43, s.get());
+    assertEquals((Integer) 43, s2.get());
+    outerX++;
+    outerY++;
+  }
+
+  public void testFunctionArray() throws Exception {
+    List<Function> fs = new ArrayList<Function>();
+    int[] nums = { 3, 2, 1, 0 };
+    for (int i : nums) {
+      fs.add((x) -> i);
+    }
+    assertEquals(0, fs.get(3).apply("5"));
+    assertEquals(1, fs.get(2).apply(new Object()));
+    assertEquals(2, fs.get(1).apply(new Object()));
+    assertEquals(3, fs.get(0).apply("4"));
+  }
+
+  public <T> UnaryOperator<T> yComb(UnaryOperator<UnaryOperator<T>> r) {
+    return ((UOToUO<T>) f -> f.apply(f)).apply(f -> r.apply(x -> f.apply(f).apply(x)));
+  }
+
+  public void testYCombinator() throws Exception {
+    UnaryOperator<UnaryOperator<String>> a = (UnaryOperator<String> f) -> {
+      return (x) -> {
+        if (x.length() == 5) {
+          return x;
+        } else {
+          return f.apply((char) (x.charAt(0) + 1) + x);
+        }
+      };
+    };
+    assertEquals("edcba", yComb(a).apply("a"));
+    UnaryOperator<UnaryOperator<Integer>> fibonacci = (UnaryOperator<Integer> f) -> {
+      return (Integer x) -> {
+        if (x < 1) {
+          return 0;
+        } else if (x == 1) {
+          return x;
+        } else {
+          return f.apply(x - 1) + f.apply(x - 2);
+        }
+      };
+    };
+    assertEquals((Integer) 55, yComb(fibonacci).apply(10));
+  }
+
+  Function outerF = (x) -> x;
+
+  public void testOuterFunctions() throws Exception {
+    assertEquals(42, outerF.apply(42));
+  }
 
   static Function staticF = (x) -> x;
 
@@ -89,8 +140,8 @@ public class LambdaTest extends TestCase {
     assertEquals(f4.apply("42").apply("43"), Integer.valueOf(42));
     Function<String, Function<Integer, Integer>> f5 = (x) -> (y) -> Integer.parseInt(x);
     assertEquals(f5.apply("42").apply(43), Integer.valueOf(42));
-    // Callable<Callable> c2 = () -> () -> 42;
-    // assertEquals(c2.call().call(), 42);
+    Callable<Callable> c2 = () -> () -> 42;
+    assertEquals(c2.call().call(), 42);
     Supplier<Supplier> s2 = () -> () -> 42;
     assertEquals(s2.get().get(), 42);
   }
@@ -148,9 +199,9 @@ public class LambdaTest extends TestCase {
     c.accept(42);
     assertEquals(42, ls[0]);
   }
-}
 
-//  public void testBasicCallable() throws Exception {
-//    Callable c = () -> 42;
-//    assertEquals(42, c.call());
-//  }
+  public void testBasicCallable() throws Exception {
+    Callable c = () -> 42;
+    assertEquals(42, c.call());
+  }
+}

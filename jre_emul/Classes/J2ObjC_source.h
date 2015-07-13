@@ -34,10 +34,10 @@ FOUNDATION_EXPORT void JreRelease(id obj);
 #endif
 
 // Defined in JreEmulation.m
-FOUNDATION_EXPORT id GetNonCapturingLambda(Class baseClass, NSString * blockClassName,
+FOUNDATION_EXPORT id GetNonCapturingLambda(Class baseClass, NSString *blockClassName,
     SEL methodSelector, id block);
-FOUNDATION_EXPORT id GetCapturingLambda(Class baseClass, NSString *blockClassName,
-    SEL methodSelector, id block);
+FOUNDATION_EXPORT id GetCapturingLambda(int argumentCount, Class baseClass,
+    NSString *blockClassName, SEL methodSelector, id block);
 
 /*!
  * Returns correct result when casting a double to an integral type. In C, a

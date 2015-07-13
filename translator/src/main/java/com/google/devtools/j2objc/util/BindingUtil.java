@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import com.google.j2objc.annotations.Property;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
@@ -128,6 +129,10 @@ public final class BindingUtil {
     }
     char binaryName = type.getBinaryName().charAt(0);
     return binaryName == 'F' || binaryName == 'D';
+  }
+
+  public static boolean isLambda(ITypeBinding type) {
+    return type instanceof LambdaTypeBinding;
   }
 
   /**

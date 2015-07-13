@@ -70,7 +70,7 @@ import java.util.regex.Pattern;
 public abstract class GenerationTest extends TestCase {
 
   protected File tempDir;
-  private JdtParser parser;
+  protected JdtParser parser;
   private DeadCodeMap deadCodeMap = null;
 
   static {
@@ -97,7 +97,7 @@ public abstract class GenerationTest extends TestCase {
     ErrorUtil.reset();
   }
 
-  private static JdtParser initializeParser(File tempDir) {
+  protected static JdtParser initializeParser(File tempDir) {
     JdtParser parser = new JdtParser();
     parser.addClasspathEntries(getComGoogleDevtoolsJ2objcPath());
     parser.addSourcepathEntry(tempDir.getAbsolutePath());
@@ -246,6 +246,37 @@ public abstract class GenerationTest extends TestCase {
     } finally {
       in.close();
     }
+  }
+
+  /**
+   * Asserts that translated source contains a list of strings in order, but not necessarily
+   * consecutive. Differs from assertTranslatedLines in that it doesn't match entire lines, and that
+   * matches may occur anywhere forward in the string from the last match, not solely in the next
+   * line.
+   */
+  protected void assertTranslatedSegments(String translation, String... expectedLines)
+      throws IOException {
+    int nLines = expectedLines.length;
+    if (nLines < 2) {
+      assertTranslation(translation, nLines == 1 ? expectedLines[0] : null);
+      return;
+    }
+    if (!hasSegments(translation, expectedLines)) {
+      fail("expected:\"" + Joiner.on('\n').join(expectedLines) + "\" in:\n" + translation);
+    }
+  }
+
+  private boolean hasSegments(String s, String[] lines) {
+    int index = 0;
+    for (int i = 0; i < lines.length; i++) {
+      index = s.indexOf(lines[i], index);
+      if (index == -1) {
+        return false;
+      } else {
+        index += lines[i].length();
+      }
+    }
+    return true;
   }
 
   protected void assertOccurrences(String translation, String expected, int times) {
