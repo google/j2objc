@@ -31,7 +31,6 @@ import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -163,17 +162,6 @@ public class InitializationNormalizer extends TreeVisitor {
    */
   private boolean requiresInitializer(VariableDeclarationFragment frag) {
     Expression initializer = frag.getInitializer();
-    switch (initializer.getKind()) {
-      case BOOLEAN_LITERAL:
-      case CHARACTER_LITERAL:
-      case NULL_LITERAL:
-      case NUMBER_LITERAL:
-        return false;
-      case STRING_LITERAL:
-        return !UnicodeUtils.hasValidCppCharacters(((StringLiteral) initializer).getLiteralValue());
-      default:
-        // Fall-through.
-    }
     if (BindingUtil.isPrimitiveConstant(frag.getVariableBinding())) {
       return false;
     }

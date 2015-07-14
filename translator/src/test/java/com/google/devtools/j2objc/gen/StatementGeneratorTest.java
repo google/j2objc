@@ -206,7 +206,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "String foo; { foo = Bar.FOO; } }",
         "Example", "Example.m");
     assertTranslation(translation,
-        "JreStrongAssign(&self->foo_, JreLoadStatic(Example_Bar, FOO_))");
+        "JreStrongAssign(&self->foo_, Example_Bar_FOO_)");
     assertTranslation(translation, "NSString *Example_Bar_FOO_ = @\"Mumble\";");
     translation = getTranslatedFile("Example.h");
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_Bar_FOO_;");
@@ -1035,7 +1035,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "public class A { String prefix(Object o) { return new String(o + B.separator); }}",
         "A", "A.m");
     assertTranslation(translation,
-        "[NSString stringWithString:JreStrcat(\"@$\", o, JreLoadStatic(B, separator_))]");
+        "[NSString stringWithString:JreStrcat(\"@$\", o, B_separator_)]");
   }
 
   public void testStringConcatWithBoolean() throws IOException {

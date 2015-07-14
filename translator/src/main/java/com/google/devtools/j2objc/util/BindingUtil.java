@@ -69,6 +69,12 @@ public final class BindingUtil {
         && binding.getDeclaringClass() != null;
   }
 
+  public static boolean isStringConstant(IVariableBinding binding) {
+    Object constantValue = binding.getConstantValue();
+    return constantValue != null && constantValue instanceof String
+        && UnicodeUtils.hasValidCppCharacters((String) constantValue);
+  }
+
   /**
    * Returns whether this variable will be declared in global scope in ObjC.
    */

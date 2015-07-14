@@ -40,7 +40,8 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 public class StaticVarRewriter extends TreeVisitor {
 
   private boolean needsStaticLoad(TreeNode currentNode, IVariableBinding var) {
-    if (!BindingUtil.isStatic(var) || BindingUtil.isPrimitiveConstant(var)) {
+    if (!BindingUtil.isStatic(var) || BindingUtil.isPrimitiveConstant(var)
+        || BindingUtil.isStringConstant(var)) {
       return false;
     }
     AbstractTypeDeclaration owningType = TreeUtil.getOwningType(currentNode);
