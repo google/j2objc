@@ -14,9 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Block;
@@ -24,13 +21,14 @@ import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
-import com.google.devtools.j2objc.ast.VariableDeclaration;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 
@@ -50,27 +48,13 @@ public class JavaCloneWriter extends TreeVisitor {
 
   private static final String JAVA_CLONE_METHOD = "__javaClone";
 
-  private static final Function<VariableDeclaration, IVariableBinding> GET_VARIABLE_BINDING_FUNC =
-      new Function<VariableDeclaration, IVariableBinding>() {
-    public IVariableBinding apply(VariableDeclaration node) {
-      return node.getVariableBinding();
-    }
-  };
-
-  private static final Predicate<IVariableBinding> IS_WEAK_PRED =
-      new Predicate<IVariableBinding>() {
-    public boolean apply(IVariableBinding binding) {
-      return !BindingUtil.isStatic(binding) && BindingUtil.isWeakReference(binding);
-    }
-  };
-
   @Override
   public void endVisit(TypeDeclaration node) {
-    ITypeBinding type = node.getTypeBinding();
-    List<IVariableBinding> fields = getWeakFields(node);
-    if (fields.isEmpty()) {
+    List<Statement> adjustments = getFieldAdjustments(node);
+    if (adjustments.isEmpty()) {
       return;
     }
+    ITypeBinding type = node.getTypeBinding();
 
     ITypeBinding voidType = typeEnv.resolveJavaType("void");
     int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
@@ -90,21 +74,47 @@ public class JavaCloneWriter extends TreeVisitor {
     SuperMethodInvocation superCall = new SuperMethodInvocation(cloneMethod);
     statements.add(new ExpressionStatement(superCall));
 
-    for (IVariableBinding field : fields) {
-      if (Options.useARC()) {
-        FunctionInvocation invocation = new FunctionInvocation(
-            "JreRelease", voidType, voidType, voidType);
-        invocation.getArguments().add(new SimpleName(field));
-        statements.add(new ExpressionStatement(invocation));
-      } else {
-        statements.add(new ExpressionStatement(
-            new MethodInvocation(typeEnv.getReleaseMethod(), new SimpleName(field))));
+    statements.addAll(adjustments);
+  }
+
+  private List<Statement> getFieldAdjustments(TypeDeclaration node) {
+    List<Statement> adjustments = Lists.newArrayList();
+    for (VariableDeclarationFragment decl : TreeUtil.getAllFields(node)) {
+      IVariableBinding var = decl.getVariableBinding();
+      if (BindingUtil.isStatic(var) || var.getType().isPrimitive()) {
+        continue;
       }
+      boolean isWeak = BindingUtil.isWeakReference(var);
+      boolean isVolatile = BindingUtil.isVolatile(var);
+      if (isWeak && !isVolatile) {
+        adjustments.add(createReleaseStatement(var));
+      } else if (!isWeak && isVolatile) {
+        adjustments.add(createVolatileRetainStatement(var));
+      }
+    }
+    return adjustments;
+  }
+
+  private Statement createReleaseStatement(IVariableBinding var) {
+    if (Options.useARC()) {
+      ITypeBinding voidType = typeEnv.resolveJavaType("void");
+      FunctionInvocation invocation = new FunctionInvocation(
+          "JreRelease", voidType, voidType, null);
+      invocation.getArguments().add(new SimpleName(var));
+      return new ExpressionStatement(invocation);
+    } else {
+      return new ExpressionStatement(
+          new MethodInvocation(typeEnv.getReleaseMethod(), new SimpleName(var)));
     }
   }
 
-  private static List<IVariableBinding> getWeakFields(TypeDeclaration node) {
-    return Lists.newArrayList(Iterables.filter(
-        Iterables.transform(TreeUtil.getAllFields(node), GET_VARIABLE_BINDING_FUNC), IS_WEAK_PRED));
+  private Statement createVolatileRetainStatement(IVariableBinding var) {
+    ITypeBinding idType = typeEnv.resolveIOSType("id");
+    FunctionInvocation invocation = new FunctionInvocation(
+        "JreRetainVolatile", idType, idType, null);
+    invocation.getArguments().add(new PrefixExpression(
+        typeEnv.getPointerType(var.getType()), PrefixExpression.Operator.ADDRESS_OF,
+        new SimpleName(var)));
+    return new ExpressionStatement(invocation);
   }
 }

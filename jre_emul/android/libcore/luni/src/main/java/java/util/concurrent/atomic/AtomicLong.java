@@ -248,6 +248,7 @@ public class AtomicLong extends Number implements java.io.Serializable {
     ]-*/;
 
     private native boolean compareAndSwapValue(long oldValue, long newValue) /*-[
-      return OSAtomicCompareAndSwap64Barrier(oldValue, newValue, &self->value_);
+      return __c11_atomic_compare_exchange_strong(
+          &self->value_, &oldValue, newValue, __ATOMIC_SEQ_CST, __ATOMIC_ACQUIRE);
     ]-*/;
 }

@@ -24,6 +24,7 @@ import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
@@ -41,7 +42,6 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -120,24 +120,31 @@ public class DestructorGenerator extends TreeVisitor {
   }
 
   private List<Statement> createReleaseStatements(TypeDeclaration node) {
-    if (Options.useARC()) {
-      return Collections.emptyList();
-    }
     List<Statement> statements = Lists.newArrayList();
     for (VariableDeclarationFragment fragment : TreeUtil.getAllFields(node)) {
       IVariableBinding var = fragment.getVariableBinding();
       ITypeBinding type = var.getType();
-      if (BindingUtil.isStatic(var) || type.isPrimitive() || BindingUtil.isWeakReference(var)) {
+      if (BindingUtil.isStatic(var) || type.isPrimitive() || BindingUtil.isWeakReference(var)
+          || (Options.useARC() && !BindingUtil.isVolatile(var))) {
         continue;
       }
-      ITypeBinding idType = typeEnv.resolveIOSType("id");
-      FunctionInvocation releaseInvocation = new FunctionInvocation(
-          "RELEASE_", idType, idType, idType);
-      releaseInvocation.getArguments().add(new SimpleName(var));
-      ExpressionStatement releaseStmt = new ExpressionStatement(releaseInvocation);
-      statements.add(releaseStmt);
+      statements.add(createRelease(var));
     }
     return statements;
+  }
+
+  private Statement createRelease(IVariableBinding var) {
+    ITypeBinding voidType = typeEnv.resolveJavaType("void");
+    boolean isVolatile = BindingUtil.isVolatile(var);
+    FunctionInvocation releaseInvocation = new FunctionInvocation(
+        isVolatile ? "JreReleaseVolatile" : "RELEASE_", voidType, voidType, null);
+    Expression arg = new SimpleName(var);
+    if (isVolatile) {
+      arg = new PrefixExpression(
+          typeEnv.getPointerType(var.getType()), PrefixExpression.Operator.ADDRESS_OF, arg);
+    }
+    releaseInvocation.getArguments().add(arg);
+    return new ExpressionStatement(releaseInvocation);
   }
 
   private void addReleaseStatements(MethodDeclaration method, List<Statement> releaseStatements) {

@@ -150,10 +150,12 @@ public class TypeImplementationGenerator extends TypeGenerator {
       IVariableBinding varBinding = fragment.getVariableBinding();
       Expression initializer = fragment.getInitializer();
       String name = nameTable.getVariableQualifiedName(varBinding);
-      String objcType = nameTable.getObjCType(varBinding.getType());
+      String objcType = getDeclarationType(varBinding);
       objcType += objcType.endsWith("*") ? "" : " ";
       if (initializer != null) {
-        printf("%s%s = %s;\n", objcType, name, generateExpression(initializer));
+        String cast = !varBinding.getType().isPrimitive() && BindingUtil.isVolatile(varBinding)
+            ? "(void *)" : "";
+        printf("%s%s = %s%s;\n", objcType, name, cast, generateExpression(initializer));
       } else {
         printf("%s%s;\n", objcType, name);
       }
@@ -170,19 +172,30 @@ public class TypeImplementationGenerator extends TypeGenerator {
     for (VariableDeclarationFragment fragment : getStaticFields()) {
       if (!((FieldDeclaration) fragment.getParent()).hasPrivateDeclaration()) {
         IVariableBinding varBinding = fragment.getVariableBinding();
+        ITypeBinding type = varBinding.getType();
+        boolean isVolatile = BindingUtil.isVolatile(varBinding);
+        boolean isPrimitive = type.isPrimitive();
         String accessorName = nameTable.getVariableBaseName(varBinding);
         String varName = nameTable.getVariableQualifiedName(varBinding);
-        String objcType = nameTable.getObjCType(varBinding.getType());
-        printf("\n+ (%s)%s {\n  return %s;\n}\n", objcType, accessorName, varName);
+        String objcType = nameTable.getObjCType(type);
+        String typeSuffix = isPrimitive ? NameTable.capitalize(type.getName()) : "Id";
+        if (isVolatile) {
+          printf("\n+ (%s)%s {\n  return JreLoadVolatile%s(&%s);\n}\n",
+                 objcType, accessorName, typeSuffix, varName);
+        } else {
+          printf("\n+ (%s)%s {\n  return %s;\n}\n", objcType, accessorName, varName);
+        }
         int modifiers = varBinding.getModifiers();
-        if (!Modifier.isFinal(modifiers) && !Modifier.isPrivate(modifiers)) {
-          if (varBinding.getType().isPrimitive()) {
+        if (!Modifier.isFinal(modifiers)) {
+          String setterFunc = isVolatile
+              ? (isPrimitive ? "JreAssignVolatile" + typeSuffix : "JreVolatileStrongAssign")
+              : (isPrimitive | Options.useARC() ? null : "JreStrongAssign");
+          if (setterFunc == null) {
             printf("\n+ (void)set%s:(%s)value {\n  %s = value;\n}\n",
                 NameTable.capitalize(accessorName), objcType, varName);
           } else {
-            printf("\n+ (void)set%s:(%s)value {\n  %s_set_%s(value);\n}\n",
-                NameTable.capitalize(accessorName), objcType, typeName,
-                nameTable.getVariableShortName(varBinding));
+            printf("\n+ (void)set%s:(%s)value {\n  %s(&%s, value);\n}\n",
+                NameTable.capitalize(accessorName), objcType, setterFunc, varName);
           }
         }
       }

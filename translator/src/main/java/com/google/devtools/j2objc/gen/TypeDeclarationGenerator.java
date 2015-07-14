@@ -256,15 +256,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           println(";");
         }
         lastDeclaration = declaration;
-        ITypeBinding varType = varBinding.getType();
         JavadocGenerator.printDocComment(getBuilder(), declaration.getJavadoc());
         printIndent();
-        if (BindingUtil.isWeakReference(varBinding)) {
+        if (BindingUtil.isWeakReference(varBinding) && !BindingUtil.isVolatile(varBinding)) {
           // We must add this even without -use-arc because the header may be
           // included by a file compiled with ARC.
           print("__weak ");
         }
-        String objcType = nameTable.getSpecificObjCType(varType);
+        String objcType = getDeclarationType(varBinding);
         needsAsterisk = objcType.endsWith("*");
         if (needsAsterisk) {
           // Strip pointer from type, as it will be added when appending fragment.
@@ -409,7 +408,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       IVariableBinding var = fragment.getVariableBinding();
       String typeStr = nameTable.getObjCType(var.getType());
       String fieldName = nameTable.getVariableShortName(var);
-      println(String.format("J2OBJC_FIELD_SETTER(%s, %s, %s)", typeName, fieldName, typeStr));
+      String isVolatile = BindingUtil.isVolatile(var) ? "_VOLATILE" : "";
+      println(String.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
+          isVolatile, typeName, fieldName, typeStr));
     }
   }
 
@@ -426,24 +427,26 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private void printStaticFieldFullDeclaration(VariableDeclarationFragment fragment) {
     IVariableBinding var = fragment.getVariableBinding();
-    String objcType = nameTable.getObjCType(var.getType());
-    String typeWithSpace = objcType + (objcType.endsWith("*") ? "" : " ");
+    boolean isVolatile = BindingUtil.isVolatile(var);
+    String objcType = nameTable.getSpecificObjCType(var.getType());
+    String declType = getDeclarationType(var);
+    declType += (declType.endsWith("*") ? "" : " ");
     String name = nameTable.getVariableShortName(var);
     boolean isFinal = Modifier.isFinal(var.getModifiers());
     boolean isPrimitive = var.getType().isPrimitive();
+    String volatileStr = isVolatile ? "_VOLATILE" + (isPrimitive ? "" : "_OBJ") : "";
     newline();
     if (BindingUtil.isPrimitiveConstant(var)) {
       name = var.getName();
     } else {
-      printStaticFieldDeclaration(
-          fragment, String.format("%s%s_%s", typeWithSpace, typeName, name));
+      printStaticFieldDeclaration(fragment, String.format("%s%s_%s", declType, typeName, name));
     }
-    printf("J2OBJC_STATIC_FIELD_GETTER(%s, %s, %s)\n", typeName, name, objcType);
+    printf("J2OBJC_STATIC%s_FIELD_GETTER(%s, %s, %s)\n", volatileStr, typeName, name, objcType);
     if (!isFinal) {
-      if (isPrimitive) {
-        printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)\n", typeName, name, objcType);
+      if (isPrimitive && !isVolatile) {
+        printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)", typeName, name, objcType);
       } else {
-        printf("J2OBJC_STATIC_FIELD_SETTER(%s, %s, %s)\n", typeName, name, objcType);
+        printf("J2OBJC_STATIC%s_FIELD_SETTER(%s, %s, %s)\n", volatileStr, typeName, name, objcType);
       }
     }
   }

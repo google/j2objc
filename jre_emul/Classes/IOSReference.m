@@ -94,23 +94,25 @@ static NSMutableSet *soft_references;
 static BOOL in_low_memory_cleanup;
 
 + (void)initReferent:(JavaLangRefReference *)reference {
-  if (reference->referent_) {
-    EnsureReferentSubclass(reference->referent_);
-    AssociateReferenceWithReferent(reference->referent_, reference);
+  id referent = JreLoadVolatileId(&reference->referent_);
+  if (referent) {
+    EnsureReferentSubclass(referent);
+    AssociateReferenceWithReferent(referent, reference);
   }
 }
 
 + (void)strengthenReferent:(JavaLangRefReference *)reference {
-  [reference->referent_ retain];
+  [JreLoadVolatileId(&reference->referent_) retain];
 }
 
 + (void)weakenReferent:(JavaLangRefReference *)reference {
-  [reference->referent_ autorelease];
+  [JreLoadVolatileId(&reference->referent_) autorelease];
 }
 
 + (void)removeAssociation:(JavaLangRefReference *)reference {
-  if (reference->referent_) {
-    RemoveReferenceAssociation(reference->referent_, reference);
+  id referent = JreLoadVolatileId(&reference->referent_);
+  if (referent) {
+    RemoveReferenceAssociation(referent, reference);
   }
 }
 
@@ -118,7 +120,7 @@ static BOOL in_low_memory_cleanup;
   WhileLocked(^{
     in_low_memory_cleanup = YES;
     for (JavaLangRefSoftReference *reference in soft_references) {
-      [reference->referent_ release];
+      [JreLoadVolatileId(&reference->referent_) release];
     }
     in_low_memory_cleanup = NO;
   });
@@ -260,7 +262,7 @@ static BOOL RemoveAllReferenceAssociations(id referent) {
     NSSet *setCopy = (ARCBRIDGE NSSet *) set;
     for (JavaLangRefReference *reference in setCopy) {
       enqueued |= [reference enqueueInternal];
-      reference->referent_ = nil;
+      JreAssignVolatileId(&reference->referent_, nil);
     }
     CFDictionaryRemoveValue(weak_refs_map, referent);
   }

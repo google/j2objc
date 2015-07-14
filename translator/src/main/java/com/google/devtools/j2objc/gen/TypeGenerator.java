@@ -228,6 +228,15 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     return !typeNode.getClassInitStatements().isEmpty();
   }
 
+  protected String getDeclarationType(IVariableBinding var) {
+    ITypeBinding type = var.getType();
+    if (BindingUtil.isVolatile(var)) {
+      return "volatile_" + NameTable.getPrimitiveObjCType(type);
+    } else {
+      return nameTable.getSpecificObjCType(type);
+    }
+  }
+
   /**
    * Create an Objective-C method signature string.
    */

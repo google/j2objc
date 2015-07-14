@@ -63,6 +63,10 @@ public final class BindingUtil {
     return Modifier.isPrivate(binding.getModifiers());
   }
 
+  public static boolean isVolatile(IVariableBinding binding) {
+    return Modifier.isVolatile(binding.getModifiers());
+  }
+
   public static boolean isPrimitiveConstant(IVariableBinding binding) {
     return isFinal(binding) && binding.getType().isPrimitive()
         && binding.getConstantValue() != null

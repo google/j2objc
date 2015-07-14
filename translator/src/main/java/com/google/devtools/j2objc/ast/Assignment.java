@@ -29,20 +29,21 @@ public class Assignment extends Expression {
    * Assignment operators.
    */
   public static enum Operator {
-    ASSIGN("="),
-    PLUS_ASSIGN("+="),
-    MINUS_ASSIGN("-="),
-    TIMES_ASSIGN("*="),
-    DIVIDE_ASSIGN("/="),
-    BIT_AND_ASSIGN("&="),
-    BIT_OR_ASSIGN("|="),
-    BIT_XOR_ASSIGN("^="),
-    REMAINDER_ASSIGN("%="),
-    LEFT_SHIFT_ASSIGN("<<="),
-    RIGHT_SHIFT_SIGNED_ASSIGN(">>="),
-    RIGHT_SHIFT_UNSIGNED_ASSIGN(">>>=");
+    ASSIGN("=", "Assign"),
+    PLUS_ASSIGN("+=", "PlusAssign"),
+    MINUS_ASSIGN("-=", "MinusAssign"),
+    TIMES_ASSIGN("*=", "TimesAssign"),
+    DIVIDE_ASSIGN("/=", "DivideAssign"),
+    BIT_AND_ASSIGN("&=", "BitAndAssign"),
+    BIT_OR_ASSIGN("|=", "BitOrAssign"),
+    BIT_XOR_ASSIGN("^=", "BitXorAssign"),
+    REMAINDER_ASSIGN("%=", "ModAssign"),
+    LEFT_SHIFT_ASSIGN("<<=", "LShiftAssign"),
+    RIGHT_SHIFT_SIGNED_ASSIGN(">>=", "RShiftAssign"),
+    RIGHT_SHIFT_UNSIGNED_ASSIGN(">>>=", "URShiftAssign");
 
     private final String opString;
+    private final String name;
     private static Map<String, Operator> stringLookup = Maps.newHashMap();
 
     static {
@@ -51,8 +52,13 @@ public class Assignment extends Expression {
       }
     }
 
-    private Operator(String opString) {
+    private Operator(String opString, String name) {
       this.opString = opString;
+      this.name = name;
+    }
+
+    public String getName() {
+      return name;
     }
 
     @Override

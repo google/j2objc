@@ -21,14 +21,19 @@ import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CStringLiteral;
 import com.google.devtools.j2objc.ast.CharacterLiteral;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.QualifiedName;
+import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.StringLiteral;
+import com.google.devtools.j2objc.ast.SuperFieldAccess;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -51,26 +56,12 @@ public class OperatorRewriter extends TreeVisitor {
 
   @Override
   public void endVisit(Assignment node) {
-    Assignment.Operator op = node.getOperator();
-    Expression lhs = node.getLeftHandSide();
-    Expression rhs = node.getRightHandSide();
-    ITypeBinding lhsType = lhs.getTypeBinding();
-    ITypeBinding rhsType = rhs.getTypeBinding();
-    if (op == Assignment.Operator.ASSIGN) {
+    if (node.getOperator() == Assignment.Operator.ASSIGN) {
       rewriteRegularAssignment(node);
     } else if (isStringAppend(node)) {
       rewriteStringAppend(node);
     } else {
-      String funcName = getOperatorAssignFunction(op, lhsType, rhsType);
-      if (funcName != null) {
-        FunctionInvocation invocation = new FunctionInvocation(funcName, lhsType, lhsType, null);
-        List<Expression> args = invocation.getArguments();
-        args.add(new PrefixExpression(
-            typeEnv.getPointerType(lhsType), PrefixExpression.Operator.ADDRESS_OF,
-            TreeUtil.remove(lhs)));
-        args.add(TreeUtil.remove(rhs));
-        node.replaceWith(invocation);
-      }
+      rewriteCompoundAssign(node);
     }
   }
 
@@ -84,6 +75,7 @@ public class OperatorRewriter extends TreeVisitor {
             assignment.getLeftHandSide().getTypeBinding());
   }
 
+  @Override
   public void endVisit(InfixExpression node) {
     InfixExpression.Operator op = node.getOperator();
     ITypeBinding nodeType = node.getTypeBinding();
@@ -113,29 +105,101 @@ public class OperatorRewriter extends TreeVisitor {
     }
   }
 
-  private void rewriteRegularAssignment(Assignment node) {
-    Expression lhs = node.getLeftHandSide();
-    IVariableBinding var = TreeUtil.getVariableBinding(lhs);
-    if (var == null || var.getType().isPrimitive() || !var.isField()
-        || BindingUtil.isWeakReference(var) || !Options.useReferenceCounting()
-        || var.isEnumConstant()) {
-      return;
+  @Override
+  public boolean visit(FieldAccess node) {
+    rewriteVolatileLoad(node);
+    node.getExpression().accept(this);
+    return false;
+  }
+
+  @Override
+  public boolean visit(SuperFieldAccess node) {
+    rewriteVolatileLoad(node);
+    return false;
+  }
+
+  @Override
+  public boolean visit(QualifiedName node) {
+    rewriteVolatileLoad(node);
+    return false;
+  }
+
+  @Override
+  public boolean visit(SimpleName node) {
+    rewriteVolatileLoad(node);
+    return false;
+  }
+
+  @Override
+  public boolean visit(VariableDeclarationFragment node) {
+    // Skip name so that it doesn't get mistaken for a variable load.
+    Expression initializer = node.getInitializer();
+    if (initializer != null) {
+      initializer.accept(this);
+    }
+    return false;
+  }
+
+  private void rewriteVolatileLoad(Expression node) {
+    IVariableBinding var = TreeUtil.getVariableBinding(node);
+    if (var != null && BindingUtil.isVolatile(var) && !TranslationUtil.isAssigned(node)) {
+      ITypeBinding type = node.getTypeBinding();
+      ITypeBinding declaredType = type.isPrimitive() ? type : typeEnv.resolveIOSType("id");
+      String funcName = "JreLoadVolatile" + NameTable.capitalize(declaredType.getName());
+      FunctionInvocation invocation = new FunctionInvocation(funcName, type, declaredType, null);
+      node.replaceWith(invocation);
+      invocation.getArguments().add(new PrefixExpression(
+          typeEnv.getPointerType(type), PrefixExpression.Operator.ADDRESS_OF, node));
+    }
+  }
+
+  private String getAssignmentFunctionName(Assignment node) {
+    IVariableBinding var = TreeUtil.getVariableBinding(node.getLeftHandSide());
+    if (var == null || !var.isField() || var.isEnumConstant()) {
+      return null;
+    }
+    ITypeBinding type = var.getType();
+    boolean isPrimitive = type.isPrimitive();
+    boolean isStrong = !isPrimitive && !BindingUtil.isWeakReference(var);
+    boolean isVolatile = BindingUtil.isVolatile(var);
+
+    if (isStrong) {
+      String funcName = null;
+      if (isVolatile) {
+        funcName = "JreVolatileStrongAssign";
+      } else if (Options.useReferenceCounting()) {
+        funcName = "JreStrongAssign";
+      }
+      if (funcName != null) {
+        Expression retainedRhs = TranslationUtil.retainResult(node.getRightHandSide());
+        if (retainedRhs != null) {
+          funcName += "AndConsume";
+          node.setRightHandSide(retainedRhs);
+        }
+      }
+      return funcName;
     }
 
-    Expression rhs = node.getRightHandSide();
-    String assignFunc = "JreStrongAssign";
-    Expression retainedRhs = TranslationUtil.retainResult(rhs);
-    if (retainedRhs != null) {
-      assignFunc = "JreStrongAssignAndConsume";
-      rhs = retainedRhs;
+    if (isVolatile) {
+      return "JreAssignVolatile" + (isPrimitive ? NameTable.capitalize(type.getName()) : "Id");
     }
-    FunctionInvocation invocation = new FunctionInvocation(
-        assignFunc, rhs.getTypeBinding(), typeEnv.resolveIOSType("id"), null);
+    return null;
+  }
+
+  private void rewriteRegularAssignment(Assignment node) {
+    String funcName = getAssignmentFunctionName(node);
+    if (funcName == null) {
+      return;
+    }
+    ITypeBinding type = node.getTypeBinding();
+    ITypeBinding declaredType = type.isPrimitive() ? type : typeEnv.resolveIOSType("id");
+    Expression lhs = node.getLeftHandSide();
+    FunctionInvocation invocation = new FunctionInvocation(funcName, type, declaredType, null);
     List<Expression> args = invocation.getArguments();
     args.add(new PrefixExpression(
-        typeEnv.getPointerType(var.getType()), PrefixExpression.Operator.ADDRESS_OF,
+        typeEnv.getPointerType(lhs.getTypeBinding()), PrefixExpression.Operator.ADDRESS_OF,
         TreeUtil.remove(lhs)));
-    args.add(TreeUtil.remove(rhs));
+    args.add(TreeUtil.remove(node.getRightHandSide()));
     node.replaceWith(invocation);
   }
 
@@ -168,24 +232,78 @@ public class OperatorRewriter extends TreeVisitor {
     }
   }
 
-  private static String getOperatorAssignFunction(
-      Assignment.Operator op, ITypeBinding lhsType, ITypeBinding rhsType) {
-    String lhsName = NameTable.capitalize(lhsType.getName());
-    switch (op) {
+  private static boolean isVolatile(Expression varNode) {
+    IVariableBinding var = TreeUtil.getVariableBinding(varNode);
+    return var != null && BindingUtil.isVolatile(var);
+  }
+
+  private static boolean shouldRewriteCompoundAssign(Assignment node) {
+    Expression lhs = node.getLeftHandSide();
+    ITypeBinding lhsType = lhs.getTypeBinding();
+    ITypeBinding rhsType = node.getRightHandSide().getTypeBinding();
+    switch (node.getOperator()) {
       case LEFT_SHIFT_ASSIGN:
-        return "JreLShiftAssign" + lhsName;
       case RIGHT_SHIFT_SIGNED_ASSIGN:
-        return "JreRShiftAssign" + lhsName;
       case RIGHT_SHIFT_UNSIGNED_ASSIGN:
-        return "JreURShiftAssign" + lhsName;
+        return true;
       case REMAINDER_ASSIGN:
-        if (BindingUtil.isFloatingPoint(lhsType) || BindingUtil.isFloatingPoint(rhsType)) {
-          return "JreModAssign" + lhsName;
-        }
-        return null;
+        return isVolatile(lhs) || BindingUtil.isFloatingPoint(lhsType)
+            || BindingUtil.isFloatingPoint(rhsType);
       default:
-        return null;
+        return isVolatile(lhs);
     }
+  }
+
+  private static boolean needsPromotionSuffix(Assignment.Operator op) {
+    switch (op) {
+      case PLUS_ASSIGN:
+      case MINUS_ASSIGN:
+      case TIMES_ASSIGN:
+      case DIVIDE_ASSIGN:
+      case REMAINDER_ASSIGN:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  /**
+   * Some operator functions are given a suffix indicating the promotion type of
+   * the operands according to JLS 5.6.2.
+   */
+  private static String getPromotionSuffix(Assignment node) {
+    if (!needsPromotionSuffix(node.getOperator())) {
+      return "";
+    }
+    char lhs = node.getLeftHandSide().getTypeBinding().getBinaryName().charAt(0);
+    char rhs = node.getRightHandSide().getTypeBinding().getBinaryName().charAt(0);
+    if (lhs == 'D' || rhs == 'D') {
+      return "D";
+    }
+    if (lhs == 'F' || rhs == 'F') {
+      return "F";
+    }
+    if (lhs == 'J' || rhs == 'J') {
+      return "L";
+    }
+    return "I";
+  }
+
+  private void rewriteCompoundAssign(Assignment node) {
+    if (!shouldRewriteCompoundAssign(node)) {
+      return;
+    }
+    Expression lhs = node.getLeftHandSide();
+    ITypeBinding lhsType = lhs.getTypeBinding();
+    String funcName = "Jre" + node.getOperator().getName() + (isVolatile(lhs) ? "Volatile" : "")
+        + NameTable.capitalize(lhsType.getName()) + getPromotionSuffix(node);
+    FunctionInvocation invocation = new FunctionInvocation(funcName, lhsType, lhsType, null);
+    List<Expression> args = invocation.getArguments();
+    args.add(new PrefixExpression(
+        typeEnv.getPointerType(lhsType), PrefixExpression.Operator.ADDRESS_OF,
+        TreeUtil.remove(lhs)));
+    args.add(TreeUtil.remove(node.getRightHandSide()));
+    node.replaceWith(invocation);
   }
 
   private CStringLiteral getStrcatTypesCString(List<Expression> operands) {

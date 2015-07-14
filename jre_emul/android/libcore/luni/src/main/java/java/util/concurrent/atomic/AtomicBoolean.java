@@ -132,6 +132,7 @@ public class AtomicBoolean implements java.io.Serializable {
     ]-*/;
 
     private native boolean compareAndSwapValue(int oldValue, int newValue) /*-[
-      return OSAtomicCompareAndSwapIntBarrier(oldValue, newValue, &self->value_);
+      return __c11_atomic_compare_exchange_strong(
+          &self->value_, &oldValue, newValue, __ATOMIC_SEQ_CST, __ATOMIC_ACQUIRE);
     ]-*/;
 }

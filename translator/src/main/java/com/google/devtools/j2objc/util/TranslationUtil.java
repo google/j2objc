@@ -192,9 +192,13 @@ public final class TranslationUtil {
           : "Expression cannot be resolved to a variable or array access.";
       return "Array";
     }
-    if (var.isField() && !BindingUtil.isWeakReference(var)) {
-      return "Strong";
+    String modifier = "";
+    if (BindingUtil.isVolatile(var)) {
+      modifier += "Volatile";
     }
-    return "";
+    if (var.isField() && !BindingUtil.isWeakReference(var)) {
+      modifier += "Strong";
+    }
+    return modifier;
   }
 }

@@ -41,13 +41,13 @@ public class OperatorRewriterTest extends GenerationTest {
         + "g %= 6.7;";
     List<Statement> stmts = translateStatements(source);
     assertEquals(14, stmts.size());
-    assertEquals("JreModAssignFloat(&a, 2.1f);", generateStatement(stmts.get(1)));
-    assertEquals("JreModAssignDouble(&b, 1.2);", generateStatement(stmts.get(3)));
-    assertEquals("JreModAssignByte(&c, 2.3);", generateStatement(stmts.get(5)));
-    assertEquals("JreModAssignShort(&d, 3.4);", generateStatement(stmts.get(7)));
-    assertEquals("JreModAssignInt(&e, 4.5);", generateStatement(stmts.get(9)));
-    assertEquals("JreModAssignLong(&f, 5.6);", generateStatement(stmts.get(11)));
-    assertEquals("JreModAssignChar(&g, 6.7);", generateStatement(stmts.get(13)));
+    assertEquals("JreModAssignFloatF(&a, 2.1f);", generateStatement(stmts.get(1)));
+    assertEquals("JreModAssignDoubleD(&b, 1.2);", generateStatement(stmts.get(3)));
+    assertEquals("JreModAssignByteD(&c, 2.3);", generateStatement(stmts.get(5)));
+    assertEquals("JreModAssignShortD(&d, 3.4);", generateStatement(stmts.get(7)));
+    assertEquals("JreModAssignIntD(&e, 4.5);", generateStatement(stmts.get(9)));
+    assertEquals("JreModAssignLongD(&f, 5.6);", generateStatement(stmts.get(11)));
+    assertEquals("JreModAssignCharD(&g, 6.7);", generateStatement(stmts.get(13)));
   }
 
   public void testDoubleModulo() throws IOException {
@@ -97,5 +97,25 @@ public class OperatorRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { String s; void test(String s2) { (s) = s2; } }", "Test", "Test.m");
     assertTranslation(translation, "JreStrongAssign(&(s_), s2);");
+  }
+
+  public void testVolatileLoadAndAssign() throws IOException {
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.Weak;"
+        + " class Test { volatile int i; static volatile int si; volatile String s;"
+        + " static volatile String vs; @Weak volatile String ws;"
+        + " void test() { int li = i; i = 2; li = si; si = 3; String ls = s; s = \"foo\";"
+        + " ls = vs; vs = \"foo\"; ls = ws; ws = \"foo\"; } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "jint li = JreLoadVolatileInt(&i_);",
+        "JreAssignVolatileInt(&i_, 2);",
+        "li = JreLoadVolatileInt(&Test_si_);",
+        "JreAssignVolatileInt(&Test_si_, 3);",
+        "NSString *ls = JreLoadVolatileId(&s_);",
+        "JreVolatileStrongAssign(&s_, @\"foo\");",
+        "ls = JreLoadVolatileId(&Test_vs_);",
+        "JreVolatileStrongAssign(&Test_vs_, @\"foo\");",
+        "ls = JreLoadVolatileId(&ws_);",
+        "JreAssignVolatileId(&ws_, @\"foo\");");
   }
 }

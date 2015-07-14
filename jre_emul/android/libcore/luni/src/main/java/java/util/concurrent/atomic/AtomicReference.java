@@ -124,19 +124,12 @@ public class AtomicReference<V>  implements java.io.Serializable {
     ]-*/;
 
     private native boolean compareAndSwapValue(V oldValue, V newValue) /*-[
-#if __has_feature(objc_arc)
-      void * volatile tmp = (__bridge void * volatile) value_;
-      return OSAtomicCompareAndSwapPtrBarrier(
-          (__bridge void *) oldValue, (__bridge void *) newValue, &tmp);
-#else
-      id tmp = self->value_;
-      if (OSAtomicCompareAndSwapPtrBarrier(oldValue, newValue, (void * volatile *) &self->value_)) {
-        [self->value_ retain];
-        [tmp autorelease];
+      if (__c11_atomic_compare_exchange_strong(
+          &self->value_, (void **)&oldValue, newValue, __ATOMIC_SEQ_CST, __ATOMIC_ACQUIRE)) {
+        [newValue retain];
+        [oldValue autorelease];
         return YES;
       }
       return NO;
-#endif
     ]-*/;
-
 }
