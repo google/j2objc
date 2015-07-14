@@ -64,6 +64,31 @@ id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT id value) {
   return JreStrongAssignInner(pIvar, value);
 }
 
+static inline id JreVolatileStrongAssignInner(
+    volatile_id *pIvar, NS_RELEASES_ARGUMENT id value) {
+  id oldValue = __c11_atomic_exchange(pIvar, value, __ATOMIC_SEQ_CST);
+  [oldValue autorelease];
+  return value;
+}
+
+id JreVolatileStrongAssign(volatile_id *pIvar, id value) {
+  return JreVolatileStrongAssignInner(pIvar, [value retain]);
+}
+
+id JreVolatileStrongAssignAndConsume(volatile_id *pIvar, NS_RELEASES_ARGUMENT id value) {
+  return JreVolatileStrongAssignInner(pIvar, value);
+}
+
+void JreReleaseVolatile(volatile_id *pVar) {
+  id value = __c11_atomic_load(pVar, __ATOMIC_RELAXED);
+  [value release];
+}
+
+id JreRetainVolatile(volatile_id *pVar) {
+  id value = __c11_atomic_load(pVar, __ATOMIC_RELAXED);
+  return [value retain];
+}
+
 // Method to handle dynamic creation of class wrappers surrounding blocks which come from lambdas
 // not requiring a capture.
 id GetNonCapturingLambda(Class baseClass, NSString *blockClassName, SEL methodSelector, id block) {
@@ -301,6 +326,23 @@ id JreStrAppendStrong(id *lhs, const char *types, ...) {
   NSString *result = JreStrAppendInner(*lhs, types, va);
   va_end(va);
   return JreStrongAssign(lhs, result);
+}
+
+id JreStrAppendVolatile(volatile_id *lhs, const char *types, ...) {
+  va_list va;
+  va_start(va, types);
+  NSString *result = JreStrAppendInner(__c11_atomic_load(lhs, __ATOMIC_SEQ_CST), types, va);
+  va_end(va);
+  __c11_atomic_store(lhs, result, __ATOMIC_SEQ_CST);
+  return result;
+}
+
+id JreStrAppendVolatileStrong(volatile_id *lhs, const char *types, ...) {
+  va_list va;
+  va_start(va, types);
+  NSString *result = JreStrAppendInner(__c11_atomic_load(lhs, __ATOMIC_SEQ_CST), types, va);
+  va_end(va);
+  return JreVolatileStrongAssign(lhs, result);
 }
 
 id JreStrAppendArray(JreArrayRef lhs, const char *types, ...) {

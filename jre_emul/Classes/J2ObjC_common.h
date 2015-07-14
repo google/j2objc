@@ -76,6 +76,15 @@ int j2objc_nil_chk_count;
 void JrePrintNilChkCount();
 void JrePrintNilChkCountAtExit();
 
+id JreStrongAssign(id *pIvar, id value);
+id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT id value);
+
+id JreVolatileStrongAssign(volatile_id *pIvar, id value);
+id JreVolatileStrongAssignAndConsume(volatile_id *pIvar, NS_RELEASES_ARGUMENT id value);
+
+id JreRetainVolatile(volatile_id *pVar);
+void JreReleaseVolatile(volatile_id *pVar);
+
 NSString *JreStrcat(const char *types, ...);
 
 CF_EXTERN_C_END
@@ -115,8 +124,33 @@ __attribute__ ((unused)) static inline id check_protocol_cast(id __unsafe_unreta
   return p;
 }
 
-FOUNDATION_EXPORT id JreStrongAssign(id *pIvar, id value);
-FOUNDATION_EXPORT id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT id value);
+__attribute__((always_inline)) inline id JreLoadVolatileId(volatile_id *pVar) {
+  return (__bridge id)__c11_atomic_load(pVar, __ATOMIC_SEQ_CST);
+}
+__attribute__((always_inline)) inline id JreAssignVolatileId(volatile_id *pVar, id value) {
+  __c11_atomic_store(pVar, (__bridge void *)value, __ATOMIC_SEQ_CST);
+  return value;
+}
+
+#define J2OBJC_VOLATILE_ACCESS_DEFN(NAME, TYPE) \
+  __attribute__((always_inline)) inline TYPE JreLoadVolatile##NAME(volatile_##TYPE *pVar) { \
+    return __c11_atomic_load(pVar, __ATOMIC_SEQ_CST); \
+  } \
+  __attribute__((always_inline)) inline TYPE JreAssignVolatile##NAME( \
+      volatile_##TYPE *pVar, TYPE value) { \
+    __c11_atomic_store(pVar, value, __ATOMIC_SEQ_CST); \
+    return value; \
+  }
+
+J2OBJC_VOLATILE_ACCESS_DEFN(Boolean, jboolean)
+J2OBJC_VOLATILE_ACCESS_DEFN(Char, jchar)
+J2OBJC_VOLATILE_ACCESS_DEFN(Byte, jbyte)
+J2OBJC_VOLATILE_ACCESS_DEFN(Short, jshort)
+J2OBJC_VOLATILE_ACCESS_DEFN(Int, jint)
+J2OBJC_VOLATILE_ACCESS_DEFN(Long, jlong)
+J2OBJC_VOLATILE_ACCESS_DEFN(Float, jfloat)
+J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
+#undef J2OBJC_VOLATILE_ACCESS_DEFN
 
 /*!
  * Macros that simplify the syntax for loading of static fields.
@@ -231,12 +265,19 @@ FOUNDATION_EXPORT id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT i
   }
 #endif
 
+#define J2OBJC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
+  __attribute__((unused)) static inline TYPE CLASS##_set_##FIELD(CLASS *instance, TYPE value) { \
+    return JreVolatileStrongAssign(&instance->FIELD, value); \
+  }
+
 /*!
  * Defines the getter for a static variable. For class "Foo" and field "bar_"
  * with type "int" the getter will have the following signature:
  *   inline int Foo_get_bar_();
  *
  * @define J2OBJC_STATIC_FIELD_GETTER
+ * @define J2OBJC_STATIC_VOLATILE_FIELD_GETTER
+ * @define J2OBJC_STATIC_VOLATILE_OBJ_FIELD_GETTER
  * @param CLASS The class containing the static variable.
  * @param FIELD The name of the static variable.
  * @param TYPE The type of the static variable.
@@ -245,6 +286,16 @@ FOUNDATION_EXPORT id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT i
   __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD() { \
     CLASS##_initialize(); \
     return CLASS##_##FIELD; \
+  }
+#define J2OBJC_STATIC_VOLATILE_FIELD_GETTER(CLASS, FIELD, TYPE) \
+  __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD() { \
+    CLASS##_initialize(); \
+    return __c11_atomic_load(&CLASS##_##FIELD, __ATOMIC_SEQ_CST); \
+  }
+#define J2OBJC_STATIC_VOLATILE_OBJ_FIELD_GETTER(CLASS, FIELD, TYPE) \
+  __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD() { \
+    CLASS##_initialize(); \
+    return (__bridge TYPE)__c11_atomic_load(&CLASS##_##FIELD, __ATOMIC_SEQ_CST); \
   }
 
 /*!
@@ -291,6 +342,18 @@ FOUNDATION_EXPORT id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT i
     return JreStrongAssignAndConsume(&CLASS##_##FIELD, value); \
   }
 #endif
+
+#define J2OBJC_STATIC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
+  __attribute__((always_inline)) inline TYPE CLASS##_set_##FIELD(TYPE value) { \
+    CLASS##_initialize(); \
+    __c11_atomic_store(&CLASS##_##FIELD, value, __ATOMIC_SEQ_CST); \
+    return value; \
+  }
+#define J2OBJC_STATIC_VOLATILE_OBJ_FIELD_SETTER(CLASS, FIELD, TYPE) \
+  __attribute__((always_inline)) inline TYPE CLASS##_set_##FIELD(TYPE value) { \
+    CLASS##_initialize(); \
+    return JreVolatileStrongAssign(&CLASS##_##FIELD, value); \
+  }
 
 /*!
  * Defines the getter for an enum constant. For enum class "FooEnum" and constant "BAR"

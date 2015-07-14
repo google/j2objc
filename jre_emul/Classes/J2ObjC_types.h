@@ -42,4 +42,15 @@ typedef uint8_t         jboolean;
 #endif
 #endif
 
+// Typedefs for Java types declared as volatile.
+typedef _Atomic(jbyte)     volatile_jbyte;
+typedef _Atomic(jchar)     volatile_jchar;
+typedef _Atomic(jshort)    volatile_jshort;
+typedef _Atomic(jint)      volatile_jint;
+typedef _Atomic(jlong)     volatile_jlong;
+typedef _Atomic(jfloat)    volatile_jfloat;
+typedef _Atomic(jdouble)   volatile_jdouble;
+typedef _Atomic(jboolean)  volatile_jboolean;
+typedef _Atomic(void *)    volatile_id;
+
 #endif // _J2OBJC_TYPES_H_
