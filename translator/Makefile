@@ -127,6 +127,7 @@ JAVA_SOURCES = \
 	ast/PostfixExpression.java \
 	ast/PrefixExpression.java \
 	ast/PrimitiveType.java \
+	ast/PropertyAnnotation.java \
 	ast/QualifiedName.java \
 	ast/QualifiedType.java \
 	ast/ReturnStatement.java \

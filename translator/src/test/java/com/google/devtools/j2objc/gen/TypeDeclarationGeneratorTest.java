@@ -124,4 +124,105 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "",
         "+ (jboolean)FOO;");
   }
+
+  public void testProperties() throws IOException {
+    String source =
+        "import com.google.j2objc.annotations.Property; "
+        + "public class FooBar {"
+        + "  @Property(\"readonly, nonatomic\") private int fieldBar, fieldBaz;"
+        + "  @Property(\"readwrite\") private String fieldCopy;"
+        + "  @Property private boolean fieldBool;"
+        + "  @Property(\"nonatomic, readonly, weak\") private int fieldReorder;"
+        + "  public int getFieldBaz() { return 1; }"
+        + "  public void setFieldNonAtomic(int value) { }"
+        + "  public void setFieldBaz(int value, int option) { }"
+        + "  public boolean isFieldBool() { return fieldBool; }"
+        + "}";
+    String translation = translateSourceFile(source, "FooBar", "FooBar.h");
+    assertTranslation(translation, "@property (readonly, nonatomic) jint fieldBar;");
+
+    // Should split out fieldBaz and include the declared getter.
+    assertTranslation(translation,
+        "@property (readonly, nonatomic, getter=getFieldBaz) jint fieldBaz;");
+
+    // Set copy for strings and drop readwrite.
+    assertTranslation(translation,
+        "@property (copy) NSString *fieldCopy;");
+
+    // Test boolean getter.
+    assertTranslation(translation,
+        "@property (nonatomic, getter=isFieldBool) jboolean fieldBool;");
+
+    // Reorder property attributes and pass setter through.
+    assertTranslation(translation,
+        "@property (weak, readonly, nonatomic) jint fieldReorder;");
+  }
+
+  public void testSynchronizedPropertyGetter() throws IOException {
+    String source = "import com.google.j2objc.annotations.Property; "
+        + "public class FooBar {"
+        + "  @Property(\"getter=getfieldBar\") private int fieldBar;"
+        + "  public synchronized int getFieldBar() { return fieldBar; }"
+        + "}";
+    String translation = translateSourceFile(source, "FooBar", "FooBar.h");
+    assertTranslation(translation, "@property (getter=getfieldBar) jint fieldBar;");
+  }
+
+  public void testBadPropertyAttribute() throws IOException {
+    String source = "import com.google.j2objc.annotations.Property; "
+        + "public class FooBar {"
+        + "  @Property(\"cause_exception\") private int fieldBar;"
+        + "}";
+    translateSourceFile(source, "FooBar", "FooBar.h");
+    assertErrorCount(1);
+  }
+
+  public void testBadPropertySetterSelector() throws IOException {
+    String source = "import com.google.j2objc.annotations.Property; "
+        + "public class FooBar {"
+        + "  @Property(\"setter=needs_colon\") private int fieldBar;"
+        + "}";
+    translateSourceFile(source, "FooBar", "FooBar.h");
+    assertErrorCount(1);
+  }
+
+  public void testNonexistentPropertySetter() throws IOException {
+    String source = "import com.google.j2objc.annotations.Property; "
+        + "public class FooBar {"
+        + "  @Property(\"setter=nonexistent:\") private int fieldBar;"
+        + "}";
+    translateSourceFile(source, "FooBar", "FooBar.h");
+    assertErrorCount(1);
+  }
+
+  public void testPropertyWeakAssignment() throws IOException {
+    String source = "import com.google.j2objc.annotations.Property; "
+        + "import com.google.j2objc.annotations.Weak; "
+        + "public class Foo {"
+        + "  @Property(\"weak\") Foo barA;"
+        + "  @Property(\"readonly\") @Weak Foo barB;"
+        + "  @Property(\"weak, readonly\") @Weak Foo barC;"
+        + "}";
+    String translation = translateSourceFile(source, "Foo", "Foo.h");
+    // Add __weak instance variable
+    assertTranslation(translation, "__weak Foo *barA_;");
+    assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Foo, barA_, Foo *)");
+    // Add weak property attribute
+    assertTranslation(translation, "@property (weak, readonly) Foo *barB;");
+    assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Foo, barB_, Foo *)");
+    // Works with both
+    assertTranslation(translation, "__weak Foo *barC_;");
+    assertTranslation(translation, "@property (weak, readonly) Foo *barC;");
+    assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Foo, barC_, Foo *)");
+  }
+
+  public void testWeakPropertyWithStrongAttribute() throws IOException {
+    String source = "import com.google.j2objc.annotations.Property; "
+        + "import com.google.j2objc.annotations.Weak; "
+        + "public class Foo {"
+        + "  @Property(\"strong\") @Weak Foo barA;"
+        + "}";
+    translateSourceFile(source, "Foo", "Foo.h");
+    assertErrorCount(1);
+  }
 }

@@ -796,6 +796,13 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(PropertyAnnotation node) {
+    String attributeString = PropertyAnnotation.toAttributeString(node.getPropertyAttributes());
+    sb.print("@Property(\"" + attributeString + "\")");
+    return false;
+  }
+
+  @Override
   public boolean visit(QualifiedName node) {
     node.getQualifier().accept(this);
     sb.print(".");

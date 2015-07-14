@@ -133,7 +133,8 @@ public class TreeConverter {
       case ASTNode.LINE_COMMENT:
         return new LineComment((org.eclipse.jdt.core.dom.LineComment) jdtNode);
       case ASTNode.MARKER_ANNOTATION:
-        return new MarkerAnnotation((org.eclipse.jdt.core.dom.MarkerAnnotation) jdtNode);
+        return MarkerAnnotation.convert(
+            (org.eclipse.jdt.core.dom.MarkerAnnotation) jdtNode);
       case ASTNode.MEMBER_VALUE_PAIR:
         return new MemberValuePair((org.eclipse.jdt.core.dom.MemberValuePair) jdtNode);
       case ASTNode.METHOD_DECLARATION:
@@ -172,7 +173,7 @@ public class TreeConverter {
       case ASTNode.SIMPLE_TYPE:
         return new SimpleType((org.eclipse.jdt.core.dom.SimpleType) jdtNode);
       case ASTNode.SINGLE_MEMBER_ANNOTATION:
-        return new SingleMemberAnnotation(
+        return SingleMemberAnnotation.convert(
             (org.eclipse.jdt.core.dom.SingleMemberAnnotation) jdtNode);
       case ASTNode.SINGLE_VARIABLE_DECLARATION:
         return new SingleVariableDeclaration(

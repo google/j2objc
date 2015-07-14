@@ -14,12 +14,22 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.j2objc.annotations.Property;
+
 /**
  * Node type for an annotation without any parameters.
  */
 public class MarkerAnnotation extends Annotation {
 
-  public MarkerAnnotation(org.eclipse.jdt.core.dom.MarkerAnnotation jdtNode) {
+  public static Annotation convert(
+      org.eclipse.jdt.core.dom.MarkerAnnotation jdtNode) {
+    if (jdtNode.getTypeName().getFullyQualifiedName().equals(Property.class.getSimpleName())) {
+      return new PropertyAnnotation(jdtNode);
+    }
+    return new MarkerAnnotation(jdtNode);
+  }
+
+  private MarkerAnnotation(org.eclipse.jdt.core.dom.MarkerAnnotation jdtNode) {
     super(jdtNode);
   }
 

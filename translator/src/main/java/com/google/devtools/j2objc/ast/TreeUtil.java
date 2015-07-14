@@ -86,13 +86,17 @@ public class TreeUtil {
   }
 
   public static boolean hasAnnotation(Class<?> annotationClass, List<Annotation> annotations) {
+    return getAnnotation(annotationClass, annotations) != null;
+  }
+
+  public static Annotation getAnnotation(Class<?> annotationClass, List<Annotation> annotations) {
     for (Annotation annotation : annotations) {
       ITypeBinding annotationType = annotation.getAnnotationBinding().getAnnotationType();
       if (annotationType.getQualifiedName().equals(annotationClass.getName())) {
-        return true;
+        return annotation;
       }
     }
-    return false;
+    return null;
   }
 
   public static <T extends TreeNode> T getNearestAncestorWithType(Class<T> type, TreeNode node) {

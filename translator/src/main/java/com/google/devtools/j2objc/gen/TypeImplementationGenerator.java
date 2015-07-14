@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.j2objc.annotations.Property;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -86,6 +87,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       newline();
       syncLineNumbers(typeNode.getName()); // avoid doc-comment
       printf("@implementation %s\n", typeName);
+      printProperties();
       printStaticAccessors();
       printInnerDeclarations();
       printAnnotationImplementation();
@@ -101,6 +103,30 @@ public class TypeImplementationGenerator extends TypeGenerator {
   private void printInitFlagDefinition() {
     if (hasInitializeMethod()) {
       printf("\nJ2OBJC_INITIALIZED_DEFN(%s)\n", typeName);
+    }
+  }
+
+  private static final Predicate<VariableDeclarationFragment> PROPERTIES =
+      new Predicate<VariableDeclarationFragment>() {
+    public boolean apply(VariableDeclarationFragment fragment) {
+      IVariableBinding varBinding = fragment.getVariableBinding();
+      return BindingUtil.hasAnnotation(varBinding, Property.class)
+          && !BindingUtil.isStatic(varBinding);
+    }
+  };
+
+  private void printProperties() {
+    Iterable<VariableDeclarationFragment> fields =
+        Iterables.filter(getInstanceFields(), PROPERTIES);
+    if (Iterables.isEmpty(fields)) {
+      return;
+    }
+    newline();
+    for (VariableDeclarationFragment fragment : fields) {
+      IVariableBinding varBinding = fragment.getVariableBinding();
+      String propertyName = nameTable.getVariableBaseName(varBinding);
+      String varName = nameTable.getVariableShortName(varBinding);
+      println("@synthesize " + propertyName + " = " + varName + ";");
     }
   }
 

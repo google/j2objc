@@ -40,6 +40,7 @@ import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
+import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -58,6 +59,7 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.RetainedLocalRef;
+import com.google.j2objc.annotations.Weak;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -483,5 +485,58 @@ public class Rewriter extends TreeVisitor {
       node.setBody(block);
     }
     return true;
+  }
+
+  /**
+   * Verify, update property attributes. Accessor methods are not checked since a
+   * property annotation may apply to separate variables in a field declaration, so
+   * each variable needs to be checked separately during generation.
+   */
+  @Override
+  public void endVisit(PropertyAnnotation node) {
+    FieldDeclaration field = (FieldDeclaration) node.getParent();
+    VariableDeclarationFragment firstVarNode = field.getFragments().get(0);
+    if (field.getType().getTypeBinding().getName().equals("String")) {
+      node.addAttribute("copy");
+    } else if (BindingUtil.hasAnnotation(firstVarNode.getVariableBinding(), Weak.class)) {
+      if (node.hasAttribute("strong")) {
+        ErrorUtil.error(field, "Weak field annotation conflicts with strong Property attribute");
+        return;
+      }
+      node.addAttribute("weak");
+    }
+
+    node.removeAttribute("readwrite");
+    node.removeAttribute("strong");
+    node.removeAttribute("atomic");
+
+    // Make sure attempt isn't made to specify an accessor method for fields with multiple
+    // fragments, since each variable needs unique accessors.
+    String getter = node.getGetter();
+    String setter = node.getSetter();
+    if (field.getFragments().size() > 1) {
+      if (getter != null) {
+        ErrorUtil.error(field, "@Property getter declared for multiple fields");
+        return;
+      }
+      if (setter != null) {
+        ErrorUtil.error(field, "@Property setter declared for multiple fields");
+        return;
+      }
+    } else {
+      // Check that specified accessors exist.
+      IVariableBinding var = field.getFragments().get(0).getVariableBinding();
+      if (getter != null) {
+        if (BindingUtil.findDeclaredMethod(var.getType(), getter) == null) {
+          ErrorUtil.error(field, "Non-existent getter specified: " + getter);
+        }
+      }
+      if (setter != null) {
+        if (BindingUtil.findDeclaredMethod(var.getType(), setter,
+            var.getType().getQualifiedName()) == null) {
+          ErrorUtil.error(field, "Non-existent setter specified: " + setter);
+        }
+      }
+    }
   }
 }

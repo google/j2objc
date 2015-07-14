@@ -157,11 +157,19 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected Iterable<VariableDeclarationFragment> getInstanceFields() {
+    return getInstanceFields(declarations);
+  }
+
+  protected Iterable<VariableDeclarationFragment> getAllInstanceFields() {
+    return getInstanceFields(typeNode.getBodyDeclarations());
+  }
+
+  private Iterable<VariableDeclarationFragment> getInstanceFields(List<BodyDeclaration> decls) {
     if (isInterfaceType()) {
       return Collections.emptyList();
     }
     return Iterables.filter(
-        TreeUtil.asFragments(Iterables.filter(declarations, FieldDeclaration.class)),
+        TreeUtil.asFragments(Iterables.filter(decls, FieldDeclaration.class)),
         IS_INSTANCE_FIELD);
   }
 

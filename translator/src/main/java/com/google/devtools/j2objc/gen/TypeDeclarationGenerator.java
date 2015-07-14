@@ -29,17 +29,21 @@ import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
+import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.j2objc.annotations.Property;
 
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Base class for generating type declarations, either public or private.
@@ -91,6 +95,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
     printImplementedProtocols();
     printInstanceVariables();
+    printProperties();
     if (!typeBinding.isInterface()) {
       printStaticAccessors();
     }
@@ -260,8 +265,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           print("__weak ");
         }
         String objcType = nameTable.getSpecificObjCType(varType);
-        needsAsterisk = !varType.isPrimitive() && !objcType.matches("id|id<.*>|Class");
-        if (needsAsterisk && objcType.endsWith(" *")) {
+        needsAsterisk = objcType.endsWith("*");
+        if (needsAsterisk) {
           // Strip pointer from type, as it will be added when appending fragment.
           // This is necessary to create "Foo *one, *two;" declarations.
           objcType = objcType.substring(0, objcType.length() - 2);
@@ -279,6 +284,60 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     println(";");
     unindent();
     println("}");
+  }
+
+  protected void printProperties() {
+    Iterable<VariableDeclarationFragment> fields = getAllInstanceFields();
+    for (VariableDeclarationFragment fragment : fields) {
+      FieldDeclaration fieldDecl = (FieldDeclaration) fragment.getParent();
+      IVariableBinding varBinding = fragment.getVariableBinding();
+      if (!BindingUtil.isStatic(varBinding)) {
+        PropertyAnnotation property = (PropertyAnnotation)
+            TreeUtil.getAnnotation(Property.class, fieldDecl.getAnnotations());
+        if (property != null) {
+          print("@property ");
+          ITypeBinding varType = varBinding.getType();
+          String propertyName = nameTable.getVariableBaseName(varBinding);
+
+          // Add default getter/setter here, as each fragment needs its own attributes
+          // to support its unique accessors.
+          Set<String> attributes = property.getPropertyAttributes();
+          if (property.getGetter() == null) {
+            IMethodBinding getter = BindingUtil.findGetterMethod(
+                propertyName, varType, varBinding.getDeclaringClass());
+            if (getter != null) {
+              attributes.add("getter=" + NameTable.getMethodName(getter));
+              if (!BindingUtil.isSynchronized(getter)) {
+                attributes.add("nonatomic");
+              }
+            }
+          }
+          if (property.getSetter() == null) {
+            IMethodBinding setter = BindingUtil.findSetterMethod(
+                propertyName, varBinding.getDeclaringClass());
+            if (setter != null) {
+              attributes.add("setter=" + NameTable.getMethodName(setter));
+              if (!BindingUtil.isSynchronized(setter)) {
+                attributes.add("nonatomic");
+              }
+            }
+          }
+
+          if (!attributes.isEmpty()) {
+            print('(');
+            print(PropertyAnnotation.toAttributeString(attributes));
+            print(") ");
+          }
+
+          String objcType = nameTable.getSpecificObjCType(varType);
+          print(objcType);
+          if (!objcType.endsWith("*")) {
+            print(' ');
+          }
+          println(propertyName + ";");
+        }
+      }
+    }
   }
 
   protected void printCompanionClassDeclaration() {

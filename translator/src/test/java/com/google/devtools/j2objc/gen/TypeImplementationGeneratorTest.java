@@ -136,4 +136,14 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "+ (TestEnum *)ONE");
     assertNotInTranslation(translation, "+ (TestEnum *)TWO");
   }
+
+  // Verify that specified properties are synthesized.
+  public void testSynthesizeProperties() throws IOException {
+    String source = "import com.google.j2objc.annotations.Property; class Test { "
+        + "@Property(\"getter=getFoo\") private final Integer foo = 42;"
+        + "private final Integer bar = 84; }";
+    String translation = translateSourceFile(source, "Test", "Test.m");
+    assertTranslation(translation, "@synthesize foo = foo_;");
+    assertNotInTranslation(translation, "@synthesize bar");
+  }
 }

@@ -428,6 +428,12 @@ public class TreeVisitor {
 
   public void endVisit(PrimitiveType node) {}
 
+  public boolean visit(PropertyAnnotation node) {
+    return true;
+  }
+
+  public void endVisit(PropertyAnnotation node) {}
+
   public boolean visit(QualifiedName node) {
     return true;
   }

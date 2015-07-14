@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.j2objc.annotations.Property;
+
 /**
  * Node type for an annotation with only a single parameter for the default value.
  */
@@ -21,7 +23,15 @@ public class SingleMemberAnnotation extends Annotation {
 
   private ChildLink<Expression> value = ChildLink.create(Expression.class, this);
 
-  public SingleMemberAnnotation(org.eclipse.jdt.core.dom.SingleMemberAnnotation jdtNode) {
+  public static Annotation convert(
+      org.eclipse.jdt.core.dom.SingleMemberAnnotation jdtNode) {
+    if (jdtNode.getTypeName().getFullyQualifiedName().equals(Property.class.getSimpleName())) {
+      return new PropertyAnnotation(jdtNode);
+    }
+    return new SingleMemberAnnotation(jdtNode);
+  }
+
+  protected SingleMemberAnnotation(org.eclipse.jdt.core.dom.SingleMemberAnnotation jdtNode) {
     super(jdtNode);
     value.set((Expression) TreeConverter.convert(jdtNode.getValue()));
   }
