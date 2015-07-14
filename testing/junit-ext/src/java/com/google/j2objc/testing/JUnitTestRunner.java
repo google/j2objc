@@ -197,17 +197,12 @@ public class JUnitTestRunner {
   /*-[
   // Returns true if |cls| conforms to the NSObject protocol.
   BOOL IsNSObjectClass(Class cls) {
-    @try {
-      while (cls != nil) {
-        if (class_conformsToProtocol(cls, @protocol(NSObject))) {
-          return YES;
-        }
-        // class_conformsToProtocol() does not examine superclasses.
-        cls = class_getSuperclass(cls);
+    while (cls != nil) {
+      if (class_conformsToProtocol(cls, @protocol(NSObject))) {
+        return YES;
       }
-    }
-    @catch (JavaLangThrowable *t) {
-      // Ignore any exceptions thrown by class initialization.
+      // class_conformsToProtocol() does not examine superclasses.
+      cls = class_getSuperclass(cls);
     }
     return NO;
   }
@@ -222,12 +217,17 @@ public class JUnitTestRunner {
     objc_getClassList(classes, classCount);
     id<JavaUtilSet> result = [ComGoogleCommonCollectSets newHashSet];
     for (int i = 0; i < classCount; i++) {
-      Class cls = classes[i];
-      if (IsNSObjectClass(cls)) {
-        IOSClass *javaClass = IOSClass_fromClass(cls);
-        if ([self isJUnitTestClassWithIOSClass:javaClass]) {
-          [result addWithId:javaClass];
+      @try {
+        Class cls = classes[i];
+        if (IsNSObjectClass(cls)) {
+          IOSClass *javaClass = IOSClass_fromClass(cls);
+          if ([self isJUnitTestClassWithIOSClass:javaClass]) {
+            [result addWithId:javaClass];
+          }
         }
+      }
+      @catch (JavaLangThrowable *t) {
+        // Ignore any exceptions thrown by class initialization.
       }
     }
     free(classes);
@@ -238,7 +238,7 @@ public class JUnitTestRunner {
    * @return true if {@param cls} is either a JUnit 3 or JUnit 4 test.
    */
   protected boolean isJUnitTestClass(Class cls) {
-    return isJUnit3TestClass(cls) || isJUnit4TestSuite(cls) || isJUnit4TestClass(cls);
+    return isJUnit3TestClass(cls) || isJUnit4TestClass(cls);
   }
 
   /**
@@ -246,18 +246,11 @@ public class JUnitTestRunner {
    * {@link junit.framework} package.
    */
   protected boolean isJUnit3TestClass(Class cls) {
-    return Test.class.isAssignableFrom(cls)
-        && !getPackageName(cls).startsWith("junit.framework")
-        && !getPackageName(cls).startsWith("junit.extensions");
-  }
-
-  /**
-   * @return true if {@param cls} derives from {@link Suite} and is not part of the
-   * {@link org.junit} package.
-   */
-  protected boolean isJUnit4TestSuite(Class cls) {
-    // TODO: implement - check for the RunWith class annotation with a value of Suite.class:
-    // http://www.vogella.com/tutorials/JUnit/article.html#juniteclipse_testsuite
+    if (Test.class.isAssignableFrom(cls)) {
+      String packageName = getPackageName(cls);
+      return !packageName.startsWith("junit.framework")
+          && !packageName.startsWith("junit.extensions");
+    }
     return false;
   }
 
@@ -273,7 +266,8 @@ public class JUnitTestRunner {
     Annotation annotation = cls.getAnnotation(RunWith.class);
     if (annotation != null) {
       RunWith runWith = (RunWith) annotation;
-      if (runWith.value().equals(JUnit4.class)) {
+      Object value = runWith.value();
+      if (value.equals(JUnit4.class) || value.equals(Suite.class)) {
         return true;
       }
     }
@@ -342,9 +336,9 @@ public class JUnitTestRunner {
     for (String key : propertyNames) {
       String value = properties.getProperty(key);
       try {
-        if (key == "outputFormat") {
+        if (key.equals("outputFormat")) {
           outputFormat = OutputFormat.valueOf(value);
-        } else if (key == "sortOrder") {
+        } else if (key.equals("sortOrder")) {
           sortOrder = SortOrder.valueOf(value);
         } else if (value.equals(TestInclusion.INCLUDE.name())) {
           includePatterns.add(key);
