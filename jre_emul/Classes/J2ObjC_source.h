@@ -59,7 +59,7 @@ __attribute__((always_inline)) inline jchar JreFpToChar(jdouble d) {
 }
 
 #define ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, OPNAME, OP, PNAME, PTYPE, CAST) \
-  __attribute__((always_inline)) inline TYPE OPNAME##AssignVolatile##NAME##PNAME( \
+  __attribute__((always_inline)) inline TYPE Jre##OPNAME##AssignVolatile##NAME##PNAME( \
       volatile_##TYPE *pLhs, PTYPE rhs) { \
     TYPE result = CAST(__c11_atomic_load(pLhs, __ATOMIC_SEQ_CST) OP rhs); \
     __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST); \
@@ -72,22 +72,22 @@ __attribute__((always_inline)) inline jchar JreFpToChar(jdouble d) {
   ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, Divide, /, PNAME, PTYPE, CAST)
 
 ARITHMETIC_OPERATORS_DEFN(Char, jchar, I, jint, (jchar))
-ARITHMETIC_OPERATORS_DEFN(Char, jchar, L, jlong, (jchar))
+ARITHMETIC_OPERATORS_DEFN(Char, jchar, J, jlong, (jchar))
 ARITHMETIC_OPERATORS_DEFN(Char, jchar, F, jfloat, JreFpToChar)
 ARITHMETIC_OPERATORS_DEFN(Char, jchar, D, jdouble, JreFpToChar)
 ARITHMETIC_OPERATORS_DEFN(Byte, jbyte, I, jint, (jbyte))
-ARITHMETIC_OPERATORS_DEFN(Byte, jbyte, L, jlong, (jbyte))
+ARITHMETIC_OPERATORS_DEFN(Byte, jbyte, J, jlong, (jbyte))
 ARITHMETIC_OPERATORS_DEFN(Byte, jbyte, F, jfloat, JreFpToInt)
 ARITHMETIC_OPERATORS_DEFN(Byte, jbyte, D, jdouble, JreFpToInt)
 ARITHMETIC_OPERATORS_DEFN(Short, jshort, I, jint, (jshort))
-ARITHMETIC_OPERATORS_DEFN(Short, jshort, L, jlong, (jshort))
+ARITHMETIC_OPERATORS_DEFN(Short, jshort, J, jlong, (jshort))
 ARITHMETIC_OPERATORS_DEFN(Short, jshort, F, jfloat, JreFpToInt)
 ARITHMETIC_OPERATORS_DEFN(Short, jshort, D, jdouble, JreFpToInt)
 ARITHMETIC_OPERATORS_DEFN(Int, jint, I, jint, (jint))
-ARITHMETIC_OPERATORS_DEFN(Int, jint, L, jlong, (jint))
+ARITHMETIC_OPERATORS_DEFN(Int, jint, J, jlong, (jint))
 ARITHMETIC_OPERATORS_DEFN(Int, jint, F, jfloat, JreFpToInt)
 ARITHMETIC_OPERATORS_DEFN(Int, jint, D, jdouble, JreFpToInt)
-ARITHMETIC_OPERATORS_DEFN(Long, jlong, L, jlong, (jlong))
+ARITHMETIC_OPERATORS_DEFN(Long, jlong, J, jlong, (jlong))
 ARITHMETIC_OPERATORS_DEFN(Long, jlong, F, jfloat, JreFpToLong)
 ARITHMETIC_OPERATORS_DEFN(Long, jlong, D, jdouble, JreFpToLong)
 ARITHMETIC_OPERATORS_DEFN(Float, jfloat, F, jfloat, (jfloat))

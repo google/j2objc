@@ -118,4 +118,17 @@ public class OperatorRewriterTest extends GenerationTest {
         "ls = JreLoadVolatileId(&ws_);",
         "JreAssignVolatileId(&ws_, @\"foo\");");
   }
+
+  public void testPromotionTypesForCompundAssign() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { volatile short s; int i; void test() {"
+        + " s += 1; s -= 2l; s *= 3.0f; s /= 4.0; s %= 5l; i %= 6.0; } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "JrePlusAssignVolatileShortI(&s_, 1);",
+        "JreMinusAssignVolatileShortJ(&s_, 2l);",
+        "JreTimesAssignVolatileShortF(&s_, 3.0f);",
+        "JreDivideAssignVolatileShortD(&s_, 4.0);",
+        "JreModAssignVolatileShortJ(&s_, 5l);",
+        "JreModAssignIntD(&i_, 6.0);");
+  }
 }

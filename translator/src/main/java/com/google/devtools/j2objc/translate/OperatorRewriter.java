@@ -284,7 +284,7 @@ public class OperatorRewriter extends TreeVisitor {
       return "F";
     }
     if (lhs == 'J' || rhs == 'J') {
-      return "L";
+      return "J";
     }
     return "I";
   }
