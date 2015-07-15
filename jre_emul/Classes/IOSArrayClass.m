@@ -25,6 +25,7 @@
 #import "NSCopying+JavaCloneable.h"
 #import "java/io/Serializable.h"
 #import "java/lang/InstantiationException.h"
+#import "java/lang/reflect/Modifier.h"
 
 @implementation IOSArrayClass
 
@@ -92,6 +93,11 @@
     @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
   }
   return [IOSObjectArray arrayWithLength:0 type:componentType_];
+}
+
+- (int)getModifiers {
+  return JavaLangReflectModifier_PUBLIC | JavaLangReflectModifier_ABSTRACT
+      | JavaLangReflectModifier_FINAL;
 }
 
 - (BOOL)isEqual:(id)anObject {

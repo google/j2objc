@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
 import java.io.Serializable;
 import java.util.Arrays;
 
@@ -138,5 +139,19 @@ public class SerializationTest extends TestCase {
     } finally {
       tmpFile.delete();
     }
+  }
+
+  // Verify that the serialVersionUID values for arrays are the same as the JVM returns.
+  public void testArraySerialVersionUIDs() throws Exception {
+    ObjectStreamClass osc = ObjectStreamClass.lookupAny(new int[0].getClass());
+    assertEquals(5600894804908749477L, osc.getSerialVersionUID());
+    osc = ObjectStreamClass.lookupAny(new int[0][0].getClass());
+    assertEquals(1727100010502261052L, osc.getSerialVersionUID());
+    osc = ObjectStreamClass.lookupAny(new double[0].getClass());
+    assertEquals(4514449696888150558L, osc.getSerialVersionUID());
+    osc = ObjectStreamClass.lookupAny(new String[0].getClass());
+    assertEquals(-5921575005990323385L, osc.getSerialVersionUID());
+    osc = ObjectStreamClass.lookupAny(new Thread[0].getClass());
+    assertEquals(-6192713741133905679L, osc.getSerialVersionUID());
   }
 }
