@@ -27,10 +27,16 @@ import java.nio.ByteOrder;
 #include "Portability.h"
 
 #if defined(__arm__)
-// 32-bit ARM has load/store alignment restrictions for longs.
+// ARM has load/store alignment restrictions for longs, ints and shorts.
+#if defined(__LP64__)
+#define LONG_ALIGNMENT_MASK 0x7
+#define INT_ALIGNMENT_MASK 0x3
+#define SHORT_ALIGNMENT_MASK 0x1
+#else
 #define LONG_ALIGNMENT_MASK 0x3
-#define INT_ALIGNMENT_MASK 0x0
-#define SHORT_ALIGNMENT_MASK 0x0
+#define INT_ALIGNMENT_MASK 0x3
+#define SHORT_ALIGNMENT_MASK 0x1
+#endif
 #else
 // x86 can load anything at any alignment.
 #define LONG_ALIGNMENT_MASK 0x0
@@ -451,7 +457,7 @@ public final class Memory {
 
     public static native void pokeLongArray(long address, long[] src, int srcOffset, int count,
         boolean swap) /*-[
-      POKER(long, Long, long long, swapLongs);
+      POKER(long long, Long, long long, swapLongs);
     ]-*/;
 
     public static native void pokeShortArray(long address, short[] src, int srcOffset, int count,
