@@ -6,6 +6,8 @@
 
 package java.util.concurrent;
 
+import com.google.j2objc.annotations.RetainedLocalRef;
+
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -169,6 +171,7 @@ public class CyclicBarrier {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
+            @RetainedLocalRef
             final Generation g = generation;
 
             if (g.broken)
