@@ -6,8 +6,6 @@
 
 package java.util.concurrent;
 
-import com.google.j2objc.annotations.WeakOuter;
-
 /**
  * A {@link CompletionService} that uses a supplied {@link Executor}
  * to execute tasks.  This class arranges that submitted tasks are,
@@ -85,7 +83,6 @@ public class ExecutorCompletionService<V> implements CompletionService<V> {
     /**
      * FutureTask extension to enqueue upon completion
      */
-    @WeakOuter
     private class QueueingFuture extends FutureTask<Void> {
         QueueingFuture(RunnableFuture<V> task) {
             super(task, null);
@@ -135,7 +132,7 @@ public class ExecutorCompletionService<V> implements CompletionService<V> {
      * @param completionQueue the queue to use as the completion queue
      *        normally one dedicated for use by this service. This
      *        queue is treated as unbounded -- failed attempted
-     *        {@code Queue.add} operations for completed taskes cause
+     *        {@code Queue.add} operations for completed tasks cause
      *        them not to be retrievable.
      * @throws NullPointerException if executor or completionQueue are {@code null}
      */

@@ -15,19 +15,18 @@ package java.util.concurrent;
  *
  * @since 1.5
  * @author Doug Lea
- *
  */
 public class BrokenBarrierException extends Exception {
     private static final long serialVersionUID = 7117394618823254244L;
 
     /**
-     * Constructs a <tt>BrokenBarrierException</tt> with no specified detail
+     * Constructs a {@code BrokenBarrierException} with no specified detail
      * message.
      */
     public BrokenBarrierException() {}
 
     /**
-     * Constructs a <tt>BrokenBarrierException</tt> with the specified
+     * Constructs a {@code BrokenBarrierException} with the specified
      * detail message.
      *
      * @param message the detail message

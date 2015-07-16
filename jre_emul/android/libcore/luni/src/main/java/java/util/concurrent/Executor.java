@@ -10,9 +10,9 @@ package java.util.concurrent;
  * An object that executes submitted {@link Runnable} tasks. This
  * interface provides a way of decoupling task submission from the
  * mechanics of how each task will be run, including details of thread
- * use, scheduling, etc.  An <tt>Executor</tt> is normally used
+ * use, scheduling, etc.  An {@code Executor} is normally used
  * instead of explicitly creating threads. For example, rather than
- * invoking <tt>new Thread(new(RunnableTask())).start()</tt> for each
+ * invoking {@code new Thread(new RunnableTask()).start()} for each
  * of a set of tasks, you might use:
  *
  * <pre>
@@ -22,7 +22,7 @@ package java.util.concurrent;
  * ...
  * </pre>
  *
- * However, the <tt>Executor</tt> interface does not strictly
+ * However, the {@code Executor} interface does not strictly
  * require that execution be asynchronous. In the simplest case, an
  * executor can run the submitted task immediately in the caller's
  * thread:
@@ -45,14 +45,14 @@ package java.util.concurrent;
  *   }
  * }}</pre>
  *
- * Many <tt>Executor</tt> implementations impose some sort of
+ * Many {@code Executor} implementations impose some sort of
  * limitation on how and when tasks are scheduled.  The executor below
  * serializes the submission of tasks to a second executor,
  * illustrating a composite executor.
  *
  *  <pre> {@code
  * class SerialExecutor implements Executor {
- *   final Queue<Runnable> tasks = new ArrayDeque<Runnable>();
+ *   final Queue<Runnable> tasks = new ArrayDeque<>();
  *   final Executor executor;
  *   Runnable active;
  *
@@ -61,7 +61,7 @@ package java.util.concurrent;
  *   }
  *
  *   public synchronized void execute(final Runnable r) {
- *     tasks.offer(new Runnable() {
+ *     tasks.add(new Runnable() {
  *       public void run() {
  *         try {
  *           r.run();
@@ -82,7 +82,7 @@ package java.util.concurrent;
  *   }
  * }}</pre>
  *
- * The <tt>Executor</tt> implementations provided in this package
+ * The {@code Executor} implementations provided in this package
  * implement {@link ExecutorService}, which is a more extensive
  * interface.  The {@link ThreadPoolExecutor} class provides an
  * extensible thread pool implementation. The {@link Executors} class
@@ -101,11 +101,11 @@ public interface Executor {
     /**
      * Executes the given command at some time in the future.  The command
      * may execute in a new thread, in a pooled thread, or in the calling
-     * thread, at the discretion of the <tt>Executor</tt> implementation.
+     * thread, at the discretion of the {@code Executor} implementation.
      *
      * @param command the runnable task
      * @throws RejectedExecutionException if this task cannot be
-     * accepted for execution.
+     * accepted for execution
      * @throws NullPointerException if command is null
      */
     void execute(Runnable command);

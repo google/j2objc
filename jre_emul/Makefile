@@ -807,6 +807,7 @@ JAVA_SOURCES = \
 	java/util/concurrent/ConcurrentSkipListMap.java \
 	java/util/concurrent/ConcurrentSkipListSet.java \
 	java/util/concurrent/CountDownLatch.java \
+	java/util/concurrent/CountedCompleter.java \
 	java/util/concurrent/CopyOnWriteArrayList.java \
 	java/util/concurrent/CopyOnWriteArraySet.java \
 	java/util/concurrent/CyclicBarrier.java \

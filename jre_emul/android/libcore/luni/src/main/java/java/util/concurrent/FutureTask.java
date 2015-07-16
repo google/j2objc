@@ -5,6 +5,7 @@
  */
 
 package java.util.concurrent;
+
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -83,12 +84,11 @@ public class FutureTask<V> implements RunnableFuture<V> {
      *
      * @param s completed state value
      */
+    @SuppressWarnings("unchecked")
     private V report(int s) throws ExecutionException {
         Object x = outcome;
-        if (s == NORMAL) {
-            @SuppressWarnings("unchecked") V v = (V)x;
-            return v;
-        }
+        if (s == NORMAL)
+            return (V)x;
         if (s >= CANCELLED)
             throw new CancellationException();
         throw new ExecutionException((Throwable)x);
@@ -134,19 +134,23 @@ public class FutureTask<V> implements RunnableFuture<V> {
     }
 
     public boolean cancel(boolean mayInterruptIfRunning) {
-        if (state != NEW)
+        if (!(state == NEW &&
+              U.compareAndSwapInt(this, STATE, NEW,
+                  mayInterruptIfRunning ? INTERRUPTING : CANCELLED)))
             return false;
-        if (mayInterruptIfRunning) {
-            if (!UNSAFE.compareAndSwapInt(this, stateOffset, NEW, INTERRUPTING))
-                return false;
-            Thread t = runner;
-            if (t != null)
-                t.interrupt();
-            UNSAFE.putOrderedInt(this, stateOffset, INTERRUPTED); // final state
+        try {    // in case call to interrupt throws exception
+            if (mayInterruptIfRunning) {
+                try {
+                    Thread t = runner;
+                    if (t != null)
+                        t.interrupt();
+                } finally { // final state
+                    U.putOrderedInt(this, STATE, INTERRUPTED);
+                }
+            }
+        } finally {
+            finishCompletion();
         }
-        else if (!UNSAFE.compareAndSwapInt(this, stateOffset, NEW, CANCELLED))
-            return false;
-        finishCompletion();
         return true;
     }
 
@@ -195,9 +199,9 @@ public class FutureTask<V> implements RunnableFuture<V> {
      * @param v the value
      */
     protected void set(V v) {
-        if (UNSAFE.compareAndSwapInt(this, stateOffset, NEW, COMPLETING)) {
+        if (U.compareAndSwapInt(this, STATE, NEW, COMPLETING)) {
             outcome = v;
-            UNSAFE.putOrderedInt(this, stateOffset, NORMAL); // final state
+            U.putOrderedInt(this, STATE, NORMAL); // final state
             finishCompletion();
         }
     }
@@ -213,17 +217,16 @@ public class FutureTask<V> implements RunnableFuture<V> {
      * @param t the cause of failure
      */
     protected void setException(Throwable t) {
-        if (UNSAFE.compareAndSwapInt(this, stateOffset, NEW, COMPLETING)) {
+        if (U.compareAndSwapInt(this, STATE, NEW, COMPLETING)) {
             outcome = t;
-            UNSAFE.putOrderedInt(this, stateOffset, EXCEPTIONAL); // final state
+            U.putOrderedInt(this, STATE, EXCEPTIONAL); // final state
             finishCompletion();
         }
     }
 
     public void run() {
         if (state != NEW ||
-            !UNSAFE.compareAndSwapObject(this, runnerOffset,
-                                         null, Thread.currentThread()))
+            !U.compareAndSwapObject(this, RUNNER, null, Thread.currentThread()))
             return;
         try {
             Callable<V> c = callable;
@@ -260,12 +263,11 @@ public class FutureTask<V> implements RunnableFuture<V> {
      * designed for use with tasks that intrinsically execute more
      * than once.
      *
-     * @return true if successfully run and reset
+     * @return {@code true} if successfully run and reset
      */
     protected boolean runAndReset() {
         if (state != NEW ||
-            !UNSAFE.compareAndSwapObject(this, runnerOffset,
-                                         null, Thread.currentThread()))
+            !U.compareAndSwapObject(this, RUNNER, null, Thread.currentThread()))
             return false;
         boolean ran = false;
         int s = state;
@@ -332,7 +334,7 @@ public class FutureTask<V> implements RunnableFuture<V> {
     private void finishCompletion() {
         // assert state > COMPLETING;
         for (WaitNode q; (q = waiters) != null;) {
-            if (UNSAFE.compareAndSwapObject(this, waitersOffset, q, null)) {
+            if (U.compareAndSwapObject(this, WAITERS, q, null)) {
                 for (;;) {
                     Thread t = q.thread;
                     if (t != null) {
@@ -359,38 +361,61 @@ public class FutureTask<V> implements RunnableFuture<V> {
      *
      * @param timed true if use timed waits
      * @param nanos time to wait, if timed
-     * @return state upon completion
+     * @return state upon completion or at timeout
      */
     private int awaitDone(boolean timed, long nanos)
         throws InterruptedException {
-        long last = timed ? System.nanoTime() : 0L;
+        // The code below is very delicate, to achieve these goals:
+        // - call nanoTime exactly once for each call to park
+        // - if nanos <= 0, return promptly without allocation or nanoTime
+        // - if nanos == Long.MIN_VALUE, don't underflow
+        // - if nanos == Long.MAX_VALUE, and nanoTime is non-monotonic
+        //   and we suffer a spurious wakeup, we will do no worse than
+        //   to park-spin for a while
+        long startTime = 0L;    // Special value 0L means not yet parked
         WaitNode q = null;
         boolean queued = false;
         for (;;) {
-            if (Thread.interrupted()) {
-                removeWaiter(q);
-                throw new InterruptedException();
-            }
-
             int s = state;
             if (s > COMPLETING) {
                 if (q != null)
                     q.thread = null;
                 return s;
             }
-            else if (q == null)
+            else if (s == COMPLETING)
+                // We may have already promised (via isDone) that we are done
+                // so never return empty-handed or throw InterruptedException
+                Thread.yield();
+            else if (Thread.interrupted()) {
+                removeWaiter(q);
+                throw new InterruptedException();
+            }
+            else if (q == null) {
+                if (timed && nanos <= 0L)
+                    return s;
                 q = new WaitNode();
+            }
             else if (!queued)
-                queued = UNSAFE.compareAndSwapObject(this, waitersOffset,
-                                                     q.next = waiters, q);
+                queued = U.compareAndSwapObject(this, WAITERS,
+                                                q.next = waiters, q);
             else if (timed) {
-                long now = System.nanoTime();
-                if ((nanos -= (now - last)) <= 0L) {
-                    removeWaiter(q);
-                    return state;
+                final long parkNanos;
+                if (startTime == 0L) { // first time
+                    startTime = System.nanoTime();
+                    if (startTime == 0L)
+                        startTime = 1L;
+                    parkNanos = nanos;
+                } else {
+                    long elapsed = System.nanoTime() - startTime;
+                    if (elapsed >= nanos) {
+                        removeWaiter(q);
+                        return state;
+                    }
+                    parkNanos = nanos - elapsed;
                 }
-                last = now;
-                LockSupport.parkNanos(this, nanos);
+                // nanoTime may be slow; recheck before parking
+                if (state < COMPLETING)
+                    LockSupport.parkNanos(this, parkNanos);
             }
             else
                 LockSupport.park(this);
@@ -421,8 +446,7 @@ public class FutureTask<V> implements RunnableFuture<V> {
                         if (pred.thread == null) // check for race
                             continue retry;
                     }
-                    else if (!UNSAFE.compareAndSwapObject(this, waitersOffset,
-                                                          q, s))
+                    else if (!U.compareAndSwapObject(this, WAITERS, q, s))
                         continue retry;
                 }
                 break;
@@ -431,23 +455,25 @@ public class FutureTask<V> implements RunnableFuture<V> {
     }
 
     // Unsafe mechanics
-    private static final sun.misc.Unsafe UNSAFE;
-    private static final long stateOffset;
-    private static final long runnerOffset;
-    private static final long waitersOffset;
+    private static final sun.misc.Unsafe U = sun.misc.Unsafe.getUnsafe();
+    private static final long STATE;
+    private static final long RUNNER;
+    private static final long WAITERS;
     static {
         try {
-            UNSAFE = sun.misc.Unsafe.getUnsafe();
-            Class<?> k = FutureTask.class;
-            stateOffset = UNSAFE.objectFieldOffset
-                (k.getDeclaredField("state"));
-            runnerOffset = UNSAFE.objectFieldOffset
-                (k.getDeclaredField("runner"));
-            waitersOffset = UNSAFE.objectFieldOffset
-                (k.getDeclaredField("waiters"));
+            STATE = U.objectFieldOffset
+                (FutureTask.class.getDeclaredField("state"));
+            RUNNER = U.objectFieldOffset
+                (FutureTask.class.getDeclaredField("runner"));
+            WAITERS = U.objectFieldOffset
+                (FutureTask.class.getDeclaredField("waiters"));
         } catch (Exception e) {
             throw new Error(e);
         }
+
+        // Reduce the risk of rare disastrous classloading in first call to
+        // LockSupport.park: https://bugs.openjdk.java.net/browse/JDK-8074773
+        Class<?> ensureLoaded = LockSupport.class;
     }
 
 }

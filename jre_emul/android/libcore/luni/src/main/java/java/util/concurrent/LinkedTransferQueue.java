@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Queue;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 
 // BEGIN android-note
@@ -50,7 +49,6 @@ import java.util.concurrent.locks.LockSupport;
  * the {@code LinkedTransferQueue} in another thread.
  *
  * @since 1.7
- * @hide
  * @author Doug Lea
  * @param <E> the type of elements held in this collection
  */
@@ -77,7 +75,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      *
      * A FIFO dual queue may be implemented using a variation of the
      * Michael & Scott (M&S) lock-free queue algorithm
-     * (http://www.cs.rochester.edu/u/scott/papers/1996_PODC_queues.pdf).
+     * (http://www.cs.rochester.edu/~scott/papers/1996_PODC_queues.pdf).
      * It maintains two pointer fields, "head", pointing to a
      * (matched) node that in turn points to the first actual
      * (unmatched) queue node (or null if empty); and "tail" that
@@ -667,7 +665,7 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
      * @return matched item, or e if unmatched on interrupt or timeout
      */
     private E awaitMatch(Node s, Node pred, E e, boolean timed, long nanos) {
-        long lastTime = timed ? System.nanoTime() : 0L;
+        final long deadline = timed ? System.nanoTime() + nanos : 0L;
         Thread w = Thread.currentThread();
         int spins = -1; // initialized after first item and cancel checks
         ThreadLocalRandom randomYields = null; // bound if needed
@@ -698,10 +696,9 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
                 s.waiter = w;                 // request unpark then recheck
             }
             else if (timed) {
-                long now = System.nanoTime();
-                if ((nanos -= now - lastTime) > 0)
+                nanos = deadline - System.nanoTime();
+                if (nanos > 0L)
                     LockSupport.parkNanos(this, nanos);
-                lastTime = now;
             }
             else {
                 LockSupport.park(this);
@@ -979,7 +976,6 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
         }
         return false;
     }
-
 
     /**
      * Creates an initially empty {@code LinkedTransferQueue}.
@@ -1267,11 +1263,10 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
     }
 
     /**
-     * Saves the state to a stream (that is, serializes it).
+     * Saves this queue to a stream (that is, serializes it).
      *
      * @serialData All of the elements (each an {@code E}) in
      * the proper order, followed by a null
-     * @param s the stream
      */
     private void writeObject(java.io.ObjectOutputStream s)
         throws java.io.IOException {
@@ -1283,16 +1278,14 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
     }
 
     /**
-     * Reconstitutes the Queue instance from a stream (that is,
-     * deserializes it).
-     *
-     * @param s the stream
+     * Reconstitutes this queue from a stream (that is, deserializes it).
      */
     private void readObject(java.io.ObjectInputStream s)
         throws java.io.IOException, ClassNotFoundException {
         s.defaultReadObject();
         for (;;) {
-            @SuppressWarnings("unchecked") E item = (E) s.readObject();
+            @SuppressWarnings("unchecked")
+            E item = (E) s.readObject();
             if (item == null)
                 break;
             else
@@ -1319,5 +1312,9 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
         } catch (Exception e) {
             throw new Error(e);
         }
+
+        // Reduce the risk of rare disastrous classloading in first call to
+        // LockSupport.park: https://bugs.openjdk.java.net/browse/JDK-8074773
+        Class<?> ensureLoaded = LockSupport.class;
     }
 }

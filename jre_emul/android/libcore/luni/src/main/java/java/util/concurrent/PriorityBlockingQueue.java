@@ -6,7 +6,8 @@
 
 package java.util.concurrent;
 
-import java.util.concurrent.locks.*;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.*;
 
 // BEGIN android-note
@@ -65,6 +66,7 @@ import java.util.*;
  * @author Doug Lea
  * @param <E> the type of elements held in this collection
  */
+@SuppressWarnings("unchecked")
 public class PriorityBlockingQueue<E> extends AbstractQueue<E>
     implements BlockingQueue<E>, java.io.Serializable {
     private static final long serialVersionUID = 5595510919245408276L;
@@ -188,7 +190,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
     /**
      * Creates a {@code PriorityBlockingQueue} containing the elements
      * in the specified collection.  If the specified collection is a
-     * {@link SortedSet} or a {@link PriorityQueue},  this
+     * {@link SortedSet} or a {@link PriorityQueue}, this
      * priority queue will be ordered according to the same ordering.
      * Otherwise, this priority queue will be ordered according to the
      * {@linkplain Comparable natural ordering} of its elements.
@@ -311,7 +313,6 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
      * @param k the position to fill
      * @param x the item to insert
      * @param array the heap array
-     * @param n heap size
      */
     private static <T> void siftUpComparable(int k, T x, Object[] array) {
         Comparable<? super T> key = (Comparable<? super T>) x;
@@ -351,39 +352,43 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
      */
     private static <T> void siftDownComparable(int k, T x, Object[] array,
                                                int n) {
-        Comparable<? super T> key = (Comparable<? super T>)x;
-        int half = n >>> 1;           // loop while a non-leaf
-        while (k < half) {
-            int child = (k << 1) + 1; // assume left child is least
-            Object c = array[child];
-            int right = child + 1;
-            if (right < n &&
-                ((Comparable<? super T>) c).compareTo((T) array[right]) > 0)
-                c = array[child = right];
-            if (key.compareTo((T) c) <= 0)
-                break;
-            array[k] = c;
-            k = child;
+        if (n > 0) {
+            Comparable<? super T> key = (Comparable<? super T>)x;
+            int half = n >>> 1;           // loop while a non-leaf
+            while (k < half) {
+                int child = (k << 1) + 1; // assume left child is least
+                Object c = array[child];
+                int right = child + 1;
+                if (right < n &&
+                    ((Comparable<? super T>) c).compareTo((T) array[right]) > 0)
+                    c = array[child = right];
+                if (key.compareTo((T) c) <= 0)
+                    break;
+                array[k] = c;
+                k = child;
+            }
+            array[k] = key;
         }
-        array[k] = key;
     }
 
     private static <T> void siftDownUsingComparator(int k, T x, Object[] array,
                                                     int n,
                                                     Comparator<? super T> cmp) {
-        int half = n >>> 1;
-        while (k < half) {
-            int child = (k << 1) + 1;
-            Object c = array[child];
-            int right = child + 1;
-            if (right < n && cmp.compare((T) c, (T) array[right]) > 0)
-                c = array[child = right];
-            if (cmp.compare(x, (T) c) <= 0)
-                break;
-            array[k] = c;
-            k = child;
+        if (n > 0) {
+            int half = n >>> 1;
+            while (k < half) {
+                int child = (k << 1) + 1;
+                Object c = array[child];
+                int right = child + 1;
+                if (right < n && cmp.compare((T) c, (T) array[right]) > 0)
+                    c = array[child = right];
+                if (cmp.compare(x, (T) c) <= 0)
+                    break;
+                array[k] = c;
+                k = child;
+            }
+            array[k] = x;
         }
-        array[k] = x;
     }
 
     /**
@@ -866,10 +871,11 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
     }
 
     /**
-     * Saves the state to a stream (that is, serializes it).  For
-     * compatibility with previous version of this class,
-     * elements are first copied to a java.util.PriorityQueue,
-     * which is then serialized.
+     * Saves this queue to a stream (that is, serializes it).
+     *
+     * For compatibility with previous version of this class, elements
+     * are first copied to a java.util.PriorityQueue, which is then
+     * serialized.
      */
     private void writeObject(java.io.ObjectOutputStream s)
         throws java.io.IOException {
@@ -886,10 +892,7 @@ public class PriorityBlockingQueue<E> extends AbstractQueue<E>
     }
 
     /**
-     * Reconstitutes the {@code PriorityBlockingQueue} instance from a stream
-     * (that is, deserializes it).
-     *
-     * @param s the stream
+     * Reconstitutes this queue from a stream (that is, deserializes it).
      */
     private void readObject(java.io.ObjectInputStream s)
         throws java.io.IOException, ClassNotFoundException {

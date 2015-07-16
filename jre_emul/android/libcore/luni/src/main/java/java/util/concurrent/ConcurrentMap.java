@@ -5,6 +5,7 @@
  */
 
 package java.util.concurrent;
+
 import java.util.Map;
 
 // BEGIN android-note
@@ -13,7 +14,7 @@ import java.util.Map;
 
 /**
  * A {@link java.util.Map} providing additional atomic
- * <tt>putIfAbsent</tt>, <tt>remove</tt>, and <tt>replace</tt> methods.
+ * {@code putIfAbsent}, {@code remove}, and {@code replace} methods.
  *
  * <p>Memory consistency effects: As with other concurrent
  * collections, actions in a thread prior to placing an object into a
@@ -27,7 +28,7 @@ import java.util.Map;
  * @param <K> the type of keys maintained by this map
  * @param <V> the type of mapped values
  */
-public interface ConcurrentMap<K, V> extends Map<K, V> {
+public interface ConcurrentMap<K,V> extends Map<K,V> {
     /**
      * If the specified key is not already associated
      * with a value, associate it with the given value.
@@ -43,11 +44,11 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      * @param key key with which the specified value is to be associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with the specified key, or
-     *         <tt>null</tt> if there was no mapping for the key.
-     *         (A <tt>null</tt> return can also indicate that the map
-     *         previously associated <tt>null</tt> with the key,
+     *         {@code null} if there was no mapping for the key.
+     *         (A {@code null} return can also indicate that the map
+     *         previously associated {@code null} with the key,
      *         if the implementation supports null values.)
-     * @throws UnsupportedOperationException if the <tt>put</tt> operation
+     * @throws UnsupportedOperationException if the {@code put} operation
      *         is not supported by this map
      * @throws ClassCastException if the class of the specified key or value
      *         prevents it from being stored in this map
@@ -55,7 +56,6 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      *         and this map does not permit null keys or values
      * @throws IllegalArgumentException if some property of the specified key
      *         or value prevents it from being stored in this map
-     *
      */
     V putIfAbsent(K key, V value);
 
@@ -73,8 +73,8 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      *
      * @param key key with which the specified value is associated
      * @param value value expected to be associated with the specified key
-     * @return <tt>true</tt> if the value was removed
-     * @throws UnsupportedOperationException if the <tt>remove</tt> operation
+     * @return {@code true} if the value was removed
+     * @throws UnsupportedOperationException if the {@code remove} operation
      *         is not supported by this map
      * @throws ClassCastException if the key or value is of an inappropriate
      *         type for this map
@@ -100,8 +100,8 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      * @param key key with which the specified value is associated
      * @param oldValue value expected to be associated with the specified key
      * @param newValue value to be associated with the specified key
-     * @return <tt>true</tt> if the value was replaced
-     * @throws UnsupportedOperationException if the <tt>put</tt> operation
+     * @return {@code true} if the value was replaced
+     * @throws UnsupportedOperationException if the {@code put} operation
      *         is not supported by this map
      * @throws ClassCastException if the class of a specified key or value
      *         prevents it from being stored in this map
@@ -126,11 +126,11 @@ public interface ConcurrentMap<K, V> extends Map<K, V> {
      * @param key key with which the specified value is associated
      * @param value value to be associated with the specified key
      * @return the previous value associated with the specified key, or
-     *         <tt>null</tt> if there was no mapping for the key.
-     *         (A <tt>null</tt> return can also indicate that the map
-     *         previously associated <tt>null</tt> with the key,
+     *         {@code null} if there was no mapping for the key.
+     *         (A {@code null} return can also indicate that the map
+     *         previously associated {@code null} with the key,
      *         if the implementation supports null values.)
-     * @throws UnsupportedOperationException if the <tt>put</tt> operation
+     * @throws UnsupportedOperationException if the {@code put} operation
      *         is not supported by this map
      * @throws ClassCastException if the class of the specified key or value
      *         prevents it from being stored in this map

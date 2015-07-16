@@ -5,6 +5,7 @@
  */
 
 package java.util.concurrent;
+
 import java.util.*;
 
 // BEGIN android-note
@@ -37,7 +38,6 @@ public interface ConcurrentNavigableMap<K,V>
      * @throws IllegalArgumentException {@inheritDoc}
      */
     ConcurrentNavigableMap<K,V> headMap(K toKey, boolean inclusive);
-
 
     /**
      * @throws ClassCastException       {@inheritDoc}
@@ -73,7 +73,7 @@ public interface ConcurrentNavigableMap<K,V>
      * reflected in the descending map, and vice-versa.
      *
      * <p>The returned map has an ordering equivalent to
-     * <tt>{@link Collections#reverseOrder(Comparator) Collections.reverseOrder}(comparator())</tt>.
+     * {@link Collections#reverseOrder(Comparator) Collections.reverseOrder}{@code (comparator())}.
      * The expression {@code m.descendingMap().descendingMap()} returns a
      * view of {@code m} essentially equivalent to {@code m}.
      *
