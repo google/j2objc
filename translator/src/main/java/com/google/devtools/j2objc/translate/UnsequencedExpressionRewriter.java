@@ -260,7 +260,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
       List<Statement> elseStmts = elseBlock.getStatements();
       extractOrderedAccesses(elseStmts, elseExpr, elseAccesses);
       // The recursive call might replace the else expression child.
-      thenExpr = conditional.getElseExpression();
+      elseExpr = conditional.getElseExpression();
       elseStmts.add(new ExpressionStatement(
           new Assignment(new SimpleName(resultVar), elseExpr.copy())));
     } else {
