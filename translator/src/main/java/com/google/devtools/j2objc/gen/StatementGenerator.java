@@ -645,7 +645,9 @@ public class StatementGenerator extends TreeVisitor {
     }
     buffer.append('[');
     buffer.append(functionalClassName);
-    buffer.append(" class], @\"");
+    buffer.append(" class], @protocol(");
+    buffer.append(functionalClassName);
+    buffer.append("), @\"");
     buffer.append(nameTable.getFullName(node.getTypeBinding()));
     buffer.append("\", @selector(");
     buffer.append(nameTable.getMethodSelector(functionalInterface));

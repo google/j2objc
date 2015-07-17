@@ -109,4 +109,20 @@ public class LambdaExpressionTest extends GenerationTest {
         "return GetNonCapturingLambda", "@selector(applyWithId:)",
         "^NSString *(id _self, NSString * y)", "return y;");
   }
+
+  // Test that we are properly adding protocols for casting.
+  public void testProtocolCast() throws IOException {
+    String translation = translateSourceFile(
+        functionHeader + "class Test { Function f = (Function) (x) -> x;}", "Test", "Test.m");
+    assertTranslatedSegments(translation,
+        "(id<Function>) check_protocol_cast(GetNonCapturingLambda([Function class], @protocol(Function), ",
+        "@protocol(Function)");
+  }
+
+  // Test that we aren't trying to import lambda types.
+  public void testImportExclusion() throws IOException {
+    String translation = translateSourceFile(
+        functionHeader + "class Test { Function f = (Function) (x) -> x;}", "Test", "Test.m");
+    assertNotInTranslation(translation, "lambda$0.h");
+  }
 }

@@ -104,7 +104,7 @@ static FastPointerLookup_t lambdaLookup = FAST_POINTER_LOOKUP_INIT(&LambdaLookup
 
 // Method to handle dynamic creation of class wrappers surrounding blocks which come from lambdas
 // not requiring a capture.
-id GetNonCapturingLambda(Class baseClass, NSString *blockClassName,
+id GetNonCapturingLambda(Class baseClass, Protocol *protocol, NSString *blockClassName,
     SEL methodSelector, id block) {
 
   // Relies on lambda names being constant strings with matching pointers for matching names.
@@ -114,6 +114,7 @@ id GetNonCapturingLambda(Class baseClass, NSString *blockClassName,
   @synchronized(baseClass) {
     if (lambdaHolder->id == nil) {
       Class blockClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
+      class_addProtocol(blockClass, protocol);
       Method method = class_getInstanceMethod(baseClass, methodSelector);
       const char *types = method_getTypeEncoding(method);
       IMP block_implementation = imp_implementationWithBlock(block);
@@ -132,8 +133,8 @@ char *capturingLambdaBlockTypes[10];
 
 // Method to handle dynamic creation of class wrappers surrounding blocks from lambdas requiring
 // a capture.
-id GetCapturingLambda(int argumentCount, Class baseClass, NSString *blockClassName,
-    SEL methodSelector, id block) {
+id GetCapturingLambda(int argumentCount, Class baseClass, Protocol *protocol,
+    NSString *blockClassName, SEL methodSelector, id block) {
   static dispatch_once_t once;
   dispatch_once(&once, ^{
     char typeHolder[10];
@@ -193,6 +194,7 @@ id GetCapturingLambda(int argumentCount, Class baseClass, NSString *blockClassNa
   @synchronized(baseClass) {
     if (lambdaHolder->id == nil) {
       Class lambdaClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], sizeof(id));
+      class_addProtocol(baseClass, protocol);
       IMP block_implementation = imp_implementationWithBlock(capturingLambdaBlockCallers[argumentCount]);
       class_addMethod([lambdaClass class], methodSelector, block_implementation,
           capturingLambdaBlockTypes[argumentCount]);

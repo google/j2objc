@@ -34,9 +34,9 @@ FOUNDATION_EXPORT void JreRelease(id obj);
 #endif
 
 // Defined in JreEmulation.m
-FOUNDATION_EXPORT id GetNonCapturingLambda(Class baseClass, NSString *blockClassName,
-    SEL methodSelector, id block);
-FOUNDATION_EXPORT id GetCapturingLambda(int argumentCount, Class baseClass,
+FOUNDATION_EXPORT id GetNonCapturingLambda(Class baseClass, Protocol *protocol,
+    NSString *blockClassName, SEL methodSelector, id block);
+FOUNDATION_EXPORT id GetCapturingLambda(int argumentCount, Class baseClass, Protocol *protocol,
     NSString *blockClassName, SEL methodSelector, id block);
 
 /*!

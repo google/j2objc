@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -129,7 +130,8 @@ public class Import implements Comparable<Import> {
       return;
     }
     binding = unit.getTypeEnv().mapType(binding.getErasure());
-    if (FOUNDATION_TYPES.contains(binding.getName())) {
+    // We don't need imports for foundation types or lambdas.
+    if (FOUNDATION_TYPES.contains(binding.getName()) || BindingUtil.isLambda(binding)) {
       return;
     }
     imports.add(new Import(binding, unit.getNameTable()));
