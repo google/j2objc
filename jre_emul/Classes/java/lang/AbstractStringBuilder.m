@@ -511,7 +511,8 @@ NSString *JreStringBuilder_toStringAndDealloc(JreStringBuilder *sb) {
     free(sb->buffer_);
   } else {
     // Don't free the buffer because we're passing it off to the CFString constructor.
-    result = (NSString *)CFStringCreateWithCharactersNoCopy(NULL, sb->buffer_, sb->count_, NULL);
+    result = (NSString *)CFStringCreateWithCharactersNoCopy(
+        NULL, sb->buffer_, sb->count_, kCFAllocatorMalloc);
   }
   return [result autorelease];
 }
