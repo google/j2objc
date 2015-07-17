@@ -189,7 +189,11 @@ public class System {
       #undef J2OBJC_BUILD_ARCH_STRINGIFY
 
       NSString *versionString;
-
+#if TARGET_OS_IPHONE_SIMULATOR
+      BOOL onSimulator = YES;
+#else
+      BOOL onSimulator = NO;
+#endif
       // During compile time, see if [NSProcessInfo processInfo].operatingSystemVersion is available
       // in the SDK.
 #if (defined(__MAC_OS_X_VERSION_MAX_ALLOWED) && (__MAC_OS_X_VERSION_MAX_ALLOWED > __MAC_10_9)) \
@@ -229,11 +233,12 @@ public class System {
         SEL systemVersionSel = NSSelectorFromString(@"systemVersion");
         id currentDevice = [uiDeviceClass performSelector:currentDeviceSel];
         versionString = (NSString *)[currentDevice performSelector:systemVersionSel];
-
-        // Ok, this is OS X. We use operatingSystemVersionString which gives us a localized
-        // version not suitable for parsing. Given the use case of this property, it's not worth
-        // doing more than just reporting this back verbatim.
-        if (!versionString) {
+        if (versionString) {
+          onSimulator = YES;
+        } else {
+          // Ok, this is OS X. We use operatingSystemVersionString which gives us a localized
+          // version not suitable for parsing. Given the use case of this property, it's not worth
+          // doing more than just reporting this back verbatim.
           versionString = [NSProcessInfo processInfo].operatingSystemVersionString;
         }
 #endif  // #if TARGET_OS_IPHONE || TARGET_OS_IPHONE_SIMULATOR
@@ -251,24 +256,31 @@ public class System {
       [JavaLangSystem_props_ setPropertyWithNSString:@"user.home" withNSString:homeDirectory];
       [JavaLangSystem_props_ setPropertyWithNSString:@"user.name" withNSString:NSUserName()];
 
-#if TARGET_OS_IPHONE
-      [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"iPhone"];
-      [JavaLangSystem_props_
-          setPropertyWithNSString:@"user.dir"
-                     withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
-#elif TARGET_IPHONE_SIMULATOR
+#if TARGET_IPHONE_SIMULATOR
       [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"iPhone Simulator"];
       [JavaLangSystem_props_
           setPropertyWithNSString:@"user.dir"
                      withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
+#elif TARGET_OS_IPHONE
+      [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"iPhone"];
+      [JavaLangSystem_props_
+          setPropertyWithNSString:@"user.dir"
+                     withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
 #else
-      [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"Mac OS X"];
-      NSString *curDir = [[NSFileManager defaultManager] currentDirectoryPath];
-      if ([curDir isEqualToString:@"/"]) {
-        // Workaround for simulator bug.
-        curDir = [homeDirectory stringByAppendingString:@"/Documents"];
+      if (onSimulator) {
+        [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"iPhone Simulator"];
+        [JavaLangSystem_props_
+            setPropertyWithNSString:@"user.dir"
+                       withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
+      } else {
+        [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"Mac OS X"];
+        NSString *curDir = [[NSFileManager defaultManager] currentDirectoryPath];
+        if ([curDir isEqualToString:@"/"]) {
+          // Workaround for simulator bug.
+          curDir = [homeDirectory stringByAppendingString:@"/Documents"];
+        }
+        [JavaLangSystem_props_ setPropertyWithNSString:@"user.dir" withNSString:curDir];
       }
-      [JavaLangSystem_props_ setPropertyWithNSString:@"user.dir" withNSString:curDir];
 #endif
 
       NSString *tmpDir = NSTemporaryDirectory();
