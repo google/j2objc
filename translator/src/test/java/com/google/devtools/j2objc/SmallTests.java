@@ -111,7 +111,6 @@ public class SmallTests {
     J2ObjCTest.class,
     JavaCloneWriterTest.class,
     JavaToIOSMethodTranslatorTest.class,
-    LambdaExpressionTest.class,
     LineDirectivesTest.class,
     LiteralGeneratorTest.class,
     NameTableTest.class,
@@ -145,6 +144,15 @@ public class SmallTests {
   };
 
   public static Test suite() {
-    return new TestSuite(smallTestClasses);
+    TestSuite testSuite = new TestSuite(smallTestClasses);
+    try {
+      Class.forName("java.lang.invoke.LambdaMetafactory");
+
+      // Running with Java 8 JRE, add test classes that depend on it.
+      testSuite.addTestSuite(LambdaExpressionTest.class);
+    } catch (ClassNotFoundException e) {
+      // Running on pre-Java 8 JRE.
+    }
+    return testSuite;
   }
 }
