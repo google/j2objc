@@ -955,6 +955,7 @@ jint javaStringHashCode(NSString *string) {
     { "getBytesWithCharsetName:", NULL, "[B", 0x1, "Ljava/io/UnsupportedEncodingException;" },
     { "intern", NULL, "Ljava/lang/String;", 0x1, NULL },
     { "isEmpty", NULL, "Z", 0x1, NULL },
+    { "length", NULL, "I", 0x1, NULL },
     { "matches:", NULL, "Z", 0x1, NULL },
     { "regionMatches:thisOffset:aString:otherOffset:count:", NULL, "Z", 0x1, NULL },
     { "regionMatches:aString:otherOffset:count:", NULL, "Z", 0x1, NULL },
