@@ -1866,7 +1866,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K, V>
      * too small, in which case resizes instead.
      */
     private final void treeifyBin(Node<K,V>[] tab, int index) {
-        Node<K,V> b; int n, sc;
+        Node<K,V> b; int n;
         if (tab != null) {
             if ((n = tab.length) < MIN_TREEIFY_CAPACITY)
                 tryPresize(n << 1);
@@ -3329,7 +3329,10 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K, V>
 
         // Reduce the risk of rare disastrous classloading in first call to
         // LockSupport.park: https://bugs.openjdk.java.net/browse/JDK-8074773
-        Class<?> ensureLoaded = LockSupport.class;
+        ensureLoaded(LockSupport.class);
+    }
+    private static void ensureLoaded(Class<?> cls) {
+      // No-op, to ensure class argument is loaded.
     }
 
 }

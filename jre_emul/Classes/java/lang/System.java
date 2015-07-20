@@ -189,9 +189,7 @@ public class System {
       #undef J2OBJC_BUILD_ARCH_STRINGIFY
 
       NSString *versionString;
-#if TARGET_OS_IPHONE_SIMULATOR
-      BOOL onSimulator = YES;
-#else
+#if !TARGET_OS_IPHONE && !TARGET_OS_IPHONE_SIMULATOR
       BOOL onSimulator = NO;
 #endif
       // During compile time, see if [NSProcessInfo processInfo].operatingSystemVersion is available

@@ -2283,7 +2283,7 @@ public class ForkJoinPool extends AbstractExecutorService {
      * least one task.
      */
     static WorkQueue commonSubmitterQueue() {
-        Submitter z; ForkJoinPool p; WorkQueue[] ws; int m, r;
+        Submitter z; ForkJoinPool p; WorkQueue[] ws; int m;
         return ((z = submitters.get()) != null &&
                 (p = common) != null &&
                 (ws = p.workQueues) != null &&

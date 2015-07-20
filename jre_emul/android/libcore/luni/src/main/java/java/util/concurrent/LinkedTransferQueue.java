@@ -1315,6 +1315,9 @@ public class LinkedTransferQueue<E> extends AbstractQueue<E>
 
         // Reduce the risk of rare disastrous classloading in first call to
         // LockSupport.park: https://bugs.openjdk.java.net/browse/JDK-8074773
-        Class<?> ensureLoaded = LockSupport.class;
+        ensureLoaded(LockSupport.class);
+    }
+    private static void ensureLoaded(Class<?> cls) {
+      // No-op, to ensure class argument is loaded.
     }
 }
