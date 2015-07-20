@@ -21,6 +21,8 @@ import tests.support.Support_Locale;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /*-[
 #include <sys/utsname.h>
@@ -118,11 +120,23 @@ public class NumberFormatTest extends junit.framework.TestCase {
       assertEquals(NumberFormat.getPercentInstance(locale).format(23.45678), "2 346 %");
     }
 
-    private static native boolean onYosemite() /*-[
-      struct utsname uts;
-      if (uname(&uts) == 0) {
-        return atoi(uts.release) >= 14;
+    private static boolean onYosemite() {
+      int[] version = parseVersion(System.getProperty("os.version"));
+      return System.getProperty("os.name").equals("Mac OS X")
+          && version.length >= 2 && version[0] >= 10 && version[1] >= 10;
+    }
+
+    private static int[] parseVersion(String version) {
+      Pattern versionPattern = Pattern.compile("[0-9.]+");
+      Matcher m = versionPattern.matcher(version);
+      if (m.find()) {
+        String[] parts = m.group(0).split("\\.");
+        int[] result = new int[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+          result[i] = Integer.valueOf(parts[i]);
+        }
+        return result;
       }
-      return NO;
-    ]-*/;
+      return new int[0];
+    }
 }
