@@ -1364,25 +1364,14 @@ FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DI
 FAT_LIB_PRECOMPILED_HEADER = JreEmulation.h
 endif
 
-LIB_NAMES = jre_emul jre_emul_core
-LIBS = $(LIB_NAMES:%=$(ARCH_BUILD_DIR)/lib%.a)
-
-DIST_LIBS := $(LIB_NAMES:%=$(ARCH_LIB_DIR)/lib%.a)
-ifdef BUILD_MACOSX
-DIST_LIBS += $(LIB_NAMES:%=$(ARCH_LIB_MACOSX_DIR)/lib%.a)
-endif
-
 CORE_OBJS_RELATIVE = $(JAVA_SOURCES_CORE:.java=.o) $(IOS_OBJS) $(IOS_JAVA_OBJS) $(APPLE_SRCS:.m=.o)
 JRE_OBJS_RELATIVE = $(CORE_OBJS_RELATIVE) $(JAVA_SOURCES_NON_CORE:.java=.o)
 
 include ../make/fat_lib_macros.mk
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
-$(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
-$(call emit_library_rules,jre_emul_core,$(CORE_OBJS_RELATIVE))
-ifdef BUILD_MACOSX
-$(call emit_osx_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
-$(call emit_osx_library_rules,jre_emul_core,$(CORE_OBJS_RELATIVE))
-endif
+LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
+LIBS += $(call emit_library_rules,jre_emul_core,$(CORE_OBJS_RELATIVE))
+DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 
 JRE_EMUL_LICENSES = \
   $(DIST_LICENSE_DIR)/android_license.txt \
@@ -1392,7 +1381,7 @@ JRE_EMUL_LICENSES = \
 
 fat_lib_dependencies: translate
 
-libs: $(LIBS)
+libs: $(LIBS) $(MAIN_LIB)
 	@:
 
 xcode_build: $(DIST_LIBS) $(ARCH_BIN_DIR)/j2objcc $(ARCH_BUILD_DIR)/.includes
@@ -1452,18 +1441,9 @@ clean:
 
 dist: emul_jar_dist libs_dist $(DIST_DIR)/j2objcc licenses emul_src_jar_dist
 
-libs_dist: libs dist_includes $(DIST_LIBS)
+libs_dist: libs dist_includes $(DIST_LIBS) $(MAIN_LIB_DIST)
 
-ifdef BUILD_MACOSX
-libs: $(MAIN_LIB)
-libs_dist: $(MAIN_LIB_DIST)
-endif
-
-$(ARCH_LIB_DIR)/lib%.a: $(ARCH_BUILD_DIR)/lib%.a
-	@mkdir -p $(@D)
-	@install -m 0644 $< $@
-
-$(ARCH_LIB_DIR)/macosx/lib%.a: $(ARCH_BUILD_DIR)/objs-macosx/lib%.a
+$(ARCH_LIB_DIR)/%.a: $(ARCH_BUILD_DIR)/%.a
 	@mkdir -p $(@D)
 	@install -m 0644 $< $@
 

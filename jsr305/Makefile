@@ -59,7 +59,7 @@ classes: $(JAVA_SOURCES_MANIFEST)
 	    -sourcepath $(SOURCE_PATH) -classpath $(CLASS_PATH) \
 	    $$(cat $(JAVA_SOURCES_MANIFEST))
 
-lib: $(FAT_LIB_LIBRARY)
+lib: $(FAT_LIBS)
 	@:
 
 $(JSR305_SRC_JAR): | java_deps_dist
@@ -72,14 +72,6 @@ $(BUILD_DIR)/.extracted: $(JSR305_SRC_JAR) | $(BUILD_DIR)
 
 $(EXTRACTED_JAVA): $(BUILD_DIR)/.extracted
 	@:
-
-$(JSR305_LIB_DIST): $(FAT_LIB_LIBRARY)
-	@mkdir -p $(@D)
-	install -m 0644 $< $@
-
-$(JSR305_LIB_MACOSX_DIST): $(MACOSX_LIB_LIBRARY)
-	@mkdir -p $(@D)
-	install -m 0644 $< $@
 
 $(ARCH_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
@@ -111,12 +103,7 @@ $(BUILD_DIR):
 	@mkdir -p $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(JSR305_LIB_DIST) $(JSR305_LIB_MACOSX_DIST)
+	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST)
 	@rm -rf $(JSR305_LICENSE_DIST) $(ARCH_INCLUDE_DIR)/javax/annotation
 
-dist: $(JSR305_LIB_DIST) $(ARCH_HEADERS) $(JSR305_LICENSE_DIST)
-
-ifdef BUILD_MACOSX
-lib: $(MACOSX_LIB_LIBRARY)
-dist: $(JSR305_LIB_MACOSX_DIST)
-endif
+dist: $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(JSR305_LICENSE_DIST)

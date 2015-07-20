@@ -312,7 +312,7 @@ MOCKITO_LICENSE_DIST = $(DIST_LICENSE_DIR)/mockito_license.txt
 
 java: jar
 
-lib: $(FAT_LIB_LIBRARY)
+lib: $(FAT_LIBS)
 	@:
 
 $(BUILD_DIR)/.extracted: $(MOCKITO_SRC_JAR) | $(BUILD_DIR)
@@ -322,14 +322,6 @@ $(BUILD_DIR)/.extracted: $(MOCKITO_SRC_JAR) | $(BUILD_DIR)
 	@touch $@
 
 $(EXTRACTED_JAVA): $(BUILD_DIR)/.extracted
-
-$(MOCKITO_LIB_DIST): $(FAT_LIB_LIBRARY)
-	@mkdir -p $(@D)
-	install -m 0644 $< $@
-
-$(MOCKITO_LIB_MACOSX_DIST): $(MACOSX_LIB_LIBRARY)
-	@mkdir -p $(@D)
-	install -m 0644 $< $@
 
 $(ARCH_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
@@ -361,12 +353,7 @@ $(BUILD_DIR):
 	@mkdir -p $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(MOCKITO_LIB_DIST) $(MOCKITO_LICENSE_DIST)
-	@rm -rf $(ARCH_INCLUDE_DIR)/org/mockito $(MOCKITO_LIB_MACOSX_DIST)
+	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST) $(MOCKITO_LICENSE_DIST)
+	@rm -rf $(ARCH_INCLUDE_DIR)/org/mockito
 
-dist: $(MOCKITO_LIB_DIST) $(ARCH_HEADERS) $(MOCKITO_LICENSE_DIST)
-
-ifdef BUILD_MACOSX
-lib: $(MACOSX_LIB_LIBRARY)
-dist: $(MOCKITO_LIB_MACOSX_DIST)
-endif
+dist: $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(MOCKITO_LICENSE_DIST)
