@@ -125,4 +125,14 @@ public class LambdaExpressionTest extends GenerationTest {
         functionHeader + "class Test { Function f = (Function) (x) -> x;}", "Test", "Test.m");
     assertNotInTranslation(translation, "lambda$0.h");
   }
+
+  // Check that lambdas are uniquely named.
+  public void testLambdaUniquify() throws IOException {
+    String translation = translateSourceFile(
+functionHeader
+        + "class Test { class Foo{ class Bar { Function f = x -> x; }}\n"
+        + "Function f = x -> x;}",
+        "Test", "Test.m");
+    assertTranslatedSegments(translation, "@\"Test_lambda$", "@\"Test_Foo_Bar_lambda");
+  }
 }

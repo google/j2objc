@@ -595,6 +595,14 @@ public class NameTable {
   }
 
   /**
+   * Similar to getFullFunctionName, but doesn't add the selector to the name, as lambda expressions
+   * cannot be overloaded.
+   */
+  public String getFullLambdaName(IMethodBinding method) {
+    return getFullName(method.getDeclaringClass()) + '_' + method.getName();
+  }
+
+  /**
    * Returns the name of the allocating constructor wrapper. The name will take
    * the form of "new_TypeName_ConstructorName".
    */

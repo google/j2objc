@@ -56,6 +56,45 @@ public class LambdaTest extends TestCase {
 
   public LambdaTest() {}
 
+  String outerCall() {
+    return "Foo";
+  }
+
+  private String privateOuterCall() {
+    return "Bar";
+  }
+
+  static class Foo {
+    String outer() {
+      return "Foo";
+    }
+
+    class Bar {
+      String findMe() {
+        return "Bar";
+      }
+
+      Supplier fooS = () -> outer();
+      Supplier barS = () -> findMe();
+    }
+
+    Bar getBar() {
+      return new Bar();
+    }
+  }
+
+  public void testOuterMethodCalls() {
+    Supplier s = () -> outerCall();
+    assertEquals("Foo", s.get());
+    Supplier s2 = () -> privateOuterCall();
+    assertEquals("Bar", s2.get());
+    Foo foo = new Foo();
+    Supplier s3 = () -> foo.outer();
+    assertEquals("Foo", s3.get());
+    Supplier s4 = () -> foo.getBar().barS.get();
+    assertEquals("Bar", s4.get());
+  }
+
   Integer outerX = 0;
   int outerY = 0;
 

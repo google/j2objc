@@ -25,6 +25,7 @@
 #import "IOSClass.h"
 #import "FastPointerLookup.h"
 #import "java/lang/AbstractStringBuilder.h"
+#import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/NullPointerException.h"
 #import "java_lang_IntegralToString.h"
@@ -106,7 +107,6 @@ static FastPointerLookup_t lambdaLookup = FAST_POINTER_LOOKUP_INIT(&LambdaLookup
 // not requiring a capture.
 id GetNonCapturingLambda(Class baseClass, Protocol *protocol, NSString *blockClassName,
     SEL methodSelector, id block) {
-
   // Relies on lambda names being constant strings with matching pointers for matching names.
   // This should happen as a clang optimization, as all string constants are kept on the stack for
   // the program duration.
@@ -114,11 +114,18 @@ id GetNonCapturingLambda(Class baseClass, Protocol *protocol, NSString *blockCla
   @synchronized(baseClass) {
     if (lambdaHolder->id == nil) {
       Class blockClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
-      class_addProtocol(blockClass, protocol);
+      // Fail quickly if we can't create the runtime class.
+      if (!class_addProtocol(blockClass, protocol)) {
+        @throw AUTORELEASE([[JavaLangAssertionError alloc]
+            initWithNSString:@"Unable to add protocol to non-capturing lambda class."]);
+      }
       Method method = class_getInstanceMethod(baseClass, methodSelector);
       const char *types = method_getTypeEncoding(method);
       IMP block_implementation = imp_implementationWithBlock(block);
-      class_addMethod(blockClass, methodSelector, block_implementation, types);
+      if (!class_addMethod(blockClass, methodSelector, block_implementation, types)) {
+        @throw AUTORELEASE([[JavaLangAssertionError alloc]
+            initWithNSString:@"Unable to add method to non-capturing lambda class."]);
+      }
       objc_registerClassPair(blockClass);
       lambdaHolder->id = (void*)[[blockClass alloc] init];
     }
@@ -194,10 +201,17 @@ id GetCapturingLambda(int argumentCount, Class baseClass, Protocol *protocol,
   @synchronized(baseClass) {
     if (lambdaHolder->id == nil) {
       Class lambdaClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], sizeof(id));
-      class_addProtocol(baseClass, protocol);
+      // Fail quickly if we can't create the runtime class.
+      if (!class_addProtocol(lambdaClass, protocol)) {
+        @throw AUTORELEASE([[JavaLangAssertionError alloc]
+            initWithNSString:@"Unable to add protocol to capturing lambda class."]);
+      }
       IMP block_implementation = imp_implementationWithBlock(capturingLambdaBlockCallers[argumentCount]);
-      class_addMethod([lambdaClass class], methodSelector, block_implementation,
-          capturingLambdaBlockTypes[argumentCount]);
+      if (!class_addMethod([lambdaClass class], methodSelector, block_implementation,
+          capturingLambdaBlockTypes[argumentCount])) {
+        @throw AUTORELEASE([[JavaLangAssertionError alloc]
+          initWithNSString:@"Unable to add method to capturing lambda class."]);
+      }
       objc_registerClassPair(lambdaClass);
       lambdaHolder->id = (void*)[lambdaClass class];
     }
