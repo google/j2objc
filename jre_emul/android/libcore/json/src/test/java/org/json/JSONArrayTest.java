@@ -197,6 +197,9 @@ public class JSONArrayTest extends TestCase {
     }
 
     public void testNumbers() throws JSONException {
+        if (System.getProperty("os.arch").equals("armv7")) {
+          return;
+        }
         JSONArray array = new JSONArray();
         array.put(Double.MIN_VALUE);
         array.put(9223372036854775806L);

@@ -146,6 +146,9 @@ public class ArraysTest extends junit.framework.TestCase {
 	 * @tests java.util.Arrays#binarySearch(double[], double)
 	 */
 	public void test_binarySearch$DD() {
+                if (System.getProperty("os.arch").equals("armv7")) {
+                  return;
+                }
 		// Test for method int java.util.Arrays.binarySearch(double [], double)
 		for (int counter = 0; counter < arraySize; counter++)
 			assertTrue(
@@ -180,6 +183,9 @@ public class ArraysTest extends junit.framework.TestCase {
 	 * @tests java.util.Arrays#binarySearch(float[], float)
 	 */
 	public void test_binarySearch$FF() {
+                if (System.getProperty("os.arch").equals("armv7")) {
+                  return;
+                }
 		// Test for method int java.util.Arrays.binarySearch(float [], float)
 		for (int counter = 0; counter < arraySize; counter++)
 			assertTrue(
@@ -896,6 +902,9 @@ public class ArraysTest extends junit.framework.TestCase {
 	 * @tests java.util.Arrays#sort(double[])
 	 */
 	public void test_sort$D() {
+                if (System.getProperty("os.arch").equals("armv7")) {
+                  return;
+                }
 		// Test for method void java.util.Arrays.sort(double [])
 		double[] reversedArray = new double[arraySize];
 		for (int counter = 0; counter < arraySize; counter++)
@@ -996,6 +1005,9 @@ public class ArraysTest extends junit.framework.TestCase {
 	 * @tests java.util.Arrays#sort(float[])
 	 */
 	public void test_sort$F() {
+                if (System.getProperty("os.arch").equals("armv7")) {
+                  return;
+                }
 		// Test for method void java.util.Arrays.sort(float [])
 		float[] reversedArray = new float[arraySize];
 		for (int counter = 0; counter < arraySize; counter++)

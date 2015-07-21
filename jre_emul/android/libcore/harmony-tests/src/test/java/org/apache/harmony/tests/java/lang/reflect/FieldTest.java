@@ -1315,6 +1315,9 @@ public class FieldTest extends junit.framework.TestCase {
      * java.lang.reflect.Field#setFloat(java.lang.Object, float)
      */
     public void test_setFloatLjava_lang_ObjectF() throws Exception{
+        if (System.getProperty("os.arch").equals("armv7")) {
+          return;
+        }
         // Test for method void
         // java.lang.reflect.Field.setFloat(java.lang.Object, float)
         TestField x = new TestField();
