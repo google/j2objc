@@ -190,7 +190,8 @@ PRIMITIVE_ARRAY_C_INTERFACE(short, Short, jshort)
 
 @interface IOSIntArray : IOSArray {
  @public
-  jint buffer_[0];
+  // Ensure alignment for java.util.concurrent.atomic.AtomicIntegerArray.
+  jint buffer_[0] __attribute__((aligned(__alignof__(volatile_jint))));
 }
 
 PRIMITIVE_ARRAY_INTERFACE(int, Int, jint)
@@ -204,7 +205,8 @@ PRIMITIVE_ARRAY_C_INTERFACE(int, Int, jint)
 
 @interface IOSLongArray : IOSArray {
  @public
-  jlong buffer_[0];
+  // Ensure alignment for java.util.concurrent.atomic.AtomicLongArray.
+  jlong buffer_[0] __attribute__((aligned(__alignof__(volatile_jlong))));
 }
 
 PRIMITIVE_ARRAY_INTERFACE(long, Long, jlong)

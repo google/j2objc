@@ -89,10 +89,9 @@ public final class Unsafe {
       __c11_atomic_store((volatile_##TYPE *)ptr, newValue, __ATOMIC_##MEM_ORDER);
 
     #define PUT_OBJECT_IMPL(MEM_ORDER) \
-      id oldValue; \
       uintptr_t ptr = PTR(obj, offset); \
       CHECK_ADDR(id, ptr) \
-      oldValue = __c11_atomic_exchange((volatile_id *)ptr, newValue, __ATOMIC_##MEM_ORDER); \
+      id oldValue = __c11_atomic_exchange((volatile_id *)ptr, newValue, __ATOMIC_##MEM_ORDER); \
       [newValue retain]; \
       [oldValue autorelease]; \
     ]-*/

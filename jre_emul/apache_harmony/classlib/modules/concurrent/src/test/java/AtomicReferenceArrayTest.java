@@ -164,8 +164,7 @@ public class AtomicReferenceArrayTest extends JSR166TestCase
 
     /**
      * a deserialized serialized array holds same values
-     *
-     // TODO(tball): enable when serialization is supported.
+     */
     public void testSerialization() {
         AtomicReferenceArray l = new AtomicReferenceArray(SIZE);
         for (int i = 0; i < SIZE; ++i) {
@@ -189,8 +188,6 @@ public class AtomicReferenceArrayTest extends JSR166TestCase
             unexpectedException();
         }
     }
-    */
-
 
     /**
      * toString returns current value.

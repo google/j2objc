@@ -7,9 +7,11 @@
 package java.util.concurrent.atomic;
 
 import java.util.Arrays;
+import java.lang.reflect.Array;
+import sun.misc.Unsafe;
 
 /*-[
-#include <libkern/OSAtomic.h>
+#include "java/lang/IndexOutOfBoundsException.h"
 ]-*/
 
 /**
@@ -24,7 +26,19 @@ import java.util.Arrays;
 public class AtomicReferenceArray<E> implements java.io.Serializable {
     private static final long serialVersionUID = -6209656149925076980L;
 
+    private static final Unsafe unsafe;
+    private static final long arrayFieldOffset;
     private final Object[] array; // must have exact type Object[]
+
+    static {
+        try {
+            unsafe = Unsafe.getUnsafe();
+            arrayFieldOffset = unsafe.objectFieldOffset
+                (AtomicReferenceArray.class.getDeclaredField("array"));
+        } catch (Exception e) {
+            throw new Error(e);
+        }
+    }
 
     /**
      * Creates a new AtomicReferenceArray of the given length, with all
@@ -57,16 +71,39 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
         return array.length;
     }
 
+    /*-[
+    static void CheckIdx(JavaUtilConcurrentAtomicAtomicReferenceArray *self, jint i) {
+      if (i < 0 || i >= self->array_->size_) {
+        @throw [new_JavaLangIndexOutOfBoundsException_initWithNSString_(
+            JreStrcat("$I", @"index ", i)) autorelease];
+      }
+    }
+
+    static inline volatile_id *GetPtrUnchecked(
+        JavaUtilConcurrentAtomicAtomicReferenceArray *self, jint i) {
+      return (volatile_id *)&self->array_->buffer_[i];
+    }
+
+    static inline volatile_id *GetPtrChecked(
+        JavaUtilConcurrentAtomicAtomicReferenceArray *self, jint i) {
+      CheckIdx(self, i);
+      return (volatile_id *)&self->array_->buffer_[i];
+    }
+    ]-*/
+
     /**
      * Gets the current value at position {@code i}.
      *
      * @param i the index
      * @return the current value
      */
-    public final E get(int i) {
-        memoryBarrier();
-        return (E) array[i];
-    }
+    public final native E get(int i) /*-[
+      return __c11_atomic_load(GetPtrChecked(self, i), __ATOMIC_SEQ_CST);
+    ]-*/;
+
+    private final native E getUnchecked(int i) /*-[
+      return __c11_atomic_load(GetPtrUnchecked(self, i), __ATOMIC_SEQ_CST);
+    ]-*/;
 
     /**
      * Sets the element at position {@code i} to the given value.
@@ -74,10 +111,11 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * @param i the index
      * @param newValue the new value
      */
-    public final void set(int i, E newValue) {
-        memoryBarrier();
-        array[i] = newValue;
-    }
+    public final native void set(int i, E newValue) /*-[
+      id oldValue = __c11_atomic_exchange(GetPtrChecked(self, i), newValue, __ATOMIC_SEQ_CST);
+      [newValue retain];
+      [oldValue autorelease];
+    ]-*/;
 
     /**
      * Eventually sets the element at position {@code i} to the given value.
@@ -86,11 +124,11 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * @param newValue the new value
      * @since 1.6
      */
-    public final void lazySet(int i, E newValue) {
-        memoryBarrier();
-        array[i] = newValue;
-    }
-
+    public final native void lazySet(int i, E newValue) /*-[
+      id oldValue = __c11_atomic_exchange(GetPtrChecked(self, i), newValue, __ATOMIC_RELEASE);
+      [newValue retain];
+      [oldValue autorelease];
+    ]-*/;
 
     /**
      * Atomically sets the element at position {@code i} to the given
@@ -100,13 +138,12 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * @param newValue the new value
      * @return the previous value
      */
-    public final E getAndSet(int i, E newValue) {
-        while (true) {
-            E current = (E) array[i];
-            if (compareAndSetRaw(i, current, newValue))
-                return current;
-        }
-    }
+    public final native E getAndSet(int i, E newValue) /*-[
+      id oldValue = __c11_atomic_exchange(GetPtrChecked(self, i), newValue, __ATOMIC_SEQ_CST);
+      [newValue retain];
+      [oldValue autorelease];
+      return oldValue;
+    ]-*/;
 
     /**
      * Atomically sets the element at position {@code i} to the given
@@ -118,26 +155,38 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * @return true if successful. False return indicates that
      * the actual value was not equal to the expected value.
      */
-    public final boolean compareAndSet(int i, E expect, E update) {
-        return compareAndSetRaw(i, expect, update);
-    }
+    public final native boolean compareAndSet(int i, E expect, E update) /*-[
+      if (__c11_atomic_compare_exchange_strong(
+          GetPtrChecked(self, i), (void **)&expect, update, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
+        [update retain];
+        [expect autorelease];
+        return YES;
+      }
+      return NO;
+    ]-*/;
 
     /**
      * Atomically sets the element at position {@code i} to the given
      * updated value if the current value {@code ==} the expected value.
      *
-     * <p>May <a href="package-summary.html#Spurious">fail spuriously</a>
-     * and does not provide ordering guarantees, so is only rarely an
-     * appropriate alternative to {@code compareAndSet}.
+     * <p><a href="package-summary.html#weakCompareAndSet">May fail
+     * spuriously and does not provide ordering guarantees</a>, so is
+     * only rarely an appropriate alternative to {@code compareAndSet}.
      *
      * @param i the index
      * @param expect the expected value
      * @param update the new value
-     * @return true if successful.
+     * @return true if successful
      */
-    public final boolean weakCompareAndSet(int i, E expect, E update) {
-        return compareAndSet(i, expect, update);
-    }
+    public final native boolean weakCompareAndSet(int i, E expect, E update) /*-[
+      if (__c11_atomic_compare_exchange_weak(
+          GetPtrChecked(self, i), (void **)&expect, update, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) {
+        [update retain];
+        [expect autorelease];
+        return YES;
+      }
+      return NO;
+    ]-*/;
 
     /**
      * Returns the String representation of the current values of array.
@@ -151,27 +200,26 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
         StringBuilder b = new StringBuilder();
         b.append('[');
         for (int i = 0; ; i++) {
-            b.append(array[i]);
+            b.append(getUnchecked(i));
             if (i == iMax)
                 return b.append(']').toString();
             b.append(',').append(' ');
         }
     }
 
-    private static native void memoryBarrier() /*-[
-      OSMemoryBarrier();
-    ]-*/;
-
-    private native boolean compareAndSetRaw(int i, E expect, E update) /*-[
-      OSSpinLock lock = OS_SPINLOCK_INIT;
-      OSSpinLockLock(&lock);
-      id current = [self->array_ objectAtIndex:i];
-      BOOL swap = current == expect;
-      if (swap) {
-        [self->array_ replaceObjectAtIndex:i withObject:update];
-      }
-      OSSpinLockUnlock(&lock);
-      return swap;
-    ]-*/;
+    /**
+     * Reconstitutes the instance from a stream (that is, deserializes it).
+     */
+    private void readObject(java.io.ObjectInputStream s)
+        throws java.io.IOException, ClassNotFoundException,
+        java.io.InvalidObjectException {
+        // Note: This must be changed if any additional fields are defined
+        Object a = s.readFields().get("array", null);
+        if (a == null || !a.getClass().isArray())
+            throw new java.io.InvalidObjectException("Not array type");
+        if (a.getClass() != Object[].class)
+            a = Arrays.copyOf((Object[])a, Array.getLength(a), Object[].class);
+        unsafe.putObjectVolatile(this, arrayFieldOffset, a);
+    }
 
 }

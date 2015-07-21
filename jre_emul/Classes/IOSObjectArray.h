@@ -41,7 +41,8 @@ typedef struct JreArrayRef {
   BOOL isRetained_;
  @public
   IOSClass *elementType_;
-  id __strong buffer_[0];
+  // Ensure alignment for java.util.concurrent.atomic.AtomicReferenceArray.
+  id __strong buffer_[0] __attribute__((aligned(__alignof__(volatile_id))));
 }
 
 @property (readonly) IOSClass *elementType;
