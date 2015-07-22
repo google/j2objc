@@ -27,7 +27,7 @@ public class CreationReference extends MethodReference {
 
   public CreationReference(CreationReference other) {
     super(other);
-    type.set(other.getType());
+    type.copyFrom(other.getType());
   }
 
   @Override
