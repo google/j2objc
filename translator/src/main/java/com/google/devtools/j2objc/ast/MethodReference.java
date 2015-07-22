@@ -13,6 +13,7 @@
  */
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
@@ -32,11 +33,13 @@ import java.util.List;
 public abstract class MethodReference extends Expression {
 
   protected ITypeBinding typeBinding;
+  protected IMethodBinding methodBinding;
   protected ChildList<Type> typeArguments = ChildList.create(Type.class, this);
 
   public MethodReference(org.eclipse.jdt.core.dom.MethodReference jdtNode) {
     super(jdtNode);
     typeBinding = jdtNode.resolveTypeBinding();
+    methodBinding = jdtNode.resolveMethodBinding();
     for (Object x : jdtNode.typeArguments()) {
       typeArguments.add((Type) TreeConverter.convert(x));
     }
@@ -45,12 +48,17 @@ public abstract class MethodReference extends Expression {
   public MethodReference(MethodReference other) {
     super(other);
     typeBinding = other.getTypeBinding();
+    methodBinding = other.getMethodBinding();
     typeArguments.copyFrom(other.typeArguments());
   }
 
   @Override
   public ITypeBinding getTypeBinding() {
     return typeBinding;
+  }
+
+  public IMethodBinding getMethodBinding() {
+    return methodBinding;
   }
 
   public List<Type> typeArguments() {

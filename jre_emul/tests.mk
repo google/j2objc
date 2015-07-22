@@ -517,6 +517,7 @@ SUITE_SOURCES = \
     org/json/SmallTests.java \
 
 JAVA8_TEST_SOURCES := \
+    com/google/j2objc/java8/CreationReferenceTest.java \
     com/google/j2objc/java8/LambdaTest.java \
 
 JAVA8_SUITE_SOURCES = \

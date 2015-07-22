@@ -441,7 +441,53 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(CreationReference node) {
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
-    return assertIncompleteJava8Support(node);
+    assert Options
+        .isJava8Translator() : "CreationReference in translator with -source less than 8.";
+    ITypeBinding functionalTypeBinding = node.getTypeBinding();
+    ITypeBinding returnType = node.getType().getTypeBinding();
+    printCreationReferenceCall(returnType, functionalTypeBinding, node.getMethodBinding());
+    return false;
+  }
+
+  /**
+   * Generates a creation reference using a block wrapper surrounding a new_Type_init call. This
+   * block is used to create a new function class. Currently a seperate class will be created for
+   * each unique FullFunctionName of the creation reference method bindings. We could reduce the
+   * number of class types by using the capturing lambda construct and generating new class names
+   * based on return type and selector.
+   */
+  public void printCreationReferenceCall(ITypeBinding returnType,
+      ITypeBinding functionalTypeBinding, IMethodBinding methodBinding) {
+    String functionalClassName = nameTable.getFullName(functionalTypeBinding);
+    String newClassName = nameTable.getFullFunctionName(methodBinding);
+    printLambdaCallWithoutBlocks(functionalTypeBinding.getFunctionalInterfaceMethod(),
+        functionalClassName, newClassName, methodBinding, false);
+    buffer.append('^');
+    buffer.append(nameTable.getSpecificObjCType(returnType));
+    // Required argument for imp_implementationWithBlock.
+    buffer.append("(id _self");
+    char var = 'a';
+    for (ITypeBinding t : methodBinding.getParameterTypes()) {
+      buffer.append(", ");
+      buffer.append(nameTable.getSpecificObjCType(t));
+      buffer.append(' ');
+      buffer.append(var++);
+    }
+    buffer.append(") {\n return ");
+    buffer.append(nameTable.getAllocatingConstructorName(methodBinding));
+    buffer.append("(");
+    var = 'a';
+    boolean delimiterFlag = false;
+    for (int i = 0; i < methodBinding.getParameterTypes().length; i++) {
+      if (delimiterFlag) {
+        buffer.append(", ");
+      } else {
+        delimiterFlag = true;
+      }
+      buffer.append(var++);
+    }
+    buffer.append(");\n}");
+    buffer.append(")");
   }
 
   @Override
@@ -635,11 +681,66 @@ public class StatementGenerator extends TreeVisitor {
     assert Options.isJava8Translator() :
       "Lambda expression in translator with -source less than 8.";
     IMethodBinding functionalInterface = node.getFunctionalInterfaceMethod();
-    String functionalClassName = nameTable.getFullName(node.functionalTypeBinding());
-    if (node.isCapturing()) {
-      buffer.append("GetCapturingLambda(");
-      buffer.append(node.getParameters().size());
+    printLambdaCall(functionalInterface, node.functionalTypeBinding(), node.getMethodBinding(),
+        node.getParameters(), node.isCapturing());
+    node.getBody().accept(this);
+    buffer.append(")");
+    return false;
+  }
+
+  /**
+   * Creates a block that is swizzled in as a class method in created capturing lambdas at runtime.
+   * This outer block calls the underlying block for each lambda instance. Each captured lambda has
+   * an outer block that matches the function signature of the functional interface, which calls an
+   * underlying block specific to the instance.
+   */
+  public void printBlockCallWrapper(IMethodBinding binding) {
+    buffer.append('^');
+    buffer.append(nameTable.getSpecificObjCType(binding.getReturnType()));
+    // Required argument for imp_implementationWithBlock.
+    buffer.append("(id _self");
+    char var = 'a';
+    for (ITypeBinding t : binding.getParameterTypes()) {
       buffer.append(", ");
+      buffer.append(nameTable.getSpecificObjCType(t));
+      buffer.append(' ');
+      buffer.append(var++);
+    }
+    buffer.append(") {\n id (^block)() = objc_getAssociatedObject(_self, (void *) 0);\n");
+    if (!BindingUtil.isVoid(binding.getReturnType())) {
+      buffer.append("return ");
+    }
+    buffer.append("block(_self");
+    var = 'a';
+    for (int i = 0; i < binding.getParameterTypes().length; i++) {
+      buffer.append(", ");
+      buffer.append(var++);
+    }
+    buffer.append(");\n},\n");
+  }
+
+  /**
+   * Creates a lambda call by combining the call without blocks and the call blocks, so that the
+   * calling portion sans blocks can be reused by method references.
+   */
+  public void printLambdaCall(IMethodBinding functionalInterface,
+      ITypeBinding functionalTypeBinding, IMethodBinding methodBinding,
+      List<VariableDeclaration> parameters, boolean isCapturing) {
+    String functionalClassName = nameTable.getFullName(functionalTypeBinding);
+    String createdClassName = nameTable.getFullLambdaName(methodBinding);
+    printLambdaCallWithoutBlocks(functionalInterface, functionalClassName, createdClassName,
+        methodBinding, isCapturing);
+    printLambdaCallBlocks(functionalInterface, parameters, isCapturing);
+  }
+
+  /**
+   * The lambda call sans wrapper and method blocks.
+   */
+  public void printLambdaCallWithoutBlocks(IMethodBinding functionalInterface,
+      String functionalClassName, String newClassName, IMethodBinding methodBinding,
+      boolean isCapturing) {
+    if (isCapturing) {
+      buffer.append("GetCapturingLambda(");
     } else {
       buffer.append("GetNonCapturingLambda(");
     }
@@ -648,14 +749,25 @@ public class StatementGenerator extends TreeVisitor {
     buffer.append(" class], @protocol(");
     buffer.append(functionalClassName);
     buffer.append("), @\"");
-    buffer.append(nameTable.getFullLambdaName(node.getMethodBinding()));
+    buffer.append(newClassName);
     buffer.append("\", @selector(");
     buffer.append(nameTable.getMethodSelector(functionalInterface));
-    buffer.append("), ^");
+    buffer.append("),\n");
+  }
+
+  /**
+   * The lambda wrapper and method blocks.
+   */
+  public void printLambdaCallBlocks(IMethodBinding functionalInterface,
+      List<VariableDeclaration> parameters, boolean isCapturing) {
+    if (isCapturing) {
+      printBlockCallWrapper(functionalInterface);
+    }
+    buffer.append('^');
     buffer.append(nameTable.getSpecificObjCType(functionalInterface.getReturnType()));
     // Required argument for imp_implementationWithBlock.
     buffer.append("(id _self");
-    for (VariableDeclaration x : node.getParameters()) {
+    for (VariableDeclaration x : parameters) {
       IVariableBinding variableBinding = x.getVariableBinding();
       buffer.append(", ");
       buffer.append(nameTable.getSpecificObjCType(x.getVariableBinding().getType()));
@@ -663,9 +775,6 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append(nameTable.getVariableQualifiedName(variableBinding.getVariableDeclaration()));
     }
     buffer.append(")");
-    node.getBody().accept(this);
-    buffer.append(")");
-    return false;
   }
 
   @Override

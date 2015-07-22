@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.google.devtools.j2objc.translate;
+package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
@@ -71,8 +71,8 @@ public class LambdaExpressionTest extends GenerationTest {
   public void testTypeInference() throws IOException {
     String quadObjectTranslation = translateSourceFile(
         fourToOneHeader + "class Test { FourToOne f = (a, b, c, d) -> 1;}", "Test", "Test.m");
-    assertTranslation(quadObjectTranslation,
-        "@selector(applyWithId:withId:withId:withId:), ^id(id _self, id a, id b, id c, id d)");
+    assertTranslatedSegments(quadObjectTranslation, "@selector(applyWithId:withId:withId:withId:)",
+        "^id(id _self, id a, id b, id c, id d)");
     String mixedObjectTranslation = translateSourceFile(fourToOneHeader
         + "class Test { FourToOne<String, Double, Integer, Boolean, String> f = "
         + "(a, b, c, d) -> \"1\";}", "Test", "Test.m");

@@ -21,6 +21,7 @@ import junit.framework.TestSuite;
  */
 public class SmallTests {
   private static final Class<?>[] smallTestClasses = new Class[] {
+    CreationReferenceTest.class,
     LambdaTest.class
   };
 

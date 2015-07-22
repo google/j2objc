@@ -91,6 +91,32 @@ id JreRetainVolatile(volatile_id *pVar) {
   return [value retain];
 }
 
+// Block flag position for copy dispose, (1 << 25).
+#define COPY_DISPOSE_FLAG 0x02000000
+
+// Modified from clang block implementation http://clang.llvm.org/docs/Block-ABI-Apple.html
+typedef struct Block_literal_1 {
+  void *isa;
+  int flags;
+  int reserved;
+  void (*invoke)(void *, ...);
+  struct Block_descriptor_1 {
+    unsigned long int reserved;
+    unsigned long int size;
+    // There will be 2 function pointers at the beginning of the signature if the copy_dispose flag
+    // is set.
+    void *signature[1];
+  } *descriptor;
+} Block_literal;
+
+// Returns a type string from a block.
+const char *blockTypeSignature(id block) {
+  Block_literal *blockLiteral = (__bridge void *) block;
+  // Offset for optional function pointers.
+  int i = (blockLiteral->flags & COPY_DISPOSE_FLAG) ? 2 : 0;
+  return (const char *) blockLiteral->descriptor->signature[i];
+}
+
 typedef struct {
   void *id;
 } LambdaHolder;
@@ -119,10 +145,9 @@ id GetNonCapturingLambda(Class baseClass, Protocol *protocol, NSString *blockCla
         @throw AUTORELEASE([[JavaLangAssertionError alloc]
             initWithNSString:@"Unable to add protocol to non-capturing lambda class."]);
       }
-      Method method = class_getInstanceMethod(baseClass, methodSelector);
-      const char *types = method_getTypeEncoding(method);
       IMP block_implementation = imp_implementationWithBlock(block);
-      if (!class_addMethod(blockClass, methodSelector, block_implementation, types)) {
+      if (!class_addMethod(blockClass, methodSelector, block_implementation,
+          blockTypeSignature(block))) {
         @throw AUTORELEASE([[JavaLangAssertionError alloc]
             initWithNSString:@"Unable to add method to non-capturing lambda class."]);
       }
@@ -133,82 +158,22 @@ id GetNonCapturingLambda(Class baseClass, Protocol *protocol, NSString *blockCla
   return (__bridge id) lambdaHolder->id;
 }
 
-// Having this hardcoded is definitely not ideal, and I would love a dynamic solution to generated
-// capturingLambdaBlockCallers that doesn't rely on packing and unpacking arrays for each lambda.
-id capturingLambdaBlockCallers[10];
-char *capturingLambdaBlockTypes[10];
-
 // Method to handle dynamic creation of class wrappers surrounding blocks from lambdas requiring
 // a capture.
-id GetCapturingLambda(int argumentCount, Class baseClass, Protocol *protocol,
-    NSString *blockClassName, SEL methodSelector, id block) {
-  static dispatch_once_t once;
-  dispatch_once(&once, ^{
-    char typeHolder[10];
-    for(int i = 0; i < 10; i++) {
-      if (i) {
-        typeHolder[i - 1] = '@';
-      }
-      typeHolder[i] = 0;
-      // strcpy returns the address of the destination string, so we can use one call for writing
-      // and assignment.
-      capturingLambdaBlockTypes[i] = strcpy(malloc(i + 1), typeHolder);
-    }
-
-    capturingLambdaBlockCallers[0] = ^id(id _self){
-      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
-      return block(_self);
-    };
-    capturingLambdaBlockCallers[1] = ^id(id _self, id a){
-      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
-      return block(_self, a);
-    };
-    capturingLambdaBlockCallers[2] = ^id(id _self, id a, id b){
-      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
-      return block(_self, a, b);
-    };
-    capturingLambdaBlockCallers[3] = ^id(id _self, id a, id b, id c){
-      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
-      return block(_self, a, b, c);
-    };
-    capturingLambdaBlockCallers[4] = ^id(id _self, id a, id b, id c, id d){
-      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
-      return block(_self, a, b, c, d);
-    };
-    capturingLambdaBlockCallers[5] = ^id(id _self, id a, id b, id c, id d, id e){
-      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
-      return block(_self, a, b, c, d, e);
-    };
-    capturingLambdaBlockCallers[6] = ^id(id _self, id a, id b, id c, id d, id e, id f){
-      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
-      return block(_self, a, b, c, d, e, f);
-    };
-    capturingLambdaBlockCallers[7] = ^id(id _self, id a, id b, id c, id d, id e, id f, id g){
-      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
-      return block(_self, a, b, c, d, e, f, g);
-    };
-    capturingLambdaBlockCallers[8] = ^id(id _self, id a, id b, id c, id d, id e, id f, id g, id h, id i){
-      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
-      return block(_self, a, b, c, d, e, f, g, h);
-    };
-    capturingLambdaBlockCallers[9] = ^id(id _self, id a, id b, id c, id d, id e, id f, id g, id h, id i){
-      id (^block)() = objc_getAssociatedObject(_self, (void *) 'b');
-      return block(_self, a, b, c, d, e, f, g, h, i);
-    };
-  });
-
+id GetCapturingLambda(Class baseClass, Protocol *protocol, NSString *blockClassName,
+    SEL methodSelector, id blockWrapper, id block) {
   LambdaHolder *lambdaHolder = FastPointerLookup(&lambdaLookup, (__bridge void*) blockClassName);
   @synchronized(baseClass) {
     if (lambdaHolder->id == nil) {
-      Class lambdaClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], sizeof(id));
+      Class lambdaClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
       // Fail quickly if we can't create the runtime class.
       if (!class_addProtocol(lambdaClass, protocol)) {
         @throw AUTORELEASE([[JavaLangAssertionError alloc]
             initWithNSString:@"Unable to add protocol to capturing lambda class."]);
       }
-      IMP block_implementation = imp_implementationWithBlock(capturingLambdaBlockCallers[argumentCount]);
+      IMP block_implementation = imp_implementationWithBlock(blockWrapper);
       if (!class_addMethod([lambdaClass class], methodSelector, block_implementation,
-          capturingLambdaBlockTypes[argumentCount])) {
+          blockTypeSignature(blockWrapper))) {
         @throw AUTORELEASE([[JavaLangAssertionError alloc]
           initWithNSString:@"Unable to add method to capturing lambda class."]);
       }
@@ -217,7 +182,7 @@ id GetCapturingLambda(int argumentCount, Class baseClass, Protocol *protocol,
     }
   }
   id instance = [[(id) lambdaHolder->id alloc] init];
-  objc_setAssociatedObject(instance, (void*) 'b', [block copy], OBJC_ASSOCIATION_ASSIGN);
+  objc_setAssociatedObject(instance, (void*) 0, block, OBJC_ASSOCIATION_COPY_NONATOMIC);
   return instance;
 }
 

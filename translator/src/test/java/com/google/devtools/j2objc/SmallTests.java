@@ -16,6 +16,8 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.devtools.j2objc.ast.LambdaExpressionTest;
+import com.google.devtools.j2objc.ast.MethodReferenceTest;
 import com.google.devtools.j2objc.ast.TreeConvertTest;
 import com.google.devtools.j2objc.ast.TreeUtilTest;
 import com.google.devtools.j2objc.gen.ArrayAccessTest;
@@ -50,7 +52,6 @@ import com.google.devtools.j2objc.translate.InitializationNormalizerTest;
 import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
 import com.google.devtools.j2objc.translate.JavaCloneWriterTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
-import com.google.devtools.j2objc.translate.LambdaExpressionTest;
 import com.google.devtools.j2objc.translate.NilCheckResolverTest;
 import com.google.devtools.j2objc.translate.OcniExtractorTest;
 import com.google.devtools.j2objc.translate.OperatorRewriterTest;
@@ -149,6 +150,7 @@ public class SmallTests {
       Class.forName("java.lang.invoke.LambdaMetafactory");
 
       // Running with Java 8 JRE, add test classes that depend on it.
+      testSuite.addTestSuite(MethodReferenceTest.class);
       testSuite.addTestSuite(LambdaExpressionTest.class);
     } catch (ClassNotFoundException e) {
       // Running on pre-Java 8 JRE.
