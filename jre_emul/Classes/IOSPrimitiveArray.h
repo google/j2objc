@@ -151,6 +151,9 @@ PRIMITIVE_ARRAY_C_INTERFACE(char, Char, jchar)
 
 PRIMITIVE_ARRAY_INTERFACE(byte, Byte, jbyte)
 
+// Create an array from an NSData object.
++ (instancetype)arrayWithNSData:(NSData *)data;
+
 // Copies the array contents into a specified buffer, up to the specified
 // length.  An IndexOutOfBoundsException is thrown if the specified length
 // is greater than the array size.

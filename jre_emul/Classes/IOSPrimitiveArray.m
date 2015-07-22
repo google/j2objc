@@ -172,6 +172,15 @@ PRIMITIVE_ARRAY_IMPLEMENTATION(char, Char, jchar)
 
 PRIMITIVE_ARRAY_IMPLEMENTATION(byte, Byte, jbyte)
 
++ (instancetype)arrayWithNSData:(NSData *)data {
+  NSUInteger length = [data length];
+  IOSByteArray *array = IOSByteArray_NewArray((jint)length);
+  if (length > 0) {
+    [data getBytes:array->buffer_ length:length];
+  }
+  return [array autorelease];
+}
+
 - (void)getBytes:(jbyte *)buffer
           offset:(jint)offset
           length:(jint)length {
