@@ -59,8 +59,7 @@ CGPCodedOutputStream::CGPCodedOutputStream(void *buffer, int size)
 
 CGPCodedOutputStream::~CGPCodedOutputStream() {
   if (output_ != NULL) {
-    // Flush remaining bytes to the output stream.
-    [output_ writeWithByteArray:bytes_ withInt:0 withInt:(int)bytes_->size_ - buffer_size_];
+    FlushBuffer();
   }
 }
 
@@ -273,12 +272,14 @@ void CGPCodedOutputStream::WriteVarint64(uint64 value) {
   }
 }
 
-bool CGPCodedOutputStream::Refresh() {
+bool CGPCodedOutputStream::FlushBuffer() {
   if (output_ != NULL) {
-    [output_ writeWithByteArray:bytes_];
+    // Flush remaining bytes to the output stream.
+    int size = (int)bytes_->size_ - buffer_size_;
+    [output_ writeWithByteArray:bytes_ withInt:0 withInt:size];
     buffer_ = (uint8 *)bytes_->buffer_;
     buffer_size_ = (int)bytes_->size_;
-    total_bytes_ += buffer_size_;
+    total_bytes_ += size;
     return true;
   } else {
     buffer_ = NULL;

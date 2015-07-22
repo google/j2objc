@@ -156,6 +156,14 @@ void CGPWriteString(NSString *value, CGPCodedOutputStream *output) {
             options:0
               range:range
      remainingRange:&remainingRange];
+    if (additionalUsedLength == 0) {
+      // The UTF8 representation of this character is longer than bufferSize.
+      if (output->FlushBuffer()) {
+        continue;
+      } else {
+        break;
+      }
+    }
     usedLength += additionalUsedLength;
     range = remainingRange;
     output->Skip((int)additionalUsedLength);

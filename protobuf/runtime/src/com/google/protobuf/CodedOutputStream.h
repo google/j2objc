@@ -208,6 +208,10 @@ class CGPCodedOutputStream {
   // created.
   bool HadError() const { return had_error_; }
 
+  // Flushes the buffer contents. If called before GetDirectBufferPointer(),
+  // the full buffer size will be available.
+  bool FlushBuffer();
+
  private:
   CGPCodedOutputStream(const CGPCodedOutputStream&);
   void operator=(const CGPCodedOutputStream&);
@@ -288,6 +292,11 @@ inline int CGPCodedOutputStream::VarintSize32SignExtended(int32 value) {
 inline void CGPCodedOutputStream::Advance(int amount) {
   buffer_ += amount;
   buffer_size_ -= amount;
+}
+
+inline bool CGPCodedOutputStream::Refresh() {
+  buffer_size_ = 0; // Make sure that the entire buffer is flushed.
+  return FlushBuffer();
 }
 
 #endif // __ComGoogleProtobufCodedOutputStream_H__
