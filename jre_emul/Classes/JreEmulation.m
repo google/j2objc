@@ -131,15 +131,15 @@ static FastPointerLookup_t lambdaLookup = FAST_POINTER_LOOKUP_INIT(&LambdaLookup
 
 // Method to handle dynamic creation of class wrappers surrounding blocks which come from lambdas
 // not requiring a capture.
-id GetNonCapturingLambda(Class baseClass, Protocol *protocol, NSString *blockClassName,
+id GetNonCapturingLambda(Protocol *protocol, NSString *blockClassName,
     SEL methodSelector, id block) {
   // Relies on lambda names being constant strings with matching pointers for matching names.
   // This should happen as a clang optimization, as all string constants are kept on the stack for
   // the program duration.
   LambdaHolder *lambdaHolder = FastPointerLookup(&lambdaLookup, (__bridge void*) blockClassName);
-  @synchronized(baseClass) {
+  @synchronized(blockClassName) {
     if (lambdaHolder->id == nil) {
-      Class blockClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
+      Class blockClass = objc_allocateClassPair([NSObject class], [blockClassName UTF8String], 0);
       // Fail quickly if we can't create the runtime class.
       if (!class_addProtocol(blockClass, protocol)) {
         @throw AUTORELEASE([[JavaLangAssertionError alloc]
@@ -160,12 +160,12 @@ id GetNonCapturingLambda(Class baseClass, Protocol *protocol, NSString *blockCla
 
 // Method to handle dynamic creation of class wrappers surrounding blocks from lambdas requiring
 // a capture.
-id GetCapturingLambda(Class baseClass, Protocol *protocol, NSString *blockClassName,
+id GetCapturingLambda(Protocol *protocol, NSString *blockClassName,
     SEL methodSelector, id blockWrapper, id block) {
   LambdaHolder *lambdaHolder = FastPointerLookup(&lambdaLookup, (__bridge void*) blockClassName);
-  @synchronized(baseClass) {
+  @synchronized(blockClassName) {
     if (lambdaHolder->id == nil) {
-      Class lambdaClass = objc_allocateClassPair(baseClass, [blockClassName UTF8String], 0);
+      Class lambdaClass = objc_allocateClassPair([NSObject class], [blockClassName UTF8String], 0);
       // Fail quickly if we can't create the runtime class.
       if (!class_addProtocol(lambdaClass, protocol)) {
         @throw AUTORELEASE([[JavaLangAssertionError alloc]

@@ -518,7 +518,11 @@ SUITE_SOURCES = \
 
 JAVA8_TEST_SOURCES := \
     com/google/j2objc/java8/CreationReferenceTest.java \
+    com/google/j2objc/java8/ExpressionMethodReferenceTest.java \
     com/google/j2objc/java8/LambdaTest.java \
+    com/google/j2objc/java8/SuperMethodReferenceTest.java \
+    com/google/j2objc/java8/TypeMethodReferenceTest.java \
+
 
 JAVA8_SUITE_SOURCES = \
     com/google/j2objc/java8/SmallTests.java \

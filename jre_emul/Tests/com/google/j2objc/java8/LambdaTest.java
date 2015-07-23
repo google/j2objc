@@ -56,6 +56,17 @@ public class LambdaTest extends TestCase {
 
   public LambdaTest() {}
 
+  public void testBasicReflection() {
+    assertEquals(false, ((Function) (x) -> 1).equals((Function) (x) -> 1));
+    Function f = x -> 1;
+    Function g = f;
+    assertEquals(f, g);
+    assertEquals(f.toString(), "" + g);
+    String lambdaClassName = f.getClass().getName();
+    assertEquals(true, lambdaClassName.contains("LambdaTest"));
+    assertEquals(true, lambdaClassName.contains("ambda$"));
+  }
+
   String outerCall() {
     return "Foo";
   }

@@ -97,10 +97,9 @@ public class LambdaExpressionTest extends GenerationTest {
     String outerCapture = translateSourceFile(functionHeader
         + "class Test { Function<String, Function<String, String>> f = x -> y -> x;}", "Test",
         "Test.m");
-    assertTranslatedSegments(outerCapture, "GetNonCapturingLambda", "[Function class]",
-        "@selector(applyWithId:)", "^id<Function>(id _self, NSString * x)",
-        "return GetCapturingLambda", "[Function class]", "@selector(applyWithId:)",
-        "^NSString *(id _self, NSString * y)", "return x;");
+    assertTranslatedSegments(outerCapture, "GetNonCapturingLambda", "@selector(applyWithId:)",
+        "^id<Function>(id _self, NSString * x)", "return GetCapturingLambda",
+        "@selector(applyWithId:)", "^NSString *(id _self, NSString * y)", "return x;");
     String noCapture = translateSourceFile(functionHeader
         + "class Test { Function<String, Function<String, String>> f = x -> y -> y;}", "Test",
         "Test.m");
@@ -115,7 +114,7 @@ public class LambdaExpressionTest extends GenerationTest {
     String translation = translateSourceFile(
         functionHeader + "class Test { Function f = (Function) (x) -> x;}", "Test", "Test.m");
     assertTranslatedSegments(translation,
-        "(id<Function>) check_protocol_cast(GetNonCapturingLambda([Function class], @protocol(Function), ",
+        "(id<Function>) check_protocol_cast(GetNonCapturingLambda(@protocol(Function), ",
         "@protocol(Function)");
   }
 
@@ -128,11 +127,32 @@ public class LambdaExpressionTest extends GenerationTest {
 
   // Check that lambdas are uniquely named.
   public void testLambdaUniquify() throws IOException {
-    String translation = translateSourceFile(
-functionHeader
+    String translation = translateSourceFile(functionHeader
         + "class Test { class Foo{ class Bar { Function f = x -> x; }}\n"
         + "Function f = x -> x;}",
         "Test", "Test.m");
     assertTranslatedSegments(translation, "@\"Test_lambda$", "@\"Test_Foo_Bar_lambda");
+  }
+
+  public void testLargeArgumentCount() throws IOException {
+    String interfaceHeader = "interface TooManyArgs<T> { T f(T a, T b, T c, T d, T e, T f, T g,"
+        + " T h, T i, T j, T k, T l, T m, T n, T o, T p, T q, T r, T s, T t, T u, T v, T w, T x,"
+        + " T y, T z, T aa, T ab, T ac, T ad, T ae, T af, T ag, T ah, T ai, T aj, T ak, T al,"
+        + " T am, T an, T ao, T ap, T aq, T ar, T as, T at, T au, T av, T aw, T ax, T ay, T az,"
+        + " T ba, T bb, T bc, T bd, T be, T bf, T bg, T bh, T bi, T bj, T bk, T bl, T bm, T bn,"
+        + " T bo, T bp, T bq, T br, T bs, T bt, T bu, T bv, T bw, T bx, T by, T bz, T foo);}";
+    String translation = translateSourceFile(interfaceHeader + "class Test { void a() {"
+        + "Object foo = \"Foo\";"
+        + "TooManyArgs fun = (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, w,"
+        + " x, y, z, aa, ab, ac, ad, ae, af, ag, ah, ai, aj, ak, al, am, an, ao, ap, aq, ar, as,"
+        + " at, au, av, aw, ax, ay, az, ba, bb, bc, bd, be, bf, bg, bh, bi, bj, bk, bl, bm, bn,"
+        + " bo, bp, bq, br, bs, bt, bu, bv, bw, bx, by, bz, bar) -> foo;}}",
+        "Test", "Test.m");
+    assertTranslatedSegments(translation, "^id(id _self, id a, id b, id c, id d, id e, id f, id g,",
+        " id bs, id bt, id bu, id bv, id bw, id bx, id by, id bz, id ca)",
+        "return block(_self, a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v, ",
+        "bn, bo, bp, bq, br, bs, bt, bu, bv, bw, bx, by, bz, ca);",
+        "^id(id _self, id a, id b, id c, id d, id e, id f, id g, id h, id i, id j, id k, id l, ",
+        "id bw, id bx, id by, id bz, id bar){");
   }
 }

@@ -29,8 +29,8 @@ public class TypeMethodReference extends MethodReference {
 
   public TypeMethodReference(TypeMethodReference other) {
     super(other);
-    type.set(other.getType());
-    name.set(other.getName());
+    type.copyFrom(other.getType());
+    name.copyFrom(other.getName());
   }
 
   @Override

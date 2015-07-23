@@ -13,22 +13,27 @@
  */
 package com.google.j2objc.java8;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.TestCase;
+
+interface H {
+  Object copy(int[] i);
+}
 
 /**
- * Returns a suite of all small tests in this package.
+ * Command-line tests for type method references.
+ *
+ * @author Seth Kirby
  */
-public class SmallTests {
-  private static final Class<?>[] smallTestClasses = new Class[] {
-    CreationReferenceTest.class,
-    ExpressionMethodReferenceTest.class,
-    LambdaTest.class,
-    SuperMethodReferenceTest.class,
-    TypeMethodReferenceTest.class,
-  };
+// TODO(kirbs): Find and test more examples of type method references.
+public class TypeMethodReferenceTest extends TestCase {
+  public TypeMethodReferenceTest() { }
 
-  public static Test suite() {
-    return new TestSuite(smallTestClasses);
+  public void testBasicReferences() throws Exception {
+    H h = int[]::clone;
+    int[] xs = { 42, 3, 13 };
+    int[] ys = (int[]) h.copy(xs);
+    for (int i = 0; i < xs.length; i++) {
+      assertEquals(xs[i], ys[i]);
+    }
   }
 }

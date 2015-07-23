@@ -86,6 +86,12 @@ public class SourceBuilder {
     }
   }
 
+  public void print(char[] cs) {
+    for (char c : cs) {
+      print(c);
+    }
+  }
+
   public void print(int i) {
     buffer.append(i);
   }
@@ -126,6 +132,11 @@ public class SourceBuilder {
 
   // StringBuilder compatibility.
   public SourceBuilder append(char c) {
+    print(c);
+    return this;
+  }
+
+  public SourceBuilder append(char[] c) {
     print(c);
     return this;
   }
