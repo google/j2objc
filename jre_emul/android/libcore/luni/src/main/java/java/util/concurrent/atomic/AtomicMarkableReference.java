@@ -6,10 +6,6 @@
 
 package java.util.concurrent.atomic;
 
-/*-[
-#include <libkern/OSAtomic.h>
-]-*/
-
 /**
  * An {@code AtomicMarkableReference} maintains an object reference
  * along with a mark bit, that can be updated atomically.
@@ -72,7 +68,7 @@ public class AtomicMarkableReference<V> {
      * Typical usage is {@code boolean[1] holder; ref = v.get(holder); }.
      *
      * @param markHolder an array of size of at least one. On return,
-     * {@code markholder[0]} will hold the value of the mark.
+     * {@code markHolder[0]} will hold the value of the mark.
      * @return the current value of the reference
      */
     public V get(boolean[] markHolder) {
@@ -87,9 +83,9 @@ public class AtomicMarkableReference<V> {
      * current reference is {@code ==} to the expected reference
      * and the current mark is equal to the expected mark.
      *
-     * <p>May <a href="package-summary.html#Spurious">fail spuriously</a>
-     * and does not provide ordering guarantees, so is only rarely an
-     * appropriate alternative to {@code compareAndSet}.
+     * <p><a href="package-summary.html#weakCompareAndSet">May fail
+     * spuriously and does not provide ordering guarantees</a>, so is
+     * only rarely an appropriate alternative to {@code compareAndSet}.
      *
      * @param expectedReference the expected value of the reference
      * @param newReference the new value for the reference
@@ -101,8 +97,13 @@ public class AtomicMarkableReference<V> {
                                      V       newReference,
                                      boolean expectedMark,
                                      boolean newMark) {
-        return compareAndSet(expectedReference, newReference,
-                             expectedMark, newMark);
+        Pair<V> current = pair;
+        return
+            expectedReference == current.reference &&
+            expectedMark == current.mark &&
+            ((newReference == current.reference &&
+              newMark == current.mark) ||
+             weakCasPair(current, Pair.of(newReference, newMark)));
     }
 
     /**
@@ -165,7 +166,17 @@ public class AtomicMarkableReference<V> {
 
     private native boolean casPair(Pair<V> cmp, Pair<V> val) /*-[
       if (__c11_atomic_compare_exchange_strong(
-          &self->pair_, (void **)&cmp, val, __ATOMIC_SEQ_CST, __ATOMIC_ACQUIRE)) {
+          &self->pair_, (void **)&cmp, val, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
+        [val retain];
+        [cmp autorelease];
+        return YES;
+      }
+      return NO;
+    ]-*/;
+
+    private native boolean weakCasPair(Pair<V> cmp, Pair<V> val) /*-[
+      if (__c11_atomic_compare_exchange_weak(
+          &self->pair_, (void **)&cmp, val, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) {
         [val retain];
         [cmp autorelease];
         return YES;

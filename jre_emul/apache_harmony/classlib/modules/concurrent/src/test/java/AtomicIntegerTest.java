@@ -179,8 +179,7 @@ public class AtomicIntegerTest extends JSR166TestCase {
 
     /**
      * a deserialized serialized atomic holds same value
-     *
-    // TODO(tball): enable when serialization is supported.
+     */
     public void testSerialization() {
         AtomicInteger l = new AtomicInteger();
 
@@ -199,7 +198,6 @@ public class AtomicIntegerTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * toString returns current value.

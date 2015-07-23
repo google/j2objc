@@ -6,10 +6,6 @@
 
 package java.util.concurrent.atomic;
 
-/*-[
-#include <libkern/OSAtomic.h>
-]-*/
-
 /**
  * An {@code AtomicStampedReference} maintains an object reference
  * along with an integer "stamp", that can be updated atomically.
@@ -72,7 +68,7 @@ public class AtomicStampedReference<V> {
      * Typical usage is {@code int[1] holder; ref = v.get(holder); }.
      *
      * @param stampHolder an array of size of at least one.  On return,
-     * {@code stampholder[0]} will hold the value of the stamp.
+     * {@code stampHolder[0]} will hold the value of the stamp.
      * @return the current value of the reference
      */
     public V get(int[] stampHolder) {
@@ -87,9 +83,9 @@ public class AtomicStampedReference<V> {
      * current reference is {@code ==} to the expected reference
      * and the current stamp is equal to the expected stamp.
      *
-     * <p>May <a href="package-summary.html#Spurious">fail spuriously</a>
-     * and does not provide ordering guarantees, so is only rarely an
-     * appropriate alternative to {@code compareAndSet}.
+     * <p><a href="package-summary.html#weakCompareAndSet">May fail
+     * spuriously and does not provide ordering guarantees</a>, so is
+     * only rarely an appropriate alternative to {@code compareAndSet}.
      *
      * @param expectedReference the expected value of the reference
      * @param newReference the new value for the reference
@@ -101,8 +97,13 @@ public class AtomicStampedReference<V> {
                                      V   newReference,
                                      int expectedStamp,
                                      int newStamp) {
-        return compareAndSet(expectedReference, newReference,
-                             expectedStamp, newStamp);
+        Pair<V> current = pair;
+        return
+            expectedReference == current.reference &&
+            expectedStamp == current.stamp &&
+            ((newReference == current.reference &&
+              newStamp == current.stamp) ||
+             weakCasPair(current, Pair.of(newReference, newStamp)));
     }
 
     /**
@@ -129,7 +130,6 @@ public class AtomicStampedReference<V> {
               newStamp == current.stamp) ||
              casPair(current, Pair.of(newReference, newStamp)));
     }
-
 
     /**
      * Unconditionally sets the value of both the reference and stamp.
@@ -166,7 +166,17 @@ public class AtomicStampedReference<V> {
 
     private native boolean casPair(Pair<V> cmp, Pair<V> val) /*-[
       if (__c11_atomic_compare_exchange_strong(
-          &self->pair_, (void **)&cmp, val, __ATOMIC_SEQ_CST, __ATOMIC_ACQUIRE)) {
+          &self->pair_, (void **)&cmp, val, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
+        [val retain];
+        [cmp autorelease];
+        return YES;
+      }
+      return NO;
+    ]-*/;
+
+    private native boolean weakCasPair(Pair<V> cmp, Pair<V> val) /*-[
+      if (__c11_atomic_compare_exchange_weak(
+          &self->pair_, (void **)&cmp, val, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) {
         [val retain];
         [cmp autorelease];
         return YES;

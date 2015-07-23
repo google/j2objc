@@ -7,7 +7,8 @@
 package java.util.concurrent.atomic;
 
 import sun.misc.Unsafe;
-import java.lang.reflect.*;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * A reflection-based utility that enables atomic updates to
@@ -27,22 +28,27 @@ import java.lang.reflect.*;
  * @author Doug Lea
  * @param <T> The type of the object holding the updatable field
  */
-public abstract class  AtomicLongFieldUpdater<T> {
+public abstract class AtomicLongFieldUpdater<T> {
     /**
      * Creates and returns an updater for objects with the given field.
      * The Class argument is needed to check that reflective types and
      * generic types match.
      *
      * @param tclass the class of the objects holding the field
-     * @param fieldName the name of the field to be updated.
+     * @param fieldName the name of the field to be updated
      * @return the updater
      * @throws IllegalArgumentException if the field is not a
-     * volatile long type.
+     * volatile long type
      * @throws RuntimeException with a nested reflection-based
-     * exception if the class does not hold field or is the wrong type.
+     * exception if the class does not hold field or is the wrong type,
+     * or the field is inaccessible to the caller according to Java language
+     * access control
      */
     public static <U> AtomicLongFieldUpdater<U> newUpdater(Class<U> tclass, String fieldName) {
-        return new LockedUpdater<U>(tclass, fieldName);
+        if (AtomicLong.VM_SUPPORTS_LONG_CAS)
+            return new CASUpdater<U>(tclass, fieldName);
+        else
+            return new LockedUpdater<U>(tclass, fieldName);
     }
 
     /**
@@ -61,9 +67,9 @@ public abstract class  AtomicLongFieldUpdater<T> {
      * @param obj An object whose field to conditionally set
      * @param expect the expected value
      * @param update the new value
-     * @return true if successful.
+     * @return true if successful
      * @throws ClassCastException if {@code obj} is not an instance
-     * of the class possessing the field established in the constructor.
+     * of the class possessing the field established in the constructor
      */
     public abstract boolean compareAndSet(T obj, long expect, long update);
 
@@ -74,16 +80,16 @@ public abstract class  AtomicLongFieldUpdater<T> {
      * other calls to {@code compareAndSet} and {@code set}, but not
      * necessarily with respect to other changes in the field.
      *
-     * <p>May <a href="package-summary.html#Spurious">fail spuriously</a>
-     * and does not provide ordering guarantees, so is only rarely an
-     * appropriate alternative to {@code compareAndSet}.
+     * <p><a href="package-summary.html#weakCompareAndSet">May fail
+     * spuriously and does not provide ordering guarantees</a>, so is
+     * only rarely an appropriate alternative to {@code compareAndSet}.
      *
      * @param obj An object whose field to conditionally set
      * @param expect the expected value
      * @param update the new value
-     * @return true if successful.
+     * @return true if successful
      * @throws ClassCastException if {@code obj} is not an instance
-     * of the class possessing the field established in the constructor.
+     * of the class possessing the field established in the constructor
      */
     public abstract boolean weakCompareAndSet(T obj, long expect, long update);
 
@@ -236,18 +242,28 @@ public abstract class  AtomicLongFieldUpdater<T> {
         private final Class<T> tclass;
         private final Class<?> cclass;
 
-        CASUpdater(Class<T> tclass, String fieldName) {
-            Field field = null;
-            Class<?> caller = null;
-            int modifiers = 0;
+        CASUpdater(final Class<T> tclass, final String fieldName) {
+            final Field field;
+            final Class<?> caller;
+            final int modifiers;
             try {
-                field = tclass.getDeclaredField(fieldName);
+                field = tclass.getDeclaredField(fieldName); // android-changed
+                caller = null; // J2ObjC: Call stack not available.
                 modifiers = field.getModifiers();
                 // BEGIN android-removed
                 // sun.reflect.misc.ReflectUtil.ensureMemberAccess(
                 //     caller, tclass, null, modifiers);
-                // sun.reflect.misc.ReflectUtil.checkPackageAccess(tclass);
+                // ClassLoader cl = tclass.getClassLoader();
+                // ClassLoader ccl = caller.getClassLoader();
+                // if ((ccl != null) && (ccl != cl) &&
+                //     ((cl == null) || !isAncestor(cl, ccl))) {
+                //   sun.reflect.misc.ReflectUtil.checkPackageAccess(tclass);
+                // }
                 // END android-removed
+            // BEGIN android-removed
+            // } catch (PrivilegedActionException pae) {
+            //    throw new RuntimeException(pae.getException());
+            // END android-removed
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -320,18 +336,28 @@ public abstract class  AtomicLongFieldUpdater<T> {
         private final Class<T> tclass;
         private final Class<?> cclass;
 
-        LockedUpdater(Class<T> tclass, String fieldName) {
+        LockedUpdater(final Class<T> tclass, final String fieldName) {
             Field field = null;
             Class<?> caller = null;
             int modifiers = 0;
             try {
-                field = tclass.getDeclaredField(fieldName);
+                field = tclass.getDeclaredField(fieldName); // android-changed
+                caller = null; // J2ObjC: Call stack not available.
                 modifiers = field.getModifiers();
                 // BEGIN android-removed
                 // sun.reflect.misc.ReflectUtil.ensureMemberAccess(
                 //     caller, tclass, null, modifiers);
-                // sun.reflect.misc.ReflectUtil.checkPackageAccess(tclass);
+                // ClassLoader cl = tclass.getClassLoader();
+                // ClassLoader ccl = caller.getClassLoader();
+                // if ((ccl != null) && (ccl != cl) &&
+                //     ((cl == null) || !isAncestor(cl, ccl))) {
+                //   sun.reflect.misc.ReflectUtil.checkPackageAccess(tclass);
+                // }
                 // END android-removed
+            // BEGIN android-removed
+            // } catch (PrivilegedActionException pae) {
+            //     throw new RuntimeException(pae.getException());
+            // END android-removed
             } catch (Exception ex) {
                 throw new RuntimeException(ex);
             }
@@ -404,4 +430,22 @@ public abstract class  AtomicLongFieldUpdater<T> {
             );
         }
     }
+
+    // BEGIN android-removed
+    // /**
+    //  * Returns true if the second classloader can be found in the first
+    //  * classloader's delegation chain.
+    //  * Equivalent to the inaccessible: first.isAncestor(second).
+    //  */
+    // private static boolean isAncestor(ClassLoader first, ClassLoader second) {
+    //     ClassLoader acl = first;
+    //     do {
+    //         acl = acl.getParent();
+    //         if (second == acl) {
+    //             return true;
+    //        }
+    //     } while (acl != null);
+    //     return false;
+    // }
+    // END android-removed
 }

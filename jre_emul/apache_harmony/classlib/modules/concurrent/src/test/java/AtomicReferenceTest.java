@@ -107,8 +107,7 @@ public class AtomicReferenceTest extends JSR166TestCase {
 
     /**
      * a deserialized serialized atomic holds same value
-     *
-     // TODO(tball): enable when serialization is supported.
+     */
     public void testSerialization() {
         AtomicReference l = new AtomicReference();
 
@@ -127,7 +126,6 @@ public class AtomicReferenceTest extends JSR166TestCase {
             unexpectedException();
         }
     }
-    */
 
     /**
      * toString returns current value.
@@ -140,4 +138,3 @@ public class AtomicReferenceTest extends JSR166TestCase {
     }
 
 }
-

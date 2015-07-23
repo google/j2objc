@@ -6,10 +6,6 @@
 
 package java.util.concurrent.atomic;
 
-/*-[
-#include <libkern/OSAtomic.h>
-]-*/
-
 /**
  * A {@code boolean} value that may be updated atomically. See the
  * {@link java.util.concurrent.atomic} package specification for
@@ -47,7 +43,6 @@ public class AtomicBoolean implements java.io.Serializable {
      * @return the current value
      */
     public final boolean get() {
-        memoryBarrier();
         return value != 0;
     }
 
@@ -60,29 +55,29 @@ public class AtomicBoolean implements java.io.Serializable {
      * @return true if successful. False return indicates that
      * the actual value was not equal to the expected value.
      */
-    public final boolean compareAndSet(boolean expect, boolean update) {
-        int e = expect ? 1 : 0;
-        int u = update ? 1 : 0;
-        return compareAndSwapValue(e, u);
-    }
+    public final native boolean compareAndSet(boolean expect, boolean update) /*-[
+      jint e = expect ? 1 : 0;
+      return __c11_atomic_compare_exchange_strong(
+          &self->value_, &e, update ? 1 : 0, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST);
+    ]-*/;
 
     /**
      * Atomically sets the value to the given updated value
      * if the current value {@code ==} the expected value.
      *
-     * <p>May <a href="package-summary.html#Spurious">fail spuriously</a>
-     * and does not provide ordering guarantees, so is only rarely an
-     * appropriate alternative to {@code compareAndSet}.
+     * <p><a href="package-summary.html#weakCompareAndSet">May fail
+     * spuriously and does not provide ordering guarantees</a>, so is
+     * only rarely an appropriate alternative to {@code compareAndSet}.
      *
      * @param expect the expected value
      * @param update the new value
-     * @return true if successful.
+     * @return true if successful
      */
-    public boolean weakCompareAndSet(boolean expect, boolean update) {
-        int e = expect ? 1 : 0;
-        int u = update ? 1 : 0;
-        return compareAndSwapValue(e, u);
-    }
+    public native boolean weakCompareAndSet(boolean expect, boolean update) /*-[
+      jint e = expect ? 1 : 0;
+      return __c11_atomic_compare_exchange_weak(
+          &self->value_, &e, update ? 1 : 0, __ATOMIC_RELAXED, __ATOMIC_RELAXED);
+    ]-*/;
 
     /**
      * Unconditionally sets to the given value.
@@ -90,7 +85,6 @@ public class AtomicBoolean implements java.io.Serializable {
      * @param newValue the new value
      */
     public final void set(boolean newValue) {
-        memoryBarrier();
         value = newValue ? 1 : 0;
     }
 
@@ -100,10 +94,9 @@ public class AtomicBoolean implements java.io.Serializable {
      * @param newValue the new value
      * @since 1.6
      */
-    public final void lazySet(boolean newValue) {
-        memoryBarrier();
-        value = newValue ? 1 : 0;
-    }
+    public final native void lazySet(boolean newValue) /*-[
+      __c11_atomic_store(&self->value_, newValue ? 1 : 0, __ATOMIC_RELEASE);
+    ]-*/;
 
     /**
      * Atomically sets to the given value and returns the previous value.
@@ -111,28 +104,16 @@ public class AtomicBoolean implements java.io.Serializable {
      * @param newValue the new value
      * @return the previous value
      */
-    public final boolean getAndSet(boolean newValue) {
-        for (;;) {
-            boolean current = get();
-            if (compareAndSet(current, newValue))
-                return current;
-        }
-    }
+    public final native boolean getAndSet(boolean newValue) /*-[
+      return __c11_atomic_exchange(&self->value_, newValue ? 1 : 0, __ATOMIC_SEQ_CST);
+    ]-*/;
 
     /**
      * Returns the String representation of the current value.
-     * @return the String representation of the current value.
+     * @return the String representation of the current value
      */
     public String toString() {
         return Boolean.toString(get());
     }
 
-    private static native void memoryBarrier() /*-[
-      OSMemoryBarrier();
-    ]-*/;
-
-    private native boolean compareAndSwapValue(int oldValue, int newValue) /*-[
-      return __c11_atomic_compare_exchange_strong(
-          &self->value_, &oldValue, newValue, __ATOMIC_SEQ_CST, __ATOMIC_ACQUIRE);
-    ]-*/;
 }

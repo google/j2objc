@@ -6,10 +6,6 @@
 
 package java.util.concurrent.atomic;
 
-/*-[
-#include <libkern/OSAtomic.h>
-]-*/
-
 /**
  * A set of methods providing fine-grained control over happens-before
  * and synchronization order relations among reads and/or writes.  The
@@ -457,7 +453,6 @@ package java.util.concurrent.atomic;
  *
  * </dl>
  *
- * @since 1.7
  * @hide
  * @author Doug Lea
  */
@@ -477,10 +472,10 @@ public class Fences {
      * @param ref the reference. If null, this method has no effect.
      * @return the given ref, to simplify usage
      */
-    public static <T> T orderReads(T ref) {
-        memoryBarrier();
-        return ref;
-    }
+    public static native <T> T orderReads(T ref) /*-[
+      __c11_atomic_thread_fence(__ATOMIC_ACQUIRE);
+      return ref;
+    ]-*/;
 
     /**
      * Informally: Ensures that a use of the given reference with the
@@ -492,10 +487,10 @@ public class Fences {
      * @param ref the reference. If null, this method has no effect.
      * @return the given ref, to simplify usage
      */
-    public static <T> T orderWrites(T ref) {
-        memoryBarrier();
-        return ref;
-    }
+    public static native <T> T orderWrites(T ref) /*-[
+      __c11_atomic_thread_fence(__ATOMIC_RELEASE);
+      return ref;
+    ]-*/;
 
     /**
      * Informally: Ensures that accesses (reads or writes) using the
@@ -506,10 +501,10 @@ public class Fences {
      * @param ref the reference. If null, this method has no effect.
      * @return the given ref, to simplify usage
      */
-    public static <T> T orderAccesses(T ref) {
-        memoryBarrier();
-        return ref;
-    }
+    public static native <T> T orderAccesses(T ref) /*-[
+      __c11_atomic_thread_fence(__ATOMIC_SEQ_CST);
+      return ref;
+    ]-*/;
 
     /**
      * Ensures that the object referenced by the given reference
@@ -527,15 +522,8 @@ public class Fences {
      * @param ref the reference. If null, this method has no effect.
      */
     public static void reachabilityFence(Object ref) {
-        if (ref != null) {
-            synchronized (ref) {}
-        }
+      // This fence is not applicable in the Objective-C reference counting
+      // environment where deallocation occurs synchronously, not by a garbage
+      // collector running in a separate thread.
     }
-
-    /**
-     * Invoke an iOS memory barrier, as defined in "man barrier".
-     */
-    private static native void memoryBarrier() /*-[
-      OSMemoryBarrier();
-    ]-*/;
 }

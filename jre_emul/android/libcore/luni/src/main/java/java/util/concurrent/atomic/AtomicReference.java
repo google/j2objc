@@ -6,10 +6,6 @@
 
 package java.util.concurrent.atomic;
 
-/*-[
-#include <libkern/OSAtomic.h>
-]-*/
-
 /**
  * An object reference that may be updated atomically. See the {@link
  * java.util.concurrent.atomic} package specification for description
@@ -18,7 +14,7 @@ package java.util.concurrent.atomic;
  * @author Doug Lea
  * @param <V> The type of object referred to by this reference
  */
-public class AtomicReference<V>  implements java.io.Serializable {
+public class AtomicReference<V> implements java.io.Serializable {
     private static final long serialVersionUID = -1848883965231344442L;
 
     private volatile V value;
@@ -44,7 +40,6 @@ public class AtomicReference<V>  implements java.io.Serializable {
      * @return the current value
      */
     public final V get() {
-        memoryBarrier();
         return value;
     }
 
@@ -54,7 +49,6 @@ public class AtomicReference<V>  implements java.io.Serializable {
      * @param newValue the new value
      */
     public final void set(V newValue) {
-        memoryBarrier();
         value = newValue;
     }
 
@@ -64,10 +58,11 @@ public class AtomicReference<V>  implements java.io.Serializable {
      * @param newValue the new value
      * @since 1.6
      */
-    public final void lazySet(V newValue) {
-        memoryBarrier();
-        value = newValue;
-    }
+    public final native void lazySet(V newValue) /*-[
+      id oldValue = __c11_atomic_exchange(&self->value_, newValue, __ATOMIC_RELEASE);
+      [newValue retain];
+      [oldValue autorelease];
+    ]-*/;
 
     /**
      * Atomically sets the value to the given updated value
@@ -77,25 +72,37 @@ public class AtomicReference<V>  implements java.io.Serializable {
      * @return true if successful. False return indicates that
      * the actual value was not equal to the expected value.
      */
-    public final boolean compareAndSet(V expect, V update) {
-        return compareAndSwapValue(expect, update);
-    }
+    public final native boolean compareAndSet(V expect, V update) /*-[
+      if (__c11_atomic_compare_exchange_strong(
+          &self->value_, (void **)&expect, update, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
+        [update retain];
+        [expect autorelease];
+        return YES;
+      }
+      return NO;
+    ]-*/;
 
     /**
      * Atomically sets the value to the given updated value
      * if the current value {@code ==} the expected value.
      *
-     * <p>May <a href="package-summary.html#Spurious">fail spuriously</a>
-     * and does not provide ordering guarantees, so is only rarely an
-     * appropriate alternative to {@code compareAndSet}.
+     * <p><a href="package-summary.html#weakCompareAndSet">May fail
+     * spuriously and does not provide ordering guarantees</a>, so is
+     * only rarely an appropriate alternative to {@code compareAndSet}.
      *
      * @param expect the expected value
      * @param update the new value
-     * @return true if successful.
+     * @return true if successful
      */
-    public final boolean weakCompareAndSet(V expect, V update) {
-        return compareAndSwapValue(expect, update);
-    }
+    public final native boolean weakCompareAndSet(V expect, V update) /*-[
+      if (__c11_atomic_compare_exchange_weak(
+          &self->value_, (void **)&expect, update, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) {
+        [update retain];
+        [expect autorelease];
+        return YES;
+      }
+      return NO;
+    ]-*/;
 
     /**
      * Atomically sets to the given value and returns the old value.
@@ -103,33 +110,19 @@ public class AtomicReference<V>  implements java.io.Serializable {
      * @param newValue the new value
      * @return the previous value
      */
-    public final V getAndSet(V newValue) {
-        while (true) {
-            V x = get();
-            if (compareAndSet(x, newValue))
-                return x;
-        }
-    }
+    public final native V getAndSet(V newValue) /*-[
+      id oldValue = __c11_atomic_exchange(&self->value_, newValue, __ATOMIC_SEQ_CST);
+      [newValue retain];
+      [oldValue autorelease];
+      return oldValue;
+    ]-*/;
 
     /**
      * Returns the String representation of the current value.
-     * @return the String representation of the current value.
+     * @return the String representation of the current value
      */
     public String toString() {
         return String.valueOf(get());
     }
 
-    private static native void memoryBarrier() /*-[
-      OSMemoryBarrier();
-    ]-*/;
-
-    private native boolean compareAndSwapValue(V oldValue, V newValue) /*-[
-      if (__c11_atomic_compare_exchange_strong(
-          &self->value_, (void **)&oldValue, newValue, __ATOMIC_SEQ_CST, __ATOMIC_ACQUIRE)) {
-        [newValue retain];
-        [oldValue autorelease];
-        return YES;
-      }
-      return NO;
-    ]-*/;
 }
