@@ -30,8 +30,6 @@
 
 #import "com/google/protobuf/RepeatedField.h"
 
-#include <libkern/OSAtomic.h>
-
 #import "com/google/protobuf/ByteString.h"
 #import "com/google/protobuf/Descriptors_PackagePrivate.h"
 #import "com/google/protobuf/ProtocolStringList.h"
@@ -41,10 +39,16 @@
 
 #define MIN_REPEATED_FIELD_SIZE 4
 
+static CGPRepeatedFieldData *NewData() {
+  CGPRepeatedFieldData *data = calloc(sizeof(CGPRepeatedFieldData), 1);
+  __c11_atomic_store(&data->ref_count, 1, __ATOMIC_RELAXED);
+  return data;
+}
+
 void CGPRepeatedFieldReserve(CGPRepeatedField *field, uint32_t new_size, size_t elemSize) {
   CGPRepeatedFieldData *data = field->data;
   if (data == NULL) {
-    data = field->data = calloc(sizeof(CGPRepeatedFieldData), 1);
+    data = field->data = NewData();
   }
 
   if (data->total_size >= new_size) {
@@ -63,7 +67,7 @@ void CGPRepeatedFieldCopyData(CGPRepeatedField *field, CGPFieldJavaType type) {
   }
 
   size_t elemSize = CGPGetTypeSize(type);
-  CGPRepeatedFieldData *newData = calloc(sizeof(CGPRepeatedFieldData), 1);
+  CGPRepeatedFieldData *newData = NewData();
   newData->size = newData->total_size = oldData->size;
   field->data = newData;
   newData->buffer = malloc(newData->size * elemSize);
@@ -101,26 +105,18 @@ static void ReleaseData(CGPRepeatedFieldData *data, CGPFieldJavaType type) {
     return;
   }
 
-  while (YES) {
-    uint32_t local_count = data->ref_count;
-    if (local_count > 0) {
-      if (OSAtomicCompareAndSwap32Barrier(
-          (int32_t)local_count, (int32_t)local_count - 1, (int32_t *)&data->ref_count)) {
-        return;
+  if (__c11_atomic_fetch_sub(&data->ref_count, 1, __ATOMIC_RELEASE) == 1) {
+    __c11_atomic_thread_fence(__ATOMIC_ACQUIRE);
+
+    if (CGPIsRetainedType(type)) {
+      for (uint32_t i = 0; i < data->size; i++) {
+        [((id *)data->buffer)[i] release];
       }
-    } else {
-      break;
     }
-  }
 
-  if (CGPIsRetainedType(type)) {
-    for (uint32_t i = 0; i < data->size; i++) {
-      [((id *)data->buffer)[i] release];
-    }
+    free(data->buffer);
+    free(data);
   }
-
-  free(data->buffer);
-  free(data);
 }
 
 void CGPRepeatedFieldClear(CGPRepeatedField *field, CGPFieldJavaType type) {
@@ -258,7 +254,7 @@ id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaTy
   CGPRepeatedFieldData *data = field->data;
   if (data != NULL) {
     list->field_.data = data;
-    OSAtomicIncrement32((int32_t *)&data->ref_count);
+    __c11_atomic_fetch_add(&data->ref_count, 1, __ATOMIC_RELAXED);
   }
   list->type_ = type;
   return list;
@@ -294,7 +290,7 @@ id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaTy
   CGPStringAsByteStringList *list = [[[CGPStringAsByteStringList alloc] init] autorelease];
   if (field_.data != NULL) {
     list->field_.data = field_.data;
-    OSAtomicIncrement32((int32_t *)&field_.data->ref_count);
+    __c11_atomic_fetch_add(&field_.data->ref_count, 1, __ATOMIC_RELAXED);
   }
   return list;
 }

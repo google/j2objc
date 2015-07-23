@@ -46,7 +46,7 @@
 typedef struct CGPRepeatedFieldData {
   uint32_t size;
   uint32_t total_size;
-  uint32_t ref_count;
+  _Atomic(uint32_t) ref_count;
   void *buffer;
 } CGPRepeatedFieldData;
 
