@@ -44,17 +44,25 @@ public class ConstantBranchPrunerTest extends GenerationTest {
     assertTranslatedLines(translation, "do {", "[self tick];", "}", "while (b);");
   }
 
-  // Verify body replaces do statement when false.
+  // Do statements should not be replaced with their body because they might contain break
+  // statements.
   public void testFalseDoExpression() throws IOException {
     String translation = translateSourceFile(
         "class Test { int test() { foo: do { return 1; } while (false); }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (jint)test {", "foo: {", "return 1;", "}", "}");
+    assertTranslatedLines(translation,
+        "- (jint)test {", "foo: do {", "return 1;", "}", "while (false);", "}");
     translation = translateSourceFile(
         "class Test { static final boolean debug = false;"
             + "  int test() { foo: do { return 1; } while (debug); }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation, "- (jint)test {", "foo: {", "return 1;", "}", "}");
+    assertTranslatedLines(translation,
+        "- (jint)test {", "foo: do {", "return 1;", "}", "while (Test_debug);", "}");
+    // Can't remove loop construct while it contains a break statement.
+    translation = translateSourceFile(
+        "class Test { void test(int i) { do { if (i == 5) break; } while (false); } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation, "do {", "if (i == 5) break;", "}", "while (false);");
   }
 
   // Verify then block replaces if statement when true.

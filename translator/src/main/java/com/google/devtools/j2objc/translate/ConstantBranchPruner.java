@@ -40,13 +40,6 @@ import java.util.List;
 public class ConstantBranchPruner extends TreeVisitor {
 
   @Override
-  public void endVisit(DoStatement node) {
-    if (getValue(node.getExpression()) == FALSE) {
-      node.replaceWith(node.getBody().copy());
-    }
-  }
-
-  @Override
   public void endVisit(IfStatement node) {
     Boolean value = getValue(node.getExpression());
     if (value != null) {
