@@ -88,6 +88,29 @@ public class StringsTest extends ProtobufTest {
     assertEquals(str, msg2.getAsciiF());
   }
 
+  public void testReallyLongNonAsciiString() throws Exception {
+    char[] chars = new char[10000];
+    Arrays.fill(chars, '\ufdfd');
+    String str = new String(chars);
+    StringMsg msg = StringMsg.newBuilder()
+        .setNonAsciiF(str)
+        .build();
+
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    msg.writeTo(out);
+    byte[] bytes = out.toByteArray();
+    assertEquals(30004, bytes.length);
+    for (int i = 4; i < 30004; ) {
+      assertEquals((byte) 0xef, bytes[i++]);
+      assertEquals((byte) 0xb7, bytes[i++]);
+      assertEquals((byte) 0xbd, bytes[i++]);
+    }
+
+    ByteArrayInputStream in = new ByteArrayInputStream(bytes);
+    StringMsg msg2 = StringMsg.parseFrom(in);
+    assertEquals(str, msg2.getNonAsciiF());
+  }
+
   public void testDefaultValue() throws Exception {
     StringMsg msg = StringMsg.newBuilder().build();
     assertEquals("", msg.getEmptyF());

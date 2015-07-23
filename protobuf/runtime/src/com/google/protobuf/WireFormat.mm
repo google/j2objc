@@ -156,17 +156,16 @@ void CGPWriteString(NSString *value, CGPCodedOutputStream *output) {
             options:0
               range:range
      remainingRange:&remainingRange];
-    if (additionalUsedLength == 0) {
-      // The UTF8 representation of this character is longer than bufferSize.
-      if (output->FlushBuffer()) {
-        continue;
-      } else {
-        break;
-      }
-    }
     usedLength += additionalUsedLength;
     range = remainingRange;
     output->Skip((int)additionalUsedLength);
+    // If we didn't read the entire string and didn't use the entire buffer then
+    // the next character is multiple bytes. We must flush the buffer to prevent
+    // an infinite loop.
+    if (range.length > 0 && additionalUsedLength < (unsigned)bufferSize
+        && !output->FlushBuffer()) {
+      break;
+    }
   }
   NSCAssert2(usedLength == length,
              @"String length was wrong: %d vs %d", (int)length, (int)usedLength);
