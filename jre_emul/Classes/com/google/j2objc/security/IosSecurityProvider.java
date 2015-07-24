@@ -72,13 +72,52 @@ public class IosSecurityProvider extends Provider {
     put("KeyFactory.RSA", PREFIX + "IosRSAKeyFactory");
     put("Alg.Alias.KeyFactory.1.2.840.113549.1.1.1", "RSA");
 
+    /* == Signatures == */
+    put("Signature.MD5WithRSA", PREFIX + "IosRSASignature$MD5RSA");
+    put("Alg.Alias.Signature.MD5WithRSAEncryption", "MD5WithRSA");
+    put("Alg.Alias.Signature.MD5/RSA", "MD5WithRSA");
+    put("Alg.Alias.Signature.1.2.840.113549.1.1.4", "MD5WithRSA");
+    put("Alg.Alias.Signature.1.2.840.113549.2.5with1.2.840.113549.1.1.1", "MD5WithRSA");
+
+    put("Signature.SHA1WithRSA", PREFIX + "IosRSASignature$SHA1RSA");
+    put("Alg.Alias.Signature.SHA1WithRSAEncryption", "SHA1WithRSA");
+    put("Alg.Alias.Signature.SHA1/RSA", "SHA1WithRSA");
+    put("Alg.Alias.Signature.SHA-1/RSA", "SHA1WithRSA");
+    put("Alg.Alias.Signature.1.2.840.113549.1.1.5", "SHA1WithRSA");
+    put("Alg.Alias.Signature.1.3.14.3.2.26with1.2.840.113549.1.1.1", "SHA1WithRSA");
+    put("Alg.Alias.Signature.1.3.14.3.2.26with1.2.840.113549.1.1.5", "SHA1WithRSA");
+    put("Alg.Alias.Signature.1.3.14.3.2.29", "SHA1WithRSA");
+
+    put("Signature.SHA256WithRSA", PREFIX + "IosRSASignature$SHA256RSA");
+    put("Alg.Alias.Signature.SHA256WithRSAEncryption", "SHA256WithRSA");
+    put("Alg.Alias.Signature.1.2.840.113549.1.1.11", "SHA256WithRSA");
+    put("Alg.Alias.Signature.2.16.840.1.101.3.4.2.1with1.2.840.113549.1.1.1",
+            "SHA256WithRSA");
+    put("Alg.Alias.Signature.2.16.840.1.101.3.4.2.1with1.2.840.113549.1.1.11",
+            "SHA256WithRSA");
+
+    put("Signature.SHA384WithRSA", PREFIX + "IosRSASignature$SHA384RSA");
+    put("Alg.Alias.Signature.SHA384WithRSAEncryption", "SHA384WithRSA");
+    put("Alg.Alias.Signature.1.2.840.113549.1.1.12", "SHA384WithRSA");
+    put("Alg.Alias.Signature.2.16.840.1.101.3.4.2.2with1.2.840.113549.1.1.1",
+            "SHA384WithRSA");
+
+    put("Signature.SHA512WithRSA", PREFIX + "IosRSASignature$SHA512RSA");
+    put("Alg.Alias.Signature.SHA512WithRSAEncryption", "SHA512WithRSA");
+    put("Alg.Alias.Signature.1.2.840.113549.1.1.13", "SHA512WithRSA");
+    put("Alg.Alias.Signature.2.16.840.1.101.3.4.2.3with1.2.840.113549.1.1.1",
+            "SHA512WithRSA");
   }
 
   // Reference all dynamically loaded classes, so they are linked into apps.
+  @SuppressWarnings("unused")
   private static final Class<?>[] unused = {
+    IosCertificateFactory.class,
     IosMD5MessageDigest.class,
+    IosRSAKeyFactory.class,
+    IosRSAKeyPairGenerator.class,
+    IosRSASignature.class,
     IosSecureRandomImpl.class,
-    IosSHAMessageDigest.class,
-    IosCertificateFactory.class
+    IosSHAMessageDigest.class
   };
 }

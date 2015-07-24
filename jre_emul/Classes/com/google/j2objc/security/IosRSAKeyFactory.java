@@ -56,6 +56,7 @@ public class IosRSAKeyFactory extends KeyFactorySpi {
   }
 
   @Override
+  @SuppressWarnings("unchecked")
   protected <T extends KeySpec> T engineGetKeySpec(Key key, Class<T> keySpec)
       throws InvalidKeySpecException {
     if (key == null) {

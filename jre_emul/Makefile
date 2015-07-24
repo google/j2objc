@@ -133,6 +133,7 @@ JAVA_SOURCES = \
 	com/google/j2objc/security/IosRSAKey.java \
 	com/google/j2objc/security/IosRSAKeyFactory.java \
 	com/google/j2objc/security/IosRSAKeyPairGenerator.java \
+	com/google/j2objc/security/IosRSASignature.java \
 	com/google/j2objc/security/IosSecureRandomImpl.java \
 	com/google/j2objc/security/IosSecurityProvider.java \
 	com/google/j2objc/security/IosSHAMessageDigest.java \
