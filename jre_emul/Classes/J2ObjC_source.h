@@ -59,42 +59,17 @@ __attribute__((always_inline)) inline jchar JreFpToChar(jdouble d) {
 }
 
 #define ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, OPNAME, OP, PNAME, PTYPE, CAST) \
+  __attribute__((always_inline)) inline TYPE Jre##OPNAME##Assign##NAME##PNAME( \
+      TYPE *pLhs, PTYPE rhs) { \
+    return *pLhs = CAST(*pLhs OP rhs); \
+  }
+#define ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, OPNAME, OP, PNAME, PTYPE, CAST) \
   __attribute__((always_inline)) inline TYPE Jre##OPNAME##AssignVolatile##NAME##PNAME( \
       volatile_##TYPE *pLhs, PTYPE rhs) { \
     TYPE result = CAST(__c11_atomic_load(pLhs, __ATOMIC_SEQ_CST) OP rhs); \
     __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST); \
     return result; \
   }
-#define ARITHMETIC_OPERATORS_DEFN(NAME, TYPE, PNAME, PTYPE, CAST) \
-  ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, Plus, +, PNAME, PTYPE, CAST) \
-  ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, Minus, -, PNAME, PTYPE, CAST) \
-  ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, Times, *, PNAME, PTYPE, CAST) \
-  ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, Divide, /, PNAME, PTYPE, CAST)
-
-ARITHMETIC_OPERATORS_DEFN(Char, jchar, I, jint, (jchar))
-ARITHMETIC_OPERATORS_DEFN(Char, jchar, J, jlong, (jchar))
-ARITHMETIC_OPERATORS_DEFN(Char, jchar, F, jfloat, JreFpToChar)
-ARITHMETIC_OPERATORS_DEFN(Char, jchar, D, jdouble, JreFpToChar)
-ARITHMETIC_OPERATORS_DEFN(Byte, jbyte, I, jint, (jbyte))
-ARITHMETIC_OPERATORS_DEFN(Byte, jbyte, J, jlong, (jbyte))
-ARITHMETIC_OPERATORS_DEFN(Byte, jbyte, F, jfloat, JreFpToInt)
-ARITHMETIC_OPERATORS_DEFN(Byte, jbyte, D, jdouble, JreFpToInt)
-ARITHMETIC_OPERATORS_DEFN(Short, jshort, I, jint, (jshort))
-ARITHMETIC_OPERATORS_DEFN(Short, jshort, J, jlong, (jshort))
-ARITHMETIC_OPERATORS_DEFN(Short, jshort, F, jfloat, JreFpToInt)
-ARITHMETIC_OPERATORS_DEFN(Short, jshort, D, jdouble, JreFpToInt)
-ARITHMETIC_OPERATORS_DEFN(Int, jint, I, jint, (jint))
-ARITHMETIC_OPERATORS_DEFN(Int, jint, J, jlong, (jint))
-ARITHMETIC_OPERATORS_DEFN(Int, jint, F, jfloat, JreFpToInt)
-ARITHMETIC_OPERATORS_DEFN(Int, jint, D, jdouble, JreFpToInt)
-ARITHMETIC_OPERATORS_DEFN(Long, jlong, J, jlong, (jlong))
-ARITHMETIC_OPERATORS_DEFN(Long, jlong, F, jfloat, JreFpToLong)
-ARITHMETIC_OPERATORS_DEFN(Long, jlong, D, jdouble, JreFpToLong)
-ARITHMETIC_OPERATORS_DEFN(Float, jfloat, F, jfloat, (jfloat))
-ARITHMETIC_OPERATORS_DEFN(Float, jfloat, D, jdouble, (jfloat))
-ARITHMETIC_OPERATORS_DEFN(Double, jdouble, D, jdouble, (jdouble))
-#undef ARITHMETIC_OPERATORS_DEFN
-
 #define MOD_ASSIGN_FP_DEFN(NAME, TYPE, FUNC, PNAME, PTYPE, CAST) \
   __attribute__((always_inline)) inline TYPE JreModAssign##NAME##PNAME(TYPE *pLhs, PTYPE rhs) { \
     return *pLhs = CAST(FUNC(*pLhs, rhs)); \
@@ -105,31 +80,50 @@ ARITHMETIC_OPERATORS_DEFN(Double, jdouble, D, jdouble, (jdouble))
     __c11_atomic_store(pLhs, result, __ATOMIC_SEQ_CST); \
     return result; \
   }
+#define ARITHMETIC_INTEGRAL_OPERATORS_DEFN(NAME, TYPE, PNAME, PTYPE) \
+  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Plus, +, PNAME, PTYPE, (TYPE)) \
+  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Minus, -, PNAME, PTYPE, (TYPE)) \
+  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Times, *, PNAME, PTYPE, (TYPE)) \
+  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Divide, /, PNAME, PTYPE, (TYPE)) \
+  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Mod, %, PNAME, PTYPE, (TYPE))
+#define ARITHMETIC_FP_OPERATORS_DEFN(NAME, TYPE, PNAME, PTYPE, MODFUNC, CAST) \
+  ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, Plus, +, PNAME, PTYPE, CAST) \
+  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Plus, +, PNAME, PTYPE, CAST) \
+  ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, Minus, -, PNAME, PTYPE, CAST) \
+  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Minus, -, PNAME, PTYPE, CAST) \
+  ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, Times, *, PNAME, PTYPE, CAST) \
+  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Times, *, PNAME, PTYPE, CAST) \
+  ARITHMETIC_OPERATOR_DEFN(NAME, TYPE, Divide, /, PNAME, PTYPE, CAST) \
+  ARITHMETIC_VOLATILE_OPERATOR_DEFN(NAME, TYPE, Divide, /, PNAME, PTYPE, CAST) \
+  MOD_ASSIGN_FP_DEFN(NAME, TYPE, MODFUNC, PNAME, PTYPE, CAST)
 
-ARITHMETIC_OPERATOR_DEFN(Char, jchar, Mod, %, I, jint, (jchar))
-ARITHMETIC_OPERATOR_DEFN(Char, jchar, Mod, %, J, jlong, (jchar))
-MOD_ASSIGN_FP_DEFN(Char, jchar, fmodf, F, jfloat, JreFpToChar)
-MOD_ASSIGN_FP_DEFN(Char, jchar, fmod, D, jdouble, JreFpToChar)
-ARITHMETIC_OPERATOR_DEFN(Byte, jbyte, Mod, %, I, jint, (jbyte))
-ARITHMETIC_OPERATOR_DEFN(Byte, jbyte, Mod, %, J, jlong, (jbyte))
-MOD_ASSIGN_FP_DEFN(Byte, jbyte, fmodf, F, jfloat, JreFpToInt)
-MOD_ASSIGN_FP_DEFN(Byte, jbyte, fmod, D, jdouble, JreFpToInt)
-ARITHMETIC_OPERATOR_DEFN(Short, jshort, Mod, %, I, jint, (jshort))
-ARITHMETIC_OPERATOR_DEFN(Short, jshort, Mod, %, J, jlong, (jshort))
-MOD_ASSIGN_FP_DEFN(Short, jshort, fmodf, F, jfloat, JreFpToInt)
-MOD_ASSIGN_FP_DEFN(Short, jshort, fmod, D, jdouble, JreFpToInt)
-ARITHMETIC_OPERATOR_DEFN(Int, jint, Mod, %, I, jint, (jint))
-ARITHMETIC_OPERATOR_DEFN(Int, jint, Mod, %, J, jlong, (jint))
-MOD_ASSIGN_FP_DEFN(Int, jint, fmodf, F, jfloat, JreFpToInt)
-MOD_ASSIGN_FP_DEFN(Int, jint, fmod, D, jdouble, JreFpToInt)
-ARITHMETIC_OPERATOR_DEFN(Long, jlong, Mod, %, J, jlong, (jlong))
-MOD_ASSIGN_FP_DEFN(Long, jlong, fmodf, F, jfloat, JreFpToLong)
-MOD_ASSIGN_FP_DEFN(Long, jlong, fmod, D, jdouble, JreFpToLong)
-MOD_ASSIGN_FP_DEFN(Float, jfloat, fmodf, F, jfloat, (jfloat))
-MOD_ASSIGN_FP_DEFN(Float, jfloat, fmod, D, jdouble, (jfloat))
-MOD_ASSIGN_FP_DEFN(Double, jdouble, fmod, D, jdouble, (jdouble))
-#undef MOD_ASSIGN_FP_DEFN
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Char, jchar, I, jint)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Char, jchar, J, jlong)
+ARITHMETIC_FP_OPERATORS_DEFN(Char, jchar, F, jfloat, fmodf, JreFpToChar)
+ARITHMETIC_FP_OPERATORS_DEFN(Char, jchar, D, jdouble, fmod, JreFpToChar)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Byte, jbyte, I, jint)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Byte, jbyte, J, jlong)
+ARITHMETIC_FP_OPERATORS_DEFN(Byte, jbyte, F, jfloat, fmodf, JreFpToInt)
+ARITHMETIC_FP_OPERATORS_DEFN(Byte, jbyte, D, jdouble, fmod, JreFpToInt)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Short, jshort, I, jint)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Short, jshort, J, jlong)
+ARITHMETIC_FP_OPERATORS_DEFN(Short, jshort, F, jfloat, fmodf, JreFpToInt)
+ARITHMETIC_FP_OPERATORS_DEFN(Short, jshort, D, jdouble, fmod, JreFpToInt)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Int, jint, I, jint)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Int, jint, J, jlong)
+ARITHMETIC_FP_OPERATORS_DEFN(Int, jint, F, jfloat, fmodf, JreFpToInt)
+ARITHMETIC_FP_OPERATORS_DEFN(Int, jint, D, jdouble, fmod, JreFpToInt)
+ARITHMETIC_INTEGRAL_OPERATORS_DEFN(Long, jlong, J, jlong)
+ARITHMETIC_FP_OPERATORS_DEFN(Long, jlong, F, jfloat, fmodf, JreFpToLong)
+ARITHMETIC_FP_OPERATORS_DEFN(Long, jlong, D, jdouble, fmod, JreFpToLong)
+ARITHMETIC_FP_OPERATORS_DEFN(Float, jfloat, F, jfloat, fmodf, (jfloat))
+ARITHMETIC_FP_OPERATORS_DEFN(Float, jfloat, D, jdouble, fmod, (jfloat))
+ARITHMETIC_FP_OPERATORS_DEFN(Double, jdouble, D, jdouble, fmod, (jdouble))
 #undef ARITHMETIC_OPERATOR_DEFN
+#undef ARITHMETIC_VOLATILE_OPERATOR_DEFN
+#undef MOD_ASSIGN_FP_DEFN
+#undef ARITHMETIC_INTEGRAL_OPERATORS_DEFN
+#undef ARITHMETIC_FP_OPERATORS_DEFN
 
 #define SHIFT_OPERATORS_DEFN(NAME, TYPE, UTYPE, MASK) \
   __attribute__((always_inline)) inline TYPE JreLShift##NAME(TYPE lhs, jlong rhs) { \

@@ -98,4 +98,25 @@ public class MaxFloatingPointTest extends TestCase {
     assertEquals("dmin as byte failed", 0, (byte) dmin);
     assertEquals("dmax as byte failed", -1, (byte) dmax);
   }
+
+  public void testCompoundOperators() {
+    int i = Integer.MAX_VALUE;
+    i += 1.0;
+    assertEquals(Integer.MAX_VALUE, i);
+    i *= 1.5;
+    assertEquals(Integer.MAX_VALUE, i);
+    i -= -1.0;
+    assertEquals(Integer.MAX_VALUE, i);
+    i /= 0.5;
+    assertEquals(Integer.MAX_VALUE, i);
+    long l = Long.MAX_VALUE;
+    l += 1.0;
+    assertEquals(Long.MAX_VALUE, l);
+    l *= 1.5;
+    assertEquals(Long.MAX_VALUE, l);
+    l -= -1.0;
+    assertEquals(Long.MAX_VALUE, l);
+    l /= 0.5;
+    assertEquals(Long.MAX_VALUE, l);
+  }
 }

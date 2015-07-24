@@ -246,6 +246,10 @@ public class OperatorRewriter extends TreeVisitor {
       case RIGHT_SHIFT_SIGNED_ASSIGN:
       case RIGHT_SHIFT_UNSIGNED_ASSIGN:
         return true;
+      case PLUS_ASSIGN:
+      case MINUS_ASSIGN:
+      case TIMES_ASSIGN:
+      case DIVIDE_ASSIGN:
       case REMAINDER_ASSIGN:
         return isVolatile(lhs) || BindingUtil.isFloatingPoint(lhsType)
             || BindingUtil.isFloatingPoint(rhsType);
