@@ -523,6 +523,10 @@ static jint ThrowNew(JNIEnv *env, jclass clazz, const char *message) {
   return 0;
 }
 
+static void ExceptionClear(JNIEnv *env) {
+  // no-op
+}
+
 static jfieldID GetFieldID(JNIEnv *env, jclass clazz, const char *name, const char *sig) {
   IOSClass *iosClass = (IOSClass *) clazz;
   JavaLangReflectField *field = [iosClass getDeclaredField:[NSString stringWithUTF8String:name]];
@@ -867,6 +871,7 @@ static struct JNINativeInterface JNI_JNIEnvTable = {
   &IsAssignableFrom,
   &Throw,
   &ThrowNew,
+  &ExceptionClear,
   &NewGlobalRef,
   &NewLocalRef,
   &DeleteGlobalRef,
