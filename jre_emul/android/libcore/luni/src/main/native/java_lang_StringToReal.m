@@ -15,9 +15,6 @@
  *  limitations under the License.
  */
 
-// Modified version of Android's java_lang_StringToReal.cpp, converted
-// to minimize JNI use.
-
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
@@ -26,9 +23,6 @@
 #include "jni.h"
 
 /* ************************* Defines ************************* */
-#if defined(__linux__) || defined(__APPLE__)
-#define USE_LL
-#endif
 
 #define LOW_I32_FROM_VAR(u64)     LOW_I32_FROM_LONG64(u64)
 #define LOW_I32_FROM_PTR(u64ptr)  LOW_I32_FROM_LONG64_PTR(u64ptr)
@@ -39,71 +33,16 @@
 
 #define DEFAULT_DOUBLE_WIDTH MAX_DOUBLE_ACCURACY_WIDTH
 
-#if defined(USE_LL)
 #define DOUBLE_INFINITE_LONGBITS (0x7FF0000000000000LL)
-#else
-#if defined(USE_L)
-#define DOUBLE_INFINITE_LONGBITS (0x7FF0000000000000L)
-#else
-#define DOUBLE_INFINITE_LONGBITS (0x7FF0000000000000)
-#endif /* USE_L */
-#endif /* USE_LL */
 
 #define DOUBLE_MINIMUM_LONGBITS (0x1)
 
-#if defined(USE_LL)
 #define DOUBLE_MANTISSA_MASK (0x000FFFFFFFFFFFFFLL)
 #define DOUBLE_EXPONENT_MASK (0x7FF0000000000000LL)
 #define DOUBLE_NORMAL_MASK   (0x0010000000000000LL)
-#else
-#if defined(USE_L)
-#define DOUBLE_MANTISSA_MASK (0x000FFFFFFFFFFFFFL)
-#define DOUBLE_EXPONENT_MASK (0x7FF0000000000000L)
-#define DOUBLE_NORMAL_MASK   (0x0010000000000000L)
-#else
-#define DOUBLE_MANTISSA_MASK (0x000FFFFFFFFFFFFF)
-#define DOUBLE_EXPONENT_MASK (0x7FF0000000000000)
-#define DOUBLE_NORMAL_MASK   (0x0010000000000000)
-#endif /* USE_L */
-#endif /* USE_LL */
 
-/* Keep a count of the number of times we decrement and increment to
- * approximate the double, and attempt to detect the case where we
- * could potentially toggle back and forth between decrementing and
- * incrementing. It is possible for us to be stuck in the loop when
- * incrementing by one or decrementing by one may exceed or stay below
- * the value that we are looking for. In this case, just break out of
- * the loop if we toggle between incrementing and decrementing for more
- * than twice.
- */
-#define INCREMENT_DOUBLE(_x, _decCount, _incCount) \
-    { \
-        ++DOUBLE_TO_LONGBITS(_x); \
-        _incCount++; \
-        if( (_incCount > 2) && (_decCount > 2) ) { \
-            if( _decCount > _incCount ) { \
-                DOUBLE_TO_LONGBITS(_x) += _decCount - _incCount; \
-            } else if( _incCount > _decCount ) { \
-                DOUBLE_TO_LONGBITS(_x) -= _incCount - _decCount; \
-            } \
-            break; \
-        } \
-    }
-#define DECREMENT_DOUBLE(_x, _decCount, _incCount) \
-    { \
-        --DOUBLE_TO_LONGBITS(_x); \
-        _decCount++; \
-        if( (_incCount > 2) && (_decCount > 2) ) { \
-            if( _decCount > _incCount ) { \
-                DOUBLE_TO_LONGBITS(_x) += _decCount - _incCount; \
-            } else if( _incCount > _decCount ) { \
-                DOUBLE_TO_LONGBITS(_x) -= _incCount - _decCount; \
-            } \
-            break; \
-        } \
-    }
-
-#define allocateU64(x, n) if (!((x) = (uint64_t*)malloc((n) * sizeof(uint64_t)))) goto OutOfMemory;
+#define allocateU64(x, n) \
+  if (!((x) = (uint64_t*)(malloc((n) * sizeof(uint64_t))))) goto OutOfMemory;
 
 /* *********************************************************** */
 
@@ -137,8 +76,7 @@ static const jdouble double_tens[] = {
 
 /* ************** private function declarations ************** */
 static jdouble createDouble1   (uint64_t * f, int32_t length, jint e);
-static jdouble doubleAlgorithm (uint64_t * f, int32_t length, jint e,
-                                jdouble z);
+static jdouble doubleAlgorithm (uint64_t * f, int32_t length, jint e, jdouble z);
 /* *********************************************************** */
 
 #define doubleTenToTheE(e) (*(double_tens + (e)))
@@ -249,7 +187,6 @@ static jdouble createDouble(const char* s, jint e) {
     }
 
   return result;
-
 }
 
 static jdouble createDouble1(uint64_t* f, int32_t length, jint e) {
@@ -311,7 +248,6 @@ static jdouble createDouble1(uint64_t* f, int32_t length, jint e) {
      first and let it fall to zero if need be. */
 
   if (result == 0.0)
-
     DOUBLE_TO_LONGBITS (result) = DOUBLE_MINIMUM_LONGBITS;
 
   return doubleAlgorithm (f, length, e, result);
@@ -324,15 +260,6 @@ static jdouble createDouble1(uint64_t* f, int32_t length, jint e) {
  *      Clinger, Proceedings of the ACM SIGPLAN '90 Conference on
  *      Programming Language Design and Implementation, June 20-22,
  *      1990, pp. 92-101.
- *
- * There is a possibility that the function will end up in an endless
- * loop if the given approximating floating-point number (a very small
- * floating-point whose value is very close to zero) straddles between
- * two approximating integer values. We modified the algorithm slightly
- * to detect the case where it oscillates back and forth between
- * incrementing and decrementing the floating-point approximation. It
- * is currently set such that if the oscillation occurs more than twice
- * then return the original approximation.
  */
 static jdouble doubleAlgorithm(uint64_t* f, int32_t length, jint e, jdouble z) {
   uint64_t m;
@@ -341,11 +268,10 @@ static jdouble doubleAlgorithm(uint64_t* f, int32_t length, jint e, jdouble z) {
   uint64_t* y;
   uint64_t* D;
   uint64_t* D2;
-  int32_t xLength, yLength, DLength, D2Length, decApproxCount, incApproxCount;
+  int32_t xLength, yLength, DLength, D2Length;
 
   x = y = D = D2 = 0;
   xLength = yLength = DLength = D2Length = 0;
-  decApproxCount = incApproxCount = 0;
 
   do
     {
@@ -444,12 +370,13 @@ static jdouble doubleAlgorithm(uint64_t* f, int32_t length, jint e, jdouble z) {
       comparison2 = compareHighPrecision (D2, D2Length, y, yLength);
       if (comparison2 < 0)
         {
-          if (comparison < 0 && m == DOUBLE_NORMAL_MASK)
+          if (comparison < 0 && m == DOUBLE_NORMAL_MASK
+              && DOUBLE_TO_LONGBITS(z) != DOUBLE_NORMAL_MASK)
             {
               simpleShiftLeftHighPrecision (D2, D2Length, 1);
               if (compareHighPrecision (D2, D2Length, y, yLength) > 0)
                 {
-                  DECREMENT_DOUBLE (z, decApproxCount, incApproxCount);
+                  --DOUBLE_TO_LONGBITS (z);
                 }
               else
                 {
@@ -467,7 +394,7 @@ static jdouble doubleAlgorithm(uint64_t* f, int32_t length, jint e, jdouble z) {
             {
               if (comparison < 0 && m == DOUBLE_NORMAL_MASK)
                 {
-                  DECREMENT_DOUBLE (z, decApproxCount, incApproxCount);
+                  --DOUBLE_TO_LONGBITS (z);
                 }
               else
                 {
@@ -476,24 +403,24 @@ static jdouble doubleAlgorithm(uint64_t* f, int32_t length, jint e, jdouble z) {
             }
           else if (comparison < 0)
             {
-              DECREMENT_DOUBLE (z, decApproxCount, incApproxCount);
+              --DOUBLE_TO_LONGBITS (z);
               break;
             }
           else
             {
-              INCREMENT_DOUBLE (z, decApproxCount, incApproxCount);
+              ++DOUBLE_TO_LONGBITS (z);
               break;
             }
         }
       else if (comparison < 0)
         {
-          DECREMENT_DOUBLE (z, decApproxCount, incApproxCount);
+          --DOUBLE_TO_LONGBITS (z);
         }
       else
         {
           if (DOUBLE_TO_LONGBITS (z) == DOUBLE_INFINITE_LONGBITS)
             break;
-          INCREMENT_DOUBLE (z, decApproxCount, incApproxCount);
+          ++DOUBLE_TO_LONGBITS (z);
         }
     }
   while (1);
@@ -547,42 +474,6 @@ static const uint32_t float_tens[] = {
 #define FLOAT_MANTISSA_MASK (0x007FFFFF)
 #define FLOAT_EXPONENT_MASK (0x7F800000)
 #define FLOAT_NORMAL_MASK   (0x00800000)
-
-/* Keep a count of the number of times we decrement and increment to
- * approximate the double, and attempt to detect the case where we
- * could potentially toggle back and forth between decrementing and
- * incrementing. It is possible for us to be stuck in the loop when
- * incrementing by one or decrementing by one may exceed or stay below
- * the value that we are looking for. In this case, just break out of
- * the loop if we toggle between incrementing and decrementing for more
- * than twice.
- */
-#define INCREMENT_FLOAT(_x, _decCount, _incCount) \
-    { \
-        ++FLOAT_TO_INTBITS(_x); \
-        _incCount++; \
-        if( (_incCount > 2) && (_decCount > 2) ) { \
-            if( _decCount > _incCount ) { \
-                FLOAT_TO_INTBITS(_x) += _decCount - _incCount; \
-            } else if( _incCount > _decCount ) { \
-                FLOAT_TO_INTBITS(_x) -= _incCount - _decCount; \
-            } \
-            break; \
-        } \
-    }
-#define DECREMENT_FLOAT(_x, _decCount, _incCount) \
-    { \
-        --FLOAT_TO_INTBITS(_x); \
-        _decCount++; \
-        if( (_incCount > 2) && (_decCount > 2) ) { \
-            if( _decCount > _incCount ) { \
-                FLOAT_TO_INTBITS(_x) += _decCount - _incCount; \
-            } else if( _incCount > _decCount ) { \
-                FLOAT_TO_INTBITS(_x) -= _incCount - _decCount; \
-            } \
-            break; \
-        } \
-    }
 
 static jfloat createFloat(const char* s, jint e) {
   /* assumes s is a null terminated string with at least one
@@ -683,7 +574,6 @@ static jfloat createFloat(const char* s, jint e) {
     }
 
   return result;
-
 }
 
 static jfloat createFloat1 (uint64_t* f, int32_t length, jint e) {
@@ -797,15 +687,6 @@ static jfloat createFloat1 (uint64_t* f, int32_t length, jint e) {
  *      Clinger, Proceedings of the ACM SIGPLAN '90 Conference on
  *      Programming Language Design and Implementation, June 20-22,
  *      1990, pp. 92-101.
- *
- * There is a possibility that the function will end up in an endless
- * loop if the given approximating floating-point number (a very small
- * floating-point whose value is very close to zero) straddles between
- * two approximating integer values. We modified the algorithm slightly
- * to detect the case where it oscillates back and forth between
- * incrementing and decrementing the floating-point approximation. It
- * is currently set such that if the oscillation occurs more than twice
- * then return the original approximation.
  */
 static jfloat floatAlgorithm(uint64_t* f, int32_t length, jint e, jfloat z) {
   uint64_t m;
@@ -815,11 +696,9 @@ static jfloat floatAlgorithm(uint64_t* f, int32_t length, jint e, jfloat z) {
   uint64_t* D;
   uint64_t* D2;
   int32_t xLength, yLength, DLength, D2Length;
-  int32_t decApproxCount, incApproxCount;
 
   x = y = D = D2 = 0;
   xLength = yLength = DLength = D2Length = 0;
-  decApproxCount = incApproxCount = 0;
 
   do
     {
@@ -918,12 +797,13 @@ static jfloat floatAlgorithm(uint64_t* f, int32_t length, jint e, jfloat z) {
       comparison2 = compareHighPrecision (D2, D2Length, y, yLength);
       if (comparison2 < 0)
         {
-          if (comparison < 0 && m == FLOAT_NORMAL_MASK)
+          if (comparison < 0 && m == FLOAT_NORMAL_MASK
+              && FLOAT_TO_INTBITS(z) != FLOAT_NORMAL_MASK)
             {
               simpleShiftLeftHighPrecision (D2, D2Length, 1);
               if (compareHighPrecision (D2, D2Length, y, yLength) > 0)
                 {
-                  DECREMENT_FLOAT (z, decApproxCount, incApproxCount);
+                  --FLOAT_TO_INTBITS (z);
                 }
               else
                 {
@@ -941,7 +821,7 @@ static jfloat floatAlgorithm(uint64_t* f, int32_t length, jint e, jfloat z) {
             {
               if (comparison < 0 && m == FLOAT_NORMAL_MASK)
                 {
-                  DECREMENT_FLOAT (z, decApproxCount, incApproxCount);
+                  --FLOAT_TO_INTBITS (z);
                 }
               else
                 {
@@ -950,24 +830,24 @@ static jfloat floatAlgorithm(uint64_t* f, int32_t length, jint e, jfloat z) {
             }
           else if (comparison < 0)
             {
-              DECREMENT_FLOAT (z, decApproxCount, incApproxCount);
+              --FLOAT_TO_INTBITS (z);
               break;
             }
           else
             {
-              INCREMENT_FLOAT (z, decApproxCount, incApproxCount);
+              ++FLOAT_TO_INTBITS (z);
               break;
             }
         }
       else if (comparison < 0)
         {
-          DECREMENT_FLOAT (z, decApproxCount, incApproxCount);
+          --FLOAT_TO_INTBITS (z);
         }
       else
         {
           if (FLOAT_TO_INTBITS (z) == FLOAT_EXPONENT_MASK)
             break;
-          INCREMENT_FLOAT (z, decApproxCount, incApproxCount);
+          ++FLOAT_TO_INTBITS (z);
         }
     }
   while (1);
@@ -989,7 +869,7 @@ OutOfMemory:
   return z;
 }
 
-jfloat Java_java_lang_StringToReal_parseFltImpl(JNIEnv *env, jclass cls, NSString *s, jint e) {
+jfloat Java_java_lang_StringToReal_parseFltImpl(JNIEnv* env, jclass cls, NSString *s, jint e) {
     const char *str = [s UTF8String];
     if (!str) {
         return 0.0;
@@ -997,7 +877,7 @@ jfloat Java_java_lang_StringToReal_parseFltImpl(JNIEnv *env, jclass cls, NSStrin
     return createFloat(str, e);
 }
 
-jdouble Java_java_lang_StringToReal_parseDblImpl(JNIEnv *env, jclass cls, NSString *s, jint e) {
+jdouble Java_java_lang_StringToReal_parseDblImpl(JNIEnv* env, jclass cls, NSString *s, jint e) {
     const char *str = [s UTF8String];
     if (!str) {
         return 0.0;
