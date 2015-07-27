@@ -29,6 +29,7 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -120,10 +121,7 @@ public class CastResolver extends TreeVisitor {
     if (type.isInterface() && !type.isAnnotation()) {
       invocation = new FunctionInvocation("check_protocol_cast", idType, idType, null);
       invocation.getArguments().add(TreeUtil.remove(expr));
-      FunctionInvocation protocolLiteral =
-          new FunctionInvocation("@protocol", idType, idType, null);
-      protocolLiteral.getArguments().add(new SimpleName(type));
-      invocation.getArguments().add(protocolLiteral);
+      invocation.getArguments().add(new TypeLiteral(type, typeEnv));
     } else if (type.isClass() || type.isArray() || type.isAnnotation() || type.isEnum()) {
       invocation = new FunctionInvocation("check_class_cast", idType, idType, null);
       invocation.getArguments().add(TreeUtil.remove(expr));

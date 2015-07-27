@@ -15,18 +15,27 @@
 #ifndef _J2OBJC_SOURCE_H_
 #define _J2OBJC_SOURCE_H_
 
-#import "J2ObjC_common.h"
-#import "JavaObject.h"
 #import "IOSClass.h"  // Type literal accessors.
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
 #import "IOSReflection.h"  // Metadata methods.
+#import "J2ObjC_common.h"
+#import "JavaObject.h"
 #import "NSCopying+JavaCloneable.h"
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
 #import "jni.h"
-#import <libkern/OSAtomic.h>  // OSMemoryBarrier used in initialize methods.
+
+__attribute__((always_inline)) inline id check_protocol_cast(
+    id __unsafe_unretained p, IOSClass *protocol) {
+#if !defined(J2OBJC_DISABLE_CAST_CHECKS)
+  if (__builtin_expect(p && ![protocol isInstance:p], 0)) {
+    JreThrowClassCastException();
+  }
+#endif
+  return p;
+}
 
 // Only expose this function to ARC generated code.
 #if __has_feature(objc_arc)

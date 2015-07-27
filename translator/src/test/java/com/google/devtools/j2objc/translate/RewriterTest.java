@@ -400,7 +400,7 @@ public class RewriterTest extends GenerationTest {
         + "JreLoadStatic(NSString, CASE_INSENSITIVE_ORDER_)) autorelease];");
     assertTranslation(translation,
         "return [((id<JavaUtilComparator>) nil_chk(((id<JavaUtilComparator>) "
-        + "check_protocol_cast(c->var_, @protocol(JavaUtilComparator))))) "
+        + "check_protocol_cast(c->var_, JavaUtilComparator_class_())))) "
         + "compareWithId:s1 withId:s2] == 0;");
     assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *thing = "
         + "[new_ComGoogleJ2objcUtilScopedLocalRef_initWithId_(t) autorelease];");

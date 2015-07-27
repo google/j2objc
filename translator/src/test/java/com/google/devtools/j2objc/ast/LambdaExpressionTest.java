@@ -115,7 +115,7 @@ public class LambdaExpressionTest extends GenerationTest {
         functionHeader + "class Test { Function f = (Function) (x) -> x;}", "Test", "Test.m");
     assertTranslatedSegments(translation,
         "(id<Function>) check_protocol_cast(GetNonCapturingLambda(@protocol(Function), ",
-        "@protocol(Function)");
+        "Function_class_()");
   }
 
   // Test that we aren't trying to import lambda types.

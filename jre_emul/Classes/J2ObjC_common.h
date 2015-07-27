@@ -114,16 +114,6 @@ __attribute__ ((unused)) static inline id check_class_cast(id __unsafe_unretaine
   return p;
 }
 
-__attribute__ ((unused)) static inline id check_protocol_cast(id __unsafe_unretained p,
-                                                              Protocol *protocol) {
-#if !defined(J2OBJC_DISABLE_CAST_CHECKS)
-  if (__builtin_expect(p && ![p conformsToProtocol:protocol], 0)) {
-    JreThrowClassCastException();
-  }
-#endif
-  return p;
-}
-
 __attribute__((always_inline)) inline id JreLoadVolatileId(volatile_id *pVar) {
   return (__bridge id)__c11_atomic_load(pVar, __ATOMIC_SEQ_CST);
 }

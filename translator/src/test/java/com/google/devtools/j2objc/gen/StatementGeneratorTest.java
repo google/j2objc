@@ -122,7 +122,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals("id<JavaUtilList> l = "
-        + "(id<JavaUtilList>) check_protocol_cast(al, @protocol(JavaUtilList));", result);
+        + "(id<JavaUtilList>) check_protocol_cast(al, JavaUtilList_class_());", result);
   }
 
   public void testCatchTranslation() throws IOException {
