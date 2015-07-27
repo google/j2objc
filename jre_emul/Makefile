@@ -374,6 +374,7 @@ JAVA_SOURCES = \
 	java/net/HttpCookie.java \
 	java/net/HttpRetryException.java \
 	java/net/HttpURLConnection.java \
+	java/net/IDN.java \
 	java/net/Inet4Address.java \
 	java/net/Inet6Address.java \
 	java/net/InetAddress.java \
@@ -1030,6 +1031,7 @@ JAVA_SOURCES = \
 	libcore/icu/ICU.java \
 	libcore/icu/LocaleData.java \
 	libcore/icu/NativeDecimalFormat.java \
+	libcore/icu/NativeIDN.java \
 	libcore/icu/TimeZoneNames.java \
 	libcore/icu/TimeZones.java \
 	libcore/internal/StringPool.java \
