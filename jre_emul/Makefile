@@ -957,6 +957,7 @@ JAVA_SOURCES = \
 	javax/net/ssl/TrustManager.java \
 	javax/net/ssl/TrustManagerFactory.java \
 	javax/net/ssl/TrustManagerFactorySpi.java \
+	javax/net/ssl/X509TrustManager.java \
 	javax/security/auth/Destroyable.java \
 	javax/security/auth/DestroyFailedException.java \
 	javax/security/auth/x500/X500Principal.java \
