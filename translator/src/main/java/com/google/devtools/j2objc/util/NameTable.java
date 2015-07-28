@@ -844,18 +844,18 @@ public class NameTable {
 
   private String getFullNameInner(ITypeBinding binding) {
     binding = typeEnv.mapType(binding.getErasure());  // Make sure type variables aren't included.
-    ITypeBinding outerBinding = binding.getDeclaringClass();
-    if (outerBinding != null) {
-      String baseName = getFullNameInner(outerBinding) + '_' + getTypeSubName(binding);
-      return (outerBinding.isEnum() && binding.isAnonymous()) ? baseName : baseName;
-    }
-    String name = binding.getQualifiedName();
 
     // Use ObjectiveCType annotation, if it exists.
     IAnnotationBinding annotation = BindingUtil.getAnnotation(binding, ObjectiveCName.class);
     if (annotation != null) {
       return (String) BindingUtil.getAnnotationValue(annotation, "value");
     }
+
+    ITypeBinding outerBinding = binding.getDeclaringClass();
+    if (outerBinding != null) {
+      return getFullNameInner(outerBinding) + '_' + getTypeSubName(binding);
+    }
+    String name = binding.getQualifiedName();
 
     // Use mapping file entry, if it exists.
     if (Options.getClassMappings().containsKey(name)) {

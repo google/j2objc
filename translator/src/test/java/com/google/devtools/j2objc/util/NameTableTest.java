@@ -151,14 +151,18 @@ public class NameTableTest extends GenerationTest {
   }
 
   public void testRenameClassAnnotation() throws IOException {
-    addSourceFile("@com.google.j2objc.annotations.ObjectiveCName(\"TestName\") "
-        + "public class A { static void test() {}}", "A.java");
+    addSourceFile("package foo; "
+        + "@com.google.j2objc.annotations.ObjectiveCName(\"TestName\") "
+        + "public class A { public static void test() {} "
+        + "@com.google.j2objc.annotations.ObjectiveCName(\"TheInner\") "
+        + "public static class C { public static void test2() {} } }", "foo/A.java");
     addSourceFile(
-        "public class B { void test() { A.test(); }}", "B.java");
-    String translation = translateSourceFile("A", "A.h");
+        "public class B { void test() { foo.A.test(); foo.A.C.test2(); }}", "B.java");
+    String translation = translateSourceFile("foo.A", "foo/A.h");
     assertTranslation(translation, "@interface TestName : NSObject");
+    assertTranslation(translation, "@interface TheInner : NSObject");
     translation = translateSourceFile("B", "B.m");
-    assertTranslation(translation, "TestName_test();");
+    assertTranslatedLines(translation, "TestName_test();", "TheInner_test2();");
   }
 
   public void testRenameMapping() throws IOException {
