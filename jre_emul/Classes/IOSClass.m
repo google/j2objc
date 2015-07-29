@@ -1105,12 +1105,24 @@ static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
   return sizeof(id);
 }
 
+NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
+  if (!resourceName || [resourceName length] == 0) {
+    return resourceName;
+  }
+  if ([resourceName characterAtIndex:0] == '/') {
+    return resourceName;
+  }
+  NSString *relativePath = [[[cls getPackage] getName] stringByReplacingOccurrencesOfString:@"."
+                                                                                 withString:@"/"];
+  return [NSString stringWithFormat:@"/%@/%@", relativePath, resourceName];
+}
+
 - (JavaNetURL *)getResource:(NSString *)name {
-  return [[self getClassLoader] getResourceWithNSString:name];
+  return [[self getClassLoader] getResourceWithNSString:resolveResourceName(self, name)];
 }
 
 - (JavaIoInputStream *)getResourceAsStream:(NSString *)name {
-  return [[self getClassLoader] getResourceAsStreamWithNSString:name];
+  return [[self getClassLoader] getResourceAsStreamWithNSString:resolveResourceName(self, name)];
 }
 
 // These java.security methods don't have an iOS equivalent, so always return nil.

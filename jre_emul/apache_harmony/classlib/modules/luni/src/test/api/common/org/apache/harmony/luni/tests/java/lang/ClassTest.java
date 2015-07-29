@@ -507,6 +507,10 @@ public class ClassTest extends junit.framework.TestCase {
         final String name = "/org/apache/harmony/luni/tests/test_resource.txt";
         URL res = getClass().getResource(name);
         assertNotNull(res);
+
+        final String relativeName = "test_resource.txt";
+        res = getClass().getResource(relativeName);
+        assertNotNull(res);
     }
 
     /**
@@ -516,6 +520,10 @@ public class ClassTest extends junit.framework.TestCase {
         final String name = "/org/apache/harmony/luni/tests/test_resource.txt";
         assertNotNull("the file " + name + " can not be found in this directory", getClass()
                 .getResourceAsStream(name));
+
+        final String relativeName = "test_resource.txt";
+        assertNotNull("the resource " + relativeName + " can not be found in this directory",
+            getClass().getResourceAsStream(relativeName));
 
         final String nameBadURI = "org/apache/harmony/luni/tests/test_resource.txt2";
         assertNull("the file " + nameBadURI + " should not be found in this directory",

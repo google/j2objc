@@ -574,6 +574,7 @@ TEST_OBJS = \
 
 TEST_RESOURCES_SRCS = \
     org/apache/harmony/luni/tests/test_resource.txt \
+    org/apache/harmony/luni/tests/java/lang/test_resource.txt \
     org/apache/harmony/luni/tests/java/io/testfile-utf8.txt \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.harmony.ser \
     serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.0.ser \
