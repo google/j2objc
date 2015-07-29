@@ -18,26 +18,7 @@ import junit.framework.TestCase;
 
 import java.util.ArrayList;
 import java.util.List;
-
-interface Function<F, T> {
-  T apply(F input);
-}
-
-interface Callable<T> {
-  T call();
-}
-
-interface Supplier<T> {
-  T get();
-}
-
-interface Consumer<R> {
-  void accept(R input);
-}
-
-interface FourToOne<F, G, H, I, R> {
-  R apply(F f, G g, H h, I i);
-}
+import java.util.concurrent.Callable;
 
 interface UnaryOperator<T> {
   public T apply(T t);
@@ -57,9 +38,9 @@ public class LambdaTest extends TestCase {
   public LambdaTest() {}
 
   public void testBasicReflection() {
-    assertEquals(false, ((Function) (x) -> 1).equals((Function) (x) -> 1));
-    Function f = x -> 1;
-    Function g = f;
+    assertEquals(false, ((Lambdas.One) (x) -> 1).equals((Lambdas.One) (x) -> 1));
+    Lambdas.One f = x -> 1;
+    Lambdas.One g = f;
     assertEquals(f, g);
     assertEquals(f.toString(), "" + g);
     String lambdaClassName = f.getClass().getName();
@@ -85,8 +66,8 @@ public class LambdaTest extends TestCase {
         return "Bar";
       }
 
-      Supplier fooS = () -> outer();
-      Supplier barS = () -> findMe();
+      Lambdas.Zero fooS = () -> outer();
+      Lambdas.Zero barS = () -> findMe();
     }
 
     Bar getBar() {
@@ -95,39 +76,35 @@ public class LambdaTest extends TestCase {
   }
 
   public void testOuterMethodCalls() {
-    Supplier s = () -> outerCall();
-    assertEquals("Foo", s.get());
-    Supplier s2 = () -> privateOuterCall();
-    assertEquals("Bar", s2.get());
+    assertEquals("Foo", Lambdas.get(() -> outerCall()).apply());
+    assertEquals("Bar", Lambdas.get(() -> privateOuterCall()).apply());
     Foo foo = new Foo();
-    Supplier s3 = () -> foo.outer();
-    assertEquals("Foo", s3.get());
-    Supplier s4 = () -> foo.getBar().barS.get();
-    assertEquals("Bar", s4.get());
+    assertEquals("Foo", Lambdas.get(() -> foo.outer()).apply());
+    assertEquals("Bar", Lambdas.get(() -> foo.getBar().barS.apply()).apply());
   }
 
   Integer outerX = 0;
   int outerY = 0;
 
   public void testOuterVarCapture() {
-    Supplier<Integer> s = () -> outerX;
-    Supplier<Integer> s2 = () -> outerY;
-    assertEquals((Integer) 0, s.get());
-    assertEquals((Integer) 0, s2.get());
+    Lambdas.Zero s = () -> outerX;
+    Lambdas.Zero s2 = () -> outerY;
+    assertEquals((Integer) 0, s.apply());
+    assertEquals((Integer) 0, s2.apply());
     outerX += 42;
     outerY += 42;
-    assertEquals((Integer) 42, s.get());
-    assertEquals((Integer) 42, s2.get());
+    assertEquals((Integer) 42, s.apply());
+    assertEquals((Integer) 42, s2.apply());
     outerX++;
     outerY++;
-    assertEquals((Integer) 43, s.get());
-    assertEquals((Integer) 43, s2.get());
+    assertEquals((Integer) 43, s.apply());
+    assertEquals((Integer) 43, s2.apply());
     outerX++;
     outerY++;
   }
 
   public void testFunctionArray() throws Exception {
-    List<Function> fs = new ArrayList<Function>();
+    List<Lambdas.One> fs = new ArrayList<>();
     int[] nums = { 3, 2, 1, 0 };
     for (int i : nums) {
       fs.add((x) -> i);
@@ -167,55 +144,57 @@ public class LambdaTest extends TestCase {
     assertEquals((Integer) 55, yComb(fibonacci).apply(10));
   }
 
-  Function outerF = (x) -> x;
+  Lambdas.One outerF = (x) -> x;
 
   public void testOuterFunctions() throws Exception {
     assertEquals(42, outerF.apply(42));
   }
 
-  static Function staticF = (x) -> x;
+  static Lambdas.One staticF = (x) -> x;
 
   public void testStaticFunctions() throws Exception {
     assertEquals(42, staticF.apply(42));
   }
 
   public void testNestedLambdas() throws Exception {
-    Function<String, Function<String, String>> f = (x) -> (y) -> x;
+    Lambdas.One<String, Lambdas.One<String, String>> f = (x) -> (y) -> x;
     assertEquals(f.apply("Foo").apply("Bar"), "Foo");
-    Function<Integer, Function<Integer, Integer>> f2 = (x) -> (y) -> x;
+    Lambdas.One<Integer, Lambdas.One<Integer, Integer>> f2 = (x) -> (y) -> x;
     assertEquals(f2.apply(42).apply(43), Integer.valueOf(42));
-    Function<Integer, Function<Integer, Integer>> f3 = (y) -> (x) -> x;
+    Lambdas.One<Integer, Lambdas.One<Integer, Integer>> f3 = (y) -> (x) -> x;
     assertEquals(f3.apply(43).apply(42), Integer.valueOf(42));
-    Function<String, Function<String, Integer>> f4 = (x) -> (y) -> Integer.parseInt(x);
+    Lambdas.One<String, Lambdas.One<String, Integer>> f4 = (x) -> (y) -> Integer.parseInt(
+        x);
     assertEquals(f4.apply("42").apply("43"), Integer.valueOf(42));
-    Function<String, Function<Integer, Integer>> f5 = (x) -> (y) -> Integer.parseInt(x);
+    Lambdas.One<String, Lambdas.One<Integer, Integer>> f5 = (x) -> (y) -> Integer.parseInt(
+        x);
     assertEquals(f5.apply("42").apply(43), Integer.valueOf(42));
     Callable<Callable> c2 = () -> () -> 42;
     assertEquals(c2.call().call(), 42);
-    Supplier<Supplier> s2 = () -> () -> 42;
-    assertEquals(s2.get().get(), 42);
+    Lambdas.Zero<Lambdas.Zero> s2 = () -> () -> 42;
+    assertEquals(s2.apply().apply(), 42);
   }
 
   // Tests outer reference resolution, and that inner fields are being correctly resolved for
   // lambdas with implicit blocks.
   public void testAdditionInLambda() throws Exception {
-    Function f = new Function<Integer, Integer>() {
+    Lambdas.One f = new Lambdas.One<Integer, Integer>() {
         @Override
       public Integer apply(Integer x) {
         return x + 20;
       }
     };
     assertEquals(42, f.apply(22));
-    Function<Integer, Integer> g = x -> {
+    Lambdas.One<Integer, Integer> g = x -> {
       return x + 20;
     };
     assertEquals((Integer) 42, g.apply(22));
-    Function<Integer, Integer> h = x -> x + 20;
+    Lambdas.One<Integer, Integer> h = x -> x + 20;
     assertEquals((Integer) 42, h.apply(22));
   }
 
   public void testBasicAnonymousClass() throws Exception {
-    Function h = new Function() {
+    Lambdas.One h = new Lambdas.One() {
         @Override
       public Object apply(Object x) {
         return x;
@@ -225,28 +204,29 @@ public class LambdaTest extends TestCase {
   }
 
   public void testBasicFunction() throws Exception {
-    Function f = x -> x;
+    Lambdas.One f = x -> x;
     assertEquals(42, f.apply(42));
-    Function<Integer, Integer> f2 = x -> x;
+    Lambdas.One<Integer, Integer> f2 = x -> x;
     assertEquals((Integer) 42, f2.apply(42));
-    Function f3 = x -> {
+    Lambdas.One f3 = x -> {
       int y = 42;
       return y;
     };
     assertEquals(42, f3.apply(null));
-    FourToOne<String, Double, Integer, Boolean, String> appendFour = (a, b, c, d) -> a + b + c + d;
+    Lambdas.Four<String, Double, Integer, Boolean, String> appendFour = (a, b, c, d) -> a + b + c
+        + d;
     assertEquals("Foo4.214true", appendFour.apply("Foo", 4.2, 14, true));
   }
 
   public void testBasicSupplier() throws Exception {
-    Supplier s = () -> 42;
-    assertEquals(42, s.get());
+    Lambdas.Zero s = () -> 42;
+    assertEquals(42, s.apply());
   }
 
   public void testBasicConsumer() throws Exception {
     Object[] ls = new Object[1];
-    Consumer c = (x) -> ls[0] = x;
-    c.accept(42);
+    Lambdas.VoidOne c = (x) -> ls[0] = x;
+    c.apply(42);
     assertEquals(42, ls[0]);
   }
 

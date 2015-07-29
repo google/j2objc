@@ -44,7 +44,7 @@ public class MethodReferenceTest extends GenerationTest {
         + "interface FunInt<T> { T apply(int x); }"
         + "interface FunInt4<T> { T apply(int x, I j, String s, Object o); }"
         + "interface Call<T> { T call(); }";
-    
+
     String noArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { Call<I> iInit = I::new; }",
         "Test", "Test.m");
@@ -89,5 +89,28 @@ public class MethodReferenceTest extends GenerationTest {
         typeReferenceHeader + "class Test { H h = int[]::clone; }", "Test", "Test.m");
     assertTranslatedSegments(translation, "GetNonCapturingLambda", "@selector(copy__WithIntArray:)",
         "^IOSIntArray *(id _self, IOSIntArray * a)", "return [a clone];");
+  }
+
+  public void testVarArgs() throws IOException {
+    String varArgsHeader = "interface I { void foo(int a1, String a2, String a3); }"
+        + "interface I2 { void foo(int a1, String a2, String a3, String a4); }"
+        + "class Y { static void m(int a1, String... rest) { } }";
+    String translation = translateSourceFile(
+        varArgsHeader + "class Test { I i = Y::m; I2 i2 = Y::m; }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "JreStrongAssign(&self->i_, GetNonCapturingLambda(@protocol(I), "
+        + "@\"Y_mWithInt_withNSString_withNSString_\", "
+        + "@selector(fooWithInt:withNSString:withNSString:),",
+        "^void(id _self, jint a, NSString * b, NSString * c) {",
+        "Y_mWithInt_withNSStringArray_(a, [IOSObjectArray arrayWithObjects:(id[]){ b, c } "
+        + "count:2 type:NSString_class_()]);",
+        "}));",
+        "JreStrongAssign(&self->i2_, GetNonCapturingLambda(@protocol(I2), "
+        + "@\"Y_mWithInt_withNSString_withNSString_withNSString_\", "
+        + "@selector(fooWithInt:withNSString:withNSString:withNSString:),",
+        "^void(id _self, jint a, NSString * b, NSString * c, NSString * d) {",
+        "Y_mWithInt_withNSStringArray_(a, [IOSObjectArray arrayWithObjects:(id[]){ b, c, d } "
+        + "count:3 type:NSString_class_()]);");
   }
 }

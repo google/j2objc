@@ -15,18 +15,6 @@ package com.google.j2objc.java8;
 
 import junit.framework.TestCase;
 
-interface FunInt<T> {
-  T apply(int x);
-}
-
-interface FunInt4<T> {
-  T apply(int x, I j, String s, Object o);
-}
-
-interface Call<T> {
-  T call();
-}
-
 class I {
   String s = "...";
   I() { }
@@ -44,6 +32,19 @@ class I {
   }
   String getS() {
     return s;
+  }
+
+  I(Object a1, Object... rest) {
+    s = a1 + p(rest);
+  }
+
+  static String p(Object... ls) {
+    String out = " [ ";
+    for (Object x : ls) {
+      out += x;
+      out += ' ';
+    }
+    return out + ']';
   }
 }
 
@@ -75,26 +76,41 @@ final class J {
 public class CreationReferenceTest extends TestCase {
   public CreationReferenceTest() {}
 
+  interface FunInt<T> {
+    T apply(int x);
+  }
+
+  interface FunInt4<T> {
+    T apply(int x, I j, String s, Object o);
+  }
+
   public void testBasicReferences() throws Exception {
-    Call<I> iInit = I::new;
+    Lambdas.Zero<I> iInit = I::new;
     FunInt<I> iInit2 = I::new;
     FunInt4<I> iInit3 = I::new;
-    I myI = iInit.call();
+    I myI = iInit.apply();
     I myI2 = iInit2.apply(42);
     I myI3 = iInit3.apply(0, myI, "43", "");
     assertEquals("World", myI.world());
     assertEquals("...", myI.getS());
     assertEquals("42", myI2.getS());
     assertEquals("43", myI3.getS());
-    Call<J> jInit = J::new;
+    Lambdas.Zero<J> jInit = J::new;
     FunInt<J> jInit2 = J::new;
     FunInt4<J> jInit3 = J::new;
-    J myJ = jInit.call();
+    J myJ = jInit.apply();
     J myJ2 = jInit2.apply(42);
     J myJ3 = jInit3.apply(43, myI, "", "");
     assertEquals("World", myJ.world());
     assertEquals(41, myJ.getX());
     assertEquals(42, myJ2.getX());
     assertEquals(43, myJ3.getX());
+  }
+
+  public void testVarargs() throws Exception {
+    Lambdas.Three f = I::new;
+    Lambdas.Four<Object, Object, Object, Object, I> f2 = I::new;
+    assertEquals("12 [ 22 42 ]", ((I) f.apply(12, 22, "42")).getS());
+    assertEquals("10 [ 20 20 10 ]", f2.apply(10, 20, "20", "10").s);
   }
 }

@@ -595,6 +595,42 @@ public class NameTable {
   }
 
   /**
+   * If a referenced method isn't a varargs method, then we can use the selector of the method
+   * binding to uniquely identify method references. If it is a varargs method, then we need to
+   * identify the reference by functional interface selector, as it contains the actual argument
+   * layout for this instance.
+   */
+  public String getMethodReferenceName(IMethodBinding method, IMethodBinding functionalInterface) {
+    if (method.isVarargs()) {
+      return getFullName(method.getDeclaringClass()) + '_'
+          + addParamNames(functionalInterface.getMethodDeclaration(), getMethodName(method), '_');
+    } else {
+      return getFullFunctionName(method);
+    }
+  }
+
+  /**
+   * Increments and returns a generic argument, as needed by lambda wrapper blocks. Possible
+   * variable names range from 'a' to 'zz'. This only supports 676 arguments, but this more than the
+   * java limit of 255 / 254 parameters for static / non-static parameters, respectively.
+   */
+  public char[] incrementVariable(char[] var) {
+    if (var == null) {
+      return new char[] { 'a' };
+    }
+    if (var[var.length - 1]++ == 'z') {
+      if (var.length == 1) {
+        var = new char[2];
+        var[0] = 'a';
+      } else {
+        var[0]++;
+      }
+      var[1] = 'a';
+    }
+    return var;
+  }
+
+  /**
    * Similar to getFullFunctionName, but doesn't add the selector to the name, as lambda expressions
    * cannot be overloaded.
    */

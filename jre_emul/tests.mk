@@ -26,6 +26,7 @@ SUPPORT_SOURCES = \
     JSR166TestCase.java \
     android/test/MoreAsserts.java \
     android/text/SpannableTest.java \
+    com/google/j2objc/java8/Lambdas.java \
     com/google/j2objc/package-info.java \
     com/google/j2objc/TestAnnotation.java \
     java/lang/test/Example.java \

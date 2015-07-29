@@ -61,6 +61,7 @@ import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MemberValuePair;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.MethodReference;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NameQualifiedType;
 import com.google.devtools.j2objc.ast.NativeExpression;
@@ -450,16 +451,15 @@ public class StatementGenerator extends TreeVisitor {
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "CreationReference in translator with -source less than 8.";
-    ITypeBinding functionalTypeBinding = node.getTypeBinding();
-    ITypeBinding returnType = node.getType().getTypeBinding();
     IMethodBinding methodBinding = node.getMethodBinding();
+    ITypeBinding returnType = node.getType().getTypeBinding();
     boolean isSelector = false;
-    printMethodReferenceCallWithoutBlocks(functionalTypeBinding, methodBinding);
-    printBlockPreExpression(returnType, methodBinding);
+    printMethodReferenceCallWithoutBlocks(node);
+    printBlockPreExpression(node, returnType);
     printBlockOptionalReturn(returnType, isSelector);
     buffer.append(nameTable.getAllocatingConstructorName(methodBinding));
     buffer.append('(');
-    printGenericArguments(methodBinding, isSelector);
+    printInvocationArguments(node, isSelector);
     printBlockTerminator(isSelector);
     return false;
   }
@@ -468,15 +468,10 @@ public class StatementGenerator extends TreeVisitor {
     printGenericArgumentsInner(methodBinding, isSelector, false);
   }
 
-  /**
-   * Prints a list of generic arguments, as needed by lambda wrapper blocks. Possibe variable names
-   * range from 'a' to 'zz'.
-   */
+
   private void printGenericArgumentsInner(IMethodBinding methodBinding, boolean isSelector,
       boolean withTypes) {
-    // Only supports 676 arguments, but this more than the java limit of 255 / 254 parameters for
-    // static / non-static parameters, respectively.
-    char[] var = { 'a' };
+    char[] var = nameTable.incrementVariable(null);
     if (isSelector) {
       String fullSelector = nameTable.getMethodSelector(methodBinding);
       String[] selectors = fullSelector.split(":");
@@ -491,53 +486,96 @@ public class StatementGenerator extends TreeVisitor {
           buffer.append(selectors[i]);
           buffer.append(':');
           buffer.append(var);
-          var = incrementVariable(var);
+          var = nameTable.incrementVariable(var);
+        }
+      }
+    } else {
+      if (!withTypes && methodBinding.isVarargs()) {
+        boolean delimiterFlag = false;
+        for (int i = 0; i < methodBinding.getParameterTypes().length - 1; i++) {
+          ITypeBinding t = methodBinding.getParameterTypes()[i];
+          if (delimiterFlag) {
+            buffer.append(", ");
+          } else {
+            delimiterFlag = true;
+          }
+          if (withTypes) {
+            buffer.append(nameTable.getSpecificObjCType(t));
+            buffer.append(' ');
+          }
+          buffer.append(var);
+          var = nameTable.incrementVariable(var);
+        }
+      } else {
+        boolean delimiterFlag = false;
+        for (ITypeBinding t : methodBinding.getParameterTypes()) {
+          if (delimiterFlag) {
+            buffer.append(", ");
+          } else {
+            delimiterFlag = true;
+          }
+          if (withTypes) {
+            buffer.append(nameTable.getSpecificObjCType(t));
+            buffer.append(' ');
+          }
+          buffer.append(var);
+          var = nameTable.incrementVariable(var);
+        }
+      }
+    }
+  }
+
+  private void printInvocationArguments(MethodReference node, boolean isSelector) {
+    IMethodBinding methodBinding = node.getMethodBinding();
+    if (isSelector) {
+      String fullSelector = nameTable.getMethodSelector(methodBinding);
+      String[] selectors = fullSelector.split(":");
+      if (selectors.length == 1 && fullSelector.charAt(fullSelector.length() - 1) != ':') {
+        buffer.append(' ');
+        buffer.append(fullSelector);
+      } else {
+        assert node.getInvocationArguments().size()
+            == selectors.length : "Selector and parameter counts differ.";
+        for (int i = 0; i < selectors.length; i++) {
+          buffer.append(' ');
+          buffer.append(selectors[i]);
+          buffer.append(':');
+          node.getInvocationArguments().get(i).accept(this);
         }
       }
     } else {
       boolean delimiterFlag = false;
-      for (ITypeBinding t : methodBinding.getParameterTypes()) {
+      for (int i = 0; i < node.getInvocationArguments().size(); i++) {
+        Expression invocationArgument = node.getInvocationArguments().get(i);
         if (delimiterFlag) {
           buffer.append(", ");
         } else {
           delimiterFlag = true;
         }
-        if (withTypes) {
-          buffer.append(nameTable.getSpecificObjCType(t));
-          buffer.append(' ');
-        }
-        buffer.append(var);
-        var = incrementVariable(var);
+        invocationArgument.accept(this);
       }
     }
-  }
-
-  char[] incrementVariable(char[] var) {
-    if (var[var.length - 1]++ == 'z') {
-      if (var.length == 1) {
-        var = new char[2];
-        var[0] = 'a';
-      } else {
-        var[0]++;
-      }
-      var[1] = 'a';
-    }
-    return var;
   }
 
   // Prints a block declaration up to first expression within a block.
-  public void printBlockPreExpression(ITypeBinding returnType, IMethodBinding methodBinding) {
+  private void printBlockPreExpression(IMethodBinding functionalInterface,
+      ITypeBinding returnType) {
     buffer.append('^');
     buffer.append(nameTable.getSpecificObjCType(returnType));
     // Required argument for imp_implementationWithBlock.
     buffer.append("(id _self");
-    if (methodBinding.getParameterTypes().length > 0) {
+    if (functionalInterface.getParameterTypes().length > 0) {
       buffer.append(", ");
       boolean isSelector = false;
       boolean withTypes = true;
-      printGenericArgumentsInner(methodBinding, isSelector, withTypes);
+      printGenericArgumentsInner(functionalInterface, isSelector, withTypes);
     }
     buffer.append(") {\n");
+  }
+
+  private void printBlockPreExpression(MethodReference node, ITypeBinding returnType) {
+    IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
+    printBlockPreExpression(functionalInterface, returnType);
   }
 
   private void printBlockOptionalReturn(ITypeBinding returnType, boolean isSelector) {
@@ -549,7 +587,7 @@ public class StatementGenerator extends TreeVisitor {
     }
   }
 
-  public void printBlockTerminator(boolean isSelector) {
+  private void printBlockTerminator(boolean isSelector) {
     if (isSelector) {
       buffer.append(']');
     } else {
@@ -597,24 +635,22 @@ public class StatementGenerator extends TreeVisitor {
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "ExpressionMethodReference in translator with -source less than 8.";
-    ITypeBinding functionalTypeBinding = node.getTypeBinding();
-    ITypeBinding returnType = functionalTypeBinding.getFunctionalInterfaceMethod().getReturnType();
     IMethodBinding methodBinding = node.getMethodBinding();
-    printMethodReferenceCallWithoutBlocks(functionalTypeBinding, methodBinding);
+    ITypeBinding returnType = methodBinding.getReturnType();
+    printMethodReferenceCallWithoutBlocks(node);
     boolean isSelector = !BindingUtil.isStatic(methodBinding);
-    printBlockPreExpression(returnType, methodBinding);
+    printBlockPreExpression(node, returnType);
     printBlockOptionalReturn(returnType, isSelector);
     node.getExpression().accept(this);
     if (isSelector) {
       // Non-static references are selectors sent to a class instance.
-      printGenericArguments(methodBinding, isSelector);
+      printInvocationArguments(node, isSelector);
     } else {
-      // Static references need to resolve to our outer static functions.
+      // Static references need to resolve to our generated outer static functions.
       buffer.append('_');
       buffer.append(nameTable.getFunctionName(methodBinding));
       buffer.append('(');
-      printGenericArguments(methodBinding, isSelector);
-
+      printInvocationArguments(node, isSelector);
     }
     printBlockTerminator(isSelector);
     return false;
@@ -770,8 +806,7 @@ public class StatementGenerator extends TreeVisitor {
     // TODO(kirbs): Implement correct conversion of Java 8 lambdas to Objective-C blocks.
     assert Options.isJava8Translator() :
       "Lambda expression in translator with -source less than 8.";
-    printLambdaCall(node.functionalTypeBinding(), node.getMethodBinding(),
-        node.getParameters(), node.isCapturing());
+    printLambdaCall(node);
     node.getBody().accept(this);
     buffer.append(")");
     return false;
@@ -783,10 +818,10 @@ public class StatementGenerator extends TreeVisitor {
    * an outer block that matches the function signature of the functional interface, which calls an
    * underlying block specific to the instance.
    */
-  public void printBlockCallWrapper(IMethodBinding methodBinding) {
+  private void printBlockCallWrapper(IMethodBinding methodBinding) {
     boolean isSelector = false;
     ITypeBinding returnType = methodBinding.getReturnType();
-    printBlockPreExpression(returnType, methodBinding);
+    printBlockPreExpression(methodBinding, returnType);
     buffer.append("id (^block)() = objc_getAssociatedObject(_self, (void *) 0);\n");
     printBlockOptionalReturn(returnType, isSelector);
     buffer.append("block(_self");
@@ -801,12 +836,15 @@ public class StatementGenerator extends TreeVisitor {
    * Creates a lambda call by combining the call without blocks and the call blocks, so that the
    * calling portion sans blocks can be reused by method references.
    */
-  private void printLambdaCall(ITypeBinding functionalTypeBinding, IMethodBinding methodBinding,
-      List<VariableDeclaration> parameters, boolean isCapturing) {
+  private void printLambdaCall(LambdaExpression node) {
+    ITypeBinding functionalTypeBinding = node.functionalTypeBinding();
+    IMethodBinding methodBinding = node.getMethodBinding();
+    IMethodBinding functionalInterface = functionalTypeBinding.getFunctionalInterfaceMethod();
+    List<VariableDeclaration> parameters = node.getParameters();
+    boolean isCapturing = node.isCapturing();
     String newClassName = nameTable.getFullLambdaName(methodBinding);
     printLambdaCallWithoutBlocks(functionalTypeBinding, newClassName,
         isCapturing);
-    IMethodBinding functionalInterface = functionalTypeBinding.getFunctionalInterfaceMethod();
     printLambdaCallBlocks(functionalInterface, parameters, isCapturing);
   }
 
@@ -815,8 +853,14 @@ public class StatementGenerator extends TreeVisitor {
    */
   private void printLambdaCallWithoutBlocks(ITypeBinding functionalTypeBinding, String newClassName,
       boolean isCapturing) {
-    IMethodBinding functionalInterface = functionalTypeBinding.getFunctionalInterfaceMethod();
+    printCallWithoutBlocksInner(functionalTypeBinding, newClassName,
+        isCapturing);
+  }
+
+  private void printCallWithoutBlocksInner(ITypeBinding functionalTypeBinding, String newClassName,
+      boolean isCapturing) {
     String functionalClassName = nameTable.getFullName(functionalTypeBinding);
+    IMethodBinding functionalInterface = functionalTypeBinding.getFunctionalInterfaceMethod();
     if (isCapturing) {
       buffer.append("GetCapturingLambda(");
     } else {
@@ -832,19 +876,21 @@ public class StatementGenerator extends TreeVisitor {
   }
 
   /**
-   * Convenience method for calling printLambdaCallWithoutBlocks from method references.
+   * Convenience method for calling printCallWithoutBlocksInner from method references.
    */
-  private void printMethodReferenceCallWithoutBlocks(ITypeBinding functionalTypeBinding,
-      IMethodBinding methodBinding) {
+  private void printMethodReferenceCallWithoutBlocks(MethodReference node) {
+    IMethodBinding methodBinding = node.getMethodBinding();
+    ITypeBinding functionalTypeBinding = node.getTypeBinding();
+    IMethodBinding functionalInterface = functionalTypeBinding.getFunctionalInterfaceMethod();
+    String newClassName = nameTable.getMethodReferenceName(methodBinding, functionalInterface);
     boolean isCapturing = false;
-    String newClassName = nameTable.getFullFunctionName(methodBinding);
-    printLambdaCallWithoutBlocks(functionalTypeBinding, newClassName, isCapturing);
+    printCallWithoutBlocksInner(functionalTypeBinding, newClassName, isCapturing);
   }
 
   /**
    * The lambda wrapper and method blocks.
    */
-  public void printLambdaCallBlocks(IMethodBinding functionalInterface,
+  private void printLambdaCallBlocks(IMethodBinding functionalInterface,
       List<VariableDeclaration> parameters, boolean isCapturing) {
     if (isCapturing) {
       printBlockCallWrapper(functionalInterface);
@@ -1140,15 +1186,13 @@ public class StatementGenerator extends TreeVisitor {
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "SuperMethodReference in translator with -source less than 8.";
-    ITypeBinding functionalTypeBinding = node.getTypeBinding();
-    IMethodBinding methodBinding = node.getMethodBinding();
-    ITypeBinding returnType = methodBinding.getReturnType();
-    printMethodReferenceCallWithoutBlocks(functionalTypeBinding, methodBinding);
+    ITypeBinding returnType = node.getMethodBinding().getReturnType();
     boolean isSelector = true;
-    printBlockPreExpression(returnType, methodBinding);
+    printMethodReferenceCallWithoutBlocks(node);
+    printBlockPreExpression(node, returnType);
     printBlockOptionalReturn(returnType, isSelector);
     buffer.append("super");
-    printGenericArguments(methodBinding, isSelector);
+    printInvocationArguments(node, isSelector);
     printBlockTerminator(isSelector);
     return false;
   }
@@ -1363,21 +1407,22 @@ public class StatementGenerator extends TreeVisitor {
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "TypeMethodReference in translator with -source less than 8.";
-    ITypeBinding functionalTypeBinding = node.getTypeBinding();
-    ITypeBinding returnType = node.getMethodBinding().getReturnType();
     IMethodBinding methodBinding = node.getMethodBinding();
-    printMethodReferenceCallWithoutBlocks(functionalTypeBinding, methodBinding);
+    ITypeBinding returnType = methodBinding.getReturnType();
+    printMethodReferenceCallWithoutBlocks(node);
     boolean isSelector = true;
-    printBlockPreExpression(returnType, methodBinding);
+    printBlockPreExpression(node, returnType);
     printBlockOptionalReturn(returnType, isSelector);
-    buffer.append("a ");
+    List<Expression> invocationArguments = node.getInvocationArguments();
+    assert invocationArguments.size() > 0 : "Type method reference does not pass self.";
+    invocationArguments.get(0).accept(this);
+    buffer.append(' ');
     node.getName().accept(this);
     String fullSelector = nameTable.getMethodSelector(methodBinding);
     String[] selectors = fullSelector.split(":");
     if (selectors.length != 1) {
       assert methodBinding.getParameterTypes().length
           == selectors.length : "Selector and parameter counts differ.";
-      char[] var = { 'b' };
       for (int i = 1; i < selectors.length; i++) {
         if (i == 1) {
           buffer.append(NameTable.capitalize(selectors[i]));
@@ -1386,8 +1431,7 @@ public class StatementGenerator extends TreeVisitor {
           buffer.append(selectors[i]);
         }
         buffer.append(':');
-        buffer.append(var);
-        var = incrementVariable(var);
+        invocationArguments.get(i).accept(this);
       }
     }
     printBlockTerminator(isSelector);

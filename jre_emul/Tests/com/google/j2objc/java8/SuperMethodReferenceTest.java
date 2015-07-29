@@ -15,80 +15,93 @@ package com.google.j2objc.java8;
 
 import junit.framework.TestCase;
 
-interface Outputter {
-  public String s();
-}
-
-interface Get<T> {
-  T g();
-}
-
-interface Func<T, R> {
-  R f(T t);
-}
-
-class X {
-  public String f() {
-    return "Foo";
-  }
-
-  protected String b() {
-    return "Bar";
-  }
-
-  public String fooGet(Outputter o) {
-    return "Foo" + o.s();
-  }
-}
-
-class XX extends X {
-  public String b() {
-    return "Baz";
-  }
-
-  public Outputter foo() {
-    return super::f;
-  }
-
-  public Outputter bar() {
-    return super::b;
-  }
-
-  public Func<Outputter, String> superFooBar() {
-    return super::fooGet;
-  }
-
-  public void t() {
-    super.b();
-  }
-}
-
-class XXX extends XX {
-  public Object fooBaz() {
-    Outputter o = super::b;
-    Get<Func> f = super::superFooBar;
-    return f.g().f(o);
-  }
-}
-
 /**
- * Command-line tests for creation references.
+ * Command-line tests for super method references.
  *
  * @author Seth Kirby
  */
 public class SuperMethodReferenceTest extends TestCase {
-  public SuperMethodReferenceTest() { }
+  public SuperMethodReferenceTest() {
+  }
+
+  class X {
+    public String f() {
+      return "Foo";
+    }
+
+    protected String b() {
+      return "Bar";
+    }
+
+    public String fooGet(Lambdas.Zero o) {
+      return "Foo" + o.apply();
+    }
+  }
+
+  class XX extends X {
+    public String b() {
+      return "Baz";
+    }
+
+    public Lambdas.Zero foo() {
+      return super::f;
+    }
+
+    public Lambdas.Zero bar() {
+      return super::b;
+    }
+
+    public Lambdas.One<Lambdas.Zero, String> superFooBar() {
+      return super::fooGet;
+    }
+
+    public void t() {
+      super.b();
+    }
+
+    String m(Object a1, Object... rest) {
+      return "" + a1 + stringify(rest);
+    }
+
+    String stringify(Object... ls) {
+      String out = " [ ";
+      for (Object x : ls) {
+        out += x;
+        out += ' ';
+      }
+      return out + ']';
+    }
+  }
+
+  class XXX extends XX {
+    public Object fooBaz() {
+      Lambdas.Zero o = super::b;
+      Lambdas.Zero<Lambdas.One> f = super::superFooBar;
+      return f.apply().apply(o);
+    }
+
+    public String superString() {
+      Lambdas.Three f = super::m;
+      Lambdas.Four f2 = super::m;
+      return f.apply("10", "15", "20") + " : " + f2.apply("40", "41", "42", "43");
+    }
+  }
 
   public void testBasicReferences() throws Exception {
     XX xx = new XX();
-    Outputter c = xx.foo();
-    Outputter c2 = xx.bar();
-    assertEquals("Foo", c.s());
-    assertEquals("Bar", c2.s());
+    Lambdas.Zero c = xx.foo();
+    Lambdas.Zero c2 = xx.bar();
+    assertEquals("Foo", c.apply());
+    assertEquals("Bar", c2.apply());
   }
 
   public void testNestedReferences() throws Exception {
     XXX xxx = new XXX();
-    assertEquals("FooBaz", xxx.fooBaz());
+    assertEquals("FooBaz", Lambdas.get(xxx::fooBaz).apply());
+  }
+
+  public void testVarargs() throws Exception {
+    XXX xxx = new XXX();
+    assertEquals("10 [ 15 20 ] : 40 [ 41 42 43 ]", Lambdas.get(xxx::superString).apply());
   }
 }
