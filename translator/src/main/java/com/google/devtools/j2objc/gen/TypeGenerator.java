@@ -324,6 +324,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected String generateExpression(Expression expr) {
-    return StatementGenerator.generate(expr, false, getBuilder().getCurrentLine());
+    return StatementGenerator.generate(expr, getBuilder().getCurrentLine());
   }
 }

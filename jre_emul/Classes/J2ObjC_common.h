@@ -51,8 +51,6 @@
 #  define RETAIN_AND_AUTORELEASE(x) [[x retain] autorelease]
 # endif
 
-#define J2OBJC_COMMA() ,
-
 #ifdef J2OBJC_DISABLE_ALL_CHECKS
  #define J2OBJC_DISABLE_NIL_CHECKS 1
  #define J2OBJC_DISABLE_CAST_CHECKS 1

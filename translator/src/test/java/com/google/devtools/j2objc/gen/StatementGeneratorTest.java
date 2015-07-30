@@ -1205,18 +1205,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "int a = 5;\nint b = 6;\nassert a < b;\n}\n}\n",
         "Test", "Test.m");
     assertTranslation(translation,
-        "NSAssert(a < b, @\"Test.java:4 condition failed: assert a < b;\")");
-  }
-
-  public void testAssertWithModulusOperator() throws IOException {
-    // Avoid format-invalid-specific warnings, caused when unescaped % characters are
-    // included in the description.
-    String translation = translateSourceFile(
-        "public class Test { void test(int i) {\n"
-        + "assert i % 5 == 0;\n}\n}\n",
-        "Test", "Test.m");
-    assertTranslation(translation,
-        "NSAssert(i % 5 == 0, @\"Test.java:2 condition failed: assert i %% 5 == 0;\");");
+        "JreAssert(a < b, @\"Test.java:4 condition failed: assert a < b;\")");
   }
 
   public void testAssertWithDescription() throws IOException {
@@ -1225,7 +1214,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "int a = 5; int b = 6; assert a < b : \"a should be lower than b\";}}",
         "Test", "Test.m");
     assertTranslation(translation,
-      "NSAssert(a < b, @\"a should be lower than b\")");
+        "JreAssert(a < b, @\"a should be lower than b\")");
   }
 
   public void testAssertWithDynamicDescription() throws IOException {
@@ -1234,8 +1223,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "int a = 5; int b = 6; assert a < b : a + \" should be lower than \" + b;}}",
         "Test", "Test.m");
     assertTranslation(translation,
-      "NSAssert(a < b, [JreStrcat(\"I$I\" J2OBJC_COMMA() a J2OBJC_COMMA()"
-        + " @\" should be lower than \" J2OBJC_COMMA() b) description]);");
+        "JreAssert(a < b, JreStrcat(\"I$I\", a, @\" should be lower than \", b));");
   }
 
   // Verify that a Unicode escape sequence is preserved with string

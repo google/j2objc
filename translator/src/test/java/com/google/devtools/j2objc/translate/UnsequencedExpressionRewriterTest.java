@@ -137,8 +137,7 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "jint unseq$1 = i++;",
         "jboolean unseq$2 = unseq$1 + i++ == 0;",
         "jint unseq$3 = i++;",
-        " NSAssert(unseq$2, [JreStrcat(\"$II\" J2OBJC_COMMA() @\"foo\" J2OBJC_COMMA() unseq$3"
-          + " J2OBJC_COMMA() i++) description]);");
+        "JreAssert(unseq$2, JreStrcat(\"$II\", @\"foo\", unseq$3, i++));");
   }
 
   public void testForInitStatements() throws IOException {

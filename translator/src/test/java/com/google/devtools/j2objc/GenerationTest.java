@@ -190,7 +190,7 @@ public abstract class GenerationTest extends TestCase {
   }
 
   protected String generateStatement(Statement statement) {
-    return StatementGenerator.generate(statement, false, SourceBuilder.BEGINNING_OF_FILE).trim();
+    return StatementGenerator.generate(statement, SourceBuilder.BEGINNING_OF_FILE).trim();
   }
 
   /**

@@ -128,11 +128,10 @@ import java.util.Map;
 public class StatementGenerator extends TreeVisitor {
 
   private final SourceBuilder buffer;
-  private final boolean asFunction;
   private final boolean useReferenceCounting;
 
-  public static String generate(TreeNode node, boolean asFunction, int currentLine) {
-    StatementGenerator generator = new StatementGenerator(node, asFunction, currentLine);
+  public static String generate(TreeNode node, int currentLine) {
+    StatementGenerator generator = new StatementGenerator(node, currentLine);
     if (node == null) {
       throw new NullPointerException("cannot generate a null statement");
     }
@@ -140,9 +139,8 @@ public class StatementGenerator extends TreeVisitor {
     return generator.getResult();
   }
 
-  private StatementGenerator(TreeNode node, boolean asFunction, int currentLine) {
+  private StatementGenerator(TreeNode node, int currentLine) {
     buffer = new SourceBuilder(Options.emitLineDirectives(), currentLine);
-    this.asFunction = asFunction;
     useReferenceCounting = !Options.useARC();
   }
 
@@ -238,38 +236,21 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(AssertStatement node) {
-    buffer.append(asFunction ? "NSCAssert(" : "NSAssert(");
+    buffer.append("JreAssert(");
     node.getExpression().accept(this);
     buffer.append(", ");
     if (node.getMessage() != null) {
-      Expression expr = node.getMessage();
-      boolean isString = expr instanceof StringLiteral;
-      if (!isString) {
-        buffer.append('[');
-      }
-      int start = buffer.length();
-      expr.accept(this);
-      int end = buffer.length();
-      // Commas inside sub-expression of the NSAssert macro will be incorrectly interpreted as
-      // new argument indicators in the macro. Replace commas with the J2OBJC_COMMA macro.
-      String substring = buffer.substring(start, end);
-      substring = substring.replaceAll(",", " J2OBJC_COMMA()");
-      buffer.replace(start, end, substring);
-      if (!isString) {
-        buffer.append(" description]");
-      }
+      node.getMessage().accept(this);
     } else {
       int startPos = node.getStartPosition();
       String assertStatementString =
           unit.getSource().substring(startPos, startPos + node.getLength());
       assertStatementString = CharMatcher.WHITESPACE.trimFrom(assertStatementString);
-      assertStatementString = makeQuotedString(assertStatementString);
-      // Avoid format-invalid-specific warnings.
-      assertStatementString = assertStatementString.replace("%", "%%");
       // Generates the following string:
       // filename.java:456 condition failed: foobar != fish.
-      buffer.append("@\"" + TreeUtil.getSourceFileName(unit) + ":" + node.getLineNumber()
-          + " condition failed: " + assertStatementString + "\"");
+      String msg = TreeUtil.getSourceFileName(unit) + ":" + node.getLineNumber()
+          + " condition failed: " + assertStatementString;
+      buffer.append(LiteralGenerator.generateStringLiteral(msg));
     }
     buffer.append(");\n");
     return false;
@@ -804,8 +785,8 @@ public class StatementGenerator extends TreeVisitor {
   @Override
   public boolean visit(LambdaExpression node) {
     // TODO(kirbs): Implement correct conversion of Java 8 lambdas to Objective-C blocks.
-    assert Options.isJava8Translator() :
-      "Lambda expression in translator with -source less than 8.";
+    assert Options.isJava8Translator()
+        : "Lambda expression in translator with -source less than 8.";
     printLambdaCall(node);
     node.getBody().accept(this);
     buffer.append(")");
@@ -1512,24 +1493,5 @@ public class StatementGenerator extends TreeVisitor {
     // All Initializer nodes should have been converted during initialization
     // normalization.
     throw new AssertionError("initializer node not converted");
-  }
-
-  // Returns a string where all characters that will interfere in
-  // a valid Objective-C string are quoted.
-  private static String makeQuotedString(String originalString) {
-    int location = 0;
-    StringBuffer buffer = new StringBuffer(originalString);
-    while ((location = buffer.indexOf("\\", location)) != -1) {
-      buffer.replace(location++, location++, "\\\\");
-    }
-    location = 0;
-    while ((location = buffer.indexOf("\"", location)) != -1) {
-      buffer.replace(location++, location++, "\\\"");
-    }
-    location = 0;
-    while ((location = buffer.indexOf("\n")) != -1) {
-      buffer.replace(location++, location++, "\\n");
-    }
-    return buffer.toString();
   }
 }

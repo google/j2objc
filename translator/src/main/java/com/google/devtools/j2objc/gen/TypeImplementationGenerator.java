@@ -252,7 +252,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       println("#pragma clang diagnostic ignored \"-Wobjc-designated-initializers\"");
     }
     syncLineNumbers(m.getName());  // avoid doc-comment
-    String methodBody = generateStatement(m.getBody(), /* isFunction */ false);
+    String methodBody = generateStatement(m.getBody());
     print(getMethodSignature(m) + " " + reindent(methodBody) + "\n");
     if (isDesignatedInitializer) {
       println("#pragma clang diagnostic pop");
@@ -266,7 +266,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     if (Modifier.isNative(function.getModifiers())) {
       printJniFunctionAndWrapper(function);
     } else {
-      String functionBody = generateStatement(function.getBody(), /* isFunction */ true);
+      String functionBody = generateStatement(function.getBody());
       println(getFunctionSignature(function) + " " + reindent(functionBody));
     }
   }
@@ -343,7 +343,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     StringBuffer sb = new StringBuffer();
     sb.append("{\nif (self == [" + typeName + " class]) {\n");
     for (Statement statement : initStatements) {
-      sb.append(generateStatement(statement, false));
+      sb.append(generateStatement(statement));
     }
     sb.append("J2OBJC_SET_INITIALIZED(" + typeName + ")\n");
     sb.append("}\n}");
@@ -428,7 +428,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     print(new MetadataGenerator(typeNode).getMetadataSource());
   }
 
-  protected String generateStatement(Statement stmt, boolean asFunction) {
-    return StatementGenerator.generate(stmt, asFunction, getBuilder().getCurrentLine());
+  protected String generateStatement(Statement stmt) {
+    return StatementGenerator.generate(stmt, getBuilder().getCurrentLine());
   }
 }

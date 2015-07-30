@@ -22,8 +22,8 @@
 
 #import "JreEmulation.h"
 
-#import "IOSClass.h"
 #import "FastPointerLookup.h"
+#import "IOSClass.h"
 #import "java/lang/AbstractStringBuilder.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
@@ -37,6 +37,10 @@ void JreThrowNullPointerException() {
 
 void JreThrowClassCastException() {
   @throw AUTORELEASE([[JavaLangClassCastException alloc] init]);
+}
+
+void JreThrowAssertionError(id __unsafe_unretained msg) {
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:[msg description]]);
 }
 
 #ifdef J2OBJC_COUNT_NIL_CHK

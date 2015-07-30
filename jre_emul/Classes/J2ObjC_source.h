@@ -37,6 +37,16 @@ __attribute__((always_inline)) inline id check_protocol_cast(
   return p;
 }
 
+FOUNDATION_EXPORT void JreThrowAssertionError(id __unsafe_unretained msg);
+
+__attribute__((always_inline)) inline void JreAssert(jboolean cond, id __unsafe_unretained msg) {
+#ifndef NS_BLOCK_ASSERTIONS
+  if (!cond) {
+    JreThrowAssertionError(msg);
+  }
+#endif
+}
+
 // Only expose this function to ARC generated code.
 #if __has_feature(objc_arc)
 FOUNDATION_EXPORT void JreRelease(id obj);

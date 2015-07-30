@@ -272,15 +272,6 @@ public class FunctionizerTest extends GenerationTest {
         + "[IOSCharArray arrayWithChars:(jchar[]){ 'a', 'b', 'c' } count:3]);");
   }
 
-  public void testAssertInFunction() throws IOException {
-    String translation = translateSourceFile(
-        "class A { void use(String s) { test(s); } "
-        + "  private void test(String msg) { assert msg != null : \"null msg\"; }}",
-        "A", "A.m");
-    assertTranslation(translation, "NSCAssert");
-    assertNotInTranslation(translation, "NSAssert");
-  }
-
   public void testSynchronizedFunction() throws IOException {
     String translation = translateSourceFile(
         "class A { void test() { str(); } "
