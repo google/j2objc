@@ -82,7 +82,7 @@ static IOSClass *IOSClass_objectClass;
 
 static IOSObjectArray *IOSClass_emptyClassArray;
 
-#define PREFIX_MAPPING_RESOURCE @"prefixes.properties"
+#define PREFIX_MAPPING_RESOURCE @"/prefixes.properties"
 
 // Package to prefix mappings, initialized in FindMappedClass().
 static JavaUtilProperties *prefixMapping;
