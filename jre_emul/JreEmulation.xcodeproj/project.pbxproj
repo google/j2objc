@@ -12,6 +12,7 @@
 		061AA0D019FEF01800457D2B /* PackageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CE19FEF01800457D2B /* PackageTest.m */; };
 		061AA0D519FEF2E700457D2B /* TestAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D219FEF2E700457D2B /* TestAnnotation.m */; };
 		061AA0D619FEF2E700457D2B /* ThrowableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D319FEF2E700457D2B /* ThrowableTest.m */; };
+		06243C5D1B6BF6BA00657D74 /* NSDataInputStreamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06243C5C1B6BF6BA00657D74 /* NSDataInputStreamTest.m */; };
 		062461821AFBF2AC003747CE /* MD5.check in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E83B197F25B2005DDE69 /* MD5.check */; };
 		062461831AFBF2AC003747CE /* MD5.data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E83C197F25B2005DDE69 /* MD5.data */; };
 		062463D41A000CE3006D52C9 /* JRETestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */; };
@@ -723,6 +724,7 @@
 		061AA0D219FEF2E700457D2B /* TestAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestAnnotation.m; path = com/google/j2objc/TestAnnotation.m; sourceTree = "<group>"; };
 		061AA0D319FEF2E700457D2B /* ThrowableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThrowableTest.m; path = com/google/j2objc/ThrowableTest.m; sourceTree = "<group>"; };
 		062272AA1816DB0B009BB2A2 /* jni.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
+		06243C5C1B6BF6BA00657D74 /* NSDataInputStreamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDataInputStreamTest.m; sourceTree = "<group>"; };
 		062463D21A000CE3006D52C9 /* JRETestsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRETestsTableViewController.h; sourceTree = "<group>"; };
 		062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRETestsTableViewController.m; sourceTree = "<group>"; };
 		062463D81A005995006D52C9 /* JRELogPaneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRELogPaneViewController.h; sourceTree = "<group>"; };
@@ -1752,7 +1754,6 @@
 		067855D8169F37710042431C /* RoundingMode.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RoundingMode.m; path = build_result/Classes/java/math/RoundingMode.m; sourceTree = "<group>"; };
 		067A99561954DF06009171DD /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		067A99581954DF06009171DD /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		067C211A1846AF800004C1A6 /* volatile.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = volatile.h; sourceTree = "<group>"; };
 		068677CB166C342C005A5AD7 /* ArrayDeque.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ArrayDeque.h; path = build_result/Classes/java/util/ArrayDeque.h; sourceTree = "<group>"; };
 		068677CC166C342C005A5AD7 /* ArrayDeque.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArrayDeque.m; path = build_result/Classes/java/util/ArrayDeque.m; sourceTree = "<group>"; };
 		068677CD166C342C005A5AD7 /* Deque.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Deque.h; path = build_result/Classes/java/util/Deque.h; sourceTree = "<group>"; };
@@ -3993,6 +3994,7 @@
 				067217CE15587FC600645E1B /* IOSObjectArrayTest.m */,
 				067217CF15587FC600645E1B /* IOSPrimitiveClassTest.m */,
 				067217D015587FC600645E1B /* JavaLangReflectMethodTest.m */,
+				06243C5C1B6BF6BA00657D74 /* NSDataInputStreamTest.m */,
 				067217D115587FC600645E1B /* NSObject_JavaObjectTest.m */,
 				067217D215587FC600645E1B /* NSString_JavaStringTest.m */,
 				06459FB31A4220AF00F5ED23 /* Supporting Files */,
@@ -4137,7 +4139,6 @@
 				06721BA31559DE3800645E1B /* Throwable.m */,
 				06AFD3DD183E785D001C90C6 /* TypeVariableImpl.h */,
 				06AFD3DE183E785D001C90C6 /* TypeVariableImpl.m */,
-				067C211A1846AF800004C1A6 /* volatile.h */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -8101,6 +8102,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				06459FBD1A4220F700F5ED23 /* IOSArrayTest.m in Sources */,
+				06243C5D1B6BF6BA00657D74 /* NSDataInputStreamTest.m in Sources */,
 				06459FBE1A4220F700F5ED23 /* IOSClassTest.m in Sources */,
 				06459FBF1A4220F700F5ED23 /* IOSObjectArrayTest.m in Sources */,
 				06459FC01A4220F700F5ED23 /* IOSPrimitiveClassTest.m in Sources */,

@@ -13,9 +13,7 @@
 @interface NSDataInputStream() {
 @private
   NSData *data_;
-  const char *bytes_;
   size_t position_;
-  size_t length_;
 }
 
 @end
@@ -24,10 +22,8 @@
 
 - (instancetype)initWithData:(NSData *)data {
   if ((self = [super init])) {
-    data_ = [nil_chk(data) copy];
-    bytes_ = (const char *) [data_ bytes];
+    data_ = [data retain];
     position_ = 0;
-    length_ = [data_ length];
   }
 
   return self;
@@ -37,45 +33,53 @@
   return AUTORELEASE([[NSDataInputStream alloc] initWithData:data]);
 }
 
-#if ! __has_feature(objc_arc)
 - (void)dealloc {
-  [data_ autorelease];
+  [data_ release];
   [super dealloc];
 }
-#endif
 
 - (jint)read {
-  if (position_ == length_) {
+  if (position_ == data_.length) {
     return -1;
   }
 
   // Ensure that we don't sign extend and accidentally return -1
-  unsigned char c = bytes_[position_++];
-  return (jint) c;
+  jbyte b = *((const jbyte *)(data_.bytes) + position_++);
+  return (jint) b;
 }
 
-- (jint)readWithJavaLangByteArray:(IOSByteArray *)b
-                          withInt:(jint)offset
-                          withInt:(jint)len {
+- (jint)readWithByteArray:(IOSByteArray *)b
+                  withInt:(jint)offset
+                  withInt:(jint)len {
   if (len == 0) {
     return 0;
   }
 
-  if ((size_t) position_ == length_) {
+  if ((size_t) position_ == data_.length) {
     return -1;
   }
 
-  jint remaining = (jint) ([data_ length] - position_);
+  jint remaining = (jint) (data_.length - position_);
   if (remaining < len) {
     len = remaining;
   }
 
-  [nil_chk(b) replaceBytes:(const jbyte *)(bytes_ + position_)
+  [nil_chk(b) replaceBytes:(const jbyte *)(data_.bytes) + position_
                     length:len
                     offset:offset];
   position_ += len;
 
   return len;
+}
+
+- (jint)available {
+  return (jint) (data_.length - position_);
+}
+
+- (void)close {
+  [data_ release];
+  data_ = nil;
+  position_ = 0;
 }
 
 @end
