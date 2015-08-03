@@ -16,12 +16,12 @@ J2ObjC currently uses the following translation steps before output file generat
 
 - [Rewriter](Rewriter.html): rewrites Java code that doesn't have an Objective-C equivalent, such as static variables.
 - [Autoboxer](Autoboxer.html): adds code to box numeric primitive values, and unbox numeric wrapper classes.
-- [iOS Type Converter](IOS Type Converter): converts types that are directly mapped from Java to Foundation classes.
-- [iOS Method Converter](IOS Method Converter): maps method declarations and invocations to equivalent Foundation class methods.
+- [iOS Type Converter](IOS-Type-Converter.html): converts types that are directly mapped from Java to Foundation classes.
+- [iOS Method Converter](IOS-Method-Converter.html): maps method declarations and invocations to equivalent Foundation class methods.
 - [Initialization Normalizer](Initialization-Normalizer.html): moves initializer statements into constructors and class initialization methods.
 - [Anonymous Class Converter](Anonymous-Class-Converter.html): modifies anonymous classes to be inner classes, which includes fields for the final variables referenced by that class.
 - [Inner Class Converter](Inner-Class-Converter.html): pulls inner classes out to be top-level classes in the same compilation unit.
-- [Destructor Generator](Destructor-Generator): adds dealloc or finalize methods, depending on GC option selected.
+- [Destructor Generator](Destructor-Generator.html): adds dealloc or finalize methods, depending on GC option selected.
 - Complex Expression Extractor: breaks up deeply nested expressions such as chained method calls.
 - Nil Check Resolver: adds nil_chk calls wherever an expression is dereferenced.
  
@@ -51,8 +51,8 @@ Java uses packages to informally define namespaces; while Objective C++ has C++ 
 
 #### Inner Class Names
 
-Objective-C doesn't have inner classes, so those classes are pulled up by the [Inner Class Converter](Inner Class Converter).  To preserve their namespace, their class names are appended to their containing class, with a separating underscore.  For example, `java.util.Map.Entry` is renamed to `JavaUtilMap_Entry`.  Deeply nested inner classes follow the same pattern with each containing class; i.e., `MyClass_Inner_MoreInner_Innermost`.
+Objective-C doesn't have inner classes, so those classes are pulled up by the [Inner Class Converter](Inner-Class-Converter.html).  To preserve their namespace, their class names are appended to their containing class, with a separating underscore.  For example, `java.util.Map.Entry` is renamed to `JavaUtilMap_Entry`.  Deeply nested inner classes follow the same pattern with each containing class; i.e., `MyClass_Inner_MoreInner_Innermost`.
 
 ### Anonymous Class Names
 
-Objective-C doesn't have anonymous classes, either, so those classes are converted to inner classes by the [Anonymous Class Converter](Anonymous Class Converter).  Like javac, a dollar sign and an integer are used to name these inner classes, such as `MyClass_$1`. The number is specific to the containing class, so it's common in classes with deeply nested anonymous classes to see names like `MyClass_$1_$2_$1`.
+Objective-C doesn't have anonymous classes, either, so those classes are converted to inner classes by the [Anonymous Class Converter](Anonymous-Class-Converter.html).  Like javac, a dollar sign and an integer are used to name these inner classes, such as `MyClass_$1`. The number is specific to the containing class, so it's common in classes with deeply nested anonymous classes to see names like `MyClass_$1_$2_$1`.
