@@ -60,7 +60,6 @@ public class ExpressionMethodReference extends MethodReference {
       expression.accept(visitor);
       typeArguments.accept(visitor);
       name.accept(visitor);
-      invocationArguments.accept(visitor);
     }
     visitor.endVisit(this);
   }

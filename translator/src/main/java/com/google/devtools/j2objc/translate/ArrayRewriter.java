@@ -44,6 +44,7 @@ import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.ArrayList;
@@ -305,22 +306,33 @@ public class ArrayRewriter extends TreeVisitor {
     IMethodBinding methodBinding = node.getMethodBinding();
     ITypeBinding[] methodParams = methodBinding.getParameterTypes();
     IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
+    ITypeBinding[] functionalParams = functionalInterface.getParameterTypes();
     char[] var = nameTable.incrementVariable(null);
     List<Expression> invocationArguments = node.getInvocationArguments();
     int methodParamStopIndex = methodBinding.isVarargs() ? methodParams.length - 1
         : methodParams.length;
     for (int i = 0; i < methodParamStopIndex; i++) {
-      invocationArguments.add(new SimpleName(new String(var)));
+      ITypeBinding functionalParam = functionalParams[i];
+      IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
+          functionalParam, false, true, null, null);
+      invocationArguments.add(new SimpleName(variableBinding));
       var = nameTable.incrementVariable(var);
     }
     if (methodBinding.isVarargs()) {
       List<Expression> varArguments = new ArrayList<>();
       for (int i = methodParamStopIndex; i < functionalInterface.getParameterTypes().length; i++) {
-        varArguments.add(new SimpleName(new String(var)));
+        ITypeBinding functionalParam = functionalParams[i];
+        IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
+            functionalParam, false, true, null, null);
+        varArguments.add(new SimpleName(variableBinding));
         var = nameTable.incrementVariable(var);
       }
       invocationArguments.add(
           newInitializedArrayInvocation(methodParams[methodParamStopIndex], varArguments, false));
+    }
+    if (!invocationArguments.isEmpty()) {
+      // Add boxing and unboxing to newly created invocation expression nodes.
+      new Autoboxer().run(node);
     }
     return true;
   }
@@ -340,7 +352,6 @@ public class ArrayRewriter extends TreeVisitor {
   public boolean visit(TypeMethodReference node) {
     return createMethodReferenceInvocationArguments(node);
   }
-
 
   private void maybeRewriteArrayLength(Expression node, SimpleName name, Expression expr) {
     ITypeBinding exprType = expr.getTypeBinding();

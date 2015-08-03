@@ -24,13 +24,16 @@ import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
+import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.MethodReference;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
@@ -38,11 +41,13 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -458,5 +463,68 @@ public class Autoboxer extends TreeVisitor {
     } else {
       return arg;
     }
+  }
+
+  /**
+   * Handle boxing and unboxing of method reference invocation. The internal invocation of the
+   * method within the block may need to be boxed or unboxed. Additionally, the outer call to invoke
+   * the method reference may be boxed or unboxed as well.
+   */
+  // TODO(kirbs): In the case that we have a referenced method with an int arg, a functional
+  // interface method with an Integer arg, and an invocation with an int arg, we will end up
+  // immediately boxing and unboxing the value. We should solve this by making the types of the
+  // referenced method and the functional interface method the same, but this requires a rewrite of
+  // the selectors that target the method reference on invocation.
+  public boolean boxOrUnboxMethodReference(MethodReference node) {
+    if (node.getInvocationArguments().isEmpty()) {
+      // ArrayRewriter hasn't run, so we have no invocation arguments to unbox.
+      return true;
+    }
+    ITypeBinding[] methodArguments = node.getMethodBinding().getParameterTypes();
+    int methodArgumentIndex = 0;
+    List<Expression> args = node.getInvocationArguments();
+    for (int argIndex = 0; argIndex < args.size(); argIndex++) {
+      Expression arg = args.get(argIndex);
+      if (arg instanceof MethodInvocation) {
+        List<Expression> invocationArguments = ((MethodInvocation) arg).getArguments();
+        assert invocationArguments.get(0) instanceof ArrayInitializer :
+          "Array initializer expected within varargs MethodReference";
+        ArrayInitializer arrayInit = (ArrayInitializer) invocationArguments.get(0);
+        List<Expression> varargs = arrayInit.getExpressions();
+        for (int varargIndex = 0; varargIndex < varargs.size(); varargIndex++) {
+          Expression vararg = varargs.get(varargIndex);
+          Expression replacementArg = boxOrUnboxExpression(vararg,
+              methodArguments[methodArgumentIndex].getElementType());
+          if (replacementArg != vararg) {
+            varargs.set(varargIndex, replacementArg);
+          }
+        }
+      } else {
+        Expression replacementArg = boxOrUnboxExpression(arg,
+            methodArguments[methodArgumentIndex++]);
+        if (replacementArg != arg) {
+          args.set(argIndex, replacementArg);
+        }
+      }
+    }
+    // We have already visited the children in the first pass, this pass comes from the
+    // ArrayRewriter, so we don't need to visit the child nodes.
+    return false;
+  }
+
+  public boolean visit(CreationReference node) {
+    return boxOrUnboxMethodReference(node);
+  }
+
+  public boolean visit(ExpressionMethodReference node) {
+    return boxOrUnboxMethodReference(node);
+  }
+
+  public boolean visit(SuperMethodReference node) {
+    return boxOrUnboxMethodReference(node);
+  }
+
+  public boolean visit(TypeMethodReference node) {
+    return boxOrUnboxMethodReference(node);
   }
 }

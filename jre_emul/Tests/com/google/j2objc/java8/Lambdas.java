@@ -40,8 +40,8 @@ public class Lambdas {
     R apply(T t, U u, V v, W w);
   }
 
-  public static <R> Zero<R> get(Zero<R> l) {
-    return l;
+  public static <R> Zero<R> get(Zero<R> lambda) {
+    return lambda;
   }
 
   public static <T, R> One<T, R> get(One<T, R> lambda) {
@@ -80,8 +80,8 @@ public class Lambdas {
     void apply(T t, U u, V v, W w);
   }
 
-  public static VoidZero get(VoidZero l) {
-    return l;
+  public static VoidZero get(VoidZero lambda) {
+    return lambda;
   }
 
   public static <T> VoidOne<T> get(VoidOne<T> lambda) {

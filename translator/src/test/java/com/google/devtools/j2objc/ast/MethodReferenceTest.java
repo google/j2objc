@@ -113,4 +113,15 @@ public class MethodReferenceTest extends GenerationTest {
         "Y_mWithInt_withNSStringArray_(a, [IOSObjectArray arrayWithObjects:(id[]){ b, c, d } "
         + "count:3 type:NSString_class_()]);");
   }
+
+  public void testBoxingAndUnboxing() throws IOException {
+    String header = "interface IntFun { void apply(int a); }\n"
+        + "interface IntegerFun { void apply(Integer a); }";
+    String translation = translateSourceFile(header
+        + "class Test { static void foo(Integer x) {}; static void bar(int x) {};"
+        + "IntFun f = Test::foo; IntegerFun f2 = Test::bar; }", "Test", "Test.m");
+    assertTranslatedSegments(translation, "^void(id _self, jint a) {",
+        "Test_fooWithJavaLangInteger_([JavaLangInteger valueOfWithInt:a]);",
+        "^void(id _self, JavaLangInteger * a) {", "Test_barWithInt_([a intValue]);");
+  }
 }

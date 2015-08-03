@@ -516,7 +516,7 @@ public class StatementGenerator extends TreeVisitor {
         buffer.append(fullSelector);
       } else {
         assert node.getInvocationArguments().size()
-            == selectors.length : "Selector and parameter counts differ.";
+            == selectors.length : "Selector and parameter counts differ in method reference.";
         for (int i = 0; i < selectors.length; i++) {
           buffer.append(' ');
           buffer.append(selectors[i]);

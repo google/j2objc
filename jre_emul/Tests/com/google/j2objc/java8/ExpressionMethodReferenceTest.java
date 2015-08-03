@@ -93,4 +93,31 @@ public class ExpressionMethodReferenceTest extends TestCase {
     assertEquals("12 [ 22 42 ]", i.foo(12, 22, "42"));
     assertEquals("10 [ 20 20 10 ]", j.m(10, 20, "20", "10"));
   }
+
+  interface IntFun {
+    String apply(int a);
+  }
+
+  interface IntegerFun {
+    String apply(Integer a);
+  }
+
+  String foo(Integer a) {
+    return "Foo";
+  }
+
+  String bar(int x) {
+    return "Bar";
+  }
+
+  public void testBoxingAndUnboxing() throws Exception {
+    IntFun i = this::foo;
+    assertEquals("Foo", i.apply(new Integer(42)));
+    i = (int x) -> "Lambda";
+    assertEquals("Lambda", i.apply(42));
+    IntegerFun i2 = this::bar;
+    assertEquals("Bar", i2.apply(42));
+    i2 = (Integer x) -> "Lambda";
+    assertEquals("Lambda", i2.apply(42));
+  }
 }
