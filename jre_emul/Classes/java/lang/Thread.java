@@ -256,7 +256,7 @@ public class Thread implements Runnable {
    * @param group ThreadGroup to which the new Thread will belong
    * @param runnable a java.lang.Runnable whose method <code>run</code> will
    *        be executed by the new Thread
-   * @param name Name for the Thread being created
+   * @param threadName Name for the Thread being created
    * @param stack Platform dependent stack size
    * @throws SecurityException if <code>group.checkAccess()</code> fails
    *         with a SecurityException

@@ -19,8 +19,7 @@ package android.text;
 /**
  * This is the interface for text whose content and markup
  * can be changed (as opposed
- * to immutable text like Strings).  If you make a {@link DynamicLayout}
- * of an Editable, the layout will be reflowed as the text is changed.
+ * to immutable text like Strings).
  */
 public interface Editable
 extends CharSequence, GetChars, Spannable, Appendable

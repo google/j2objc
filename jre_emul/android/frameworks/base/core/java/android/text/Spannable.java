@@ -31,10 +31,7 @@ extends Spanned
      * what the flags mean.  The object can be one that has meaning only
      * within your application, or it can be one that the text system will
      * use to affect text display or behavior.  Some noteworthy ones are
-     * the subclasses of {@link android.text.style.CharacterStyle} and
-     * {@link android.text.style.ParagraphStyle}, and
-     * {@link android.text.TextWatcher} and
-     * {@link android.text.SpanWatcher}.
+     * {@link android.text.TextWatcher} and {@link android.text.SpanWatcher}.
      */
     public void setSpan(Object what, int start, int end, int flags);
 

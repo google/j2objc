@@ -597,8 +597,6 @@ public class ThreadGroup implements Thread.UncaughtExceptionHandler {
      * @param t the Thread that terminated with an uncaught exception
      * @param e the uncaught exception itself
      *
-     * @see Thread#stop()
-     * @see Thread#stop(Throwable)
      * @see ThreadDeath
      */
     public void uncaughtException(Thread t, Throwable e) {

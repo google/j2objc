@@ -63,8 +63,6 @@ import libcore.net.url.UrlUtils;
  *     Transfer Protocol</a>
  * <li><strong>https</strong>: <a href="http://www.ietf.org/rfc/rfc2818.txt">HTTP
  *     over TLS</a>
- * <li><strong>jar</strong>: read {@link JarFile Jar files} from the
- *     filesystem</li>
  * </ul>
  * In general, attempts to create URLs with any other protocol will fail with a
  * {@link MalformedURLException}. Applications may install handlers for other

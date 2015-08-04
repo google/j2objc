@@ -66,8 +66,7 @@ import java.nio.CharBuffer;
  * encoding process for all charsets. Encoders for a specific charset should
  * extend this class and need only to implement the
  * {@link #encodeLoop(CharBuffer, ByteBuffer) encodeLoop} method for basic
- * encoding. If a subclass maintains internal state, it should also override the
- * {@link #implFlush(ByteBuffer) implFlush} and {@link #implReset() implReset} methods.
+ * encoding.
  *
  * <p>This class is not thread-safe.
  *
@@ -122,8 +121,7 @@ public abstract class CharsetEncoder {
      * @param replacement
      *            the replacement byte array, cannot be null or empty, its
      *            length cannot be larger than <code>maxBytesPerChar</code>,
-     *            and must be a legal replacement, which can be justified by
-     *            {@link #isLegalReplacement(byte[]) isLegalReplacement}.
+     *            and must be a legal replacement.
      * @throws IllegalArgumentException
      *             if any parameters are invalid.
      */
@@ -371,11 +369,6 @@ public abstract class CharsetEncoder {
     /**
      * Flushes this encoder.
      * <p>
-     * This method will call {@link #implFlush(ByteBuffer) implFlush}. Some
-     * encoders may need to write some bytes to the output buffer when they have
-     * read all input characters, subclasses can overridden
-     * {@link #implFlush(ByteBuffer) implFlush} to perform writing action.
-     * <p>
      * The maximum number of written bytes won't larger than
      * {@link ByteBuffer#remaining() out.remaining()}. If some encoder wants to
      * write more bytes than the output buffer's available remaining space, then
@@ -422,10 +415,6 @@ public abstract class CharsetEncoder {
     /**
      * Sets this encoder's action on malformed input error.
      *
-     * This method will call the
-     * {@link #implOnMalformedInput(CodingErrorAction) implOnMalformedInput}
-     * method with the given new action as argument.
-     *
      * @param newAction
      *            the new action on malformed input error.
      * @return this encoder.
@@ -442,10 +431,6 @@ public abstract class CharsetEncoder {
 
     /**
      * Sets this encoder's action on unmappable character error.
-     *
-     * This method will call the
-     * {@link #implOnUnmappableCharacter(CodingErrorAction) implOnUnmappableCharacter}
-     * method with the given new action as argument.
      *
      * @param newAction
      *            the new action on unmappable character error.
@@ -472,15 +457,12 @@ public abstract class CharsetEncoder {
      * Sets the new replacement value.
      *
      * This method first checks the given replacement's validity, then changes
-     * the replacement value and finally calls the
-     * {@link #implReplaceWith(byte[]) implReplaceWith} method with the given
-     * new replacement as argument.
+     * the replacement value.
      *
      * @param replacement
      *            the replacement byte array, cannot be null or empty, its
      *            length cannot be larger than <code>maxBytesPerChar</code>,
-     *            and it must be legal replacement, which can be justified by
-     *            calling <code>isLegalReplacement(byte[] replacement)</code>.
+     *            and it must be legal replacement.
      * @return this encoder.
      * @throws IllegalArgumentException
      *             if the given replacement cannot satisfy the requirement
@@ -502,9 +484,7 @@ public abstract class CharsetEncoder {
     }
 
     /**
-     * Resets this encoder. This method will reset the internal status and then
-     * calls <code>implReset()</code> to reset any status related to the
-     * specific charset.
+     * Resets this encoder.
      *
      * @return this encoder.
      */

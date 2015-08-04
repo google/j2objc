@@ -21,8 +21,8 @@ import libcore.io.Libcore;
 import static libcore.io.OsConstants.*;
 
 /**
- * Provides access to the console, if available. The system-wide instance can
- * be accessed via {@link java.lang.System#console}.
+ * Provides access to the console, if available.
+ *
  * @since 1.6
  */
 public final class Console implements Flushable {

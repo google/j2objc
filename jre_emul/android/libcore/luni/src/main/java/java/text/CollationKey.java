@@ -76,7 +76,6 @@ package java.text;
  * </blockquote>
  *
  * @see Collator
- * @see RuleBasedCollator
  */
 public abstract class CollationKey implements Comparable<CollationKey> {
     private final String source;

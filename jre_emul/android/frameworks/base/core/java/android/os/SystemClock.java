@@ -36,13 +36,7 @@ package android.os;
  *     backwards or forwards unpredictably.  This clock should only be used
  *     when correspondence with real-world dates and times is important, such
  *     as in a calendar or alarm clock application.  Interval or elapsed
- *     time measurements should use a different clock.  If you are using
- *     System.currentTimeMillis(), consider listening to the
- *     {@link android.content.Intent#ACTION_TIME_TICK ACTION_TIME_TICK},
- *     {@link android.content.Intent#ACTION_TIME_CHANGED ACTION_TIME_CHANGED}
- *     and {@link android.content.Intent#ACTION_TIMEZONE_CHANGED
- *     ACTION_TIMEZONE_CHANGED} {@link android.content.Intent Intent}
- *     broadcasts to find out when the time changes.
+ *     time measurements should use a different clock.
  *
  *     <li> <p> {@link #uptimeMillis} is counted in milliseconds since the
  *     system was booted.  This clock stops when the system enters deep
@@ -80,18 +74,6 @@ package android.os;
  *     ignores {@link InterruptedException}.  Use this function for delays if
  *     you do not use {@link Thread#interrupt Thread.interrupt()}, as it will
  *     preserve the interrupted state of the thread.
- *
- *     <li> <p> The {@link android.os.Handler} class can schedule asynchronous
- *     callbacks at an absolute or relative time.  Handler objects also use the
- *     {@link #uptimeMillis} clock, and require an {@link android.os.Looper
- *     event loop} (normally present in any GUI application).
- *
- *     <li> <p> The {@link android.app.AlarmManager} can trigger one-time or
- *     recurring events which occur even when the device is in deep sleep
- *     or your application is not running.  Events may be scheduled with your
- *     choice of {@link java.lang.System#currentTimeMillis} (RTC) or
- *     {@link #elapsedRealtime} (ELAPSED_REALTIME), and cause an
- *     {@link android.content.Intent} broadcast when they occur.
  * </ul>
  */
 public final class SystemClock {

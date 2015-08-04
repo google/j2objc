@@ -91,7 +91,7 @@ package java.io;
  *
  * <h3>Recommended Alternatives</h3>
  * <strong>JSON</strong> is concise, human-readable and efficient. Android
- * includes both a {@link android.util.JsonReader streaming API} and a {@link
+ * includes both a android.util.JsonReader streaming API and a {@link
  * org.json.JSONObject tree API} to read and write JSON. Use a binding library
  * like <a href="http://code.google.com/p/google-gson/">GSON</a> to read and
  * write Java objects directly.

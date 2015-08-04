@@ -23,9 +23,7 @@ import java.util.Locale;
 import libcore.icu.ICU;
 
 /**
- * Performs locale-sensitive string comparison. A concrete subclass,
- * {@link RuleBasedCollator}, allows customization of the collation ordering by
- * the use of rule sets.
+ * Performs locale-sensitive string comparison.
  * <p>
  * Following the <a href=http://www.unicode.org>Unicode Consortium</a>'s
  * specifications for the <a
@@ -105,7 +103,6 @@ import libcore.icu.ICU;
  *
  * </blockquote>
  *
- * @see RuleBasedCollator
  * @see CollationKey
  */
 public abstract class Collator implements Comparator<Object>, Cloneable {

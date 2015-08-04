@@ -41,9 +41,7 @@ import libcore.icu.TimeZoneNames;
  * pattern describing what strings are produced/accepted, but almost all
  * callers should use {@link DateFormat#getDateInstance}, {@link DateFormat#getDateTimeInstance},
  * or {@link DateFormat#getTimeInstance} to get a ready-made instance suitable for the user's
- * locale. In cases where the system does not provide a suitable pattern, see
- * {@link android.text.format.DateFormat#getBestDateTimePattern} which lets you specify
- * the elements you'd like in a pattern and get back a pattern suitable for any given locale.
+ * locale.
  *
  * <p>The main reason you'd create an instance this class directly is because you need to
  * format/parse a specific machine-readable format, in which case you almost certainly want

@@ -25,8 +25,6 @@ import java.lang.annotation.Target;
  * Marks a test that should run as part of the smoke tests.
  * The <code>android.test.suitebuilder.SmokeTestSuiteBuilder</code>
  * will run all tests with this annotation.
- *
- * @see android.test.suitebuilder.SmokeTestSuiteBuilder
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD, ElementType.TYPE})

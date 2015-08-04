@@ -326,7 +326,6 @@ public final class Locale implements Cloneable, Serializable {
      * offer their own {@code getAvailableLocales} method, which should be
      * preferred over this general purpose method.
      *
-     * @see java.text.BreakIterator#getAvailableLocales()
      * @see java.text.Collator#getAvailableLocales()
      * @see java.text.DateFormat#getAvailableLocales()
      * @see java.text.DateFormatSymbols#getAvailableLocales()

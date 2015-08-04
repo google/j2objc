@@ -46,8 +46,6 @@ import libcore.io.SizeOf;
  * <p>Note that the output of a {@code SecureRandom} instance should never
  * be relied upon to be deterministic. For deterministic output from a given
  * input, see {@link MessageDigest} which provides one-way hash functions.
- * For deriving keys from passwords, see
- * {@link javax.crypto.SecretKeyFactory}.
  *
  * <h3><a name="insecure_seed">Seeding {@code SecureRandom} may be
  * insecure</a></h3>

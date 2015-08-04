@@ -1013,15 +1013,15 @@ public class TextUtils {
         END_SMALL
     }
 
+    /* TODO(tball): enable if android.graphics is ever supported.
     public interface EllipsizeCallback {
         /**
          * This method is called to report that the specified region of
          * text was ellipsized away by a call to {@link #ellipsize}.
-         */
+         *
         public void ellipsized(int start, int end);
     }
 
-    /* TODO(tball): enable if android.graphics is ever supported.
     /**
      * Returns the original text if it fits in the specified width
      * given the properties of the specified Paint,

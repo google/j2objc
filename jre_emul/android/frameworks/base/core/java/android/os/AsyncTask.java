@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * perform background operations and publish results on the UI thread without
  * having to manipulate threads and/or handlers.</p>
  *
- * <p>AsyncTask is designed to be a helper class around {@link Thread} and {@link Handler}
+ * <p>AsyncTask is designed to be a helper class around {@link Thread}
  * and does not constitute a generic threading framework. AsyncTasks should ideally be
  * used for short operations (a few seconds at the most.) If you need to keep threads
  * running for long periods of time, it is highly recommended you use the various APIs
@@ -52,13 +52,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * types, called <code>Params</code>, <code>Progress</code> and <code>Result</code>,
  * and 4 steps, called <code>onPreExecute</code>, <code>doInBackground</code>,
  * <code>onProgressUpdate</code> and <code>onPostExecute</code>.</p>
- *
- * <div class="special reference">
- * <h3>Developer Guides</h3>
- * <p>For more information about using tasks and threads, read the
- * <a href="{@docRoot}guide/topics/fundamentals/processes-and-threads.html">Processes and
- * Threads</a> developer guide.</p>
- * </div>
  *
  * <h2>Usage</h2>
  * <p>AsyncTask must be subclassed to be used. The subclass will override at least
@@ -149,7 +142,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  * work properly:</p>
  * <ul>
  *     <li>The AsyncTask class must be loaded on the UI thread. This is done
- *     automatically as of {@link android.os.Build.VERSION_CODES#JELLY_BEAN}.</li>
+ *     automatically as of JELLY_BEAN.</li>
  *     <li>The task instance must be created on the UI thread.</li>
  *     <li>{@link #execute} must be invoked on the UI thread.</li>
  *     <li>Do not call {@link #onPreExecute()}, {@link #onPostExecute},
@@ -170,9 +163,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * <h2>Order of execution</h2>
  * <p>When first introduced, AsyncTasks were executed serially on a single background
- * thread. Starting with {@link android.os.Build.VERSION_CODES#DONUT}, this was changed
+ * thread. Starting with DONUT, this was changed
  * to a pool of threads allowing multiple tasks to operate in parallel. Starting with
- * {@link android.os.Build.VERSION_CODES#HONEYCOMB}, tasks are executed on a single
+ * HONEYCOMB, tasks are executed on a single
  * thread to avoid common application errors caused by parallel execution.</p>
  * <p>If you truly want parallel execution, you can invoke
  * {@link #executeOnExecutor(java.util.concurrent.Executor, Object[])} with
@@ -508,9 +501,9 @@ public abstract class AsyncTask<Params, Progress, Result> {
      * <p>Note: this function schedules the task on a queue for a single background
      * thread or pool of threads depending on the platform version.  When first
      * introduced, AsyncTasks were executed serially on a single background thread.
-     * Starting with {@link android.os.Build.VERSION_CODES#DONUT}, this was changed
+     * Starting with DONUT, this was changed
      * to a pool of threads allowing multiple tasks to operate in parallel. Starting
-     * {@link android.os.Build.VERSION_CODES#HONEYCOMB}, tasks are back to being
+     * HONEYCOMB, tasks are back to being
      * executed on a single thread to avoid common application errors caused
      * by parallel execution.  If you truly want parallel execution, you can use
      * the {@link #executeOnExecutor} version of this method

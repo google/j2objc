@@ -143,10 +143,8 @@ public interface InputType {
      * This generally means that the input method should not be showing
      * candidates itself, but can expect the editor to supply its own
      * completions/candidates from
-     * {@link android.view.inputmethod.InputMethodSession#displayCompletions
-     * InputMethodSession.displayCompletions()} as a result of the editor calling
-     * {@link android.view.inputmethod.InputMethodManager#displayCompletions
-     * InputMethodManager.displayCompletions()}.
+     * InputMethodSession.displayCompletions() as a result of the editor calling
+     * InputMethodManager.displayCompletions().
      * Note the contrast with {@link #TYPE_TEXT_FLAG_AUTO_CORRECT} and
      * {@link #TYPE_TEXT_FLAG_NO_SUGGESTIONS}:
      * {@code TYPE_TEXT_FLAG_AUTO_COMPLETE} means the editor should show an
@@ -267,23 +265,18 @@ public interface InputType {
     
     /**
      * Variation of {@link #TYPE_CLASS_TEXT}: entering e-mail address inside
-     * of a web form.  This was added in
-     * {@link android.os.Build.VERSION_CODES#HONEYCOMB}.  An IME must target
+     * of a web form.  This was added in HONEYCOMB.  An IME must target
      * this API version or later to see this input type; if it doesn't, a request
      * for this type will be seen as {@link #TYPE_TEXT_VARIATION_EMAIL_ADDRESS}
-     * when passed through {@link android.view.inputmethod.EditorInfo#makeCompatible(int)
-     * EditorInfo.makeCompatible(int)}.
+     * when passed through EditorInfo.makeCompatible(int).
      */
     public static final int TYPE_TEXT_VARIATION_WEB_EMAIL_ADDRESS = 0x000000d0;
 
     /**
      * Variation of {@link #TYPE_CLASS_TEXT}: entering password inside
-     * of a web form.  This was added in
-     * {@link android.os.Build.VERSION_CODES#HONEYCOMB}.  An IME must target
+     * of a web form.  This was added in HONEYCOMB.  An IME must target
      * this API version or later to see this input type; if it doesn't, a request
-     * for this type will be seen as {@link #TYPE_TEXT_VARIATION_PASSWORD}
-     * when passed through {@link android.view.inputmethod.EditorInfo#makeCompatible(int)
-     * EditorInfo.makeCompatible(int)}.
+     * for this type will be seen as EditorInfo.makeCompatible(int).
      */
     public static final int TYPE_TEXT_VARIATION_WEB_PASSWORD = 0x000000e0;
 
@@ -318,22 +311,19 @@ public interface InputType {
 
     /**
      * Default variation of {@link #TYPE_CLASS_NUMBER}: plain normal
-     * numeric text.  This was added in
-     * {@link android.os.Build.VERSION_CODES#HONEYCOMB}.  An IME must target
+     * numeric text.  This was added in HONEYCOMB.  An IME must target
      * this API version or later to see this input type; if it doesn't, a request
      * for this type will be dropped when passed through
-     * {@link android.view.inputmethod.EditorInfo#makeCompatible(int)
-     * EditorInfo.makeCompatible(int)}.
+     * EditorInfo.makeCompatible(int).
      */
     public static final int TYPE_NUMBER_VARIATION_NORMAL = 0x00000000;
 
     /**
      * Variation of {@link #TYPE_CLASS_NUMBER}: entering a numeric password.
-     * This was added in {@link android.os.Build.VERSION_CODES#HONEYCOMB}.  An
+     * This was added in HONEYCOMB.  An
      * IME must target this API version or later to see this input type; if it
      * doesn't, a request for this type will be dropped when passed
-     * through {@link android.view.inputmethod.EditorInfo#makeCompatible(int)
-     * EditorInfo.makeCompatible(int)}.
+     * through EditorInfo.makeCompatible(int).
      */
     public static final int TYPE_NUMBER_VARIATION_PASSWORD = 0x00000010;
 

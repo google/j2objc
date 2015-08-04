@@ -541,10 +541,10 @@ public class ObjectInputStream extends InputStream implements ObjectInput, Objec
      *
      * @param buffer
      *            the array in which to store the bytes read.
-     * @param offset
+     * @param byteOffset
      *            the initial position in {@code buffer} to store the bytes
      *            read from the source stream.
-     * @param length
+     * @param byteCount
      *            the maximum number of bytes to store in {@code buffer}.
      * @return the number of bytes read or -1 if the end of the source input
      *         stream has been reached.

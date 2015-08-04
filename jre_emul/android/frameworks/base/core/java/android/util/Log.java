@@ -297,9 +297,6 @@ public final class Log {
     /**
      * What a Terrible Failure: Report a condition that should never happen.
      * The error will always be logged at level ASSERT with the call stack.
-     * Depending on system configuration, a report may be added to the
-     * {@link android.os.DropBoxManager} and/or the process may be terminated
-     * immediately with an error dialog.
      * @param tag Used to identify the source of a log message.
      * @param msg The message you would like logged.
      */

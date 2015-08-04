@@ -163,10 +163,6 @@ import java.util.*;
  * actions subsequent to the access or removal of that element from
  * the {@code BlockingDeque} in another thread.
  *
- * <p>This interface is a member of the
- * <a href="{@docRoot}/../technotes/guides/collections/index.html">
- * Java Collections Framework</a>.
- *
  * @since 1.6
  * @author Doug Lea
  * @param <E> the type of elements held in this collection

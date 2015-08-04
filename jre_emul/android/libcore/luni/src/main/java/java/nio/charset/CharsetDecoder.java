@@ -72,9 +72,7 @@ import java.nio.CharBuffer;
  * decoding process for all charsets. Decoders for a specific charset should
  * extend this class and need only to implement the
  * {@link #decodeLoop(ByteBuffer, CharBuffer) decodeLoop} method for the basic
- * decoding. If a subclass maintains an internal state, it should override the
- * {@link #implFlush(CharBuffer) implFlush} method and the
- * {@link #implReset() implReset} method in addition.
+ * decoding.
  * <p>
  * This class is not thread-safe.
  *
@@ -311,11 +309,6 @@ public abstract class CharsetDecoder {
     /**
      * Flushes this decoder.
      *
-     * This method will call {@link #implFlush(CharBuffer) implFlush}. Some
-     * decoders may need to write some characters to the output buffer when they
-     * have read all input bytes; subclasses can override
-     * {@link #implFlush(CharBuffer) implFlush} to perform the writing operation.
-     * <p>
      * The maximum number of written bytes won't be larger than
      * {@link CharBuffer#remaining() out.remaining()}. If some decoder wants to
      * write more bytes than an output buffer's remaining space allows, then a
@@ -393,10 +386,6 @@ public abstract class CharsetDecoder {
     /**
      * Sets this decoder's action on malformed input errors.
      *
-     * This method will call the
-     * {@link #implOnMalformedInput(CodingErrorAction) implOnMalformedInput}
-     * method with the given new action as argument.
-     *
      * @param newAction
      *            the new action on malformed input error.
      * @return this decoder.
@@ -409,10 +398,6 @@ public abstract class CharsetDecoder {
 
     /**
      * Sets this decoder's action on unmappable character errors.
-     *
-     * This method will call the
-     * {@link #implOnUnmappableCharacter(CodingErrorAction) implOnUnmappableCharacter}
-     * method with the given new action as argument.
      *
      * @param newAction
      *            the new action on unmappable character error.
@@ -434,11 +419,6 @@ public abstract class CharsetDecoder {
     /**
      * Sets the new replacement string.
      *
-     * This method first checks the given replacement's validity, then changes
-     * the replacement value, and at last calls the
-     * {@link #implReplaceWith(String) implReplaceWith} method with the given
-     * new replacement as argument.
-     *
      * @param replacement
      *            the replacement string, cannot be null or empty. Its length
      *            cannot be larger than {@link #maxCharsPerByte()}.
@@ -459,9 +439,7 @@ public abstract class CharsetDecoder {
     }
 
     /**
-     * Resets this decoder. This method will reset the internal status, and then
-     * calls <code>implReset()</code> to reset any status related to the
-     * specific charset.
+     * Resets this decoder.
      *
      * @return this decoder.
      */

@@ -92,10 +92,6 @@ import java.util.TreeMap;
  * </table>
  *
  * <p>The next table shows how each variant's decoder behaves when reading a byte sequence.
- * The exact meaning of "failure" in the table is dependent on the
- * {@link CodingErrorAction} supplied to {@link CharsetDecoder#malformedInputAction}, so
- * "BE, failure" means "the byte sequence is treated as big-endian, and a little-endian BOM
- * triggers the malformedInputAction".
  *
  * <p>The phrase "includes BOM" means that the output includes the U+FEFF byte order mark character.
  *
