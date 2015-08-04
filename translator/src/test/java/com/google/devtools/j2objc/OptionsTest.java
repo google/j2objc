@@ -44,8 +44,32 @@ public class OptionsTest extends GenerationTest {
   }
 
   public void testSourceVersionFlags() throws IOException {
-    // Check that version default is correct.
-    assertEquals("1.7", Options.getSourceVersion());
+    // TODO(kirbs): Uncomment following lines and lines in Options when we enable automatic version
+    // detection.
+    // // Check that version default is correctly pulled from system properties.
+    // String javaVersion = System.getProperty("java.version");
+    //
+    // Options.reset();
+    // Options.load(new String[] {});
+    // assertEquals(javaVersion.substring(0, 3), Options.getSourceVersion());
+    //
+    // System.setProperty("java.version", "1.8.0_45");
+    // Options.reset();
+    // Options.load(new String[] {});
+    // assertEquals("1.8", Options.getSourceVersion());
+    //
+    // System.setProperty("java.version", "1.6.0");
+    // Options.reset();
+    // Options.load(new String[] {});
+    // assertEquals("1.6", Options.getSourceVersion());
+    //
+    // System.setProperty("java.version", "1.7");
+    // Options.reset();
+    // Options.load(new String[] {});
+    // assertEquals("1.7", Options.getSourceVersion());
+    //
+    // // Reset the java.version property to prevent any unexpected jvm behavior after testing.
+    // System.setProperty("java.version", javaVersion);
 
     String[] argsJavaSource = "-source 1.6".split(" ");
     Options.load(argsJavaSource);

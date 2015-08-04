@@ -87,8 +87,14 @@ public class Options {
 
   private static final Set<String> VALID_JAVA_VERSIONS = ImmutableSet.of("1.8", "1.7", "1.6",
       "1.5");
-  // The default source version number if not passed with -source
+
+  // TODO(kirbs): Uncomment following lines and lines in OptionsTest when we enable automatic
+  // version detection.
   private String sourceVersion = "1.7";
+  // // The default source version number if not passed with -source is determined from the system
+  // // properties of the running java version after parsing the argument list.
+  // private String sourceVersion = null;
+  
   // Force JLS8 and conversion of JLS8 nodes.
   // TODO(kirbs): Remove when Java 8 is fully supported.
   private boolean forceIncompleteJava8Support = false;
@@ -371,6 +377,11 @@ public class Options {
 
     if (memoryManagementOption == null) {
       memoryManagementOption = MemoryManagementOption.REFERENCE_COUNTING;
+    }
+
+    // Pull source version from system properties if it is not passed with -source flag.
+    if (sourceVersion == null) {
+      sourceVersion = System.getProperty("java.version").substring(0, 3);
     }
 
     int nFiles = args.length - nArg;
