@@ -120,4 +120,37 @@ public class ExpressionMethodReferenceTest extends TestCase {
     i2 = (Integer x) -> "Lambda";
     assertEquals("Lambda", i2.apply(42));
   }
+
+  interface IntegerVarargsFun {
+    Integer apply(int a, int b, Integer c, Integer d, int e);
+  }
+
+  interface IntVarargsFun {
+    int apply(int a, int b, Integer c, Integer d, int e);
+  }
+
+  Integer foos(int x, Integer... xs) {
+    int out = x;
+    for (int a : xs) {
+      out += a;
+    }
+    return out;
+  }
+
+  int bars(Integer x, int... xs) {
+    Integer out = x;
+    for (int a : xs) {
+      out -= a;
+    }
+    return out;
+  }
+
+  public void testVarargBoxingAndUnboxing() throws Exception {
+    IntegerVarargsFun i = this::foos;
+    int b = 42, d = 24;
+    Integer a = 5, c = 8, e = 13;
+    IntVarargsFun i2 = this::bars;
+    assertEquals((Integer) 92, i.apply(a, b, c, d, e));
+    assertEquals(-82, i2.apply(a, b, c, d, e));
+  }
 }
