@@ -585,16 +585,16 @@ TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.golden.ser
 ANDROID_TEST_RESOURCES_SRCS = \
     META-INF/services/libcore.java.util.ServiceLoaderTestInterface \
-    MD5.check \
-    MD5.data \
-    SHA-1.check \
-    SHA-1.data \
-    SHA-256.check \
-    SHA-256.data \
-    SHA-384.check \
-    SHA-384.data \
-    SHA-512.check \
-    SHA-512.data \
+    tests/targets/security/MD5.check \
+    tests/targets/security/MD5.data \
+    tests/targets/security/SHA-1.check \
+    tests/targets/security/SHA-1.data \
+    tests/targets/security/SHA-256.check \
+    tests/targets/security/SHA-256.data \
+    tests/targets/security/SHA-384.check \
+    tests/targets/security/SHA-384.data \
+    tests/targets/security/SHA-512.check \
+    tests/targets/security/SHA-512.data \
     recipt.xml \
     simple.xml \
     systemid.xml \

@@ -7,14 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0600BFFA1B715330005FDEF9 /* SHA-1.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E84D197F26C6005DDE69 /* SHA-1.check */; };
+		0600BFFB1B715330005FDEF9 /* SHA-1.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E84E197F26C6005DDE69 /* SHA-1.data */; };
+		0600BFFC1B715330005FDEF9 /* SHA-256.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E84F197F26C6005DDE69 /* SHA-256.check */; };
+		0600BFFD1B715330005FDEF9 /* SHA-256.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E850197F26C6005DDE69 /* SHA-256.data */; };
+		0600BFFE1B715330005FDEF9 /* SHA-384.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E851197F26C6005DDE69 /* SHA-384.check */; };
+		0600BFFF1B715330005FDEF9 /* SHA-384.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E852197F26C6005DDE69 /* SHA-384.data */; };
+		0600C0001B715330005FDEF9 /* SHA-512.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E853197F26C6005DDE69 /* SHA-512.check */; };
+		0600C0011B715330005FDEF9 /* SHA-512.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E854197F26C6005DDE69 /* SHA-512.data */; };
+		0600C0021B715330005FDEF9 /* MD5.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E83B197F25B2005DDE69 /* MD5.check */; };
+		0600C0031B715330005FDEF9 /* MD5.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E83C197F25B2005DDE69 /* MD5.data */; };
 		0616608B1A40DD1400972BBD /* SerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0616608A1A40DD1400972BBD /* SerializationTest.m */; };
 		061AA0CF19FEF01800457D2B /* package-info.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CD19FEF01800457D2B /* package-info.m */; };
 		061AA0D019FEF01800457D2B /* PackageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CE19FEF01800457D2B /* PackageTest.m */; };
 		061AA0D519FEF2E700457D2B /* TestAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D219FEF2E700457D2B /* TestAnnotation.m */; };
 		061AA0D619FEF2E700457D2B /* ThrowableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D319FEF2E700457D2B /* ThrowableTest.m */; };
 		06243C5D1B6BF6BA00657D74 /* NSDataInputStreamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06243C5C1B6BF6BA00657D74 /* NSDataInputStreamTest.m */; };
-		062461821AFBF2AC003747CE /* MD5.check in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E83B197F25B2005DDE69 /* MD5.check */; };
-		062461831AFBF2AC003747CE /* MD5.data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E83C197F25B2005DDE69 /* MD5.data */; };
 		062463D41A000CE3006D52C9 /* JRETestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */; };
 		062463DA1A005995006D52C9 /* JRELogPaneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 062463D91A005995006D52C9 /* JRELogPaneViewController.m */; };
 		06459FB71A4220AF00F5ED23 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
@@ -530,14 +538,6 @@
 		06E4E835197F1E4E005DDE69 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87C219759EFF00633227 /* main.m */; };
 		06E4E843197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E842197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */; };
 		06E4E849197F267B005DDE69 /* test_resource.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E848197F267B005DDE69 /* test_resource.txt */; };
-		06E4E857197F26C6005DDE69 /* SHA-1.check in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E84D197F26C6005DDE69 /* SHA-1.check */; };
-		06E4E858197F26C6005DDE69 /* SHA-1.data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E84E197F26C6005DDE69 /* SHA-1.data */; };
-		06E4E859197F26C6005DDE69 /* SHA-256.check in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E84F197F26C6005DDE69 /* SHA-256.check */; };
-		06E4E85A197F26C6005DDE69 /* SHA-256.data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E850197F26C6005DDE69 /* SHA-256.data */; };
-		06E4E85B197F26C6005DDE69 /* SHA-384.check in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E851197F26C6005DDE69 /* SHA-384.check */; };
-		06E4E85C197F26C6005DDE69 /* SHA-384.data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E852197F26C6005DDE69 /* SHA-384.data */; };
-		06E4E85D197F26C6005DDE69 /* SHA-512.check in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E853197F26C6005DDE69 /* SHA-512.check */; };
-		06E4E85E197F26C6005DDE69 /* SHA-512.data in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E854197F26C6005DDE69 /* SHA-512.data */; };
 		06E4E863197F2705005DDE69 /* testFields.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E860197F2705005DDE69 /* testFields.ser */; };
 		06E4E864197F2705005DDE69 /* testFieldsDefaulted.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E861197F2705005DDE69 /* testFieldsDefaulted.ser */; };
 		06E4E865197F2705005DDE69 /* testFieldsDeprecated.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E862197F2705005DDE69 /* testFieldsDeprecated.ser */; };
@@ -599,6 +599,26 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		0600BFF91B7152C1005FDEF9 /* Copy Files */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = tests/targets/security;
+			dstSubfolderSpec = 7;
+			files = (
+				0600BFFA1B715330005FDEF9 /* SHA-1.check in Copy Files */,
+				0600BFFB1B715330005FDEF9 /* SHA-1.data in Copy Files */,
+				0600BFFC1B715330005FDEF9 /* SHA-256.check in Copy Files */,
+				0600BFFD1B715330005FDEF9 /* SHA-256.data in Copy Files */,
+				0600BFFE1B715330005FDEF9 /* SHA-384.check in Copy Files */,
+				0600BFFF1B715330005FDEF9 /* SHA-384.data in Copy Files */,
+				0600C0001B715330005FDEF9 /* SHA-512.check in Copy Files */,
+				0600C0011B715330005FDEF9 /* SHA-512.data in Copy Files */,
+				0600C0021B715330005FDEF9 /* MD5.check in Copy Files */,
+				0600C0031B715330005FDEF9 /* MD5.data in Copy Files */,
+			);
+			name = "Copy Files";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		06574AB91A8EB5AF000A3616 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -659,20 +679,10 @@
 			dstPath = "";
 			dstSubfolderSpec = 7;
 			files = (
-				062461821AFBF2AC003747CE /* MD5.check in CopyFiles */,
-				062461831AFBF2AC003747CE /* MD5.data in CopyFiles */,
 				06574AD11A8EB93D000A3616 /* wrong.xml in CopyFiles */,
 				06574ACD1A8EB8F9000A3616 /* recipt.xml in CopyFiles */,
 				06574ACE1A8EB8F9000A3616 /* simple.xml in CopyFiles */,
 				06574ACF1A8EB8F9000A3616 /* systemid.xml in CopyFiles */,
-				06E4E857197F26C6005DDE69 /* SHA-1.check in CopyFiles */,
-				06E4E858197F26C6005DDE69 /* SHA-1.data in CopyFiles */,
-				06E4E859197F26C6005DDE69 /* SHA-256.check in CopyFiles */,
-				06E4E85A197F26C6005DDE69 /* SHA-256.data in CopyFiles */,
-				06E4E85B197F26C6005DDE69 /* SHA-384.check in CopyFiles */,
-				06E4E85C197F26C6005DDE69 /* SHA-384.data in CopyFiles */,
-				06E4E85D197F26C6005DDE69 /* SHA-512.check in CopyFiles */,
-				06E4E85E197F26C6005DDE69 /* SHA-512.data in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8019,6 +8029,7 @@
 				06E4E85F197F26DC005DDE69 /* CopyFiles */,
 				06E4E866197F270E005DDE69 /* CopyFiles */,
 				06E4E871197F2746005DDE69 /* CopyFiles */,
+				0600BFF91B7152C1005FDEF9 /* Copy Files */,
 			);
 			buildRules = (
 			);
