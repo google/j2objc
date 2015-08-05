@@ -1388,3 +1388,12 @@ objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
 
+
+DOCLET_PATH = $(JAVA_DEPS_JAR_DIR)/$(DOCLAVA_JAR):$(JAVA_DEPS_JAR_DIR)/$(JSILVER_JAR)
+
+javadoc: $(ANNOTATIONS_JAR)
+	@echo "building javadoc"
+	@javadoc -d $(BUILD_DIR)/javadoc -classpath $(ANNOTATIONS_JAR) -quiet \
+	    -sourcepath $(JRE_SRC):$(STUBS_DIR) -subpackages android:java:javax:org.json:org.w3c:org.xml \
+	    -doclet com.google.doclava.Doclava -docletpath $(DOCLET_PATH) -hide 101 -hide 113 \
+	    -title "JRE Emulation"

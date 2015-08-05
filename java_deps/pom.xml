@@ -213,5 +213,16 @@
       <artifactId>jarjar</artifactId>
       <version>1.3</version>
     </dependency>
+    <dependency>
+        <groupId>com.google.doclava</groupId>
+        <artifactId>doclava</artifactId>
+        <version>1.0.6</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.jsilver</groupId>
+      <artifactId>jsilver</artifactId>
+      <version>1.0.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
 </project>
