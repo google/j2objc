@@ -7,24 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0600C0121B715D13005FDEF9 /* CreationReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C0051B715CB4005FDEF9 /* CreationReferenceTest.m */; };
-		0600C0131B715D13005FDEF9 /* ExpressionMethodReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C0071B715CB4005FDEF9 /* ExpressionMethodReferenceTest.m */; };
-		0600C0141B715D13005FDEF9 /* Lambdas.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C0091B715CB4005FDEF9 /* Lambdas.m */; };
-		0600C0161B715D13005FDEF9 /* SmallTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C00D1B715CB4005FDEF9 /* SmallTests.m */; };
-		0600C0171B715D13005FDEF9 /* SuperMethodReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C00F1B715CB4005FDEF9 /* SuperMethodReferenceTest.m */; };
-		0600C0181B715D13005FDEF9 /* TypeMethodReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C0111B715CB4005FDEF9 /* TypeMethodReferenceTest.m */; };
+		0600BFFA1B715330005FDEF9 /* SHA-1.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E84D197F26C6005DDE69 /* SHA-1.check */; };
+		0600BFFB1B715330005FDEF9 /* SHA-1.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E84E197F26C6005DDE69 /* SHA-1.data */; };
+		0600BFFC1B715330005FDEF9 /* SHA-256.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E84F197F26C6005DDE69 /* SHA-256.check */; };
+		0600BFFD1B715330005FDEF9 /* SHA-256.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E850197F26C6005DDE69 /* SHA-256.data */; };
+		0600BFFE1B715330005FDEF9 /* SHA-384.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E851197F26C6005DDE69 /* SHA-384.check */; };
+		0600BFFF1B715330005FDEF9 /* SHA-384.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E852197F26C6005DDE69 /* SHA-384.data */; };
+		0600C0001B715330005FDEF9 /* SHA-512.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E853197F26C6005DDE69 /* SHA-512.check */; };
+		0600C0011B715330005FDEF9 /* SHA-512.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E854197F26C6005DDE69 /* SHA-512.data */; };
+		0600C0021B715330005FDEF9 /* MD5.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E83B197F25B2005DDE69 /* MD5.check */; };
+		0600C0031B715330005FDEF9 /* MD5.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 06E4E83C197F25B2005DDE69 /* MD5.data */; };
 		0616608B1A40DD1400972BBD /* SerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0616608A1A40DD1400972BBD /* SerializationTest.m */; };
-		061A108D1B71892C002093E3 /* MD5.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10831B718717002093E3 /* MD5.check */; };
-		061A108E1B71892C002093E3 /* MD5.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10841B718717002093E3 /* MD5.data */; };
-		061A108F1B71892C002093E3 /* SHA-1.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10851B718717002093E3 /* SHA-1.check */; };
-		061A10901B71892C002093E3 /* SHA-1.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10861B718717002093E3 /* SHA-1.data */; };
-		061A10911B71892C002093E3 /* SHA-256.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10871B718717002093E3 /* SHA-256.check */; };
-		061A10921B71892C002093E3 /* SHA-256.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10881B718717002093E3 /* SHA-256.data */; };
-		061A10931B71892C002093E3 /* SHA-384.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10891B718717002093E3 /* SHA-384.check */; };
-		061A10941B71892C002093E3 /* SHA-384.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A108A1B718717002093E3 /* SHA-384.data */; };
-		061A10951B71892C002093E3 /* SHA-512.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A108B1B718717002093E3 /* SHA-512.check */; };
-		061A10961B71892C002093E3 /* SHA-512.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A108C1B718717002093E3 /* SHA-512.data */; };
-		061A109B1B71918C002093E3 /* test_resource.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 061A109A1B71916D002093E3 /* test_resource.txt */; };
 		061AA0CF19FEF01800457D2B /* package-info.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CD19FEF01800457D2B /* package-info.m */; };
 		061AA0D019FEF01800457D2B /* PackageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CE19FEF01800457D2B /* PackageTest.m */; };
 		061AA0D519FEF2E700457D2B /* TestAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D219FEF2E700457D2B /* TestAnnotation.m */; };
@@ -569,6 +562,7 @@
 		06FADA7F1B3B29B300A9579E /* NoPackageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FADA7D1B3B29B300A9579E /* NoPackageTest.m */; };
 		06FADA821B3B2E1300A9579E /* ArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FADA811B3B2E1300A9579E /* ArrayTest.m */; };
 		06FADA871B3B2E4400A9579E /* LambdaTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FADA841B3B2E4400A9579E /* LambdaTest.m */; };
+		06FADA881B3B2E4400A9579E /* SmallTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06FADA861B3B2E4400A9579E /* SmallTests.m */; };
 		5110C61F19AFCBAA00FA26E1 /* ClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110C61E19AFCBAA00FA26E1 /* ClassTest.m */; };
 		5110C62519AFCC2E00FA26E1 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110C62419AFCC2E00FA26E1 /* ProxyTest.m */; };
 /* End PBXBuildFile section */
@@ -611,28 +605,18 @@
 			dstPath = tests/targets/security;
 			dstSubfolderSpec = 7;
 			files = (
-				061A108D1B71892C002093E3 /* MD5.check in Copy Files */,
-				061A108E1B71892C002093E3 /* MD5.data in Copy Files */,
-				061A108F1B71892C002093E3 /* SHA-1.check in Copy Files */,
-				061A10901B71892C002093E3 /* SHA-1.data in Copy Files */,
-				061A10911B71892C002093E3 /* SHA-256.check in Copy Files */,
-				061A10921B71892C002093E3 /* SHA-256.data in Copy Files */,
-				061A10931B71892C002093E3 /* SHA-384.check in Copy Files */,
-				061A10941B71892C002093E3 /* SHA-384.data in Copy Files */,
-				061A10951B71892C002093E3 /* SHA-512.check in Copy Files */,
-				061A10961B71892C002093E3 /* SHA-512.data in Copy Files */,
+				0600BFFA1B715330005FDEF9 /* SHA-1.check in Copy Files */,
+				0600BFFB1B715330005FDEF9 /* SHA-1.data in Copy Files */,
+				0600BFFC1B715330005FDEF9 /* SHA-256.check in Copy Files */,
+				0600BFFD1B715330005FDEF9 /* SHA-256.data in Copy Files */,
+				0600BFFE1B715330005FDEF9 /* SHA-384.check in Copy Files */,
+				0600BFFF1B715330005FDEF9 /* SHA-384.data in Copy Files */,
+				0600C0001B715330005FDEF9 /* SHA-512.check in Copy Files */,
+				0600C0011B715330005FDEF9 /* SHA-512.data in Copy Files */,
+				0600C0021B715330005FDEF9 /* MD5.check in Copy Files */,
+				0600C0031B715330005FDEF9 /* MD5.data in Copy Files */,
 			);
 			name = "Copy Files";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		061A10971B718E12002093E3 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = org/apache/harmony/luni/tests/java/lang;
-			dstSubfolderSpec = 7;
-			files = (
-				061A109B1B71918C002093E3 /* test_resource.txt in CopyFiles */,
-			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		06574AB91A8EB5AF000A3616 /* CopyFiles */ = {
@@ -741,32 +725,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0600C0041B715CB4005FDEF9 /* CreationReferenceTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CreationReferenceTest.h; path = com/google/j2objc/java8/CreationReferenceTest.h; sourceTree = "<group>"; };
-		0600C0051B715CB4005FDEF9 /* CreationReferenceTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CreationReferenceTest.m; path = com/google/j2objc/java8/CreationReferenceTest.m; sourceTree = "<group>"; };
-		0600C0061B715CB4005FDEF9 /* ExpressionMethodReferenceTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ExpressionMethodReferenceTest.h; path = com/google/j2objc/java8/ExpressionMethodReferenceTest.h; sourceTree = "<group>"; };
-		0600C0071B715CB4005FDEF9 /* ExpressionMethodReferenceTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ExpressionMethodReferenceTest.m; path = com/google/j2objc/java8/ExpressionMethodReferenceTest.m; sourceTree = "<group>"; };
-		0600C0081B715CB4005FDEF9 /* Lambdas.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Lambdas.h; path = com/google/j2objc/java8/Lambdas.h; sourceTree = "<group>"; };
-		0600C0091B715CB4005FDEF9 /* Lambdas.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Lambdas.m; path = com/google/j2objc/java8/Lambdas.m; sourceTree = "<group>"; };
-		0600C00C1B715CB4005FDEF9 /* SmallTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SmallTests.h; path = com/google/j2objc/java8/SmallTests.h; sourceTree = "<group>"; };
-		0600C00D1B715CB4005FDEF9 /* SmallTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SmallTests.m; path = com/google/j2objc/java8/SmallTests.m; sourceTree = "<group>"; };
-		0600C00E1B715CB4005FDEF9 /* SuperMethodReferenceTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SuperMethodReferenceTest.h; path = com/google/j2objc/java8/SuperMethodReferenceTest.h; sourceTree = "<group>"; };
-		0600C00F1B715CB4005FDEF9 /* SuperMethodReferenceTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SuperMethodReferenceTest.m; path = com/google/j2objc/java8/SuperMethodReferenceTest.m; sourceTree = "<group>"; };
-		0600C0101B715CB4005FDEF9 /* TypeMethodReferenceTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TypeMethodReferenceTest.h; path = com/google/j2objc/java8/TypeMethodReferenceTest.h; sourceTree = "<group>"; };
-		0600C0111B715CB4005FDEF9 /* TypeMethodReferenceTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TypeMethodReferenceTest.m; path = com/google/j2objc/java8/TypeMethodReferenceTest.m; sourceTree = "<group>"; };
 		0604932C1772407B0047D336 /* IOSClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = IOSClassTest.m; path = Classes/IOSClassTest.m; sourceTree = SOURCE_ROOT; tabWidth = 2; wrapsLines = 0; };
 		061660891A40DD1400972BBD /* SerializationTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SerializationTest.h; path = libcore/java/io/SerializationTest.h; sourceTree = "<group>"; };
 		0616608A1A40DD1400972BBD /* SerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SerializationTest.m; path = libcore/java/io/SerializationTest.m; sourceTree = "<group>"; };
-		061A10831B718717002093E3 /* MD5.check */ = {isa = PBXFileReference; lastKnownFileType = text; name = MD5.check; path = build_result/tests/tests/targets/security/MD5.check; sourceTree = SOURCE_ROOT; };
-		061A10841B718717002093E3 /* MD5.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = MD5.data; path = build_result/tests/tests/targets/security/MD5.data; sourceTree = SOURCE_ROOT; };
-		061A10851B718717002093E3 /* SHA-1.check */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SHA-1.check"; path = "build_result/tests/tests/targets/security/SHA-1.check"; sourceTree = SOURCE_ROOT; };
-		061A10861B718717002093E3 /* SHA-1.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-1.data"; path = "build_result/tests/tests/targets/security/SHA-1.data"; sourceTree = SOURCE_ROOT; };
-		061A10871B718717002093E3 /* SHA-256.check */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-256.check"; path = "build_result/tests/tests/targets/security/SHA-256.check"; sourceTree = SOURCE_ROOT; };
-		061A10881B718717002093E3 /* SHA-256.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-256.data"; path = "build_result/tests/tests/targets/security/SHA-256.data"; sourceTree = SOURCE_ROOT; };
-		061A10891B718717002093E3 /* SHA-384.check */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SHA-384.check"; path = "build_result/tests/tests/targets/security/SHA-384.check"; sourceTree = SOURCE_ROOT; };
-		061A108A1B718717002093E3 /* SHA-384.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-384.data"; path = "build_result/tests/tests/targets/security/SHA-384.data"; sourceTree = SOURCE_ROOT; };
-		061A108B1B718717002093E3 /* SHA-512.check */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-512.check"; path = "build_result/tests/tests/targets/security/SHA-512.check"; sourceTree = SOURCE_ROOT; };
-		061A108C1B718717002093E3 /* SHA-512.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-512.data"; path = "build_result/tests/tests/targets/security/SHA-512.data"; sourceTree = SOURCE_ROOT; };
-		061A109A1B71916D002093E3 /* test_resource.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = test_resource.txt; path = build_result/tests/org/apache/harmony/luni/tests/java/lang/test_resource.txt; sourceTree = SOURCE_ROOT; };
 		061AA0CC19FEF01800457D2B /* package-info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "package-info.h"; path = "com/google/j2objc/package-info.h"; sourceTree = "<group>"; };
 		061AA0CD19FEF01800457D2B /* package-info.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "package-info.m"; path = "com/google/j2objc/package-info.m"; sourceTree = "<group>"; };
 		061AA0CE19FEF01800457D2B /* PackageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PackageTest.m; path = com/google/j2objc/PackageTest.m; sourceTree = "<group>"; };
@@ -3317,9 +3278,20 @@
 		06E4E6AE197F1D47005DDE69 /* TimeUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUnitTest.h; sourceTree = "<group>"; };
 		06E4E6AF197F1D47005DDE69 /* TimeUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeUnitTest.m; sourceTree = "<group>"; };
 		06E4E837197F253D005DDE69 /* testfile-utf8.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = "testfile-utf8.txt"; path = "../build_result/tests/org/apache/harmony/luni/tests/java/io/testfile-utf8.txt"; sourceTree = "<group>"; };
+		06E4E838197F253D005DDE69 /* test_resource.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = test_resource.txt; path = ../build_result/tests/org/apache/harmony/luni/tests/test_resource.txt; sourceTree = "<group>"; };
+		06E4E83B197F25B2005DDE69 /* MD5.check */ = {isa = PBXFileReference; lastKnownFileType = text; name = MD5.check; path = ../build_result/tests/MD5.check; sourceTree = "<group>"; };
+		06E4E83C197F25B2005DDE69 /* MD5.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = MD5.data; path = ../build_result/tests/MD5.data; sourceTree = "<group>"; };
 		06E4E83D197F25B2005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */ = {isa = PBXFileReference; lastKnownFileType = text; name = libcore.java.util.ServiceLoaderTestInterface; path = "../build_result/tests/META-INF/services/libcore.java.util.ServiceLoaderTestInterface"; sourceTree = "<group>"; };
 		06E4E842197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */ = {isa = PBXFileReference; lastKnownFileType = text; name = libcore.java.util.ServiceLoaderTestInterface; path = "../build_result/tests/META-INF/services/libcore.java.util.ServiceLoaderTestInterface"; sourceTree = "<group>"; };
 		06E4E848197F267B005DDE69 /* test_resource.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = test_resource.txt; path = ../build_result/tests/org/apache/harmony/luni/tests/test_resource.txt; sourceTree = "<group>"; };
+		06E4E84D197F26C6005DDE69 /* SHA-1.check */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SHA-1.check"; path = "../build_result/tests/SHA-1.check"; sourceTree = "<group>"; };
+		06E4E84E197F26C6005DDE69 /* SHA-1.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-1.data"; path = "../build_result/tests/SHA-1.data"; sourceTree = "<group>"; };
+		06E4E84F197F26C6005DDE69 /* SHA-256.check */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-256.check"; path = "../build_result/tests/SHA-256.check"; sourceTree = "<group>"; };
+		06E4E850197F26C6005DDE69 /* SHA-256.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-256.data"; path = "../build_result/tests/SHA-256.data"; sourceTree = "<group>"; };
+		06E4E851197F26C6005DDE69 /* SHA-384.check */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SHA-384.check"; path = "../build_result/tests/SHA-384.check"; sourceTree = "<group>"; };
+		06E4E852197F26C6005DDE69 /* SHA-384.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-384.data"; path = "../build_result/tests/SHA-384.data"; sourceTree = "<group>"; };
+		06E4E853197F26C6005DDE69 /* SHA-512.check */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-512.check"; path = "../build_result/tests/SHA-512.check"; sourceTree = "<group>"; };
+		06E4E854197F26C6005DDE69 /* SHA-512.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-512.data"; path = "../build_result/tests/SHA-512.data"; sourceTree = "<group>"; };
 		06E4E860197F2705005DDE69 /* testFields.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = testFields.ser; path = ../build_result/tests/tests/api/java/io/testFields.ser; sourceTree = "<group>"; };
 		06E4E861197F2705005DDE69 /* testFieldsDefaulted.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = testFieldsDefaulted.ser; path = ../build_result/tests/tests/api/java/io/testFieldsDefaulted.ser; sourceTree = "<group>"; };
 		06E4E862197F2705005DDE69 /* testFieldsDeprecated.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = testFieldsDeprecated.ser; path = ../build_result/tests/tests/api/java/io/testFieldsDeprecated.ser; sourceTree = "<group>"; };
@@ -3969,6 +3941,8 @@
 		06FADA811B3B2E1300A9579E /* ArrayTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ArrayTest.m; path = com/google/j2objc/ArrayTest.m; sourceTree = "<group>"; };
 		06FADA831B3B2E4400A9579E /* LambdaTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LambdaTest.h; path = com/google/j2objc/java8/LambdaTest.h; sourceTree = "<group>"; };
 		06FADA841B3B2E4400A9579E /* LambdaTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LambdaTest.m; path = com/google/j2objc/java8/LambdaTest.m; sourceTree = "<group>"; };
+		06FADA851B3B2E4400A9579E /* SmallTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SmallTests.h; path = com/google/j2objc/java8/SmallTests.h; sourceTree = "<group>"; };
+		06FADA861B3B2E4400A9579E /* SmallTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SmallTests.m; path = com/google/j2objc/java8/SmallTests.m; sourceTree = "<group>"; };
 		2CBD9CBA174A8BD7008A0086 /* NSDictionaryMap.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDictionaryMap.h; sourceTree = "<group>"; };
 		2CBD9CBB174A8BD7008A0086 /* NSDictionaryMap.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NSDictionaryMap.m; sourceTree = "<group>"; };
 		2CBD9CBC174ABC0D008A0086 /* NSDataInputStream.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NSDataInputStream.h; sourceTree = "<group>"; };
@@ -6459,8 +6433,6 @@
 				06E4E39E197F1D46005DDE69 /* CopyOnWriteArraySetTest.m */,
 				06E4E39F197F1D46005DDE69 /* CountDownLatchTest.h */,
 				06E4E3A0197F1D46005DDE69 /* CountDownLatchTest.m */,
-				0600C0041B715CB4005FDEF9 /* CreationReferenceTest.h */,
-				0600C0051B715CB4005FDEF9 /* CreationReferenceTest.m */,
 				06E4E3A1197F1D46005DDE69 /* CyclicBarrierTest.h */,
 				06E4E3A2197F1D46005DDE69 /* CyclicBarrierTest.m */,
 				06CBF51B1AFBE88800CA582D /* dalvik */,
@@ -6487,8 +6459,6 @@
 				06E4E3A8197F1D46005DDE69 /* ExecutorCompletionServiceTest.m */,
 				06E4E3A9197F1D46005DDE69 /* ExecutorsTest.h */,
 				06E4E3AA197F1D46005DDE69 /* ExecutorsTest.m */,
-				0600C0061B715CB4005FDEF9 /* ExpressionMethodReferenceTest.h */,
-				0600C0071B715CB4005FDEF9 /* ExpressionMethodReferenceTest.m */,
 				06574A361A8EB04A000A3616 /* FactoryConfigurationErrorTest.m */,
 				06E4E3AB197F1D46005DDE69 /* FutureTaskTest.h */,
 				06E4E3AC197F1D46005DDE69 /* FutureTaskTest.m */,
@@ -6508,8 +6478,6 @@
 				06574A211A8EB04A000A3616 /* KeyPairGeneratorSpiTest.m */,
 				06574A221A8EB04A000A3616 /* KeyPairTest.m */,
 				06574A231A8EB04A000A3616 /* KeyTest.m */,
-				0600C0081B715CB4005FDEF9 /* Lambdas.h */,
-				0600C0091B715CB4005FDEF9 /* Lambdas.m */,
 				06FADA831B3B2E4400A9579E /* LambdaTest.h */,
 				06FADA841B3B2E4400A9579E /* LambdaTest.m */,
 				06E4E3C4197F1D46005DDE69 /* libcore */,
@@ -6591,15 +6559,13 @@
 				06C54AD11A40C78E004B3ACD /* SerializationTester.m */,
 				06574A2C1A8EB04A000A3616 /* SignatureSpiTest.m */,
 				06574A2D1A8EB04A000A3616 /* SignatureTest.m */,
-				0600C00C1B715CB4005FDEF9 /* SmallTests.h */,
-				0600C00D1B715CB4005FDEF9 /* SmallTests.m */,
+				06FADA851B3B2E4400A9579E /* SmallTests.h */,
+				06FADA861B3B2E4400A9579E /* SmallTests.m */,
 				06574A331A8EB04A000A3616 /* SpiEngUtils.m */,
 				06C54AC91A40C0D8004B3ACD /* StrictMathTest.h */,
 				06C54ACA1A40C0D8004B3ACD /* StrictMathTest.m */,
 				06E685D71A2FC550006F8791 /* StringBuilderTest.h */,
 				06E685D81A2FC550006F8791 /* StringBuilderTest.m */,
-				0600C00E1B715CB4005FDEF9 /* SuperMethodReferenceTest.h */,
-				0600C00F1B715CB4005FDEF9 /* SuperMethodReferenceTest.m */,
 				06574A7E1A8EB150000A3616 /* Support_Configuration.m */,
 				06574A7D1A8EB150000A3616 /* Support_Resources.m */,
 				06E4E63D197F1D47005DDE69 /* SynchronousQueueTest.h */,
@@ -6616,8 +6582,6 @@
 				06E4E6AF197F1D47005DDE69 /* TimeUnitTest.m */,
 				06934A121A40CE8900D2CD07 /* TreeSetTest.h */,
 				06934A131A40CE8900D2CD07 /* TreeSetTest.m */,
-				0600C0101B715CB4005FDEF9 /* TypeMethodReferenceTest.h */,
-				0600C0111B715CB4005FDEF9 /* TypeMethodReferenceTest.m */,
 				0661AA4819F705E200EFD1F5 /* UTF16EncodingTest.h */,
 				0661AA4919F705E200EFD1F5 /* UTF16EncodingTest.m */,
 				06574A681A8EB150000A3616 /* Util.m */,
@@ -7905,17 +7869,6 @@
 		06E4E874197F277A005DDE69 /* Test Resources */ = {
 			isa = PBXGroup;
 			children = (
-				061A109A1B71916D002093E3 /* test_resource.txt */,
-				061A10831B718717002093E3 /* MD5.check */,
-				061A10841B718717002093E3 /* MD5.data */,
-				061A10851B718717002093E3 /* SHA-1.check */,
-				061A10861B718717002093E3 /* SHA-1.data */,
-				061A10871B718717002093E3 /* SHA-256.check */,
-				061A10881B718717002093E3 /* SHA-256.data */,
-				061A10891B718717002093E3 /* SHA-384.check */,
-				061A108A1B718717002093E3 /* SHA-384.data */,
-				061A108B1B718717002093E3 /* SHA-512.check */,
-				061A108C1B718717002093E3 /* SHA-512.data */,
 				06574ABA1A8EB61C000A3616 /* EnumTest.golden.0.ser */,
 				06574ABB1A8EB61C000A3616 /* EnumTest.golden.1.ser */,
 				06574ABC1A8EB61C000A3616 /* EnumTest.golden.2.ser */,
@@ -7930,15 +7883,26 @@
 				06E4E869197F273E005DDE69 /* res.properties */,
 				06E4E86A197F273E005DDE69 /* res2.properties */,
 				06E4E86B197F273F005DDE69 /* res3.properties */,
+				06E4E84D197F26C6005DDE69 /* SHA-1.check */,
+				06E4E84E197F26C6005DDE69 /* SHA-1.data */,
+				06E4E84F197F26C6005DDE69 /* SHA-256.check */,
+				06E4E850197F26C6005DDE69 /* SHA-256.data */,
+				06E4E851197F26C6005DDE69 /* SHA-384.check */,
+				06E4E852197F26C6005DDE69 /* SHA-384.data */,
+				06E4E853197F26C6005DDE69 /* SHA-512.check */,
+				06E4E854197F26C6005DDE69 /* SHA-512.data */,
 				06574ACB1A8EB8E2000A3616 /* simple.xml */,
 				06574ACC1A8EB8E2000A3616 /* systemid.xml */,
 				06E4E848197F267B005DDE69 /* test_resource.txt */,
 				06E4E860197F2705005DDE69 /* testFields.ser */,
 				06E4E861197F2705005DDE69 /* testFieldsDefaulted.ser */,
 				06E4E862197F2705005DDE69 /* testFieldsDeprecated.ser */,
+				06E4E83B197F25B2005DDE69 /* MD5.check */,
+				06E4E83C197F25B2005DDE69 /* MD5.data */,
 				06574AD01A8EB91E000A3616 /* wrong.xml */,
 				06E4E83D197F25B2005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */,
 				06E4E837197F253D005DDE69 /* testfile-utf8.txt */,
+				06E4E838197F253D005DDE69 /* test_resource.txt */,
 			);
 			name = "Test Resources";
 			sourceTree = "<group>";
@@ -8066,7 +8030,6 @@
 				06E4E866197F270E005DDE69 /* CopyFiles */,
 				06E4E871197F2746005DDE69 /* CopyFiles */,
 				0600BFF91B7152C1005FDEF9 /* Copy Files */,
-				061A10971B718E12002093E3 /* CopyFiles */,
 			);
 			buildRules = (
 			);
@@ -8164,12 +8127,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0600C0121B715D13005FDEF9 /* CreationReferenceTest.m in Sources */,
-				0600C0131B715D13005FDEF9 /* ExpressionMethodReferenceTest.m in Sources */,
-				0600C0141B715D13005FDEF9 /* Lambdas.m in Sources */,
-				0600C0161B715D13005FDEF9 /* SmallTests.m in Sources */,
-				0600C0171B715D13005FDEF9 /* SuperMethodReferenceTest.m in Sources */,
-				0600C0181B715D13005FDEF9 /* TypeMethodReferenceTest.m in Sources */,
 				0661AA4A19F7063200EFD1F5 /* UTF16EncodingTest.m in Sources */,
 				06E4E832197F1E4E005DDE69 /* JREAppDelegate.m in Sources */,
 				06E4E833197F1E4E005DDE69 /* JRELogPaneView.m in Sources */,
@@ -8383,6 +8340,7 @@
 				06E4E74D197F1D47005DDE69 /* DecimalFormatTest.m in Sources */,
 				06CBF5831AFBEE2400CA582D /* ModifierTest.m in Sources */,
 				06E4E704197F1D47005DDE69 /* OldCharArrayWriterTest.m in Sources */,
+				06FADA881B3B2E4400A9579E /* SmallTests.m in Sources */,
 				06CBF5731AFBEE2400CA582D /* ConstructorTest.m in Sources */,
 				06E4E748197F1D47005DDE69 /* OldAndroidNIOTest.m in Sources */,
 				06E4E6D3197F1D47005DDE69 /* ExecutorsTest.m in Sources */,
