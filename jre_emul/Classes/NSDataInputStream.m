@@ -44,7 +44,7 @@
   }
 
   // Ensure that we don't sign extend and accidentally return -1
-  jbyte b = *((const jbyte *)(data_.bytes) + position_++);
+  unsigned char b = *((const unsigned char *)(data_.bytes) + position_++);
   return (jint) b;
 }
 
