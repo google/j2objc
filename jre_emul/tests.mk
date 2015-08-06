@@ -651,6 +651,8 @@ GCOV_FLAGS = -ftest-coverage -fprofile-arcs
 TEST_JOCC += $(GCOV_FLAGS)
 endif
 
+all-tests: test run-xctests
+
 test: run-tests
 
 support-lib: $(SUPPORT_LIB)
@@ -713,6 +715,12 @@ run-each-test: link resources $(TEST_BIN)
 	  echo $$test:; \
 	  $(TEST_BIN) org.junit.runner.JUnitCore $$test; \
 	done
+
+# Build and run the JreEmulation project's test bundle, then close simulator app.
+run-xctests:
+	@xcodebuild -project JreEmulation.xcodeproj -scheme jre_emul -destination \
+	    'platform=iOS Simulator,name=iPhone 6' test
+	@killall 'iOS Simulator'
 
 $(SUPPORT_LIB): $(SUPPORT_OBJS)
 	@echo libtool -o $(SUPPORT_LIB)

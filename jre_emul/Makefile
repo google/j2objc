@@ -1333,7 +1333,7 @@ $(CLASS_DIR)/%.o: $(EMULATION_CLASS_DIR)/%.m | translate
 	@$(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DIR) $(SDK_FLAGS) -c $< -o $@
 
 test: libs_dist $(DIST_DIR)/j2objcc
-	$(MAKE) -f tests.mk test
+	$(MAKE) -f tests.mk all-tests
 
 clean:
 	@rm -rf $(BUILD_DIR) $(GEN_OBJC_DIR)
@@ -1388,3 +1388,9 @@ objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
 
+
+JAVADOC_STYLESHEET = ../doc/j2objc_javadoc.css
+
+javadoc: $(JAVA_SOURCES_MANIFEST) $(ANNOTATIONS_JAR)
+	@javadoc -d $(BUILD_DIR)/javadoc -classpath $(ANNOTATIONS_JAR) -quiet \
+	    -stylesheetfile $(JAVADOC_STYLESHEET) @$(JAVA_SOURCES_MANIFEST)
