@@ -153,4 +153,27 @@ public class ExpressionMethodReferenceTest extends TestCase {
     assertEquals((Integer) 92, i.apply(a, b, c, d, e));
     assertEquals(-82, i2.apply(a, b, c, d, e));
   }
+
+  interface Fun {
+    Integer apply();
+  }
+
+  interface Fun2 {
+    int apply();
+  }
+
+  int size() {
+    return 42;
+  }
+
+  Integer size2() {
+    return 43;
+  }
+
+  public void testReturnBoxingAndUnboxing() throws Exception {
+    Fun f = this::size;
+    assertEquals((Integer) 42, f.apply());
+    Fun2 f2 = this::size2;
+    assertEquals(43, f2.apply());
+  }
 }

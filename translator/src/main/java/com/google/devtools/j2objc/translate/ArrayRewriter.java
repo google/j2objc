@@ -19,35 +19,27 @@ import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.Expression;
-import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
-import com.google.devtools.j2objc.ast.MethodReference;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
-import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeLiteral;
-import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -293,64 +285,6 @@ public class ArrayRewriter extends TreeVisitor {
   @Override
   public void endVisit(QualifiedName node) {
     maybeRewriteArrayLength(node, node.getName(), node.getQualifier());
-  }
-
-  /**
-   * Method references which reference varargs have two very different method signatures attached to
-   * their bindings. The method binding for the method reference is vararg, while the underlying
-   * functional interface matches the actual argument count of the call, and is enforced at runtime.
-   * We create a list of expressions for the method invocation, handling varargs by passing the
-   * remaining arguments from the functional interface binding as an array in the block invocation.
-   */
-  public boolean createMethodReferenceInvocationArguments(MethodReference node) {
-    IMethodBinding methodBinding = node.getMethodBinding();
-    ITypeBinding[] methodParams = methodBinding.getParameterTypes();
-    IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
-    ITypeBinding[] functionalParams = functionalInterface.getParameterTypes();
-    char[] var = nameTable.incrementVariable(null);
-    List<Expression> invocationArguments = node.getInvocationArguments();
-    int methodParamStopIndex = methodBinding.isVarargs() ? methodParams.length - 1
-        : methodParams.length;
-    for (int i = 0; i < methodParamStopIndex; i++) {
-      ITypeBinding functionalParam = functionalParams[i];
-      IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
-          functionalParam, false, true, null, null);
-      invocationArguments.add(new SimpleName(variableBinding));
-      var = nameTable.incrementVariable(var);
-    }
-    if (methodBinding.isVarargs()) {
-      List<Expression> varArguments = new ArrayList<>();
-      for (int i = methodParamStopIndex; i < functionalInterface.getParameterTypes().length; i++) {
-        ITypeBinding functionalParam = functionalParams[i];
-        IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
-            functionalParam, false, true, null, null);
-        varArguments.add(new SimpleName(variableBinding));
-        var = nameTable.incrementVariable(var);
-      }
-      invocationArguments.add(
-          newInitializedArrayInvocation(methodParams[methodParamStopIndex], varArguments, false));
-    }
-    if (!invocationArguments.isEmpty()) {
-      // Add boxing and unboxing to newly created invocation expression nodes.
-      new Autoboxer().run(node);
-    }
-    return true;
-  }
-
-  public boolean visit(CreationReference node) {
-    return createMethodReferenceInvocationArguments(node);
-  }
-
-  public boolean visit(ExpressionMethodReference node) {
-    return createMethodReferenceInvocationArguments(node);
-  }
-
-  public boolean visit(SuperMethodReference node) {
-    return createMethodReferenceInvocationArguments(node);
-  }
-
-  public boolean visit(TypeMethodReference node) {
-    return createMethodReferenceInvocationArguments(node);
   }
 
   private void maybeRewriteArrayLength(Expression node, SimpleName name, Expression expr) {

@@ -48,22 +48,19 @@ public class MethodReferenceTest extends GenerationTest {
     String noArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { Call<I> iInit = I::new; }",
         "Test", "Test.m");
-    assertTranslatedSegments(noArgumentTranslation,
- "GetNonCapturingLambda(@protocol(Call)",
-        "@\"I_init\"", "^I *(id _self) {", "return new_I_init();");
+    assertTranslatedSegments(noArgumentTranslation, "GetNonCapturingLambda(@protocol(Call)",
+        "@\"I_init\"", "^I *(id _self) {", "return [new_I_init() autorelease];");
     String oneArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt<I> iInit2 = I::new; }", "Test", "Test.m");
-    assertTranslatedSegments(oneArgumentTranslation,
- "GetNonCapturingLambda(@protocol(FunInt)",
-        "@\"I_initWithInt_\"",
-        "^I *(id _self, jint a) {", "return new_I_initWithInt_(a);");
+    assertTranslatedSegments(oneArgumentTranslation, "GetNonCapturingLambda(@protocol(FunInt)",
+        "@\"I_initWithInt_\"", "^I *(id _self, jint a) {",
+        "return [new_I_initWithInt_(a) autorelease];");
     String mixedArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt4<I> iInit3 = I::new; }", "Test", "Test.m");
-    assertTranslatedSegments(mixedArgumentTranslation,
- "GetNonCapturingLambda(@protocol(FunInt4)",
+    assertTranslatedSegments(mixedArgumentTranslation, "GetNonCapturingLambda(@protocol(FunInt4)",
         "@\"I_initWithInt_withI_withNSString_withId_\"",
         "^I *(id _self, jint a, I * b, NSString * c, id d) {",
-        "return new_I_initWithInt_withI_withNSString_withId_(a, b, c, d);");
+        "return [new_I_initWithInt_withI_withNSString_withId_(a, b, c, d) autorelease];");
   }
 
   // Test that expression method references resolve correctly for static and non-static methods.
@@ -79,7 +76,7 @@ public class MethodReferenceTest extends GenerationTest {
         expressionReferenceHeader + "class Test { F fun = new Q()::o2; }",
         "Test", "Test.m");
     assertTranslatedSegments(instanceTranslation, "GetNonCapturingLambda", "@\"Q_o2WithId_\"",
-        "@selector(fWithId:)", "return [[new_Q_init() autorelease] o2WithId:a];");
+        "@selector(fWithId:)", "return [((Q *) [new_Q_init() autorelease]) o2WithId:a];");
   }
 
   public void testTypeReference() throws IOException {
@@ -88,7 +85,8 @@ public class MethodReferenceTest extends GenerationTest {
     String translation = translateSourceFile(
         typeReferenceHeader + "class Test { H h = int[]::clone; }", "Test", "Test.m");
     assertTranslatedSegments(translation, "GetNonCapturingLambda", "@selector(copy__WithIntArray:)",
-        "^IOSIntArray *(id _self, IOSIntArray * a)", "return [a clone];");
+        "^id(id _self, IOSIntArray * a)",
+        "return [((IOSIntArray *) nil_chk(a)) clone];");
   }
 
   public void testVarArgs() throws IOException {
@@ -114,14 +112,26 @@ public class MethodReferenceTest extends GenerationTest {
         + "count:3 type:NSString_class_()]);");
   }
 
-  public void testBoxingAndUnboxing() throws IOException {
+  public void testArgumentBoxingAndUnboxing() throws IOException {
     String header = "interface IntFun { void apply(int a); }\n"
         + "interface IntegerFun { void apply(Integer a); }";
     String translation = translateSourceFile(header
         + "class Test { static void foo(Integer x) {}; static void bar(int x) {};"
         + "IntFun f = Test::foo; IntegerFun f2 = Test::bar; }", "Test", "Test.m");
     assertTranslatedSegments(translation, "^void(id _self, jint a) {",
-        "Test_fooWithJavaLangInteger_([JavaLangInteger valueOfWithInt:a]);",
-        "^void(id _self, JavaLangInteger * a) {", "Test_barWithInt_([a intValue]);");
+        "Test_fooWithJavaLangInteger_(JavaLangInteger_valueOfWithInt_(a));",
+        "^void(id _self, JavaLangInteger * a) {",
+        "Test_barWithInt_([((JavaLangInteger *) nil_chk(a)) intValue]);");
+  }
+
+  public void testReturnBoxingAndUnboxing() throws IOException {
+    String header = "interface Fun { Integer a(); } interface Fun2 { int a(); }";
+    String translation = translateSourceFile(header
+        + "class Test { int size() { return 42; } Integer size2() { return 43; }"
+        + "Fun f = this::size; Fun2 f2 = this::size2; }",
+        "Test", "Test.m");
+    assertTranslatedSegments(translation, "^JavaLangInteger *(id _self) {",
+        "return JavaLangInteger_valueOfWithInt_([self size]);", "^jint(id _self) {",
+        "return [((JavaLangInteger *) nil_chk([self size2])) intValue];");
   }
 }

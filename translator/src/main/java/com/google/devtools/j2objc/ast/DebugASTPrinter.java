@@ -1074,10 +1074,10 @@ public class DebugASTPrinter extends TreeVisitor {
   public boolean visit(TypeMethodReference node) {
     node.getType().accept(this);
     sb.print("::");
-    if (!node.typeArguments().isEmpty()) {
+    if (!node.getTypeArguments().isEmpty()) {
       sb.print('<');
       boolean delimiterFlag = false;
-      for (Type t : node.typeArguments()) {
+      for (Type t : node.getTypeArguments()) {
         if (delimiterFlag) {
           sb.print(", ");
         } else {

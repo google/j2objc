@@ -52,6 +52,7 @@ public class SuperMethodReference extends MethodReference {
       qualifier.accept(visitor);
       typeArguments.accept(visitor);
       name.accept(visitor);
+      invocation.accept(visitor);
     }
     visitor.endVisit(this);
   }

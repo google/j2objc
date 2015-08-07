@@ -35,8 +35,8 @@ public abstract class MethodReference extends Expression {
   protected ITypeBinding typeBinding;
   protected IMethodBinding methodBinding;
   protected ChildList<Type> typeArguments = ChildList.create(Type.class, this);
-  // We generate a list of invocation arguments to properly resolve vararg references.
-  protected ChildList<Expression> invocationArguments = ChildList.create(Expression.class, this);
+  // We generate an invocation to properly resolve translations with normal visitors.
+  protected ChildLink<Statement> invocation = ChildLink.create(Statement.class, this);
 
   public MethodReference(org.eclipse.jdt.core.dom.MethodReference jdtNode) {
     super(jdtNode);
@@ -51,8 +51,8 @@ public abstract class MethodReference extends Expression {
     super(other);
     typeBinding = other.getTypeBinding();
     methodBinding = other.getMethodBinding();
-    typeArguments.copyFrom(other.typeArguments());
-    invocationArguments.copyFrom(other.getInvocationArguments());
+    typeArguments.copyFrom(other.getTypeArguments());
+    invocation.copyFrom(other.getInvocation());
   }
 
   @Override
@@ -64,12 +64,16 @@ public abstract class MethodReference extends Expression {
     return methodBinding;
   }
 
-  public List<Expression> getInvocationArguments() {
-    return invocationArguments;
+  public List<Type> getTypeArguments() {
+    return typeArguments;
   }
 
-  public List<Type> typeArguments() {
-    return typeArguments;
+  public Statement getInvocation() {
+    return invocation.get();
+  }
+
+  public void setInvocation(Statement invocation) {
+    this.invocation.set(invocation);
   }
 
   @Override

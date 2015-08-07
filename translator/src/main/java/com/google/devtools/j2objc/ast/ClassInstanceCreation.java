@@ -56,6 +56,11 @@ public class ClassInstanceCreation extends Expression {
     anonymousClassDeclaration.copyFrom(other.getAnonymousClassDeclaration());
   }
 
+  public ClassInstanceCreation(IMethodBinding methodBinding, Type type) {
+    this.methodBinding = methodBinding;
+    this.type.set(type);
+  }
+
   public ClassInstanceCreation(IMethodBinding methodBinding) {
     this.methodBinding = methodBinding;
     type.set(Type.newType(methodBinding.getDeclaringClass()));

@@ -219,30 +219,36 @@ public abstract class GenerationTest extends TestCase {
       assertTranslation(translation, nLines == 1 ? expectedLines[0] : null);
       return;
     }
-    if (!hasRegion(translation, expectedLines)) {
-      fail("expected:\"" + Joiner.on('\n').join(expectedLines) + "\" in:\n" + translation);
+    int unmatchedLineIndex = unmatchedLineIndex(translation, expectedLines);
+    if (unmatchedLineIndex != -1) {
+      fail("unmatched:\n\"" + expectedLines[unmatchedLineIndex] + "\"\n" + "expected lines:\n\""
+          + Joiner.on('\n').join(expectedLines) + "\"\nin:\n" + translation);
     }
   }
 
-  private boolean hasRegion(String s, String[] lines) throws IOException {
+  private int unmatchedLineIndex(String s, String[] lines) throws IOException {
     int index = s.indexOf(lines[0]);
     if (index == -1) {
-      return false;
+      return 0;
     }
     BufferedReader in = new BufferedReader(new StringReader(s.substring(index)));
     try {
       for (int i = 0; i < lines.length; i++) {
         String nextLine = in.readLine();
         if (nextLine == null) {
-          return false;
+          return i;
         }
         index += nextLine.length() + 1;  // Also skip trailing newline.
         if (!nextLine.trim().equals(lines[i].trim())) {
           // Check if there is a subsequent match.
-          return hasRegion(s.substring(index), lines);
+          int subsequentMatch = unmatchedLineIndex(s.substring(index), lines);
+          if (subsequentMatch == -1) {
+            return -1;
+          }
+          return Math.max(i, subsequentMatch);
         }
       }
-      return true;
+      return -1;
     } finally {
       in.close();
     }
@@ -261,22 +267,24 @@ public abstract class GenerationTest extends TestCase {
       assertTranslation(translation, nLines == 1 ? expectedLines[0] : null);
       return;
     }
-    if (!hasSegments(translation, expectedLines)) {
-      fail("expected:\"" + Joiner.on('\n').join(expectedLines) + "\" in:\n" + translation);
+    String incorrectSegment = firstIncorrectSegment(translation, expectedLines);
+    if (incorrectSegment != null) {
+      fail("unmatched:\n\"" + incorrectSegment + "\"\n" + "expected segments:\n\""
+          + Joiner.on('\n').join(expectedLines) + "\"\nin:\n" + translation);
     }
   }
 
-  private boolean hasSegments(String s, String[] lines) {
+  private String firstIncorrectSegment(String s, String[] lines) {
     int index = 0;
     for (int i = 0; i < lines.length; i++) {
       index = s.indexOf(lines[i], index);
       if (index == -1) {
-        return false;
+        return lines[i];
       } else {
         index += lines[i].length();
       }
     }
-    return true;
+    return null;
   }
 
   protected void assertOccurrences(String translation, String expected, int times) {

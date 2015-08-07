@@ -432,16 +432,20 @@ public class StatementGenerator extends TreeVisitor {
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "CreationReference in translator with -source less than 8.";
-    IMethodBinding methodBinding = node.getMethodBinding();
-    ITypeBinding returnType = node.getType().getTypeBinding();
-    boolean isSelector = false;
+    return printMethodReference(node);
+  }
+
+  /**
+   * Prints a method reference using our created invocation, called from each individual method
+   * reference subclass visit.
+   */
+  public boolean printMethodReference(MethodReference node) {
+    IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
+    ITypeBinding returnType = functionalInterface.getReturnType();
     printMethodReferenceCallWithoutBlocks(node);
     printBlockPreExpression(node, returnType);
-    printBlockOptionalReturn(returnType, isSelector);
-    buffer.append(nameTable.getAllocatingConstructorName(methodBinding));
-    buffer.append('(');
-    printInvocationArguments(node, isSelector);
-    printBlockTerminator(isSelector);
+    node.getInvocation().accept(this);
+    buffer.append("})");
     return false;
   }
 
@@ -506,39 +510,9 @@ public class StatementGenerator extends TreeVisitor {
     }
   }
 
-  private void printInvocationArguments(MethodReference node, boolean isSelector) {
-    IMethodBinding methodBinding = node.getMethodBinding();
-    if (isSelector) {
-      String fullSelector = nameTable.getMethodSelector(methodBinding);
-      String[] selectors = fullSelector.split(":");
-      if (selectors.length == 1 && fullSelector.charAt(fullSelector.length() - 1) != ':') {
-        buffer.append(' ');
-        buffer.append(fullSelector);
-      } else {
-        assert node.getInvocationArguments().size()
-            == selectors.length : "Selector and parameter counts differ in method reference.";
-        for (int i = 0; i < selectors.length; i++) {
-          buffer.append(' ');
-          buffer.append(selectors[i]);
-          buffer.append(':');
-          node.getInvocationArguments().get(i).accept(this);
-        }
-      }
-    } else {
-      boolean delimiterFlag = false;
-      for (int i = 0; i < node.getInvocationArguments().size(); i++) {
-        Expression invocationArgument = node.getInvocationArguments().get(i);
-        if (delimiterFlag) {
-          buffer.append(", ");
-        } else {
-          delimiterFlag = true;
-        }
-        invocationArgument.accept(this);
-      }
-    }
-  }
-
-  // Prints a block declaration up to first expression within a block.
+  /**
+   * Prints a block declaration up to first expression within a block.
+   */
   private void printBlockPreExpression(IMethodBinding functionalInterface,
       ITypeBinding returnType) {
     buffer.append('^');
@@ -557,24 +531,6 @@ public class StatementGenerator extends TreeVisitor {
   private void printBlockPreExpression(MethodReference node, ITypeBinding returnType) {
     IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
     printBlockPreExpression(functionalInterface, returnType);
-  }
-
-  private void printBlockOptionalReturn(ITypeBinding returnType, boolean isSelector) {
-    if (!BindingUtil.isVoid(returnType)) {
-      buffer.append("return ");
-    }
-    if (isSelector) {
-      buffer.append('[');
-    }
-  }
-
-  private void printBlockTerminator(boolean isSelector) {
-    if (isSelector) {
-      buffer.append(']');
-    } else {
-      buffer.append(')');
-    }
-    buffer.append(";\n})");
   }
 
   @Override
@@ -616,25 +572,7 @@ public class StatementGenerator extends TreeVisitor {
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "ExpressionMethodReference in translator with -source less than 8.";
-    IMethodBinding methodBinding = node.getMethodBinding();
-    ITypeBinding returnType = methodBinding.getReturnType();
-    printMethodReferenceCallWithoutBlocks(node);
-    boolean isSelector = !BindingUtil.isStatic(methodBinding);
-    printBlockPreExpression(node, returnType);
-    printBlockOptionalReturn(returnType, isSelector);
-    node.getExpression().accept(this);
-    if (isSelector) {
-      // Non-static references are selectors sent to a class instance.
-      printInvocationArguments(node, isSelector);
-    } else {
-      // Static references need to resolve to our generated outer static functions.
-      buffer.append('_');
-      buffer.append(nameTable.getFunctionName(methodBinding));
-      buffer.append('(');
-      printInvocationArguments(node, isSelector);
-    }
-    printBlockTerminator(isSelector);
-    return false;
+    return printMethodReference(node);
   }
 
   @Override
@@ -804,7 +742,9 @@ public class StatementGenerator extends TreeVisitor {
     ITypeBinding returnType = methodBinding.getReturnType();
     printBlockPreExpression(methodBinding, returnType);
     buffer.append("id (^block)() = objc_getAssociatedObject(_self, (void *) 0);\n");
-    printBlockOptionalReturn(returnType, isSelector);
+    if (!BindingUtil.isVoid(returnType)) {
+      buffer.append("return ");
+    }
     buffer.append("block(_self");
     if (methodBinding.getParameterTypes().length > 0) {
       buffer.append(", ");
@@ -1167,15 +1107,7 @@ public class StatementGenerator extends TreeVisitor {
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "SuperMethodReference in translator with -source less than 8.";
-    ITypeBinding returnType = node.getMethodBinding().getReturnType();
-    boolean isSelector = true;
-    printMethodReferenceCallWithoutBlocks(node);
-    printBlockPreExpression(node, returnType);
-    printBlockOptionalReturn(returnType, isSelector);
-    buffer.append("super");
-    printInvocationArguments(node, isSelector);
-    printBlockTerminator(isSelector);
-    return false;
+    return printMethodReference(node);
   }
 
   @Override
@@ -1388,35 +1320,7 @@ public class StatementGenerator extends TreeVisitor {
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "TypeMethodReference in translator with -source less than 8.";
-    IMethodBinding methodBinding = node.getMethodBinding();
-    ITypeBinding returnType = methodBinding.getReturnType();
-    printMethodReferenceCallWithoutBlocks(node);
-    boolean isSelector = true;
-    printBlockPreExpression(node, returnType);
-    printBlockOptionalReturn(returnType, isSelector);
-    List<Expression> invocationArguments = node.getInvocationArguments();
-    assert invocationArguments.size() > 0 : "Type method reference does not pass self.";
-    invocationArguments.get(0).accept(this);
-    buffer.append(' ');
-    node.getName().accept(this);
-    String fullSelector = nameTable.getMethodSelector(methodBinding);
-    String[] selectors = fullSelector.split(":");
-    if (selectors.length != 1) {
-      assert methodBinding.getParameterTypes().length
-          == selectors.length : "Selector and parameter counts differ.";
-      for (int i = 1; i < selectors.length; i++) {
-        if (i == 1) {
-          buffer.append(NameTable.capitalize(selectors[i]));
-        } else {
-          buffer.append(' ');
-          buffer.append(selectors[i]);
-        }
-        buffer.append(':');
-        invocationArguments.get(i).accept(this);
-      }
-    }
-    printBlockTerminator(isSelector);
-    return false;
+    return printMethodReference(node);
   }
 
   @Override

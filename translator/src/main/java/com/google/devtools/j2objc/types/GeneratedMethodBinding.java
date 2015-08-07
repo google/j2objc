@@ -25,6 +25,7 @@ import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 import org.eclipse.jdt.internal.compiler.ast.ASTNode;
 
 import java.util.Arrays;
@@ -66,6 +67,12 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
   public GeneratedMethodBinding(IMethodBinding m) {
     this(null, m.getName(), m.getModifiers(), m.getReturnType(), null, m.getDeclaringClass(),
         m.isConstructor(), m.isVarargs());
+    addParameters(m);
+  }
+
+  public GeneratedMethodBinding(String name, IMethodBinding m) {
+    this(null, name, m.getModifiers() & ~Modifier.STATIC, m.getReturnType(), null,
+        m.getDeclaringClass(), m.isConstructor(), m.isVarargs());
     addParameters(m);
   }
 

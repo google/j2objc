@@ -55,6 +55,12 @@ public class MethodInvocation extends Expression {
     name.set(new SimpleName(binding));
   }
 
+  public MethodInvocation(IMethodBinding binding, Expression expression, SimpleName name) {
+    methodBinding = binding;
+    this.expression.set(expression);
+    this.name.set(name);
+  }
+
   @Override
   public Kind getKind() {
     return Kind.METHOD_INVOCATION;

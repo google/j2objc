@@ -26,10 +26,12 @@ import com.google.devtools.j2objc.ast.BreakStatement;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.ContinueStatement;
+import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.EmptyStatement;
 import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
@@ -38,6 +40,9 @@ import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.MethodReference;
+import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
@@ -45,14 +50,18 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
@@ -63,6 +72,7 @@ import com.google.j2objc.annotations.Weak;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Iterator;
 import java.util.List;
@@ -489,6 +499,133 @@ public class Rewriter extends TreeVisitor {
     // Resolve whether a lambda captures variables from the enclosing scope.
     node.setIsCapturing(!outerResolver.getCapturedVars(node.getTypeBinding()).isEmpty());
     return true;
+  }
+
+  public boolean visit(CreationReference node) {
+    IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
+    Type type = node.getType().copy();
+    ClassInstanceCreation invocation = new ClassInstanceCreation(methodBinding, type);
+    List<Expression> invocationArguments = invocation.getArguments();
+    buildMethodReferenceInvocationArguments(invocationArguments, node);
+    node.setInvocation(new ReturnStatement(invocation));
+    return true;
+  }
+
+  public boolean visit(ExpressionMethodReference node) {
+    IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
+    Expression expression = node.getExpression().copy();
+    SimpleName name = node.getName().copy();
+    MethodInvocation invocation = new MethodInvocation(methodBinding, expression, name);
+    List<Expression> invocationArguments = invocation.getArguments();
+    buildMethodReferenceInvocationArguments(invocationArguments, node);
+    if (BindingUtil.isVoid(methodBinding.getReturnType())) {
+      node.setInvocation(new ExpressionStatement(invocation));
+    } else {
+      node.setInvocation(new ReturnStatement(invocation));
+    }
+    return true;
+  }
+
+  public boolean visit(SuperMethodReference node) {
+    IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
+    Name qualifier = node.getQualifier() == null ? null : node.getQualifier().copy();
+    SimpleName name = node.getName().copy();
+    SuperMethodInvocation invocation = new SuperMethodInvocation(methodBinding, qualifier, name);
+    List<Expression> invocationArguments = invocation.getArguments();
+    buildMethodReferenceInvocationArguments(invocationArguments, node);
+    if (BindingUtil.isVoid(methodBinding.getReturnType())) {
+      node.setInvocation(new ExpressionStatement(invocation));
+    } else {
+      node.setInvocation(new ReturnStatement(invocation));
+    }
+    return true;
+  }
+
+  /**
+   * The signatures of TypeMethodReferences include the object parameter, which will be passed in
+   * our case as the first argument. We need to create a method binding without that first argument
+   * for the MethodInvocation, so we are duplicating code from
+   * buildMethodReferenceInvocationArguments.
+   */
+  public boolean visit(TypeMethodReference node) {
+    GeneratedMethodBinding methodBinding = new GeneratedMethodBinding(node.getName().toString(),
+        node.getMethodBinding());
+    methodBinding.setModifiers(methodBinding.getModifiers() & ~Modifier.STATIC);
+    methodBinding.getParameters().remove(0);
+    IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
+    ITypeBinding[] methodParams = methodBinding.getParameterTypes();
+    ITypeBinding[] functionalParams = functionalInterface.getParameterTypes();
+    char[] var = nameTable.incrementVariable(null);
+    ITypeBinding functionalParam = functionalParams[0];
+    IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
+        functionalParam, false, true, null, null);
+    SimpleName expression = new SimpleName(variableBinding);
+    SimpleName name = node.getName().copy();
+    MethodInvocation invocation = new MethodInvocation(methodBinding, expression, name);
+    List<Expression> invocationArguments = invocation.getArguments();
+    if (BindingUtil.isVoid(methodBinding.getReturnType())) {
+      node.setInvocation(new ExpressionStatement(invocation));
+    } else {
+      node.setInvocation(new ReturnStatement(invocation));
+    }
+    int methodParamStopIndex = methodBinding.isVarargs() ? methodParams.length
+        : methodParams.length + 1;
+    for (int i = 1; i < methodParamStopIndex; i++) {
+      functionalParam = functionalParams[i];
+      variableBinding = new GeneratedVariableBinding(new String(var), 0, functionalParam, false,
+          true, null, null);
+      invocationArguments.add(new SimpleName(variableBinding));
+      var = nameTable.incrementVariable(var);
+    }
+    if (methodBinding.isVarargs()) {
+      for (int i = methodParamStopIndex; i < functionalInterface.getParameterTypes().length; i++) {
+        functionalParam = functionalParams[i];
+        variableBinding = new GeneratedVariableBinding(new String(var), 0,
+            functionalParam, false, true, null, null);
+        invocationArguments.add(new SimpleName(variableBinding));
+        var = nameTable.incrementVariable(var);
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Method references which reference varargs have two very different method signatures attached to
+   * their bindings. The method binding for the method reference is vararg, while the underlying
+   * functional interface matches the actual argument count of the call, and is enforced at runtime.
+   * We create a list of expressions for the method invocation, handling varargs by passing the
+   * remaining arguments from the functional interface binding as an array in the block invocation.
+   */
+  // TODO(kirbs): In the case that we have a referenced method with an int arg, a functional
+  // interface method with an Integer arg, and an invocation with an int arg, we will end up
+  // immediately boxing and unboxing the value. We should solve this by making the types of the
+  // referenced method and the functional interface method the same, but this requires a rewrite of
+  // the selectors that target the method reference on invocation.
+  public void buildMethodReferenceInvocationArguments(List<Expression> invocationArguments,
+      MethodReference node) {
+    IMethodBinding methodBinding = node.getMethodBinding();
+    IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
+    ITypeBinding[] methodParams = methodBinding.getParameterTypes();
+    ITypeBinding[] functionalParams = functionalInterface.getParameterTypes();
+    char[] var = nameTable.incrementVariable(null);
+    int methodParamStopIndex = methodBinding.isVarargs() ? methodParams.length - 1
+        : methodParams.length;
+    for (int i = 0; i < methodParamStopIndex; i++) {
+      ITypeBinding functionalParam = functionalParams[i];
+      IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
+          functionalParam, false, true, null, null);
+      invocationArguments.add(new SimpleName(variableBinding));
+      var = nameTable.incrementVariable(var);
+    }
+    if (methodBinding.isVarargs()) {
+      for (int i = methodParamStopIndex; i < functionalInterface.getParameterTypes().length; i++) {
+        ITypeBinding functionalParam = functionalParams[i];
+        IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
+            functionalParam, false, true, null, null);
+        invocationArguments.add(new SimpleName(variableBinding));
+        var = nameTable.incrementVariable(var);
+      }
+    }
   }
 
   /**
