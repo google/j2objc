@@ -32,7 +32,11 @@
          var ___gcfg = ___gcfg || {};
          ___gcfg.lang = 'en';
       </script>
+      {% if page.title %}
+      <title>{{ page.title }}</title>
+      {% else %}
       <title>J2ObjC</title>
+      {% endif %}
       <meta property="og:title" content="Class List">
    </head>
    <body class="devsite-{{page.page_type}}
