@@ -1,4 +1,5 @@
 ---
+title: Autoboxer
 layout: docs
 ---
 

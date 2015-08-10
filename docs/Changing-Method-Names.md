@@ -1,4 +1,5 @@
 ---
+title: Changing Method Names
 layout: docs
 ---
 

@@ -1,4 +1,5 @@
 ---
+title: Design Overview
 layout: docs
 ---
 

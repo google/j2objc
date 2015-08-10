@@ -1,4 +1,5 @@
 ---
+title: Cycle Finder Tool
 layout: docs
 ---
 

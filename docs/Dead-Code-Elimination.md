@@ -1,4 +1,5 @@
 ---
+title: Dead Code Elimination
 layout: docs
 ---
 

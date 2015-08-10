@@ -1,4 +1,5 @@
 ---
+title: Using Protocol Buffers
 layout: docs
 ---
 

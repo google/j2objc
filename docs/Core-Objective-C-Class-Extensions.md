@@ -1,4 +1,5 @@
 ---
+title: Core Class Extensions
 layout: docs
 ---
 

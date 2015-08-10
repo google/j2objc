@@ -1,4 +1,5 @@
 ---
+title: Static Variables and Constants
 layout: docs
 ---
 

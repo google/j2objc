@@ -1,4 +1,5 @@
 ---
+title: Memory Management
 layout: docs
 ---
 

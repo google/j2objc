@@ -1,4 +1,5 @@
 ---
+title: Initialization Normalizer
 layout: docs
 ---
 

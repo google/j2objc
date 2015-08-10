@@ -1,4 +1,5 @@
 ---
+title: FAQ
 layout: docs
 ---
 

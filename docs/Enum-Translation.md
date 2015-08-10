@@ -1,4 +1,5 @@
 ---
+title: Enum Translation
 layout: docs
 ---
 

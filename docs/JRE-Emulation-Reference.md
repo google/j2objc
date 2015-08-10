@@ -1,4 +1,5 @@
 ---
+title: JRE Emulation Reference
 layout: docs
 ---
 

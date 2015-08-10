@@ -1,4 +1,5 @@
 ---
+title: Object.clone() support
 layout: docs
 ---
 

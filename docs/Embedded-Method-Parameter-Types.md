@@ -1,4 +1,5 @@
 ---
+title: Method Name Mangling
 layout: docs
 ---
 

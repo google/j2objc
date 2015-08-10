@@ -1,4 +1,5 @@
 ---
+title: 20% Project Ideas
 layout: docs
 ---
 

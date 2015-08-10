@@ -1,4 +1,5 @@
 ---
+title: Rewriter
 layout: docs
 ---
 

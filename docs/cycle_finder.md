@@ -1,4 +1,5 @@
 ---
+title: cycle_finder man page
 layout: docs
 ---
 

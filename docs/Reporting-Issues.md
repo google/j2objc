@@ -1,4 +1,5 @@
 ---
+title: Reporting Issues
 layout: docs
 ---
 

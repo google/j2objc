@@ -1,4 +1,5 @@
 ---
+title: Destructor Generator
 layout: docs
 ---
 

@@ -1,4 +1,5 @@
 ---
+title: Java Conversions Table
 layout: docs
 ---
 

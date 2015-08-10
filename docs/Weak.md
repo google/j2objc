@@ -1,4 +1,5 @@
 ---
+title: Weak
 layout: docs
 ---
 

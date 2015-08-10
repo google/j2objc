@@ -1,4 +1,5 @@
 ---
+title: Java Resources
 layout: docs
 ---
 

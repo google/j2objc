@@ -1,4 +1,5 @@
 ---
+title: Anonymous Class Converter
 layout: docs
 ---
 

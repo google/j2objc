@@ -1,4 +1,5 @@
 ---
+title: Writing Native Methods
 layout: docs
 ---
 

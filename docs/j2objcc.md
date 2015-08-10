@@ -1,4 +1,5 @@
 ---
+title: j2objcc man page
 layout: docs
 ---
 

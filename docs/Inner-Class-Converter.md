@@ -1,4 +1,5 @@
 ---
+title: Inner Class Converter
 layout: docs
 ---
 

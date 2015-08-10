@@ -1,4 +1,5 @@
 ---
+title: WeakOuter
 layout: docs
 ---
 

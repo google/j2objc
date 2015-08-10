@@ -1,4 +1,5 @@
 ---
+title: Contributing to J2ObjC
 layout: docs
 ---
 

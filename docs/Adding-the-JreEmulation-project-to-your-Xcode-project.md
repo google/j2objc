@@ -1,8 +1,9 @@
 ---
+title: Add JreEmulation to Xcode
 layout: docs
 ---
 
-# Adding the JreEmulation Protect to Your Xcode Project
+# Adding the JreEmulation Project to Your Xcode Project
 
 J2ObjC's JRE emulation library can be built using Xcode, and can be included as a sub-project in your Xcode projects.  This allows you to control the settings used to build that library so it can best be used by your projects.
 

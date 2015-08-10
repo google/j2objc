@@ -1,4 +1,5 @@
 ---
+title: Class Naming
 layout: docs
 ---
 
