@@ -118,6 +118,8 @@ Aside from being cleaner, as long as our lambda isn't mutating referenced variab
 
 If you are interested in a deeper discussion of the implementation details, direction, and decisions that went into Java's lambdas, take a look at [Lambdas in Java: A peek under the hood](https://www.youtube.com/watch?v=MLksirK9nnE), a great deep dive by Brian Goetz.  It covers the history of implementations that were ruled out, runtime implementation, invokedynamic, performance specifics, possible future direction, and a host of interesting topics that we aren't going to begin to talk about.
 
+#### Capturing and non-capturing lambdas
+
 We have two kinds of lambdas, capturing or stateful lambdas, and non-capturing or stateless lambdas.  A capturing lambda is bound with the values or references to enclosing variables, as such:
 
 {% highlight java %}
