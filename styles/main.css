@@ -1,3 +1,39 @@
+aside.quote::before {
+    content: ""
+}
+
+aside.quote {
+  padding: 24px 48px
+}
+
+code, pre{
+  line-height: 1.3
+}
+.mi, .nd {
+    color: #ef6c00
+}
+
+.k, .kd {
+    color: #03a9f4
+}
+
+.kt {
+    color: #689f38
+}
+
+.na {
+    color: #0097a7
+}
+
+.c1 {
+    color: #d81b60
+}
+
+/* Make line numbers unselectable: excludes line numbers from copy-paste user ops */
+.highlight .lineno {-webkit-user-select: none;-moz-user-select: none; -o-user-select: none;}
+.lineno::-moz-selection {background-color: transparent;} /* Mozilla specific */
+.lineno::selection {background-color: transparent;} /* Other major browsers */
+
 .float-right{
   float: right
 }
