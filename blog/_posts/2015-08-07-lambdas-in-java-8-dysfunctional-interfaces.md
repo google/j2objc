@@ -27,7 +27,7 @@ interface Func {
 }
 {% endhighlight %}
 
-We have a new ```@FunctionalInterface``` annotation, but it is entirely optional, as any interface with only one non-Object method is a functional interface.  We have also explicitly defined the types of the functional interface method, when we could use template types.  Far more often you are going to see functional interfaces like the following:
+We have a new ```@FunctionalInterface``` annotation, but it is entirely optional, as any interface with only one non-Object method is a functional interface.  We have also explicitly defined the types of the functional interface method, when we could use generic types.  Far more often you are going to see functional interfaces like the following:
 
 {% highlight java %}
 interface Func<T, R> {
@@ -35,7 +35,7 @@ interface Func<T, R> {
 }
 {% endhighlight %}
 
-We drop the annotation, add template types, and with this we can look at our first lambda:
+We drop the annotation, add generic types, and with this we can look at our first lambda:
 
 {% highlight java %}
 Func<Object, Object> hello = (Object x) -> x + " World!";
@@ -78,7 +78,7 @@ Func<Object, Object> identity = new Identity();
 identity.apply("Hello");
 {% endhighlight %}
 
-Okay so lambdas one more time in case you missed the confetti memo:
+Okay, lets look at lambdas one more time in case you missed the confetti memo:
 
 {% highlight java %}
 x -> "Hello " + x;
@@ -92,7 +92,7 @@ Func<Integer, Integer> f = (Integer x) -> x * x;
 
 ### Why are lambdas important?
 
-First off, don't ask this question randomly in the wild, as you might accidentally find a functional programmer, and wander away from the ensuing conversation much later and intellectually drowning in parentheses, type theory, monads, and the like. Among this laundry list of reasons however you will probably hear something about closures and state capturing.  A closure is a function stored together with its environment, and lambdas are just one instance of closures in Java.  For each variable that is not defined within the closure, we store the value of the variable or of the reference to the variable's storage location.
+First off, don't ask this question randomly in the wild, as you might accidentally find a functional programmer, and wander away from the ensuing conversation much later intellectually drowning in parentheses, type theory, monads, and the like. Among this laundry list of reasons however you will probably hear something about closures and state capturing.  A closure is a function stored together with its environment, and lambdas are just one instance of closures in Java.  For each variable that is not defined within the closure, we store the value of the variable or of the reference to the variable's storage location.
 
 Since closures hold the enclosing state, they play nicely together in a concurrent environment as long as they don't mutate referenced variables.  Looking at a typical loop over a List:
 
@@ -112,7 +112,7 @@ MyList<String> ls = getUsers();
 ls.each(x -> operate(x));
 {% endhighlight %}
 
-Aside from being cleaner, as long as our lambda isn't mutating referenced variables, our list library is given the freedom to optimize for a concurrent environment, while the implementation details are abstracted away from view.
+Aside from being cleaner, as long as our lambda isn't mutating referenced variables, our list library is given the freedom to optimize for a concurrent environment, while the implementation details are abstracted away and left as an exercise for the library.
 
 ### Implementation details
 
@@ -154,7 +154,7 @@ We have been working on translating language features, keeping in mind the follo
 
 - Mimic Java behavior as closely as possible.
 - Preserve the performance characteristics of lambdas, specifically the performance gains of non-capturing lambdas.
-- Future-proof our implementation against potential code generation and Object method behavior changes in the future.  For more on this, again look at [Goetz's talk](https://www.youtube.com/watch?v=MLksirK9nnE), which talks about how they preserved the ability to easily change lambda implementation in the future.
+- Future-proof our implementation against potential code generation and Object method behavior changes in Java's future.  For more on this, again look at [Goetz's talk](https://www.youtube.com/watch?v=MLksirK9nnE), which talks about how they preserved the ability to easily change lambda implementation going forward.
 - Leverage Objective-C blocks for readability and capturing.  We already have a strategy for captures from our anonymous class implementation, but we can reduce complexity by leaning on Objective-C's closures.
 - Preserve reflection.  Currently lambdas don't offer any guarantee for serialization, but this may change in the future, and we want the ability to respond quickly to any changes without having to change the entirety of our model.
 
@@ -166,7 +166,7 @@ In this way we:
 - Preserve object methods.
 - Retain performance benefits of stateless lambdas.
 - Leverage variable capturing of Objective-C blocks.
-- Create something feasible without heavily disrupting the existing j2objc model.
+- Work within the existing j2objc model.
 
 For a non-capturing lambda:
 
@@ -182,7 +182,7 @@ We generate a block in Objective-C:
 }
 {% endhighlight %}
 
-This block is swizzled into and Objective-C class as a class method on the first assignment, during which an instance is created.  Future references to this lambda are instance lookups within our [FastPointerLookup](https://github.com/google/j2objc/blob/master/jre_emul/Classes/FastPointerLookup.m).
+This block is swizzled into an Objective-C class as a class method on the first assignment, during which an instance is created.  Future references to this lambda are instance lookups within our [FastPointerLookup](https://github.com/google/j2objc/blob/master/jre_emul/Classes/FastPointerLookup.m).
 
 Lambda classes are created at runtime, using [```objc_allocateClassPair```](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/#//apple_ref/c/func/objc_allocateClassPair) and [```objc_registerClassPair```](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/#//apple_ref/c/func/objc_registerClassPair).  We add the currently unused ```_self``` parameter so we can extract an implementation for the block using [```imp_implementationWithBlock```](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/#//apple_ref/c/func/imp_implementationWithBlock), and we register this implementation as a class method using [```class_addMethod```](https://developer.apple.com/library/mac/documentation/Cocoa/Reference/ObjCRuntimeRef/#//apple_ref/c/func/class_addMethod).
 
@@ -204,6 +204,8 @@ For capturing lambdas, we create the classes at runtime using the same methods, 
 {% endhighlight %}
 
 Future instances of this lambda are class lookups which create a new instance and set the underlying block as an associated object.
+
+These two implementations are encapsulated in GetNonCapturingLambda and GetCapturingLambda within [JreEmulation](https://github.com/google/j2objc/blob/master/jre_emul/Classes/JreEmulation.m) for those looking for the source.
 
 ### Using lambdas in j2objc
 
