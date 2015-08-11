@@ -1,0 +1,1962 @@
+---
+
+title: LogRecord - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/Filter.html">Filter</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/LoggingMXBean.html">LoggingMXBean</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/ConsoleHandler.html">ConsoleHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/ErrorManager.html">ErrorManager</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/Formatter.html">Formatter</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/Handler.html">Handler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/Level.html">Level</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/Logger.html">Logger</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/LoggingPermission.html">LoggingPermission</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/LogManager.html">LogManager</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/java/util/logging/LogRecord.html">LogRecord</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/MemoryHandler.html">MemoryHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/SimpleFormatter.html">SimpleFormatter</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/StreamHandler.html">StreamHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/XMLFormatter.html">XMLFormatter</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">LogRecord</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>A <code>LogRecord</code> object represents a logging request. It is passed between
+ the logging framework and individual logging handlers. Client applications
+ should not modify a <code>LogRecord</code> object that has been passed into the
+ logging framework.
+ <p>
+ The <code>LogRecord</code> class will infer the source method name and source
+ class name the first time they are accessed if the client application didn't
+ specify them explicitly. This automatic inference is based on the analysis of
+ the call stack and is not guaranteed to be precise. Client applications
+ should force the initialization of these two fields by calling
+ <code>getSourceClassName</code> or <code>getSourceMethodName</code> if they expect to
+ use them after passing the <code>LogRecord</code> object to another thread or
+ transmitting it over RMI.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#LogRecord(java.util.logging.Level, java.lang.String)">LogRecord</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/logging/Level.html">Level</a> <i>level</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>msg</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/logging/Level.html">Level</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getLevel()">getLevel</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getLoggerName()">getLoggerName</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getMessage()">getMessage</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getMillis()">getMillis</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/Object.html">Object[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getParameters()">getParameters</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/ResourceBundle.html">ResourceBundle</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getResourceBundle()">getResourceBundle</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getResourceBundleName()">getResourceBundleName</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getSequenceNumber()">getSequenceNumber</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getSourceClassName()">getSourceClassName</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getSourceMethodName()">getSourceMethodName</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getThreadID()">getThreadID</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/Throwable.html">Throwable</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#getThrown()">getThrown</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setLevel(java.util.logging.Level)">setLevel</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/logging/Level.html">Level</a> <i>level</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setLoggerName(java.lang.String)">setLoggerName</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>loggerName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setMessage(java.lang.String)">setMessage</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>message</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setMillis(long)">setMillis</a></span>(<span class="nowrap">long <i>millis</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setParameters(java.lang.Object[])">setParameters</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object[]</a> <i>parameters</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setResourceBundle(java.util.ResourceBundle)">setResourceBundle</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/ResourceBundle.html">ResourceBundle</a> <i>resourceBundle</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setResourceBundleName(java.lang.String)">setResourceBundleName</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>resourceBundleName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setSequenceNumber(long)">setSequenceNumber</a></span>(<span class="nowrap">long <i>sequenceNumber</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setSourceClassName(java.lang.String)">setSourceClassName</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>sourceClassName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setSourceMethodName(java.lang.String)">setSourceMethodName</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>sourceMethodName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setThreadID(int)">setThreadID</a></span>(<span class="nowrap">int <i>threadID</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogRecord.html#setThrown(java.lang.Throwable)">setThrown</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Throwable.html">Throwable</a> <i>thrown</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="LogRecord(java.util.logging.Level, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>LogRecord</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/logging/Level.html">Level</a> <i>level</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>msg</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>LogRecord</code> object using the supplied the logging
+ level and message. The millis property is set to the current time. The
+ sequence property is set to a new unique value, allocated in increasing
+ order within the VM. The thread ID is set to a unique value
+ for the current thread. All other properties are set to <code>null</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">level</td>
+          <td class="jd-tagdescr">the logging level, may not be <code>null</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">msg</td>
+          <td class="jd-tagdescr">the raw message.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>level</code> is <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="getLevel()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/logging/Level.html">Level</a>
+      </span>
+      <span class="sympad"><strong>getLevel</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the logging level.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the logging level.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLoggerName()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getLoggerName</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the name of the logger.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the logger name.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMessage()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getMessage</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the raw message.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the raw message, may be <code>null</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMillis()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>getMillis</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the time when this event occurred, in milliseconds since 1970.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the time when this event occurred, in milliseconds since 1970.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getParameters()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/Object.html">Object[]</a>
+      </span>
+      <span class="sympad"><strong>getParameters</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the parameters.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the array of parameters or <code>null</code> if there are no
+         parameters.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getResourceBundle()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/ResourceBundle.html">ResourceBundle</a>
+      </span>
+      <span class="sympad"><strong>getResourceBundle</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the resource bundle used to localize the raw message during
+ formatting.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the associated resource bundle, <code>null</code> if none is
+         available or the message is not localizable.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getResourceBundleName()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getResourceBundleName</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the name of the resource bundle.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the name of the resource bundle, <code>null</code> if none is
+         available or the message is not localizable.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSequenceNumber()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>getSequenceNumber</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the sequence number.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the sequence number.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSourceClassName()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getSourceClassName</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the name of the class that is the source of this log record. This
+ information can be changed, may be <code>null</code> and is untrusted.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the name of the source class of this log record (possiblity <code>null</code>)
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSourceMethodName()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getSourceMethodName</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the name of the method that is the source of this log record.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the name of the source method of this log record.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getThreadID()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getThreadID</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets a unique ID of the thread originating the log record. Every thread
+ becomes a different ID.
+ <p>
+ Notice : the ID doesn't necessary map the OS thread ID
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the ID of the thread originating this log record.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getThrown()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/Throwable.html">Throwable</a>
+      </span>
+      <span class="sympad"><strong>getThrown</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the <code>Throwable</code> object associated with this log record.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Throwable</code> object associated with this log record.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setLevel(java.util.logging.Level)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setLevel</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/logging/Level.html">Level</a> <i>level</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the logging level.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">level</td>
+          <td class="jd-tagdescr">the level to set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>level</code> is <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setLoggerName(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setLoggerName</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>loggerName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the name of the logger.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">loggerName</td>
+          <td class="jd-tagdescr">the logger name to set.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setMessage(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setMessage</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>message</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the raw message. When this record is formatted by a logger that has
+ a localization resource bundle that contains an entry for <code>message</code>,
+ then the raw message is replaced with its localized version.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">message</td>
+          <td class="jd-tagdescr">the raw message to set, may be <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setMillis(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setMillis</strong></span>
+      <span class="params">(<span class="nowrap">long <i>millis</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the time when this event occurred, in milliseconds since 1970.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">millis</td>
+          <td class="jd-tagdescr">the time when this event occurred, in milliseconds since 1970.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setParameters(java.lang.Object[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setParameters</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object[]</a> <i>parameters</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the parameters.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameters</td>
+          <td class="jd-tagdescr">the array of parameters to set, may be <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setResourceBundle(java.util.ResourceBundle)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setResourceBundle</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/ResourceBundle.html">ResourceBundle</a> <i>resourceBundle</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the resource bundle used to localize the raw message during
+ formatting.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">resourceBundle</td>
+          <td class="jd-tagdescr">the resource bundle to set, may be <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setResourceBundleName(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setResourceBundleName</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>resourceBundleName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the name of the resource bundle.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">resourceBundleName</td>
+          <td class="jd-tagdescr">the name of the resource bundle to set.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setSequenceNumber(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setSequenceNumber</strong></span>
+      <span class="params">(<span class="nowrap">long <i>sequenceNumber</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the sequence number. It is usually not necessary to call this method
+ to change the sequence number because the number is allocated when this
+ instance is constructed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">sequenceNumber</td>
+          <td class="jd-tagdescr">the sequence number to set.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setSourceClassName(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setSourceClassName</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>sourceClassName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the name of the class that is the source of this log record.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">sourceClassName</td>
+          <td class="jd-tagdescr">the name of the source class of this log record, may be
+            <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setSourceMethodName(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setSourceMethodName</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>sourceMethodName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the name of the method that is the source of this log record.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">sourceMethodName</td>
+          <td class="jd-tagdescr">the name of the source method of this log record, may be
+            <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setThreadID(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setThreadID</strong></span>
+      <span class="params">(<span class="nowrap">int <i>threadID</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the ID of the thread originating this log record.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">threadID</td>
+          <td class="jd-tagdescr">the new ID of the thread originating this log record.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setThrown(java.lang.Throwable)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setThrown</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Throwable.html">Throwable</a> <i>thrown</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the <code>Throwable</code> object associated with this log record.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">thrown</td>
+          <td class="jd-tagdescr">the new <code>Throwable</code> object to associate with this log
+            record.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

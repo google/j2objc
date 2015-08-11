@@ -1,0 +1,2252 @@
+---
+
+title: AttributesImpl - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../../reference/org/xml/sax/helpers/AttributeListImpl.html">AttributeListImpl</a></li>
+          <li class="selected api apilevel-"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html">AttributesImpl</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/xml/sax/helpers/LocatorImpl.html">LocatorImpl</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html">NamespaceSupport</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/xml/sax/helpers/ParserAdapter.html">ParserAdapter</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/xml/sax/helpers/ParserFactory.html">ParserFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/xml/sax/helpers/XMLFilterImpl.html">XMLFilterImpl</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/xml/sax/helpers/XMLReaderAdapter.html">XMLReaderAdapter</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/xml/sax/helpers/XMLReaderFactory.html">XMLReaderFactory</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">AttributesImpl</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;">
+Known Direct Subclasses
+
+  <div id="subclasses-direct">
+      <div id="subclasses-direct-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../../../reference/org/xml/sax/ext/Attributes2Impl.html">Attributes2Impl</a>
+            
+          
+      </div>
+      <div id="subclasses-direct-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/org/xml/sax/ext/Attributes2Impl.html">Attributes2Impl</a></td>
+              <td class="jd-descrcol" width="100%">SAX2 extension helper for additional Attributes information,
+ implementing the <code><a href="reference/org/xml/sax/ext/Attributes2.html">Attributes2</a></code> interface.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Default implementation of the Attributes interface.
+
+ <blockquote>
+ <em>This module, both source code and documentation, is in the
+ Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
+ See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
+ for further information.
+ </blockquote>
+
+ <p>This class provides a default implementation of the SAX2
+ <code><a href="reference/org/xml/sax/Attributes.html">Attributes</a></code> interface, with the
+ addition of manipulators so that the list can be modified or
+ reused.</p>
+
+ <p>There are two typical uses of this class:</p>
+
+ <ol>
+ <li>to take a persistent snapshot of an Attributes object
+  in a <code><a href="reference/org/xml/sax/ContentHandler.html#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)">startElement</a></code> event; or</li>
+ <li>to construct or modify an Attributes object in a SAX2 driver or filter.</li>
+ </ol>
+
+ <p>This class replaces the now-deprecated SAX1 <code><a href="reference/org/xml/sax/helpers/AttributeListImpl.html">AttributeListImpl</a></code>
+ class; in addition to supporting the updated Attributes
+ interface rather than the deprecated <code><a href="reference/org/xml/sax/AttributeList.html">AttributeList</a></code> interface, it also includes a much more efficient
+ implementation using a single array rather than a set of Vectors.</p></p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#AttributesImpl()">AttributesImpl</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#AttributesImpl(org.xml.sax.Attributes)">AttributesImpl</a></span>(<span class="nowrap"><a href="../../../../../reference/org/xml/sax/Attributes.html">Attributes</a> <i>atts</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#addAttribute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)">addAttribute</a></span>(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>type</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#clear()">clear</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getIndex(java.lang.String)">getIndex</a></span>(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getIndex(java.lang.String, java.lang.String)">getIndex</a></span>(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getLength()">getLength</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getLocalName(int)">getLocalName</a></span>(<span class="nowrap">int <i>index</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getQName(int)">getQName</a></span>(<span class="nowrap">int <i>index</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getType(java.lang.String)">getType</a></span>(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getType(int)">getType</a></span>(<span class="nowrap">int <i>index</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getType(java.lang.String, java.lang.String)">getType</a></span>(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getURI(int)">getURI</a></span>(<span class="nowrap">int <i>index</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getValue(java.lang.String)">getValue</a></span>(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getValue(java.lang.String, java.lang.String)">getValue</a></span>(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#getValue(int)">getValue</a></span>(<span class="nowrap">int <i>index</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#removeAttribute(int)">removeAttribute</a></span>(<span class="nowrap">int <i>index</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#setAttribute(int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)">setAttribute</a></span>(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>type</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#setAttributes(org.xml.sax.Attributes)">setAttributes</a></span>(<span class="nowrap"><a href="../../../../../reference/org/xml/sax/Attributes.html">Attributes</a> <i>atts</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#setLocalName(int, java.lang.String)">setLocalName</a></span>(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#setQName(int, java.lang.String)">setQName</a></span>(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#setType(int, java.lang.String)">setType</a></span>(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>type</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#setURI(int, java.lang.String)">setURI</a></span>(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/AttributesImpl.html#setValue(int, java.lang.String)">setValue</a></span>(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="AttributesImpl()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>AttributesImpl</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Construct a new, empty AttributesImpl object.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="AttributesImpl(org.xml.sax.Attributes)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>AttributesImpl</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/org/xml/sax/Attributes.html">Attributes</a> <i>atts</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Copy an existing Attributes object.
+
+ <p>This constructor is especially useful inside a
+ <code><a href="reference/org/xml/sax/ContentHandler.html#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)">startElement</a></code> event.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">atts</td>
+          <td class="jd-tagdescr">The existing Attributes object.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="addAttribute(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>addAttribute</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>type</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Add an attribute to the end of the list.
+
+ <p>For the sake of speed, this method does no checking
+ to see if the attribute is already in the list: that is
+ the responsibility of the application.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">The Namespace URI, or the empty string if
+        none is available or Namespace processing is not
+        being performed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">localName</td>
+          <td class="jd-tagdescr">The local name, or the empty string if
+        Namespace processing is not being performed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">qName</td>
+          <td class="jd-tagdescr">The qualified (prefixed) name, or the empty string
+        if qualified names are not available.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">type</td>
+          <td class="jd-tagdescr">The attribute type as a string.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">The attribute value.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="clear()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>clear</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Clear the attribute list for reuse.
+
+ <p>Note that little memory is freed by this call:
+ the current array is kept so it can be
+ reused.</p>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getIndex(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getIndex</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Look up an attribute's index by qualified (prefixed) name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">qName</td>
+          <td class="jd-tagdescr">The qualified name.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The attribute's index, or -1 if none matches.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getIndex(java.lang.String)">getIndex(java.lang.String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getIndex(java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getIndex</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Look up an attribute's index by Namespace name.
+
+ <p>In many cases, it will be more efficient to look up the name once and
+ use the index query methods rather than using the name query methods
+ repeatedly.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">The attribute's Namespace URI, or the empty
+        string if none is available.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">localName</td>
+          <td class="jd-tagdescr">The attribute's local name.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The attribute's index, or -1 if none matches.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getIndex(java.lang.String, java.lang.String)">getIndex(java.lang.String, java.lang.String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLength()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getLength</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return the number of attributes in the list.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The number of attributes in the list.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getLength()">getLength()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLocalName(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getLocalName</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an attribute's local name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The attribute's index (zero-based).</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The attribute's local name, the empty string if
+         none is available, or null if the index if out of range.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getLocalName(int)">getLocalName(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getQName(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getQName</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an attribute's qualified (prefixed) name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The attribute's index (zero-based).</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The attribute's qualified name, the empty string if
+         none is available, or null if the index is out of bounds.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getQName(int)">getQName(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getType(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getType</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Look up an attribute's type by qualified (prefixed) name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">qName</td>
+          <td class="jd-tagdescr">The qualified name.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The attribute's type, or null if there is no
+         matching attribute.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getType(java.lang.String)">getType(java.lang.String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getType(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getType</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an attribute's type by index.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The attribute's index (zero-based).</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The attribute's type, "CDATA" if the type is unknown, or null
+         if the index is out of bounds.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getType(int)">getType(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getType(java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getType</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Look up an attribute's type by Namespace-qualified name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">The Namespace URI, or the empty string for a name
+        with no explicit Namespace URI.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">localName</td>
+          <td class="jd-tagdescr">The local name.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The attribute's type, or null if there is no
+         matching attribute.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getType(java.lang.String, java.lang.String)">getType(java.lang.String, java.lang.String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getURI(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getURI</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an attribute's Namespace URI.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The attribute's index (zero-based).</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The Namespace URI, the empty string if none is
+         available, or null if the index is out of range.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getURI(int)">getURI(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getValue(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getValue</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Look up an attribute's value by qualified (prefixed) name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">qName</td>
+          <td class="jd-tagdescr">The qualified name.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The attribute's value, or null if there is no
+         matching attribute.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getValue(java.lang.String)">getValue(java.lang.String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getValue(java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getValue</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Look up an attribute's value by Namespace-qualified name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">The Namespace URI, or the empty string for a name
+        with no explicit Namespace URI.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">localName</td>
+          <td class="jd-tagdescr">The local name.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The attribute's value, or null if there is no
+         matching attribute.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getValue(java.lang.String, java.lang.String)">getValue(java.lang.String, java.lang.String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getValue(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getValue</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an attribute's value by index.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The attribute's index (zero-based).</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The attribute's value or null if the index is out of bounds.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/Attributes.html#getValue(int)">getValue(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="removeAttribute(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>removeAttribute</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Remove an attribute from the list.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The index of the attribute (zero-based).</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">When the
+            supplied index does not point to an attribute
+            in the list.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setAttribute(int, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setAttribute</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>type</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set an attribute in the list.
+
+ <p>For the sake of speed, this method does no checking
+ for name conflicts or well-formedness: such checks are the
+ responsibility of the application.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The index of the attribute (zero-based).</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">The Namespace URI, or the empty string if
+        none is available or Namespace processing is not
+        being performed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">localName</td>
+          <td class="jd-tagdescr">The local name, or the empty string if
+        Namespace processing is not being performed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">qName</td>
+          <td class="jd-tagdescr">The qualified name, or the empty string
+        if qualified names are not available.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">type</td>
+          <td class="jd-tagdescr">The attribute type as a string.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">The attribute value.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">When the
+            supplied index does not point to an attribute
+            in the list.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setAttributes(org.xml.sax.Attributes)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setAttributes</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/org/xml/sax/Attributes.html">Attributes</a> <i>atts</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Copy an entire Attributes object.
+
+ <p>It may be more efficient to reuse an existing object
+ rather than constantly allocating new ones.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">atts</td>
+          <td class="jd-tagdescr">The attributes to copy.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setLocalName(int, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setLocalName</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the local name of a specific attribute.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The index of the attribute (zero-based).</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">localName</td>
+          <td class="jd-tagdescr">The attribute's local name, or the empty
+        string for none.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">When the
+            supplied index does not point to an attribute
+            in the list.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setQName(int, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setQName</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the qualified name of a specific attribute.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The index of the attribute (zero-based).</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">qName</td>
+          <td class="jd-tagdescr">The attribute's qualified name, or the empty
+        string for none.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">When the
+            supplied index does not point to an attribute
+            in the list.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setType(int, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setType</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>type</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the type of a specific attribute.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The index of the attribute (zero-based).</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">type</td>
+          <td class="jd-tagdescr">The attribute's type.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">When the
+            supplied index does not point to an attribute
+            in the list.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setURI(int, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setURI</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the Namespace URI of a specific attribute.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The index of the attribute (zero-based).</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">The attribute's Namespace URI, or the empty
+        string for none.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">When the
+            supplied index does not point to an attribute
+            in the list.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setValue(int, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setValue</strong></span>
+      <span class="params">(<span class="nowrap">int <i>index</i></span>, <span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the value of a specific attribute.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">index</td>
+          <td class="jd-tagdescr">The index of the attribute (zero-based).</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">The attribute's value.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">When the
+            supplied index does not point to an attribute
+            in the list.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

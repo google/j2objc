@@ -1,0 +1,2314 @@
+---
+
+title: SocketImpl - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ContentHandlerFactory.html">ContentHandlerFactory</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookiePolicy.html">CookiePolicy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookieStore.html">CookieStore</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramSocketImplFactory.html">DatagramSocketImplFactory</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/FileNameMap.html">FileNameMap</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketImplFactory.html">SocketImplFactory</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketOptions.html">SocketOptions</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLStreamHandlerFactory.html">URLStreamHandlerFactory</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Authenticator.html">Authenticator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CacheRequest.html">CacheRequest</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CacheResponse.html">CacheResponse</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ContentHandler.html">ContentHandler</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookieHandler.html">CookieHandler</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookieManager.html">CookieManager</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramPacket.html">DatagramPacket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramSocket.html">DatagramSocket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramSocketImpl.html">DatagramSocketImpl</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/HttpCookie.html">HttpCookie</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/HttpURLConnection.html">HttpURLConnection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/IDN.html">IDN</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Inet4Address.html">Inet4Address</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Inet6Address.html">Inet6Address</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/InetAddress.html">InetAddress</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/InetSocketAddress.html">InetSocketAddress</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/InterfaceAddress.html">InterfaceAddress</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/MulticastSocket.html">MulticastSocket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/NetworkInterface.html">NetworkInterface</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/PasswordAuthentication.html">PasswordAuthentication</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Proxy.html">Proxy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ProxySelector.html">ProxySelector</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ResponseCache.html">ResponseCache</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SecureCacheResponse.html">SecureCacheResponse</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ServerSocket.html">ServerSocket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Socket.html">Socket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketAddress.html">SocketAddress</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/net/SocketImpl.html">SocketImpl</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketPermission.html">SocketPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URI.html">URI</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URL.html">URL</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLClassLoader.html">URLClassLoader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLConnection.html">URLConnection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLDecoder.html">URLDecoder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLEncoder.html">URLEncoder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLStreamHandler.html">URLStreamHandler</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Authenticator.RequestorType.html">Authenticator.RequestorType</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Proxy.Type.html">Proxy.Type</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/BindException.html">BindException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ConnectException.html">ConnectException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/HttpRetryException.html">HttpRetryException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/MalformedURLException.html">MalformedURLException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/NoRouteToHostException.html">NoRouteToHostException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/PortUnreachableException.html">PortUnreachableException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ProtocolException.html">ProtocolException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketException.html">SocketException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketTimeoutException.html">SocketTimeoutException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/UnknownServiceException.html">UnknownServiceException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URISyntaxException.html">URISyntaxException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+   
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">SocketImpl</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>This class is the base of all streaming socket implementation classes.
+ Streaming sockets are wrapped by two classes, <code>ServerSocket</code> and
+ <code>Socket</code> at the server and client end of a connection. At the server,
+ there are two types of sockets engaged in communication, the <code>ServerSocket</code> on a well known port (referred to as listener) used to
+ establish a connection and the resulting <code>Socket</code> (referred to as
+ host).
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="inhconstants">
+  <h3>Inherited Constant Summary</h3>
+  
+    
+  
+    
+      <div class="expandable api apilevel-">
+        <span class="showalways">
+          From interface
+          <a href="../../../reference/java/net/SocketOptions.html">java.net.SocketOptions</a>
+        </span>
+        <div id="inherited-constants-java.net.SocketOptions">
+          <div id="inherited-constants-java.net.SocketOptions-list"
+                class="jd-inheritedlinks">
+          </div>
+          <div id="inherited-constants-java.net.SocketOptions-summary">
+            <table class="jd-sumtable-expando">
+              
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#IP_MULTICAST_IF">IP_MULTICAST_IF</a></td>
+        <td class="jd-descrcol" width="100%">This is an IPv4-only socket option whose functionality is subsumed by
+ <code><a href="reference/java/net/SocketOptions.html#IP_MULTICAST_IF2">IP_MULTICAST_IF2</a></code> and not implemented on Android.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#IP_MULTICAST_IF2">IP_MULTICAST_IF2</a></td>
+        <td class="jd-descrcol" width="100%">This integer option sets the outgoing interface for multicast packets
+ using an interface index.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#IP_MULTICAST_LOOP">IP_MULTICAST_LOOP</a></td>
+        <td class="jd-descrcol" width="100%">This boolean option specifies whether the local loopback of multicast packets is
+ enabled or disabled.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#IP_TOS">IP_TOS</a></td>
+        <td class="jd-descrcol" width="100%">This integer option specifies the value for the type-of-service field of the IPv4 header,
+ or the traffic class field of the IPv6 header.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#SO_BINDADDR">SO_BINDADDR</a></td>
+        <td class="jd-descrcol" width="100%">This option does not correspond to any Unix socket option and is not implemented on Android.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#SO_BROADCAST">SO_BROADCAST</a></td>
+        <td class="jd-descrcol" width="100%">This boolean option can be used to enable or disable broadcasting on datagram sockets.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#SO_KEEPALIVE">SO_KEEPALIVE</a></td>
+        <td class="jd-descrcol" width="100%">This boolean option specifies whether the kernel sends keepalive messages on
+ connection-oriented sockets.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#SO_LINGER">SO_LINGER</a></td>
+        <td class="jd-descrcol" width="100%">Number of seconds to wait when closing a socket if there is still some buffered data to be
+ sent.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#SO_OOBINLINE">SO_OOBINLINE</a></td>
+        <td class="jd-descrcol" width="100%">This boolean option specifies whether sending TCP urgent data is supported on
+ this socket or not.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#SO_RCVBUF">SO_RCVBUF</a></td>
+        <td class="jd-descrcol" width="100%">The size in bytes of a socket's receive buffer.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#SO_REUSEADDR">SO_REUSEADDR</a></td>
+        <td class="jd-descrcol" width="100%">This boolean option specifies whether a reuse of a local address is allowed when another
+ socket has not yet been removed by the operating system.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#SO_SNDBUF">SO_SNDBUF</a></td>
+        <td class="jd-descrcol" width="100%">The size in bytes of a socket's send buffer.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#SO_TIMEOUT">SO_TIMEOUT</a></td>
+        <td class="jd-descrcol" width="100%">Integer timeout in milliseconds for blocking accept or read/receive operations (but not
+ write/send operations).</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/net/SocketOptions.html#TCP_NODELAY">TCP_NODELAY</a></td>
+        <td class="jd-descrcol" width="100%">This boolean option specifies whether data is sent immediately on this socket or buffered.</td>
+    </tr>
+    
+    
+
+            </table>
+          </div>
+        </div>
+      </div>
+    
+  
+</section>
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<section id="lfields"><h3>Field Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          <a href="../../../reference/java/net/InetAddress.html">InetAddress</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/net/SocketImpl.html#address">address</a></td>
+          <td class="jd-descrcol" width="100%">The remote address this socket is connected to.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          <a href="../../../reference/java/io/FileDescriptor.html">FileDescriptor</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/net/SocketImpl.html#fd">fd</a></td>
+          <td class="jd-descrcol" width="100%">The file descriptor of this socket.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          int</td>
+          <td class="jd-linkcol"><a href="../../../reference/java/net/SocketImpl.html#localport">localport</a></td>
+          <td class="jd-descrcol" width="100%">The local port this socket is connected to.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          int</td>
+          <td class="jd-linkcol"><a href="../../../reference/java/net/SocketImpl.html#port">port</a></td>
+          <td class="jd-descrcol" width="100%">The remote port this socket is connected to.</td>
+      </tr>
+      
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#SocketImpl()">SocketImpl</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#accept(java.net.SocketImpl)">accept</a></span>(<span class="nowrap"><a href="../../../reference/java/net/SocketImpl.html">SocketImpl</a> <i>newSocket</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#available()">available</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#bind(java.net.InetAddress, int)">bind</a></span>(<span class="nowrap"><a href="../../../reference/java/net/InetAddress.html">InetAddress</a> <i>address</i></span>, <span class="nowrap">int <i>port</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#close()">close</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#connect(java.net.InetAddress, int)">connect</a></span>(<span class="nowrap"><a href="../../../reference/java/net/InetAddress.html">InetAddress</a> <i>address</i></span>, <span class="nowrap">int <i>port</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#connect(java.net.SocketAddress, int)">connect</a></span>(<span class="nowrap"><a href="../../../reference/java/net/SocketAddress.html">SocketAddress</a> <i>remoteAddr</i></span>, <span class="nowrap">int <i>timeout</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#connect(java.lang.String, int)">connect</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#create(boolean)">create</a></span>(<span class="nowrap">boolean <i>isStreaming</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/io/FileDescriptor.html">FileDescriptor</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#getFileDescriptor()">getFileDescriptor</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#getInetAddress()">getInetAddress</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/io/InputStream.html">InputStream</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#getInputStream()">getInputStream</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#getLocalPort()">getLocalPort</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/io/OutputStream.html">OutputStream</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#getOutputStream()">getOutputStream</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#getPort()">getPort</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#listen(int)">listen</a></span>(<span class="nowrap">int <i>backlog</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#sendUrgentData(int)">sendUrgentData</a></span>(<span class="nowrap">int <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#setPerformancePreferences(int, int, int)">setPerformancePreferences</a></span>(<span class="nowrap">int <i>connectionTime</i></span>, <span class="nowrap">int <i>latency</i></span>, <span class="nowrap">int <i>bandwidth</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#shutdownInput()">shutdownInput</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#shutdownOutput()">shutdownOutput</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/SocketImpl.html#supportsUrgentData()">supportsUrgentData</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- ========= FIELD DETAIL ======== -->
+<section id="fields">
+  <h2>Fields</h2>
+  
+
+
+
+<A NAME="address"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+          <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+        
+      </span>
+        <strong>address</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The remote address this socket is connected to.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<A NAME="fd"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+          <a href="../../../reference/java/io/FileDescriptor.html">FileDescriptor</a>
+        
+      </span>
+        <strong>fd</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The file descriptor of this socket.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<A NAME="localport"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+          int
+        
+      </span>
+        <strong>localport</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The local port this socket is connected to.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<A NAME="port"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+          int
+        
+      </span>
+        <strong>port</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The remote port this socket is connected to.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="SocketImpl()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SocketImpl</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of the
+ socket.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the textual representation of this socket.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="accept(java.net.SocketImpl)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>accept</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/net/SocketImpl.html">SocketImpl</a> <i>newSocket</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Waits for an incoming request and blocks until the connection is opened
+ on the given socket.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">newSocket</td>
+          <td class="jd-tagdescr">the socket to accept connections on.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while accepting a new connection.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="available()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>available</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the available number of bytes which are readable from this socket
+ without blocking.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of bytes that may be read without blocking.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while reading the number of bytes.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="bind(java.net.InetAddress, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>bind</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/net/InetAddress.html">InetAddress</a> <i>address</i></span>, <span class="nowrap">int <i>port</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Binds this socket to the specified local host address and port number.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">address</td>
+          <td class="jd-tagdescr">the local machine address to bind this socket to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the port on the local machine to bind this socket to.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while binding this socket.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="close()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>close</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Closes this socket. This makes later access invalid.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while closing this socket.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="connect(java.net.InetAddress, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>connect</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/net/InetAddress.html">InetAddress</a> <i>address</i></span>, <span class="nowrap">int <i>port</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Connects this socket to the specified remote host address and port
+ number.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">address</td>
+          <td class="jd-tagdescr">the remote host address this socket has to be connected to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the remote port on which this socket has to be connected.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while connecting to the remote host.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="connect(java.net.SocketAddress, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>connect</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/net/SocketAddress.html">SocketAddress</a> <i>remoteAddr</i></span>, <span class="nowrap">int <i>timeout</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Connects this socket to the remote host address and port number specified
+ by the <code>SocketAddress</code> object with the given timeout. This method
+ will block indefinitely if the timeout is set to zero.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">remoteAddr</td>
+          <td class="jd-tagdescr">the remote host address and port number to connect to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">timeout</td>
+          <td class="jd-tagdescr">the timeout value in milliseconds.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while connecting.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="connect(java.lang.String, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>connect</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Connects this socket to the specified remote host and port number.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">host</td>
+          <td class="jd-tagdescr">the remote host this socket has to be connected to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the remote port on which this socket has to be connected.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while connecting to the remote host.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="create(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>create</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>isStreaming</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new unconnected socket. The argument <code>isStreaming</code>
+ defines whether the new socket is a streaming or a datagram socket.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">isStreaming</td>
+          <td class="jd-tagdescr">defines whether the type of the new socket is streaming or
+            datagram.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while creating the socket.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getFileDescriptor()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../reference/java/io/FileDescriptor.html">FileDescriptor</a>
+      </span>
+      <span class="sympad"><strong>getFileDescriptor</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the file descriptor of this socket.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the file descriptor of this socket.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getInetAddress()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </span>
+      <span class="sympad"><strong>getInetAddress</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the remote address this socket is connected to.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the remote address of this socket.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getInputStream()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/io/InputStream.html">InputStream</a>
+      </span>
+      <span class="sympad"><strong>getInputStream</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the input stream of this socket.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the input stream of this socket.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while accessing the input stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLocalPort()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getLocalPort</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the local port number of this socket. The field is initialized to
+ <code>-1</code> and upon demand will go to the IP stack to get the bound
+ value. See the class comment for the context of the local port.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the local port number this socket is bound to.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getOutputStream()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/io/OutputStream.html">OutputStream</a>
+      </span>
+      <span class="sympad"><strong>getOutputStream</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the output stream of this socket.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the output stream of this socket.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while accessing the output stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getPort()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getPort</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the remote port number of this socket. This value is not meaningful
+ when this instance is wrapped by a <code>ServerSocket</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the remote port this socket is connected to.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="listen(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>listen</strong></span>
+      <span class="params">(<span class="nowrap">int <i>backlog</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Listens for connection requests on this streaming socket. Incoming
+ connection requests are queued up to the limit specified by <code>backlog</code>. Additional requests are rejected. This method
+ may only be invoked on stream sockets.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">backlog</td>
+          <td class="jd-tagdescr">the maximum number of outstanding connection requests.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while listening.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="sendUrgentData(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>sendUrgentData</strong></span>
+      <span class="params">(<span class="nowrap">int <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sends the single byte of urgent data on the socket.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the byte of urgent data.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs sending urgent data.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setPerformancePreferences(int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setPerformancePreferences</strong></span>
+      <span class="params">(<span class="nowrap">int <i>connectionTime</i></span>, <span class="nowrap">int <i>latency</i></span>, <span class="nowrap">int <i>bandwidth</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets performance preference for connection time, latency and bandwidth.
+ Does nothing by default.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">connectionTime</td>
+          <td class="jd-tagdescr">the importance of connect time.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">latency</td>
+          <td class="jd-tagdescr">the importance of latency.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">bandwidth</td>
+          <td class="jd-tagdescr">the importance of bandwidth.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="shutdownInput()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>shutdownInput</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Closes the input channel of this socket.
+
+ <p>This default implementation always throws an <code><a href="reference/java/io/IOException.html">IOException</a></code> to
+ indicate that the subclass should have overridden this method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">always because this method should be overridden.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="shutdownOutput()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>shutdownOutput</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Closes the output channel of this socket.
+
+ <p>This default implementation always throws an <code><a href="reference/java/io/IOException.html">IOException</a></code> to
+ indicate that the subclass should have overridden this method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">always because this method should be overridden.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="supportsUrgentData()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>supportsUrgentData</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether the socket supports urgent data or not. Subclasses should
+ override this method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>false</code> because subclasses must override this method.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

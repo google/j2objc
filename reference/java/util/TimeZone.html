@@ -1,0 +1,1921 @@
+---
+
+title: TimeZone - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Collection.html">Collection</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Deque.html">Deque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventListener.html">EventListener</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formattable.html">Formattable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Map.Entry.html">Map.Entry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Observer.html">Observer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Queue.html">Queue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/RandomAccess.html">RandomAccess</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;</li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractCollection.html">AbstractCollection</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractList.html">AbstractList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.html">AbstractMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleEntry.html">AbstractMap.SimpleEntry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleImmutableEntry.html">AbstractMap.SimpleImmutableEntry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractQueue.html">AbstractQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSequentialList.html">AbstractSequentialList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSet.html">AbstractSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ArrayDeque.html">ArrayDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Arrays.html">Arrays</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/BitSet.html">BitSet</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Calendar.html">Calendar</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Collections.html">Collections</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Currency.html">Currency</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Date.html">Date</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Dictionary.html">Dictionary</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EnumMap.html">EnumMap</a>&lt;K&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;K&gt;,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventObject.html">EventObject</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormattableFlags.html">FormattableFlags</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.html">Formatter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/HashMap.html">HashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/HashSet.html">HashSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Hashtable.html">Hashtable</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IdentityHashMap.html">IdentityHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashMap.html">LinkedHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashSet.html">LinkedHashSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ListResourceBundle.html">ListResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Locale.html">Locale</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Objects.html">Objects</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Observable.html">Observable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Properties.html">Properties</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PropertyPermission.html">PropertyPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PropertyResourceBundle.html">PropertyResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Random.html">Random</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.html">ResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.Control.html">ResourceBundle.Control</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Scanner.html">Scanner</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ServiceLoader.html">ServiceLoader</a>&lt;S&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SimpleTimeZone.html">SimpleTimeZone</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Stack.html">Stack</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/StringTokenizer.html">StringTokenizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Timer.html">Timer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TimerTask.html">TimerTask</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TreeMap.html">TreeMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TreeSet.html">TreeSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UUID.html">UUID</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Vector.html">Vector</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/WeakHashMap.html">WeakHashMap</a>&lt;K,&nbsp;V&gt;</li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.BigDecimalLayoutForm.html">Formatter.BigDecimalLayoutForm</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/DuplicateFormatFlagsException.html">DuplicateFormatFlagsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EmptyStackException.html">EmptyStackException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormatFlagsConversionMismatchException.html">FormatFlagsConversionMismatchException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormatterClosedException.html">FormatterClosedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatCodePointException.html">IllegalFormatCodePointException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatConversionException.html">IllegalFormatConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatFlagsException.html">IllegalFormatFlagsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatPrecisionException.html">IllegalFormatPrecisionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatWidthException.html">IllegalFormatWidthException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/InputMismatchException.html">InputMismatchException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html">InvalidPropertiesFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatArgumentException.html">MissingFormatArgumentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatWidthException.html">MissingFormatWidthException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingResourceException.html">MissingResourceException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TooManyListenersException.html">TooManyListenersException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatConversionException.html">UnknownFormatConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatFlagsException.html">UnknownFormatFlagsException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ServiceConfigurationError.html">ServiceConfigurationError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">TimeZone</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;">
+Known Direct Subclasses
+
+  <div id="subclasses-direct">
+      <div id="subclasses-direct-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/util/SimpleTimeZone.html">SimpleTimeZone</a>
+            
+          
+      </div>
+      <div id="subclasses-direct-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/SimpleTimeZone.html">SimpleTimeZone</a></td>
+              <td class="jd-descrcol" width="100%"><code>SimpleTimeZone</code> is a concrete subclass of <code>TimeZone</code>
+ that represents a time zone for use with a Gregorian calendar.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+
+
+<div class="jd-descr">
+
+
+<p><code>TimeZone</code> represents a time zone, primarily used for configuring a <code><a href="reference/java/util/Calendar.html">Calendar</a></code> or
+ <code><a href="reference/java/text/SimpleDateFormat.html">SimpleDateFormat</a></code> instance.
+
+ <p>Most applications will use <code><a href="reference/java/util/TimeZone.html#getDefault()">getDefault()</a></code> which returns a <code>TimeZone</code> based on
+ the time zone where the program is running.
+
+ <p>You can also get a specific <code>TimeZone</code> <code><a href="reference/java/util/TimeZone.html#getTimeZone(java.lang.String)">by Olson ID</a></code>.
+
+ <p>It is highly unlikely you'll ever want to use anything but the factory methods yourself.
+ Let classes like <code><a href="reference/java/util/Calendar.html">Calendar</a></code> and <code><a href="reference/java/text/SimpleDateFormat.html">SimpleDateFormat</a></code> do the date
+ computations for you.
+
+ <p>If you do need to do date computations manually, there are two common cases to take into
+ account:
+ <ul>
+ <li>Somewhere like California, where daylight time is used.
+ The <code><a href="reference/java/util/TimeZone.html#useDaylightTime()">useDaylightTime()</a></code> method will always return true, and <code><a href="reference/java/util/TimeZone.html#inDaylightTime(java.util.Date)">inDaylightTime(Date)</a></code>
+ must be used to determine whether or not daylight time applies to a given <code>Date</code>.
+ The <code><a href="reference/java/util/TimeZone.html#getRawOffset()">getRawOffset()</a></code> method will return a raw offset of (in this case) -8 hours from UTC,
+ which isn't usually very useful. More usefully, the <code><a href="reference/java/util/TimeZone.html#getOffset(int, int, int, int, int, int)">getOffset(int, int, int, int, int, int)</a></code> methods return the
+ actual offset from UTC <i>for a given point in time</i>; this is the raw offset plus (if the
+ point in time is <code><a href="reference/java/util/TimeZone.html#inDaylightTime(java.util.Date)">in daylight time</a></code>) the applicable
+ <code><a href="reference/java/util/TimeZone.html#getDSTSavings()">DST savings</a></code> (usually, but not necessarily, 1 hour).
+ <li>Somewhere like Japan, where daylight time is not used.
+ The <code><a href="reference/java/util/TimeZone.html#useDaylightTime()">useDaylightTime()</a></code> and <code><a href="reference/java/util/TimeZone.html#inDaylightTime(java.util.Date)">inDaylightTime(Date)</a></code> methods both always return false,
+ and the raw and actual offsets will always be the same.
+ </ul>
+
+ <p>Note the type returned by the factory methods <code><a href="reference/java/util/TimeZone.html#getDefault()">getDefault()</a></code> and <code><a href="reference/java/util/TimeZone.html#getTimeZone(java.lang.String)">getTimeZone(String)</a></code> is
+ implementation dependent. This may introduce serialization incompatibility issues between
+ different implementations, or different versions of Android.</p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Calendar.html">Calendar</a></code></li><li><code><a href="../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a></code></li><li><code><a href="../../../reference/java/text/SimpleDateFormat.html">SimpleDateFormat</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="constants"><h3>Constant Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/TimeZone.html#LONG">LONG</a></td>
+        <td class="jd-descrcol" width="100%">The long display name style, such as <code>Pacific Daylight Time</code>.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/TimeZone.html#SHORT">SHORT</a></td>
+        <td class="jd-descrcol" width="100%">The short display name style, such as <code>PDT</code>.</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#TimeZone()">TimeZone</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#clone()">clone</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            static
+            
+            <a href="../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getAvailableIDs()">getAvailableIDs</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            static
+            
+            <a href="../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getAvailableIDs(int)">getAvailableIDs</a></span>(<span class="nowrap">int <i>offsetMillis</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getDSTSavings()">getDSTSavings</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            static
+            
+            <a href="../../../reference/java/util/TimeZone.html">TimeZone</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getDefault()">getDefault</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getDisplayName(boolean, int, java.util.Locale)">getDisplayName</a></span>(<span class="nowrap">boolean <i>daylightTime</i></span>, <span class="nowrap">int <i>style</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getDisplayName(java.util.Locale)">getDisplayName</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getDisplayName(boolean, int)">getDisplayName</a></span>(<span class="nowrap">boolean <i>daylightTime</i></span>, <span class="nowrap">int <i>style</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getDisplayName()">getDisplayName</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getID()">getID</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getOffset(long)">getOffset</a></span>(<span class="nowrap">long <i>time</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getOffset(int, int, int, int, int, int)">getOffset</a></span>(<span class="nowrap">int <i>era</i></span>, <span class="nowrap">int <i>year</i></span>, <span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>timeOfDayMillis</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getRawOffset()">getRawOffset</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            static
+            
+            <a href="../../../reference/java/util/TimeZone.html">TimeZone</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#getTimeZone(java.lang.String)">getTimeZone</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>id</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#hasSameRules(java.util.TimeZone)">hasSameRules</a></span>(<span class="nowrap"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a> <i>timeZone</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#inDaylightTime(java.util.Date)">inDaylightTime</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Date.html">Date</a> <i>time</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#setDefault(java.util.TimeZone)">setDefault</a></span>(<span class="nowrap"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a> <i>timeZone</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#setID(java.lang.String)">setID</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>id</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#setRawOffset(int)">setRawOffset</a></span>(<span class="nowrap">int <i>offsetMillis</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/TimeZone.html#useDaylightTime()">useDaylightTime</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<section id="constants">
+  <h2>Constants</h2>
+  
+
+
+
+<A NAME="LONG"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>LONG</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The long display name style, such as <code>Pacific Daylight Time</code>.
+ Requests for this style may yield GMT offsets like <code>GMT-08:00</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                1
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="SHORT"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>SHORT</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The short display name style, such as <code>PDT</code>. Requests for this
+ style may yield GMT offsets like <code>GMT-08:00</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                0
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="TimeZone()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>TimeZone</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="clone()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad"><strong>clone</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new time zone with the same ID, raw offset, and daylight
+ savings time rules as this time zone.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getAvailableIDs()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        synchronized
+        <a href="../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getAvailableIDs</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the system's installed time zone IDs. Any of these IDs can be
+ passed to <code><a href="reference/java/util/TimeZone.html#getTimeZone(java.lang.String)">getTimeZone(String)</a></code> to lookup the corresponding time zone
+ instance.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getAvailableIDs(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        synchronized
+        <a href="../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getAvailableIDs</strong></span>
+      <span class="params">(<span class="nowrap">int <i>offsetMillis</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the IDs of the time zones whose offset from UTC is <code>offsetMillis</code>. Any of these IDs can be passed to <code><a href="reference/java/util/TimeZone.html#getTimeZone(java.lang.String)">getTimeZone(String)</a></code> to
+ lookup the corresponding time zone instance.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a possibly-empty array.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getDSTSavings()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getDSTSavings</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the latest daylight savings in milliseconds for this time zone, relative
+ to this time zone's regular UTC offset (as returned by <code><a href="reference/java/util/TimeZone.html#getRawOffset()">getRawOffset()</a></code>).
+
+ <p>This class returns <code>3600000</code> (1 hour) for time zones
+ that use daylight savings time and <code>0</code> for timezones that do not,
+ leaving it to subclasses to override this method for other daylight savings
+ offsets. (There are time zones, such as <code>Australia/Lord_Howe</code>,
+ that use other values.)
+
+ <p>Note that this method doesn't tell you whether or not to <i>apply</i> the
+ offset: you need to call <code>inDaylightTime</code> for the specific time
+ you're interested in. If this method returns a non-zero offset, that only
+ tells you that this <code>TimeZone</code> sometimes observes daylight savings.
+
+ <p>Note also that this method doesn't necessarily return the value you need
+ to apply to the time you're working with. This value can and does change over
+ time for a given time zone.
+
+ <p>It's highly unlikely that you should ever call this method. You
+ probably want <code><a href="reference/java/util/TimeZone.html#getOffset(int, int, int, int, int, int)">getOffset(int, int, int, int, int, int)</a></code> instead, which tells you the offset
+ for a specific point in time, and takes daylight savings into account for you.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getDefault()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        synchronized
+        <a href="../../../reference/java/util/TimeZone.html">TimeZone</a>
+      </span>
+      <span class="sympad"><strong>getDefault</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the user's preferred time zone. This may have been overridden for
+ this process with <code><a href="reference/java/util/TimeZone.html#setDefault(java.util.TimeZone)">setDefault(TimeZone)</a></code>.
+
+ <p>Since the user's time zone changes dynamically, avoid caching this
+ value. Instead, use this method to look it up for each use.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getDisplayName(boolean, int, java.util.Locale)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getDisplayName</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>daylightTime</i></span>, <span class="nowrap">int <i>style</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code><a href="reference/java/util/TimeZone.html#SHORT">short</a></code> or <code><a href="reference/java/util/TimeZone.html#LONG">long</a></code> name of this time
+ zone with either standard or daylight time, as written in <code>locale</code>.
+ If the name is not available, the result is in the format
+ <code>GMT[+-]hh:mm</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">daylightTime</td>
+          <td class="jd-tagdescr">true for daylight time, false for standard time.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">style</td>
+          <td class="jd-tagdescr">either <code><a href="reference/java/util/TimeZone.html#LONG">LONG</a></code> or <code><a href="reference/java/util/TimeZone.html#SHORT">SHORT</a></code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">locale</td>
+          <td class="jd-tagdescr">the display locale.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getDisplayName(java.util.Locale)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getDisplayName</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Equivalent to <code>getDisplayName(false, TimeZone.LONG, locale)</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getDisplayName(boolean, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getDisplayName</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>daylightTime</i></span>, <span class="nowrap">int <i>style</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Equivalent to <code>getDisplayName(daylightTime, style, Locale.getDefault())</code>.
+ <a href="../util/Locale.html#default_locale">Be wary of the default locale</a>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getDisplayName()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getDisplayName</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Equivalent to <code>getDisplayName(false, TimeZone.LONG, Locale.getDefault())</code>.
+ <a href="../util/Locale.html#default_locale">Be wary of the default locale</a>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getID()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getID</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the ID of this <code>TimeZone</code>, such as
+ <code>America/Los_Angeles</code>, <code>GMT-08:00</code> or <code>UTC</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getOffset(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getOffset</strong></span>
+      <span class="params">(<span class="nowrap">long <i>time</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the offset in milliseconds from UTC for this time zone at <code>time</code>. The offset includes daylight savings time if the specified
+ date is within the daylight savings time period.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">time</td>
+          <td class="jd-tagdescr">the date in milliseconds since January 1, 1970 00:00:00 UTC
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getOffset(int, int, int, int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getOffset</strong></span>
+      <span class="params">(<span class="nowrap">int <i>era</i></span>, <span class="nowrap">int <i>year</i></span>, <span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>timeOfDayMillis</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns this time zone's offset in milliseconds from UTC at the specified
+ date and time. The offset includes daylight savings time if the date
+ and time is within the daylight savings time period.
+
+ <p>This method is intended to be used by <code><a href="reference/java/util/Calendar.html">Calendar</a></code> to compute
+ <code><a href="reference/java/util/Calendar.html#DST_OFFSET">DST_OFFSET</a></code> and <code><a href="reference/java/util/Calendar.html#ZONE_OFFSET">ZONE_OFFSET</a></code>. Application
+ code should have no reason to call this method directly. Each parameter
+ is interpreted in the same way as the corresponding <code>Calendar</code>
+ field. Refer to <code><a href="reference/java/util/Calendar.html">Calendar</a></code> for specific definitions of this
+ method's parameters.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getRawOffset()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getRawOffset</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the offset in milliseconds from UTC of this time zone's standard
+ time.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getTimeZone(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        synchronized
+        <a href="../../../reference/java/util/TimeZone.html">TimeZone</a>
+      </span>
+      <span class="sympad"><strong>getTimeZone</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>id</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>TimeZone</code> corresponding to the given <code>id</code>, or <code>GMT</code>
+ for unknown ids.
+
+ <p>An ID can be an Olson name of the form <i>Area</i>/<i>Location</i>, such
+ as <code>America/Los_Angeles</code>. The <code><a href="reference/java/util/TimeZone.html#getAvailableIDs()">getAvailableIDs()</a></code> method returns
+ the supported names.
+
+ <p>This method can also create a custom <code>TimeZone</code> given an ID with the following
+ syntax: <code>GMT[+|-]hh[[:]mm]</code>. For example, <code>"GMT+05:00"</code>, <code>"GMT+0500"</code>,
+ <code>"GMT+5:00"</code>, <code>"GMT+500"</code>, <code>"GMT+05"</code>, and <code>"GMT+5"</code> all return
+ an object with a raw offset of +5 hours from UTC, and which does <i>not</i> use daylight
+ savings. These are rarely useful, because they don't correspond to time zones actually
+ in use by humans.
+
+ <p>Other than the special cases "UTC" and "GMT" (which are synonymous in this context,
+ both corresponding to UTC), Android does not support the deprecated three-letter time
+ zone IDs used in Java 1.1.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="hasSameRules(java.util.TimeZone)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>hasSameRules</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a> <i>timeZone</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if <code>timeZone</code> has the same rules as this time zone.
+
+ <p>The base implementation returns true if both time zones have the same
+ raw offset.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="inDaylightTime(java.util.Date)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>inDaylightTime</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Date.html">Date</a> <i>time</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if <code>time</code> is in a daylight savings time period for
+ this time zone.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setDefault(java.util.TimeZone)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>setDefault</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a> <i>timeZone</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Overrides the default time zone for the current process only.
+
+ <p><strong>Warning</strong>: avoid using this method to use a custom time
+ zone in your process. This value may be cleared or overwritten at any
+ time, which can cause unexpected behavior. Instead, manually supply a
+ custom time zone as needed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">timeZone</td>
+          <td class="jd-tagdescr">a custom time zone, or <code>null</code> to set the default to
+     the user's preferred value.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setID(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setID</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>id</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the ID of this <code>TimeZone</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setRawOffset(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setRawOffset</strong></span>
+      <span class="params">(<span class="nowrap">int <i>offsetMillis</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the offset in milliseconds from UTC of this time zone's standard
+ time.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="useDaylightTime()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>useDaylightTime</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if this time zone has a future transition to or from
+ daylight savings time.
+
+ <p><strong>Warning:</strong> this returns false for time zones like
+ <code>Asia/Kuala_Lumpur</code> that have previously used DST but do not
+ currently. A hypothetical country that has never observed daylight
+ savings before but plans to start next year would return true.
+
+ <p><strong>Warning:</strong> this returns true for time zones that use
+ DST, even when it is not active.
+
+ <p>Use <code><a href="reference/java/util/TimeZone.html#inDaylightTime(java.util.Date)">inDaylightTime(Date)</a></code> to find out whether daylight savings is
+ in effect at a specific time.
+
+ <p>Most applications should not use this method.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

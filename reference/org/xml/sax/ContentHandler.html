@@ -1,0 +1,1599 @@
+---
+
+title: ContentHandler - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/AttributeList.html">AttributeList</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/Attributes.html">Attributes</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/org/xml/sax/ContentHandler.html">ContentHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/DTDHandler.html">DTDHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/EntityResolver.html">EntityResolver</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/Locator.html">Locator</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/Parser.html">Parser</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/XMLFilter.html">XMLFilter</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/XMLReader.html">XMLReader</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/InputSource.html">InputSource</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/SAXNotRecognizedException.html">SAXNotRecognizedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/SAXNotSupportedException.html">SAXNotSupportedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/SAXParseException.html">SAXParseException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     interface
+  <h1 itemprop="name" class="devsite-page-title">ContentHandler</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;font-size:85%;">
+Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a>,
+            
+              <a href="../../../../reference/org/xml/sax/ext/DefaultHandler2.html">DefaultHandler2</a>,
+            
+              <a href="../../../../reference/javax/xml/transform/sax/TemplatesHandler.html">TemplatesHandler</a>,
+            
+              <a href="../../../../reference/javax/xml/transform/sax/TransformerHandler.html">TransformerHandler</a>,
+            
+              <a href="../../../../reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a>,
+            
+              <a href="../../../../reference/org/xml/sax/helpers/XMLFilterImpl.html">XMLFilterImpl</a>,
+            
+              <a href="../../../../reference/org/xml/sax/helpers/XMLReaderAdapter.html">XMLReaderAdapter</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a></td>
+              <td class="jd-descrcol" width="100%">Default base class for SAX2 event handlers.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/org/xml/sax/ext/DefaultHandler2.html">DefaultHandler2</a></td>
+              <td class="jd-descrcol" width="100%">This class extends the SAX2 base handler class to support the
+ SAX2 <code><a href="reference/org/xml/sax/ext/LexicalHandler.html">LexicalHandler</a></code>, <code><a href="reference/org/xml/sax/ext/DeclHandler.html">DeclHandler</a></code>, and
+ <code><a href="reference/org/xml/sax/ext/EntityResolver2.html">EntityResolver2</a></code> extensions.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/xml/transform/sax/TemplatesHandler.html">TemplatesHandler</a></td>
+              <td class="jd-descrcol" width="100%">A SAX ContentHandler that may be used to process SAX
+ parse events (parsing transformation instructions) into a Templates object.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/xml/transform/sax/TransformerHandler.html">TransformerHandler</a></td>
+              <td class="jd-descrcol" width="100%">A TransformerHandler
+ listens for SAX ContentHandler parse events and transforms
+ them to a Result.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></td>
+              <td class="jd-descrcol" width="100%">Streaming validator that works on SAX stream.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/org/xml/sax/helpers/XMLFilterImpl.html">XMLFilterImpl</a></td>
+              <td class="jd-descrcol" width="100%">Base class for deriving an XML filter.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/org/xml/sax/helpers/XMLReaderAdapter.html">XMLReaderAdapter</a></td>
+              <td class="jd-descrcol" width="100%">Adapt a SAX2 XMLReader as a SAX1 Parser.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<p>Receive notification of the logical content of a document.
+
+ <blockquote>
+ <em>This module, both source code and documentation, is in the
+ Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
+ See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
+ for further information.
+ </blockquote>
+
+ <p>This is the main interface that most SAX applications
+ implement: if the application needs to be informed of basic parsing
+ events, it implements this interface and registers an instance with
+ the SAX parser using the <code><a href="reference/org/xml/sax/XMLReader.html#setContentHandler(org.xml.sax.ContentHandler)">setContentHandler</a></code> method.  The parser uses the instance to report
+ basic document-related events like the start and end of elements
+ and character data.</p>
+
+ <p>The order of events in this interface is very important, and
+ mirrors the order of information in the document itself.  For
+ example, all of an element's content (character data, processing
+ instructions, and/or subelements) will appear, in order, between
+ the startElement event and the corresponding endElement event.</p>
+
+ <p>This interface is similar to the now-deprecated SAX 1.0
+ DocumentHandler interface, but it adds support for Namespaces
+ and for reporting skipped entities (in non-validating XML
+ processors).</p>
+
+ <p>Implementors should note that there is also a
+ <code>ContentHandler</code> class in the <code>java.net</code>
+ package; that means that it's probably a bad idea to do</p>
+
+ <pre>import java.net.*;
+ import org.xml.sax.*;
+ </pre>
+
+ <p>In fact, "import ...*" is usually a sign of sloppy programming
+ anyway, so the user should consider this a feature rather than a
+ bug.</p></p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/XMLReader.html">XMLReader</a></code></li><li><code><a href="../../../../reference/org/xml/sax/DTDHandler.html">DTDHandler</a></code></li><li><code><a href="../../../../reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/ContentHandler.html#characters(char[], int, int)">characters</a></span>(<span class="nowrap">char[] <i>ch</i></span>, <span class="nowrap">int <i>start</i></span>, <span class="nowrap">int <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/ContentHandler.html#endDocument()">endDocument</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/ContentHandler.html#endElement(java.lang.String, java.lang.String, java.lang.String)">endElement</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/ContentHandler.html#endPrefixMapping(java.lang.String)">endPrefixMapping</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>prefix</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/ContentHandler.html#ignorableWhitespace(char[], int, int)">ignorableWhitespace</a></span>(<span class="nowrap">char[] <i>ch</i></span>, <span class="nowrap">int <i>start</i></span>, <span class="nowrap">int <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/ContentHandler.html#processingInstruction(java.lang.String, java.lang.String)">processingInstruction</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>target</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>data</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/ContentHandler.html#setDocumentLocator(org.xml.sax.Locator)">setDocumentLocator</a></span>(<span class="nowrap"><a href="../../../../reference/org/xml/sax/Locator.html">Locator</a> <i>locator</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/ContentHandler.html#skippedEntity(java.lang.String)">skippedEntity</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/ContentHandler.html#startDocument()">startDocument</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/ContentHandler.html#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)">startElement</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/Attributes.html">Attributes</a> <i>atts</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/ContentHandler.html#startPrefixMapping(java.lang.String, java.lang.String)">startPrefixMapping</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>prefix</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="characters(char[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>characters</strong></span>
+      <span class="params">(<span class="nowrap">char[] <i>ch</i></span>, <span class="nowrap">int <i>start</i></span>, <span class="nowrap">int <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Receive notification of character data.
+
+ <p>The Parser will call this method to report each chunk of
+ character data.  SAX parsers may return all contiguous character
+ data in a single chunk, or they may split it into several
+ chunks; however, all of the characters in any single event
+ must come from the same external entity so that the Locator
+ provides useful information.</p>
+
+ <p>The application must not attempt to read from the array
+ outside of the specified range.</p>
+
+ <p>Individual characters may consist of more than one Java
+ <code>char</code> value.  There are two important cases where this
+ happens, because characters can't be represented in just sixteen bits.
+ In one case, characters are represented in a <em>Surrogate Pair</em>,
+ using two special Unicode values. Such characters are in the so-called
+ "Astral Planes", with a code point above U+FFFF.  A second case involves
+ composite characters, such as a base character combining with one or
+ more accent characters. </p>
+
+ <p> Your code should not assume that algorithms using
+ <code>char</code>-at-a-time idioms will be working in character
+ units; in some cases they will split characters.  This is relevant
+ wherever XML permits arbitrary characters, such as attribute values,
+ processing instruction data, and comments as well as in data reported
+ from this method.  It's also generally relevant whenever Java code
+ manipulates internationalized text; the issue isn't unique to XML.</p>
+
+ <p>Note that some parsers will report whitespace in element
+ content using the <code><a href="reference/org/xml/sax/ContentHandler.html#ignorableWhitespace(char[], int, int)">ignorableWhitespace</a></code>
+ method rather than this one (validating parsers <em>must</em>
+ do so).</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">ch</td>
+          <td class="jd-tagdescr">the characters from the XML document</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">start</td>
+          <td class="jd-tagdescr">the start position in the array</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the number of characters to read from the array</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">any SAX exception, possibly
+            wrapping another exception</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/ContentHandler.html#ignorableWhitespace(char[], int, int)">ignorableWhitespace(char[], int, int)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/Locator.html">Locator</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="endDocument()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>endDocument</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Receive notification of the end of a document.
+
+ <p><strong>There is an apparent contradiction between the
+ documentation for this method and the documentation for <code><a href="reference/org/xml/sax/ErrorHandler.html#fatalError(org.xml.sax.SAXParseException)">fatalError(SAXParseException)</a></code>.  Until this ambiguity is
+ resolved in a future major release, clients should make no
+ assumptions about whether endDocument() will or will not be
+ invoked when the parser has reported a fatalError() or thrown
+ an exception.</strong></p>
+
+ <p>The SAX parser will invoke this method only once, and it will
+ be the last method invoked during the parse.  The parser shall
+ not invoke this method until it has either abandoned parsing
+ (because of an unrecoverable error) or reached the end of
+ input.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">any SAX exception, possibly
+            wrapping another exception</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/ContentHandler.html#startDocument()">startDocument()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="endElement(java.lang.String, java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>endElement</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Receive notification of the end of an element.
+
+ <p>The SAX parser will invoke this method at the end of every
+ element in the XML document; there will be a corresponding
+ <code><a href="reference/org/xml/sax/ContentHandler.html#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)">startElement</a></code> event for every endElement
+ event (even when the element is empty).</p>
+
+ <p>For information on the names, see startElement.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">the Namespace URI, or the empty string if the
+        element has no Namespace URI or if Namespace
+        processing is not being performed</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">localName</td>
+          <td class="jd-tagdescr">the local name (without prefix), or the
+        empty string if Namespace processing is not being
+        performed</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">qName</td>
+          <td class="jd-tagdescr">the qualified XML name (with prefix), or the
+        empty string if qualified names are not available</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">any SAX exception, possibly
+            wrapping another exception
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="endPrefixMapping(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>endPrefixMapping</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>prefix</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>End the scope of a prefix-URI mapping.
+
+ <p>See <code><a href="reference/org/xml/sax/ContentHandler.html#startPrefixMapping(java.lang.String, java.lang.String)">startPrefixMapping</a></code> for
+ details.  These events will always occur immediately after the
+ corresponding <code><a href="reference/org/xml/sax/ContentHandler.html#endElement(java.lang.String, java.lang.String, java.lang.String)">endElement</a></code> event, but the order of
+ <code><a href="reference/org/xml/sax/ContentHandler.html#endPrefixMapping(java.lang.String)">endPrefixMapping</a></code> events is not otherwise
+ guaranteed.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">prefix</td>
+          <td class="jd-tagdescr">the prefix that was being mapped.
+    This is the empty string when a default mapping scope ends.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">the client may throw
+            an exception during processing</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/ContentHandler.html#startPrefixMapping(java.lang.String, java.lang.String)">startPrefixMapping(String, String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/ContentHandler.html#endElement(java.lang.String, java.lang.String, java.lang.String)">endElement(String, String, String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ignorableWhitespace(char[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>ignorableWhitespace</strong></span>
+      <span class="params">(<span class="nowrap">char[] <i>ch</i></span>, <span class="nowrap">int <i>start</i></span>, <span class="nowrap">int <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Receive notification of ignorable whitespace in element content.
+
+ <p>Validating Parsers must use this method to report each chunk
+ of whitespace in element content (see the W3C XML 1.0
+ recommendation, section 2.10): non-validating parsers may also
+ use this method if they are capable of parsing and using
+ content models.</p>
+
+ <p>SAX parsers may return all contiguous whitespace in a single
+ chunk, or they may split it into several chunks; however, all of
+ the characters in any single event must come from the same
+ external entity, so that the Locator provides useful
+ information.</p>
+
+ <p>The application must not attempt to read from the array
+ outside of the specified range.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">ch</td>
+          <td class="jd-tagdescr">the characters from the XML document</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">start</td>
+          <td class="jd-tagdescr">the start position in the array</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the number of characters to read from the array</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">any SAX exception, possibly
+            wrapping another exception</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/ContentHandler.html#characters(char[], int, int)">characters(char[], int, int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="processingInstruction(java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>processingInstruction</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>target</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>data</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Receive notification of a processing instruction.
+
+ <p>The Parser will invoke this method once for each processing
+ instruction found: note that processing instructions may occur
+ before or after the main document element.</p>
+
+ <p>A SAX parser must never report an XML declaration (XML 1.0,
+ section 2.8) or a text declaration (XML 1.0, section 4.3.1)
+ using this method.</p>
+
+ <p>Like <code><a href="reference/org/xml/sax/ContentHandler.html#characters(char[], int, int)">characters()</a></code>, processing instruction
+ data may have characters that need more than one <code>char</code>
+ value. </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">target</td>
+          <td class="jd-tagdescr">the processing instruction target</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">data</td>
+          <td class="jd-tagdescr">the processing instruction data, or null if
+        none was supplied.  The data does not include any
+        whitespace separating it from the target</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">any SAX exception, possibly
+            wrapping another exception
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setDocumentLocator(org.xml.sax.Locator)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setDocumentLocator</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/org/xml/sax/Locator.html">Locator</a> <i>locator</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Receive an object for locating the origin of SAX document events.
+
+ <p>SAX parsers are strongly encouraged (though not absolutely
+ required) to supply a locator: if it does so, it must supply
+ the locator to the application by invoking this method before
+ invoking any of the other methods in the ContentHandler
+ interface.</p>
+
+ <p>The locator allows the application to determine the end
+ position of any document-related event, even if the parser is
+ not reporting an error.  Typically, the application will
+ use this information for reporting its own errors (such as
+ character content that does not match an application's
+ business rules).  The information returned by the locator
+ is probably not sufficient for use with a search engine.</p>
+
+ <p>Note that the locator will return correct information only
+ during the invocation SAX event callbacks after
+ <code><a href="reference/org/xml/sax/ContentHandler.html#startDocument()">startDocument</a></code> returns and before
+ <code><a href="reference/org/xml/sax/ContentHandler.html#endDocument()">endDocument</a></code> is called.  The
+ application should not attempt to use it at any other time.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">locator</td>
+          <td class="jd-tagdescr">an object that can return the location of
+                any SAX document event</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/Locator.html">Locator</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="skippedEntity(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>skippedEntity</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Receive notification of a skipped entity.
+ This is not called for entity references within markup constructs
+ such as element start tags or markup declarations.  (The XML
+ recommendation requires reporting skipped external entities.
+ SAX also reports internal entity expansion/non-expansion, except
+ within markup constructs.)
+
+ <p>The Parser will invoke this method each time the entity is
+ skipped.  Non-validating processors may skip entities if they
+ have not seen the declarations (because, for example, the
+ entity was declared in an external DTD subset).  All processors
+ may skip external entities, depending on the values of the
+ <code>http://xml.org/sax/features/external-general-entities</code>
+ and the
+ <code>http://xml.org/sax/features/external-parameter-entities</code>
+ properties.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">the name of the skipped entity.  If it is a
+        parameter entity, the name will begin with '%', and if
+        it is the external DTD subset, it will be the string
+        "[dtd]"</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">any SAX exception, possibly
+            wrapping another exception
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="startDocument()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>startDocument</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Receive notification of the beginning of a document.
+
+ <p>The SAX parser will invoke this method only once, before any
+ other event callbacks (except for <code><a href="reference/org/xml/sax/ContentHandler.html#setDocumentLocator(org.xml.sax.Locator)">setDocumentLocator</a></code>).</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">any SAX exception, possibly
+            wrapping another exception</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/ContentHandler.html#endDocument()">endDocument()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>startElement</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>localName</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>qName</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/Attributes.html">Attributes</a> <i>atts</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Receive notification of the beginning of an element.
+
+ <p>The Parser will invoke this method at the beginning of every
+ element in the XML document; there will be a corresponding
+ <code><a href="reference/org/xml/sax/ContentHandler.html#endElement(java.lang.String, java.lang.String, java.lang.String)">endElement</a></code> event for every startElement event
+ (even when the element is empty). All of the element's content will be
+ reported, in order, before the corresponding endElement
+ event.</p>
+
+ <p>This event allows up to three name components for each
+ element:</p>
+
+ <ol>
+ <li>the Namespace URI;</li>
+ <li>the local name; and</li>
+ <li>the qualified (prefixed) name.</li>
+ </ol>
+
+ <p>Any or all of these may be provided, depending on the
+ values of the <var>http://xml.org/sax/features/namespaces</var>
+ and the <var>http://xml.org/sax/features/namespace-prefixes</var>
+ properties:</p>
+
+ <ul>
+ <li>the Namespace URI and local name are required when
+ the namespaces property is <var>true</var> (the default), and are
+ optional when the namespaces property is <var>false</var> (if one is
+ specified, both must be);</li>
+ <li>the qualified name is required when the namespace-prefixes property
+ is <var>true</var>, and is optional when the namespace-prefixes property
+ is <var>false</var> (the default).</li>
+ </ul>
+
+ <p>Note that the attribute list provided will contain only
+ attributes with explicit values (specified or defaulted):
+ #IMPLIED attributes will be omitted.  The attribute list
+ will contain attributes used for Namespace declarations
+ (xmlns* attributes) only if the
+ <code>http://xml.org/sax/features/namespace-prefixes</code>
+ property is true (it is false by default, and support for a
+ true value is optional).</p>
+
+ <p>Like <code><a href="reference/org/xml/sax/ContentHandler.html#characters(char[], int, int)">characters()</a></code>, attribute values may have
+ characters that need more than one <code>char</code> value.  </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">the Namespace URI, or the empty string if the
+        element has no Namespace URI or if Namespace
+        processing is not being performed</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">localName</td>
+          <td class="jd-tagdescr">the local name (without prefix), or the
+        empty string if Namespace processing is not being
+        performed</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">qName</td>
+          <td class="jd-tagdescr">the qualified name (with prefix), or the
+        empty string if qualified names are not available</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">atts</td>
+          <td class="jd-tagdescr">the attributes attached to the element.  If
+        there are no attributes, it shall be an empty
+        Attributes object.  The value of this object after
+        startElement returns is undefined</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">any SAX exception, possibly
+            wrapping another exception</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/ContentHandler.html#endElement(java.lang.String, java.lang.String, java.lang.String)">endElement(String, String, String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/Attributes.html">Attributes</a></code></li><li><code><a href="../../../../reference/org/xml/sax/helpers/AttributesImpl.html">AttributesImpl</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="startPrefixMapping(java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>startPrefixMapping</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>prefix</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Begin the scope of a prefix-URI Namespace mapping.
+
+ <p>The information from this event is not necessary for
+ normal Namespace processing: the SAX XML reader will
+ automatically replace prefixes for element and attribute
+ names when the <code>http://xml.org/sax/features/namespaces</code>
+ feature is <var>true</var> (the default).</p>
+
+ <p>There are cases, however, when applications need to
+ use prefixes in character data or in attribute values,
+ where they cannot safely be expanded automatically; the
+ start/endPrefixMapping event supplies the information
+ to the application to expand prefixes in those contexts
+ itself, if necessary.</p>
+
+ <p>Note that start/endPrefixMapping events are not
+ guaranteed to be properly nested relative to each other:
+ all startPrefixMapping events will occur immediately before the
+ corresponding <code><a href="reference/org/xml/sax/ContentHandler.html#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)">startElement</a></code> event,
+ and all <code><a href="reference/org/xml/sax/ContentHandler.html#endPrefixMapping(java.lang.String)">endPrefixMapping</a></code>
+ events will occur immediately after the corresponding
+ <code><a href="reference/org/xml/sax/ContentHandler.html#endElement(java.lang.String, java.lang.String, java.lang.String)">endElement</a></code> event,
+ but their order is not otherwise
+ guaranteed.</p>
+
+ <p>There should never be start/endPrefixMapping events for the
+ "xml" prefix, since it is predeclared and immutable.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">prefix</td>
+          <td class="jd-tagdescr">the Namespace prefix being declared.
+    An empty string is used for the default element namespace,
+    which has no prefix.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">the Namespace URI the prefix is mapped to</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">the client may throw
+            an exception during processing</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/ContentHandler.html#endPrefixMapping(java.lang.String)">endPrefixMapping(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/ContentHandler.html#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)">startElement(String, String, String, Attributes)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

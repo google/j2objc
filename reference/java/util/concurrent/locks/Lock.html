@@ -1,0 +1,1074 @@
+---
+
+title: Lock - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a></li>
+          <li class="selected api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/Lock.html">Lock</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReadWriteLock.html">ReadWriteLock</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractOwnableSynchronizer.html">AbstractOwnableSynchronizer</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedLongSynchronizer.html">AbstractQueuedLongSynchronizer</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedLongSynchronizer.ConditionObject.html">AbstractQueuedLongSynchronizer.ConditionObject</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html">AbstractQueuedSynchronizer</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html">AbstractQueuedSynchronizer.ConditionObject</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/LockSupport.html">LockSupport</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html">ReentrantReadWriteLock</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.ReadLock.html">ReentrantReadWriteLock.ReadLock</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.WriteLock.html">ReentrantReadWriteLock.WriteLock</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     interface
+  <h1 itemprop="name" class="devsite-page-title">Lock</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;font-size:85%;">
+Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../../../reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a>,
+            
+              <a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.ReadLock.html">ReentrantReadWriteLock.ReadLock</a>,
+            
+              <a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.WriteLock.html">ReentrantReadWriteLock.WriteLock</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></td>
+              <td class="jd-descrcol" width="100%">A reentrant mutual exclusion <code><a href="reference/java/util/concurrent/locks/Lock.html">Lock</a></code> with the same basic
+ behavior and semantics as the implicit monitor lock accessed using
+ <code>synchronized</code> methods and statements, but with extended
+ capabilities.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.ReadLock.html">ReentrantReadWriteLock.ReadLock</a></td>
+              <td class="jd-descrcol" width="100%">The lock returned by method <code><a href="reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#readLock()">readLock()</a></code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.WriteLock.html">ReentrantReadWriteLock.WriteLock</a></td>
+              <td class="jd-descrcol" width="100%">The lock returned by method <code><a href="reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#writeLock()">writeLock()</a></code>.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<p><code>Lock</code> implementations provide more extensive locking
+ operations than can be obtained using <code>synchronized</code> methods
+ and statements.  They allow more flexible structuring, may have
+ quite different properties, and may support multiple associated
+ <code><a href="reference/java/util/concurrent/locks/Condition.html">Condition</a></code> objects.
+
+ <p>A lock is a tool for controlling access to a shared resource by
+ multiple threads. Commonly, a lock provides exclusive access to a
+ shared resource: only one thread at a time can acquire the lock and
+ all access to the shared resource requires that the lock be
+ acquired first. However, some locks may allow concurrent access to
+ a shared resource, such as the read lock of a <code><a href="reference/java/util/concurrent/locks/ReadWriteLock.html">ReadWriteLock</a></code>.
+
+ <p>The use of <code>synchronized</code> methods or statements provides
+ access to the implicit monitor lock associated with every object, but
+ forces all lock acquisition and release to occur in a block-structured way:
+ when multiple locks are acquired they must be released in the opposite
+ order, and all locks must be released in the same lexical scope in which
+ they were acquired.
+
+ <p>While the scoping mechanism for <code>synchronized</code> methods
+ and statements makes it much easier to program with monitor locks,
+ and helps avoid many common programming errors involving locks,
+ there are occasions where you need to work with locks in a more
+ flexible way. For example, some algorithms for traversing
+ concurrently accessed data structures require the use of
+ &quot;hand-over-hand&quot; or &quot;chain locking&quot;: you
+ acquire the lock of node A, then node B, then release A and acquire
+ C, then release B and acquire D and so on.  Implementations of the
+ <code>Lock</code> interface enable the use of such techniques by
+ allowing a lock to be acquired and released in different scopes,
+ and allowing multiple locks to be acquired and released in any
+ order.
+
+ <p>With this increased flexibility comes additional
+ responsibility. The absence of block-structured locking removes the
+ automatic release of locks that occurs with <code>synchronized</code>
+ methods and statements. In most cases, the following idiom
+ should be used:
+
+  <pre> <code>Lock l = ...;
+ l.lock();
+ try {
+   // access the resource protected by this lock
+ </code> finally {
+   l.unlock();
+ }}</pre>
+
+ When locking and unlocking occur in different scopes, care must be
+ taken to ensure that all code that is executed while the lock is
+ held is protected by try-finally or try-catch to ensure that the
+ lock is released when necessary.
+
+ <p><code>Lock</code> implementations provide additional functionality
+ over the use of <code>synchronized</code> methods and statements by
+ providing a non-blocking attempt to acquire a lock (<code><a href="reference/java/util/concurrent/locks/Lock.html#tryLock()">tryLock()</a></code>), an attempt to acquire the lock that can be
+ interrupted (<code><a href="reference/java/util/concurrent/locks/Lock.html#lockInterruptibly()">lockInterruptibly()</a></code>, and an attempt to acquire
+ the lock that can timeout (<code><a href="reference/java/util/concurrent/locks/Lock.html#tryLock(long, java.util.concurrent.TimeUnit)">tryLock(long, TimeUnit)</a></code>).
+
+ <p>A <code>Lock</code> class can also provide behavior and semantics
+ that is quite different from that of the implicit monitor lock,
+ such as guaranteed ordering, non-reentrant usage, or deadlock
+ detection. If an implementation provides such specialized semantics
+ then the implementation must document those semantics.
+
+ <p>Note that <code>Lock</code> instances are just normal objects and can
+ themselves be used as the target in a <code>synchronized</code> statement.
+ Acquiring the
+ monitor lock of a <code>Lock</code> instance has no specified relationship
+ with invoking any of the <code><a href="reference/java/util/concurrent/locks/Lock.html#lock()">lock()</a></code> methods of that instance.
+ It is recommended that to avoid confusion you never use <code>Lock</code>
+ instances in this way, except within their own implementation.
+
+ <p>Except where noted, passing a <code>null</code> value for any
+ parameter will result in a <code><a href="reference/java/lang/NullPointerException.html">NullPointerException</a></code> being
+ thrown.
+
+ <h3>Memory Synchronization</h3>
+
+ <p>All <code>Lock</code> implementations <em>must</em> enforce the same
+ memory synchronization semantics as provided by the built-in monitor
+ lock, as described in <a href="http://java.sun.com/docs/books/jls/">
+ The Java Language Specification, Third Edition (17.4 Memory Model)</a>:
+ <ul>
+ <li>A successful <code>lock</code> operation has the same memory
+ synchronization effects as a successful <em>Lock</em> action.
+ <li>A successful <code>unlock</code> operation has the same
+ memory synchronization effects as a successful <em>Unlock</em> action.
+ </ul>
+
+ Unsuccessful locking and unlocking operations, and reentrant
+ locking/unlocking operations, do not require any memory
+ synchronization effects.
+
+ <h3>Implementation Considerations</h3>
+
+ <p> The three forms of lock acquisition (interruptible,
+ non-interruptible, and timed) may differ in their performance
+ characteristics, ordering guarantees, or other implementation
+ qualities.  Further, the ability to interrupt the <em>ongoing</em>
+ acquisition of a lock may not be available in a given <code>Lock</code>
+ class.  Consequently, an implementation is not required to define
+ exactly the same guarantees or semantics for all three forms of
+ lock acquisition, nor is it required to support interruption of an
+ ongoing lock acquisition.  An implementation is required to clearly
+ document the semantics and guarantees provided by each of the
+ locking methods. It must also obey the interruption semantics as
+ defined in this interface, to the extent that interruption of lock
+ acquisition is supported: which is either totally, or only on
+ method entry.
+
+ <p>As interruption generally implies cancellation, and checks for
+ interruption are often infrequent, an implementation can favor responding
+ to an interrupt over normal method return. This is true even if it can be
+ shown that the interrupt occurred after another action may have unblocked
+ the thread. An implementation should document this behavior.</p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></code></li><li><code><a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a></code></li><li><code><a href="../../../../../reference/java/util/concurrent/locks/ReadWriteLock.html">ReadWriteLock</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/Lock.html#lock()">lock</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/Lock.html#lockInterruptibly()">lockInterruptibly</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/Lock.html#newCondition()">newCondition</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/Lock.html#tryLock()">tryLock</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/Lock.html#tryLock(long, java.util.concurrent.TimeUnit)">tryLock</a></span>(<span class="nowrap">long <i>time</i></span>, <span class="nowrap"><a href="../../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/Lock.html#unlock()">unlock</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="lock()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>lock</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Acquires the lock.
+
+ <p>If the lock is not available then the current thread becomes
+ disabled for thread scheduling purposes and lies dormant until the
+ lock has been acquired.
+
+ <p><b>Implementation Considerations</b>
+
+ <p>A <code>Lock</code> implementation may be able to detect erroneous use
+ of the lock, such as an invocation that would cause deadlock, and
+ may throw an (unchecked) exception in such circumstances.  The
+ circumstances and the exception type must be documented by that
+ <code>Lock</code> implementation.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="lockInterruptibly()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>lockInterruptibly</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Acquires the lock unless the current thread is
+ {@linkplain Thread#interrupt interrupted}.
+
+ <p>Acquires the lock if it is available and returns immediately.
+
+ <p>If the lock is not available then the current thread becomes
+ disabled for thread scheduling purposes and lies dormant until
+ one of two things happens:
+
+ <ul>
+ <li>The lock is acquired by the current thread; or
+ <li>Some other thread {@linkplain Thread#interrupt interrupts} the
+ current thread, and interruption of lock acquisition is supported.
+ </ul>
+
+ <p>If the current thread:
+ <ul>
+ <li>has its interrupted status set on entry to this method; or
+ <li>is {@linkplain Thread#interrupt interrupted} while acquiring the
+ lock, and interruption of lock acquisition is supported,
+ </ul>
+ then <code><a href="reference/java/lang/InterruptedException.html">InterruptedException</a></code> is thrown and the current thread's
+ interrupted status is cleared.
+
+ <p><b>Implementation Considerations</b>
+
+ <p>The ability to interrupt a lock acquisition in some
+ implementations may not be possible, and if possible may be an
+ expensive operation.  The programmer should be aware that this
+ may be the case. An implementation should document when this is
+ the case.
+
+ <p>An implementation can favor responding to an interrupt over
+ normal method return.
+
+ <p>A <code>Lock</code> implementation may be able to detect
+ erroneous use of the lock, such as an invocation that would
+ cause deadlock, and may throw an (unchecked) exception in such
+ circumstances.  The circumstances and the exception type must
+ be documented by that <code>Lock</code> implementation.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
+            <td class="jd-tagdescr">if the current thread is
+         interrupted while acquiring the lock (and interruption
+         of lock acquisition is supported).
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="newCondition()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a>
+      </span>
+      <span class="sympad"><strong>newCondition</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code><a href="reference/java/util/concurrent/locks/Condition.html">Condition</a></code> instance that is bound to this
+ <code>Lock</code> instance.
+
+ <p>Before waiting on the condition the lock must be held by the
+ current thread.
+ A call to <code><a href="reference/java/util/concurrent/locks/Condition.html#await()">await()</a></code> will atomically release the lock
+ before waiting and re-acquire the lock before the wait returns.
+
+ <p><b>Implementation Considerations</b>
+
+ <p>The exact operation of the <code><a href="reference/java/util/concurrent/locks/Condition.html">Condition</a></code> instance depends on
+ the <code>Lock</code> implementation and must be documented by that
+ implementation.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>A new <code><a href="reference/java/util/concurrent/locks/Condition.html">Condition</a></code> instance for this <code>Lock</code> instance</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td class="jd-tagdescr">if this <code>Lock</code>
+         implementation does not support conditions
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="tryLock()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>tryLock</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Acquires the lock only if it is free at the time of invocation.
+
+ <p>Acquires the lock if it is available and returns immediately
+ with the value <code>true</code>.
+ If the lock is not available then this method will return
+ immediately with the value <code>false</code>.
+
+ <p>A typical usage idiom for this method would be:
+  <pre> <code>Lock lock = ...;
+ if (lock.tryLock()) {
+   try {
+     // manipulate protected state
+   </code> finally {
+     lock.unlock();
+   }
+ } else {
+   // perform alternative actions
+ }}</pre>
+
+ This usage ensures that the lock is unlocked if it was acquired, and
+ doesn't try to unlock if the lock was not acquired.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the lock was acquired and
+         <code>false</code> otherwise
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="tryLock(long, java.util.concurrent.TimeUnit)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>tryLock</strong></span>
+      <span class="params">(<span class="nowrap">long <i>time</i></span>, <span class="nowrap"><a href="../../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Acquires the lock if it is free within the given waiting time and the
+ current thread has not been {@linkplain Thread#interrupt interrupted}.
+
+ <p>If the lock is available this method returns immediately
+ with the value <code>true</code>.
+ If the lock is not available then
+ the current thread becomes disabled for thread scheduling
+ purposes and lies dormant until one of three things happens:
+ <ul>
+ <li>The lock is acquired by the current thread; or
+ <li>Some other thread {@linkplain Thread#interrupt interrupts} the
+ current thread, and interruption of lock acquisition is supported; or
+ <li>The specified waiting time elapses
+ </ul>
+
+ <p>If the lock is acquired then the value <code>true</code> is returned.
+
+ <p>If the current thread:
+ <ul>
+ <li>has its interrupted status set on entry to this method; or
+ <li>is {@linkplain Thread#interrupt interrupted} while acquiring
+ the lock, and interruption of lock acquisition is supported,
+ </ul>
+ then <code><a href="reference/java/lang/InterruptedException.html">InterruptedException</a></code> is thrown and the current thread's
+ interrupted status is cleared.
+
+ <p>If the specified waiting time elapses then the value <code>false</code>
+ is returned.
+ If the time is
+ less than or equal to zero, the method will not wait at all.
+
+ <p><b>Implementation Considerations</b>
+
+ <p>The ability to interrupt a lock acquisition in some implementations
+ may not be possible, and if possible may
+ be an expensive operation.
+ The programmer should be aware that this may be the case. An
+ implementation should document when this is the case.
+
+ <p>An implementation can favor responding to an interrupt over normal
+ method return, or reporting a timeout.
+
+ <p>A <code>Lock</code> implementation may be able to detect
+ erroneous use of the lock, such as an invocation that would cause
+ deadlock, and may throw an (unchecked) exception in such circumstances.
+ The circumstances and the exception type must be documented by that
+ <code>Lock</code> implementation.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">time</td>
+          <td class="jd-tagdescr">the maximum time to wait for the lock</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">unit</td>
+          <td class="jd-tagdescr">the time unit of the <code>time</code> argument</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the lock was acquired and <code>false</code>
+         if the waiting time elapsed before the lock was acquired</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
+            <td class="jd-tagdescr">if the current thread is interrupted
+         while acquiring the lock (and interruption of lock
+         acquisition is supported)
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="unlock()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>unlock</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Releases the lock.
+
+ <p><b>Implementation Considerations</b>
+
+ <p>A <code>Lock</code> implementation will usually impose
+ restrictions on which thread can release a lock (typically only the
+ holder of the lock can release it) and may throw
+ an (unchecked) exception if the restriction is violated.
+ Any restrictions and the exception
+ type must be documented by that <code>Lock</code> implementation.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

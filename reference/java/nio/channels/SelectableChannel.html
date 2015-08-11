@@ -1,0 +1,1301 @@
+---
+
+title: SelectableChannel - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ByteChannel.html">ByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Channel.html">Channel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/GatheringByteChannel.html">GatheringByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/InterruptibleChannel.html">InterruptibleChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ReadableByteChannel.html">ReadableByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ScatteringByteChannel.html">ScatteringByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/WritableByteChannel.html">WritableByteChannel</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Channels.html">Channels</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/DatagramChannel.html">DatagramChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/FileChannel.html">FileChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/FileChannel.MapMode.html">FileChannel.MapMode</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/FileLock.html">FileLock</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Pipe.html">Pipe</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Pipe.SinkChannel.html">Pipe.SinkChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Pipe.SourceChannel.html">Pipe.SourceChannel</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/java/nio/channels/SelectableChannel.html">SelectableChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/SelectionKey.html">SelectionKey</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Selector.html">Selector</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ServerSocketChannel.html">ServerSocketChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/SocketChannel.html">SocketChannel</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/AlreadyConnectedException.html">AlreadyConnectedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/CancelledKeyException.html">CancelledKeyException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ClosedSelectorException.html">ClosedSelectorException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ConnectionPendingException.html">ConnectionPendingException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/FileLockInterruptionException.html">FileLockInterruptionException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/IllegalBlockingModeException.html">IllegalBlockingModeException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/IllegalSelectorException.html">IllegalSelectorException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NoConnectionPendingException.html">NoConnectionPendingException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NonReadableChannelException.html">NonReadableChannelException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NonWritableChannelException.html">NonWritableChannelException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NotYetBoundException.html">NotYetBoundException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NotYetConnectedException.html">NotYetConnectedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/OverlappingFileLockException.html">OverlappingFileLockException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/UnresolvedAddressException.html">UnresolvedAddressException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/UnsupportedAddressTypeException.html">UnsupportedAddressTypeException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">SelectableChannel</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;">
+Known Direct Subclasses
+
+  <div id="subclasses-direct">
+      <div id="subclasses-direct-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../../reference/java/nio/channels/spi/AbstractSelectableChannel.html">AbstractSelectableChannel</a>
+            
+          
+      </div>
+      <div id="subclasses-direct-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/spi/AbstractSelectableChannel.html">AbstractSelectableChannel</a></td>
+              <td class="jd-descrcol" width="100%"><code>AbstractSelectableChannel</code> is the base implementation class for
+ selectable channels.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;font-size:85%;">
+Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../../reference/java/nio/channels/DatagramChannel.html">DatagramChannel</a>,
+            
+              <a href="../../../../reference/java/nio/channels/Pipe.SinkChannel.html">Pipe.SinkChannel</a>,
+            
+              <a href="../../../../reference/java/nio/channels/Pipe.SourceChannel.html">Pipe.SourceChannel</a>,
+            
+              <a href="../../../../reference/java/nio/channels/ServerSocketChannel.html">ServerSocketChannel</a>,
+            
+              <a href="../../../../reference/java/nio/channels/SocketChannel.html">SocketChannel</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/DatagramChannel.html">DatagramChannel</a></td>
+              <td class="jd-descrcol" width="100%">A <code>DatagramChannel</code> is a selectable channel that represents a partial
+ abstraction of a datagram socket.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/Pipe.SinkChannel.html">Pipe.SinkChannel</a></td>
+              <td class="jd-descrcol" width="100%">Writable sink channel used to write to a pipe.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/Pipe.SourceChannel.html">Pipe.SourceChannel</a></td>
+              <td class="jd-descrcol" width="100%">Readable source channel used to read from a pipe.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/ServerSocketChannel.html">ServerSocketChannel</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ServerSocketChannel</code> is a partial abstraction of a selectable,
+ stream-oriented listening socket.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/SocketChannel.html">SocketChannel</a></td>
+              <td class="jd-descrcol" width="100%">A <code>SocketChannel</code> is a selectable channel that provides a partial
+ abstraction of stream connecting socket.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<p>A channel that can be used with a <code><a href="reference/java/nio/channels/Selector.html">Selector</a></code>. The channel must be
+ registered with a selector by calling one of the <code>register</code> methods,
+ which return a <code><a href="reference/java/nio/channels/SelectionKey.html">SelectionKey</a></code> object. In order to deregister a channel
+ from a selector, its selection key must be canceled. This can be done
+ explicitly by calling the <code><a href="reference/java/nio/channels/SelectionKey.html#cancel()">cancel()</a></code> method but it is also
+ done implicitly when the channel or the selector is closed.
+ <p>
+ A channel may be registered with several selectors at the same time but only
+ once for any given selector.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SelectableChannel.html#SelectableChannel()">SelectableChannel</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/Object.html">Object</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SelectableChannel.html#blockingLock()">blockingLock</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/nio/channels/SelectableChannel.html">SelectableChannel</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SelectableChannel.html#configureBlocking(boolean)">configureBlocking</a></span>(<span class="nowrap">boolean <i>block</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SelectableChannel.html#isBlocking()">isBlocking</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SelectableChannel.html#isRegistered()">isRegistered</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/nio/channels/SelectionKey.html">SelectionKey</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SelectableChannel.html#keyFor(java.nio.channels.Selector)">keyFor</a></span>(<span class="nowrap"><a href="../../../../reference/java/nio/channels/Selector.html">Selector</a> <i>sel</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/nio/channels/spi/SelectorProvider.html">SelectorProvider</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SelectableChannel.html#provider()">provider</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/nio/channels/SelectionKey.html">SelectionKey</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SelectableChannel.html#register(java.nio.channels.Selector, int, java.lang.Object)">register</a></span>(<span class="nowrap"><a href="../../../../reference/java/nio/channels/Selector.html">Selector</a> <i>sel</i></span>, <span class="nowrap">int <i>ops</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>att</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../../reference/java/nio/channels/SelectionKey.html">SelectionKey</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SelectableChannel.html#register(java.nio.channels.Selector, int)">register</a></span>(<span class="nowrap"><a href="../../../../reference/java/nio/channels/Selector.html">Selector</a> <i>selector</i></span>, <span class="nowrap">int <i>operations</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SelectableChannel.html#validOps()">validOps</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="SelectableChannel()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SelectableChannel</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>SelectableChannel</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="blockingLock()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad"><strong>blockingLock</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the blocking lock which synchronizes the <code>configureBlocking</code>
+ and <code>register</code> methods.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the blocking object as lock.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="configureBlocking(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/nio/channels/SelectableChannel.html">SelectableChannel</a>
+      </span>
+      <span class="sympad"><strong>configureBlocking</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>block</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the blocking mode of this channel. A call to this method blocks if
+ other calls to this method or to a <code>register</code> method are executing.
+ The new blocking mode is valid for calls to other methods that are
+ invoked after the call to this method. If other methods are already
+ executing when this method is called, they still have the old mode and
+ the call to this method might block depending on the implementation.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">block</td>
+          <td class="jd-tagdescr"><code>true</code> for setting this channel's mode to blocking,
+            <code>false</code> to set it to non-blocking.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>this channel.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if this channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/IllegalBlockingModeException.html">IllegalBlockingModeException</a></td>
+            <td class="jd-tagdescr">if <code>block</code> is <code>true</code> and this channel has been
+             registered with at least one selector.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isBlocking()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isBlocking</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether this channel is in blocking mode.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this channel is blocking, undefined if this
+         channel is closed.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isRegistered()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isRegistered</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether this channel is registered with at least one selector.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this channel is registered, <code>false</code>
+         otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="keyFor(java.nio.channels.Selector)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/nio/channels/SelectionKey.html">SelectionKey</a>
+      </span>
+      <span class="sympad"><strong>keyFor</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/nio/channels/Selector.html">Selector</a> <i>sel</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets this channel's selection key for the specified selector.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">sel</td>
+          <td class="jd-tagdescr">the selector with which this channel has been registered.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the selection key for the channel or <code>null</code> if this channel
+         has not been registered with <code>sel</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="provider()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/nio/channels/spi/SelectorProvider.html">SelectorProvider</a>
+      </span>
+      <span class="sympad"><strong>provider</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the provider of this channel.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the provider of this channel.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="register(java.nio.channels.Selector, int, java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/nio/channels/SelectionKey.html">SelectionKey</a>
+      </span>
+      <span class="sympad"><strong>register</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/nio/channels/Selector.html">Selector</a> <i>sel</i></span>, <span class="nowrap">int <i>ops</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>att</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Registers this channel with the specified selector for the specified
+ interest set and an object to attach. If the channel is already
+ registered with the selector, the corresponding selection key is returned
+ but its <code><a href="reference/java/nio/channels/SelectionKey.html">interest set</a></code> is updated to <code>ops</code> and
+ the attached object is updated to <code>att</code>. The returned key is
+ canceled if the channel is closed while registering is in progress.
+ <p>
+ Calling this method is valid at any time. If another thread executes this
+ method or the <code>configureBlocking(boolean)</code> method then this call is
+ blocked until the other call finishes. After that, it will synchronize on
+ the key set of the selector and thus may again block if other threads
+ also hold locks on the key set of the same selector.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">sel</td>
+          <td class="jd-tagdescr">the selector with which to register this channel.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">ops</td>
+          <td class="jd-tagdescr">this channel's <code><a href="reference/java/nio/channels/SelectionKey.html">interest set</a></code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">att</td>
+          <td class="jd-tagdescr">the object to attach, can be <code>null</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the selection key for this registration.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if this channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>ops</code> is not supported by this channel.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/IllegalBlockingModeException.html">IllegalBlockingModeException</a></td>
+            <td class="jd-tagdescr">if this channel is in blocking mode.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/IllegalSelectorException.html">IllegalSelectorException</a></td>
+            <td class="jd-tagdescr">if this channel does not have the same provider as the given
+             selector.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/CancelledKeyException.html">CancelledKeyException</a></td>
+            <td class="jd-tagdescr">if this channel is registered but its key has been canceled.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="register(java.nio.channels.Selector, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../../reference/java/nio/channels/SelectionKey.html">SelectionKey</a>
+      </span>
+      <span class="sympad"><strong>register</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/nio/channels/Selector.html">Selector</a> <i>selector</i></span>, <span class="nowrap">int <i>operations</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Registers this channel with the specified selector for the specified
+ interest set. If the channel is already registered with the selector, the
+ corresponding selection key is returned but the
+ <code><a href="reference/java/nio/channels/SelectionKey.html">interest set</a></code> is updated to <code>operations</code>. The
+ returned key is canceled if the channel is closed while registering is in
+ progress.
+ <p>
+ Calling this method is valid at any time. If another thread executes this
+ method or the <code>configureBlocking(boolean</code> method then this call is
+ blocked until the other call finishes. After that, it will synchronize on
+ the key set of the selector and thus may again block if other threads
+ also hold locks on the key set of the same selector.
+ <p>
+ Calling this method is equivalent to calling
+ <code>register(selector, operations, null)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">selector</td>
+          <td class="jd-tagdescr">the selector with which to register this channel.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">operations</td>
+          <td class="jd-tagdescr">this channel's <code><a href="reference/java/nio/channels/SelectionKey.html">interest set</a></code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the selection key for this registration.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if the channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/IllegalBlockingModeException.html">IllegalBlockingModeException</a></td>
+            <td class="jd-tagdescr">if the channel is in blocking mode.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/IllegalSelectorException.html">IllegalSelectorException</a></td>
+            <td class="jd-tagdescr">if this channel does not have the same provider as the given
+             selector.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/CancelledKeyException.html">CancelledKeyException</a></td>
+            <td class="jd-tagdescr">if this channel is registered but its key has been canceled.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the operation given is not supported by this channel.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="validOps()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>validOps</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the set of valid <code><a href="reference/java/nio/channels/SelectionKey.html">operations</a></code> of this channel.
+ Instances of a concrete channel class always return the same value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the set of operations that this channel supports.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

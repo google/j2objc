@@ -1,0 +1,1990 @@
+---
+
+title: DateFormatSymbols - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/text/AttributedCharacterIterator.html">AttributedCharacterIterator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/CharacterIterator.html">CharacterIterator</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Annotation.html">Annotation</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/AttributedString.html">AttributedString</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/ChoiceFormat.html">ChoiceFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/CollationKey.html">CollationKey</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Collator.html">Collator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DateFormat.html">DateFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DateFormat.Field.html">DateFormat.Field</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/text/DateFormatSymbols.html">DateFormatSymbols</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DecimalFormat.html">DecimalFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DecimalFormatSymbols.html">DecimalFormatSymbols</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/FieldPosition.html">FieldPosition</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Format.html">Format</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Format.Field.html">Format.Field</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/IOSCollator.html">IOSCollator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/MessageFormat.html">MessageFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/MessageFormat.Field.html">MessageFormat.Field</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Normalizer.html">Normalizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/NumberFormat.html">NumberFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/NumberFormat.Field.html">NumberFormat.Field</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/ParsePosition.html">ParsePosition</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/SimpleDateFormat.html">SimpleDateFormat</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Normalizer.Form.html">Normalizer.Form</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/text/ParseException.html">ParseException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">DateFormatSymbols</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Encapsulates localized date-time formatting data, such as the names of the
+ months, the names of the days of the week, and the time zone data.
+ <code>DateFormat</code> and <code>SimpleDateFormat</code> both use
+ <code>DateFormatSymbols</code> to encapsulate this information.
+
+ <p>Typically you shouldn't use <code>DateFormatSymbols</code> directly. Rather, you
+ are encouraged to create a date/time formatter with the <code>DateFormat</code>
+ class's factory methods: <code>getTimeInstance</code>, <code>getDateInstance</code>,
+ or <code>getDateTimeInstance</code>. These methods automatically create a
+ <code>DateFormatSymbols</code> for the formatter so that you don't have to. After
+ the formatter is created, you may modify its format pattern using the
+ <code>setPattern</code> method. For more information about creating formatters
+ using <code>DateFormat</code>'s factory methods, see <code><a href="reference/java/text/DateFormat.html">DateFormat</a></code>.
+
+ <p>Direct use of <code>DateFormatSymbols</code> is likely to be less efficient
+ because the implementation cannot make assumptions about user-supplied/user-modifiable data
+ to the same extent that it can with its own built-in data.</p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/text/DateFormat.html">DateFormat</a></code></li><li><code><a href="../../../reference/java/text/SimpleDateFormat.html">SimpleDateFormat</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#DateFormatSymbols()">DateFormatSymbols</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#DateFormatSymbols(java.util.Locale)">DateFormatSymbols</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#clone()">clone</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#equals(java.lang.Object)">equals</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#getAmPmStrings()">getAmPmStrings</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/util/Locale.html">Locale[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#getAvailableLocales()">getAvailableLocales</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#getEras()">getEras</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            static
+            
+            <a href="../../../reference/java/text/DateFormatSymbols.html">DateFormatSymbols</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#getInstance()">getInstance</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            static
+            
+            <a href="../../../reference/java/text/DateFormatSymbols.html">DateFormatSymbols</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#getInstance(java.util.Locale)">getInstance</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#getLocalPatternChars()">getLocalPatternChars</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#getMonths()">getMonths</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#getShortMonths()">getShortMonths</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#getShortWeekdays()">getShortWeekdays</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#getWeekdays()">getWeekdays</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String[][]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#getZoneStrings()">getZoneStrings</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#hashCode()">hashCode</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#setAmPmStrings(java.lang.String[])">setAmPmStrings</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#setEras(java.lang.String[])">setEras</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#setLocalPatternChars(java.lang.String)">setLocalPatternChars</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>data</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#setMonths(java.lang.String[])">setMonths</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#setShortMonths(java.lang.String[])">setShortMonths</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#setShortWeekdays(java.lang.String[])">setShortWeekdays</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#setWeekdays(java.lang.String[])">setWeekdays</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#setZoneStrings(java.lang.String[][])">setZoneStrings</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[][]</a> <i>zoneStrings</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/DateFormatSymbols.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="DateFormatSymbols()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>DateFormatSymbols</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>DateFormatSymbols</code> instance containing the
+ symbols for the user's default locale.
+ See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="DateFormatSymbols(java.util.Locale)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>DateFormatSymbols</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>DateFormatSymbols</code> instance containing the
+ symbols for the specified locale.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">locale</td>
+          <td class="jd-tagdescr">the locale.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="clone()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad"><strong>clone</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this object with the specified object and indicates if they are
+ equal.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">object</td>
+          <td class="jd-tagdescr">the object to compare with this object.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if <code>object</code> is an instance of
+         <code>DateFormatSymbols</code> and has the same symbols as this
+         object, <code>false</code> otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/text/DateFormatSymbols.html#hashCode()">hashCode()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getAmPmStrings()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getAmPmStrings</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the array of strings which represent AM and PM. Use the
+ <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants <code>Calendar.AM</code> and
+ <code>Calendar.PM</code> as indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an array of strings.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getAvailableLocales()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/util/Locale.html">Locale[]</a>
+      </span>
+      <span class="sympad"><strong>getAvailableLocales</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array of locales for which custom <code>DateFormatSymbols</code> instances
+ are available.
+ <p>Note that Android does not support user-supplied locale service providers.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getEras()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getEras</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the array of strings which represent BC and AD. Use the
+ <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants <code>GregorianCalendar.BC</code> and
+ <code>GregorianCalendar.AD</code> as indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an array of strings.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getInstance()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+        <a href="../../../reference/java/text/DateFormatSymbols.html">DateFormatSymbols</a>
+      </span>
+      <span class="sympad"><strong>getInstance</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>DateFormatSymbols</code> instance for the user's default locale.
+ See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an instance of <code>DateFormatSymbols</code></li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getInstance(java.util.Locale)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+        <a href="../../../reference/java/text/DateFormatSymbols.html">DateFormatSymbols</a>
+      </span>
+      <span class="sympad"><strong>getInstance</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>DateFormatSymbols</code> for the given locale.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">locale</td>
+          <td class="jd-tagdescr">the locale</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an instance of <code>DateFormatSymbols</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>locale == null</code></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLocalPatternChars()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getLocalPatternChars</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the pattern characters used by <code><a href="reference/java/text/SimpleDateFormat.html">SimpleDateFormat</a></code> to
+ specify date and time fields.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a string containing the pattern characters.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMonths()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getMonths</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the array of strings containing the full names of the months. Use
+ the <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants <code>Calendar.JANUARY</code> etc. as
+ indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an array of strings.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getShortMonths()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getShortMonths</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the array of strings containing the abbreviated names of the
+ months. Use the <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants
+ <code>Calendar.JANUARY</code> etc. as indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an array of strings.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getShortWeekdays()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getShortWeekdays</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the array of strings containing the abbreviated names of the days
+ of the week. Use the <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants
+ <code>Calendar.SUNDAY</code> etc. as indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an array of strings.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getWeekdays()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getWeekdays</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the array of strings containing the full names of the days of the
+ week. Use the <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants
+ <code>Calendar.SUNDAY</code> etc. as indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an array of strings.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getZoneStrings()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String[][]</a>
+      </span>
+      <span class="sympad"><strong>getZoneStrings</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the two-dimensional array of strings containing localized names for time zones.
+ Each row is an array of five strings:
+ <ul>
+ <li>The time zone ID, for example "America/Los_Angeles".
+     This is not localized, and is used as a key into the table.
+ <li>The long display name, for example "Pacific Standard Time".
+ <li>The short display name, for example "PST".
+ <li>The long display name for DST, for example "Pacific Daylight Time".
+     This is the non-DST long name for zones that have never had DST, for
+     example "Central Standard Time" for "Canada/Saskatchewan".
+ <li>The short display name for DST, for example "PDT". This is the
+     non-DST short name for zones that have never had DST, for example
+     "CST" for "Canada/Saskatchewan".
+ </ul>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="hashCode()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>hashCode</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setAmPmStrings(java.lang.String[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setAmPmStrings</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the array of strings which represent AM and PM. Use the
+ <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants <code>Calendar.AM</code> and
+ <code>Calendar.PM</code> as indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">data</td>
+          <td class="jd-tagdescr">the array of strings for AM and PM.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setEras(java.lang.String[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setEras</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the array of Strings which represent BC and AD. Use the
+ <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants <code>GregorianCalendar.BC</code> and
+ <code>GregorianCalendar.AD</code> as indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">data</td>
+          <td class="jd-tagdescr">the array of strings for BC and AD.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setLocalPatternChars(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setLocalPatternChars</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>data</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the pattern characters used by <code><a href="reference/java/text/SimpleDateFormat.html">SimpleDateFormat</a></code> to specify
+ date and time fields.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">data</td>
+          <td class="jd-tagdescr">the string containing the pattern characters.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>data</code> is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setMonths(java.lang.String[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setMonths</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the array of strings containing the full names of the months. Use
+ the <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants <code>Calendar.JANUARY</code> etc. as
+ indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">data</td>
+          <td class="jd-tagdescr">the array of strings.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setShortMonths(java.lang.String[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setShortMonths</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the array of strings containing the abbreviated names of the months.
+ Use the <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants <code>Calendar.JANUARY</code>
+ etc. as indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">data</td>
+          <td class="jd-tagdescr">the array of strings.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setShortWeekdays(java.lang.String[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setShortWeekdays</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the array of strings containing the abbreviated names of the days of
+ the week. Use the <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants
+ <code>Calendar.SUNDAY</code> etc. as indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">data</td>
+          <td class="jd-tagdescr">the array of strings.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setWeekdays(java.lang.String[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setWeekdays</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[]</a> <i>data</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the array of strings containing the full names of the days of the
+ week. Use the <code><a href="reference/java/util/Calendar.html">Calendar</a></code> constants
+ <code>Calendar.SUNDAY</code> etc. as indices for the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">data</td>
+          <td class="jd-tagdescr">the array of strings.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setZoneStrings(java.lang.String[][])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setZoneStrings</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String[][]</a> <i>zoneStrings</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the two-dimensional array of strings containing localized names for time zones.
+ See <code><a href="reference/java/text/DateFormatSymbols.html#getZoneStrings()">getZoneStrings()</a></code> for details.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if any row has fewer than 5 elements.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>zoneStrings == null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

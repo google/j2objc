@@ -1,0 +1,844 @@
+---
+
+title: java.util - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Collection.html">Collection</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Deque.html">Deque</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/EventListener.html">EventListener</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Formattable.html">Formattable</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Map.Entry.html">Map.Entry</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Observer.html">Observer</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Queue.html">Queue</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/RandomAccess.html">RandomAccess</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;</li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+        <li class="api apilevel-"><a href="../../../reference/java/util/AbstractCollection.html">AbstractCollection</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/AbstractList.html">AbstractList</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.html">AbstractMap</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleEntry.html">AbstractMap.SimpleEntry</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleImmutableEntry.html">AbstractMap.SimpleImmutableEntry</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/AbstractQueue.html">AbstractQueue</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSequentialList.html">AbstractSequentialList</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSet.html">AbstractSet</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/ArrayDeque.html">ArrayDeque</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Arrays.html">Arrays</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/BitSet.html">BitSet</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Calendar.html">Calendar</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Collections.html">Collections</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Currency.html">Currency</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Date.html">Date</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Dictionary.html">Dictionary</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/EnumMap.html">EnumMap</a>&lt;K&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;K&gt;,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/EventObject.html">EventObject</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/FormattableFlags.html">FormattableFlags</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.html">Formatter</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/HashMap.html">HashMap</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/HashSet.html">HashSet</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Hashtable.html">Hashtable</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/IdentityHashMap.html">IdentityHashMap</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashMap.html">LinkedHashMap</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashSet.html">LinkedHashSet</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/ListResourceBundle.html">ListResourceBundle</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Locale.html">Locale</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Objects.html">Objects</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Observable.html">Observable</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Properties.html">Properties</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/PropertyPermission.html">PropertyPermission</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/PropertyResourceBundle.html">PropertyResourceBundle</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Random.html">Random</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.html">ResourceBundle</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.Control.html">ResourceBundle.Control</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Scanner.html">Scanner</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/ServiceLoader.html">ServiceLoader</a>&lt;S&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/SimpleTimeZone.html">SimpleTimeZone</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Stack.html">Stack</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/StringTokenizer.html">StringTokenizer</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Timer.html">Timer</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/TimerTask.html">TimerTask</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/TreeMap.html">TreeMap</a>&lt;K,&nbsp;V&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/TreeSet.html">TreeSet</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/UUID.html">UUID</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Vector.html">Vector</a>&lt;E&gt;</li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/WeakHashMap.html">WeakHashMap</a>&lt;K,&nbsp;V&gt;</li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+        <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.BigDecimalLayoutForm.html">Formatter.BigDecimalLayoutForm</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+        <li class="api apilevel-"><a href="../../../reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/DuplicateFormatFlagsException.html">DuplicateFormatFlagsException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/EmptyStackException.html">EmptyStackException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/FormatFlagsConversionMismatchException.html">FormatFlagsConversionMismatchException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/FormatterClosedException.html">FormatterClosedException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatCodePointException.html">IllegalFormatCodePointException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatConversionException.html">IllegalFormatConversionException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatFlagsException.html">IllegalFormatFlagsException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatPrecisionException.html">IllegalFormatPrecisionException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatWidthException.html">IllegalFormatWidthException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/InputMismatchException.html">InputMismatchException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html">InvalidPropertiesFormatException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatArgumentException.html">MissingFormatArgumentException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatWidthException.html">MissingFormatWidthException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/MissingResourceException.html">MissingResourceException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/TooManyListenersException.html">TooManyListenersException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatConversionException.html">UnknownFormatConversionException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatFlagsException.html">UnknownFormatFlagsException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+        <li class="api apilevel-"><a href="../../../reference/java/util/ServiceConfigurationError.html">ServiceConfigurationError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="jd-header">
+  package
+  <h1>java.util</h1>
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+  
+    <h3>Interfaces</h3>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Collection.html">Collection</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%"><code>Collection</code> is the root of the collection hierarchy.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;</td>
+              <td class="jd-descrcol" width="100%">A <code>Comparator</code> is used to compare two objects to determine their ordering with
+ respect to each other.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Deque.html">Deque</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">A linear collection that supports element insertion and removal at
+ both ends.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">A legacy iteration interface.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/EventListener.html">EventListener</a></td>
+              <td class="jd-descrcol" width="100%">EventListener is the superclass of all event listener interfaces.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Formattable.html">Formattable</a></td>
+              <td class="jd-descrcol" width="100%">Classes that handle custom formatting for the 's' specifier of <code>Formatter</code>
+ should implement the <code>Formattable</code> interface.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">An iterator over a sequence of objects, such as a collection.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">A <code>List</code> is a collection which maintains an ordering for its elements.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">An ListIterator is used to sequence over a List of objects.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A <code>Map</code> is a data structure consisting of a set of keys and values
+ in which each key is mapped to a single value.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Map.Entry.html">Map.Entry</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%"><code>Map.Entry</code> is a key/value mapping contained in a <code>Map</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A <code><a href="reference/java/util/SortedMap.html">SortedMap</a></code> extended with navigation methods returning the
+ closest matches for given search targets.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">A <code><a href="reference/java/util/SortedSet.html">SortedSet</a></code> extended with navigation methods reporting
+ closest matches for given search targets.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Observer.html">Observer</a></td>
+              <td class="jd-descrcol" width="100%"><code>Observer</code> is the interface to be implemented by objects that
+ receive notification of updates on an <code>Observable</code> object.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Queue.html">Queue</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">A collection designed for holding elements prior to processing.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/RandomAccess.html">RandomAccess</a></td>
+              <td class="jd-descrcol" width="100%">RandomAccess is implemented by <code>List</code> implementations that support fast
+ (usually constant time) random access.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">A <code>Set</code> is a data structure which does not allow duplicate elements.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A map that has its keys ordered.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">SortedSet is a Set which iterates over its elements in a sorted order.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h3>Classes</h3>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractCollection.html">AbstractCollection</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">Class <code>AbstractCollection</code> is an abstract implementation of the <code>Collection</code> interface.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractList.html">AbstractList</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%"><code>AbstractList</code> is an abstract implementation of the <code>List</code> interface, optimized
+ for a backing store which supports random access.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractMap.html">AbstractMap</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A base class for <code>Map</code> implementations.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractMap.SimpleEntry.html">AbstractMap.SimpleEntry</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A key-value mapping with mutable values.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractMap.SimpleImmutableEntry.html">AbstractMap.SimpleImmutableEntry</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">An immutable key-value mapping.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractQueue.html">AbstractQueue</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">This class provides skeletal implementations of some <code><a href="reference/java/util/Queue.html">Queue</a></code>
+ operations.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractSequentialList.html">AbstractSequentialList</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">AbstractSequentialList is an abstract implementation of the List interface.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/AbstractSet.html">AbstractSet</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">An AbstractSet is an abstract implementation of the Set interface.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/ArrayDeque.html">ArrayDeque</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">Resizable-array implementation of the <code><a href="reference/java/util/Deque.html">Deque</a></code> interface.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">ArrayList is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by an array.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Arrays.html">Arrays</a></td>
+              <td class="jd-descrcol" width="100%"><code>Arrays</code> contains static methods which operate on arrays.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/BitSet.html">BitSet</a></td>
+              <td class="jd-descrcol" width="100%">The <code>BitSet</code> class implements a
+ <a href="http://en.wikipedia.org/wiki/Bit_array">bit array</a>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html">Calendar</a></td>
+              <td class="jd-descrcol" width="100%"><code>Calendar</code> is an abstract base class for converting between a
+ <code>Date</code> object and a set of integer fields such as
+ <code>YEAR</code>, <code>MONTH</code>, <code>DAY</code>,
+ <code>HOUR</code>, and so on.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Collections.html">Collections</a></td>
+              <td class="jd-descrcol" width="100%"><code>Collections</code> contains static methods which operate on
+ <code>Collection</code> classes.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Currency.html">Currency</a></td>
+              <td class="jd-descrcol" width="100%">A currency corresponding to an <a href="http://en.wikipedia.org/wiki/ISO_4217">ISO 4217</a>
+ currency code such as "EUR" or "USD".&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Date.html">Date</a></td>
+              <td class="jd-descrcol" width="100%">A specific moment in time, with millisecond precision.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Dictionary.html">Dictionary</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%"><strong>Note: Do not use this class since it is obsolete.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/EnumMap.html">EnumMap</a>&lt;K&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;K&gt;,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">An <code>Map</code> specialized for use with <code>Enum</code> types as keys.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</td>
+              <td class="jd-descrcol" width="100%">An EnumSet is a specialized Set to be used with enums as keys.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a></td>
+              <td class="jd-descrcol" width="100%">This abstract class provides a simple wrapper for objects of type <code>EventListener</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/EventObject.html">EventObject</a></td>
+              <td class="jd-descrcol" width="100%"><code>EventObject</code>s represent events.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/FormattableFlags.html">FormattableFlags</a></td>
+              <td class="jd-descrcol" width="100%">FormattableFlags are used as a parameter to
+ <code><a href="reference/java/util/Formattable.html#formatTo(java.util.Formatter, int, int, int)">formatTo(Formatter, int, int, int)</a></code> and change the output
+ format in <code>Formattable</code>s.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Formatter.html">Formatter</a></td>
+              <td class="jd-descrcol" width="100%">Formats arguments according to a format string (like <code>printf</code> in C).&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a></td>
+              <td class="jd-descrcol" width="100%"><code>GregorianCalendar</code> is a concrete subclass of <code><a href="reference/java/util/Calendar.html">Calendar</a></code>
+ and provides the standard calendar used by most of the world.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/HashMap.html">HashMap</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">HashMap is an implementation of <code><a href="reference/java/util/Map.html">Map</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/HashSet.html">HashSet</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">HashSet is an implementation of a Set.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Hashtable.html">Hashtable</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">Hashtable is a synchronized implementation of <code><a href="reference/java/util/Map.html">Map</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IdentityHashMap.html">IdentityHashMap</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">IdentityHashMap is a variant on HashMap which tests equality by reference
+ instead of equality by value.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedHashMap.html">LinkedHashMap</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">LinkedHashMap is an implementation of <code><a href="reference/java/util/Map.html">Map</a></code> that guarantees iteration order.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedHashSet.html">LinkedHashSet</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">LinkedHashSet is a variant of HashSet.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">LinkedList is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by a doubly-linked list.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/ListResourceBundle.html">ListResourceBundle</a></td>
+              <td class="jd-descrcol" width="100%"><code>ListResourceBundle</code> is the abstract superclass of classes which provide
+ resources by implementing the <code>getContents()</code> method to return
+ the list of resources.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Locale.html">Locale</a></td>
+              <td class="jd-descrcol" width="100%"><code>Locale</code> represents a language/country/variant combination.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Objects.html">Objects</a></td>
+              <td class="jd-descrcol" width="100%">Utility methods for objects.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Observable.html">Observable</a></td>
+              <td class="jd-descrcol" width="100%">Observable is used to notify a group of Observer objects when a change
+ occurs.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">A PriorityQueue holds elements on a priority heap, which orders the elements
+ according to their natural order or according to the comparator specified at
+ construction time.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Properties.html">Properties</a></td>
+              <td class="jd-descrcol" width="100%">A <code>Properties</code> object is a <code>Hashtable</code> where the keys and values
+ must be <code>String</code>s.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/PropertyPermission.html">PropertyPermission</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/PropertyResourceBundle.html">PropertyResourceBundle</a></td>
+              <td class="jd-descrcol" width="100%"><code>PropertyResourceBundle</code> loads resources from an <code>InputStream</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Random.html">Random</a></td>
+              <td class="jd-descrcol" width="100%">This class provides methods that return pseudo-random values.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/ResourceBundle.html">ResourceBundle</a></td>
+              <td class="jd-descrcol" width="100%"><code>ResourceBundle</code> is an abstract class which is the superclass of classes which
+ provide <code>Locale</code>-specific resources.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/ResourceBundle.Control.html">ResourceBundle.Control</a></td>
+              <td class="jd-descrcol" width="100%">ResourceBundle.Control is a static utility class defines ResourceBundle
+ load access methods, its default access order is as the same as before.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Scanner.html">Scanner</a></td>
+              <td class="jd-descrcol" width="100%">A parser that parses a text string of primitive types and strings with the
+ help of regular expressions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/ServiceLoader.html">ServiceLoader</a>&lt;S&gt;</td>
+              <td class="jd-descrcol" width="100%">A service-provider loader.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/SimpleTimeZone.html">SimpleTimeZone</a></td>
+              <td class="jd-descrcol" width="100%"><code>SimpleTimeZone</code> is a concrete subclass of <code>TimeZone</code>
+ that represents a time zone for use with a Gregorian calendar.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Stack.html">Stack</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%"><code>Stack</code> is a Last-In/First-Out(LIFO) data structure which represents a
+ stack of objects.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/StringTokenizer.html">StringTokenizer</a></td>
+              <td class="jd-descrcol" width="100%">Breaks a string into tokens; new code should probably use <code><a href="reference/java/lang/String.html#split(java.lang.String)">split(String)</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Timer.html">Timer</a></td>
+              <td class="jd-descrcol" width="100%">Timers schedule one-shot or recurring <code><a href="reference/java/util/TimerTask.html">tasks</a></code> for execution.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/TimerTask.html">TimerTask</a></td>
+              <td class="jd-descrcol" width="100%">The <code>TimerTask</code> class represents a task to run at a specified time.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a></td>
+              <td class="jd-descrcol" width="100%"><code>TimeZone</code> represents a time zone, primarily used for configuring a <code><a href="reference/java/util/Calendar.html">Calendar</a></code> or
+ <code><a href="reference/java/text/SimpleDateFormat.html">SimpleDateFormat</a></code> instance.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/TreeMap.html">TreeMap</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A map whose entries are sorted by their keys.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/TreeSet.html">TreeSet</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">TreeSet is an implementation of SortedSet.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/UUID.html">UUID</a></td>
+              <td class="jd-descrcol" width="100%">UUID is an immutable representation of a 128-bit universally unique
+ identifier (UUID).&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Vector.html">Vector</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">Vector is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by an array and synchronized.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/WeakHashMap.html">WeakHashMap</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">WeakHashMap is an implementation of Map with keys which are WeakReferences.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h3>Enums</h3>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Formatter.BigDecimalLayoutForm.html">Formatter.BigDecimalLayoutForm</a></td>
+              <td class="jd-descrcol" width="100%">The enumeration giving the available styles for formatting very large
+ decimal numbers.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h3>Exceptions</h3>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>ConcurrentModificationException</code> is thrown when a Collection is
+ modified and an existing iterator on the Collection is used to modify the
+ Collection as well.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/DuplicateFormatFlagsException.html">DuplicateFormatFlagsException</a></td>
+              <td class="jd-descrcol" width="100%">The unchecked exception will be thrown out if there are duplicate flags given
+ out in the format specifier.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/EmptyStackException.html">EmptyStackException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>EmptyStackException</code> is thrown if the pop/peek method of a stack is
+ executed on an empty stack.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/FormatFlagsConversionMismatchException.html">FormatFlagsConversionMismatchException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>FormatFlagsConversionMismatchException</code> will be thrown if a
+ conversion and the flags are incompatible.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/FormatterClosedException.html">FormatterClosedException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>FormatterClosedException</code> will be thrown if the formatter has been
+ closed.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatCodePointException.html">IllegalFormatCodePointException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatCodePointException</code> will be thrown if an invalid
+ Unicode code point (defined by <code><a href="reference/java/lang/Character.html#isValidCodePoint(int)">isValidCodePoint(int)</a></code>) is
+ passed as a parameter to a Formatter.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatConversionException.html">IllegalFormatConversionException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatConversionException</code> will be thrown when the parameter
+ is incompatible with the corresponding format specifier.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatException</code> is thrown when a format string that
+ contains either an illegal syntax or format specifier is transferred as a
+ parameter.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatFlagsException.html">IllegalFormatFlagsException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatFlagsException</code> will be thrown if the combination of
+ the format flags is illegal.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatPrecisionException.html">IllegalFormatPrecisionException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatPrecisionException</code> will be thrown if the precision is
+ a negative other than -1 or in other cases where precision is not supported.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatWidthException.html">IllegalFormatWidthException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatWidthException</code> will be thrown if the width is a
+ negative value other than -1 or in other cases where a width is not
+ supported.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/InputMismatchException.html">InputMismatchException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>InputMismatchException</code> is thrown by a scanner to indicate that the
+ next token does not match or is out of range for the type specified in the
+ pattern.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html">InvalidPropertiesFormatException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>InvalidPropertiesFormatException</code> is thrown if loading the XML
+ document defining the properties does not follow the <code>Properties</code>
+ specification.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/MissingFormatArgumentException.html">MissingFormatArgumentException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>MissingFormatArgumentException</code> will be thrown if there is no
+ corresponding argument with the specified conversion or an argument index
+ that refers to a missing argument.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/MissingFormatWidthException.html">MissingFormatWidthException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>MissingFormatWidthException</code> will be thrown if the format width is
+ missing but is required.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/MissingResourceException.html">MissingResourceException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>MissingResourceException</code> is thrown by ResourceBundle when a
+ resource bundle cannot be found or a resource is missing from a resource
+ bundle.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when trying to retrieve an element
+ past the end of an Enumeration or Iterator.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/TooManyListenersException.html">TooManyListenersException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>TooManyListenersException</code> is thrown when an attempt is made to add
+ more than one listener to an event source which only supports a single
+ listener.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/UnknownFormatConversionException.html">UnknownFormatConversionException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnknownFormatConversionException</code> will be thrown if the format
+ conversion is unknown.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/UnknownFormatFlagsException.html">UnknownFormatFlagsException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnknownFormatFlagsException</code> will be thrown if there is
+ an unknown flag.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h3>Errors</h3>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/ServiceConfigurationError.html">ServiceConfigurationError</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a service provider can't be loaded by <code><a href="reference/java/util/ServiceLoader.html">ServiceLoader</a></code>.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+

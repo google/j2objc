@@ -1,0 +1,1112 @@
+---
+
+title: AbstractQueue - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Collection.html">Collection</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Deque.html">Deque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventListener.html">EventListener</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formattable.html">Formattable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Map.Entry.html">Map.Entry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Observer.html">Observer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Queue.html">Queue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/RandomAccess.html">RandomAccess</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;</li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractCollection.html">AbstractCollection</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractList.html">AbstractList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.html">AbstractMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleEntry.html">AbstractMap.SimpleEntry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleImmutableEntry.html">AbstractMap.SimpleImmutableEntry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/util/AbstractQueue.html">AbstractQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSequentialList.html">AbstractSequentialList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSet.html">AbstractSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ArrayDeque.html">ArrayDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Arrays.html">Arrays</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/BitSet.html">BitSet</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Calendar.html">Calendar</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Collections.html">Collections</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Currency.html">Currency</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Date.html">Date</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Dictionary.html">Dictionary</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EnumMap.html">EnumMap</a>&lt;K&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;K&gt;,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventObject.html">EventObject</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormattableFlags.html">FormattableFlags</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.html">Formatter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/HashMap.html">HashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/HashSet.html">HashSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Hashtable.html">Hashtable</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IdentityHashMap.html">IdentityHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashMap.html">LinkedHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashSet.html">LinkedHashSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ListResourceBundle.html">ListResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Locale.html">Locale</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Objects.html">Objects</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Observable.html">Observable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Properties.html">Properties</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PropertyPermission.html">PropertyPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PropertyResourceBundle.html">PropertyResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Random.html">Random</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.html">ResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.Control.html">ResourceBundle.Control</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Scanner.html">Scanner</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ServiceLoader.html">ServiceLoader</a>&lt;S&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SimpleTimeZone.html">SimpleTimeZone</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Stack.html">Stack</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/StringTokenizer.html">StringTokenizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Timer.html">Timer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TimerTask.html">TimerTask</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TreeMap.html">TreeMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TreeSet.html">TreeSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UUID.html">UUID</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Vector.html">Vector</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/WeakHashMap.html">WeakHashMap</a>&lt;K,&nbsp;V&gt;</li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.BigDecimalLayoutForm.html">Formatter.BigDecimalLayoutForm</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/DuplicateFormatFlagsException.html">DuplicateFormatFlagsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EmptyStackException.html">EmptyStackException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormatFlagsConversionMismatchException.html">FormatFlagsConversionMismatchException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormatterClosedException.html">FormatterClosedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatCodePointException.html">IllegalFormatCodePointException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatConversionException.html">IllegalFormatConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatFlagsException.html">IllegalFormatFlagsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatPrecisionException.html">IllegalFormatPrecisionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatWidthException.html">IllegalFormatWidthException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/InputMismatchException.html">InputMismatchException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html">InvalidPropertiesFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatArgumentException.html">MissingFormatArgumentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatWidthException.html">MissingFormatWidthException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingResourceException.html">MissingResourceException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TooManyListenersException.html">TooManyListenersException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatConversionException.html">UnknownFormatConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatFlagsException.html">UnknownFormatFlagsException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ServiceConfigurationError.html">ServiceConfigurationError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">AbstractQueue</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;">
+Known Direct Subclasses
+
+  <div id="subclasses-direct">
+      <div id="subclasses-direct-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>&lt;E&gt;,
+            
+              <a href="../../../reference/java/util/concurrent/ConcurrentLinkedQueue.html">ConcurrentLinkedQueue</a>&lt;E&gt;,
+            
+              <a href="../../../reference/java/util/concurrent/DelayQueue.html">DelayQueue</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/util/concurrent/Delayed.html">Delayed</a>&gt;,
+            
+              <a href="../../../reference/java/util/concurrent/LinkedBlockingDeque.html">LinkedBlockingDeque</a>&lt;E&gt;,
+            
+              <a href="../../../reference/java/util/concurrent/LinkedBlockingQueue.html">LinkedBlockingQueue</a>&lt;E&gt;,
+            
+              <a href="../../../reference/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>&lt;E&gt;,
+            
+              <a href="../../../reference/java/util/concurrent/PriorityBlockingQueue.html">PriorityBlockingQueue</a>&lt;E&gt;,
+            
+              <a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;E&gt;,
+            
+              <a href="../../../reference/java/util/concurrent/SynchronousQueue.html">SynchronousQueue</a>&lt;E&gt;
+            
+          
+      </div>
+      <div id="subclasses-direct-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">A bounded {@linkplain BlockingQueue blocking queue} backed by an
+ array.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ConcurrentLinkedQueue.html">ConcurrentLinkedQueue</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">An unbounded thread-safe {@linkplain Queue queue} based on linked nodes.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/DelayQueue.html">DelayQueue</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/util/concurrent/Delayed.html">Delayed</a>&gt;</td>
+              <td class="jd-descrcol" width="100%">An unbounded {@linkplain BlockingQueue blocking queue} of
+ <code>Delayed</code> elements, in which an element can only be taken
+ when its delay has expired.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/LinkedBlockingDeque.html">LinkedBlockingDeque</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">An optionally-bounded {@linkplain BlockingDeque blocking deque} based on
+ linked nodes.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/LinkedBlockingQueue.html">LinkedBlockingQueue</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">An optionally-bounded {@linkplain BlockingQueue blocking queue} based on
+ linked nodes.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">An unbounded <code><a href="reference/java/util/concurrent/TransferQueue.html">TransferQueue</a></code> based on linked nodes.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/PriorityBlockingQueue.html">PriorityBlockingQueue</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">An unbounded {@linkplain BlockingQueue blocking queue} that uses
+ the same ordering rules as class <code><a href="reference/java/util/PriorityQueue.html">PriorityQueue</a></code> and supplies
+ blocking retrieval operations.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">A PriorityQueue holds elements on a priority heap, which orders the elements
+ according to their natural order or according to the comparator specified at
+ construction time.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/SynchronousQueue.html">SynchronousQueue</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">A {@linkplain BlockingQueue blocking queue} in which each insert
+ operation must wait for a corresponding remove operation by another
+ thread, and vice versa.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+
+
+<div class="jd-descr">
+
+
+<p>This class provides skeletal implementations of some <code><a href="reference/java/util/Queue.html">Queue</a></code>
+ operations. The implementations in this class are appropriate when
+ the base implementation does <em>not</em> allow <tt>null</tt>
+ elements.  Methods <code><a href="reference/java/util/AbstractQueue.html#add(E)">add</a></code>, <code><a href="reference/java/util/AbstractQueue.html#remove()">remove</a></code>, and
+ <code><a href="reference/java/util/AbstractQueue.html#element()">element</a></code> are based on <code><a href="reference/java/util/Queue.html#offer(E)">offer</a></code>, <code><a href="reference/java/util/Queue.html#poll()">poll</a></code>, and <code><a href="reference/java/util/Queue.html#peek()">peek</a></code>, respectively, but throw
+ exceptions instead of indicating failure via <tt>false</tt> or
+ <tt>null</tt> returns.
+
+ <p>A <tt>Queue</tt> implementation that extends this class must
+ minimally define a method <code><a href="reference/java/util/Queue.html#offer(E)">offer(E)</a></code> which does not permit
+ insertion of <tt>null</tt> elements, along with methods <code><a href="reference/java/util/Queue.html#peek()">peek()</a></code>, <code><a href="reference/java/util/Queue.html#poll()">poll()</a></code>, <code><a href="reference/java/util/Collection.html#size()">size()</a></code>, and
+ <code><a href="reference/java/util/Collection.html#iterator()">iterator()</a></code>.  Typically, additional methods will be
+ overridden as well.  If these requirements cannot be met, consider
+ instead subclassing <code><a href="reference/java/util/AbstractCollection.html">AbstractCollection</a></code>.</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/AbstractQueue.html#AbstractQueue()">AbstractQueue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/AbstractQueue.html#add(E)">add</a></span>(<span class="nowrap">E <i>e</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/AbstractQueue.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; <i>c</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/AbstractQueue.html#clear()">clear</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            E
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/AbstractQueue.html#element()">element</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            E
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/AbstractQueue.html#remove()">remove</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="AbstractQueue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>AbstractQueue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructor for use by subclasses.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="add(E)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>add</strong></span>
+      <span class="params">(<span class="nowrap">E <i>e</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element into this queue if it is possible to do so
+ immediately without violating capacity restrictions, returning
+ <tt>true</tt> upon success and throwing an <tt>IllegalStateException</tt>
+ if no space is currently available.
+
+ <p>This implementation returns <tt>true</tt> if <tt>offer</tt> succeeds,
+ else throws an <tt>IllegalStateException</tt>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">e</td>
+          <td class="jd-tagdescr">the element to add</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><tt>true</tt> (as specified by <code><a href="reference/java/util/Collection.html#add(E)">add(E)</a></code>)</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td class="jd-tagdescr">if the element cannot be added at this
+         time due to capacity restrictions</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the class of the specified element
+         prevents it from being added to this queue</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified element is null and
+         this queue does not permit null elements</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if some property of this element
+         prevents it from being added to this queue
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="addAll(java.util.Collection<? extends E>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>addAll</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; <i>c</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Adds all of the elements in the specified collection to this
+ queue.  Attempts to addAll of a queue to itself result in
+ <tt>IllegalArgumentException</tt>. Further, the behavior of
+ this operation is undefined if the specified collection is
+ modified while the operation is in progress.
+
+ <p>This implementation iterates over the specified collection,
+ and adds each element returned by the iterator to this
+ queue, in turn.  A runtime exception encountered while
+ trying to add an element (including, in particular, a
+ <tt>null</tt> element) may result in only some of the elements
+ having been successfully added when the associated exception is
+ thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">c</td>
+          <td class="jd-tagdescr">collection containing elements to be added to this queue</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><tt>true</tt> if this queue changed as a result of the call</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the class of an element of the specified
+         collection prevents it from being added to this queue</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified collection contains a
+         null element and this queue does not permit null elements,
+         or if the specified collection is null</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if some property of an element of the
+         specified collection prevents it from being added to this
+         queue, or if the specified collection is this queue</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td class="jd-tagdescr">if not all the elements can be added at
+         this time due to insertion restrictions</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/AbstractQueue.html#add(E)">add(Object)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="clear()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>clear</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes all of the elements from this queue.
+ The queue will be empty after this call returns.
+
+ <p>This implementation repeatedly invokes <code><a href="reference/java/util/Queue.html#poll()">poll</a></code> until it
+ returns <tt>null</tt>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="element()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        E
+      </span>
+      <span class="sympad"><strong>element</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the head of this queue.  This method
+ differs from <code><a href="reference/java/util/Queue.html#peek()">peek</a></code> only in that it throws an exception if
+ this queue is empty.
+
+ <p>This implementation returns the result of <tt>peek</tt>
+ unless the queue is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the head of this queue</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td class="jd-tagdescr">if this queue is empty
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="remove()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        E
+      </span>
+      <span class="sympad"><strong>remove</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the head of this queue.  This method differs
+ from <code><a href="reference/java/util/Queue.html#poll()">poll</a></code> only in that it throws an exception if this
+ queue is empty.
+
+ <p>This implementation returns the result of <tt>poll</tt>
+ unless the queue is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the head of this queue</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td class="jd-tagdescr">if this queue is empty
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

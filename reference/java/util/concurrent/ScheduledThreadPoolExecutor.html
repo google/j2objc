@@ -1,0 +1,2461 @@
+---
+
+title: ScheduledThreadPoolExecutor - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BlockingDeque.html">BlockingDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BlockingQueue.html">BlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CompletionService.html">CompletionService</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentNavigableMap.html">ConcurrentNavigableMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Delayed.html">Delayed</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Executor.html">Executor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutorService.html">ExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.ForkJoinWorkerThreadFactory.html">ForkJoinPool.ForkJoinWorkerThreadFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.ManagedBlocker.html">ForkJoinPool.ManagedBlocker</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Future.html">Future</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RejectedExecutionHandler.html">RejectedExecutionHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RunnableFuture.html">RunnableFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledExecutorService.html">ScheduledExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadFactory.html">ThreadFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TransferQueue.html">TransferQueue</a>&lt;E&gt;</li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/AbstractExecutorService.html">AbstractExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html">ConcurrentHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html">ConcurrentLinkedDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedQueue.html">ConcurrentLinkedQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListMap.html">ConcurrentSkipListMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html">ConcurrentSkipListSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CopyOnWriteArrayList.html">CopyOnWriteArrayList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CopyOnWriteArraySet.html">CopyOnWriteArraySet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CountDownLatch.html">CountDownLatch</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CyclicBarrier.html">CyclicBarrier</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/DelayQueue.html">DelayQueue</a>&lt;E&nbsp;extends&nbsp;<a href="../../../../reference/java/util/concurrent/Delayed.html">Delayed</a>&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Exchanger.html">Exchanger</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutorCompletionService.html">ExecutorCompletionService</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Executors.html">Executors</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinWorkerThread.html">ForkJoinWorkerThread</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/FutureTask.html">FutureTask</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedBlockingDeque.html">LinkedBlockingDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedBlockingQueue.html">LinkedBlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Phaser.html">Phaser</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/PriorityBlockingQueue.html">PriorityBlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RecursiveAction.html">RecursiveAction</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RecursiveTask.html">RecursiveTask</a>&lt;V&gt;</li>
+          <li class="selected api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html">ScheduledThreadPoolExecutor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Semaphore.html">Semaphore</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/SynchronousQueue.html">SynchronousQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadLocalRandom.html">ThreadLocalRandom</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.html">ThreadPoolExecutor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.AbortPolicy.html">ThreadPoolExecutor.AbortPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.CallerRunsPolicy.html">ThreadPoolExecutor.CallerRunsPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.DiscardOldestPolicy.html">ThreadPoolExecutor.DiscardOldestPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.DiscardPolicy.html">ThreadPoolExecutor.DiscardPolicy</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BrokenBarrierException.html">BrokenBarrierException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CancellationException.html">CancellationException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutionException.html">ExecutionException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TimeoutException.html">TimeoutException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">ScheduledThreadPoolExecutor</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>A <code><a href="reference/java/util/concurrent/ThreadPoolExecutor.html">ThreadPoolExecutor</a></code> that can additionally schedule
+ commands to run after a given delay, or to execute periodically.
+ This class is preferable to <code><a href="reference/java/util/Timer.html">Timer</a></code> when multiple
+ worker threads are needed, or when the additional flexibility or
+ capabilities of <code><a href="reference/java/util/concurrent/ThreadPoolExecutor.html">ThreadPoolExecutor</a></code> (which this class
+ extends) are required.
+
+ <p>Delayed tasks execute no sooner than they are enabled, but
+ without any real-time guarantees about when, after they are
+ enabled, they will commence. Tasks scheduled for exactly the same
+ execution time are enabled in first-in-first-out (FIFO) order of
+ submission.
+
+ <p>When a submitted task is cancelled before it is run, execution
+ is suppressed. By default, such a cancelled task is not
+ automatically removed from the work queue until its delay
+ elapses. While this enables further inspection and monitoring, it
+ may also cause unbounded retention of cancelled tasks.
+
+ <p>Successive executions of a periodic task scheduled via
+ <code><a href="reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#scheduleAtFixedRate(java.lang.Runnable, long, long, java.util.concurrent.TimeUnit)">scheduleAtFixedRate(Runnable, long, long, TimeUnit)</a></code> or
+ <code><a href="reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#scheduleWithFixedDelay(java.lang.Runnable, long, long, java.util.concurrent.TimeUnit)">scheduleWithFixedDelay(Runnable, long, long, TimeUnit)</a></code> do not overlap. While different
+ executions may be performed by different threads, the effects of
+ prior executions <a
+ href="package-summary.html#MemoryVisibility"><i>happen-before</i></a>
+ those of subsequent ones.
+
+ <p>While this class inherits from <code><a href="reference/java/util/concurrent/ThreadPoolExecutor.html">ThreadPoolExecutor</a></code>, a few
+ of the inherited tuning methods are not useful for it. In
+ particular, because it acts as a fixed-sized pool using
+ <code>corePoolSize</code> threads and an unbounded queue, adjustments
+ to <code>maximumPoolSize</code> have no useful effect. Additionally, it
+ is almost never a good idea to set <code>corePoolSize</code> to zero or
+ use <code>allowCoreThreadTimeOut</code> because this may leave the pool
+ without threads to handle tasks once they become eligible to run.
+
+ <p><b>Extension notes:</b> This class overrides the
+ <code><a href="reference/java/util/concurrent/ThreadPoolExecutor.html#execute(java.lang.Runnable)">execute</a></code> and
+ <code><a href="reference/java/util/concurrent/AbstractExecutorService.html#submit(java.lang.Runnable)">submit</a></code>
+ methods to generate internal <code><a href="reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a></code> objects to
+ control per-task delays and scheduling.  To preserve
+ functionality, any further overrides of these methods in
+ subclasses must invoke superclass versions, which effectively
+ disables additional task customization.  However, this class
+ provides alternative protected extension method
+ <code>decorateTask</code> (one version each for <code>Runnable</code> and
+ <code>Callable</code>) that can be used to customize the concrete task
+ types used to execute commands entered via <code>execute</code>,
+ <code>submit</code>, <code>schedule</code>, <code>scheduleAtFixedRate</code>,
+ and <code>scheduleWithFixedDelay</code>.  By default, a
+ <code>ScheduledThreadPoolExecutor</code> uses a task type extending
+ <code><a href="reference/java/util/concurrent/FutureTask.html">FutureTask</a></code>. However, this may be modified or replaced using
+ subclasses of the form:
+
+  <pre> <code>public class CustomScheduledExecutor extends ScheduledThreadPoolExecutor {
+
+   static class CustomTask<V> implements RunnableScheduledFuture<V> { ... </code>
+
+   protected <V> RunnableScheduledFuture<V> decorateTask(
+                Runnable r, RunnableScheduledFuture<V> task) {
+       return new CustomTask<V>(r, task);
+   }
+
+   protected <V> RunnableScheduledFuture<V> decorateTask(
+                Callable<V> c, RunnableScheduledFuture<V> task) {
+       return new CustomTask<V>(c, task);
+   }
+   // ... add constructors, etc.
+ }}</pre></p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#ScheduledThreadPoolExecutor(int)">ScheduledThreadPoolExecutor</a></span>(<span class="nowrap">int <i>corePoolSize</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#ScheduledThreadPoolExecutor(int, java.util.concurrent.ThreadFactory)">ScheduledThreadPoolExecutor</a></span>(<span class="nowrap">int <i>corePoolSize</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/ThreadFactory.html">ThreadFactory</a> <i>threadFactory</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#ScheduledThreadPoolExecutor(int, java.util.concurrent.RejectedExecutionHandler)">ScheduledThreadPoolExecutor</a></span>(<span class="nowrap">int <i>corePoolSize</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/RejectedExecutionHandler.html">RejectedExecutionHandler</a> <i>handler</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#ScheduledThreadPoolExecutor(int, java.util.concurrent.ThreadFactory, java.util.concurrent.RejectedExecutionHandler)">ScheduledThreadPoolExecutor</a></span>(<span class="nowrap">int <i>corePoolSize</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/ThreadFactory.html">ThreadFactory</a> <i>threadFactory</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/RejectedExecutionHandler.html">RejectedExecutionHandler</a> <i>handler</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#execute(java.lang.Runnable)">execute</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>command</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#getContinueExistingPeriodicTasksAfterShutdownPolicy()">getContinueExistingPeriodicTasksAfterShutdownPolicy</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#getExecuteExistingDelayedTasksAfterShutdownPolicy()">getExecuteExistingDelayedTasksAfterShutdownPolicy</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/concurrent/BlockingQueue.html">BlockingQueue</a>&lt;<a href="../../../../reference/java/lang/Runnable.html">Runnable</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#getQueue()">getQueue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#getRemoveOnCancelPolicy()">getRemoveOnCancelPolicy</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            &lt;V&gt;
+            <a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#schedule(java.util.concurrent.Callable<V>, long, java.util.concurrent.TimeUnit)">schedule</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;V&gt; <i>callable</i></span>, <span class="nowrap">long <i>delay</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#schedule(java.lang.Runnable, long, java.util.concurrent.TimeUnit)">schedule</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>command</i></span>, <span class="nowrap">long <i>delay</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#scheduleAtFixedRate(java.lang.Runnable, long, long, java.util.concurrent.TimeUnit)">scheduleAtFixedRate</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>command</i></span>, <span class="nowrap">long <i>initialDelay</i></span>, <span class="nowrap">long <i>period</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#scheduleWithFixedDelay(java.lang.Runnable, long, long, java.util.concurrent.TimeUnit)">scheduleWithFixedDelay</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>command</i></span>, <span class="nowrap">long <i>initialDelay</i></span>, <span class="nowrap">long <i>delay</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#setContinueExistingPeriodicTasksAfterShutdownPolicy(boolean)">setContinueExistingPeriodicTasksAfterShutdownPolicy</a></span>(<span class="nowrap">boolean <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#setExecuteExistingDelayedTasksAfterShutdownPolicy(boolean)">setExecuteExistingDelayedTasksAfterShutdownPolicy</a></span>(<span class="nowrap">boolean <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#setRemoveOnCancelPolicy(boolean)">setRemoveOnCancelPolicy</a></span>(<span class="nowrap">boolean <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#shutdown()">shutdown</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/List.html">List</a>&lt;<a href="../../../../reference/java/lang/Runnable.html">Runnable</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#shutdownNow()">shutdownNow</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/concurrent/Future.html">Future</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#submit(java.lang.Runnable)">submit</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>task</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            &lt;T&gt;
+            <a href="../../../../reference/java/util/concurrent/Future.html">Future</a>&lt;T&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#submit(java.util.concurrent.Callable<T>)">submit</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;T&gt; <i>task</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            &lt;T&gt;
+            <a href="../../../../reference/java/util/concurrent/Future.html">Future</a>&lt;T&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#submit(java.lang.Runnable, T)">submit</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>task</i></span>, <span class="nowrap">T <i>result</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            &lt;V&gt;
+            <a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#decorateTask(java.lang.Runnable, java.util.concurrent.RunnableScheduledFuture<V>)">decorateTask</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>runnable</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt; <i>task</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            &lt;V&gt;
+            <a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#decorateTask(java.util.concurrent.Callable<V>, java.util.concurrent.RunnableScheduledFuture<V>)">decorateTask</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;V&gt; <i>callable</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt; <i>task</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="ScheduledThreadPoolExecutor(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ScheduledThreadPoolExecutor</strong></span>
+      <span class="params">(<span class="nowrap">int <i>corePoolSize</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>ScheduledThreadPoolExecutor</code> with the
+ given core pool size.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">corePoolSize</td>
+          <td class="jd-tagdescr">the number of threads to keep in the pool, even
+        if they are idle, unless <code>allowCoreThreadTimeOut</code> is set</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>corePoolSize < 0</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ScheduledThreadPoolExecutor(int, java.util.concurrent.ThreadFactory)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ScheduledThreadPoolExecutor</strong></span>
+      <span class="params">(<span class="nowrap">int <i>corePoolSize</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/ThreadFactory.html">ThreadFactory</a> <i>threadFactory</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>ScheduledThreadPoolExecutor</code> with the
+ given initial parameters.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">corePoolSize</td>
+          <td class="jd-tagdescr">the number of threads to keep in the pool, even
+        if they are idle, unless <code>allowCoreThreadTimeOut</code> is set</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">threadFactory</td>
+          <td class="jd-tagdescr">the factory to use when the executor
+        creates a new thread</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>corePoolSize < 0</code></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>threadFactory</code> is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ScheduledThreadPoolExecutor(int, java.util.concurrent.RejectedExecutionHandler)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ScheduledThreadPoolExecutor</strong></span>
+      <span class="params">(<span class="nowrap">int <i>corePoolSize</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/RejectedExecutionHandler.html">RejectedExecutionHandler</a> <i>handler</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>ScheduledThreadPoolExecutor</code> with the
+ given initial parameters.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">corePoolSize</td>
+          <td class="jd-tagdescr">the number of threads to keep in the pool, even
+        if they are idle, unless <code>allowCoreThreadTimeOut</code> is set</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">handler</td>
+          <td class="jd-tagdescr">the handler to use when execution is blocked
+        because the thread bounds and queue capacities are reached</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>corePoolSize < 0</code></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>handler</code> is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ScheduledThreadPoolExecutor(int, java.util.concurrent.ThreadFactory, java.util.concurrent.RejectedExecutionHandler)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ScheduledThreadPoolExecutor</strong></span>
+      <span class="params">(<span class="nowrap">int <i>corePoolSize</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/ThreadFactory.html">ThreadFactory</a> <i>threadFactory</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/RejectedExecutionHandler.html">RejectedExecutionHandler</a> <i>handler</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>ScheduledThreadPoolExecutor</code> with the
+ given initial parameters.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">corePoolSize</td>
+          <td class="jd-tagdescr">the number of threads to keep in the pool, even
+        if they are idle, unless <code>allowCoreThreadTimeOut</code> is set</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">threadFactory</td>
+          <td class="jd-tagdescr">the factory to use when the executor
+        creates a new thread</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">handler</td>
+          <td class="jd-tagdescr">the handler to use when execution is blocked
+        because the thread bounds and queue capacities are reached</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>corePoolSize < 0</code></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>threadFactory</code> or
+         <code>handler</code> is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="execute(java.lang.Runnable)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>execute</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>command</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Executes <code>command</code> with zero required delay.
+ This has effect equivalent to
+ <code><a href="reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#schedule(java.lang.Runnable, long, java.util.concurrent.TimeUnit)">schedule(command, 0, anyUnit)</a></code>.
+ Note that inspections of the queue and of the list returned by
+ <code>shutdownNow</code> will access the zero-delayed
+ <code><a href="reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a></code>, not the <code>command</code> itself.
+
+ <p>A consequence of the use of <code>ScheduledFuture</code> objects is
+ that <code><a href="reference/java/util/concurrent/ThreadPoolExecutor.html#afterExecute(java.lang.Runnable, java.lang.Throwable)">afterExecute</a></code> is always
+ called with a null second <code>Throwable</code> argument, even if the
+ <code>command</code> terminated abruptly.  Instead, the <code>Throwable</code>
+ thrown by such a task can be obtained via <code><a href="reference/java/util/concurrent/Future.html#get()">get()</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">command</td>
+          <td class="jd-tagdescr">the task to execute</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></td>
+            <td class="jd-tagdescr">at discretion of
+         <code>RejectedExecutionHandler</code>, if the task
+         cannot be accepted for execution because the
+         executor has been shut down</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getContinueExistingPeriodicTasksAfterShutdownPolicy()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>getContinueExistingPeriodicTasksAfterShutdownPolicy</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the policy on whether to continue executing existing
+ periodic tasks even when this executor has been <code>shutdown</code>.
+ In this case, these tasks will only terminate upon
+ <code>shutdownNow</code> or after setting the policy to
+ <code>false</code> when already shutdown.
+ This value is by default <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if will continue after shutdown</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#setContinueExistingPeriodicTasksAfterShutdownPolicy(boolean)">setContinueExistingPeriodicTasksAfterShutdownPolicy(boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getExecuteExistingDelayedTasksAfterShutdownPolicy()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>getExecuteExistingDelayedTasksAfterShutdownPolicy</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the policy on whether to execute existing delayed
+ tasks even when this executor has been <code>shutdown</code>.
+ In this case, these tasks will only terminate upon
+ <code>shutdownNow</code>, or after setting the policy to
+ <code>false</code> when already shutdown.
+ This value is by default <code>true</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if will execute after shutdown</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#setExecuteExistingDelayedTasksAfterShutdownPolicy(boolean)">setExecuteExistingDelayedTasksAfterShutdownPolicy(boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getQueue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/BlockingQueue.html">BlockingQueue</a>&lt;<a href="../../../../reference/java/lang/Runnable.html">Runnable</a>&gt;
+      </span>
+      <span class="sympad"><strong>getQueue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the task queue used by this executor.
+ Each element of this list is a <code><a href="reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a></code>.
+ For tasks submitted via one of the <code>schedule</code> methods, the
+ element will be identical to the returned <code>ScheduledFuture</code>.
+ For tasks submitted using <code><a href="reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#execute(java.lang.Runnable)">execute(Runnable)</a></code>, the element will be a
+ zero-delay <code>ScheduledFuture</code>.
+
+ <p>Iteration over this queue is <em>not</em> guaranteed to traverse
+ tasks in the order in which they will execute.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the task queue
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getRemoveOnCancelPolicy()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>getRemoveOnCancelPolicy</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the policy on whether cancelled tasks should be immediately
+ removed from the work queue at time of cancellation.  This value is
+ by default <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if cancelled tasks are immediately removed
+         from the queue</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#setRemoveOnCancelPolicy(boolean)">setRemoveOnCancelPolicy(boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="schedule(java.util.concurrent.Callable<V>, long, java.util.concurrent.TimeUnit)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;V&gt;
+      </span>
+      <span class="sympad"><strong>schedule</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;V&gt; <i>callable</i></span>, <span class="nowrap">long <i>delay</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates and executes a ScheduledFuture that becomes enabled after the
+ given delay.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">callable</td>
+          <td class="jd-tagdescr">the function to execute</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">delay</td>
+          <td class="jd-tagdescr">the time from now to delay execution</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">unit</td>
+          <td class="jd-tagdescr">the time unit of the delay parameter</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a ScheduledFuture that can be used to extract result or cancel</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="schedule(java.lang.Runnable, long, java.util.concurrent.TimeUnit)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>schedule</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>command</i></span>, <span class="nowrap">long <i>delay</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates and executes a one-shot action that becomes enabled
+ after the given delay.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">command</td>
+          <td class="jd-tagdescr">the task to execute</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">delay</td>
+          <td class="jd-tagdescr">the time from now to delay execution</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">unit</td>
+          <td class="jd-tagdescr">the time unit of the delay parameter</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a ScheduledFuture representing pending completion of
+         the task and whose <code>get()</code> method will return
+         <code>null</code> upon completion</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="scheduleAtFixedRate(java.lang.Runnable, long, long, java.util.concurrent.TimeUnit)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>scheduleAtFixedRate</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>command</i></span>, <span class="nowrap">long <i>initialDelay</i></span>, <span class="nowrap">long <i>period</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates and executes a periodic action that becomes enabled first
+ after the given initial delay, and subsequently with the given
+ period; that is executions will commence after
+ <code>initialDelay</code> then <code>initialDelay+period</code>, then
+ <code>initialDelay + 2 * period</code>, and so on.
+ If any execution of the task
+ encounters an exception, subsequent executions are suppressed.
+ Otherwise, the task will only terminate via cancellation or
+ termination of the executor.  If any execution of this task
+ takes longer than its period, then subsequent executions
+ may start late, but will not concurrently execute.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">command</td>
+          <td class="jd-tagdescr">the task to execute</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">initialDelay</td>
+          <td class="jd-tagdescr">the time to delay first execution</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">period</td>
+          <td class="jd-tagdescr">the period between successive executions</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">unit</td>
+          <td class="jd-tagdescr">the time unit of the initialDelay and period parameters</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a ScheduledFuture representing pending completion of
+         the task, and whose <code>get()</code> method will throw an
+         exception upon cancellation</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="scheduleWithFixedDelay(java.lang.Runnable, long, long, java.util.concurrent.TimeUnit)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>scheduleWithFixedDelay</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>command</i></span>, <span class="nowrap">long <i>initialDelay</i></span>, <span class="nowrap">long <i>delay</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates and executes a periodic action that becomes enabled first
+ after the given initial delay, and subsequently with the
+ given delay between the termination of one execution and the
+ commencement of the next.  If any execution of the task
+ encounters an exception, subsequent executions are suppressed.
+ Otherwise, the task will only terminate via cancellation or
+ termination of the executor.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">command</td>
+          <td class="jd-tagdescr">the task to execute</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">initialDelay</td>
+          <td class="jd-tagdescr">the time to delay first execution</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">delay</td>
+          <td class="jd-tagdescr">the delay between the termination of one
+ execution and the commencement of the next</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">unit</td>
+          <td class="jd-tagdescr">the time unit of the initialDelay and delay parameters</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a ScheduledFuture representing pending completion of
+         the task, and whose <code>get()</code> method will throw an
+         exception upon cancellation</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setContinueExistingPeriodicTasksAfterShutdownPolicy(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setContinueExistingPeriodicTasksAfterShutdownPolicy</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the policy on whether to continue executing existing
+ periodic tasks even when this executor has been <code>shutdown</code>.
+ In this case, these tasks will only terminate upon
+ <code>shutdownNow</code> or after setting the policy to
+ <code>false</code> when already shutdown.
+ This value is by default <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">if <code>true</code>, continue after shutdown, else don't</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#getContinueExistingPeriodicTasksAfterShutdownPolicy()">getContinueExistingPeriodicTasksAfterShutdownPolicy()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setExecuteExistingDelayedTasksAfterShutdownPolicy(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setExecuteExistingDelayedTasksAfterShutdownPolicy</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the policy on whether to execute existing delayed
+ tasks even when this executor has been <code>shutdown</code>.
+ In this case, these tasks will only terminate upon
+ <code>shutdownNow</code>, or after setting the policy to
+ <code>false</code> when already shutdown.
+ This value is by default <code>true</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">if <code>true</code>, execute after shutdown, else don't</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#getExecuteExistingDelayedTasksAfterShutdownPolicy()">getExecuteExistingDelayedTasksAfterShutdownPolicy()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setRemoveOnCancelPolicy(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setRemoveOnCancelPolicy</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the policy on whether cancelled tasks should be immediately
+ removed from the work queue at time of cancellation.  This value is
+ by default <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">if <code>true</code>, remove on cancellation, else don't</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#getRemoveOnCancelPolicy()">getRemoveOnCancelPolicy()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="shutdown()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>shutdown</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Initiates an orderly shutdown in which previously submitted
+ tasks are executed, but no new tasks will be accepted.
+ Invocation has no additional effect if already shut down.
+
+ <p>This method does not wait for previously submitted tasks to
+ complete execution.  Use <code><a href="reference/java/util/concurrent/ThreadPoolExecutor.html#awaitTermination(long, java.util.concurrent.TimeUnit)">awaitTermination</a></code>
+ to do that.
+
+ <p>If the <code>ExecuteExistingDelayedTasksAfterShutdownPolicy</code>
+ has been set <code>false</code>, existing delayed tasks whose delays
+ have not yet elapsed are cancelled.  And unless the <code>ContinueExistingPeriodicTasksAfterShutdownPolicy</code> has been set
+ <code>true</code>, future executions of existing periodic tasks will
+ be cancelled.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="shutdownNow()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/List.html">List</a>&lt;<a href="../../../../reference/java/lang/Runnable.html">Runnable</a>&gt;
+      </span>
+      <span class="sympad"><strong>shutdownNow</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Attempts to stop all actively executing tasks, halts the
+ processing of waiting tasks, and returns a list of the tasks
+ that were awaiting execution.
+
+ <p>This method does not wait for actively executing tasks to
+ terminate.  Use <code><a href="reference/java/util/concurrent/ThreadPoolExecutor.html#awaitTermination(long, java.util.concurrent.TimeUnit)">awaitTermination</a></code> to
+ do that.
+
+ <p>There are no guarantees beyond best-effort attempts to stop
+ processing actively executing tasks.  This implementation
+ cancels tasks via <code><a href="reference/java/lang/Thread.html#interrupt()">interrupt()</a></code>, so any task that
+ fails to respond to interrupts may never terminate.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>list of tasks that never commenced execution.
+         Each element of this list is a <code><a href="reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a></code>.
+         For tasks submitted via one of the <code>schedule</code>
+         methods, the element will be identical to the returned
+         <code>ScheduledFuture</code>.  For tasks submitted using
+         <code><a href="reference/java/util/concurrent/ScheduledThreadPoolExecutor.html#execute(java.lang.Runnable)">execute(Runnable)</a></code>, the element will be a zero-delay <code>ScheduledFuture</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="submit(java.lang.Runnable)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/Future.html">Future</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>submit</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>task</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Submits a Runnable task for execution and returns a Future
+ representing that task. The Future's <code>get</code> method will
+ return <code>null</code> upon <em>successful</em> completion.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">task</td>
+          <td class="jd-tagdescr">the task to submit</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a Future representing pending completion of the task</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="submit(java.util.concurrent.Callable<T>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/Future.html">Future</a>&lt;T&gt;
+      </span>
+      <span class="sympad"><strong>submit</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;T&gt; <i>task</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Submits a value-returning task for execution and returns a
+ Future representing the pending results of the task. The
+ Future's <code>get</code> method will return the task's result upon
+ successful completion.
+
+ <p>
+ If you would like to immediately block waiting
+ for a task, you can use constructions of the form
+ <code>result = exec.submit(aCallable).get();</code>
+
+ <p>Note: The <code><a href="reference/java/util/concurrent/Executors.html">Executors</a></code> class includes a set of methods
+ that can convert some other common closure-like objects,
+ for example, <code><a href="reference/java/security/PrivilegedAction.html">PrivilegedAction</a></code> to
+ <code><a href="reference/java/util/concurrent/Callable.html">Callable</a></code> form so they can be submitted.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">task</td>
+          <td class="jd-tagdescr">the task to submit</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a Future representing pending completion of the task</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="submit(java.lang.Runnable, T)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/Future.html">Future</a>&lt;T&gt;
+      </span>
+      <span class="sympad"><strong>submit</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>task</i></span>, <span class="nowrap">T <i>result</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Submits a Runnable task for execution and returns a Future
+ representing that task. The Future's <code>get</code> method will
+ return the given result upon successful completion.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">task</td>
+          <td class="jd-tagdescr">the task to submit</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">result</td>
+          <td class="jd-tagdescr">the result to return</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a Future representing pending completion of the task</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="decorateTask(java.lang.Runnable, java.util.concurrent.RunnableScheduledFuture<V>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt;
+      </span>
+      <span class="sympad"><strong>decorateTask</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>runnable</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt; <i>task</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Modifies or replaces the task used to execute a runnable.
+ This method can be used to override the concrete
+ class used for managing internal tasks.
+ The default implementation simply returns the given task.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">runnable</td>
+          <td class="jd-tagdescr">the submitted Runnable</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">task</td>
+          <td class="jd-tagdescr">the task created to execute the runnable</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a task that can execute the runnable</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="decorateTask(java.util.concurrent.Callable<V>, java.util.concurrent.RunnableScheduledFuture<V>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt;
+      </span>
+      <span class="sympad"><strong>decorateTask</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;V&gt; <i>callable</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt; <i>task</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Modifies or replaces the task used to execute a callable.
+ This method can be used to override the concrete
+ class used for managing internal tasks.
+ The default implementation simply returns the given task.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">callable</td>
+          <td class="jd-tagdescr">the submitted Callable</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">task</td>
+          <td class="jd-tagdescr">the task created to execute the callable</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a task that can execute the callable</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

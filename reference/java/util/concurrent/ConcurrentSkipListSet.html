@@ -1,0 +1,2906 @@
+---
+
+title: ConcurrentSkipListSet - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BlockingDeque.html">BlockingDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BlockingQueue.html">BlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CompletionService.html">CompletionService</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentNavigableMap.html">ConcurrentNavigableMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Delayed.html">Delayed</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Executor.html">Executor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutorService.html">ExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.ForkJoinWorkerThreadFactory.html">ForkJoinPool.ForkJoinWorkerThreadFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.ManagedBlocker.html">ForkJoinPool.ManagedBlocker</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Future.html">Future</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RejectedExecutionHandler.html">RejectedExecutionHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RunnableFuture.html">RunnableFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledExecutorService.html">ScheduledExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadFactory.html">ThreadFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TransferQueue.html">TransferQueue</a>&lt;E&gt;</li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/AbstractExecutorService.html">AbstractExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html">ConcurrentHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html">ConcurrentLinkedDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedQueue.html">ConcurrentLinkedQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListMap.html">ConcurrentSkipListMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="selected api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html">ConcurrentSkipListSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CopyOnWriteArrayList.html">CopyOnWriteArrayList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CopyOnWriteArraySet.html">CopyOnWriteArraySet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CountDownLatch.html">CountDownLatch</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CyclicBarrier.html">CyclicBarrier</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/DelayQueue.html">DelayQueue</a>&lt;E&nbsp;extends&nbsp;<a href="../../../../reference/java/util/concurrent/Delayed.html">Delayed</a>&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Exchanger.html">Exchanger</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutorCompletionService.html">ExecutorCompletionService</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Executors.html">Executors</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinWorkerThread.html">ForkJoinWorkerThread</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/FutureTask.html">FutureTask</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedBlockingDeque.html">LinkedBlockingDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedBlockingQueue.html">LinkedBlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Phaser.html">Phaser</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/PriorityBlockingQueue.html">PriorityBlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RecursiveAction.html">RecursiveAction</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RecursiveTask.html">RecursiveTask</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html">ScheduledThreadPoolExecutor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Semaphore.html">Semaphore</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/SynchronousQueue.html">SynchronousQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadLocalRandom.html">ThreadLocalRandom</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.html">ThreadPoolExecutor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.AbortPolicy.html">ThreadPoolExecutor.AbortPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.CallerRunsPolicy.html">ThreadPoolExecutor.CallerRunsPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.DiscardOldestPolicy.html">ThreadPoolExecutor.DiscardOldestPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.DiscardPolicy.html">ThreadPoolExecutor.DiscardPolicy</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BrokenBarrierException.html">BrokenBarrierException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CancellationException.html">CancellationException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutionException.html">ExecutionException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TimeoutException.html">TimeoutException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">ConcurrentSkipListSet</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>A scalable concurrent <code><a href="reference/java/util/NavigableSet.html">NavigableSet</a></code> implementation based on
+ a <code><a href="reference/java/util/concurrent/ConcurrentSkipListMap.html">ConcurrentSkipListMap</a></code>.  The elements of the set are kept
+ sorted according to their {@linkplain Comparable natural ordering},
+ or by a <code><a href="reference/java/util/Comparator.html">Comparator</a></code> provided at set creation time, depending
+ on which constructor is used.
+
+ <p>This implementation provides expected average <i>log(n)</i> time
+ cost for the <code>contains</code>, <code>add</code>, and <code>remove</code>
+ operations and their variants.  Insertion, removal, and access
+ operations safely execute concurrently by multiple threads.
+ Iterators are <i>weakly consistent</i>, returning elements
+ reflecting the state of the set at some point at or since the
+ creation of the iterator.  They do <em>not</em> throw <code><a href="reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></code>, and may proceed concurrently with
+ other operations.  Ascending ordered views and their iterators are
+ faster than descending ones.
+
+ <p>Beware that, unlike in most collections, the <code>size</code>
+ method is <em>not</em> a constant-time operation. Because of the
+ asynchronous nature of these sets, determining the current number
+ of elements requires a traversal of the elements, and so may report
+ inaccurate results if this collection is modified during traversal.
+ Additionally, the bulk operations <code>addAll</code>,
+ <code>removeAll</code>, <code>retainAll</code>, <code>containsAll</code>,
+ <code>equals</code>, and <code>toArray</code> are <em>not</em> guaranteed
+ to be performed atomically. For example, an iterator operating
+ concurrently with an <code>addAll</code> operation might view only some
+ of the added elements.
+
+ <p>This class and its iterators implement all of the
+ <em>optional</em> methods of the <code><a href="reference/java/util/Set.html">Set</a></code> and <code><a href="reference/java/util/Iterator.html">Iterator</a></code>
+ interfaces. Like most other concurrent collection implementations,
+ this class does not permit the use of <code>null</code> elements,
+ because <code>null</code> arguments and return values cannot be reliably
+ distinguished from the absence of elements.</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#ConcurrentSkipListSet()">ConcurrentSkipListSet</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#ConcurrentSkipListSet(java.util.Comparator<? super E>)">ConcurrentSkipListSet</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;E&gt; <i>comparator</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#ConcurrentSkipListSet(java.util.Collection<? extends E>)">ConcurrentSkipListSet</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; <i>c</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#ConcurrentSkipListSet(java.util.SortedSet<E>)">ConcurrentSkipListSet</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt; <i>s</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#add(E)">add</a></span>(<span class="nowrap">E <i>e</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            E
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#ceiling(E)">ceiling</a></span>(<span class="nowrap">E <i>e</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#clear()">clear</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html">ConcurrentSkipListSet</a>&lt;E&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#clone()">clone</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;E&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#comparator()">comparator</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#contains(java.lang.Object)">contains</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>o</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#descendingIterator()">descendingIterator</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#descendingSet()">descendingSet</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#equals(java.lang.Object)">equals</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>o</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            E
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#first()">first</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            E
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#floor(E)">floor</a></span>(<span class="nowrap">E <i>e</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#headSet(E, boolean)">headSet</a></span>(<span class="nowrap">E <i>toElement</i></span>, <span class="nowrap">boolean <i>inclusive</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#headSet(E)">headSet</a></span>(<span class="nowrap">E <i>toElement</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            E
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#higher(E)">higher</a></span>(<span class="nowrap">E <i>e</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#isEmpty()">isEmpty</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#iterator()">iterator</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            E
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#last()">last</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            E
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#lower(E)">lower</a></span>(<span class="nowrap">E <i>e</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            E
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#pollFirst()">pollFirst</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            E
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#pollLast()">pollLast</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#remove(java.lang.Object)">remove</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>o</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; <i>c</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#size()">size</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#subSet(E, boolean, E, boolean)">subSet</a></span>(<span class="nowrap">E <i>fromElement</i></span>, <span class="nowrap">boolean <i>fromInclusive</i></span>, <span class="nowrap">E <i>toElement</i></span>, <span class="nowrap">boolean <i>toInclusive</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#subSet(E, E)">subSet</a></span>(<span class="nowrap">E <i>fromElement</i></span>, <span class="nowrap">E <i>toElement</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#tailSet(E, boolean)">tailSet</a></span>(<span class="nowrap">E <i>fromElement</i></span>, <span class="nowrap">boolean <i>inclusive</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html#tailSet(E)">tailSet</a></span>(<span class="nowrap">E <i>fromElement</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="ConcurrentSkipListSet()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ConcurrentSkipListSet</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new, empty set that orders its elements according to
+ their {@linkplain Comparable natural ordering}.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="ConcurrentSkipListSet(java.util.Comparator<? super E>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ConcurrentSkipListSet</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;E&gt; <i>comparator</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new, empty set that orders its elements according to
+ the specified comparator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">comparator</td>
+          <td class="jd-tagdescr">the comparator that will be used to order this set.
+        If <code>null</code>, the {@linkplain Comparable natural
+        ordering} of the elements will be used.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ConcurrentSkipListSet(java.util.Collection<? extends E>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ConcurrentSkipListSet</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; <i>c</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new set containing the elements in the specified
+ collection, that orders its elements according to their
+ {@linkplain Comparable natural ordering}.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">c</td>
+          <td class="jd-tagdescr">The elements that will comprise the new set</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the elements in <code>c</code> are
+         not <code><a href="reference/java/lang/Comparable.html">Comparable</a></code>, or are not mutually comparable</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified collection or any
+         of its elements are null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ConcurrentSkipListSet(java.util.SortedSet<E>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ConcurrentSkipListSet</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt; <i>s</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new set containing the same elements and using the
+ same ordering as the specified sorted set.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">s</td>
+          <td class="jd-tagdescr">sorted set whose elements will comprise the new set</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified sorted set or any
+         of its elements are null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="add(E)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>add</strong></span>
+      <span class="params">(<span class="nowrap">E <i>e</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Adds the specified element to this set if it is not already present.
+ More formally, adds the specified element <code>e</code> to this set if
+ the set contains no element <code>e2</code> such that <code>e.equals(e2)</code>.
+ If this set already contains the element, the call leaves the set
+ unchanged and returns <code>false</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">e</td>
+          <td class="jd-tagdescr">element to be added to this set</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this set did not already contain the
+         specified element</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if <code>e</code> cannot be compared
+         with the elements currently in this set</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified element is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ceiling(E)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        E
+      </span>
+      <span class="sympad"><strong>ceiling</strong></span>
+      <span class="params">(<span class="nowrap">E <i>e</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the least element in this set greater than or equal to
+ the given element, or <code>null</code> if there is no such element.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">e</td>
+          <td class="jd-tagdescr">the value to match</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the least element greater than or equal to <code>e</code>,
+         or <code>null</code> if there is no such element</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified element is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="clear()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>clear</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes all of the elements from this set.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="clone()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html">ConcurrentSkipListSet</a>&lt;E&gt;
+      </span>
+      <span class="sympad"><strong>clone</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a shallow copy of this <code>ConcurrentSkipListSet</code>
+ instance. (The elements themselves are not cloned.)</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a shallow copy of this set
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="comparator()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;E&gt;
+      </span>
+      <span class="sympad"><strong>comparator</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the comparator used to compare elements in this <code>SortedSet</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a comparator or null if the natural ordering is used.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="contains(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>contains</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>o</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this set contains the specified element.
+ More formally, returns <code>true</code> if and only if this set
+ contains an element <code>e</code> such that <code>o.equals(e)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">o</td>
+          <td class="jd-tagdescr">object to be checked for containment in this set</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this set contains the specified element</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the specified element cannot be
+         compared with the elements currently in this set</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified element is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="descendingIterator()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+      </span>
+      <span class="sympad"><strong>descendingIterator</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an iterator over the elements in this set in descending order.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an iterator over the elements in this set in descending order
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="descendingSet()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </span>
+      <span class="sympad"><strong>descendingSet</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a reverse order view of the elements contained in this set.
+ The descending set is backed by this set, so changes to the set are
+ reflected in the descending set, and vice-versa.
+
+ <p>The returned set has an ordering equivalent to
+ <code><a href="reference/java/util/Collections.html#reverseOrder(java.util.Comparator<T>)">Collections.reverseOrder</a></code><code>(comparator())</code>.
+ The expression <code>s.descendingSet().descendingSet()</code> returns a
+ view of <code>s</code> essentially equivalent to <code>s</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a reverse order view of this set
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>o</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares the specified object with this set for equality.  Returns
+ <code>true</code> if the specified object is also a set, the two sets
+ have the same size, and every member of the specified set is
+ contained in this set (or equivalently, every member of this set is
+ contained in the specified set).  This definition ensures that the
+ equals method works properly across different implementations of the
+ set interface.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">o</td>
+          <td class="jd-tagdescr">the object to be compared for equality with this set</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the specified object is equal to this set
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="first()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        E
+      </span>
+      <span class="sympad"><strong>first</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the first element in this <code>SortedSet</code>. The first element
+ is the lowest element.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the first element.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="floor(E)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        E
+      </span>
+      <span class="sympad"><strong>floor</strong></span>
+      <span class="params">(<span class="nowrap">E <i>e</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the greatest element in this set less than or equal to
+ the given element, or <code>null</code> if there is no such element.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">e</td>
+          <td class="jd-tagdescr">the value to match</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the greatest element less than or equal to <code>e</code>,
+         or <code>null</code> if there is no such element</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified element is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="headSet(E, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </span>
+      <span class="sympad"><strong>headSet</strong></span>
+      <span class="params">(<span class="nowrap">E <i>toElement</i></span>, <span class="nowrap">boolean <i>inclusive</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this set whose elements are less than
+ (or equal to, if <code>inclusive</code> is true) <code>toElement</code>.  The
+ returned set is backed by this set, so changes in the returned set are
+ reflected in this set, and vice-versa.  The returned set supports all
+ optional set operations that this set supports.
+
+ <p>The returned set will throw an <code>IllegalArgumentException</code>
+ on an attempt to insert an element outside its range.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">toElement</td>
+          <td class="jd-tagdescr">high endpoint of the returned set</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">inclusive</td>
+          <td class="jd-tagdescr"><code>true</code> if the high endpoint
+        is to be included in the returned view</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a view of the portion of this set whose elements are less than
+         (or equal to, if <code>inclusive</code> is true) <code>toElement</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>toElement</code> is null</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="headSet(E)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </span>
+      <span class="sympad"><strong>headSet</strong></span>
+      <span class="params">(<span class="nowrap">E <i>toElement</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>SortedSet</code> of the specified portion of this
+ <code>SortedSet</code> which contains elements less than the end element. The
+ returned <code>SortedSet</code> is backed by this <code>SortedSet</code> so changes
+ to one set are reflected by the other.
+
+ <p>Equivalent to <code>headSet(toElement, false)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">toElement</td>
+          <td class="jd-tagdescr">the end element.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a subset where the elements are less than <code>end</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>toElement</code> is null</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="higher(E)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        E
+      </span>
+      <span class="sympad"><strong>higher</strong></span>
+      <span class="params">(<span class="nowrap">E <i>e</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the least element in this set strictly greater than the
+ given element, or <code>null</code> if there is no such element.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">e</td>
+          <td class="jd-tagdescr">the value to match</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the least element greater than <code>e</code>,
+         or <code>null</code> if there is no such element</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified element is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isEmpty()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isEmpty</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this set contains no elements.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this set contains no elements
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="iterator()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+      </span>
+      <span class="sympad"><strong>iterator</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an iterator over the elements in this set in ascending order.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an iterator over the elements in this set in ascending order
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="last()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        E
+      </span>
+      <span class="sympad"><strong>last</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the last element in this <code>SortedSet</code>. The last element is
+ the highest element.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the last element.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="lower(E)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        E
+      </span>
+      <span class="sympad"><strong>lower</strong></span>
+      <span class="params">(<span class="nowrap">E <i>e</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the greatest element in this set strictly less than the
+ given element, or <code>null</code> if there is no such element.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">e</td>
+          <td class="jd-tagdescr">the value to match</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the greatest element less than <code>e</code>,
+         or <code>null</code> if there is no such element</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified element is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="pollFirst()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        E
+      </span>
+      <span class="sympad"><strong>pollFirst</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the first (lowest) element,
+ or returns <code>null</code> if this set is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the first element, or <code>null</code> if this set is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="pollLast()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        E
+      </span>
+      <span class="sympad"><strong>pollLast</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the last (highest) element,
+ or returns <code>null</code> if this set is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the last element, or <code>null</code> if this set is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="remove(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>remove</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>o</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the specified element from this set if it is present.
+ More formally, removes an element <code>e</code> such that
+ <code>o.equals(e)</code>, if this set contains such an element.
+ Returns <code>true</code> if this set contained the element (or
+ equivalently, if this set changed as a result of the call).
+ (This set will not contain the element once the call returns.)</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">o</td>
+          <td class="jd-tagdescr">object to be removed from this set, if present</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this set contained the specified element</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if <code>o</code> cannot be compared
+         with the elements currently in this set</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified element is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="removeAll(java.util.Collection<?>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>removeAll</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; <i>c</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes from this set all of its elements that are contained in
+ the specified collection.  If the specified collection is also
+ a set, this operation effectively modifies this set so that its
+ value is the <i>asymmetric set difference</i> of the two sets.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">c</td>
+          <td class="jd-tagdescr">collection containing elements to be removed from this set</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this set changed as a result of the call</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the types of one or more elements in this
+         set are incompatible with the specified collection</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified collection or any
+         of its elements are null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="size()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>size</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of elements in this set.  If this set
+ contains more than <code>Integer.MAX_VALUE</code> elements, it
+ returns <code>Integer.MAX_VALUE</code>.
+
+ <p>Beware that, unlike in most collections, this method is
+ <em>NOT</em> a constant-time operation. Because of the
+ asynchronous nature of these sets, determining the current
+ number of elements requires traversing them all to count them.
+ Additionally, it is possible for the size to change during
+ execution of this method, in which case the returned result
+ will be inaccurate. Thus, this method is typically not very
+ useful in concurrent applications.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of elements in this set
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="subSet(E, boolean, E, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </span>
+      <span class="sympad"><strong>subSet</strong></span>
+      <span class="params">(<span class="nowrap">E <i>fromElement</i></span>, <span class="nowrap">boolean <i>fromInclusive</i></span>, <span class="nowrap">E <i>toElement</i></span>, <span class="nowrap">boolean <i>toInclusive</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this set whose elements range from
+ <code>fromElement</code> to <code>toElement</code>.  If <code>fromElement</code> and
+ <code>toElement</code> are equal, the returned set is empty unless <code>fromExclusive</code> and <code>toExclusive</code> are both true.  The returned set
+ is backed by this set, so changes in the returned set are reflected in
+ this set, and vice-versa.  The returned set supports all optional set
+ operations that this set supports.
+
+ <p>The returned set will throw an <code>IllegalArgumentException</code>
+ on an attempt to insert an element outside its range.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">fromElement</td>
+          <td class="jd-tagdescr">low endpoint of the returned set</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">fromInclusive</td>
+          <td class="jd-tagdescr"><code>true</code> if the low endpoint
+        is to be included in the returned view</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">toElement</td>
+          <td class="jd-tagdescr">high endpoint of the returned set</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">toInclusive</td>
+          <td class="jd-tagdescr"><code>true</code> if the high endpoint
+        is to be included in the returned view</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a view of the portion of this set whose elements range from
+         <code>fromElement</code>, inclusive, to <code>toElement</code>, exclusive</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>fromElement</code> or
+         <code>toElement</code> is null</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="subSet(E, E)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </span>
+      <span class="sympad"><strong>subSet</strong></span>
+      <span class="params">(<span class="nowrap">E <i>fromElement</i></span>, <span class="nowrap">E <i>toElement</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>SortedSet</code> of the specified portion of this
+ <code>SortedSet</code> which contains elements greater or equal to the start
+ element but less than the end element. The returned <code>SortedSet</code> is
+ backed by this SortedMap so changes to one set are reflected by the
+ other.
+
+ <p>Equivalent to <code>subSet(fromElement, true, toElement, false)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">fromElement</td>
+          <td class="jd-tagdescr">the start element.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">toElement</td>
+          <td class="jd-tagdescr">the end element.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a subset where the elements are greater or equal to <code>start</code>
+         and less than <code>end</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>fromElement</code> or
+         <code>toElement</code> is null</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="tailSet(E, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </span>
+      <span class="sympad"><strong>tailSet</strong></span>
+      <span class="params">(<span class="nowrap">E <i>fromElement</i></span>, <span class="nowrap">boolean <i>inclusive</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this set whose elements are greater
+ than (or equal to, if <code>inclusive</code> is true) <code>fromElement</code>.
+ The returned set is backed by this set, so changes in the returned set
+ are reflected in this set, and vice-versa.  The returned set supports
+ all optional set operations that this set supports.
+
+ <p>The returned set will throw an <code>IllegalArgumentException</code>
+ on an attempt to insert an element outside its range.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">fromElement</td>
+          <td class="jd-tagdescr">low endpoint of the returned set</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">inclusive</td>
+          <td class="jd-tagdescr"><code>true</code> if the low endpoint
+        is to be included in the returned view</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a view of the portion of this set whose elements are greater
+         than or equal to <code>fromElement</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>fromElement</code> is null</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="tailSet(E)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;
+      </span>
+      <span class="sympad"><strong>tailSet</strong></span>
+      <span class="params">(<span class="nowrap">E <i>fromElement</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>SortedSet</code> of the specified portion of this
+ <code>SortedSet</code> which contains elements greater or equal to the start
+ element. The returned <code>SortedSet</code> is backed by this
+ <code>SortedSet</code> so changes to one set are reflected by the other.
+
+ <p>Equivalent to <code>tailSet(fromElement, true)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">fromElement</td>
+          <td class="jd-tagdescr">the start element.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a subset where the elements are greater or equal to <code>start</code> .</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>fromElement</code> is null</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

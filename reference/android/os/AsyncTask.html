@@ -1,0 +1,1872 @@
+---
+
+title: AsyncTask - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="selected api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="selected api apilevel-"><a href="../../../reference/android/os/AsyncTask.html">AsyncTask</a>&lt;Params,&nbsp;Progress,&nbsp;Result&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/android/os/SystemClock.html">SystemClock</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/android/os/AsyncTask.Status.html">AsyncTask.Status</a></li>
+      </ul>
+    </li>
+              
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">AsyncTask</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p><p>AsyncTask enables proper and easy use of the UI thread. This class allows to
+ perform background operations and publish results on the UI thread without
+ having to manipulate threads and/or handlers.</p>
+
+ <p>AsyncTask is designed to be a helper class around <code><a href="reference/java/lang/Thread.html">Thread</a></code>
+ and does not constitute a generic threading framework. AsyncTasks should ideally be
+ used for short operations (a few seconds at the most.) If you need to keep threads
+ running for long periods of time, it is highly recommended you use the various APIs
+ provided by the <code>java.util.concurrent</code> package such as <code><a href="reference/java/util/concurrent/Executor.html">Executor</a></code>,
+ <code><a href="reference/java/util/concurrent/ThreadPoolExecutor.html">ThreadPoolExecutor</a></code> and <code><a href="reference/java/util/concurrent/FutureTask.html">FutureTask</a></code>.</p>
+
+ <p>An asynchronous task is defined by a computation that runs on a background thread and
+ whose result is published on the UI thread. An asynchronous task is defined by 3 generic
+ types, called <code>Params</code>, <code>Progress</code> and <code>Result</code>,
+ and 4 steps, called <code>onPreExecute</code>, <code>doInBackground</code>,
+ <code>onProgressUpdate</code> and <code>onPostExecute</code>.</p>
+
+ <h2>Usage</h2>
+ <p>AsyncTask must be subclassed to be used. The subclass will override at least
+ one method (<code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code>), and most often will override a
+ second one (<code><a href="reference/android/os/AsyncTask.html#onPostExecute(Result)">onPostExecute(Result)</a></code>.)</p>
+
+ <p>Here is an example of subclassing:</p>
+ <pre class="prettyprint">
+ private class DownloadFilesTask extends AsyncTask&lt;URL, Integer, Long&gt; {
+     protected Long doInBackground(URL... urls) {
+         int count = urls.length;
+         long totalSize = 0;
+         for (int i = 0; i < count; i++) {
+             totalSize += Downloader.downloadFile(urls[i]);
+             publishProgress((int) ((i / (float) count) * 100));
+             // Escape early if cancel() is called
+             if (isCancelled()) break;
+         }
+         return totalSize;
+     }
+
+     protected void onProgressUpdate(Integer... progress) {
+         setProgressPercent(progress[0]);
+     }
+
+     protected void onPostExecute(Long result) {
+         showDialog("Downloaded " + result + " bytes");
+     }
+ }
+ </pre>
+
+ <p>Once created, a task is executed very simply:</p>
+ <pre class="prettyprint">
+ new DownloadFilesTask().execute(url1, url2, url3);
+ </pre>
+
+ <h2>AsyncTask's generic types</h2>
+ <p>The three types used by an asynchronous task are the following:</p>
+ <ol>
+     <li><code>Params</code>, the type of the parameters sent to the task upon
+     execution.</li>
+     <li><code>Progress</code>, the type of the progress units published during
+     the background computation.</li>
+     <li><code>Result</code>, the type of the result of the background
+     computation.</li>
+ </ol>
+ <p>Not all types are always used by an asynchronous task. To mark a type as unused,
+ simply use the type <code><a href="reference/java/lang/Void.html">Void</a></code>:</p>
+ <pre>
+ private class MyTask extends AsyncTask&lt;Void, Void, Void&gt; { ... }
+ </pre>
+
+ <h2>The 4 steps</h2>
+ <p>When an asynchronous task is executed, the task goes through 4 steps:</p>
+ <ol>
+     <li><code><a href="reference/android/os/AsyncTask.html#onPreExecute()">onPreExecute()</a></code>, invoked on the UI thread before the task
+     is executed. This step is normally used to setup the task, for instance by
+     showing a progress bar in the user interface.</li>
+     <li><code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code>, invoked on the background thread
+     immediately after <code><a href="reference/android/os/AsyncTask.html#onPreExecute()">onPreExecute()</a></code> finishes executing. This step is used
+     to perform background computation that can take a long time. The parameters
+     of the asynchronous task are passed to this step. The result of the computation must
+     be returned by this step and will be passed back to the last step. This step
+     can also use <code><a href="reference/android/os/AsyncTask.html#publishProgress(Progress...)">publishProgress(Progress...)</a></code> to publish one or more units
+     of progress. These values are published on the UI thread, in the
+     <code><a href="reference/android/os/AsyncTask.html#onProgressUpdate(Progress...)">onProgressUpdate(Progress...)</a></code> step.</li>
+     <li><code><a href="reference/android/os/AsyncTask.html#onProgressUpdate(Progress...)">onProgressUpdate(Progress...)</a></code>, invoked on the UI thread after a
+     call to <code><a href="reference/android/os/AsyncTask.html#publishProgress(Progress...)">publishProgress(Progress...)</a></code>. The timing of the execution is
+     undefined. This method is used to display any form of progress in the user
+     interface while the background computation is still executing. For instance,
+     it can be used to animate a progress bar or show logs in a text field.</li>
+     <li><code><a href="reference/android/os/AsyncTask.html#onPostExecute(Result)">onPostExecute(Result)</a></code>, invoked on the UI thread after the background
+     computation finishes. The result of the background computation is passed to
+     this step as a parameter.</li>
+ </ol>
+
+ <h2>Cancelling a task</h2>
+ <p>A task can be cancelled at any time by invoking <code><a href="reference/android/os/AsyncTask.html#cancel(boolean)">cancel(boolean)</a></code>. Invoking
+ this method will cause subsequent calls to <code><a href="reference/android/os/AsyncTask.html#isCancelled()">isCancelled()</a></code> to return true.
+ After invoking this method, <code><a href="reference/android/os/AsyncTask.html#onCancelled(Result)">onCancelled(Object)</a></code>, instead of
+ <code><a href="reference/android/os/AsyncTask.html#onPostExecute(Result)">onPostExecute(Object)</a></code> will be invoked after <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Object[])</a></code>
+ returns. To ensure that a task is cancelled as quickly as possible, you should always
+ check the return value of <code><a href="reference/android/os/AsyncTask.html#isCancelled()">isCancelled()</a></code> periodically from
+ <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Object[])</a></code>, if possible (inside a loop for instance.)</p>
+
+ <h2>Threading rules</h2>
+ <p>There are a few threading rules that must be followed for this class to
+ work properly:</p>
+ <ul>
+     <li>The AsyncTask class must be loaded on the UI thread. This is done
+     automatically as of JELLY_BEAN.</li>
+     <li>The task instance must be created on the UI thread.</li>
+     <li><code><a href="reference/android/os/AsyncTask.html#execute(Params...)">execute(Params...)</a></code> must be invoked on the UI thread.</li>
+     <li>Do not call <code><a href="reference/android/os/AsyncTask.html#onPreExecute()">onPreExecute()</a></code>, <code><a href="reference/android/os/AsyncTask.html#onPostExecute(Result)">onPostExecute(Result)</a></code>,
+     <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code>, <code><a href="reference/android/os/AsyncTask.html#onProgressUpdate(Progress...)">onProgressUpdate(Progress...)</a></code> manually.</li>
+     <li>The task can be executed only once (an exception will be thrown if
+     a second execution is attempted.)</li>
+ </ul>
+
+ <h2>Memory observability</h2>
+ <p>AsyncTask guarantees that all callback calls are synchronized in such a way that the following
+ operations are safe without explicit synchronizations.</p>
+ <ul>
+     <li>Set member fields in the constructor or <code><a href="reference/android/os/AsyncTask.html#onPreExecute()">onPreExecute()</a></code>, and refer to them
+     in <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code>.
+     <li>Set member fields in <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code>, and refer to them in
+     <code><a href="reference/android/os/AsyncTask.html#onProgressUpdate(Progress...)">onProgressUpdate(Progress...)</a></code> and <code><a href="reference/android/os/AsyncTask.html#onPostExecute(Result)">onPostExecute(Result)</a></code>.
+ </ul>
+
+ <h2>Order of execution</h2>
+ <p>When first introduced, AsyncTasks were executed serially on a single background
+ thread. Starting with DONUT, this was changed
+ to a pool of threads allowing multiple tasks to operate in parallel. Starting with
+ HONEYCOMB, tasks are executed on a single
+ thread to avoid common application errors caused by parallel execution.</p>
+ <p>If you truly want parallel execution, you can invoke
+ <code><a href="reference/android/os/AsyncTask.html#executeOnExecutor(java.util.concurrent.Executor, Params...)">executeOnExecutor(java.util.concurrent.Executor, Object[])</a></code> with
+ <code><a href="reference/android/os/AsyncTask.html#THREAD_POOL_EXECUTOR">THREAD_POOL_EXECUTOR</a></code>.</p>
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<section>
+  <h3>Nested Class Summary</h3>
+  <table id="nestedclasses" class="jd-sumtable">
+    
+
+  
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+        
+        
+        
+        
+        enum</td>
+      <td class="jd-linkcol" colspan="2"><a href="../../../reference/android/os/AsyncTask.Status.html">AsyncTask.Status</a></td>
+      <td class="jd-descrcol" width="100%">Indicates the current status of the task.&nbsp;</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<section id="lfields"><h3>Field Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/util/concurrent/Executor.html">Executor</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/android/os/AsyncTask.html#SERIAL_EXECUTOR">SERIAL_EXECUTOR</a></td>
+          <td class="jd-descrcol" width="100%">An <code><a href="reference/java/util/concurrent/Executor.html">Executor</a></code> that executes tasks one at a time in serial
+ order.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/util/concurrent/Executor.html">Executor</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/android/os/AsyncTask.html#THREAD_POOL_EXECUTOR">THREAD_POOL_EXECUTOR</a></td>
+          <td class="jd-descrcol" width="100%">An <code><a href="reference/java/util/concurrent/Executor.html">Executor</a></code> that can be used to execute tasks in parallel.</td>
+      </tr>
+      
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#AsyncTask()">AsyncTask</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#cancel(boolean)">cancel</a></span>(<span class="nowrap">boolean <i>mayInterruptIfRunning</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/android/os/AsyncTask.html">AsyncTask</a>&lt;Params,&nbsp;Progress,&nbsp;Result&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#execute(Params...)">execute</a></span>(<span class="nowrap">Params... <i>params</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#execute(java.lang.Runnable)">execute</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Runnable.html">Runnable</a> <i>runnable</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/android/os/AsyncTask.html">AsyncTask</a>&lt;Params,&nbsp;Progress,&nbsp;Result&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#executeOnExecutor(java.util.concurrent.Executor, Params...)">executeOnExecutor</a></span>(<span class="nowrap"><a href="../../../reference/java/util/concurrent/Executor.html">Executor</a> <i>exec</i></span>, <span class="nowrap">Params... <i>params</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            Result
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#get(long, java.util.concurrent.TimeUnit)">get</a></span>(<span class="nowrap">long <i>timeout</i></span>, <span class="nowrap"><a href="../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            Result
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#get()">get</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/android/os/AsyncTask.Status.html">AsyncTask.Status</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#getStatus()">getStatus</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#isCancelled()">isCancelled</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            Result
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground</a></span>(<span class="nowrap">Params... <i>params</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#onCancelled()">onCancelled</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#onCancelled(Result)">onCancelled</a></span>(<span class="nowrap">Result <i>result</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#onPostExecute(Result)">onPostExecute</a></span>(<span class="nowrap">Result <i>result</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#onPreExecute()">onPreExecute</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#onProgressUpdate(Progress...)">onProgressUpdate</a></span>(<span class="nowrap">Progress... <i>values</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/android/os/AsyncTask.html#publishProgress(Progress...)">publishProgress</a></span>(<span class="nowrap">Progress... <i>values</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- ========= FIELD DETAIL ======== -->
+<section id="fields">
+  <h2>Fields</h2>
+  
+
+
+
+<A NAME="SERIAL_EXECUTOR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          <a href="../../../reference/java/util/concurrent/Executor.html">Executor</a>
+        
+      </span>
+        <strong>SERIAL_EXECUTOR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>An <code><a href="reference/java/util/concurrent/Executor.html">Executor</a></code> that executes tasks one at a time in serial
+ order.  This serialization is global to a particular process.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<A NAME="THREAD_POOL_EXECUTOR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          <a href="../../../reference/java/util/concurrent/Executor.html">Executor</a>
+        
+      </span>
+        <strong>THREAD_POOL_EXECUTOR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>An <code><a href="reference/java/util/concurrent/Executor.html">Executor</a></code> that can be used to execute tasks in parallel.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="AsyncTask()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>AsyncTask</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new asynchronous task. This constructor must be invoked on the UI thread.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="cancel(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>cancel</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>mayInterruptIfRunning</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Attempts to cancel execution of this task.  This attempt will
+ fail if the task has already completed, already been cancelled,
+ or could not be cancelled for some other reason. If successful,
+ and this task has not started when <tt>cancel</tt> is called,
+ this task should never run. If the task has already started,
+ then the <tt>mayInterruptIfRunning</tt> parameter determines
+ whether the thread executing this task should be interrupted in
+ an attempt to stop the task.</p>
+
+ <p>Calling this method will result in <code><a href="reference/android/os/AsyncTask.html#onCancelled(Result)">onCancelled(Object)</a></code> being
+ invoked on the UI thread after <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Object[])</a></code>
+ returns. Calling this method guarantees that <code><a href="reference/android/os/AsyncTask.html#onPostExecute(Result)">onPostExecute(Object)</a></code>
+ is never invoked. After invoking this method, you should check the
+ value returned by <code><a href="reference/android/os/AsyncTask.html#isCancelled()">isCancelled()</a></code> periodically from
+ <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Object[])</a></code> to finish the task as early as
+ possible.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">mayInterruptIfRunning</td>
+          <td class="jd-tagdescr"><tt>true</tt> if the thread executing this
+        task should be interrupted; otherwise, in-progress tasks are allowed
+        to complete.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><tt>false</tt> if the task could not be cancelled,
+         typically because it has already completed normally;
+         <tt>true</tt> otherwise</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#isCancelled()">isCancelled()</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#onCancelled(Result)">onCancelled(Object)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="execute(Params...)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/android/os/AsyncTask.html">AsyncTask</a>&lt;Params,&nbsp;Progress,&nbsp;Result&gt;
+      </span>
+      <span class="sympad"><strong>execute</strong></span>
+      <span class="params">(<span class="nowrap">Params... <i>params</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Executes the task with the specified parameters. The task returns
+ itself (this) so that the caller can keep a reference to it.
+
+ <p>Note: this function schedules the task on a queue for a single background
+ thread or pool of threads depending on the platform version.  When first
+ introduced, AsyncTasks were executed serially on a single background thread.
+ Starting with DONUT, this was changed
+ to a pool of threads allowing multiple tasks to operate in parallel. Starting
+ HONEYCOMB, tasks are back to being
+ executed on a single thread to avoid common application errors caused
+ by parallel execution.  If you truly want parallel execution, you can use
+ the <code><a href="reference/android/os/AsyncTask.html#executeOnExecutor(java.util.concurrent.Executor, Params...)">executeOnExecutor(Executor, Params...)</a></code> version of this method
+ with <code><a href="reference/android/os/AsyncTask.html#THREAD_POOL_EXECUTOR">THREAD_POOL_EXECUTOR</a></code>; however, see commentary there for warnings
+ on its use.
+
+ <p>This method must be invoked on the UI thread.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">params</td>
+          <td class="jd-tagdescr">The parameters of the task.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>This instance of AsyncTask.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td class="jd-tagdescr">If <code><a href="reference/android/os/AsyncTask.html#getStatus()">getStatus()</a></code> returns either
+         <code><a href="reference/android/os/AsyncTask.Status.html#RUNNING">RUNNING</a></code> or <code><a href="reference/android/os/AsyncTask.Status.html#FINISHED">FINISHED</a></code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#executeOnExecutor(java.util.concurrent.Executor, Params...)">executeOnExecutor(java.util.concurrent.Executor, Object[])</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#execute(java.lang.Runnable)">execute(Runnable)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="execute(java.lang.Runnable)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>execute</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Runnable.html">Runnable</a> <i>runnable</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Convenience version of <code><a href="reference/android/os/AsyncTask.html#execute(Params...)">execute(Object)</a></code> for use with
+ a simple Runnable object. See <code><a href="reference/android/os/AsyncTask.html#execute(Params...)">execute(Object[])</a></code> for more
+ information on the order of execution.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#execute(Params...)">execute(Object[])</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#executeOnExecutor(java.util.concurrent.Executor, Params...)">executeOnExecutor(java.util.concurrent.Executor, Object[])</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="executeOnExecutor(java.util.concurrent.Executor, Params...)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/android/os/AsyncTask.html">AsyncTask</a>&lt;Params,&nbsp;Progress,&nbsp;Result&gt;
+      </span>
+      <span class="sympad"><strong>executeOnExecutor</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/concurrent/Executor.html">Executor</a> <i>exec</i></span>, <span class="nowrap">Params... <i>params</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Executes the task with the specified parameters. The task returns
+ itself (this) so that the caller can keep a reference to it.
+
+ <p>This method is typically used with <code><a href="reference/android/os/AsyncTask.html#THREAD_POOL_EXECUTOR">THREAD_POOL_EXECUTOR</a></code> to
+ allow multiple tasks to run in parallel on a pool of threads managed by
+ AsyncTask, however you can also use your own <code><a href="reference/java/util/concurrent/Executor.html">Executor</a></code> for custom
+ behavior.
+
+ <p><em>Warning:</em> Allowing multiple tasks to run in parallel from
+ a thread pool is generally <em>not</em> what one wants, because the order
+ of their operation is not defined.  For example, if these tasks are used
+ to modify any state in common (such as writing a file due to a button click),
+ there are no guarantees on the order of the modifications.
+ Without careful work it is possible in rare cases for the newer version
+ of the data to be over-written by an older one, leading to obscure data
+ loss and stability issues.  Such changes are best
+ executed in serial; to guarantee such work is serialized regardless of
+ platform version you can use this function with <code><a href="reference/android/os/AsyncTask.html#SERIAL_EXECUTOR">SERIAL_EXECUTOR</a></code>.
+
+ <p>This method must be invoked on the UI thread.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">exec</td>
+          <td class="jd-tagdescr">The executor to use.  <code><a href="reference/android/os/AsyncTask.html#THREAD_POOL_EXECUTOR">THREAD_POOL_EXECUTOR</a></code> is available as a
+              convenient process-wide thread pool for tasks that are loosely coupled.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">params</td>
+          <td class="jd-tagdescr">The parameters of the task.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>This instance of AsyncTask.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td class="jd-tagdescr">If <code><a href="reference/android/os/AsyncTask.html#getStatus()">getStatus()</a></code> returns either
+         <code><a href="reference/android/os/AsyncTask.Status.html#RUNNING">RUNNING</a></code> or <code><a href="reference/android/os/AsyncTask.Status.html#FINISHED">FINISHED</a></code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#execute(Params...)">execute(Object[])</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="get(long, java.util.concurrent.TimeUnit)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        Result
+      </span>
+      <span class="sympad"><strong>get</strong></span>
+      <span class="params">(<span class="nowrap">long <i>timeout</i></span>, <span class="nowrap"><a href="../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Waits if necessary for at most the given time for the computation
+ to complete, and then retrieves its result.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">timeout</td>
+          <td class="jd-tagdescr">Time to wait before cancelling the operation.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">unit</td>
+          <td class="jd-tagdescr">The time unit for the timeout.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The computed result.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/util/concurrent/CancellationException.html">CancellationException</a></td>
+            <td class="jd-tagdescr">If the computation was cancelled.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/util/concurrent/ExecutionException.html">ExecutionException</a></td>
+            <td class="jd-tagdescr">If the computation threw an exception.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
+            <td class="jd-tagdescr">If the current thread was interrupted
+         while waiting.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/util/concurrent/TimeoutException.html">TimeoutException</a></td>
+            <td class="jd-tagdescr">If the wait timed out.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="get()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        Result
+      </span>
+      <span class="sympad"><strong>get</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Waits if necessary for the computation to complete, and then
+ retrieves its result.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The computed result.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/util/concurrent/CancellationException.html">CancellationException</a></td>
+            <td class="jd-tagdescr">If the computation was cancelled.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/util/concurrent/ExecutionException.html">ExecutionException</a></td>
+            <td class="jd-tagdescr">If the computation threw an exception.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
+            <td class="jd-tagdescr">If the current thread was interrupted
+         while waiting.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getStatus()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/android/os/AsyncTask.Status.html">AsyncTask.Status</a>
+      </span>
+      <span class="sympad"><strong>getStatus</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the current status of this task.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The current status.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isCancelled()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isCancelled</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <tt>true</tt> if this task was cancelled before it completed
+ normally. If you are calling <code><a href="reference/android/os/AsyncTask.html#cancel(boolean)">cancel(boolean)</a></code> on the task,
+ the value returned by this method should be checked periodically from
+ <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Object[])</a></code> to end the task as soon as possible.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><tt>true</tt> if task was cancelled before it completed</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#cancel(boolean)">cancel(boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="doInBackground(Params...)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        Result
+      </span>
+      <span class="sympad"><strong>doInBackground</strong></span>
+      <span class="params">(<span class="nowrap">Params... <i>params</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Override this method to perform a computation on a background thread. The
+ specified parameters are the parameters passed to <code><a href="reference/android/os/AsyncTask.html#execute(Params...)">execute(Params...)</a></code>
+ by the caller of this task.
+
+ This method can call <code><a href="reference/android/os/AsyncTask.html#publishProgress(Progress...)">publishProgress(Progress...)</a></code> to publish updates
+ on the UI thread.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">params</td>
+          <td class="jd-tagdescr">The parameters of the task.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>A result, defined by the subclass of this task.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#onPreExecute()">onPreExecute()</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#onPostExecute(Result)">onPostExecute(Result)</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#publishProgress(Progress...)">publishProgress(Progress...)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="onCancelled()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>onCancelled</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Applications should preferably override <code><a href="reference/android/os/AsyncTask.html#onCancelled(Result)">onCancelled(Object)</a></code>.
+ This method is invoked by the default implementation of
+ <code><a href="reference/android/os/AsyncTask.html#onCancelled(Result)">onCancelled(Object)</a></code>.</p>
+
+ <p>Runs on the UI thread after <code><a href="reference/android/os/AsyncTask.html#cancel(boolean)">cancel(boolean)</a></code> is invoked and
+ <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Object[])</a></code> has finished.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#onCancelled(Result)">onCancelled(Object)</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#cancel(boolean)">cancel(boolean)</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#isCancelled()">isCancelled()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="onCancelled(Result)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>onCancelled</strong></span>
+      <span class="params">(<span class="nowrap">Result <i>result</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Runs on the UI thread after <code><a href="reference/android/os/AsyncTask.html#cancel(boolean)">cancel(boolean)</a></code> is invoked and
+ <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Object[])</a></code> has finished.</p>
+
+ <p>The default implementation simply invokes <code><a href="reference/android/os/AsyncTask.html#onCancelled()">onCancelled()</a></code> and
+ ignores the result. If you write your own implementation, do not call
+ <code>super.onCancelled(result)</code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">result</td>
+          <td class="jd-tagdescr">The result, if any, computed in
+               <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Object[])</a></code>, can be null</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#cancel(boolean)">cancel(boolean)</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#isCancelled()">isCancelled()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="onPostExecute(Result)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>onPostExecute</strong></span>
+      <span class="params">(<span class="nowrap">Result <i>result</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Runs on the UI thread after <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code>. The
+ specified result is the value returned by <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code>.</p>
+
+ <p>This method won't be invoked if the task was cancelled.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">result</td>
+          <td class="jd-tagdescr">The result of the operation computed by <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#onPreExecute()">onPreExecute()</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#onCancelled(Result)">onCancelled(Object)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="onPreExecute()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>onPreExecute</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Runs on the UI thread before <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#onPostExecute(Result)">onPostExecute(Result)</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="onProgressUpdate(Progress...)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>onProgressUpdate</strong></span>
+      <span class="params">(<span class="nowrap">Progress... <i>values</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Runs on the UI thread after <code><a href="reference/android/os/AsyncTask.html#publishProgress(Progress...)">publishProgress(Progress...)</a></code> is invoked.
+ The specified values are the values passed to <code><a href="reference/android/os/AsyncTask.html#publishProgress(Progress...)">publishProgress(Progress...)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">values</td>
+          <td class="jd-tagdescr">The values indicating progress.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#publishProgress(Progress...)">publishProgress(Progress...)</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="publishProgress(Progress...)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>publishProgress</strong></span>
+      <span class="params">(<span class="nowrap">Progress... <i>values</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>This method can be invoked from <code><a href="reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code> to
+ publish updates on the UI thread while the background computation is
+ still running. Each call to this method will trigger the execution of
+ <code><a href="reference/android/os/AsyncTask.html#onProgressUpdate(Progress...)">onProgressUpdate(Progress...)</a></code> on the UI thread.
+
+ <code><a href="reference/android/os/AsyncTask.html#onProgressUpdate(Progress...)">onProgressUpdate(Progress...)</a></code> will not be called if the task has been
+ canceled.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">values</td>
+          <td class="jd-tagdescr">The progress values to update the UI with.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/android/os/AsyncTask.html#onProgressUpdate(Progress...)">onProgressUpdate(Progress...)</a></code></li><li><code><a href="../../../reference/android/os/AsyncTask.html#doInBackground(Params...)">doInBackground(Params...)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

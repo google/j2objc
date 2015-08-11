@@ -1,0 +1,4264 @@
+---
+
+title: BigInteger - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/math/MathContext.html">MathContext</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/math/RoundingMode.html">RoundingMode</a></li>
+      </ul>
+    </li>
+              
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">BigInteger</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>This class represents immutable integer numbers of arbitrary length. Large
+ numbers are typically used in security applications and therefore BigIntegers
+ offer dedicated functionality like the generation of large prime numbers or
+ the computation of modular inverse.
+ <p>
+ Since the class was modeled to offer all the functionality as the <code><a href="reference/java/lang/Integer.html">Integer</a></code>
+ class does, it provides even methods that operate bitwise on a two's
+ complement representation of large integers. Note however that the
+ implementations favors an internal representation where magnitude and sign
+ are treated separately. Hence such operations are inefficient and should be
+ discouraged. In simple words: Do NOT implement any bit fields based on
+ BigInteger.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<section id="lfields"><h3>Field Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/math/BigInteger.html">BigInteger</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/math/BigInteger.html#ONE">ONE</a></td>
+          <td class="jd-descrcol" width="100%">The <code>BigInteger</code> constant 1.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/math/BigInteger.html">BigInteger</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/math/BigInteger.html#TEN">TEN</a></td>
+          <td class="jd-descrcol" width="100%">The <code>BigInteger</code> constant 10.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/math/BigInteger.html">BigInteger</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/math/BigInteger.html#ZERO">ZERO</a></td>
+          <td class="jd-descrcol" width="100%">The <code>BigInteger</code> constant 0.</td>
+      </tr>
+      
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#BigInteger(int, java.util.Random)">BigInteger</a></span>(<span class="nowrap">int <i>numBits</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Random.html">Random</a> <i>rnd</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#BigInteger(int, int, java.util.Random)">BigInteger</a></span>(<span class="nowrap">int <i>bitLength</i></span>, <span class="nowrap">int <i>certainty</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Random.html">Random</a> <i>rnd</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#BigInteger(java.lang.String)">BigInteger</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#BigInteger(java.lang.String, int)">BigInteger</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>val</i></span>, <span class="nowrap">int <i>radix</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#BigInteger(int, byte[])">BigInteger</a></span>(<span class="nowrap">int <i>signum</i></span>, <span class="nowrap">byte[] <i>magnitude</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#BigInteger(byte[])">BigInteger</a></span>(<span class="nowrap">byte[] <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#abs()">abs</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#add(java.math.BigInteger)">add</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#and(java.math.BigInteger)">and</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#andNot(java.math.BigInteger)">andNot</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#bitCount()">bitCount</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#bitLength()">bitLength</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#clearBit(int)">clearBit</a></span>(<span class="nowrap">int <i>n</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#compareTo(java.math.BigInteger)">compareTo</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#divide(java.math.BigInteger)">divide</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>divisor</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#divideAndRemainder(java.math.BigInteger)">divideAndRemainder</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>divisor</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#doubleValue()">doubleValue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#equals(java.lang.Object)">equals</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>x</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#flipBit(int)">flipBit</a></span>(<span class="nowrap">int <i>n</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#floatValue()">floatValue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#gcd(java.math.BigInteger)">gcd</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#getLowestSetBit()">getLowestSetBit</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#hashCode()">hashCode</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#intValue()">intValue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#isProbablePrime(int)">isProbablePrime</a></span>(<span class="nowrap">int <i>certainty</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#longValue()">longValue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#max(java.math.BigInteger)">max</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#min(java.math.BigInteger)">min</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#mod(java.math.BigInteger)">mod</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>m</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#modInverse(java.math.BigInteger)">modInverse</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>m</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#modPow(java.math.BigInteger, java.math.BigInteger)">modPow</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>exponent</i></span>, <span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>m</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#multiply(java.math.BigInteger)">multiply</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#negate()">negate</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#nextProbablePrime()">nextProbablePrime</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#not()">not</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#or(java.math.BigInteger)">or</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#pow(int)">pow</a></span>(<span class="nowrap">int <i>exp</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#probablePrime(int, java.util.Random)">probablePrime</a></span>(<span class="nowrap">int <i>bitLength</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Random.html">Random</a> <i>rnd</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#remainder(java.math.BigInteger)">remainder</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>divisor</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#setBit(int)">setBit</a></span>(<span class="nowrap">int <i>n</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#shiftLeft(int)">shiftLeft</a></span>(<span class="nowrap">int <i>n</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#shiftRight(int)">shiftRight</a></span>(<span class="nowrap">int <i>n</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#signum()">signum</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#subtract(java.math.BigInteger)">subtract</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#testBit(int)">testBit</a></span>(<span class="nowrap">int <i>n</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            byte[]
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#toByteArray()">toByteArray</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#toString(int)">toString</a></span>(<span class="nowrap">int <i>radix</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#valueOf(long)">valueOf</a></span>(<span class="nowrap">long <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/math/BigInteger.html#xor(java.math.BigInteger)">xor</a></span>(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- ========= FIELD DETAIL ======== -->
+<section id="fields">
+  <h2>Fields</h2>
+  
+
+
+
+<A NAME="ONE"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+        
+      </span>
+        <strong>ONE</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>BigInteger</code> constant 1.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<A NAME="TEN"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+        
+      </span>
+        <strong>TEN</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>BigInteger</code> constant 10.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<A NAME="ZERO"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+        
+      </span>
+        <strong>ZERO</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>BigInteger</code> constant 0.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="BigInteger(int, java.util.Random)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>BigInteger</strong></span>
+      <span class="params">(<span class="nowrap">int <i>numBits</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Random.html">Random</a> <i>rnd</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a random non-negative <code>BigInteger</code> instance in the range
+ [0, 2^(numBits)-1].</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">numBits</td>
+          <td class="jd-tagdescr">maximum length of the new <code>BigInteger</code> in bits.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">rnd</td>
+          <td class="jd-tagdescr">is an optional random generator to be used.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>numBits</code> < 0.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="BigInteger(int, int, java.util.Random)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>BigInteger</strong></span>
+      <span class="params">(<span class="nowrap">int <i>bitLength</i></span>, <span class="nowrap">int <i>certainty</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Random.html">Random</a> <i>rnd</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a random <code>BigInteger</code> instance in the range [0,
+ 2^(bitLength)-1] which is probably prime. The probability that the
+ returned <code>BigInteger</code> is prime is beyond (1-1/2^certainty).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">bitLength</td>
+          <td class="jd-tagdescr">length of the new <code>BigInteger</code> in bits.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">certainty</td>
+          <td class="jd-tagdescr">tolerated primality uncertainty.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">rnd</td>
+          <td class="jd-tagdescr">is an optional random generator to be used.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>bitLength</code> < 2.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="BigInteger(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>BigInteger</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>BigInteger</code> instance from the string
+ representation. The string representation consists of an optional minus
+ sign followed by a non-empty sequence of decimal digits.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">string representation of the new <code>BigInteger</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+            <td class="jd-tagdescr">if <code>val</code> is not a valid representation of a <code>BigInteger</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="BigInteger(java.lang.String, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>BigInteger</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>val</i></span>, <span class="nowrap">int <i>radix</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>BigInteger</code> instance from the string
+ representation. The string representation consists of an optional minus
+ sign followed by a non-empty sequence of digits in the specified radix.
+ For the conversion the method <code>Character.digit(char, radix)</code> is
+ used.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">string representation of the new <code>BigInteger</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">radix</td>
+          <td class="jd-tagdescr">the base to be used for the conversion.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+            <td class="jd-tagdescr">if <code>val</code> is not a valid representation of a <code>BigInteger</code> or if <code>radix < Character.MIN_RADIX</code> or
+             <code>radix > Character.MAX_RADIX</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="BigInteger(int, byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>BigInteger</strong></span>
+      <span class="params">(<span class="nowrap">int <i>signum</i></span>, <span class="nowrap">byte[] <i>magnitude</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>BigInteger</code> instance with the given sign and the
+ given magnitude. The sign is given as an integer (-1 for negative, 0 for
+ zero, 1 for positive). The magnitude is specified as a byte array. The
+ most significant byte is the entry at index 0.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">signum</td>
+          <td class="jd-tagdescr">sign of the new <code>BigInteger</code> (-1 for negative, 0 for
+            zero, 1 for positive).</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">magnitude</td>
+          <td class="jd-tagdescr">magnitude of the new <code>BigInteger</code> with the most
+            significant byte first.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>magnitude == null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+            <td class="jd-tagdescr">if the sign is not one of -1, 0, 1 or if the sign is zero and
+             the magnitude contains non-zero entries.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="BigInteger(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>BigInteger</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>BigInteger</code> from the given two's complement
+ representation. The most significant byte is the entry at index 0. The
+ most significant bit of this entry determines the sign of the new <code>BigInteger</code> instance. The given array must not be empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">two's complement representation of the new <code>BigInteger</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+            <td class="jd-tagdescr">if the length of <code>val</code> is zero.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="abs()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>abs</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a (new) <code>BigInteger</code> whose value is the absolute value of
+ <code>this</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>abs(this)</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="add(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>add</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this + val</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">value to be added to <code>this</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this + val</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="and(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>and</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this & val</code>.
+ <p>
+ <b>Implementation Note:</b> Usage of this method is not recommended as
+ the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">value to be and'ed with <code>this</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this & val</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="andNot(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>andNot</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this & ~val</code>.
+ Evaluating <code>x.andNot(val)</code> returns the same result as <code>x.and(val.not())</code>.
+ <p>
+ <b>Implementation Note:</b> Usage of this method is not recommended as
+ the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">value to be not'ed and then and'ed with <code>this</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this & ~val</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="bitCount()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>bitCount</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Use <code>bitLength(0)</code> if you want to know the length of the binary
+ value in bits.
+ <p>
+ Returns the number of bits in the binary representation of <code>this</code>
+ which differ from the sign bit. If <code>this</code> is positive the result is
+ equivalent to the number of bits set in the binary representation of
+ <code>this</code>. If <code>this</code> is negative the result is equivalent to the
+ number of bits set in the binary representation of <code>-this-1</code>.
+ <p>
+ <b>Implementation Note:</b> Usage of this method is not recommended as
+ the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>number of bits in the binary representation of <code>this</code> which
+         differ from the sign bit
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="bitLength()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>bitLength</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the length of the value's two's complement representation without
+ leading zeros for positive numbers / without leading ones for negative
+ values.
+ <p>
+ The two's complement representation of <code>this</code> will be at least
+ <code>bitLength() + 1</code> bits long.
+ <p>
+ The value will fit into an <code>int</code> if <code>bitLength() < 32</code> or
+ into a <code>long</code> if <code>bitLength() < 64</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the length of the minimal two's complement representation for
+         <code>this</code> without the sign bit.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="clearBit(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>clearBit</strong></span>
+      <span class="params">(<span class="nowrap">int <i>n</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> which has the same binary representation
+ as <code>this</code> but with the bit at position n cleared. The result is
+ equivalent to <code>this & ~(2^n)</code>.
+ <p>
+ <b>Implementation Note:</b> Usage of this method is not recommended as
+ the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">n</td>
+          <td class="jd-tagdescr">position where the bit in <code>this</code> has to be cleared.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this & ~(2^n)</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>n < 0</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="compareTo(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>compareTo</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this <code>BigInteger</code> with <code>val</code>. Returns one of the
+ three values 1, 0, or -1.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">value to be compared with <code>this</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>1</code> if <code>this > val</code>, <code>-1</code> if <code>this < val</code>
+         , <code>0</code> if <code>this == val</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="divide(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>divide</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>divisor</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this / divisor</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">divisor</td>
+          <td class="jd-tagdescr">value by which <code>this</code> is divided.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this / divisor</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>divisor == null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>divisor == 0</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="divideAndRemainder(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger[]</a>
+      </span>
+      <span class="sympad"><strong>divideAndRemainder</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>divisor</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>BigInteger</code> array which contains <code>this / divisor</code>
+ at index 0 and <code>this % divisor</code> at index 1.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">divisor</td>
+          <td class="jd-tagdescr">value by which <code>this</code> is divided.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>[this / divisor, this % divisor]</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>divisor == null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>divisor == 0</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/math/BigInteger.html#divide(java.math.BigInteger)">divide(BigInteger)</a></code></li><li><code><a href="../../../reference/java/math/BigInteger.html#remainder(java.math.BigInteger)">remainder(BigInteger)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="doubleValue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>doubleValue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns this <code>BigInteger</code> as an double value. If <code>this</code> is
+ too big to be represented as an double, then <code>Double.POSITIVE_INFINITY</code> or <code>Double.NEGATIVE_INFINITY</code> is
+ returned. Note, that not all integers x in the range [-Double.MAX_VALUE,
+ Double.MAX_VALUE] can be represented as a double. The double
+ representation has a mantissa of length 53. For example, 2^53+1 =
+ 9007199254740993 is returned as double 9007199254740992.0.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>this <code>BigInteger</code> as a double value
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>x</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if <code>x</code> is a BigInteger instance and if this
+ instance is equal to this <code>BigInteger</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">x</td>
+          <td class="jd-tagdescr">object to be compared with <code>this</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>true if <code>x</code> is a BigInteger and <code>this == x</code>,
+          <code>false</code> otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="flipBit(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>flipBit</strong></span>
+      <span class="params">(<span class="nowrap">int <i>n</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> which has the same binary representation
+ as <code>this</code> but with the bit at position n flipped. The result is
+ equivalent to <code>this ^ 2^n</code>.
+ <p>
+ <b>Implementation Note:</b> Usage of this method is not recommended as
+ the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">n</td>
+          <td class="jd-tagdescr">position where the bit in <code>this</code> has to be flipped.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this ^ 2^n</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>n < 0</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="floatValue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>floatValue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns this <code>BigInteger</code> as an float value. If <code>this</code> is too
+ big to be represented as an float, then <code>Float.POSITIVE_INFINITY</code>
+ or <code>Float.NEGATIVE_INFINITY</code> is returned. Note, that not all
+ integers x in the range [-Float.MAX_VALUE, Float.MAX_VALUE] can be
+ represented as a float. The float representation has a mantissa of length
+ 24. For example, 2^24+1 = 16777217 is returned as float 16777216.0.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>this <code>BigInteger</code> as a float value.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="gcd(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>gcd</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is greatest common divisor
+ of <code>this</code> and <code>val</code>. If <code>this==0</code> and <code>val==0</code>
+ then zero is returned, otherwise the result is positive.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">value with which the greatest common divisor is computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>gcd(this, val)</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLowestSetBit()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getLowestSetBit</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the position of the lowest set bit in the two's complement
+ representation of this <code>BigInteger</code>. If all bits are zero (this=0)
+ then -1 is returned as result.
+ <p>
+ <b>Implementation Note:</b> Usage of this method is not recommended as
+ the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>position of lowest bit if <code>this != 0</code>, <code>-1</code> otherwise
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="hashCode()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>hashCode</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code for this <code>BigInteger</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>hash code for <code>this</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="intValue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>intValue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns this <code>BigInteger</code> as an int value. If <code>this</code> is too
+ big to be represented as an int, then <code>this</code> % 2^32 is returned.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>this <code>BigInteger</code> as an int value.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isProbablePrime(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isProbablePrime</strong></span>
+      <span class="params">(<span class="nowrap">int <i>certainty</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tests whether this <code>BigInteger</code> is probably prime. If <code>true</code>
+ is returned, then this is prime with a probability beyond
+ (1-1/2^certainty). If <code>false</code> is returned, then this is definitely
+ composite. If the argument <code>certainty</code> <= 0, then this method
+ returns true.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">certainty</td>
+          <td class="jd-tagdescr">tolerated primality uncertainty.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code>, if <code>this</code> is probably prime, <code>false</code>
+         otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="longValue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>longValue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns this <code>BigInteger</code> as an long value. If <code>this</code> is too
+ big to be represented as an long, then <code>this</code> % 2^64 is returned.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>this <code>BigInteger</code> as a long value.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="max(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>max</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the maximum of this <code>BigInteger</code> and <code>val</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">value to be used to compute the maximum with <code>this</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>max(this, val)</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="min(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>min</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the minimum of this <code>BigInteger</code> and <code>val</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">value to be used to compute the minimum with <code>this</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>min(this, val)</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="mod(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>mod</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>m</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this mod m</code>. The
+ modulus <code>m</code> must be positive. The result is guaranteed to be in the
+ interval <code>[0, m)</code> (0 inclusive, m exclusive). The behavior of this
+ function is not equivalent to the behavior of the % operator defined for
+ the built-in <code>int</code>'s.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">m</td>
+          <td class="jd-tagdescr">the modulus.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this mod m</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>m == null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>m < 0</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="modInverse(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>modInverse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>m</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>1/this mod m</code>. The
+ modulus <code>m</code> must be positive. The result is guaranteed to be in the
+ interval <code>[0, m)</code> (0 inclusive, m exclusive). If <code>this</code> is
+ not relatively prime to m, then an exception is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">m</td>
+          <td class="jd-tagdescr">the modulus.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>1/this mod m</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>m == null</code></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>m < 0 or</code> if <code>this</code> is not relatively prime
+             to <code>m</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="modPow(java.math.BigInteger, java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>modPow</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>exponent</i></span>, <span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>m</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this^exponent mod
+ m</code>. The modulus <code>m</code> must be positive. The result is guaranteed to
+ be in the interval <code>[0, m)</code> (0 inclusive, m exclusive). If the
+ exponent is negative, then <code>this.modInverse(m)^(-exponent) mod m)</code>
+ is computed. The inverse of this only exists if <code>this</code> is
+ relatively prime to m, otherwise an exception is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">exponent</td>
+          <td class="jd-tagdescr">the exponent.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">m</td>
+          <td class="jd-tagdescr">the modulus.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this^exponent mod val</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>m == null</code> or <code>exponent == null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>m < 0</code> or if <code>exponent<0</code> and this is not
+             relatively prime to <code>m</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="multiply(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>multiply</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this * val</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">value to be multiplied with <code>this</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this * val</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="negate()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>negate</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is the <code>-this</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>-this</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="nextProbablePrime()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>nextProbablePrime</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the smallest integer x > <code>this</code> which is probably prime as
+ a <code>BigInteger</code> instance. The probability that the returned <code>BigInteger</code> is prime is beyond (1-1/2^80).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>smallest integer > <code>this</code> which is robably prime.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>this < 0</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="not()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>not</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>~this</code>. The result
+ of this operation is <code>-this-1</code>.
+ <p>
+ <b>Implementation Note:</b> Usage of this method is not recommended as
+ the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>~this</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="or(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>or</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this | val</code>.
+ <p>
+ <b>Implementation Note:</b> Usage of this method is not recommended as
+ the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">value to be or'ed with <code>this</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this | val</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="pow(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>pow</strong></span>
+      <span class="params">(<span class="nowrap">int <i>exp</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this ^ exp</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">exp</td>
+          <td class="jd-tagdescr">exponent to which <code>this</code> is raised.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this ^ exp</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>exp < 0</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="probablePrime(int, java.util.Random)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>probablePrime</strong></span>
+      <span class="params">(<span class="nowrap">int <i>bitLength</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Random.html">Random</a> <i>rnd</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a random positive <code>BigInteger</code> instance in the range [0,
+ 2^(bitLength)-1] which is probably prime. The probability that the
+ returned <code>BigInteger</code> is prime is beyond (1-1/2^80).
+ <p>
+ <b>Implementation Note:</b> Currently <code>rnd</code> is ignored.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">bitLength</td>
+          <td class="jd-tagdescr">length of the new <code>BigInteger</code> in bits.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">rnd</td>
+          <td class="jd-tagdescr">random generator used to generate the new <code>BigInteger</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>probably prime random <code>BigInteger</code> instance.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>bitLength < 2</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="remainder(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>remainder</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>divisor</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this % divisor</code>.
+ Regarding signs this methods has the same behavior as the % operator on
+ int's, i.e. the sign of the remainder is the same as the sign of this.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">divisor</td>
+          <td class="jd-tagdescr">value by which <code>this</code> is divided.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this % divisor</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>divisor == null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>divisor == 0</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setBit(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>setBit</strong></span>
+      <span class="params">(<span class="nowrap">int <i>n</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> which has the same binary representation
+ as <code>this</code> but with the bit at position n set. The result is
+ equivalent to <code>this | 2^n</code>.
+ <p>
+ <b>Implementation Note:</b> Usage of this method is not recommended as
+ the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">n</td>
+          <td class="jd-tagdescr">position where the bit in <code>this</code> has to be set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this | 2^n</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>n < 0</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="shiftLeft(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>shiftLeft</strong></span>
+      <span class="params">(<span class="nowrap">int <i>n</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this << n</code>. The
+ result is equivalent to <code>this * 2^n</code> if n >= 0. The shift distance
+ may be negative which means that <code>this</code> is shifted right. The
+ result then corresponds to <code>floor(this / 2^(-n))</code>.
+ <p>
+ <b>Implementation Note:</b> Usage of this method on negative values is
+ not recommended as the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">n</td>
+          <td class="jd-tagdescr">shift distance.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this << n</code> if <code>n >= 0</code>; <code>this >> (-n)</code>.
+         otherwise
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="shiftRight(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>shiftRight</strong></span>
+      <span class="params">(<span class="nowrap">int <i>n</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this >> n</code>. For
+ negative arguments, the result is also negative. The shift distance may
+ be negative which means that <code>this</code> is shifted left.
+ <p>
+ <b>Implementation Note:</b> Usage of this method on negative values is
+ not recommended as the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">n</td>
+          <td class="jd-tagdescr">shift distance</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this >> n</code> if <code>n >= 0</code>; <code>this << (-n)</code>
+         otherwise
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="signum()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>signum</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the sign of this <code>BigInteger</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>-1</code> if <code>this < 0</code>,
+         <code>0</code> if <code>this == 0</code>,
+         <code>1</code> if <code>this > 0</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="subtract(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>subtract</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this - val</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">value to be subtracted from <code>this</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this - val</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="testBit(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>testBit</strong></span>
+      <span class="params">(<span class="nowrap">int <i>n</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tests whether the bit at position n in <code>this</code> is set. The result is
+ equivalent to <code>this & (2^n) != 0</code>.
+ <p>
+ <b>Implementation Note:</b> Usage of this method is not recommended as
+ the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">n</td>
+          <td class="jd-tagdescr">position where the bit in <code>this</code> has to be inspected.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this & (2^n) != 0</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+            <td class="jd-tagdescr">if <code>n < 0</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toByteArray()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        byte[]
+      </span>
+      <span class="sympad"><strong>toByteArray</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the two's complement representation of this BigInteger in a byte
+ array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>two's complement representation of <code>this</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of this <code>BigInteger</code> in decimal
+ form.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a string representation of <code>this</code> in decimal form.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">(<span class="nowrap">int <i>radix</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a string representation of this <code>BigInteger</code> with base radix. If <code>radix < Character.MIN_RADIX</code> or
+ <code>radix > Character.MAX_RADIX</code> then a decimal representation is
+ returned. The characters of the string representation are generated with
+ method <code>Character.forDigit</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">radix</td>
+          <td class="jd-tagdescr">base to be used for the string representation.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a string representation of this with radix 10.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="valueOf(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>valueOf</strong></span>
+      <span class="params">(<span class="nowrap">long <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="xor(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>xor</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a> <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>BigInteger</code> whose value is <code>this ^ val</code>.
+ <p>
+ <b>Implementation Note:</b> Usage of this method is not recommended as
+ the current implementation is not efficient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">value to be xor'ed with <code>this</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this ^ val</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>val == null</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

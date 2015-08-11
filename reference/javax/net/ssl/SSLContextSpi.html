@@ -1,0 +1,1075 @@
+---
+
+title: SSLContextSpi - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedListener.html">HandshakeCompletedListener</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/HostnameVerifier.html">HostnameVerifier</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/KeyManager.html">KeyManager</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/ManagerFactoryParameters.html">ManagerFactoryParameters</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSession.html">SSLSession</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSessionBindingListener.html">SSLSessionBindingListener</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSessionContext.html">SSLSessionContext</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/TrustManager.html">TrustManager</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/X509TrustManager.html">X509TrustManager</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html">HandshakeCompletedEvent</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/HttpsURLConnection.html">HttpsURLConnection</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/KeyManagerFactory.html">KeyManagerFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/KeyManagerFactorySpi.html">KeyManagerFactorySpi</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLContext.html">SSLContext</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html">SSLContextSpi</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngine.html">SSLEngine</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.html">SSLEngineResult</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLServerSocket.html">SSLServerSocket</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLServerSocketFactory.html">SSLServerSocketFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSessionBindingEvent.html">SSLSessionBindingEvent</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSocket.html">SSLSocket</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSocketFactory.html">SSLSocketFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/TrustManagerFactory.html">TrustManagerFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/TrustManagerFactorySpi.html">TrustManagerFactorySpi</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.HandshakeStatus.html">SSLEngineResult.HandshakeStatus</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.Status.html">SSLEngineResult.Status</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLException.html">SSLException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLHandshakeException.html">SSLHandshakeException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLPeerUnverifiedException.html">SSLPeerUnverifiedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLProtocolException.html">SSLProtocolException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">SSLContextSpi</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>The <i>Service Provider Interface</i> (SPI) for the <code>SSLContext</code> class.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html#SSLContextSpi()">SSLContextSpi</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLEngine.html">SSLEngine</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html#engineCreateSSLEngine()">engineCreateSSLEngine</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLEngine.html">SSLEngine</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html#engineCreateSSLEngine(java.lang.String, int)">engineCreateSSLEngine</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLSessionContext.html">SSLSessionContext</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html#engineGetClientSessionContext()">engineGetClientSessionContext</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html#engineGetDefaultSSLParameters()">engineGetDefaultSSLParameters</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLSessionContext.html">SSLSessionContext</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html#engineGetServerSessionContext()">engineGetServerSessionContext</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLServerSocketFactory.html">SSLServerSocketFactory</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html#engineGetServerSocketFactory()">engineGetServerSocketFactory</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLSocketFactory.html">SSLSocketFactory</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html#engineGetSocketFactory()">engineGetSocketFactory</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html#engineGetSupportedSSLParameters()">engineGetSupportedSSLParameters</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html#engineInit(javax.net.ssl.KeyManager[], javax.net.ssl.TrustManager[], java.security.SecureRandom)">engineInit</a></span>(<span class="nowrap"><a href="../../../../reference/javax/net/ssl/KeyManager.html">KeyManager[]</a> <i>km</i></span>, <span class="nowrap"><a href="../../../../reference/javax/net/ssl/TrustManager.html">TrustManager[]</a> <i>tm</i></span>, <span class="nowrap"><a href="../../../../reference/java/security/SecureRandom.html">SecureRandom</a> <i>sr</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="SSLContextSpi()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SSLContextSpi</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>SSLContextSpi</code> instance.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="engineCreateSSLEngine()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/net/ssl/SSLEngine.html">SSLEngine</a>
+      </span>
+      <span class="sympad"><strong>engineCreateSSLEngine</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an <code>SSLEngine</code> instance from this context.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an <code>SSLEngine</code> instance from this context.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td class="jd-tagdescr">if the provider does not support the operation.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="engineCreateSSLEngine(java.lang.String, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/net/ssl/SSLEngine.html">SSLEngine</a>
+      </span>
+      <span class="sympad"><strong>engineCreateSSLEngine</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an <code>SSLEngine</code> instance from this context with the
+ specified hostname and port.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">host</td>
+          <td class="jd-tagdescr">the name of the host</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the port</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an <code>SSLEngine</code> instance from this context.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td class="jd-tagdescr">if the provider does not support the operation.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="engineGetClientSessionContext()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/net/ssl/SSLSessionContext.html">SSLSessionContext</a>
+      </span>
+      <span class="sympad"><strong>engineGetClientSessionContext</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the SSL session context that encapsulates the set of SSL sessions
+ that can be used for the client side of the SSL handshake.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the SSL client session context for this context or <code>null</code>
+         if the underlying provider does not provide an implementation of
+         the <code>SSLSessionContext</code> interface.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="engineGetDefaultSSLParameters()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a>
+      </span>
+      <span class="sympad"><strong>engineGetDefaultSSLParameters</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new SSLParameters instance that includes the default
+ SSL handshake parameters values including cipher suites,
+ protocols, and client authentication.
+
+ <p>The default implementation returns an SSLParameters with values
+ based an SSLSocket created from this instances SocketFactory.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="engineGetServerSessionContext()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/net/ssl/SSLSessionContext.html">SSLSessionContext</a>
+      </span>
+      <span class="sympad"><strong>engineGetServerSessionContext</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the SSL session context that encapsulates the set of SSL sessions
+ that can be used for the server side of the SSL handshake.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the SSL server session context for this context or <code>null</code>
+         if the underlying provider does not provide an implementation of
+         the <code>SSLSessionContext</code> interface.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="engineGetServerSocketFactory()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/net/ssl/SSLServerSocketFactory.html">SSLServerSocketFactory</a>
+      </span>
+      <span class="sympad"><strong>engineGetServerSocketFactory</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a server socket factory for this instance.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a server socket factory for this instance.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="engineGetSocketFactory()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/net/ssl/SSLSocketFactory.html">SSLSocketFactory</a>
+      </span>
+      <span class="sympad"><strong>engineGetSocketFactory</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a socket factory for this instance.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a socket factory for this instance.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="engineGetSupportedSSLParameters()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a>
+      </span>
+      <span class="sympad"><strong>engineGetSupportedSSLParameters</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new SSLParameters instance that includes all
+ supported cipher suites and protocols.
+
+ <p>The default implementation returns an SSLParameters with values
+ based an SSLSocket created from this instances SocketFactory.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="engineInit(javax.net.ssl.KeyManager[], javax.net.ssl.TrustManager[], java.security.SecureRandom)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>engineInit</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/net/ssl/KeyManager.html">KeyManager[]</a> <i>km</i></span>, <span class="nowrap"><a href="../../../../reference/javax/net/ssl/TrustManager.html">TrustManager[]</a> <i>tm</i></span>, <span class="nowrap"><a href="../../../../reference/java/security/SecureRandom.html">SecureRandom</a> <i>sr</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Initializes this <code>SSLContext</code> instance. All of the arguments are
+ optional, and the security providers will be searched for the required
+ implementations of the needed algorithms.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">km</td>
+          <td class="jd-tagdescr">the key sources or <code>null</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">tm</td>
+          <td class="jd-tagdescr">the trust decision sources or <code>null</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">sr</td>
+          <td class="jd-tagdescr">the randomness source or <code>null.</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/security/KeyManagementException.html">KeyManagementException</a></td>
+            <td class="jd-tagdescr">if initializing this instance fails.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

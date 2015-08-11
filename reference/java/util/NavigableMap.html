@@ -1,0 +1,2333 @@
+---
+
+title: NavigableMap - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Collection.html">Collection</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Deque.html">Deque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventListener.html">EventListener</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formattable.html">Formattable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Map.Entry.html">Map.Entry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Observer.html">Observer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Queue.html">Queue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/RandomAccess.html">RandomAccess</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;</li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractCollection.html">AbstractCollection</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractList.html">AbstractList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.html">AbstractMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleEntry.html">AbstractMap.SimpleEntry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleImmutableEntry.html">AbstractMap.SimpleImmutableEntry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractQueue.html">AbstractQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSequentialList.html">AbstractSequentialList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSet.html">AbstractSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ArrayDeque.html">ArrayDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Arrays.html">Arrays</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/BitSet.html">BitSet</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Calendar.html">Calendar</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Collections.html">Collections</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Currency.html">Currency</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Date.html">Date</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Dictionary.html">Dictionary</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EnumMap.html">EnumMap</a>&lt;K&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;K&gt;,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventObject.html">EventObject</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormattableFlags.html">FormattableFlags</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.html">Formatter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/HashMap.html">HashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/HashSet.html">HashSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Hashtable.html">Hashtable</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IdentityHashMap.html">IdentityHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashMap.html">LinkedHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashSet.html">LinkedHashSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ListResourceBundle.html">ListResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Locale.html">Locale</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Objects.html">Objects</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Observable.html">Observable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Properties.html">Properties</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PropertyPermission.html">PropertyPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PropertyResourceBundle.html">PropertyResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Random.html">Random</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.html">ResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.Control.html">ResourceBundle.Control</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Scanner.html">Scanner</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ServiceLoader.html">ServiceLoader</a>&lt;S&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SimpleTimeZone.html">SimpleTimeZone</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Stack.html">Stack</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/StringTokenizer.html">StringTokenizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Timer.html">Timer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TimerTask.html">TimerTask</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TreeMap.html">TreeMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TreeSet.html">TreeSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UUID.html">UUID</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Vector.html">Vector</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/WeakHashMap.html">WeakHashMap</a>&lt;K,&nbsp;V&gt;</li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.BigDecimalLayoutForm.html">Formatter.BigDecimalLayoutForm</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/DuplicateFormatFlagsException.html">DuplicateFormatFlagsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EmptyStackException.html">EmptyStackException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormatFlagsConversionMismatchException.html">FormatFlagsConversionMismatchException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormatterClosedException.html">FormatterClosedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatCodePointException.html">IllegalFormatCodePointException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatConversionException.html">IllegalFormatConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatFlagsException.html">IllegalFormatFlagsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatPrecisionException.html">IllegalFormatPrecisionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatWidthException.html">IllegalFormatWidthException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/InputMismatchException.html">InputMismatchException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html">InvalidPropertiesFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatArgumentException.html">MissingFormatArgumentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatWidthException.html">MissingFormatWidthException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingResourceException.html">MissingResourceException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TooManyListenersException.html">TooManyListenersException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatConversionException.html">UnknownFormatConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatFlagsException.html">UnknownFormatFlagsException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ServiceConfigurationError.html">ServiceConfigurationError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     interface
+  <h1 itemprop="name" class="devsite-page-title">NavigableMap</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;font-size:85%;">
+Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/util/concurrent/ConcurrentNavigableMap.html">ConcurrentNavigableMap</a>&lt;K,&nbsp;V&gt;,
+            
+              <a href="../../../reference/java/util/concurrent/ConcurrentSkipListMap.html">ConcurrentSkipListMap</a>&lt;K,&nbsp;V&gt;,
+            
+              <a href="../../../reference/java/util/TreeMap.html">TreeMap</a>&lt;K,&nbsp;V&gt;
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ConcurrentNavigableMap.html">ConcurrentNavigableMap</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A <code><a href="reference/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a></code> supporting <code><a href="reference/java/util/NavigableMap.html">NavigableMap</a></code> operations,
+ and recursively so for its navigable sub-maps.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ConcurrentSkipListMap.html">ConcurrentSkipListMap</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A scalable concurrent <code><a href="reference/java/util/concurrent/ConcurrentNavigableMap.html">ConcurrentNavigableMap</a></code> implementation.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/TreeMap.html">TreeMap</a>&lt;K,&nbsp;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A map whose entries are sorted by their keys.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<p>A <code><a href="reference/java/util/SortedMap.html">SortedMap</a></code> extended with navigation methods returning the
+ closest matches for given search targets. Methods
+ <code>lowerEntry</code>, <code>floorEntry</code>, <code>ceilingEntry</code>,
+ and <code>higherEntry</code> return <code>Map.Entry</code> objects
+ associated with keys respectively less than, less than or equal,
+ greater than or equal, and greater than a given key, returning
+ <code>null</code> if there is no such key.  Similarly, methods
+ <code>lowerKey</code>, <code>floorKey</code>, <code>ceilingKey</code>, and
+ <code>higherKey</code> return only the associated keys. All of these
+ methods are designed for locating, not traversing entries.
+
+ <p>A <code>NavigableMap</code> may be accessed and traversed in either
+ ascending or descending key order.  The <code>descendingMap</code>
+ method returns a view of the map with the senses of all relational
+ and directional methods inverted. The performance of ascending
+ operations and views is likely to be faster than that of descending
+ ones.  Methods <code>subMap</code>, <code>headMap</code>,
+ and <code>tailMap</code> differ from the like-named <code>SortedMap</code> methods in accepting additional arguments describing
+ whether lower and upper bounds are inclusive versus exclusive.
+ Submaps of any <code>NavigableMap</code> must implement the <code>NavigableMap</code> interface.
+
+ <p>This interface additionally defines methods <code>firstEntry</code>,
+ <code>pollFirstEntry</code>, <code>lastEntry</code>, and
+ <code>pollLastEntry</code> that return and/or remove the least and
+ greatest mappings, if any exist, else returning <code>null</code>.
+
+ <p>Implementations of entry-returning methods are expected to
+ return <code>Map.Entry</code> pairs representing snapshots of mappings
+ at the time they were produced, and thus generally do <em>not</em>
+ support the optional <code>Entry.setValue</code> method. Note however
+ that it is possible to change mappings in the associated map using
+ method <code>put</code>.
+
+ <p>Methods
+ <code><a href="reference/java/util/NavigableMap.html#subMap(K, K)">subMap(K, K)</a></code>,
+ <code><a href="reference/java/util/NavigableMap.html#headMap(K)">headMap(K)</a></code>, and
+ <code><a href="reference/java/util/NavigableMap.html#tailMap(K)">tailMap(K)</a></code>
+ are specified to return <code>SortedMap</code> to allow existing
+ implementations of <code>SortedMap</code> to be compatibly retrofitted to
+ implement <code>NavigableMap</code>, but extensions and implementations
+ of this interface are encouraged to override these methods to return
+ <code>NavigableMap</code>.  Similarly,
+ <code><a href="reference/java/util/Map.html#keySet()">keySet()</a></code> can be overriden to return <code>NavigableSet</code>.</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#ceilingEntry(K)">ceilingEntry</a></span>(<span class="nowrap">K <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            K
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#ceilingKey(K)">ceilingKey</a></span>(<span class="nowrap">K <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;K&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#descendingKeySet()">descendingKeySet</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#descendingMap()">descendingMap</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#firstEntry()">firstEntry</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#floorEntry(K)">floorEntry</a></span>(<span class="nowrap">K <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            K
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#floorKey(K)">floorKey</a></span>(<span class="nowrap">K <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#headMap(K)">headMap</a></span>(<span class="nowrap">K <i>toKey</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#headMap(K, boolean)">headMap</a></span>(<span class="nowrap">K <i>toKey</i></span>, <span class="nowrap">boolean <i>inclusive</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#higherEntry(K)">higherEntry</a></span>(<span class="nowrap">K <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            K
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#higherKey(K)">higherKey</a></span>(<span class="nowrap">K <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#lastEntry()">lastEntry</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#lowerEntry(K)">lowerEntry</a></span>(<span class="nowrap">K <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            K
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#lowerKey(K)">lowerKey</a></span>(<span class="nowrap">K <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;K&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#navigableKeySet()">navigableKeySet</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#pollFirstEntry()">pollFirstEntry</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#pollLastEntry()">pollLastEntry</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#subMap(K, K)">subMap</a></span>(<span class="nowrap">K <i>fromKey</i></span>, <span class="nowrap">K <i>toKey</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#subMap(K, boolean, K, boolean)">subMap</a></span>(<span class="nowrap">K <i>fromKey</i></span>, <span class="nowrap">boolean <i>fromInclusive</i></span>, <span class="nowrap">K <i>toKey</i></span>, <span class="nowrap">boolean <i>toInclusive</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#tailMap(K, boolean)">tailMap</a></span>(<span class="nowrap">K <i>fromKey</i></span>, <span class="nowrap">boolean <i>inclusive</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/NavigableMap.html#tailMap(K)">tailMap</a></span>(<span class="nowrap">K <i>fromKey</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="ceilingEntry(K)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>ceilingEntry</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a key-value mapping associated with the least key
+ greater than or equal to the given key, or <code>null</code> if
+ there is no such key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">the key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an entry with the least key greater than or equal to
+         <code>key</code>, or <code>null</code> if there is no such key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the specified key cannot be compared
+         with the keys currently in the map</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+         and this map does not permit null keys
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ceilingKey(K)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        K
+      </span>
+      <span class="sympad"><strong>ceilingKey</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the least key greater than or equal to the given key,
+ or <code>null</code> if there is no such key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">the key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the least key greater than or equal to <code>key</code>,
+         or <code>null</code> if there is no such key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the specified key cannot be compared
+         with the keys currently in the map</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+         and this map does not permit null keys
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="descendingKeySet()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;K&gt;
+      </span>
+      <span class="sympad"><strong>descendingKeySet</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a reverse order <code><a href="reference/java/util/NavigableSet.html">NavigableSet</a></code> view of the keys contained in this map.
+ The set's iterator returns the keys in descending order.
+ The set is backed by the map, so changes to the map are reflected in
+ the set, and vice-versa.  If the map is modified while an iteration
+ over the set is in progress (except through the iterator's own <code>remove</code> operation), the results of the iteration are undefined.  The
+ set supports element removal, which removes the corresponding mapping
+ from the map, via the <code>Iterator.remove</code>, <code>Set.remove</code>,
+ <code>removeAll</code>, <code>retainAll</code>, and <code>clear</code> operations.
+ It does not support the <code>add</code> or <code>addAll</code> operations.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a reverse order navigable set view of the keys in this map
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="descendingMap()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>descendingMap</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a reverse order view of the mappings contained in this map.
+ The descending map is backed by this map, so changes to the map are
+ reflected in the descending map, and vice-versa.  If either map is
+ modified while an iteration over a collection view of either map
+ is in progress (except through the iterator's own <code>remove</code>
+ operation), the results of the iteration are undefined.
+
+ <p>The returned map has an ordering equivalent to
+ <tt><code><a href="reference/java/util/Collections.html#reverseOrder(java.util.Comparator<T>)">Collections.reverseOrder</a></code>(comparator())</tt>.
+ The expression <code>m.descendingMap().descendingMap()</code> returns a
+ view of <code>m</code> essentially equivalent to <code>m</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a reverse order view of this map
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="firstEntry()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>firstEntry</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a key-value mapping associated with the least
+ key in this map, or <code>null</code> if the map is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an entry with the least key,
+         or <code>null</code> if this map is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="floorEntry(K)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>floorEntry</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a key-value mapping associated with the greatest key
+ less than or equal to the given key, or <code>null</code> if there
+ is no such key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">the key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an entry with the greatest key less than or equal to
+         <code>key</code>, or <code>null</code> if there is no such key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the specified key cannot be compared
+         with the keys currently in the map</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+         and this map does not permit null keys
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="floorKey(K)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        K
+      </span>
+      <span class="sympad"><strong>floorKey</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the greatest key less than or equal to the given key,
+ or <code>null</code> if there is no such key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">the key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the greatest key less than or equal to <code>key</code>,
+         or <code>null</code> if there is no such key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the specified key cannot be compared
+         with the keys currently in the map</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+         and this map does not permit null keys
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="headMap(K)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>headMap</strong></span>
+      <span class="params">(<span class="nowrap">K <i>toKey</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a sorted map over a range of this sorted map with all keys that
+ are less than the specified <code>endKey</code>. Changes to the returned
+ sorted map are reflected in this sorted map and vice versa.
+ <p>
+ Note: The returned map will not allow an insertion of a key outside the
+ specified range.
+
+ <p>Equivalent to <code>headMap(toKey, false)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">toKey</td>
+          <td class="jd-tagdescr">the high boundary of the range specified.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a sorted map where the keys are less than <code>endKey</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="headMap(K, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>headMap</strong></span>
+      <span class="params">(<span class="nowrap">K <i>toKey</i></span>, <span class="nowrap">boolean <i>inclusive</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this map whose keys are less than (or
+ equal to, if <code>inclusive</code> is true) <code>toKey</code>.  The returned
+ map is backed by this map, so changes in the returned map are reflected
+ in this map, and vice-versa.  The returned map supports all optional
+ map operations that this map supports.
+
+ <p>The returned map will throw an <code>IllegalArgumentException</code>
+ on an attempt to insert a key outside its range.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">toKey</td>
+          <td class="jd-tagdescr">high endpoint of the keys in the returned map</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">inclusive</td>
+          <td class="jd-tagdescr"><code>true</code> if the high endpoint
+        is to be included in the returned view</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a view of the portion of this map whose keys are less than
+         (or equal to, if <code>inclusive</code> is true) <code>toKey</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if <code>toKey</code> is not compatible
+         with this map's comparator (or, if the map has no comparator,
+         if <code>toKey</code> does not implement <code><a href="reference/java/lang/Comparable.html">Comparable</a></code>).
+         Implementations may, but are not required to, throw this
+         exception if <code>toKey</code> cannot be compared to keys
+         currently in the map.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>toKey</code> is null
+         and this map does not permit null keys</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if this map itself has a
+         restricted range, and <code>toKey</code> lies outside the
+         bounds of the range
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="higherEntry(K)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>higherEntry</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a key-value mapping associated with the least key
+ strictly greater than the given key, or <code>null</code> if there
+ is no such key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">the key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an entry with the least key greater than <code>key</code>,
+         or <code>null</code> if there is no such key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the specified key cannot be compared
+         with the keys currently in the map</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+         and this map does not permit null keys
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="higherKey(K)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        K
+      </span>
+      <span class="sympad"><strong>higherKey</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the least key strictly greater than the given key, or
+ <code>null</code> if there is no such key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">the key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the least key greater than <code>key</code>,
+         or <code>null</code> if there is no such key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the specified key cannot be compared
+         with the keys currently in the map</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+         and this map does not permit null keys
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="lastEntry()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>lastEntry</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a key-value mapping associated with the greatest
+ key in this map, or <code>null</code> if the map is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an entry with the greatest key,
+         or <code>null</code> if this map is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="lowerEntry(K)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>lowerEntry</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a key-value mapping associated with the greatest key
+ strictly less than the given key, or <code>null</code> if there is
+ no such key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">the key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an entry with the greatest key less than <code>key</code>,
+         or <code>null</code> if there is no such key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the specified key cannot be compared
+         with the keys currently in the map</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+         and this map does not permit null keys
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="lowerKey(K)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        K
+      </span>
+      <span class="sympad"><strong>lowerKey</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the greatest key strictly less than the given key, or
+ <code>null</code> if there is no such key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">the key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the greatest key less than <code>key</code>,
+         or <code>null</code> if there is no such key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if the specified key cannot be compared
+         with the keys currently in the map</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+         and this map does not permit null keys
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="navigableKeySet()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;K&gt;
+      </span>
+      <span class="sympad"><strong>navigableKeySet</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code><a href="reference/java/util/NavigableSet.html">NavigableSet</a></code> view of the keys contained in this map.
+ The set's iterator returns the keys in ascending order.
+ The set is backed by the map, so changes to the map are reflected in
+ the set, and vice-versa.  If the map is modified while an iteration
+ over the set is in progress (except through the iterator's own <code>remove</code> operation), the results of the iteration are undefined.  The
+ set supports element removal, which removes the corresponding mapping
+ from the map, via the <code>Iterator.remove</code>, <code>Set.remove</code>,
+ <code>removeAll</code>, <code>retainAll</code>, and <code>clear</code> operations.
+ It does not support the <code>add</code> or <code>addAll</code> operations.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a navigable set view of the keys in this map
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="pollFirstEntry()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>pollFirstEntry</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes and returns a key-value mapping associated with
+ the least key in this map, or <code>null</code> if the map is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the removed first entry of this map,
+         or <code>null</code> if this map is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="pollLastEntry()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>pollLastEntry</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes and returns a key-value mapping associated with
+ the greatest key in this map, or <code>null</code> if the map is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the removed last entry of this map,
+         or <code>null</code> if this map is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="subMap(K, K)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>subMap</strong></span>
+      <span class="params">(<span class="nowrap">K <i>fromKey</i></span>, <span class="nowrap">K <i>toKey</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a sorted map over a range of this sorted map with all keys
+ greater than or equal to the specified <code>startKey</code> and less than the
+ specified <code>endKey</code>. Changes to the returned sorted map are
+ reflected in this sorted map and vice versa.
+ <p>
+ Note: The returned map will not allow an insertion of a key outside the
+ specified range.
+
+ <p>Equivalent to <code>subMap(fromKey, true, toKey, false)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">fromKey</td>
+          <td class="jd-tagdescr">the low boundary of the range (inclusive).</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">toKey</td>
+          <td class="jd-tagdescr">the high boundary of the range (exclusive),</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a sorted map with the key from the specified range.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="subMap(K, boolean, K, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>subMap</strong></span>
+      <span class="params">(<span class="nowrap">K <i>fromKey</i></span>, <span class="nowrap">boolean <i>fromInclusive</i></span>, <span class="nowrap">K <i>toKey</i></span>, <span class="nowrap">boolean <i>toInclusive</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this map whose keys range from
+ <code>fromKey</code> to <code>toKey</code>.  If <code>fromKey</code> and
+ <code>toKey</code> are equal, the returned map is empty unless
+ <code>fromExclusive</code> and <code>toExclusive</code> are both true.  The
+ returned map is backed by this map, so changes in the returned map are
+ reflected in this map, and vice-versa.  The returned map supports all
+ optional map operations that this map supports.
+
+ <p>The returned map will throw an <code>IllegalArgumentException</code>
+ on an attempt to insert a key outside of its range, or to construct a
+ submap either of whose endpoints lie outside its range.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">fromKey</td>
+          <td class="jd-tagdescr">low endpoint of the keys in the returned map</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">fromInclusive</td>
+          <td class="jd-tagdescr"><code>true</code> if the low endpoint
+        is to be included in the returned view</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">toKey</td>
+          <td class="jd-tagdescr">high endpoint of the keys in the returned map</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">toInclusive</td>
+          <td class="jd-tagdescr"><code>true</code> if the high endpoint
+        is to be included in the returned view</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a view of the portion of this map whose keys range from
+         <code>fromKey</code> to <code>toKey</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if <code>fromKey</code> and <code>toKey</code>
+         cannot be compared to one another using this map's comparator
+         (or, if the map has no comparator, using natural ordering).
+         Implementations may, but are not required to, throw this
+         exception if <code>fromKey</code> or <code>toKey</code>
+         cannot be compared to keys currently in the map.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>fromKey</code> or <code>toKey</code>
+         is null and this map does not permit null keys</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>fromKey</code> is greater than
+         <code>toKey</code>; or if this map itself has a restricted
+         range, and <code>fromKey</code> or <code>toKey</code> lies
+         outside the bounds of the range
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="tailMap(K, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>tailMap</strong></span>
+      <span class="params">(<span class="nowrap">K <i>fromKey</i></span>, <span class="nowrap">boolean <i>inclusive</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a view of the portion of this map whose keys are greater than (or
+ equal to, if <code>inclusive</code> is true) <code>fromKey</code>.  The returned
+ map is backed by this map, so changes in the returned map are reflected
+ in this map, and vice-versa.  The returned map supports all optional
+ map operations that this map supports.
+
+ <p>The returned map will throw an <code>IllegalArgumentException</code>
+ on an attempt to insert a key outside its range.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">fromKey</td>
+          <td class="jd-tagdescr">low endpoint of the keys in the returned map</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">inclusive</td>
+          <td class="jd-tagdescr"><code>true</code> if the low endpoint
+        is to be included in the returned view</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a view of the portion of this map whose keys are greater than
+         (or equal to, if <code>inclusive</code> is true) <code>fromKey</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if <code>fromKey</code> is not compatible
+         with this map's comparator (or, if the map has no comparator,
+         if <code>fromKey</code> does not implement <code><a href="reference/java/lang/Comparable.html">Comparable</a></code>).
+         Implementations may, but are not required to, throw this
+         exception if <code>fromKey</code> cannot be compared to keys
+         currently in the map.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>fromKey</code> is null
+         and this map does not permit null keys</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if this map itself has a
+         restricted range, and <code>fromKey</code> lies outside the
+         bounds of the range
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="tailMap(K)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;
+      </span>
+      <span class="sympad"><strong>tailMap</strong></span>
+      <span class="params">(<span class="nowrap">K <i>fromKey</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a sorted map over a range of this sorted map with all keys that
+ are greater than or equal to the specified <code>startKey</code>. Changes to
+ the returned sorted map are reflected in this sorted map and vice versa.
+ <p>
+ Note: The returned map will not allow an insertion of a key outside the
+ specified range.
+
+ <p>Equivalent to <code>tailMap(fromKey, true)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">fromKey</td>
+          <td class="jd-tagdescr">the low boundary of the range specified.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a sorted map where the keys are greater or equal to
+         <code>startKey</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

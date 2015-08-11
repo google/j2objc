@@ -1,0 +1,977 @@
+---
+
+title: Proxy - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/AnnotatedElement.html">AnnotatedElement</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/GenericArrayType.html">GenericArrayType</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/GenericDeclaration.html">GenericDeclaration</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/Member.html">Member</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/ParameterizedType.html">ParameterizedType</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/Type.html">Type</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/TypeVariable.html">TypeVariable</a>&lt;D&nbsp;extends&nbsp;<a href="../../../../reference/java/lang/reflect/GenericDeclaration.html">GenericDeclaration</a>&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/WildcardType.html">WildcardType</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/AccessibleObject.html">AccessibleObject</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/Array.html">Array</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/Constructor.html">Constructor</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/Field.html">Field</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/Method.html">Method</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/Modifier.html">Modifier</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/java/lang/reflect/Proxy.html">Proxy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/ReflectPermission.html">ReflectPermission</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/InvocationTargetException.html">InvocationTargetException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/MalformedParameterizedTypeException.html">MalformedParameterizedTypeException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/UndeclaredThrowableException.html">UndeclaredThrowableException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/lang/reflect/GenericSignatureFormatError.html">GenericSignatureFormatError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">Proxy</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p><code>Proxy</code> defines methods for creating dynamic proxy classes and instances.
+ A proxy class implements a declared set of interfaces and delegates method
+ invocations to an <code>InvocationHandler</code>.</p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<section id="lfields"><h3>Field Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          <a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Proxy.html#handler">handler</a></td>
+          <td class="jd-descrcol" width="100%">The invocation handler on which the method calls are dispatched.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          <a href="../../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../../reference/java/lang/reflect/Method.html">Method</a>&gt;</td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Proxy.html#methodMap">methodMap</a></td>
+          <td class="jd-descrcol" width="100%"></td>
+      </tr>
+      
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/lang/reflect/Proxy.html#Proxy(java.lang.reflect.InvocationHandler)">Proxy</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a> <i>h</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/lang/reflect/Proxy.html#getInvocationHandler(java.lang.Object)">getInvocationHandler</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>proxy</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/lang/reflect/Proxy.html#getProxyClass(java.lang.ClassLoader, java.lang.Class<?>...)">getProxyClass</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/ClassLoader.html">ClassLoader</a> <i>loader</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Class.html">Class...</a>&lt;?&gt; <i>interfaces</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/lang/reflect/Proxy.html#isProxyClass(java.lang.Class<?>)">isProxyClass</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; <i>cl</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/lang/Object.html">Object</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/lang/reflect/Proxy.html#newProxyInstance(java.lang.ClassLoader, java.lang.Class<?>[], java.lang.reflect.InvocationHandler)">newProxyInstance</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/ClassLoader.html">ClassLoader</a> <i>loader</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Class.html">Class[]</a>&lt;?&gt; <i>interfaces</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a> <i>h</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- ========= FIELD DETAIL ======== -->
+<section id="fields">
+  <h2>Fields</h2>
+  
+
+
+
+<A NAME="handler"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+          <a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a>
+        
+      </span>
+        <strong>handler</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The invocation handler on which the method calls are dispatched.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<A NAME="methodMap"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+          <a href="../../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../../reference/java/lang/reflect/Method.html">Method</a>&gt;
+        
+      </span>
+        <strong>methodMap</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="Proxy(java.lang.reflect.InvocationHandler)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>Proxy</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a> <i>h</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Proxy</code> instance with the specified invocation
+ handler.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">h</td>
+          <td class="jd-tagdescr">the invocation handler for the newly created proxy
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="getInvocationHandler(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a>
+      </span>
+      <span class="sympad"><strong>getInvocationHandler</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>proxy</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the invocation handler of the specified proxy instance.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">proxy</td>
+          <td class="jd-tagdescr">the proxy instance</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the invocation handler of the specified proxy instance</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the supplied <code>proxy</code> is not a proxy object
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getProxyClass(java.lang.ClassLoader, java.lang.Class<?>...)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>getProxyClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/ClassLoader.html">ClassLoader</a> <i>loader</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Class.html">Class...</a>&lt;?&gt; <i>interfaces</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the dynamically built <code>Class</code> for the specified interfaces.
+ Creates a new <code>Class</code> when necessary. The order of the interfaces
+ is relevant. Invocations of this method with the same interfaces but
+ different order result in different generated classes. The interfaces
+ must be visible from the supplied class loader; no duplicates are
+ permitted. All non-public interfaces must be defined in the same package.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">loader</td>
+          <td class="jd-tagdescr">the class loader that will define the proxy class</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">interfaces</td>
+          <td class="jd-tagdescr">an array of <code>Class</code> objects, each one identifying an
+            interface that will be implemented by the returned proxy
+            class</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a proxy class that implements all of the interfaces referred to
+         in the contents of <code>interfaces</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if any of the interface restrictions are violated</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if either <code>interfaces</code> or any of its elements are
+                <code>null</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isProxyClass(java.lang.Class<?>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isProxyClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; <i>cl</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not the specified class is a dynamically generated
+ proxy class.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">cl</td>
+          <td class="jd-tagdescr">the class</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the class is a proxy class, <code>false</code>
+         otherwise</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the class is <code>null</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="newProxyInstance(java.lang.ClassLoader, java.lang.Class<?>[], java.lang.reflect.InvocationHandler)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad"><strong>newProxyInstance</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/ClassLoader.html">ClassLoader</a> <i>loader</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Class.html">Class[]</a>&lt;?&gt; <i>interfaces</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a> <i>h</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an instance of the dynamically built class for the specified
+ interfaces. Method invocations on the returned instance are forwarded to
+ the specified invocation handler. The interfaces must be visible from the
+ supplied class loader; no duplicates are permitted. All non-public
+ interfaces must be defined in the same package.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">loader</td>
+          <td class="jd-tagdescr">the class loader that will define the proxy class</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">interfaces</td>
+          <td class="jd-tagdescr">an array of <code>Class</code> objects, each one identifying an
+            interface that will be implemented by the returned proxy
+            object</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">h</td>
+          <td class="jd-tagdescr">the invocation handler that handles the dispatched method
+            invocations</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a new proxy object that delegates to the handler <code>h</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if any of the interface restrictions are violated</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the interfaces or any of its elements are null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

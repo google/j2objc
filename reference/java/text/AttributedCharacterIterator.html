@@ -1,0 +1,1066 @@
+---
+
+title: AttributedCharacterIterator - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="selected api apilevel-"><a href="../../../reference/java/text/AttributedCharacterIterator.html">AttributedCharacterIterator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/CharacterIterator.html">CharacterIterator</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Annotation.html">Annotation</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/AttributedString.html">AttributedString</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/ChoiceFormat.html">ChoiceFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/CollationKey.html">CollationKey</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Collator.html">Collator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DateFormat.html">DateFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DateFormat.Field.html">DateFormat.Field</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DateFormatSymbols.html">DateFormatSymbols</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DecimalFormat.html">DecimalFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DecimalFormatSymbols.html">DecimalFormatSymbols</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/FieldPosition.html">FieldPosition</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Format.html">Format</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Format.Field.html">Format.Field</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/IOSCollator.html">IOSCollator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/MessageFormat.html">MessageFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/MessageFormat.Field.html">MessageFormat.Field</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Normalizer.html">Normalizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/NumberFormat.html">NumberFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/NumberFormat.Field.html">NumberFormat.Field</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/ParsePosition.html">ParsePosition</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/SimpleDateFormat.html">SimpleDateFormat</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Normalizer.Form.html">Normalizer.Form</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/text/ParseException.html">ParseException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+   
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     interface
+  <h1 itemprop="name" class="devsite-page-title">AttributedCharacterIterator</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Extends the
+ <code><a href="reference/java/text/CharacterIterator.html">CharacterIterator</a></code> interface, adding support for iterating over
+ attributes and not only characters. An
+ <code>AttributedCharacterIterator</code> also allows the user to find runs and
+ their limits. Runs are defined as ranges of characters that all have the same
+ attributes with the same values.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<section>
+  <h3>Nested Class Summary</h3>
+  <table id="nestedclasses" class="jd-sumtable">
+    
+
+  
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+        
+        
+        
+        
+        class</td>
+      <td class="jd-linkcol" colspan="2"><a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a></td>
+      <td class="jd-descrcol" width="100%">Defines keys for text attributes.&nbsp;</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="inhconstants">
+  <h3>Inherited Constant Summary</h3>
+  
+    
+      <div class="expandable api apilevel-">
+        <span class="showalways">
+          From interface
+          <a href="../../../reference/java/text/CharacterIterator.html">java.text.CharacterIterator</a>
+        </span>
+        <div id="inherited-constants-java.text.CharacterIterator">
+          <div id="inherited-constants-java.text.CharacterIterator-list"
+                class="jd-inheritedlinks">
+          </div>
+          <div id="inherited-constants-java.text.CharacterIterator-summary">
+            <table class="jd-sumtable-expando">
+              
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">char</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/text/CharacterIterator.html#DONE">DONE</a></td>
+        <td class="jd-descrcol" width="100%">A constant which indicates that there is no character at the current
+ index.</td>
+    </tr>
+    
+    
+
+            </table>
+          </div>
+        </div>
+      </div>
+    
+  
+    
+  
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/AttributedCharacterIterator.html#getAllAttributeKeys()">getAllAttributeKeys</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/AttributedCharacterIterator.html#getAttribute(java.text.AttributedCharacterIterator.Attribute)">getAttribute</a></span>(<span class="nowrap"><a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a> <i>attribute</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a>,&nbsp;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/AttributedCharacterIterator.html#getAttributes()">getAttributes</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/AttributedCharacterIterator.html#getRunLimit()">getRunLimit</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/AttributedCharacterIterator.html#getRunLimit(java.text.AttributedCharacterIterator.Attribute)">getRunLimit</a></span>(<span class="nowrap"><a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a> <i>attribute</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/AttributedCharacterIterator.html#getRunLimit(java.util.Set<? extends java.text.AttributedCharacterIterator.Attribute>)">getRunLimit</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Set.html">Set</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a>&gt; <i>attributes</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/AttributedCharacterIterator.html#getRunStart(java.text.AttributedCharacterIterator.Attribute)">getRunStart</a></span>(<span class="nowrap"><a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a> <i>attribute</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/AttributedCharacterIterator.html#getRunStart(java.util.Set<? extends java.text.AttributedCharacterIterator.Attribute>)">getRunStart</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Set.html">Set</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a>&gt; <i>attributes</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/AttributedCharacterIterator.html#getRunStart()">getRunStart</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="getAllAttributeKeys()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a>&gt;
+      </span>
+      <span class="sympad"><strong>getAllAttributeKeys</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a set of attributes present in the <code>AttributedCharacterIterator</code>. An empty set is returned if no attributes
+ were defined.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a set of attribute keys; may be empty.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getAttribute(java.text.AttributedCharacterIterator.Attribute)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad"><strong>getAttribute</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a> <i>attribute</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value stored in the attribute for the current character. If
+ the attribute was not defined then <code>null</code> is returned.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">attribute</td>
+          <td class="jd-tagdescr">the attribute for which the value should be returned.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the value of the requested attribute for the current character or
+         <code>null</code> if it was not defined.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getAttributes()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a>,&nbsp;<a href="../../../reference/java/lang/Object.html">Object</a>&gt;
+      </span>
+      <span class="sympad"><strong>getAttributes</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a map of all attributes of the current character. If no
+ attributes were defined for the current character then an empty map is
+ returned.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a map of all attributes for the current character or an empty
+         map.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getRunLimit()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getRunLimit</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the last character in the run having the same
+ attributes as the current character.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the index of the last character of the current run.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getRunLimit(java.text.AttributedCharacterIterator.Attribute)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getRunLimit</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a> <i>attribute</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the last character in the run that has the same
+ attribute value for the given attribute as the current character.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">attribute</td>
+          <td class="jd-tagdescr">the attribute which the run is based on.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the index of the last character of the current run.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getRunLimit(java.util.Set<? extends java.text.AttributedCharacterIterator.Attribute>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getRunLimit</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Set.html">Set</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a>&gt; <i>attributes</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the last character in the run that has the same
+ attribute values for the attributes in the set as the current character.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">attributes</td>
+          <td class="jd-tagdescr">the set of attributes which the run is based on.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the index of the last character of the current run.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getRunStart(java.text.AttributedCharacterIterator.Attribute)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getRunStart</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a> <i>attribute</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the first character in the run that has the same
+ attribute value for the given attribute as the current character.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">attribute</td>
+          <td class="jd-tagdescr">the attribute which the run is based on.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the index of the last character of the current run.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getRunStart(java.util.Set<? extends java.text.AttributedCharacterIterator.Attribute>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getRunStart</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Set.html">Set</a>&lt;?&nbsp;extends&nbsp;<a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a>&gt; <i>attributes</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the first character in the run that has the same
+ attribute values for the attributes in the set as the current character.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">attributes</td>
+          <td class="jd-tagdescr">the set of attributes which the run is based on.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the index of the last character of the current run.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getRunStart()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getRunStart</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the index of the first character in the run that has the same
+ attributes as the current character.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the index of the last character of the current run.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

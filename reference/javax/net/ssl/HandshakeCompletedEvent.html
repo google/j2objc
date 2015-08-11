@@ -1,0 +1,1064 @@
+---
+
+title: HandshakeCompletedEvent - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedListener.html">HandshakeCompletedListener</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/HostnameVerifier.html">HostnameVerifier</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/KeyManager.html">KeyManager</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/ManagerFactoryParameters.html">ManagerFactoryParameters</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSession.html">SSLSession</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSessionBindingListener.html">SSLSessionBindingListener</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSessionContext.html">SSLSessionContext</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/TrustManager.html">TrustManager</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/X509TrustManager.html">X509TrustManager</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="selected api apilevel-"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html">HandshakeCompletedEvent</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/HttpsURLConnection.html">HttpsURLConnection</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/KeyManagerFactory.html">KeyManagerFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/KeyManagerFactorySpi.html">KeyManagerFactorySpi</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLContext.html">SSLContext</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html">SSLContextSpi</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngine.html">SSLEngine</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.html">SSLEngineResult</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLServerSocket.html">SSLServerSocket</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLServerSocketFactory.html">SSLServerSocketFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSessionBindingEvent.html">SSLSessionBindingEvent</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSocket.html">SSLSocket</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSocketFactory.html">SSLSocketFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/TrustManagerFactory.html">TrustManagerFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/TrustManagerFactorySpi.html">TrustManagerFactorySpi</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.HandshakeStatus.html">SSLEngineResult.HandshakeStatus</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.Status.html">SSLEngineResult.Status</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLException.html">SSLException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLHandshakeException.html">SSLHandshakeException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLPeerUnverifiedException.html">SSLPeerUnverifiedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLProtocolException.html">SSLProtocolException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+   
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">HandshakeCompletedEvent</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>The event object encapsulating the information about a completed SSL
+ handshake on a SSL connection.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<section id="inhfields">
+  <h3>Inherited Field Summary</h3>
+  
+    
+    <div class="expandable api apilevel-">
+      <span class="showalways">
+        From class
+        <a href="../../../../reference/java/util/EventObject.html">java.util.EventObject</a>
+      </span>
+      <div id="inherited-fields-java.util.EventObject">
+        <div id="inherited-fields-java.util.EventObject-list"
+              class="jd-inheritedlinks">
+        </div>
+        <div id="inherited-fields-java.util.EventObject-summary">
+          <table class="jd-sumtable-expando">
+          
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          <a href="../../../../reference/java/lang/Object.html">Object</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/util/EventObject.html#source">source</a></td>
+          <td class="jd-descrcol" width="100%"></td>
+      </tr>
+      
+    
+
+          </table>
+        </div>
+      </div>
+    </div>
+    
+  
+    
+  
+    
+  
+  </section>
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html#HandshakeCompletedEvent(javax.net.ssl.SSLSocket, javax.net.ssl.SSLSession)">HandshakeCompletedEvent</a></span>(<span class="nowrap"><a href="../../../../reference/javax/net/ssl/SSLSocket.html">SSLSocket</a> <i>sock</i></span>, <span class="nowrap"><a href="../../../../reference/javax/net/ssl/SSLSession.html">SSLSession</a> <i>s</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html#getCipherSuite()">getCipherSuite</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/security/cert/Certificate.html">Certificate[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html#getLocalCertificates()">getLocalCertificates</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/security/Principal.html">Principal</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html#getLocalPrincipal()">getLocalPrincipal</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/javax/security/cert/X509Certificate.html">X509Certificate[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html#getPeerCertificateChain()">getPeerCertificateChain</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/security/cert/Certificate.html">Certificate[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html#getPeerCertificates()">getPeerCertificates</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/security/Principal.html">Principal</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html#getPeerPrincipal()">getPeerPrincipal</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLSession.html">SSLSession</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html#getSession()">getSession</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLSocket.html">SSLSocket</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html#getSocket()">getSocket</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="HandshakeCompletedEvent(javax.net.ssl.SSLSocket, javax.net.ssl.SSLSession)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>HandshakeCompletedEvent</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/net/ssl/SSLSocket.html">SSLSocket</a> <i>sock</i></span>, <span class="nowrap"><a href="../../../../reference/javax/net/ssl/SSLSession.html">SSLSession</a> <i>s</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>HandshakeCompletedEvent</code> with the specified SSL
+ socket and SSL session.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">sock</td>
+          <td class="jd-tagdescr">the SSL socket.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">s</td>
+          <td class="jd-tagdescr">the SSL session.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="getCipherSuite()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getCipherSuite</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the name of the cipher suite negotiated during this handshake.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the name of the cipher suite negotiated during this handshake.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLocalCertificates()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/security/cert/Certificate.html">Certificate[]</a>
+      </span>
+      <span class="sympad"><strong>getLocalCertificates</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the list of local certificates used during the handshake. These
+ certificates were sent to the peer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>Returns the list of certificates used during the handshake with
+         the local identity certificate followed by CAs, or <code>null</code>
+         if no certificates were used during the handshake.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLocalPrincipal()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/security/Principal.html">Principal</a>
+      </span>
+      <span class="sympad"><strong>getLocalPrincipal</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>Principal</code> used to identify during the handshake.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Principal</code> used to identify during the handshake.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getPeerCertificateChain()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/javax/security/cert/X509Certificate.html">X509Certificate[]</a>
+      </span>
+      <span class="sympad"><strong>getPeerCertificateChain</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the list of certificates identifying the peer. The peer's
+ identity certificate is followed by the validated certificate authority
+ certificates.
+ <p>
+ <b>Replaced by:</b> <code><a href="reference/javax/net/ssl/HandshakeCompletedEvent.html#getPeerCertificates()">getPeerCertificates()</a></code></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the list of certificates identifying the peer</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/javax/net/ssl/SSLPeerUnverifiedException.html">SSLPeerUnverifiedException</a></td>
+            <td class="jd-tagdescr">if the identity of the peer has not been verified.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getPeerCertificates()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/security/cert/Certificate.html">Certificate[]</a>
+      </span>
+      <span class="sympad"><strong>getPeerCertificates</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return the list of certificates identifying the peer during the
+ handshake.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the list of certificates identifying the peer with the peer's
+         identity certificate followed by CAs.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/javax/net/ssl/SSLPeerUnverifiedException.html">SSLPeerUnverifiedException</a></td>
+            <td class="jd-tagdescr">if the identity of the peer has not been verified.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getPeerPrincipal()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/security/Principal.html">Principal</a>
+      </span>
+      <span class="sympad"><strong>getPeerPrincipal</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>Principal</code> identifying the peer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Principal</code> identifying the peer.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/javax/net/ssl/SSLPeerUnverifiedException.html">SSLPeerUnverifiedException</a></td>
+            <td class="jd-tagdescr">if the identity of the peer has not been verified.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSession()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/javax/net/ssl/SSLSession.html">SSLSession</a>
+      </span>
+      <span class="sympad"><strong>getSession</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the SSL session associated with this event.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the SSL session associated with this event.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSocket()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/javax/net/ssl/SSLSocket.html">SSLSocket</a>
+      </span>
+      <span class="sympad"><strong>getSocket</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the SSL socket that produced this event.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the SSL socket that produced this event.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

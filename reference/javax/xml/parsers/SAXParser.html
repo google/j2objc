@@ -1,0 +1,2104 @@
+---
+
+title: SAXParser - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/parsers/DocumentBuilder.html">DocumentBuilder</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/parsers/DocumentBuilderFactory.html">DocumentBuilderFactory</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/javax/xml/parsers/SAXParser.html">SAXParser</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/parsers/SAXParserFactory.html">SAXParserFactory</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/parsers/ParserConfigurationException.html">ParserConfigurationException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/parsers/FactoryConfigurationError.html">FactoryConfigurationError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">SAXParser</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Defines the API that wraps an <code><a href="reference/org/xml/sax/XMLReader.html">XMLReader</a></code>
+ implementation class. In JAXP 1.0, this class wrapped the
+ <code><a href="reference/org/xml/sax/Parser.html">Parser</a></code> interface, however this interface was
+ replaced by the <code><a href="reference/org/xml/sax/XMLReader.html">XMLReader</a></code>. For ease
+ of transition, this class continues to support the same name
+ and interface as well as supporting new methods.
+
+ An instance of this class can be obtained from the
+ <code><a href="reference/javax/xml/parsers/SAXParserFactory.html#newSAXParser()">newSAXParser()</a></code> method.
+ Once an instance of this class is obtained, XML can be parsed from
+ a variety of input sources. These input sources are InputStreams,
+ Files, URLs, and SAX InputSources.<p>
+
+ This static method creates a new factory instance based
+ on a system property setting or uses the platform default
+ if no property has been defined.<p>
+
+ The system property that controls which Factory implementation
+ to create is named <code>&quot;javax.xml.parsers.SAXParserFactory&quot;</code>.
+ This property names a class that is a concrete subclass of this
+ abstract class. If no property is defined, a platform default
+ will be used.</p>
+
+ As the content is parsed by the underlying parser, methods of the
+ given <code><a href="reference/org/xml/sax/HandlerBase.html">HandlerBase</a></code> or the
+ <code><a href="reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a></code> are called.<p>
+
+ Implementations of this class which wrap an underlying implementation
+ can consider using the <code><a href="reference/org/xml/sax/helpers/ParserAdapter.html">ParserAdapter</a></code>
+ class to initially adapt their SAX1 implementation to work under
+ this revised class.</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#SAXParser()">SAXParser</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/org/xml/sax/Parser.html">Parser</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#getParser()">getParser</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/Object.html">Object</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#getProperty(java.lang.String)">getProperty</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/javax/xml/validation/Schema.html">Schema</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#getSchema()">getSchema</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/org/xml/sax/XMLReader.html">XMLReader</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#getXMLReader()">getXMLReader</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#isNamespaceAware()">isNamespaceAware</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#isValidating()">isValidating</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#isXIncludeAware()">isXIncludeAware</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#parse(org.xml.sax.InputSource, org.xml.sax.helpers.DefaultHandler)">parse</a></span>(<span class="nowrap"><a href="../../../../reference/org/xml/sax/InputSource.html">InputSource</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a> <i>dh</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#parse(org.xml.sax.InputSource, org.xml.sax.HandlerBase)">parse</a></span>(<span class="nowrap"><a href="../../../../reference/org/xml/sax/InputSource.html">InputSource</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a> <i>hb</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#parse(java.io.InputStream, org.xml.sax.HandlerBase, java.lang.String)">parse</a></span>(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a> <i>hb</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>systemId</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#parse(java.lang.String, org.xml.sax.HandlerBase)">parse</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a> <i>hb</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#parse(java.io.File, org.xml.sax.HandlerBase)">parse</a></span>(<span class="nowrap"><a href="../../../../reference/java/io/File.html">File</a> <i>f</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a> <i>hb</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#parse(java.lang.String, org.xml.sax.helpers.DefaultHandler)">parse</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a> <i>dh</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#parse(java.io.InputStream, org.xml.sax.HandlerBase)">parse</a></span>(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a> <i>hb</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#parse(java.io.File, org.xml.sax.helpers.DefaultHandler)">parse</a></span>(<span class="nowrap"><a href="../../../../reference/java/io/File.html">File</a> <i>f</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a> <i>dh</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#parse(java.io.InputStream, org.xml.sax.helpers.DefaultHandler)">parse</a></span>(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a> <i>dh</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#parse(java.io.InputStream, org.xml.sax.helpers.DefaultHandler, java.lang.String)">parse</a></span>(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a> <i>dh</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>systemId</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#reset()">reset</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/parsers/SAXParser.html#setProperty(java.lang.String, java.lang.Object)">setProperty</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="SAXParser()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SAXParser</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Protected constructor to prevent instantiation.
+ Use <code><a href="reference/javax/xml/parsers/SAXParserFactory.html#newSAXParser()">newSAXParser()</a></code>.</p>
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="getParser()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/org/xml/sax/Parser.html">Parser</a>
+      </span>
+      <span class="sympad"><strong>getParser</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the SAX parser that is encapsulated by the
+ implementation of this class.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The SAX parser that is encapsulated by the
+         implementation of this class.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If any SAX errors occur during processing.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getProperty(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad"><strong>getProperty</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Returns the particular property requested for in the underlying
+ implementation of <code><a href="reference/org/xml/sax/XMLReader.html">XMLReader</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">The name of the property to be retrieved.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>Value of the requested property.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotRecognizedException.html">SAXNotRecognizedException</a></td>
+            <td class="jd-tagdescr">When the underlying XMLReader does
+    not recognize the property name.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotSupportedException.html">SAXNotSupportedException</a></td>
+            <td class="jd-tagdescr">When the underlying XMLReader
+  recognizes the property name but doesn't support the property.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/XMLReader.html#getProperty(java.lang.String)">getProperty(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSchema()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/javax/xml/validation/Schema.html">Schema</a>
+      </span>
+      <span class="sympad"><strong>getSchema</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Get a reference to the the <code><a href="reference/javax/xml/validation/Schema.html">Schema</a></code> being used by
+ the XML processor.</p>
+
+ <p>If no schema is being used, <code>null</code> is returned.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code><a href="reference/javax/xml/validation/Schema.html">Schema</a></code> being used or <code>null</code>
+  if none in use</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td class="jd-tagdescr">For backward compatibility, when implementations for
+      earlier versions of JAXP is used, this exception will be
+      thrown.</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getXMLReader()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/org/xml/sax/XMLReader.html">XMLReader</a>
+      </span>
+      <span class="sympad"><strong>getXMLReader</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code><a href="reference/org/xml/sax/XMLReader.html">XMLReader</a></code> that is encapsulated by the
+ implementation of this class.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The XMLReader that is encapsulated by the
+         implementation of this class.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If any SAX errors occur during processing.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isNamespaceAware()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isNamespaceAware</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not this parser is configured to
+ understand namespaces.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>true if this parser is configured to
+         understand namespaces; false otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isValidating()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isValidating</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether or not this parser is configured to
+ validate XML documents.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>true if this parser is configured to
+         validate XML documents; false otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isXIncludeAware()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isXIncludeAware</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Get the XInclude processing mode for this parser.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the return value of
+      the <code><a href="reference/javax/xml/parsers/SAXParserFactory.html#isXIncludeAware()">isXIncludeAware()</a></code>
+      when this parser was created from factory.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td class="jd-tagdescr">For backward compatibility, when implementations for
+      earlier versions of JAXP is used, this exception will be
+      thrown.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/parsers/SAXParserFactory.html#setXIncludeAware(boolean)">setXIncludeAware(boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parse(org.xml.sax.InputSource, org.xml.sax.helpers.DefaultHandler)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>parse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/org/xml/sax/InputSource.html">InputSource</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a> <i>dh</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse the content given <code><a href="reference/org/xml/sax/InputSource.html">InputSource</a></code>
+ as XML using the specified
+ <code><a href="reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">is</td>
+          <td class="jd-tagdescr">The InputSource containing the content to be parsed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">dh</td>
+          <td class="jd-tagdescr">The SAX DefaultHandler to use.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the <code>InputSource</code> object
+   is <code>null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">If any IO errors occur.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If any SAX errors occur during processing.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parse(org.xml.sax.InputSource, org.xml.sax.HandlerBase)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>parse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/org/xml/sax/InputSource.html">InputSource</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a> <i>hb</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse the content given <code><a href="reference/org/xml/sax/InputSource.html">InputSource</a></code>
+ as XML using the specified
+ <code><a href="reference/org/xml/sax/HandlerBase.html">HandlerBase</a></code>.
+ <i> Use of the DefaultHandler version of this method is recommended as
+ the HandlerBase class has been deprecated in SAX 2.0</i></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">is</td>
+          <td class="jd-tagdescr">The InputSource containing the content to be parsed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">hb</td>
+          <td class="jd-tagdescr">The SAX HandlerBase to use.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the <code>InputSource</code> object
+   is <code>null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">If any IO errors occur.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If any SAX errors occur during processing.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parse(java.io.InputStream, org.xml.sax.HandlerBase, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>parse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a> <i>hb</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>systemId</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Parse the content of the given <code><a href="reference/java/io/InputStream.html">InputStream</a></code>
+ instance as XML using the specified <code><a href="reference/org/xml/sax/HandlerBase.html">HandlerBase</a></code>.
+ <i> Use of the DefaultHandler version of this method is recommended as
+ the HandlerBase class has been deprecated in SAX 2.0</i>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">is</td>
+          <td class="jd-tagdescr">InputStream containing the content to be parsed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">hb</td>
+          <td class="jd-tagdescr">The SAX HandlerBase to use.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">systemId</td>
+          <td class="jd-tagdescr">The systemId which is needed for resolving relative URIs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the given <code>InputStream</code> is
+   <code>null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">If any IO error occurs interacting with the
+   <code>InputStream</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If any SAX errors occur during processing.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">version of this method instead.
+</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parse(java.lang.String, org.xml.sax.HandlerBase)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>parse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a> <i>hb</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse the content described by the giving Uniform Resource
+ Identifier (URI) as XML using the specified
+ <code><a href="reference/org/xml/sax/HandlerBase.html">HandlerBase</a></code>.
+ <i> Use of the DefaultHandler version of this method is recommended as
+ the <code>HandlerBase</code> class has been deprecated in SAX 2.0</i></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">The location of the content to be parsed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">hb</td>
+          <td class="jd-tagdescr">The SAX HandlerBase to use.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the uri is null.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">If any IO errors occur.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If any SAX errors occur during processing.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parse(java.io.File, org.xml.sax.HandlerBase)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>parse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/io/File.html">File</a> <i>f</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a> <i>hb</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse the content of the file specified as XML using the
+ specified <code><a href="reference/org/xml/sax/HandlerBase.html">HandlerBase</a></code>.
+ <i> Use of the DefaultHandler version of this method is recommended as
+ the HandlerBase class has been deprecated in SAX 2.0</i></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">f</td>
+          <td class="jd-tagdescr">The file containing the XML to parse</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">hb</td>
+          <td class="jd-tagdescr">The SAX HandlerBase to use.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the File object is null.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">If any IO errors occur.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If any SAX errors occur during processing.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parse(java.lang.String, org.xml.sax.helpers.DefaultHandler)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>parse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a> <i>dh</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse the content described by the giving Uniform Resource
+ Identifier (URI) as XML using the specified
+ <code><a href="reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">The location of the content to be parsed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">dh</td>
+          <td class="jd-tagdescr">The SAX DefaultHandler to use.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the uri is null.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">If any IO errors occur.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If any SAX errors occur during processing.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parse(java.io.InputStream, org.xml.sax.HandlerBase)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>parse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a> <i>hb</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Parse the content of the given <code><a href="reference/java/io/InputStream.html">InputStream</a></code>
+ instance as XML using the specified <code><a href="reference/org/xml/sax/HandlerBase.html">HandlerBase</a></code>.
+ <i> Use of the DefaultHandler version of this method is recommended as
+ the HandlerBase class has been deprecated in SAX 2.0</i>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">is</td>
+          <td class="jd-tagdescr">InputStream containing the content to be parsed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">hb</td>
+          <td class="jd-tagdescr">The SAX HandlerBase to use.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the given InputStream is null.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If parse produces a SAX error.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">If an IO error occurs interacting with the
+   <code>InputStream</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parse(java.io.File, org.xml.sax.helpers.DefaultHandler)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>parse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/io/File.html">File</a> <i>f</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a> <i>dh</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse the content of the file specified as XML using the
+ specified <code><a href="reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">f</td>
+          <td class="jd-tagdescr">The file containing the XML to parse</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">dh</td>
+          <td class="jd-tagdescr">The SAX DefaultHandler to use.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the File object is null.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">If any IO errors occur.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If any SAX errors occur during processing.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parse(java.io.InputStream, org.xml.sax.helpers.DefaultHandler)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>parse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a> <i>dh</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse the content of the given <code><a href="reference/java/io/InputStream.html">InputStream</a></code>
+ instance as XML using the specified
+ <code><a href="reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">is</td>
+          <td class="jd-tagdescr">InputStream containing the content to be parsed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">dh</td>
+          <td class="jd-tagdescr">The SAX DefaultHandler to use.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the given InputStream is null.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">If any IO errors occur.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If any SAX errors occur during processing.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parse(java.io.InputStream, org.xml.sax.helpers.DefaultHandler, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>parse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>is</i></span>, <span class="nowrap"><a href="../../../../reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a> <i>dh</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>systemId</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse the content of the given <code><a href="reference/java/io/InputStream.html">InputStream</a></code>
+ instance as XML using the specified
+ <code><a href="reference/org/xml/sax/helpers/DefaultHandler.html">DefaultHandler</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">is</td>
+          <td class="jd-tagdescr">InputStream containing the content to be parsed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">dh</td>
+          <td class="jd-tagdescr">The SAX DefaultHandler to use.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">systemId</td>
+          <td class="jd-tagdescr">The systemId which is needed for resolving relative URIs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the given InputStream is null.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">If any IO errors occur.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td class="jd-tagdescr">If any SAX errors occur during processing.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">version of this method instead.
+</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="reset()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>reset</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Reset this <code>SAXParser</code> to its original configuration.</p>
+
+ <p><code>SAXParser</code> is reset to the same state as when it was created with
+ <code><a href="reference/javax/xml/parsers/SAXParserFactory.html#newSAXParser()">newSAXParser()</a></code>.
+ <code>reset()</code> is designed to allow the reuse of existing <code>SAXParser</code>s
+ thus saving resources associated with the creation of new <code>SAXParser</code>s.</p>
+
+ <p>The reset <code>SAXParser</code> is not guaranteed to have the same <code><a href="reference/javax/xml/validation/Schema.html">Schema</a></code>
+ <code>Object</code>, e.g. <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code>.  It is guaranteed to have a functionally equal
+ <code>Schema</code>.</p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setProperty(java.lang.String, java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setProperty</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Sets the particular property in the underlying implementation of
+ <code><a href="reference/org/xml/sax/XMLReader.html">XMLReader</a></code>.
+ A list of the core features and properties can be found at
+ <a href="http://sax.sourceforge.net/?selected=get-set">
+ http://sax.sourceforge.net/?selected=get-set</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">The name of the property to be set.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">The value of the property to be set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotRecognizedException.html">SAXNotRecognizedException</a></td>
+            <td class="jd-tagdescr">When the underlying XMLReader does
+   not recognize the property name.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotSupportedException.html">SAXNotSupportedException</a></td>
+            <td class="jd-tagdescr">When the underlying XMLReader
+  recognizes the property name but doesn't support the property.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/XMLReader.html#setProperty(java.lang.String, java.lang.Object)">setProperty(String, Object)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

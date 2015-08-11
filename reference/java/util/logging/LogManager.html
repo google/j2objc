@@ -1,0 +1,1382 @@
+---
+
+title: LogManager - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/Filter.html">Filter</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/LoggingMXBean.html">LoggingMXBean</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/ConsoleHandler.html">ConsoleHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/ErrorManager.html">ErrorManager</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/Formatter.html">Formatter</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/Handler.html">Handler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/Level.html">Level</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/Logger.html">Logger</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/LoggingPermission.html">LoggingPermission</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/java/util/logging/LogManager.html">LogManager</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/LogRecord.html">LogRecord</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/MemoryHandler.html">MemoryHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/SimpleFormatter.html">SimpleFormatter</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/StreamHandler.html">StreamHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/logging/XMLFormatter.html">XMLFormatter</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">LogManager</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p><code>LogManager</code> is used to maintain configuration properties of the
+ logging framework, and to manage a hierarchical namespace of all named
+ <code>Logger</code> objects.
+ <p>
+ There is only one global <code>LogManager</code> instance in the
+ application, which can be get by calling static method
+ <code><a href="reference/java/util/logging/LogManager.html#getLogManager()">getLogManager()</a></code>. This instance is created and
+ initialized during class initialization and cannot be changed.
+ <p>
+ The <code>LogManager</code> class can be specified by
+ java.util.logging.manager system property, if the property is unavailable or
+ invalid, the default class <code><a href="reference/java/util/logging/LogManager.html">LogManager</a></code> will
+ be used.
+ <p>
+ On initialization, <code>LogManager</code> reads its configuration from a
+ properties file, which by default is the "lib/logging.properties" in the JRE
+ directory.
+ <p>
+ However, two optional system properties can be used to customize the initial
+ configuration process of <code>LogManager</code>.
+ <ul>
+ <li>"java.util.logging.config.class"</li>
+ <li>"java.util.logging.config.file"</li>
+ </ul>
+ <p>
+ These two properties can be set in three ways, by the Preferences API, by the
+ "java" command line property definitions, or by system property definitions
+ passed to JNI_CreateJavaVM.
+ <p>
+ The "java.util.logging.config.class" should specifies a class name. If it is
+ set, this given class will be loaded and instantiated during
+ <code>LogManager</code> initialization, so that this object's default
+ constructor can read the initial configuration and define properties for
+ <code>LogManager</code>.
+ <p>
+ If "java.util.logging.config.class" property is not set, or it is invalid, or
+ some exception is thrown during the instantiation, then the
+ "java.util.logging.config.file" system property can be used to specify a
+ properties file. The <code>LogManager</code> will read initial
+ configuration from this file.
+ <p>
+ If neither of these properties is defined, or some exception is thrown
+ during these two properties using, the <code>LogManager</code> will read
+ its initial configuration from default properties file, as described above.
+ <p>
+ The global logging properties may include:
+ <ul>
+ <li>"handlers". This property's values should be a list of class names for
+ handler classes separated by whitespace, these classes must be subclasses of
+ <code>Handler</code> and each must have a default constructor, these
+ classes will be loaded, instantiated and registered as handlers on the root
+ <code>Logger</code> (the <code>Logger</code> named ""). These
+ <code>Handler</code>s maybe initialized lazily.</li>
+ <li>"config". The property defines a list of class names separated by
+ whitespace. Each class must have a default constructor, in which it can
+ update the logging configuration, such as levels, handlers, or filters for
+ some logger, etc. These classes will be loaded and instantiated during
+ <code>LogManager</code> configuration</li>
+ </ul>
+ <p>
+ This class, together with any handler and configuration classes associated
+ with it, <b>must</b> be loaded from the system classpath when
+ <code>LogManager</code> configuration occurs.
+ <p>
+ Besides global properties, the properties for loggers and Handlers can be
+ specified in the property files. The names of these properties will start
+ with the complete dot separated names for the handlers or loggers.
+ <p>
+ In the <code>LogManager</code>'s hierarchical namespace,
+ <code>Loggers</code> are organized based on their dot separated names. For
+ example, "x.y.z" is child of "x.y".
+ <p>
+ Levels for <code>Loggers</code> can be defined by properties whose name end
+ with ".level". Thus "alogger.level" defines a level for the logger named as
+ "alogger" and for all its children in the naming hierarchy. Log levels
+ properties are read and applied in the same order as they are specified in
+ the property file. The root logger's level can be defined by the property
+ named as ".level".
+ <p>
+ This class is thread safe. It is an error to synchronize on a
+ <code>LogManager</code> while synchronized on a <code>Logger</code>.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="constants"><h3>Constant Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol"><a href="../../../../reference/java/lang/String.html">String</a></td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/LogManager.html#LOGGING_MXBEAN_NAME">LOGGING_MXBEAN_NAME</a></td>
+        <td class="jd-descrcol" width="100%">The <code>String</code> value of the <code><a href="reference/java/util/logging/LoggingMXBean.html">LoggingMXBean</a></code>'s ObjectName.</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#LogManager()">LogManager</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#addLogger(java.util.logging.Logger)">addLogger</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/logging/Logger.html">Logger</a> <i>logger</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#addPropertyChangeListener(java.beans.PropertyChangeListener)">addPropertyChangeListener</a></span>(<span class="nowrap"><a href="../../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a> <i>l</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#checkAccess()">checkAccess</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/util/logging/LogManager.html">LogManager</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#getLogManager()">getLogManager</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            <a href="../../../../reference/java/util/logging/Logger.html">Logger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#getLogger(java.lang.String)">getLogger</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            <a href="../../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../../reference/java/lang/String.html">String</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#getLoggerNames()">getLoggerNames</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/util/logging/LoggingMXBean.html">LoggingMXBean</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#getLoggingMXBean()">getLoggingMXBean</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#getProperty(java.lang.String)">getProperty</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#readConfiguration()">readConfiguration</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#readConfiguration(java.io.InputStream)">readConfiguration</a></span>(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>ins</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#removePropertyChangeListener(java.beans.PropertyChangeListener)">removePropertyChangeListener</a></span>(<span class="nowrap"><a href="../../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a> <i>l</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/logging/LogManager.html#reset()">reset</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<section id="constants">
+  <h2>Constants</h2>
+  
+
+
+
+<A NAME="LOGGING_MXBEAN_NAME"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          <a href="../../../../reference/java/lang/String.html">String</a>
+        
+      </span>
+        <strong>LOGGING_MXBEAN_NAME</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>String</code> value of the <code><a href="reference/java/util/logging/LoggingMXBean.html">LoggingMXBean</a></code>'s ObjectName.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                "java.util.logging:type=Logging"
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="LogManager()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>LogManager</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Default constructor. This is not public because there should be only one
+ <code>LogManager</code> instance, which can be get by
+ <code>LogManager.getLogManager()</code>. This is protected so that
+ application can subclass the object.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="addLogger(java.util.logging.Logger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        boolean
+      </span>
+      <span class="sympad"><strong>addLogger</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/logging/Logger.html">Logger</a> <i>logger</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Add a given logger into the hierarchical namespace. The
+ <code>Logger.addLogger()</code> factory methods call this method to add newly
+ created Logger. This returns false if a logger with the given name has
+ existed in the namespace
+ <p>
+ Note that the <code>LogManager</code> may only retain weak references to
+ registered loggers. In order to prevent <code>Logger</code> objects from being
+ unexpectedly garbage collected it is necessary for <i>applications</i>
+ to maintain references to them.
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">logger</td>
+          <td class="jd-tagdescr">the logger to be added.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>true if the given logger is added into the namespace
+         successfully, false if the given logger exists in the namespace.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="addPropertyChangeListener(java.beans.PropertyChangeListener)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>addPropertyChangeListener</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a> <i>l</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Add a <code>PropertyChangeListener</code>, which will be invoked when
+ the properties are reread.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">l</td>
+          <td class="jd-tagdescr">the <code>PropertyChangeListener</code> to be added.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="checkAccess()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>checkAccess</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Does nothing.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getLogManager()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/util/logging/LogManager.html">LogManager</a>
+      </span>
+      <span class="sympad"><strong>getLogManager</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Get the global <code>LogManager</code> instance.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the global <code>LogManager</code> instance
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLogger(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        <a href="../../../../reference/java/util/logging/Logger.html">Logger</a>
+      </span>
+      <span class="sympad"><strong>getLogger</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Get the logger with the given name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">name of logger</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>logger with given name, or <code>null</code> if nothing is found.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLoggerNames()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        <a href="../../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../../reference/java/lang/String.html">String</a>&gt;
+      </span>
+      <span class="sympad"><strong>getLoggerNames</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Get a <code>Enumeration</code> of all registered logger names.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>enumeration of registered logger names
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLoggingMXBean()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/util/logging/LoggingMXBean.html">LoggingMXBean</a>
+      </span>
+      <span class="sympad"><strong>getLoggingMXBean</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Get the <code>LoggingMXBean</code> instance. this implementation always throws
+ an UnsupportedOperationException.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>LoggingMXBean</code> instance
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getProperty(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getProperty</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Get the value of property with given name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">the name of property</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the value of property
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readConfiguration()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>readConfiguration</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Re-initialize the properties and configuration. The initialization
+ process is same as the <code>LogManager</code> instantiation.
+ <p>
+ Notice : No <code>PropertyChangeEvent</code> are fired.
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if any IO related problems happened.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readConfiguration(java.io.InputStream)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>readConfiguration</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>ins</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Re-initialize the properties and configuration from the given
+ <code>InputStream</code>
+ <p>
+ Notice : No <code>PropertyChangeEvent</code> are fired.
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">ins</td>
+          <td class="jd-tagdescr">the input stream</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if any IO related problems happened.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="removePropertyChangeListener(java.beans.PropertyChangeListener)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>removePropertyChangeListener</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/beans/PropertyChangeListener.html">PropertyChangeListener</a> <i>l</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Remove a <code>PropertyChangeListener</code>, do nothing if the given
+ listener is not found.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">l</td>
+          <td class="jd-tagdescr">the <code>PropertyChangeListener</code> to be removed.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="reset()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>reset</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reset configuration.
+
+ <p>All handlers are closed and removed from any named loggers. All loggers'
+ level is set to null, except the root logger's level is set to
+ <code>Level.INFO</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

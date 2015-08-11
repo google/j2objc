@@ -1,0 +1,910 @@
+---
+
+title: LSParserFilter - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/DOMImplementationLS.html">DOMImplementationLS</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSInput.html">LSInput</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSOutput.html">LSOutput</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html">LSParser</a></li>
+          <li class="selected api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html">LSParserFilter</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSSerializer.html">LSSerializer</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSException.html">LSException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     interface
+  <h1 itemprop="name" class="devsite-page-title">LSParserFilter</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p><code>LSParserFilter</code>s provide applications the ability to examine
+ nodes as they are being constructed while parsing. As each node is
+ examined, it may be modified or removed, or the entire parse may be
+ terminated early.
+ <p> At the time any of the filter methods are called by the parser, the
+ owner Document and DOMImplementation objects exist and are accessible.
+ The document element is never passed to the <code>LSParserFilter</code>
+ methods, i.e. it is not possible to filter out the document element.
+ <code>Document</code>, <code>DocumentType</code>, <code>Notation</code>,
+ <code>Entity</code>, and <code>Attr</code> nodes are never passed to the
+ <code>acceptNode</code> method on the filter. The child nodes of an
+ <code>EntityReference</code> node are passed to the filter if the
+ parameter "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-entities'>
+ entities</a>" is set to <code>false</code>. Note that, as described by the parameter "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-entities'>
+ entities</a>", unexpanded entity reference nodes are never discarded and are always
+ passed to the filter.
+ <p> All validity checking while parsing a document occurs on the source
+ document as it appears on the input stream, not on the DOM document as it
+ is built in memory. With filters, the document in memory may be a subset
+ of the document on the stream, and its validity may have been affected by
+ the filtering.
+ <p> All default attributes must be present on elements when the elements
+ are passed to the filter methods. All other default content must be
+ passed to the filter methods.
+ <p> DOM applications must not raise exceptions in a filter. The effect of
+ throwing exceptions from a filter is DOM implementation dependent.
+ <p>See also the <a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-LS-20040407'>Document Object Model (DOM) Level 3 Load
+and Save Specification</a>.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="constants"><h3>Constant Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html#FILTER_ACCEPT">FILTER_ACCEPT</a></td>
+        <td class="jd-descrcol" width="100%">Accept the node.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html#FILTER_INTERRUPT">FILTER_INTERRUPT</a></td>
+        <td class="jd-descrcol" width="100%">Interrupt the normal processing of the document.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html#FILTER_REJECT">FILTER_REJECT</a></td>
+        <td class="jd-descrcol" width="100%">Reject the node and its children.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html#FILTER_SKIP">FILTER_SKIP</a></td>
+        <td class="jd-descrcol" width="100%">Skip this single node.</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            short
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html#acceptNode(org.w3c.dom.Node)">acceptNode</a></span>(<span class="nowrap"><a href="../../../../../reference/org/w3c/dom/Node.html">Node</a> <i>nodeArg</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html#getWhatToShow()">getWhatToShow</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            short
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html#startElement(org.w3c.dom.Element)">startElement</a></span>(<span class="nowrap"><a href="../../../../../reference/org/w3c/dom/Element.html">Element</a> <i>elementArg</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<section id="constants">
+  <h2>Constants</h2>
+  
+
+
+
+<A NAME="FILTER_ACCEPT"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>FILTER_ACCEPT</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Accept the node.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                1
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="FILTER_INTERRUPT"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>FILTER_INTERRUPT</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Interrupt the normal processing of the document.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                4
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="FILTER_REJECT"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>FILTER_REJECT</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reject the node and its children.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                2
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="FILTER_SKIP"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>FILTER_SKIP</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Skip this single node. The children of this node will still be
+ considered.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                3
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="acceptNode(org.w3c.dom.Node)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        short
+      </span>
+      <span class="sympad"><strong>acceptNode</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/org/w3c/dom/Node.html">Node</a> <i>nodeArg</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>This method will be called by the parser at the completion of the
+ parsing of each node. The node and all of its descendants will exist
+ and be complete. The parent node will also exist, although it may be
+ incomplete, i.e. it may have additional children that have not yet
+ been parsed. Attribute nodes are never passed to this function.
+ <br>From within this method, the new node may be freely modified -
+ children may be added or removed, text nodes modified, etc. The state
+ of the rest of the document outside this node is not defined, and the
+ affect of any attempt to navigate to, or to modify any other part of
+ the document is undefined.
+ <br>For validating parsers, the checks are made on the original
+ document, before any modification by the filter. No validity checks
+ are made on any document modifications made by the filter.
+ <br>If this new node is rejected, the parser might reuse the new node
+ and any of its descendants.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">nodeArg</td>
+          <td class="jd-tagdescr">The newly constructed element. At the time this method
+   is called, the element is complete - it has all of its children
+   (and their children, recursively) and attributes, and is attached
+   as a child to its parent.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><ul>
+ <li> <code>FILTER_ACCEPT</code> if this <code>Node</code> should
+   be included in the DOM document being built.
+ </li>
+ <li>
+   <code>FILTER_REJECT</code> if the <code>Node</code> and all of its
+   children should be rejected.
+ </li>
+ <li> <code>FILTER_SKIP</code> if the
+   <code>Node</code> should be skipped and the <code>Node</code>
+   should be replaced by all the children of the <code>Node</code>.
+ </li>
+ <li>
+   <code>FILTER_INTERRUPT</code> if the filter wants to stop the
+   processing of the document. Interrupting the processing of the
+   document does no longer guarantee that the resulting DOM tree is
+   XML well-formed. The <code>Node</code> is accepted and will be the
+   last completely parsed node.
+ </li>
+ </ul>
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getWhatToShow()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getWhatToShow</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tells the <code>LSParser</code> what types of nodes to show to the
+ method <code>LSParserFilter.acceptNode</code>. If a node is not shown
+ to the filter using this attribute, it is automatically included in
+ the DOM document being built. See <code>NodeFilter</code> for
+ definition of the constants. The constants <code>SHOW_ATTRIBUTE</code>
+ , <code>SHOW_DOCUMENT</code>, <code>SHOW_DOCUMENT_TYPE</code>,
+ <code>SHOW_NOTATION</code>, <code>SHOW_ENTITY</code>, and
+ <code>SHOW_DOCUMENT_FRAGMENT</code> are meaningless here. Those nodes
+ will never be passed to <code>LSParserFilter.acceptNode</code>.
+ <br> The constants used here are defined in [<a href='http://www.w3.org/TR/2000/REC-DOM-Level-2-Traversal-Range-20001113'>DOM Level 2 Traversal and      Range</a>]
+ .
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="startElement(org.w3c.dom.Element)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        short
+      </span>
+      <span class="sympad"><strong>startElement</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/org/w3c/dom/Element.html">Element</a> <i>elementArg</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The parser will call this method after each <code>Element</code> start
+ tag has been scanned, but before the remainder of the
+ <code>Element</code> is processed. The intent is to allow the
+ element, including any children, to be efficiently skipped. Note that
+ only element nodes are passed to the <code>startElement</code>
+ function.
+ <br>The element node passed to <code>startElement</code> for filtering
+ will include all of the Element's attributes, but none of the
+ children nodes. The Element may not yet be in place in the document
+ being constructed (it may not have a parent node.)
+ <br>A <code>startElement</code> filter function may access or change
+ the attributes for the Element. Changing Namespace declarations will
+ have no effect on namespace resolution by the parser.
+ <br>For efficiency, the Element node passed to the filter may not be
+ the same one as is actually placed in the tree if the node is
+ accepted. And the actual node (node object identity) may be reused
+ during the process of reading in and filtering a document.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">elementArg</td>
+          <td class="jd-tagdescr">The newly encountered element. At the time this
+   method is called, the element is incomplete - it will have its
+   attributes, but no children.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><ul>
+ <li> <code>FILTER_ACCEPT</code> if the <code>Element</code> should
+   be included in the DOM document being built.
+ </li>
+ <li>
+   <code>FILTER_REJECT</code> if the <code>Element</code> and all of
+   its children should be rejected.
+ </li>
+ <li> <code>FILTER_SKIP</code> if the
+   <code>Element</code> should be skipped. All of its children are
+   inserted in place of the skipped <code>Element</code> node.
+ </li>
+ <li>
+   <code>FILTER_INTERRUPT</code> if the filter wants to stop the
+   processing of the document. Interrupting the processing of the
+   document does no longer guarantee that the resulting DOM tree is
+   XML well-formed. The <code>Element</code> is rejected.
+ </li>
+ </ul> Returning
+   any other values will result in unspecified behavior.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

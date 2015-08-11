@@ -1,0 +1,4260 @@
+---
+
+title: Math - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Appendable.html">Appendable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/CharSequence.html">CharSequence</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Cloneable.html">Cloneable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Iterable.html">Iterable</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Readable.html">Readable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Runnable.html">Runnable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.UncaughtExceptionHandler.html">Thread.UncaughtExceptionHandler</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Boolean.html">Boolean</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Byte.html">Byte</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.html">Character</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.Subset.html">Character.Subset</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.UnicodeBlock.html">Character.UnicodeBlock</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Double.html">Double</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Float.html">Float</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Integer.html">Integer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Long.html">Long</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/lang/Math.html">Math</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Number.html">Number</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Object.html">Object</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Package.html">Package</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Runtime.html">Runtime</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/RuntimePermission.html">RuntimePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SecurityManager.html">SecurityManager</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Short.html">Short</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StrictMath.html">StrictMath</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/String.html">String</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringBuffer.html">StringBuffer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringBuilder.html">StringBuilder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/System.html">System</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.html">Thread</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ThreadLocal.html">ThreadLocal</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Throwable.html">Throwable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Void.html">Void</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Annotations</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Deprecated.html">Deprecated</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Override.html">Override</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SafeVarargs.html">SafeVarargs</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SuppressWarnings.html">SuppressWarnings</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.State.html">Thread.State</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArrayStoreException.html">ArrayStoreException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/CloneNotSupportedException.html">CloneNotSupportedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Exception.html">Exception</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalAccessException.html">IllegalAccessException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalThreadStateException.html">IllegalThreadStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InstantiationException.html">InstantiationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NegativeArraySizeException.html">NegativeArraySizeException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchFieldException.html">NoSuchFieldException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchMethodException.html">NoSuchMethodException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ReflectiveOperationException.html">ReflectiveOperationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/RuntimeException.html">RuntimeException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/TypeNotPresentException.html">TypeNotPresentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/AbstractMethodError.html">AbstractMethodError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/AssertionError.html">AssertionError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Error.html">Error</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ExceptionInInitializerError.html">ExceptionInInitializerError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalAccessError.html">IllegalAccessError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IncompatibleClassChangeError.html">IncompatibleClassChangeError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InternalError.html">InternalError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/LinkageError.html">LinkageError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchFieldError.html">NoSuchFieldError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchMethodError.html">NoSuchMethodError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/OutOfMemoryError.html">OutOfMemoryError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StackOverflowError.html">StackOverflowError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ThreadDeath.html">ThreadDeath</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/VirtualMachineError.html">VirtualMachineError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public  final   class
+  <h1 itemprop="name" class="devsite-page-title">Math</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Class Math provides basic math constants and operations such as trigonometric
+ functions, hyperbolic functions, exponential, logarithms, etc.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="constants"><h3>Constant Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">double</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Math.html#E">E</a></td>
+        <td class="jd-descrcol" width="100%">The double value closest to e, the base of the natural logarithm.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">double</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Math.html#PI">PI</a></td>
+        <td class="jd-descrcol" width="100%">The double value closest to pi, the ratio of a circle's circumference to
+ its diameter.</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#IEEEremainder(double, double)">IEEEremainder</a></span>(<span class="nowrap">double <i>x</i></span>, <span class="nowrap">double <i>y</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#abs(long)">abs</a></span>(<span class="nowrap">long <i>l</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#abs(int)">abs</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#abs(float)">abs</a></span>(<span class="nowrap">float <i>f</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#abs(double)">abs</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#acos(double)">acos</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#asin(double)">asin</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#atan(double)">atan</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#atan2(double, double)">atan2</a></span>(<span class="nowrap">double <i>y</i></span>, <span class="nowrap">double <i>x</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#cbrt(double)">cbrt</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#ceil(double)">ceil</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#copySign(float, float)">copySign</a></span>(<span class="nowrap">float <i>magnitude</i></span>, <span class="nowrap">float <i>sign</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#copySign(double, double)">copySign</a></span>(<span class="nowrap">double <i>magnitude</i></span>, <span class="nowrap">double <i>sign</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#cos(double)">cos</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#cosh(double)">cosh</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#exp(double)">exp</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#expm1(double)">expm1</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#floor(double)">floor</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#getExponent(double)">getExponent</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#getExponent(float)">getExponent</a></span>(<span class="nowrap">float <i>f</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#hypot(double, double)">hypot</a></span>(<span class="nowrap">double <i>x</i></span>, <span class="nowrap">double <i>y</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#log(double)">log</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#log10(double)">log10</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#log1p(double)">log1p</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#max(int, int)">max</a></span>(<span class="nowrap">int <i>i1</i></span>, <span class="nowrap">int <i>i2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#max(long, long)">max</a></span>(<span class="nowrap">long <i>l1</i></span>, <span class="nowrap">long <i>l2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#max(float, float)">max</a></span>(<span class="nowrap">float <i>f1</i></span>, <span class="nowrap">float <i>f2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#max(double, double)">max</a></span>(<span class="nowrap">double <i>d1</i></span>, <span class="nowrap">double <i>d2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#min(float, float)">min</a></span>(<span class="nowrap">float <i>f1</i></span>, <span class="nowrap">float <i>f2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#min(double, double)">min</a></span>(<span class="nowrap">double <i>d1</i></span>, <span class="nowrap">double <i>d2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#min(int, int)">min</a></span>(<span class="nowrap">int <i>i1</i></span>, <span class="nowrap">int <i>i2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#min(long, long)">min</a></span>(<span class="nowrap">long <i>l1</i></span>, <span class="nowrap">long <i>l2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#nextAfter(double, double)">nextAfter</a></span>(<span class="nowrap">double <i>start</i></span>, <span class="nowrap">double <i>direction</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#nextAfter(float, double)">nextAfter</a></span>(<span class="nowrap">float <i>start</i></span>, <span class="nowrap">double <i>direction</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#nextUp(float)">nextUp</a></span>(<span class="nowrap">float <i>f</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#nextUp(double)">nextUp</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#pow(double, double)">pow</a></span>(<span class="nowrap">double <i>x</i></span>, <span class="nowrap">double <i>y</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#random()">random</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#rint(double)">rint</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#round(double)">round</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#round(float)">round</a></span>(<span class="nowrap">float <i>f</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#scalb(float, int)">scalb</a></span>(<span class="nowrap">float <i>d</i></span>, <span class="nowrap">int <i>scaleFactor</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#scalb(double, int)">scalb</a></span>(<span class="nowrap">double <i>d</i></span>, <span class="nowrap">int <i>scaleFactor</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#signum(double)">signum</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#signum(float)">signum</a></span>(<span class="nowrap">float <i>f</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#sin(double)">sin</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#sinh(double)">sinh</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#sqrt(double)">sqrt</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#tan(double)">tan</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#tanh(double)">tanh</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#toDegrees(double)">toDegrees</a></span>(<span class="nowrap">double <i>angrad</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#toRadians(double)">toRadians</a></span>(<span class="nowrap">double <i>angdeg</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#ulp(double)">ulp</a></span>(<span class="nowrap">double <i>d</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Math.html#ulp(float)">ulp</a></span>(<span class="nowrap">float <i>f</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<section id="constants">
+  <h2>Constants</h2>
+  
+
+
+
+<A NAME="E"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          double
+        
+      </span>
+        <strong>E</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The double value closest to e, the base of the natural logarithm.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                2.718281828459045
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="PI"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          double
+        
+      </span>
+        <strong>PI</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The double value closest to pi, the ratio of a circle's circumference to
+ its diameter.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                3.141592653589793
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="IEEEremainder(double, double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>IEEEremainder</strong></span>
+      <span class="params">(<span class="nowrap">double <i>x</i></span>, <span class="nowrap">double <i>y</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the remainder of dividing <code>x</code> by <code>y</code> using the IEEE
+ 754 rules. The result is <code>x-round(x/p)*p</code> where <code>round(x/p)</code>
+ is the nearest integer (rounded to even), but without numerical
+ cancellation problems.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>IEEEremainder((anything), 0) = NaN</code></li>
+ <li><code>IEEEremainder(+infinity, (anything)) = NaN</code></li>
+ <li><code>IEEEremainder(-infinity, (anything)) = NaN</code></li>
+ <li><code>IEEEremainder(NaN, (anything)) = NaN</code></li>
+ <li><code>IEEEremainder((anything), NaN) = NaN</code></li>
+ <li><code>IEEEremainder(x, +infinity) = x </code> where x is anything but
+ +/-infinity</li>
+ <li><code>IEEEremainder(x, -infinity) = x </code> where x is anything but
+ +/-infinity</li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">x</td>
+          <td class="jd-tagdescr">the numerator of the operation.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">y</td>
+          <td class="jd-tagdescr">the denominator of the operation.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the IEEE754 floating point reminder of of <code>x/y</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="abs(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>abs</strong></span>
+      <span class="params">(<span class="nowrap">long <i>l</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of the argument. If the argument is <code>Long.MIN_VALUE</code>, <code>Long.MIN_VALUE</code> is returned.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="abs(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>abs</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of the argument.
+ <p>
+ If the argument is <code>Integer.MIN_VALUE</code>, <code>Integer.MIN_VALUE</code>
+ is returned.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="abs(float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>abs</strong></span>
+      <span class="params">(<span class="nowrap">float <i>f</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of the argument.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>abs(-0.0) = +0.0</code></li>
+ <li><code>abs(+infinity) = +infinity</code></li>
+ <li><code>abs(-infinity) = +infinity</code></li>
+ <li><code>abs(NaN) = NaN</code></li>
+ </ul>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="abs(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>abs</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute value of the argument.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>abs(-0.0) = +0.0</code></li>
+ <li><code>abs(+infinity) = +infinity</code></li>
+ <li><code>abs(-infinity) = +infinity</code></li>
+ <li><code>abs(NaN) = NaN</code></li>
+ </ul>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="acos(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>acos</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the arc cosine of the
+ argument within the range <code>[0..pi]</code>. The returned result is within
+ 1 ulp (unit in the last place) of the real result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>acos((anything > 1) = NaN</code></li>
+ <li><code>acos((anything < -1) = NaN</code></li>
+ <li><code>acos(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value to compute arc cosine of.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the arc cosine of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="asin(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>asin</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the arc sine of the argument
+ within the range <code>[-pi/2..pi/2]</code>. The returned result is within 1
+ ulp (unit in the last place) of the real result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>asin((anything > 1)) = NaN</code></li>
+ <li><code>asin((anything < -1)) = NaN</code></li>
+ <li><code>asin(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value whose arc sine has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the arc sine of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="atan(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>atan</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the arc tangent of the
+ argument within the range <code>[-pi/2..pi/2]</code>. The returned result is
+ within 1 ulp (unit in the last place) of the real result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>atan(+0.0) = +0.0</code></li>
+ <li><code>atan(-0.0) = -0.0</code></li>
+ <li><code>atan(+infinity) = +pi/2</code></li>
+ <li><code>atan(-infinity) = -pi/2</code></li>
+ <li><code>atan(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value whose arc tangent has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the arc tangent of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="atan2(double, double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>atan2</strong></span>
+      <span class="params">(<span class="nowrap">double <i>y</i></span>, <span class="nowrap">double <i>x</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the arc tangent of <code>y/x</code> within the range <code>[-pi..pi]</code>. This is the angle of the polar
+ representation of the rectangular coordinates (x,y). The returned result
+ is within 2 ulps (units in the last place) of the real result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>atan2((anything), NaN ) = NaN;</code></li>
+ <li><code>atan2(NaN , (anything) ) = NaN;</code></li>
+ <li><code>atan2(+0.0, +(anything but NaN)) = +0.0</code></li>
+ <li><code>atan2(-0.0, +(anything but NaN)) = -0.0</code></li>
+ <li><code>atan2(+0.0, -(anything but NaN)) = +pi</code></li>
+ <li><code>atan2(-0.0, -(anything but NaN)) = -pi</code></li>
+ <li><code>atan2(+(anything but 0 and NaN), 0) = +pi/2</code></li>
+ <li><code>atan2(-(anything but 0 and NaN), 0) = -pi/2</code></li>
+ <li><code>atan2(+(anything but infinity and NaN), +infinity)</code> <code>=</code>
+ <code>+0.0</code></li>
+ <li><code>atan2(-(anything but infinity and NaN), +infinity)</code> <code>=</code>
+ <code>-0.0</code></li>
+ <li><code>atan2(+(anything but infinity and NaN), -infinity) = +pi</code></li>
+ <li><code>atan2(-(anything but infinity and NaN), -infinity) = -pi</code></li>
+ <li><code>atan2(+infinity, +infinity ) = +pi/4</code></li>
+ <li><code>atan2(-infinity, +infinity ) = -pi/4</code></li>
+ <li><code>atan2(+infinity, -infinity ) = +3pi/4</code></li>
+ <li><code>atan2(-infinity, -infinity ) = -3pi/4</code></li>
+ <li><code>atan2(+infinity, (anything but,0, NaN, and infinity))</code> <code>=</code> <code>+pi/2</code></li>
+ <li><code>atan2(-infinity, (anything but,0, NaN, and infinity))</code> <code>=</code> <code>-pi/2</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">y</td>
+          <td class="jd-tagdescr">the numerator of the value whose atan has to be computed.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">x</td>
+          <td class="jd-tagdescr">the denominator of the value whose atan has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the arc tangent of <code>y/x</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="cbrt(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>cbrt</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the cube root of the
+ argument.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>cbrt(+0.0) = +0.0</code></li>
+ <li><code>cbrt(-0.0) = -0.0</code></li>
+ <li><code>cbrt(+infinity) = +infinity</code></li>
+ <li><code>cbrt(-infinity) = -infinity</code></li>
+ <li><code>cbrt(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value whose cube root has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the cube root of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ceil(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>ceil</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the double conversion of the most negative (closest to negative
+ infinity) integer value greater than or equal to the argument.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>ceil(+0.0) = +0.0</code></li>
+ <li><code>ceil(-0.0) = -0.0</code></li>
+ <li><code>ceil((anything in range (-1,0)) = -0.0</code></li>
+ <li><code>ceil(+infinity) = +infinity</code></li>
+ <li><code>ceil(-infinity) = -infinity</code></li>
+ <li><code>ceil(NaN) = NaN</code></li>
+ </ul>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="copySign(float, float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>copySign</strong></span>
+      <span class="params">(<span class="nowrap">float <i>magnitude</i></span>, <span class="nowrap">float <i>sign</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a float with the given magnitude and the sign of <code>sign</code>.
+ If <code>sign</code> is NaN, the sign of the result is arbitrary.
+ If you need a determinate sign in such cases, use <code>StrictMath.copySign</code>.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="copySign(double, double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>copySign</strong></span>
+      <span class="params">(<span class="nowrap">double <i>magnitude</i></span>, <span class="nowrap">double <i>sign</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a double with the given magnitude and the sign of <code>sign</code>.
+ If <code>sign</code> is NaN, the sign of the result is arbitrary.
+ If you need a determinate sign in such cases, use <code>StrictMath.copySign</code>.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="cos(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>cos</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the cosine of the argument.
+ The returned result is within 1 ulp (unit in the last place) of the real
+ result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>cos(+infinity) = NaN</code></li>
+ <li><code>cos(-infinity) = NaN</code></li>
+ <li><code>cos(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the angle whose cosine has to be computed, in radians.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the cosine of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="cosh(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>cosh</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the hyperbolic cosine of the
+ argument. The returned result is within 2.5 ulps (units in the last
+ place) of the real result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>cosh(+infinity) = +infinity</code></li>
+ <li><code>cosh(-infinity) = +infinity</code></li>
+ <li><code>cosh(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value whose hyperbolic cosine has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the hyperbolic cosine of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="exp(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>exp</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the raising "e" to the power
+ of the argument. The returned result is within 1 ulp (unit in the last
+ place) of the real result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>exp(+infinity) = +infinity</code></li>
+ <li><code>exp(-infinity) = +0.0</code></li>
+ <li><code>exp(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value whose exponential has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the exponential of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="expm1(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>expm1</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of <i><code>e</code></i><sup> <code>d</code></sup><code>- 1</code>. If the argument is very close to 0, it is much more
+ accurate to use <code>expm1(d)+1</code> than <code>exp(d)</code> (due to
+ cancellation of significant digits). The returned result is within 1 ulp
+ (unit in the last place) of the real result.
+ <p>
+ For any finite input, the result is not less than -1.0. If the real
+ result is within 0.5 ulp of -1, -1.0 is returned.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>expm1(+0.0) = +0.0</code></li>
+ <li><code>expm1(-0.0) = -0.0</code></li>
+ <li><code>expm1(+infinity) = +infinity</code></li>
+ <li><code>expm1(-infinity) = -1.0</code></li>
+ <li><code>expm1(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value to compute the <i><code>e</code></i><sup><code>d</code> </sup>
+            <code>- 1</code> of.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <i><code>e</code></i><sup><code>d</code></sup><code>- 1</code> value of the
+         argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="floor(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>floor</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the double conversion of the most positive (closest to positive
+ infinity) integer value less than or equal to the argument.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>floor(+0.0) = +0.0</code></li>
+ <li><code>floor(-0.0) = -0.0</code></li>
+ <li><code>floor(+infinity) = +infinity</code></li>
+ <li><code>floor(-infinity) = -infinity</code></li>
+ <li><code>floor(NaN) = NaN</code></li>
+ </ul>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getExponent(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getExponent</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the unbiased base-2 exponent of double <code>d</code>.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getExponent(float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getExponent</strong></span>
+      <span class="params">(<span class="nowrap">float <i>f</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the unbiased base-2 exponent of float <code>f</code>.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="hypot(double, double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>hypot</strong></span>
+      <span class="params">(<span class="nowrap">double <i>x</i></span>, <span class="nowrap">double <i>y</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>sqrt(</code><i><code>x</code></i><sup><code>2</code></sup><code>+</code> <i>
+ <code>y</code></i><sup><code>2</code></sup><code>)</code>. The final result is without
+ medium underflow or overflow. The returned result is within 1 ulp (unit
+ in the last place) of the real result. If one parameter remains constant,
+ the result should be semi-monotonic.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>hypot(+infinity, (anything including NaN)) = +infinity</code></li>
+ <li><code>hypot(-infinity, (anything including NaN)) = +infinity</code></li>
+ <li><code>hypot((anything including NaN), +infinity) = +infinity</code></li>
+ <li><code>hypot((anything including NaN), -infinity) = +infinity</code></li>
+ <li><code>hypot(NaN, NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">x</td>
+          <td class="jd-tagdescr">a double number.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">y</td>
+          <td class="jd-tagdescr">a double number.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>sqrt(</code><i><code>x</code></i><sup><code>2</code></sup><code>+</code>
+         <i> <code>y</code></i><sup><code>2</code></sup><code>)</code> value of the
+         arguments.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="log(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>log</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the natural logarithm of the
+ argument. The returned result is within 1 ulp (unit in the last place) of
+ the real result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>log(+0.0) = -infinity</code></li>
+ <li><code>log(-0.0) = -infinity</code></li>
+ <li><code>log((anything < 0) = NaN</code></li>
+ <li><code>log(+infinity) = +infinity</code></li>
+ <li><code>log(-infinity) = NaN</code></li>
+ <li><code>log(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value whose log has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the natural logarithm of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="log10(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>log10</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the base 10 logarithm of the
+ argument. The returned result is within 1 ulp (unit in the last place) of
+ the real result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>log10(+0.0) = -infinity</code></li>
+ <li><code>log10(-0.0) = -infinity</code></li>
+ <li><code>log10((anything < 0) = NaN</code></li>
+ <li><code>log10(+infinity) = +infinity</code></li>
+ <li><code>log10(-infinity) = NaN</code></li>
+ <li><code>log10(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value whose base 10 log has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the natural logarithm of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="log1p(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>log1p</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the natural logarithm of the
+ sum of the argument and 1. If the argument is very close to 0, it is much
+ more accurate to use <code>log1p(d)</code> than <code>log(1.0+d)</code> (due to
+ numerical cancellation). The returned result is within 1 ulp (unit in the
+ last place) of the real result and is semi-monotonic.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>log1p(+0.0) = +0.0</code></li>
+ <li><code>log1p(-0.0) = -0.0</code></li>
+ <li><code>log1p((anything < 1)) = NaN</code></li>
+ <li><code>log1p(-1.0) = -infinity</code></li>
+ <li><code>log1p(+infinity) = +infinity</code></li>
+ <li><code>log1p(-infinity) = NaN</code></li>
+ <li><code>log1p(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value to compute the <code>ln(1+d)</code> of.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the natural logarithm of the sum of the argument and 1.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="max(int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>max</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i1</i></span>, <span class="nowrap">int <i>i2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the most positive (closest to positive infinity) of the two
+ arguments.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="max(long, long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>max</strong></span>
+      <span class="params">(<span class="nowrap">long <i>l1</i></span>, <span class="nowrap">long <i>l2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the most positive (closest to positive infinity) of the two
+ arguments.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="max(float, float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>max</strong></span>
+      <span class="params">(<span class="nowrap">float <i>f1</i></span>, <span class="nowrap">float <i>f2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the most positive (closest to positive infinity) of the two
+ arguments.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>max(NaN, (anything)) = NaN</code></li>
+ <li><code>max((anything), NaN) = NaN</code></li>
+ <li><code>max(+0.0, -0.0) = +0.0</code></li>
+ <li><code>max(-0.0, +0.0) = +0.0</code></li>
+ </ul>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="max(double, double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>max</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d1</i></span>, <span class="nowrap">double <i>d2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the most positive (closest to positive infinity) of the two
+ arguments.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>max(NaN, (anything)) = NaN</code></li>
+ <li><code>max((anything), NaN) = NaN</code></li>
+ <li><code>max(+0.0, -0.0) = +0.0</code></li>
+ <li><code>max(-0.0, +0.0) = +0.0</code></li>
+ </ul>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="min(float, float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>min</strong></span>
+      <span class="params">(<span class="nowrap">float <i>f1</i></span>, <span class="nowrap">float <i>f2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the most negative (closest to negative infinity) of the two
+ arguments.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>min(NaN, (anything)) = NaN</code></li>
+ <li><code>min((anything), NaN) = NaN</code></li>
+ <li><code>min(+0.0, -0.0) = -0.0</code></li>
+ <li><code>min(-0.0, +0.0) = -0.0</code></li>
+ </ul>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="min(double, double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>min</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d1</i></span>, <span class="nowrap">double <i>d2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the most negative (closest to negative infinity) of the two
+ arguments.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>min(NaN, (anything)) = NaN</code></li>
+ <li><code>min((anything), NaN) = NaN</code></li>
+ <li><code>min(+0.0, -0.0) = -0.0</code></li>
+ <li><code>min(-0.0, +0.0) = -0.0</code></li>
+ </ul>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="min(int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>min</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i1</i></span>, <span class="nowrap">int <i>i2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the most negative (closest to negative infinity) of the two
+ arguments.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="min(long, long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>min</strong></span>
+      <span class="params">(<span class="nowrap">long <i>l1</i></span>, <span class="nowrap">long <i>l2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the most negative (closest to negative infinity) of the two
+ arguments.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="nextAfter(double, double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>nextAfter</strong></span>
+      <span class="params">(<span class="nowrap">double <i>start</i></span>, <span class="nowrap">double <i>direction</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the next double after <code>start</code> in the given <code>direction</code>.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="nextAfter(float, double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>nextAfter</strong></span>
+      <span class="params">(<span class="nowrap">float <i>start</i></span>, <span class="nowrap">double <i>direction</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the next float after <code>start</code> in the given <code>direction</code>.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="nextUp(float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>nextUp</strong></span>
+      <span class="params">(<span class="nowrap">float <i>f</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the next float larger than <code>f</code>.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="nextUp(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>nextUp</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the next double larger than <code>d</code>.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="pow(double, double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>pow</strong></span>
+      <span class="params">(<span class="nowrap">double <i>x</i></span>, <span class="nowrap">double <i>y</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the result of raising <code>x</code> to the power of <code>y</code>.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>pow((anything), +0.0) = 1.0</code></li>
+ <li><code>pow((anything), -0.0) = 1.0</code></li>
+ <li><code>pow(x, 1.0) = x</code></li>
+ <li><code>pow((anything), NaN) = NaN</code></li>
+ <li><code>pow(NaN, (anything except 0)) = NaN</code></li>
+ <li><code>pow(+/-(|x| > 1), +infinity) = +infinity</code></li>
+ <li><code>pow(+/-(|x| > 1), -infinity) = +0.0</code></li>
+ <li><code>pow(+/-(|x| < 1), +infinity) = +0.0</code></li>
+ <li><code>pow(+/-(|x| < 1), -infinity) = +infinity</code></li>
+ <li><code>pow(+/-1.0 , +infinity) = NaN</code></li>
+ <li><code>pow(+/-1.0 , -infinity) = NaN</code></li>
+ <li><code>pow(+0.0, (+anything except 0, NaN)) = +0.0</code></li>
+ <li><code>pow(-0.0, (+anything except 0, NaN, odd integer)) = +0.0</code></li>
+ <li><code>pow(+0.0, (-anything except 0, NaN)) = +infinity</code></li>
+ <li><code>pow(-0.0, (-anything except 0, NAN, odd integer))</code> <code>=</code>
+ <code>+infinity</code></li>
+ <li><code>pow(-0.0, (odd integer)) = -pow( +0 , (odd integer) )</code></li>
+ <li><code>pow(+infinity, (+anything except 0, NaN)) = +infinity</code></li>
+ <li><code>pow(+infinity, (-anything except 0, NaN)) = +0.0</code></li>
+ <li><code>pow(-infinity, (anything)) = -pow(0, (-anything))</code></li>
+ <li><code>pow((-anything), (integer))</code> <code>=</code> <code>pow(-1,(integer))*pow(+anything,integer) </code></li>
+ <li><code>pow((-anything except 0 and inf), (non-integer)) = NAN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">x</td>
+          <td class="jd-tagdescr">the base of the operation.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">y</td>
+          <td class="jd-tagdescr">the exponent of the operation.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>x</code> to the power of <code>y</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="random()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        synchronized
+        double
+      </span>
+      <span class="sympad"><strong>random</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a pseudo-random double <code>n</code>, where <code>n >= 0.0 && n < 1.0</code>.
+ This method reuses a single instance of <code><a href="reference/java/util/Random.html">Random</a></code>.
+ This method is thread-safe because access to the <code>Random</code> is synchronized,
+ but this harms scalability. Applications may find a performance benefit from
+ allocating a <code>Random</code> for each of their threads.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a pseudo-random number.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="rint(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>rint</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the double conversion of the result of rounding the argument to
+ an integer. Tie breaks are rounded towards even.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>rint(+0.0) = +0.0</code></li>
+ <li><code>rint(-0.0) = -0.0</code></li>
+ <li><code>rint(+infinity) = +infinity</code></li>
+ <li><code>rint(-infinity) = -infinity</code></li>
+ <li><code>rint(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value to be rounded.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the closest integer to the argument (as a double).
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="round(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>round</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the result of rounding the argument to an integer. The result is
+ equivalent to <code>(long) Math.floor(d+0.5)</code>.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>round(+0.0) = +0.0</code></li>
+ <li><code>round(-0.0) = +0.0</code></li>
+ <li><code>round((anything > Long.MAX_VALUE) = Long.MAX_VALUE</code></li>
+ <li><code>round((anything < Long.MIN_VALUE) = Long.MIN_VALUE</code></li>
+ <li><code>round(+infinity) = Long.MAX_VALUE</code></li>
+ <li><code>round(-infinity) = Long.MIN_VALUE</code></li>
+ <li><code>round(NaN) = +0.0</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value to be rounded.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the closest integer to the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="round(float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>round</strong></span>
+      <span class="params">(<span class="nowrap">float <i>f</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the result of rounding the argument to an integer. The result is
+ equivalent to <code>(int) Math.floor(f+0.5)</code>.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>round(+0.0) = +0.0</code></li>
+ <li><code>round(-0.0) = +0.0</code></li>
+ <li><code>round((anything > Integer.MAX_VALUE) = Integer.MAX_VALUE</code></li>
+ <li><code>round((anything < Integer.MIN_VALUE) = Integer.MIN_VALUE</code></li>
+ <li><code>round(+infinity) = Integer.MAX_VALUE</code></li>
+ <li><code>round(-infinity) = Integer.MIN_VALUE</code></li>
+ <li><code>round(NaN) = +0.0</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">f</td>
+          <td class="jd-tagdescr">the value to be rounded.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the closest integer to the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="scalb(float, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>scalb</strong></span>
+      <span class="params">(<span class="nowrap">float <i>d</i></span>, <span class="nowrap">int <i>scaleFactor</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>d</code> * 2^<code>scaleFactor</code>. The result may be rounded.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="scalb(double, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>scalb</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>, <span class="nowrap">int <i>scaleFactor</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>d</code> * 2^<code>scaleFactor</code>. The result may be rounded.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="signum(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>signum</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the signum function of the argument. If the argument is less than
+ zero, it returns -1.0. If the argument is greater than zero, 1.0 is
+ returned. If the argument is either positive or negative zero, the
+ argument is returned as result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>signum(+0.0) = +0.0</code></li>
+ <li><code>signum(-0.0) = -0.0</code></li>
+ <li><code>signum(+infinity) = +1.0</code></li>
+ <li><code>signum(-infinity) = -1.0</code></li>
+ <li><code>signum(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value whose signum has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the value of the signum function.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="signum(float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>signum</strong></span>
+      <span class="params">(<span class="nowrap">float <i>f</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the signum function of the argument. If the argument is less than
+ zero, it returns -1.0. If the argument is greater than zero, 1.0 is
+ returned. If the argument is either positive or negative zero, the
+ argument is returned as result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>signum(+0.0) = +0.0</code></li>
+ <li><code>signum(-0.0) = -0.0</code></li>
+ <li><code>signum(+infinity) = +1.0</code></li>
+ <li><code>signum(-infinity) = -1.0</code></li>
+ <li><code>signum(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">f</td>
+          <td class="jd-tagdescr">the value whose signum has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the value of the signum function.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="sin(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>sin</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the sine of the argument. The
+ returned result is within 1 ulp (unit in the last place) of the real
+ result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>sin(+0.0) = +0.0</code></li>
+ <li><code>sin(-0.0) = -0.0</code></li>
+ <li><code>sin(+infinity) = NaN</code></li>
+ <li><code>sin(-infinity) = NaN</code></li>
+ <li><code>sin(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the angle whose sin has to be computed, in radians.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the sine of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="sinh(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>sinh</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the hyperbolic sine of the
+ argument. The returned result is within 2.5 ulps (units in the last
+ place) of the real result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>sinh(+0.0) = +0.0</code></li>
+ <li><code>sinh(-0.0) = -0.0</code></li>
+ <li><code>sinh(+infinity) = +infinity</code></li>
+ <li><code>sinh(-infinity) = -infinity</code></li>
+ <li><code>sinh(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value whose hyperbolic sine has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the hyperbolic sine of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="sqrt(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>sqrt</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the square root of the
+ argument.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>sqrt(+0.0) = +0.0</code></li>
+ <li><code>sqrt(-0.0) = -0.0</code></li>
+ <li><code>sqrt( (anything < 0) ) = NaN</code></li>
+ <li><code>sqrt(+infinity) = +infinity</code></li>
+ <li><code>sqrt(NaN) = NaN</code></li>
+ </ul>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="tan(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>tan</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the tangent of the argument.
+ The returned result is within 1 ulp (unit in the last place) of the real
+ result.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>tan(+0.0) = +0.0</code></li>
+ <li><code>tan(-0.0) = -0.0</code></li>
+ <li><code>tan(+infinity) = NaN</code></li>
+ <li><code>tan(-infinity) = NaN</code></li>
+ <li><code>tan(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the angle whose tangent has to be computed, in radians.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the tangent of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="tanh(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>tanh</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the closest double approximation of the hyperbolic tangent of the
+ argument. The absolute value is always less than 1. The returned result
+ is within 2.5 ulps (units in the last place) of the real result. If the
+ real result is within 0.5ulp of 1 or -1, it should return exactly +1 or
+ -1.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>tanh(+0.0) = +0.0</code></li>
+ <li><code>tanh(-0.0) = -0.0</code></li>
+ <li><code>tanh(+infinity) = +1.0</code></li>
+ <li><code>tanh(-infinity) = -1.0</code></li>
+ <li><code>tanh(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the value whose hyperbolic tangent has to be computed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the hyperbolic tangent of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toDegrees(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>toDegrees</strong></span>
+      <span class="params">(<span class="nowrap">double <i>angrad</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the measure in degrees of the supplied radian angle. The result
+ is <code>angrad * 180 / pi</code>.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>toDegrees(+0.0) = +0.0</code></li>
+ <li><code>toDegrees(-0.0) = -0.0</code></li>
+ <li><code>toDegrees(+infinity) = +infinity</code></li>
+ <li><code>toDegrees(-infinity) = -infinity</code></li>
+ <li><code>toDegrees(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">angrad</td>
+          <td class="jd-tagdescr">an angle in radians.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the degree measure of the angle.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toRadians(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>toRadians</strong></span>
+      <span class="params">(<span class="nowrap">double <i>angdeg</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the measure in radians of the supplied degree angle. The result
+ is <code>angdeg / 180 * pi</code>.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>toRadians(+0.0) = +0.0</code></li>
+ <li><code>toRadians(-0.0) = -0.0</code></li>
+ <li><code>toRadians(+infinity) = +infinity</code></li>
+ <li><code>toRadians(-infinity) = -infinity</code></li>
+ <li><code>toRadians(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">angdeg</td>
+          <td class="jd-tagdescr">an angle in degrees.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the radian measure of the angle.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ulp(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>ulp</strong></span>
+      <span class="params">(<span class="nowrap">double <i>d</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the argument's ulp (unit in the last place). The size of a ulp of
+ a double value is the positive distance between this value and the double
+ value next larger in magnitude. For non-NaN <code>x</code>, <code>ulp(-x) ==
+ ulp(x)</code>.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>ulp(+0.0) = Double.MIN_VALUE</code></li>
+ <li><code>ulp(-0.0) = Double.MIN_VALUE</code></li>
+ <li><code>ulp(+infinity) = infinity</code></li>
+ <li><code>ulp(-infinity) = infinity</code></li>
+ <li><code>ulp(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">d</td>
+          <td class="jd-tagdescr">the floating-point value to compute ulp of.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the size of a ulp of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ulp(float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>ulp</strong></span>
+      <span class="params">(<span class="nowrap">float <i>f</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the argument's ulp (unit in the last place). The size of a ulp of
+ a float value is the positive distance between this value and the float
+ value next larger in magnitude. For non-NaN <code>x</code>, <code>ulp(-x) ==
+ ulp(x)</code>.
+ <p>
+ Special cases:
+ <ul>
+ <li><code>ulp(+0.0) = Float.MIN_VALUE</code></li>
+ <li><code>ulp(-0.0) = Float.MIN_VALUE</code></li>
+ <li><code>ulp(+infinity) = infinity</code></li>
+ <li><code>ulp(-infinity) = infinity</code></li>
+ <li><code>ulp(NaN) = NaN</code></li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">f</td>
+          <td class="jd-tagdescr">the floating-point value to compute ulp of.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the size of a ulp of the argument.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

@@ -1,0 +1,1440 @@
+---
+
+title: DriverManager - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Array.html">Array</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Blob.html">Blob</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/CallableStatement.html">CallableStatement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Clob.html">Clob</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Connection.html">Connection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/DatabaseMetaData.html">DatabaseMetaData</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Driver.html">Driver</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/NClob.html">NClob</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ParameterMetaData.html">ParameterMetaData</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/PreparedStatement.html">PreparedStatement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Ref.html">Ref</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ResultSetMetaData.html">ResultSetMetaData</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/RowId.html">RowId</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Savepoint.html">Savepoint</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLData.html">SQLData</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLInput.html">SQLInput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLOutput.html">SQLOutput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLXML.html">SQLXML</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Statement.html">Statement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Struct.html">Struct</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Wrapper.html">Wrapper</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Date.html">Date</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/sql/DriverManager.html">DriverManager</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/DriverPropertyInfo.html">DriverPropertyInfo</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLPermission.html">SQLPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Time.html">Time</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Types.html">Types</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/RowIdLifetime.html">RowIdLifetime</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/BatchUpdateException.html">BatchUpdateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/DataTruncation.html">DataTruncation</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLDataException.html">SQLDataException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLIntegrityConstraintViolationException.html">SQLIntegrityConstraintViolationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLInvalidAuthorizationSpecException.html">SQLInvalidAuthorizationSpecException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLNonTransientConnectionException.html">SQLNonTransientConnectionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLNonTransientException.html">SQLNonTransientException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLRecoverableException.html">SQLRecoverableException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLSyntaxErrorException.html">SQLSyntaxErrorException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTimeoutException.html">SQLTimeoutException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransactionRollbackException.html">SQLTransactionRollbackException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransientConnectionException.html">SQLTransientConnectionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransientException.html">SQLTransientException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLWarning.html">SQLWarning</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">DriverManager</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Provides facilities for managing JDBC drivers. The <code>android.database</code> and
+ <code>android.database.sqlite</code> packages offer a higher-performance alternative for new
+ code.
+
+ <p>Note that Android does not include any JDBC drivers by default; you must provide your own.
+
+ <p>The <code>DriverManager</code> class loads JDBC drivers during its initialization,
+ from the list of drivers referenced by the system property <code>"jdbc.drivers"</code>.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#deregisterDriver(java.sql.Driver)">deregisterDriver</a></span>(<span class="nowrap"><a href="../../../reference/java/sql/Driver.html">Driver</a> <i>driver</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/sql/Connection.html">Connection</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#getConnection(java.lang.String)">getConnection</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>url</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/sql/Connection.html">Connection</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#getConnection(java.lang.String, java.lang.String, java.lang.String)">getConnection</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>url</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>user</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>password</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/sql/Connection.html">Connection</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#getConnection(java.lang.String, java.util.Properties)">getConnection</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>url</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Properties.html">Properties</a> <i>info</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/sql/Driver.html">Driver</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#getDriver(java.lang.String)">getDriver</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>url</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/sql/Driver.html">Driver</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#getDrivers()">getDrivers</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/io/PrintStream.html">PrintStream</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#getLogStream()">getLogStream</a></span>()
+            
+            <div class="jd-descrdiv">
+      <em>
+  This method is deprecated.
+      Use <code><a href="reference/java/sql/DriverManager.html#getLogWriter()">getLogWriter()</a></code> instead.</em></div>
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#getLogWriter()">getLogWriter</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#getLoginTimeout()">getLoginTimeout</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#println(java.lang.String)">println</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>message</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#registerDriver(java.sql.Driver)">registerDriver</a></span>(<span class="nowrap"><a href="../../../reference/java/sql/Driver.html">Driver</a> <i>driver</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#setLogStream(java.io.PrintStream)">setLogStream</a></span>(<span class="nowrap"><a href="../../../reference/java/io/PrintStream.html">PrintStream</a> <i>out</i></span>)
+            
+            <div class="jd-descrdiv">
+      <em>
+  This method is deprecated.
+      Use <code><a href="reference/java/sql/DriverManager.html#setLogWriter(java.io.PrintWriter)">setLogWriter(PrintWriter)</a></code> instead.</em></div>
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#setLogWriter(java.io.PrintWriter)">setLogWriter</a></span>(<span class="nowrap"><a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a> <i>out</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/DriverManager.html#setLoginTimeout(int)">setLoginTimeout</a></span>(<span class="nowrap">int <i>seconds</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="deregisterDriver(java.sql.Driver)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>deregisterDriver</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/sql/Driver.html">Driver</a> <i>driver</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes a driver from the <code>DriverManager</code>'s registered driver list.
+ This will only succeed when the caller's class loader loaded the driver
+ that is to be removed. If the driver was loaded by a different class
+ loader, the removal of the driver fails silently.
+ <p>
+ If the removal succeeds, the <code>DriverManager</code> will not use this
+ driver in the future when asked to get a <code>Connection</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">driver</td>
+          <td class="jd-tagdescr">the JDBC driver to remove.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if there is a problem interfering with accessing the
+             database.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getConnection(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/sql/Connection.html">Connection</a>
+      </span>
+      <span class="sympad"><strong>getConnection</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>url</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Attempts to establish a connection to the given database URL.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">url</td>
+          <td class="jd-tagdescr">a URL string representing the database target to connect with.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a <code>Connection</code> to the database identified by the URL.
+         <code>null</code> if no connection can be established.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if there is an error while attempting to connect to the
+             database identified by the URL.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getConnection(java.lang.String, java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/sql/Connection.html">Connection</a>
+      </span>
+      <span class="sympad"><strong>getConnection</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>url</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>user</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>password</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Attempts to establish a connection to the given database URL.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">url</td>
+          <td class="jd-tagdescr">a URL string representing the database target to connect with.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">user</td>
+          <td class="jd-tagdescr">a user ID used to login to the database.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">password</td>
+          <td class="jd-tagdescr">a password for the user ID to login to the database.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a <code>Connection</code> to the database identified by the URL.
+         <code>null</code> if no connection can be established.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if there is an error while attempting to connect to the
+             database identified by the URL.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getConnection(java.lang.String, java.util.Properties)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/sql/Connection.html">Connection</a>
+      </span>
+      <span class="sympad"><strong>getConnection</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>url</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Properties.html">Properties</a> <i>info</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Attempts to establish a connection to the given database URL.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">url</td>
+          <td class="jd-tagdescr">a URL string representing the database target to connect with</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">info</td>
+          <td class="jd-tagdescr">a set of properties to use as arguments to set up the
+            connection. Properties are arbitrary string/value pairs.
+            Normally, at least the properties <code>"user"</code> and <code>"password"</code> should be passed, with appropriate settings for
+            the user ID and its corresponding password to get access to
+            the corresponding database.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a <code>Connection</code> to the database identified by the URL.
+         <code>null</code> if no connection can be established.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if there is an error while attempting to connect to the
+             database identified by the URL.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getDriver(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/sql/Driver.html">Driver</a>
+      </span>
+      <span class="sympad"><strong>getDriver</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>url</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tries to find a driver that can interpret the supplied URL.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">url</td>
+          <td class="jd-tagdescr">the URL of a database.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a <code>Driver</code> that matches the provided URL. <code>null</code> if
+         no <code>Driver</code> understands the URL</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if there is any kind of problem accessing the database.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getDrivers()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/sql/Driver.html">Driver</a>&gt;
+      </span>
+      <span class="sympad"><strong>getDrivers</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an <code>Enumeration</code> that contains all of the loaded JDBC
+ drivers that the current caller can access.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>An <code>Enumeration</code> containing all the currently loaded JDBC
+         <code>Drivers</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLogStream()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/io/PrintStream.html">PrintStream</a>
+      </span>
+      <span class="sympad"><strong>getLogStream</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      <p>
+  <p class="caution">
+      <strong>
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/sql/DriverManager.html#getLogWriter()">getLogWriter()</a></code> instead.
+  </p>
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the log <code>PrintStream</code> used by the <code>DriverManager</code> and
+ all the JDBC Drivers.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>PrintStream</code> used for logging activities.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLogWriter()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a>
+      </span>
+      <span class="sympad"><strong>getLogWriter</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves the log writer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>A <code>PrintWriter</code> object used as the log writer. <code>null</code>
+         if no log writer is set.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLoginTimeout()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getLoginTimeout</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the login timeout when connecting to a database in seconds.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the login timeout in seconds.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="println(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>println</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>message</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Prints a message to the current JDBC log stream. This is either the
+ <code>PrintWriter</code> or (deprecated) the <code>PrintStream</code>, if set.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">message</td>
+          <td class="jd-tagdescr">the message to print to the JDBC log stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="registerDriver(java.sql.Driver)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>registerDriver</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/sql/Driver.html">Driver</a> <i>driver</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Registers a given JDBC driver with the <code>DriverManager</code>.
+ <p>
+ A newly loaded JDBC driver class should register itself with the
+ <code>DriverManager</code> by calling this method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">driver</td>
+          <td class="jd-tagdescr">the <code>Driver</code> to register with the <code>DriverManager</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database access error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setLogStream(java.io.PrintStream)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setLogStream</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/io/PrintStream.html">PrintStream</a> <i>out</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      <p>
+  <p class="caution">
+      <strong>
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/sql/DriverManager.html#setLogWriter(java.io.PrintWriter)">setLogWriter(PrintWriter)</a></code> instead.
+  </p>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the print stream to use for logging data from the <code>DriverManager</code> and the JDBC drivers.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">out</td>
+          <td class="jd-tagdescr">the <code>PrintStream</code> to use for logging.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setLogWriter(java.io.PrintWriter)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setLogWriter</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a> <i>out</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the <code>PrintWriter</code> that is used by all loaded drivers, and also
+ the <code>DriverManager</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">out</td>
+          <td class="jd-tagdescr">the <code>PrintWriter</code> to be used.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setLoginTimeout(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setLoginTimeout</strong></span>
+      <span class="params">(<span class="nowrap">int <i>seconds</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the login timeout when connecting to a database in seconds.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">seconds</td>
+          <td class="jd-tagdescr">seconds until timeout. 0 indicates wait forever.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

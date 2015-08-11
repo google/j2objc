@@ -1,0 +1,1256 @@
+---
+
+title: Security - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/security/DomainCombiner.html">DomainCombiner</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Guard.html">Guard</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Key.html">Key</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.Entry.html">KeyStore.Entry</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.LoadStoreParameter.html">KeyStore.LoadStoreParameter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.ProtectionParameter.html">KeyStore.ProtectionParameter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Policy.Parameters.html">Policy.Parameters</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Principal.html">Principal</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PrivateKey.html">PrivateKey</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PrivilegedAction.html">PrivilegedAction</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PrivilegedExceptionAction.html">PrivilegedExceptionAction</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PublicKey.html">PublicKey</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AccessControlContext.html">AccessControlContext</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AccessController.html">AccessController</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AlgorithmParameterGenerator.html">AlgorithmParameterGenerator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AlgorithmParameterGeneratorSpi.html">AlgorithmParameterGeneratorSpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AlgorithmParameters.html">AlgorithmParameters</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AlgorithmParametersSpi.html">AlgorithmParametersSpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AllPermission.html">AllPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/BasicPermission.html">BasicPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/CodeSource.html">CodeSource</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/GuardedObject.html">GuardedObject</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyFactory.html">KeyFactory</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyFactorySpi.html">KeyFactorySpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyPair.html">KeyPair</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyPairGenerator.html">KeyPairGenerator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyPairGeneratorSpi.html">KeyPairGeneratorSpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.html">KeyStore</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.Builder.html">KeyStore.Builder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.CallbackHandlerProtection.html">KeyStore.CallbackHandlerProtection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.PasswordProtection.html">KeyStore.PasswordProtection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.PrivateKeyEntry.html">KeyStore.PrivateKeyEntry</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.SecretKeyEntry.html">KeyStore.SecretKeyEntry</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.TrustedCertificateEntry.html">KeyStore.TrustedCertificateEntry</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStoreSpi.html">KeyStoreSpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/MessageDigest.html">MessageDigest</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/MessageDigestSpi.html">MessageDigestSpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Permission.html">Permission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PermissionCollection.html">PermissionCollection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Permissions.html">Permissions</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Policy.html">Policy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/ProtectionDomain.html">ProtectionDomain</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Provider.html">Provider</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Provider.Service.html">Provider.Service</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/SecureClassLoader.html">SecureClassLoader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/SecureRandom.html">SecureRandom</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/SecureRandomSpi.html">SecureRandomSpi</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/security/Security.html">Security</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/SecurityPermission.html">SecurityPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Signature.html">Signature</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/SignatureSpi.html">SignatureSpi</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AccessControlException.html">AccessControlException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/DigestException.html">DigestException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/GeneralSecurityException.html">GeneralSecurityException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html">InvalidAlgorithmParameterException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/InvalidKeyException.html">InvalidKeyException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/InvalidParameterException.html">InvalidParameterException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyException.html">KeyException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyManagementException.html">KeyManagementException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStoreException.html">KeyStoreException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/NoSuchAlgorithmException.html">NoSuchAlgorithmException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/NoSuchProviderException.html">NoSuchProviderException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PrivilegedActionException.html">PrivilegedActionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/ProviderException.html">ProviderException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/SignatureException.html">SignatureException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/UnrecoverableEntryException.html">UnrecoverableEntryException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/UnrecoverableKeyException.html">UnrecoverableKeyException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public  final   class
+  <h1 itemprop="name" class="devsite-page-title">Security</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p><code>Security</code> is the central class in the Java Security API. It manages
+ the list of security <code>Provider</code> that have been installed into this
+ runtime environment.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/Security.html#addProvider(java.security.Provider)">addProvider</a></span>(<span class="nowrap"><a href="../../../reference/java/security/Provider.html">Provider</a> <i>provider</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/Security.html#getAlgorithmProperty(java.lang.String, java.lang.String)">getAlgorithmProperty</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>algName</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>propName</i></span>)
+            
+            <div class="jd-descrdiv">
+      <em>
+  This method is deprecated.
+      Use <code><a href="reference/java/security/AlgorithmParameters.html">AlgorithmParameters</a></code> and <code><a href="reference/java/security/KeyFactory.html">KeyFactory</a></code> instead.
+</em></div>
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/Security.html#getAlgorithms(java.lang.String)">getAlgorithms</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>serviceName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/Security.html#getProperty(java.lang.String)">getProperty</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            static
+            
+            <a href="../../../reference/java/security/Provider.html">Provider</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/Security.html#getProvider(java.lang.String)">getProvider</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            static
+            
+            <a href="../../../reference/java/security/Provider.html">Provider[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/Security.html#getProviders(java.util.Map<java.lang.String, java.lang.String>)">getProviders</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/lang/String.html">String</a>&gt; <i>filter</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            static
+            
+            <a href="../../../reference/java/security/Provider.html">Provider[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/Security.html#getProviders()">getProviders</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/security/Provider.html">Provider[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/Security.html#getProviders(java.lang.String)">getProviders</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>filter</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/Security.html#insertProviderAt(java.security.Provider, int)">insertProviderAt</a></span>(<span class="nowrap"><a href="../../../reference/java/security/Provider.html">Provider</a> <i>provider</i></span>, <span class="nowrap">int <i>position</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/Security.html#removeProvider(java.lang.String)">removeProvider</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/Security.html#setProperty(java.lang.String, java.lang.String)">setProperty</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>key</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="addProvider(java.security.Provider)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>addProvider</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/security/Provider.html">Provider</a> <i>provider</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Adds the given <code>provider</code> to the collection of providers at the
+ next available position.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">provider</td>
+          <td class="jd-tagdescr">the provider to be added.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the actual position or <code>-1</code> if the given <code>provider</code>
+         was already in the list.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getAlgorithmProperty(java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getAlgorithmProperty</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>algName</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>propName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      <p>
+  <p class="caution">
+      <strong>
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/security/AlgorithmParameters.html">AlgorithmParameters</a></code> and <code><a href="reference/java/security/KeyFactory.html">KeyFactory</a></code> instead.
+
+  </p>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns value for the specified algorithm with the specified name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">algName</td>
+          <td class="jd-tagdescr">the name of the algorithm.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">propName</td>
+          <td class="jd-tagdescr">the name of the property.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>value of the property.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getAlgorithms(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>&gt;
+      </span>
+      <span class="sympad"><strong>getAlgorithms</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>serviceName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Set</code> of all registered algorithms for the specified
+ cryptographic service. <code>"Signature"</code>, <code>"Cipher"</code> and <code>"KeyStore"</code> are examples for such kind of services.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">serviceName</td>
+          <td class="jd-tagdescr">the case-insensitive name of the service.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a <code>Set</code> of all registered algorithms for the specified
+         cryptographic service, or an empty <code>Set</code> if <code>serviceName</code> is <code>null</code> or if no registered provider
+         provides the requested service.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getProperty(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getProperty</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of the security property named by the argument.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">the name of the requested security property.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the value of the security property.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getProvider(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        synchronized
+        <a href="../../../reference/java/security/Provider.html">Provider</a>
+      </span>
+      <span class="sympad"><strong>getProvider</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>Provider</code> with the specified name. Returns <code>null</code> if name is <code>null</code> or no provider with the specified name is
+ installed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">the name of the requested provider.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the provider with the specified name, maybe <code>null</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getProviders(java.util.Map<java.lang.String, java.lang.String>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        synchronized
+        <a href="../../../reference/java/security/Provider.html">Provider[]</a>
+      </span>
+      <span class="sympad"><strong>getProviders</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/lang/String.html">String</a>&gt; <i>filter</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the array of providers which meet the user supplied set of
+ filters. The filter must be supplied in one of two formats:
+ <nl>
+ <li> CRYPTO_SERVICE_NAME.ALGORITHM_OR_TYPE
+ <p>
+ for example: "MessageDigest.SHA" The value associated with the key must
+ be an empty string. <li> CRYPTO_SERVICE_NAME.ALGORITHM_OR_TYPE
+ ATTR_NAME:ATTR_VALUE
+ <p>
+ for example: "Signature.MD2withRSA KeySize:512" where "KeySize:512" is
+ the value of the filter map entry.
+ </nl></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">filter</td>
+          <td class="jd-tagdescr">case-insensitive filter.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the providers which meet the user supplied string filter <code>filter</code>. A <code>null</code> value signifies that none of the
+         installed providers meets the filter specification.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/security/InvalidParameterException.html">InvalidParameterException</a></td>
+            <td class="jd-tagdescr">if an unusable filter is supplied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>filter</code> is <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getProviders()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        synchronized
+        <a href="../../../reference/java/security/Provider.html">Provider[]</a>
+      </span>
+      <span class="sympad"><strong>getProviders</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array containing all installed providers. The providers are
+ ordered according their preference order.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an array containing all installed providers.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getProviders(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/security/Provider.html">Provider[]</a>
+      </span>
+      <span class="sympad"><strong>getProviders</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>filter</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the array of providers which meet the user supplied string
+ filter. The specified filter must be supplied in one of two formats:
+ <nl>
+ <li> CRYPTO_SERVICE_NAME.ALGORITHM_OR_TYPE
+ <p>
+ (for example: "MessageDigest.SHA")
+ <li> CRYPTO_SERVICE_NAME.ALGORITHM_OR_TYPE
+ ATTR_NAME:ATTR_VALUE
+ <p>
+ (for example: "Signature.MD2withRSA KeySize:512")
+ </nl></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">filter</td>
+          <td class="jd-tagdescr">case-insensitive filter.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the providers which meet the user supplied string filter <code>filter</code>. A <code>null</code> value signifies that none of the
+         installed providers meets the filter specification.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/security/InvalidParameterException.html">InvalidParameterException</a></td>
+            <td class="jd-tagdescr">if an unusable filter is supplied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>filter</code> is <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="insertProviderAt(java.security.Provider, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        synchronized
+        int
+      </span>
+      <span class="sympad"><strong>insertProviderAt</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/security/Provider.html">Provider</a> <i>provider</i></span>, <span class="nowrap">int <i>position</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Insert the given <code>Provider</code> at the specified <code>position</code>. The
+ positions define the preference order in which providers are searched for
+ requested algorithms.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">provider</td>
+          <td class="jd-tagdescr">the provider to insert.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">position</td>
+          <td class="jd-tagdescr">the position (starting from 1).</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the actual position or <code>-1</code> if the given <code>provider</code>
+         was already in the list. The actual position may be different
+         from the desired position.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="removeProvider(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>removeProvider</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the <code>Provider</code> with the specified name form the collection
+ of providers. If the the <code>Provider</code> with the specified name is
+ removed, all provider at a greater position are shifted down one
+ position.
+
+ <p>Returns silently if <code>name</code> is <code>null</code> or no provider with the
+ specified name is installed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">the name of the provider to remove.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setProperty(java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setProperty</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>key</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified security property.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

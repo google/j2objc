@@ -1,0 +1,1945 @@
+---
+
+title: SocketChannel - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ByteChannel.html">ByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Channel.html">Channel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/GatheringByteChannel.html">GatheringByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/InterruptibleChannel.html">InterruptibleChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ReadableByteChannel.html">ReadableByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ScatteringByteChannel.html">ScatteringByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/WritableByteChannel.html">WritableByteChannel</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Channels.html">Channels</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/DatagramChannel.html">DatagramChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/FileChannel.html">FileChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/FileChannel.MapMode.html">FileChannel.MapMode</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/FileLock.html">FileLock</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Pipe.html">Pipe</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Pipe.SinkChannel.html">Pipe.SinkChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Pipe.SourceChannel.html">Pipe.SourceChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/SelectableChannel.html">SelectableChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/SelectionKey.html">SelectionKey</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Selector.html">Selector</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ServerSocketChannel.html">ServerSocketChannel</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/java/nio/channels/SocketChannel.html">SocketChannel</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/AlreadyConnectedException.html">AlreadyConnectedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/CancelledKeyException.html">CancelledKeyException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ClosedSelectorException.html">ClosedSelectorException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ConnectionPendingException.html">ConnectionPendingException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/FileLockInterruptionException.html">FileLockInterruptionException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/IllegalBlockingModeException.html">IllegalBlockingModeException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/IllegalSelectorException.html">IllegalSelectorException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NoConnectionPendingException.html">NoConnectionPendingException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NonReadableChannelException.html">NonReadableChannelException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NonWritableChannelException.html">NonWritableChannelException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NotYetBoundException.html">NotYetBoundException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NotYetConnectedException.html">NotYetConnectedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/OverlappingFileLockException.html">OverlappingFileLockException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/UnresolvedAddressException.html">UnresolvedAddressException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/UnsupportedAddressTypeException.html">UnsupportedAddressTypeException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">SocketChannel</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>A <code>SocketChannel</code> is a selectable channel that provides a partial
+ abstraction of stream connecting socket.
+
+ The <code><a href="reference/java/nio/channels/SocketChannel.html#socket()">socket()</a></code> method returns a <code><a href="reference/java/net/Socket.html">Socket</a></code> instance which
+ allows a wider range of socket operations than <code>SocketChannel</code> itself.
+
+ <p>A socket channel is open but not connected when created by <code><a href="reference/java/nio/channels/SocketChannel.html#open()">open()</a></code>.
+ After connecting it by calling <code><a href="reference/java/nio/channels/SocketChannel.html#connect(java.net.SocketAddress)">connect(SocketAddress)</a></code>, it will remain
+ connected until closed.
+
+ <p>If the connection is non-blocking then
+ <code><a href="reference/java/nio/channels/SocketChannel.html#connect(java.net.SocketAddress)">connect(SocketAddress)</a></code> is used to initiate the connection, followed
+ by a call of <code><a href="reference/java/nio/channels/SocketChannel.html#finishConnect()">finishConnect()</a></code> to perform the final steps of
+ connecting. <code><a href="reference/java/nio/channels/SocketChannel.html#isConnectionPending()">isConnectionPending()</a></code> to tests whether we're still
+ trying to connect; <code><a href="reference/java/nio/channels/SocketChannel.html#isConnected()">isConnected()</a></code> tests whether the socket connect
+ completed successfully. Note that realistic code should use a <code><a href="reference/java/nio/channels/Selector.html">Selector</a></code>
+ instead of polling. Note also that <code><a href="reference/java/net/Socket.html">Socket</a></code> can connect with a
+ timeout, which is the most common use for a non-blocking connect.
+
+ <p>The input and output sides of a channel can be shut down independently and
+ asynchronously without closing the channel. The <code><a href="reference/java/net/Socket.html#shutdownInput()">shutdownInput()</a></code> method
+ on the socket returned by <code><a href="reference/java/nio/channels/SocketChannel.html#socket()">socket()</a></code>
+ is used for the input side of a channel and subsequent read operations return
+ -1, which means end of stream. If another thread is blocked in a read
+ operation when the shutdown occurs, the read will end without effect and
+ return end of stream. Likewise the <code><a href="reference/java/net/Socket.html#shutdownOutput()">shutdownOutput()</a></code> method is used for the
+ output side of the channel; subsequent write operations throw a
+ <code><a href="reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></code>. If the output is shut down and another thread
+ is blocked in a write operation, an <code><a href="reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></code> will
+ be thrown to the pending thread.
+
+ <p>Socket channels are thread-safe, no more than one thread can read or write at
+ any given time. The <code><a href="reference/java/nio/channels/SocketChannel.html#connect(java.net.SocketAddress)">connect(SocketAddress)</a></code> and <code><a href="reference/java/nio/channels/SocketChannel.html#finishConnect()">finishConnect()</a></code> methods are synchronized against each other; when they are
+ processing, calls to <code><a href="reference/java/nio/channels/SocketChannel.html#read(java.nio.ByteBuffer)">read(ByteBuffer)</a></code> and <code><a href="reference/java/nio/channels/SocketChannel.html#write(java.nio.ByteBuffer)">write(ByteBuffer)</a></code> will block.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#SocketChannel(java.nio.channels.spi.SelectorProvider)">SocketChannel</a></span>(<span class="nowrap"><a href="../../../../reference/java/nio/channels/spi/SelectorProvider.html">SelectorProvider</a> <i>selectorProvider</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#connect(java.net.SocketAddress)">connect</a></span>(<span class="nowrap"><a href="../../../../reference/java/net/SocketAddress.html">SocketAddress</a> <i>address</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#finishConnect()">finishConnect</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#isConnected()">isConnected</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#isConnectionPending()">isConnectionPending</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/nio/channels/SocketChannel.html">SocketChannel</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#open()">open</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/nio/channels/SocketChannel.html">SocketChannel</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#open(java.net.SocketAddress)">open</a></span>(<span class="nowrap"><a href="../../../../reference/java/net/SocketAddress.html">SocketAddress</a> <i>address</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#read(java.nio.ByteBuffer[], int, int)">read</a></span>(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer[]</a> <i>targets</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#read(java.nio.ByteBuffer)">read</a></span>(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> <i>target</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            final
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#read(java.nio.ByteBuffer[])">read</a></span>(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer[]</a> <i>targets</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/net/Socket.html">Socket</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#socket()">socket</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#validOps()">validOps</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#write(java.nio.ByteBuffer)">write</a></span>(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> <i>source</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            final
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#write(java.nio.ByteBuffer[])">write</a></span>(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer[]</a> <i>sources</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/SocketChannel.html#write(java.nio.ByteBuffer[], int, int)">write</a></span>(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer[]</a> <i>sources</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="SocketChannel(java.nio.channels.spi.SelectorProvider)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SocketChannel</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/nio/channels/spi/SelectorProvider.html">SelectorProvider</a> <i>selectorProvider</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>SocketChannel</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">selectorProvider</td>
+          <td class="jd-tagdescr">an instance of SelectorProvider.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="connect(java.net.SocketAddress)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>connect</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/net/SocketAddress.html">SocketAddress</a> <i>address</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Connects this channel's socket with a remote address.
+ <p>
+ If this channel is blocking, this method will suspend until connecting is
+ finished or an I/O exception occurs. If the channel is non-blocking,
+ this method will return <code>true</code> if the connection is finished at
+ once or return <code>false</code> when the connection must be finished later
+ by calling <code>finishConnect()</code>.
+ <p>
+ This method can be called at any moment and can block other read and
+ write operations while connecting. It executes the same security checks
+ as the connect method of the <code>Socket</code> class.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">address</td>
+          <td class="jd-tagdescr">the address to connect with.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the connection is finished, <code>false</code>
+         otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/AlreadyConnectedException.html">AlreadyConnectedException</a></td>
+            <td class="jd-tagdescr">if the channel is already connected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ConnectionPendingException.html">ConnectionPendingException</a></td>
+            <td class="jd-tagdescr">a non-blocking connecting operation is already executing on
+             this channel.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if this channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
+            <td class="jd-tagdescr">if this channel is closed by another thread while this method
+             is executing.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
+            <td class="jd-tagdescr">if another thread interrupts the calling thread while this
+             operation is in progress. The calling thread will have the
+             interrupt state set and this channel will be closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/UnresolvedAddressException.html">UnresolvedAddressException</a></td>
+            <td class="jd-tagdescr">if the address is not resolved.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/UnsupportedAddressTypeException.html">UnsupportedAddressTypeException</a></td>
+            <td class="jd-tagdescr">if the address type is not supported.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="finishConnect()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>finishConnect</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Completes the connection process initiated by a call of <code>connect(SocketAddress)</code>.
+ <p>
+ This method returns <code>true</code> if the connection is finished already
+ and returns <code>false</code> if the channel is non-blocking and the
+ connection is not finished yet.
+ <p>
+ If this channel is in blocking mode, this method will suspend and return
+ <code>true</code> when the connection is finished. It closes this channel and
+ throws an exception if the connection fails.
+ <p>
+ This method can be called at any moment and it can block other <code>read</code> and <code>write</code> operations while connecting.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the connection is successfully finished, <code>false</code> otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/NoConnectionPendingException.html">NoConnectionPendingException</a></td>
+            <td class="jd-tagdescr">if the channel is not connected and the connection process
+             has not been initiated.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if this channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
+            <td class="jd-tagdescr">if this channel is closed by another thread while this method
+             is executing.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
+            <td class="jd-tagdescr">if another thread interrupts the calling thread while this
+             operation is in progress. The calling thread has the
+             interrupt state set, and this channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isConnected()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isConnected</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether this channel's socket is connected.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this channel's socket is connected, <code>false</code>
+         otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isConnectionPending()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isConnectionPending</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether this channel's socket is still trying to connect.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the connection is initiated but not finished;
+         <code>false</code> otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="open()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/nio/channels/SocketChannel.html">SocketChannel</a>
+      </span>
+      <span class="sympad"><strong>open</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an open and unconnected socket channel.
+ <p>
+ This channel is created by calling <code>openSocketChannel()</code> of the
+ default <code><a href="reference/java/nio/channels/spi/SelectorProvider.html">SelectorProvider</a></code> instance.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the new channel which is open but unconnected.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="open(java.net.SocketAddress)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/nio/channels/SocketChannel.html">SocketChannel</a>
+      </span>
+      <span class="sympad"><strong>open</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/net/SocketAddress.html">SocketAddress</a> <i>address</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a socket channel and connects it to a socket address.
+ <p>
+ This method performs a call to <code>open()</code> followed by a call to
+ <code>connect(SocketAddress)</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">address</td>
+          <td class="jd-tagdescr">the socket address to be connected to.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the new connected channel.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
+            <td class="jd-tagdescr">if this channel is closed by another thread while this method
+             is executing.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
+            <td class="jd-tagdescr">if another thread interrupts the calling thread while this
+             operation is executing. The calling thread will have the
+             interrupt state set and the channel will be closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/UnresolvedAddressException.html">UnresolvedAddressException</a></td>
+            <td class="jd-tagdescr">if the address is not resolved.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/UnsupportedAddressTypeException.html">UnsupportedAddressTypeException</a></td>
+            <td class="jd-tagdescr">if the address type is not supported.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="read(java.nio.ByteBuffer[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        long
+      </span>
+      <span class="sympad"><strong>read</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer[]</a> <i>targets</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads bytes from this socket channel into a subset of the given buffers.
+ This method attempts to read all <code>remaining()</code> bytes from <code>length</code> byte buffers, in order, starting at <code>targets[offset]</code>. The
+ number of bytes actually read is returned.
+ <p>
+ If a read operation is in progress, subsequent threads will block until
+ the read is completed and will then contend for the ability to read.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">targets</td>
+          <td class="jd-tagdescr">the array of byte buffers into which the bytes will be copied.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the index of the first buffer to store bytes in.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the maximum number of buffers to store bytes in.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of bytes actually read.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
+            <td class="jd-tagdescr">if this channel is closed by another thread during this read
+             operation.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
+            <td class="jd-tagdescr">if another thread interrupts the calling thread while this
+             operation is in progress. The interrupt state of the calling
+             thread is set and the channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if this channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">if <code>offset < 0</code> or <code>length < 0</code>, or if <code>offset + length</code> is greater than the size of <code>targets</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if another I/O error occurs.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/NotYetConnectedException.html">NotYetConnectedException</a></td>
+            <td class="jd-tagdescr">if this channel is not yet connected.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/nio/channels/ScatteringByteChannel.html#read(java.nio.ByteBuffer[], int, int)">read(java.nio.ByteBuffer[], int, int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="read(java.nio.ByteBuffer)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>read</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> <i>target</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads bytes from this socket channel into the given buffer.
+ <p>
+ The maximum number of bytes that will be read is the remaining number of
+ bytes in the buffer when the method is invoked. The bytes will be copied
+ into the buffer starting at the buffer's current position.
+ <p>
+ The call may block if other threads are also attempting to read from this
+ channel.
+ <p>
+ Upon completion, the buffer's position is set to the end of the bytes
+ that have been read. The buffer's limit is not changed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">target</td>
+          <td class="jd-tagdescr">the byte buffer to receive the bytes.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of bytes actually read.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
+            <td class="jd-tagdescr">if another thread closes the channel during the read.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/NotYetConnectedException.html">NotYetConnectedException</a></td>
+            <td class="jd-tagdescr">if this channel is not yet connected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
+            <td class="jd-tagdescr">if another thread interrupts the calling thread while this
+             operation is in progress. The interrupt state of the calling
+             thread is set and the channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if this channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/nio/channels/ReadableByteChannel.html#read(java.nio.ByteBuffer)">read(java.nio.ByteBuffer)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="read(java.nio.ByteBuffer[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        synchronized
+        long
+      </span>
+      <span class="sympad"><strong>read</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer[]</a> <i>targets</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads bytes from this socket channel and stores them in the specified
+ array of buffers. This method attempts to read as many bytes as can be
+ stored in the buffer array from this channel and returns the number of
+ bytes actually read.
+ <p>
+ If a read operation is in progress, subsequent threads will block until
+ the read is completed and will then contend for the ability to read.
+ <p>
+ Calling this method is equivalent to calling <code>read(targets, 0,
+ targets.length);</code></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">targets</td>
+          <td class="jd-tagdescr">the array of byte buffers into which the bytes will be copied.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of bytes actually read.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
+            <td class="jd-tagdescr">if this channel is closed by another thread during this read
+             operation.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
+            <td class="jd-tagdescr">if another thread interrupts the calling thread while this
+             operation is in progress. The interrupt state of the calling
+             thread is set and the channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if this channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if another I/O error occurs.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/NotYetConnectedException.html">NotYetConnectedException</a></td>
+            <td class="jd-tagdescr">if this channel is not yet connected.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="socket()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/net/Socket.html">Socket</a>
+      </span>
+      <span class="sympad"><strong>socket</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the socket assigned to this channel, which does not declare any public
+ methods that are not declared in <code>Socket</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the socket assigned to this channel.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="validOps()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>validOps</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the valid operations of this channel. Socket channels support
+ connect, read and write operation, so this method returns
+ <code>SelectionKey.OP_CONNECT | SelectionKey.OP_READ | SelectionKey.OP_WRITE</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the operations supported by this channel.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/nio/channels/SelectableChannel.html#validOps()">validOps()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="write(java.nio.ByteBuffer)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>write</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> <i>source</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes bytes from the given byte buffer to this socket channel. The
+ maximum number of bytes that are written is the remaining number of bytes
+ in the buffer when this method is invoked. The bytes are taken from the
+ buffer starting at the buffer's position.
+ <p>
+ The call may block if other threads are also attempting to write to the
+ same channel.
+ <p>
+ Upon completion, the buffer's position is updated to the end of the bytes
+ that have been written. The buffer's limit is not changed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">source</td>
+          <td class="jd-tagdescr">the byte buffer containing the bytes to be written.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of bytes actually written.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
+            <td class="jd-tagdescr">if another thread closes the channel during the write.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
+            <td class="jd-tagdescr">if another thread interrupts the calling thread while this
+             operation is in progress. The interrupt state of the calling
+             thread is set and the channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if the channel was already closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if another I/O error occurs.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/NotYetConnectedException.html">NotYetConnectedException</a></td>
+            <td class="jd-tagdescr">if this channel is not connected yet.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/nio/channels/WritableByteChannel.html#write(java.nio.ByteBuffer)">write(java.nio.ByteBuffer)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="write(java.nio.ByteBuffer[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        synchronized
+        long
+      </span>
+      <span class="sympad"><strong>write</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer[]</a> <i>sources</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes bytes from all the given byte buffers to this socket channel.
+ <p>
+ Calling this method is equivalent to calling <code>write(sources, 0,
+ sources.length);</code></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">sources</td>
+          <td class="jd-tagdescr">the buffers containing bytes to write.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of bytes actually written.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
+            <td class="jd-tagdescr">if this channel is closed by another thread during this write
+             operation.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
+            <td class="jd-tagdescr">if another thread interrupts the calling thread while this
+             operation is in progress. The interrupt state of the calling
+             thread is set and the channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if this channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if another I/O error occurs.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/NotYetConnectedException.html">NotYetConnectedException</a></td>
+            <td class="jd-tagdescr">if this channel is not yet connected.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/nio/channels/GatheringByteChannel.html#write(java.nio.ByteBuffer[])">write(java.nio.ByteBuffer[])</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="write(java.nio.ByteBuffer[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        long
+      </span>
+      <span class="sympad"><strong>write</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/nio/ByteBuffer.html">ByteBuffer[]</a> <i>sources</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Attempts to write a subset of the given bytes from the buffers to this
+ socket channel. This method attempts to write all <code>remaining()</code>
+ bytes from <code>length</code> byte buffers, in order, starting at <code>sources[offset]</code>. The number of bytes actually written is returned.
+ <p>
+ If a write operation is in progress, subsequent threads will block until
+ the write is completed and then contend for the ability to write.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">sources</td>
+          <td class="jd-tagdescr">the array of byte buffers that is the source for bytes written
+            to this channel.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the index of the first buffer in <code>buffers </code>to get bytes
+            from.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the number of buffers to get bytes from.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of bytes actually written to this channel.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
+            <td class="jd-tagdescr">if this channel is closed by another thread during this write
+             operation.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
+            <td class="jd-tagdescr">if another thread interrupts the calling thread while this
+             operation is in progress. The interrupt state of the calling
+             thread is set and the channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if this channel is closed.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">if <code>offset < 0</code> or <code>length < 0</code>, or if <code>offset + length</code> is greater than the size of <code>sources</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if another I/O error occurs.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/NotYetConnectedException.html">NotYetConnectedException</a></td>
+            <td class="jd-tagdescr">if this channel is not yet connected.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/nio/channels/GatheringByteChannel.html#write(java.nio.ByteBuffer[], int, int)">write(java.nio.ByteBuffer[], int, int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

@@ -1,0 +1,1468 @@
+---
+
+title: DOMException - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/Attr.html">Attr</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/CDATASection.html">CDATASection</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/CharacterData.html">CharacterData</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/Comment.html">Comment</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/Document.html">Document</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/DocumentFragment.html">DocumentFragment</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/DocumentType.html">DocumentType</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/DOMConfiguration.html">DOMConfiguration</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/DOMError.html">DOMError</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/DOMErrorHandler.html">DOMErrorHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/DOMImplementation.html">DOMImplementation</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/DOMImplementationList.html">DOMImplementationList</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/DOMImplementationSource.html">DOMImplementationSource</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/DOMLocator.html">DOMLocator</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/DOMStringList.html">DOMStringList</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/Element.html">Element</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/Entity.html">Entity</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/EntityReference.html">EntityReference</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/NamedNodeMap.html">NamedNodeMap</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/NameList.html">NameList</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/Node.html">Node</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/NodeList.html">NodeList</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/Notation.html">Notation</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/ProcessingInstruction.html">ProcessingInstruction</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/Text.html">Text</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/TypeInfo.html">TypeInfo</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/w3c/dom/UserDataHandler.html">UserDataHandler</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="selected api apilevel-"><a href="../../../../reference/org/w3c/dom/DOMException.html">DOMException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">DOMException</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>DOM operations only raise exceptions in "exceptional" circumstances, i.e.,
+ when an operation is impossible to perform (either for logical reasons,
+ because data is lost, or because the implementation has become unstable).
+ In general, DOM methods return specific error values in ordinary
+ processing situations, such as out-of-bound errors when using
+ <code>NodeList</code>.
+ <p>Implementations should raise other exceptions under other circumstances.
+ For example, implementations should raise an implementation-dependent
+ exception if a <code>null</code> argument is passed when <code>null</code>
+  was not expected.
+ <p>Some languages and object systems do not support the concept of
+ exceptions. For such systems, error conditions may be indicated using
+ native error reporting mechanisms. For some bindings, for example,
+ methods may return error codes similar to those listed in the
+ corresponding method descriptions.
+ <p>See also the <a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document Object Model (DOM) Level 3 Core Specification</a>.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="constants"><h3>Constant Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#DOMSTRING_SIZE_ERR">DOMSTRING_SIZE_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If the specified range of text does not fit into a
+ <code>DOMString</code>.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#HIERARCHY_REQUEST_ERR">HIERARCHY_REQUEST_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If any <code>Node</code> is inserted somewhere it doesn't belong.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#INDEX_SIZE_ERR">INDEX_SIZE_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If index or size is negative, or greater than the allowed value.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#INUSE_ATTRIBUTE_ERR">INUSE_ATTRIBUTE_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If an attempt is made to add an attribute that is already in use
+ elsewhere.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#INVALID_ACCESS_ERR">INVALID_ACCESS_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If a parameter or an operation is not supported by the underlying
+ object.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#INVALID_CHARACTER_ERR">INVALID_CHARACTER_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If an invalid or illegal character is specified, such as in an XML name.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#INVALID_MODIFICATION_ERR">INVALID_MODIFICATION_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If an attempt is made to modify the type of the underlying object.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#INVALID_STATE_ERR">INVALID_STATE_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If an attempt is made to use an object that is not, or is no longer,
+ usable.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#NAMESPACE_ERR">NAMESPACE_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If an attempt is made to create or change an object in a way which is
+ incorrect with regard to namespaces.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#NOT_FOUND_ERR">NOT_FOUND_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If an attempt is made to reference a <code>Node</code> in a context
+ where it does not exist.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#NOT_SUPPORTED_ERR">NOT_SUPPORTED_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If the implementation does not support the requested type of object or
+ operation.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#NO_DATA_ALLOWED_ERR">NO_DATA_ALLOWED_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If data is specified for a <code>Node</code> which does not support
+ data.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#NO_MODIFICATION_ALLOWED_ERR">NO_MODIFICATION_ALLOWED_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If an attempt is made to modify an object where modifications are not
+ allowed.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#SYNTAX_ERR">SYNTAX_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If an invalid or illegal string is specified.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#TYPE_MISMATCH_ERR">TYPE_MISMATCH_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If the type of an object is incompatible with the expected type of the
+ parameter associated to the object.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#VALIDATION_ERR">VALIDATION_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If a call to a method such as <code>insertBefore</code> or
+ <code>removeChild</code> would make the <code>Node</code> invalid
+ with respect to "partial validity", this exception would be raised
+ and the operation would not be done.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#WRONG_DOCUMENT_ERR">WRONG_DOCUMENT_ERR</a></td>
+        <td class="jd-descrcol" width="100%">If a <code>Node</code> is used in a different document than the one
+ that created it (that doesn't support it).</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<section id="lfields"><h3>Field Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          
+          
+          short</td>
+          <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/DOMException.html#code">code</a></td>
+          <td class="jd-descrcol" width="100%"></td>
+      </tr>
+      
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/w3c/dom/DOMException.html#DOMException(short, java.lang.String)">DOMException</a></span>(<span class="nowrap">short <i>code</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>message</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<section id="constants">
+  <h2>Constants</h2>
+  
+
+
+
+<A NAME="DOMSTRING_SIZE_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>DOMSTRING_SIZE_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If the specified range of text does not fit into a
+ <code>DOMString</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                2
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="HIERARCHY_REQUEST_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>HIERARCHY_REQUEST_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If any <code>Node</code> is inserted somewhere it doesn't belong.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                3
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="INDEX_SIZE_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>INDEX_SIZE_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If index or size is negative, or greater than the allowed value.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                1
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="INUSE_ATTRIBUTE_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>INUSE_ATTRIBUTE_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If an attempt is made to add an attribute that is already in use
+ elsewhere.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                10
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="INVALID_ACCESS_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>INVALID_ACCESS_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If a parameter or an operation is not supported by the underlying
+ object.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                15
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="INVALID_CHARACTER_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>INVALID_CHARACTER_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If an invalid or illegal character is specified, such as in an XML name.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                5
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="INVALID_MODIFICATION_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>INVALID_MODIFICATION_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If an attempt is made to modify the type of the underlying object.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                13
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="INVALID_STATE_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>INVALID_STATE_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If an attempt is made to use an object that is not, or is no longer,
+ usable.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                11
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="NAMESPACE_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>NAMESPACE_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If an attempt is made to create or change an object in a way which is
+ incorrect with regard to namespaces.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                14
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="NOT_FOUND_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>NOT_FOUND_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If an attempt is made to reference a <code>Node</code> in a context
+ where it does not exist.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                8
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="NOT_SUPPORTED_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>NOT_SUPPORTED_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If the implementation does not support the requested type of object or
+ operation.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                9
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="NO_DATA_ALLOWED_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>NO_DATA_ALLOWED_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If data is specified for a <code>Node</code> which does not support
+ data.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                6
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="NO_MODIFICATION_ALLOWED_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>NO_MODIFICATION_ALLOWED_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If an attempt is made to modify an object where modifications are not
+ allowed.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                7
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="SYNTAX_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>SYNTAX_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If an invalid or illegal string is specified.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                12
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="TYPE_MISMATCH_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>TYPE_MISMATCH_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If the type of an object is incompatible with the expected type of the
+ parameter associated to the object.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                17
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="VALIDATION_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>VALIDATION_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If a call to a method such as <code>insertBefore</code> or
+ <code>removeChild</code> would make the <code>Node</code> invalid
+ with respect to "partial validity", this exception would be raised
+ and the operation would not be done. This code is used in [<a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Val-20040127/'>DOM Level 3 Validation</a>]
+ . Refer to this specification for further information.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                16
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="WRONG_DOCUMENT_ERR"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>WRONG_DOCUMENT_ERR</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If a <code>Node</code> is used in a different document than the one
+ that created it (that doesn't support it).
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                4
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Fields -->
+
+
+<!-- ========= FIELD DETAIL ======== -->
+<section id="fields">
+  <h2>Fields</h2>
+  
+
+
+
+<A NAME="code"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+          short
+        
+      </span>
+        <strong>code</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="DOMException(short, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>DOMException</strong></span>
+      <span class="params">(<span class="nowrap">short <i>code</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>message</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

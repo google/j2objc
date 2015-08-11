@@ -1,0 +1,3253 @@
+---
+
+title: Integer - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Appendable.html">Appendable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/CharSequence.html">CharSequence</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Cloneable.html">Cloneable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Iterable.html">Iterable</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Readable.html">Readable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Runnable.html">Runnable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.UncaughtExceptionHandler.html">Thread.UncaughtExceptionHandler</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Boolean.html">Boolean</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Byte.html">Byte</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.html">Character</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.Subset.html">Character.Subset</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.UnicodeBlock.html">Character.UnicodeBlock</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Double.html">Double</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Float.html">Float</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>&lt;T&gt;</li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/lang/Integer.html">Integer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Long.html">Long</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Math.html">Math</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Number.html">Number</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Object.html">Object</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Package.html">Package</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Runtime.html">Runtime</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/RuntimePermission.html">RuntimePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SecurityManager.html">SecurityManager</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Short.html">Short</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StrictMath.html">StrictMath</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/String.html">String</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringBuffer.html">StringBuffer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringBuilder.html">StringBuilder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/System.html">System</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.html">Thread</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ThreadLocal.html">ThreadLocal</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Throwable.html">Throwable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Void.html">Void</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Annotations</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Deprecated.html">Deprecated</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Override.html">Override</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SafeVarargs.html">SafeVarargs</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SuppressWarnings.html">SuppressWarnings</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.State.html">Thread.State</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArrayStoreException.html">ArrayStoreException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/CloneNotSupportedException.html">CloneNotSupportedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Exception.html">Exception</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalAccessException.html">IllegalAccessException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalThreadStateException.html">IllegalThreadStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InstantiationException.html">InstantiationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NegativeArraySizeException.html">NegativeArraySizeException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchFieldException.html">NoSuchFieldException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchMethodException.html">NoSuchMethodException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ReflectiveOperationException.html">ReflectiveOperationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/RuntimeException.html">RuntimeException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/TypeNotPresentException.html">TypeNotPresentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/AbstractMethodError.html">AbstractMethodError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/AssertionError.html">AssertionError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Error.html">Error</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ExceptionInInitializerError.html">ExceptionInInitializerError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalAccessError.html">IllegalAccessError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IncompatibleClassChangeError.html">IncompatibleClassChangeError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InternalError.html">InternalError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/LinkageError.html">LinkageError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchFieldError.html">NoSuchFieldError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchMethodError.html">NoSuchMethodError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/OutOfMemoryError.html">OutOfMemoryError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StackOverflowError.html">StackOverflowError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ThreadDeath.html">ThreadDeath</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/VirtualMachineError.html">VirtualMachineError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public  final   class
+  <h1 itemprop="name" class="devsite-page-title">Integer</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>The wrapper for the primitive type <code>int</code>.
+ <p>
+ Implementation note: The "bit twiddling" methods in this class use techniques
+ described in <a href="http://www.hackersdelight.org/">Henry S. Warren,
+ Jr.'s Hacker's Delight, (Addison Wesley, 2002)</a> and <a href=
+ "http://graphics.stanford.edu/~seander/bithacks.html">Sean Anderson's
+ Bit Twiddling Hacks.</a></p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Long.html">Long</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="constants"><h3>Constant Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Integer.html#MAX_VALUE">MAX_VALUE</a></td>
+        <td class="jd-descrcol" width="100%">Constant for the maximum <code>int</code> value, 2<sup>31</sup>-1.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Integer.html#MIN_VALUE">MIN_VALUE</a></td>
+        <td class="jd-descrcol" width="100%">Constant for the minimum <code>int</code> value, -2<sup>31</sup>.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/lang/Integer.html#SIZE">SIZE</a></td>
+        <td class="jd-descrcol" width="100%">Constant for the number of bits needed to represent an <code>int</code> in
+ two's complement form.</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<section id="lfields"><h3>Field Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/lang/Class.html">Class</a>&lt;<a href="../../../reference/java/lang/Integer.html">Integer</a>&gt;</td>
+          <td class="jd-linkcol"><a href="../../../reference/java/lang/Integer.html#TYPE">TYPE</a></td>
+          <td class="jd-descrcol" width="100%">The <code><a href="reference/java/lang/Class.html">Class</a></code> object that represents the primitive type <code>int</code>.</td>
+      </tr>
+      
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#Integer(int)">Integer</a></span>(<span class="nowrap">int <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#Integer(java.lang.String)">Integer</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#bitCount(int)">bitCount</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            byte
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#byteValue()">byteValue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#compare(int, int)">compare</a></span>(<span class="nowrap">int <i>lhs</i></span>, <span class="nowrap">int <i>rhs</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#compareTo(java.lang.Integer)">compareTo</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Integer.html">Integer</a> <i>object</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#decode(java.lang.String)">decode</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#doubleValue()">doubleValue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#equals(java.lang.Object)">equals</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>o</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#floatValue()">floatValue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#getInteger(java.lang.String, java.lang.Integer)">getInteger</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Integer.html">Integer</a> <i>defaultValue</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#getInteger(java.lang.String)">getInteger</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#getInteger(java.lang.String, int)">getInteger</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>, <span class="nowrap">int <i>defaultValue</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#hashCode()">hashCode</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#highestOneBit(int)">highestOneBit</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#intValue()">intValue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#longValue()">longValue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#lowestOneBit(int)">lowestOneBit</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#numberOfLeadingZeros(int)">numberOfLeadingZeros</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#numberOfTrailingZeros(int)">numberOfTrailingZeros</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#parseInt(java.lang.String, int)">parseInt</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>, <span class="nowrap">int <i>radix</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#parseInt(java.lang.String)">parseInt</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#reverse(int)">reverse</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#reverseBytes(int)">reverseBytes</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#rotateLeft(int, int)">rotateLeft</a></span>(<span class="nowrap">int <i>i</i></span>, <span class="nowrap">int <i>distance</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#rotateRight(int, int)">rotateRight</a></span>(<span class="nowrap">int <i>i</i></span>, <span class="nowrap">int <i>distance</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            short
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#shortValue()">shortValue</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#signum(int)">signum</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#toBinaryString(int)">toBinaryString</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#toHexString(int)">toHexString</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#toOctalString(int)">toOctalString</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#toString(int)">toString</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#toString(int, int)">toString</a></span>(<span class="nowrap">int <i>i</i></span>, <span class="nowrap">int <i>radix</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#valueOf(java.lang.String)">valueOf</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#valueOf(java.lang.String, int)">valueOf</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>, <span class="nowrap">int <i>radix</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/Integer.html#valueOf(int)">valueOf</a></span>(<span class="nowrap">int <i>i</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<section id="constants">
+  <h2>Constants</h2>
+  
+
+
+
+<A NAME="MAX_VALUE"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>MAX_VALUE</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constant for the maximum <code>int</code> value, 2<sup>31</sup>-1.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                2147483647
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="MIN_VALUE"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>MIN_VALUE</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constant for the minimum <code>int</code> value, -2<sup>31</sup>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                -2147483648
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="SIZE"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>SIZE</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constant for the number of bits needed to represent an <code>int</code> in
+ two's complement form.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                32
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Fields -->
+
+
+<!-- ========= FIELD DETAIL ======== -->
+<section id="fields">
+  <h2>Fields</h2>
+  
+
+
+
+<A NAME="TYPE"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          <a href="../../../reference/java/lang/Class.html">Class</a>&lt;<a href="../../../reference/java/lang/Integer.html">Integer</a>&gt;
+        
+      </span>
+        <strong>TYPE</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The <code><a href="reference/java/lang/Class.html">Class</a></code> object that represents the primitive type <code>int</code>.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="Integer(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>Integer</strong></span>
+      <span class="params">(<span class="nowrap">int <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Integer</code> with the specified primitive integer
+ value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the primitive integer value to store in the new instance.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="Integer(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>Integer</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Integer</code> from the specified string.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string</td>
+          <td class="jd-tagdescr">the string representation of an integer value.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+            <td class="jd-tagdescr">if <code>string</code> cannot be parsed as an integer value.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Integer.html#parseInt(java.lang.String)">parseInt(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="bitCount(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>bitCount</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Counts the number of 1 bits in the specified integer; this is also
+ referred to as population count.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer to examine.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of 1 bits in <code>i</code>.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="byteValue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        byte
+      </span>
+      <span class="sympad"><strong>byteValue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="compare(int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>compare</strong></span>
+      <span class="params">(<span class="nowrap">int <i>lhs</i></span>, <span class="nowrap">int <i>rhs</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares two <code>int</code> values.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>0 if lhs = rhs, less than 0 if lhs &lt; rhs, and greater than 0 if lhs &gt; rhs.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="compareTo(java.lang.Integer)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>compareTo</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Integer.html">Integer</a> <i>object</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this object to the specified integer object to determine their
+ relative order.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">object</td>
+          <td class="jd-tagdescr">the integer object to compare this object to.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a negative value if the value of this integer is less than the
+         value of <code>object</code>; 0 if the value of this integer and the
+         value of <code>object</code> are equal; a positive value if the value
+         of this integer is greater than the value of <code>object</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Comparable.html">Comparable</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="decode(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+      <span class="sympad"><strong>decode</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string and returns a <code>Integer</code> instance if the
+ string can be decoded into an integer value. The string may be an
+ optional minus sign "-" followed by a hexadecimal ("0x..." or "#..."),
+ octal ("0..."), or decimal ("...") representation of an integer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string</td>
+          <td class="jd-tagdescr">a string representation of an integer value.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an <code>Integer</code> containing the value represented by
+         <code>string</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+            <td class="jd-tagdescr">if <code>string</code> cannot be parsed as an integer value.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="doubleValue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>doubleValue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>o</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this instance with the specified object and indicates if they
+ are equal. In order to be equal, <code>o</code> must be an instance of
+ <code>Integer</code> and have the same integer value as this object.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">o</td>
+          <td class="jd-tagdescr">the object to compare this integer with.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the specified object is equal to this
+         <code>Integer</code>; <code>false</code> otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="floatValue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>floatValue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getInteger(java.lang.String, java.lang.Integer)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+      <span class="sympad"><strong>getInteger</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Integer.html">Integer</a> <i>defaultValue</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>Integer</code> value of the system property identified by
+ <code>string</code>. Returns the specified default value if <code>string</code> is
+ <code>null</code> or empty, if the property can not be found or if its value
+ can not be parsed as an integer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string</td>
+          <td class="jd-tagdescr">the name of the requested system property.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">defaultValue</td>
+          <td class="jd-tagdescr">the default value that is returned if there is no integer
+            system property with the requested name.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the requested property's value as an <code>Integer</code> or the
+         default value.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getInteger(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+      <span class="sympad"><strong>getInteger</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>Integer</code> value of the system property identified by
+ <code>string</code>. Returns <code>null</code> if <code>string</code> is <code>null</code>
+ or empty, if the property can not be found or if its value can not be
+ parsed as an integer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string</td>
+          <td class="jd-tagdescr">the name of the requested system property.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the requested property's value as an <code>Integer</code> or
+         <code>null</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getInteger(java.lang.String, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+      <span class="sympad"><strong>getInteger</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>, <span class="nowrap">int <i>defaultValue</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>Integer</code> value of the system property identified by
+ <code>string</code>. Returns the specified default value if <code>string</code> is
+ <code>null</code> or empty, if the property can not be found or if its value
+ can not be parsed as an integer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string</td>
+          <td class="jd-tagdescr">the name of the requested system property.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">defaultValue</td>
+          <td class="jd-tagdescr">the default value that is returned if there is no integer
+            system property with the requested name.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the requested property's value as an <code>Integer</code> or the
+         default value.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="hashCode()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>hashCode</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="highestOneBit(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>highestOneBit</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Determines the highest (leftmost) bit of the specified integer that is 1
+ and returns the bit mask value for that bit. This is also referred to as
+ the Most Significant 1 Bit. Returns zero if the specified integer is
+ zero.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer to examine.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the bit mask indicating the highest 1 bit in <code>i</code>.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="intValue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>intValue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the primitive value of this int.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>this object's primitive value.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="longValue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>longValue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="lowestOneBit(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>lowestOneBit</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Determines the lowest (rightmost) bit of the specified integer that is 1
+ and returns the bit mask value for that bit. This is also referred
+ to as the Least Significant 1 Bit. Returns zero if the specified integer
+ is zero.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer to examine.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the bit mask indicating the lowest 1 bit in <code>i</code>.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="numberOfLeadingZeros(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>numberOfLeadingZeros</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Determines the number of leading zeros in the specified integer prior to
+ the <code><a href="reference/java/lang/Integer.html#highestOneBit(int)">highest one bit</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer to examine.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of leading zeros in <code>i</code>.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="numberOfTrailingZeros(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>numberOfTrailingZeros</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Determines the number of trailing zeros in the specified integer after
+ the <code><a href="reference/java/lang/Integer.html#lowestOneBit(int)">lowest one bit</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer to examine.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of trailing zeros in <code>i</code>.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parseInt(java.lang.String, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>parseInt</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>, <span class="nowrap">int <i>radix</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed integer value using the specified
+ radix. The ASCII character - ('-') is recognized as the minus sign.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string</td>
+          <td class="jd-tagdescr">the string representation of an integer value.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">radix</td>
+          <td class="jd-tagdescr">the radix to use when parsing.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the primitive integer value represented by <code>string</code> using
+         <code>radix</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+            <td class="jd-tagdescr">if <code>string</code> cannot be parsed as an integer value,
+             or <code>radix < Character.MIN_RADIX ||
+             radix > Character.MAX_RADIX</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parseInt(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>parseInt</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed decimal integer value. The ASCII
+ character - ('-') is recognized as the minus sign.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string</td>
+          <td class="jd-tagdescr">the string representation of an integer value.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the primitive integer value represented by <code>string</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+            <td class="jd-tagdescr">if <code>string</code> cannot be parsed as an integer value.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="reverse(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>reverse</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reverses the order of the bits of the specified integer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer value for which to reverse the bit order.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the reversed value.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="reverseBytes(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>reverseBytes</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reverses the order of the bytes of the specified integer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer value for which to reverse the byte order.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the reversed value.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="rotateLeft(int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>rotateLeft</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>, <span class="nowrap">int <i>distance</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Rotates the bits of the specified integer to the left by the specified
+ number of bits.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer value to rotate left.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">distance</td>
+          <td class="jd-tagdescr">the number of bits to rotate.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the rotated value.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="rotateRight(int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>rotateRight</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>, <span class="nowrap">int <i>distance</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Rotates the bits of the specified integer to the right by the specified
+ number of bits.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer value to rotate right.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">distance</td>
+          <td class="jd-tagdescr">the number of bits to rotate.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the rotated value.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="shortValue()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        short
+      </span>
+      <span class="sympad"><strong>shortValue</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="signum(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>signum</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value of the <code>signum</code> function for the specified
+ integer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer value to check.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>-1 if <code>i</code> is negative, 1 if <code>i</code> is positive, 0 if
+         <code>i</code> is zero.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toBinaryString(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toBinaryString</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified integer into its binary string representation. The
+ returned string is a concatenation of '0' and '1' characters.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer to convert.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the binary string representation of <code>i</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toHexString(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toHexString</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified integer into its hexadecimal string
+ representation. The returned string is a concatenation of characters from
+ '0' to '9' and 'a' to 'f'.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer to convert.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the hexadecimal string representation of <code>i</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toOctalString(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toOctalString</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified integer into its octal string representation. The
+ returned string is a concatenation of characters from '0' to '7'.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer to convert.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the octal string representation of <code>i</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="toString(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified integer into its decimal string representation.
+ The returned string is a concatenation of a minus sign if the number is
+ negative and characters from '0' to '9'.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer to convert.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the decimal string representation of <code>i</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString(int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>, <span class="nowrap">int <i>radix</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Converts the specified signed integer into a string representation based on the
+ specified radix. The returned string is a concatenation of a minus sign
+ if the number is negative and characters from '0' to '9' and 'a' to 'z',
+ depending on the radix. If <code>radix</code> is not in the interval defined
+ by <code>Character.MIN_RADIX</code> and <code>Character.MAX_RADIX</code> then 10 is
+ used as the base for the conversion.
+
+ <p>This method treats its argument as signed. If you want to convert an
+ unsigned value to one of the common non-decimal bases, you may find
+ <code><a href="reference/java/lang/Integer.html#toBinaryString(int)">toBinaryString(int)</a></code>, <code>#toHexString</code>, or <code><a href="reference/java/lang/Integer.html#toOctalString(int)">toOctalString(int)</a></code>
+ more convenient.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the signed integer to convert.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">radix</td>
+          <td class="jd-tagdescr">the base to use for the conversion.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the string representation of <code>i</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="valueOf(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+      <span class="sympad"><strong>valueOf</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed decimal integer value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string</td>
+          <td class="jd-tagdescr">the string representation of an integer value.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an <code>Integer</code> instance containing the integer value
+         represented by <code>string</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+            <td class="jd-tagdescr">if <code>string</code> cannot be parsed as an integer value.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Integer.html#parseInt(java.lang.String)">parseInt(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="valueOf(java.lang.String, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+      <span class="sympad"><strong>valueOf</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>, <span class="nowrap">int <i>radix</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parses the specified string as a signed integer value using the specified
+ radix.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string</td>
+          <td class="jd-tagdescr">the string representation of an integer value.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">radix</td>
+          <td class="jd-tagdescr">the radix to use when parsing.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an <code>Integer</code> instance containing the integer value
+         represented by <code>string</code> using <code>radix</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+            <td class="jd-tagdescr">if <code>string</code> cannot be parsed as an integer value, or
+             <code>radix < Character.MIN_RADIX ||
+             radix > Character.MAX_RADIX</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Integer.html#parseInt(java.lang.String, int)">parseInt(String, int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="valueOf(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+      <span class="sympad"><strong>valueOf</strong></span>
+      <span class="params">(<span class="nowrap">int <i>i</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Integer</code> instance for the specified integer value.
+ <p>
+ If it is not necessary to get a new <code>Integer</code> instance, it is
+ recommended to use this method instead of the constructor, since it
+ maintains a cache of instances which may result in better performance.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">i</td>
+          <td class="jd-tagdescr">the integer value to store in the instance.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a <code>Integer</code> instance containing <code>i</code>.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

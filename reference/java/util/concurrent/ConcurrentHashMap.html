@@ -1,0 +1,2536 @@
+---
+
+title: ConcurrentHashMap - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BlockingDeque.html">BlockingDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BlockingQueue.html">BlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CompletionService.html">CompletionService</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentNavigableMap.html">ConcurrentNavigableMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Delayed.html">Delayed</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Executor.html">Executor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutorService.html">ExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.ForkJoinWorkerThreadFactory.html">ForkJoinPool.ForkJoinWorkerThreadFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.ManagedBlocker.html">ForkJoinPool.ManagedBlocker</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Future.html">Future</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RejectedExecutionHandler.html">RejectedExecutionHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RunnableFuture.html">RunnableFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledExecutorService.html">ScheduledExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadFactory.html">ThreadFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TransferQueue.html">TransferQueue</a>&lt;E&gt;</li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/AbstractExecutorService.html">AbstractExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>&lt;E&gt;</li>
+          <li class="selected api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html">ConcurrentHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html">ConcurrentLinkedDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedQueue.html">ConcurrentLinkedQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListMap.html">ConcurrentSkipListMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html">ConcurrentSkipListSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CopyOnWriteArrayList.html">CopyOnWriteArrayList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CopyOnWriteArraySet.html">CopyOnWriteArraySet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CountDownLatch.html">CountDownLatch</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CyclicBarrier.html">CyclicBarrier</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/DelayQueue.html">DelayQueue</a>&lt;E&nbsp;extends&nbsp;<a href="../../../../reference/java/util/concurrent/Delayed.html">Delayed</a>&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Exchanger.html">Exchanger</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutorCompletionService.html">ExecutorCompletionService</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Executors.html">Executors</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinWorkerThread.html">ForkJoinWorkerThread</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/FutureTask.html">FutureTask</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedBlockingDeque.html">LinkedBlockingDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedBlockingQueue.html">LinkedBlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Phaser.html">Phaser</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/PriorityBlockingQueue.html">PriorityBlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RecursiveAction.html">RecursiveAction</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RecursiveTask.html">RecursiveTask</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html">ScheduledThreadPoolExecutor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Semaphore.html">Semaphore</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/SynchronousQueue.html">SynchronousQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadLocalRandom.html">ThreadLocalRandom</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.html">ThreadPoolExecutor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.AbortPolicy.html">ThreadPoolExecutor.AbortPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.CallerRunsPolicy.html">ThreadPoolExecutor.CallerRunsPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.DiscardOldestPolicy.html">ThreadPoolExecutor.DiscardOldestPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.DiscardPolicy.html">ThreadPoolExecutor.DiscardPolicy</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BrokenBarrierException.html">BrokenBarrierException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CancellationException.html">CancellationException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutionException.html">ExecutionException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TimeoutException.html">TimeoutException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">ConcurrentHashMap</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>A hash table supporting full concurrency of retrievals and
+ high expected concurrency for updates. This class obeys the
+ same functional specification as <code><a href="reference/java/util/Hashtable.html">Hashtable</a></code>, and
+ includes versions of methods corresponding to each method of
+ <code>Hashtable</code>. However, even though all operations are
+ thread-safe, retrieval operations do <em>not</em> entail locking,
+ and there is <em>not</em> any support for locking the entire table
+ in a way that prevents all access.  This class is fully
+ interoperable with <code>Hashtable</code> in programs that rely on its
+ thread safety but not on its synchronization details.
+
+ <p>Retrieval operations (including <code>get</code>) generally do not
+ block, so may overlap with update operations (including <code>put</code>
+ and <code>remove</code>). Retrievals reflect the results of the most
+ recently <em>completed</em> update operations holding upon their
+ onset. (More formally, an update operation for a given key bears a
+ <em>happens-before</em> relation with any (non-null) retrieval for
+ that key reporting the updated value.)  For aggregate operations
+ such as <code>putAll</code> and <code>clear</code>, concurrent retrievals may
+ reflect insertion or removal of only some entries.  Similarly,
+ Iterators and Enumerations return elements reflecting the state of
+ the hash table at some point at or since the creation of the
+ iterator/enumeration.  They do <em>not</em> throw <code><a href="reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></code>.  However, iterators are designed
+ to be used by only one thread at a time.  Bear in mind that the
+ results of aggregate status methods including <code>size</code>, <code>isEmpty</code>, and <code>containsValue</code> are typically useful only when
+ a map is not undergoing concurrent updates in other threads.
+ Otherwise the results of these methods reflect transient states
+ that may be adequate for monitoring or estimation purposes, but not
+ for program control.
+
+ <p>The table is dynamically expanded when there are too many
+ collisions (i.e., keys that have distinct hash codes but fall into
+ the same slot modulo the table size), with the expected average
+ effect of maintaining roughly two bins per mapping (corresponding
+ to a 0.75 load factor threshold for resizing). There may be much
+ variance around this average as mappings are added and removed, but
+ overall, this maintains a commonly accepted time/space tradeoff for
+ hash tables.  However, resizing this or any other kind of hash
+ table may be a relatively slow operation. When possible, it is a
+ good idea to provide a size estimate as an optional <code>initialCapacity</code> constructor argument. An additional optional
+ <code>loadFactor</code> constructor argument provides a further means of
+ customizing initial table capacity by specifying the table density
+ to be used in calculating the amount of space to allocate for the
+ given number of elements.  Also, for compatibility with previous
+ versions of this class, constructors may optionally specify an
+ expected <code>concurrencyLevel</code> as an additional hint for
+ internal sizing.  Note that using many keys with exactly the same
+ <code>hashCode()</code> is a sure way to slow down performance of any
+ hash table. To ameliorate impact, when keys are <code><a href="reference/java/lang/Comparable.html">Comparable</a></code>,
+ this class may use comparison order among keys to help break ties.
+
+ <p>This class and its views and iterators implement all of the
+ <em>optional</em> methods of the <code><a href="reference/java/util/Map.html">Map</a></code> and <code><a href="reference/java/util/Iterator.html">Iterator</a></code>
+ interfaces.
+
+ <p>Like <code><a href="reference/java/util/Hashtable.html">Hashtable</a></code> but unlike <code><a href="reference/java/util/HashMap.html">HashMap</a></code>, this class
+ does <em>not</em> allow <code>null</code> to be used as a key or value.</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#ConcurrentHashMap()">ConcurrentHashMap</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#ConcurrentHashMap(int)">ConcurrentHashMap</a></span>(<span class="nowrap">int <i>initialCapacity</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#ConcurrentHashMap(java.util.Map<? extends K, ? extends V>)">ConcurrentHashMap</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; <i>m</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#ConcurrentHashMap(int, float)">ConcurrentHashMap</a></span>(<span class="nowrap">int <i>initialCapacity</i></span>, <span class="nowrap">float <i>loadFactor</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#ConcurrentHashMap(int, float, int)">ConcurrentHashMap</a></span>(<span class="nowrap">int <i>initialCapacity</i></span>, <span class="nowrap">float <i>loadFactor</i></span>, <span class="nowrap">int <i>concurrencyLevel</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#clear()">clear</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#contains(java.lang.Object)">contains</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#containsKey(java.lang.Object)">containsKey</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#containsValue(java.lang.Object)">containsValue</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#elements()">elements</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#entrySet()">entrySet</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#equals(java.lang.Object)">equals</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>o</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            V
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#get(java.lang.Object)">get</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#hashCode()">hashCode</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#isEmpty()">isEmpty</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Set.html">Set</a>&lt;K&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#keySet()">keySet</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;K&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#keys()">keys</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            V
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#put(K, V)">put</a></span>(<span class="nowrap">K <i>key</i></span>, <span class="nowrap">V <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#putAll(java.util.Map<? extends K, ? extends V>)">putAll</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; <i>m</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            V
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#putIfAbsent(K, V)">putIfAbsent</a></span>(<span class="nowrap">K <i>key</i></span>, <span class="nowrap">V <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#remove(java.lang.Object, java.lang.Object)">remove</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>key</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            V
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#remove(java.lang.Object)">remove</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>key</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#replace(K, V, V)">replace</a></span>(<span class="nowrap">K <i>key</i></span>, <span class="nowrap">V <i>oldValue</i></span>, <span class="nowrap">V <i>newValue</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            V
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#replace(K, V)">replace</a></span>(<span class="nowrap">K <i>key</i></span>, <span class="nowrap">V <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#size()">size</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#values()">values</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="ConcurrentHashMap()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ConcurrentHashMap</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new, empty map with the default initial table size (16).
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="ConcurrentHashMap(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ConcurrentHashMap</strong></span>
+      <span class="params">(<span class="nowrap">int <i>initialCapacity</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new, empty map with an initial table size
+ accommodating the specified number of elements without the need
+ to dynamically resize.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">initialCapacity</td>
+          <td class="jd-tagdescr">The implementation performs internal
+ sizing to accommodate this many elements.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the initial capacity of
+ elements is negative
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ConcurrentHashMap(java.util.Map<? extends K, ? extends V>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ConcurrentHashMap</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; <i>m</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new map with the same mappings as the given map.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">m</td>
+          <td class="jd-tagdescr">the map
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ConcurrentHashMap(int, float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ConcurrentHashMap</strong></span>
+      <span class="params">(<span class="nowrap">int <i>initialCapacity</i></span>, <span class="nowrap">float <i>loadFactor</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new, empty map with an initial table size based on
+ the given number of elements (<code>initialCapacity</code>) and
+ initial table density (<code>loadFactor</code>).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">initialCapacity</td>
+          <td class="jd-tagdescr">the initial capacity. The implementation
+ performs internal sizing to accommodate this many elements,
+ given the specified load factor.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">loadFactor</td>
+          <td class="jd-tagdescr">the load factor (table density) for
+ establishing the initial table size</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the initial capacity of
+ elements is negative or the load factor is nonpositive</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ConcurrentHashMap(int, float, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ConcurrentHashMap</strong></span>
+      <span class="params">(<span class="nowrap">int <i>initialCapacity</i></span>, <span class="nowrap">float <i>loadFactor</i></span>, <span class="nowrap">int <i>concurrencyLevel</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new, empty map with an initial table size based on
+ the given number of elements (<code>initialCapacity</code>), table
+ density (<code>loadFactor</code>), and number of concurrently
+ updating threads (<code>concurrencyLevel</code>).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">initialCapacity</td>
+          <td class="jd-tagdescr">the initial capacity. The implementation
+ performs internal sizing to accommodate this many elements,
+ given the specified load factor.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">loadFactor</td>
+          <td class="jd-tagdescr">the load factor (table density) for
+ establishing the initial table size</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">concurrencyLevel</td>
+          <td class="jd-tagdescr">the estimated number of concurrently
+ updating threads. The implementation may use this value as
+ a sizing hint.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the initial capacity is
+ negative or the load factor or concurrencyLevel are
+ nonpositive
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="clear()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>clear</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes all of the mappings from this map.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="contains(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>contains</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Legacy method testing if some key maps into the specified value
+ in this table.
+
+ This method is identical in functionality to
+ <code><a href="reference/java/util/concurrent/ConcurrentHashMap.html#containsValue(java.lang.Object)">containsValue(Object)</a></code>, and exists solely to ensure
+ full compatibility with class <code><a href="reference/java/util/Hashtable.html">Hashtable</a></code>,
+ which supported this method prior to introduction of the
+ Java Collections framework.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">a value to search for</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if and only if some key maps to the
+         <code>value</code> argument in this table as
+         determined by the <code>equals</code> method;
+         <code>false</code> otherwise</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified value is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="containsKey(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>containsKey</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tests if the specified object is a key in this table.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">possible key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if and only if the specified object
+         is a key in this table, as determined by the
+         <code>equals</code> method; <code>false</code> otherwise</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="containsValue(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>containsValue</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this map maps one or more keys to the
+ specified value. Note: This method may require a full traversal
+ of the map, and is much slower than method <code>containsKey</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">value whose presence in this map is to be tested</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this map maps one or more keys to the
+         specified value</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified value is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="elements()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;V&gt;
+      </span>
+      <span class="sympad"><strong>elements</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration of the values in this table.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an enumeration of the values in this table</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#values()">values()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="entrySet()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/Set.html">Set</a>&lt;<a href="../../../../reference/java/util/Map.Entry.html">Entry</a>&lt;K,&nbsp;V&gt;&gt;
+      </span>
+      <span class="sympad"><strong>entrySet</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the mappings contained in this map.
+ The set is backed by the map, so changes to the map are
+ reflected in the set, and vice-versa.  The set supports element
+ removal, which removes the corresponding mapping from the map,
+ via the <code>Iterator.remove</code>, <code>Set.remove</code>,
+ <code>removeAll</code>, <code>retainAll</code>, and <code>clear</code>
+ operations.
+
+ <p>The view's <code>iterator</code> is a "weakly consistent" iterator
+ that will never throw <code><a href="reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></code>,
+ and guarantees to traverse elements as they existed upon
+ construction of the iterator, and may (but is not guaranteed to)
+ reflect any modifications subsequent to construction.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the set view
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>o</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares the specified object with this map for equality.
+ Returns <code>true</code> if the given object is a map with the same
+ mappings as this map.  This operation may return misleading
+ results if either map is concurrently modified during execution
+ of this method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">o</td>
+          <td class="jd-tagdescr">object to be compared for equality with this map</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the specified object is equal to this map
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="get(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        V
+      </span>
+      <span class="sympad"><strong>get</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the value to which the specified key is mapped,
+ or <code>null</code> if this map contains no mapping for the key.
+
+ <p>More formally, if this map contains a mapping from a key
+ <code>k</code> to a value <code>v</code> such that <code>key.equals(k)</code>,
+ then this method returns <code>v</code>; otherwise it returns
+ <code>null</code>.  (There can be at most one such mapping.)</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">the key.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the value of the mapping with the specified key, or <code>null</code>
+         if no mapping for the specified key is found.
+</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="hashCode()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>hashCode</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the hash code value for this <code><a href="reference/java/util/Map.html">Map</a></code>, i.e.,
+ the sum of, for each key-value pair in the map,
+ <code>key.hashCode() ^ value.hashCode()</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the hash code value for this map
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isEmpty()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isEmpty</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this map is empty.
+
+ <p>This implementation compares <code>size()</code> to 0.
+
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this map has no elements, <code>false</code>
+         otherwise.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="keySet()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/Set.html">Set</a>&lt;K&gt;
+      </span>
+      <span class="sympad"><strong>keySet</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code><a href="reference/java/util/Set.html">Set</a></code> view of the keys contained in this map.
+ The set is backed by the map, so changes to the map are
+ reflected in the set, and vice-versa. The set supports element
+ removal, which removes the corresponding mapping from this map,
+ via the <code>Iterator.remove</code>, <code>Set.remove</code>,
+ <code>removeAll</code>, <code>retainAll</code>, and <code>clear</code>
+ operations.  It does not support the <code>add</code> or
+ <code>addAll</code> operations.
+
+ <p>The view's <code>iterator</code> is a "weakly consistent" iterator
+ that will never throw <code><a href="reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></code>,
+ and guarantees to traverse elements as they existed upon
+ construction of the iterator, and may (but is not guaranteed to)
+ reflect any modifications subsequent to construction.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the set view
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="keys()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;K&gt;
+      </span>
+      <span class="sympad"><strong>keys</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration of the keys in this table.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an enumeration of the keys in this table</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html#keySet()">keySet()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="put(K, V)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        V
+      </span>
+      <span class="sympad"><strong>put</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>, <span class="nowrap">V <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Maps the specified key to the specified value in this table.
+ Neither the key nor the value can be null.
+
+ <p>The value can be retrieved by calling the <code>get</code> method
+ with a key that is equal to the original key.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">key with which the specified value is to be associated</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">value to be associated with the specified key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the previous value associated with <code>key</code>, or
+         <code>null</code> if there was no mapping for <code>key</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key or value is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="putAll(java.util.Map<? extends K, ? extends V>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>putAll</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/Map.html">Map</a>&lt;?&nbsp;extends&nbsp;K,&nbsp;?&nbsp;extends&nbsp;V&gt; <i>m</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Copies all of the mappings from the specified map to this one.
+ These mappings replace any mappings that this map had for any of the
+ keys currently in the specified map.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">m</td>
+          <td class="jd-tagdescr">mappings to be stored in this map
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="putIfAbsent(K, V)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        V
+      </span>
+      <span class="sympad"><strong>putIfAbsent</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>, <span class="nowrap">V <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If the specified key is not already associated
+ with a value, associate it with the given value.
+ This is equivalent to
+  <pre> <code>if (!map.containsKey(key))
+   return map.put(key, value);
+ else
+   return map.get(key);</code></pre>
+
+ except that the action is performed atomically.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">key with which the specified value is to be associated</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">value to be associated with the specified key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the previous value associated with the specified key,
+         or <code>null</code> if there was no mapping for the key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key or value is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="remove(java.lang.Object, java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>remove</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>key</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the entry for a key only if currently mapped to a given value.
+ This is equivalent to
+  <pre> <code>if (map.containsKey(key) && map.get(key).equals(value)) {
+   map.remove(key);
+   return true;
+ </code> else
+   return false;}</pre>
+
+ except that the action is performed atomically.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">key with which the specified value is associated</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">value expected to be associated with the specified key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the value was removed</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="remove(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        V
+      </span>
+      <span class="sympad"><strong>remove</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>key</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the key (and its corresponding value) from this map.
+ This method does nothing if the key is not in the map.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">the key that needs to be removed</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the previous value associated with <code>key</code>, or
+         <code>null</code> if there was no mapping for <code>key</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="replace(K, V, V)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>replace</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>, <span class="nowrap">V <i>oldValue</i></span>, <span class="nowrap">V <i>newValue</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Replaces the entry for a key only if currently mapped to a given value.
+ This is equivalent to
+  <pre> <code>if (map.containsKey(key) && map.get(key).equals(oldValue)) {
+   map.put(key, newValue);
+   return true;
+ </code> else
+   return false;}</pre>
+
+ except that the action is performed atomically.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">key with which the specified value is associated</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">oldValue</td>
+          <td class="jd-tagdescr">value expected to be associated with the specified key</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">newValue</td>
+          <td class="jd-tagdescr">value to be associated with the specified key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the value was replaced</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if any of the arguments are null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="replace(K, V)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        V
+      </span>
+      <span class="sympad"><strong>replace</strong></span>
+      <span class="params">(<span class="nowrap">K <i>key</i></span>, <span class="nowrap">V <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Replaces the entry for a key only if currently mapped to some value.
+ This is equivalent to
+  <pre> <code>if (map.containsKey(key)) {
+   return map.put(key, value);
+ </code> else
+   return null;}</pre>
+
+ except that the action is performed atomically.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">key</td>
+          <td class="jd-tagdescr">key with which the specified value is associated</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">value to be associated with the specified key</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the previous value associated with the specified key,
+         or <code>null</code> if there was no mapping for the key</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the specified key or value is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="size()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>size</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of mappings in this <code>Map</code>.
+
+ <p>This implementation returns its entry set's size.
+
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of mappings in this <code>Map</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string representation of this map.  The string
+ representation consists of a list of key-value mappings (in no
+ particular order) enclosed in braces ("<code>{</code>}").  Adjacent
+ mappings are separated by the characters <code>", "</code> (comma
+ and space).  Each key-value mapping is rendered as the key
+ followed by an equals sign ("<code>=</code>") followed by the
+ associated value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a string representation of this map
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="values()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;V&gt;
+      </span>
+      <span class="sympad"><strong>values</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code><a href="reference/java/util/Collection.html">Collection</a></code> view of the values contained in this map.
+ The collection is backed by the map, so changes to the map are
+ reflected in the collection, and vice-versa.  The collection
+ supports element removal, which removes the corresponding
+ mapping from this map, via the <code>Iterator.remove</code>,
+ <code>Collection.remove</code>, <code>removeAll</code>,
+ <code>retainAll</code>, and <code>clear</code> operations.  It does not
+ support the <code>add</code> or <code>addAll</code> operations.
+
+ <p>The view's <code>iterator</code> is a "weakly consistent" iterator
+ that will never throw <code><a href="reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></code>,
+ and guarantees to traverse elements as they existed upon
+ construction of the iterator, and may (but is not guaranteed to)
+ reflect any modifications subsequent to construction.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the collection view
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

@@ -1,0 +1,2732 @@
+---
+
+title: Duration - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/datatype/DatatypeConstants.html">DatatypeConstants</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/datatype/DatatypeConstants.Field.html">DatatypeConstants.Field</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/datatype/DatatypeFactory.html">DatatypeFactory</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html">XMLGregorianCalendar</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/datatype/DatatypeConfigurationException.html">DatatypeConfigurationException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">Duration</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p><p>Immutable representation of a time span as defined in
+ the W3C XML Schema 1.0 specification.</p>
+
+ <p>A Duration object represents a period of Gregorian time,
+ which consists of six fields (years, months, days, hours,
+ minutes, and seconds) plus a sign (+/-) field.</p>
+
+ <p>The first five fields have non-negative (>=0) integers or null
+ (which represents that the field is not set),
+ and the seconds field has a non-negative decimal or null.
+ A negative sign indicates a negative duration.</p>
+
+ <p>This class provides a number of methods that make it easy
+ to use for the duration datatype of XML Schema 1.0 with
+ the errata.</p>
+
+ <h2>Order relationship</h2>
+ <p>Duration objects only have partial order, where two values A and B
+ maybe either:</p>
+ <ol>
+  <li>A&lt;B (A is shorter than B)
+  <li>A&gt;B (A is longer than B)
+  <li>A==B   (A and B are of the same duration)
+  <li>A&lt;>B (Comparison between A and B is indeterminate)
+ </ol>
+
+ <p>For example, 30 days cannot be meaningfully compared to one month.
+ The <code><a href="reference/javax/xml/datatype/Duration.html#compare(javax.xml.datatype.Duration)">compare(Duration)</a></code> method implements this
+ relationship.</p>
+
+ <p>See the <code><a href="reference/javax/xml/datatype/Duration.html#isLongerThan(javax.xml.datatype.Duration)">isLongerThan(Duration)</a></code> method for details about
+ the order relationship among <code>Duration</code> objects.</p>
+
+ <h2>Operations over Duration</h2>
+ <p>This class provides a set of basic arithmetic operations, such
+ as addition, subtraction and multiplication.
+ Because durations don't have total order, an operation could
+ fail for some combinations of operations. For example, you cannot
+ subtract 15 days from 1 month. See the javadoc of those methods
+ for detailed conditions where this could happen.</p>
+
+ <p>Also, division of a duration by a number is not provided because
+ the <code>Duration</code> class can only deal with finite precision
+ decimal numbers. For example, one cannot represent 1 sec divided by 3.</p>
+
+ <p>However, you could substitute a division by 3 with multiplying
+ by numbers such as 0.3 or 0.333.</p>
+
+ <h2>Range of allowed values</h2>
+ <p>
+ Because some operations of <code>Duration</code> rely on <code><a href="reference/java/util/Calendar.html">Calendar</a></code>
+ even though <code><a href="reference/javax/xml/datatype/Duration.html">Duration</a></code> can hold very large or very small values,
+ some of the methods may not work correctly on such <code>Duration</code>s.
+ The impacted methods document their dependency on <code><a href="reference/java/util/Calendar.html">Calendar</a></code>.</p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#add(javax.xml.datatype.Duration)">add(Duration)</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#Duration()">Duration</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#add(javax.xml.datatype.Duration)">add</a></span>(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>rhs</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#addTo(java.util.Calendar)">addTo</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/Calendar.html">Calendar</a> <i>calendar</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#addTo(java.util.Date)">addTo</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/Date.html">Date</a> <i>date</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#compare(javax.xml.datatype.Duration)">compare</a></span>(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>duration</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#equals(java.lang.Object)">equals</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>duration</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#getDays()">getDays</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/Number.html">Number</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#getField(javax.xml.datatype.DatatypeConstants.Field)">getField</a></span>(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/DatatypeConstants.Field.html">DatatypeConstants.Field</a> <i>field</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#getHours()">getHours</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#getMinutes()">getMinutes</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#getMonths()">getMonths</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#getSeconds()">getSeconds</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#getSign()">getSign</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#getTimeInMillis(java.util.Calendar)">getTimeInMillis</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/Calendar.html">Calendar</a> <i>startInstant</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#getTimeInMillis(java.util.Date)">getTimeInMillis</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/Date.html">Date</a> <i>startInstant</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/javax/xml/namespace/QName.html">QName</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#getXMLSchemaType()">getXMLSchemaType</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#getYears()">getYears</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#hashCode()">hashCode</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#isLongerThan(javax.xml.datatype.Duration)">isLongerThan</a></span>(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>duration</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#isSet(javax.xml.datatype.DatatypeConstants.Field)">isSet</a></span>(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/DatatypeConstants.Field.html">DatatypeConstants.Field</a> <i>field</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#isShorterThan(javax.xml.datatype.Duration)">isShorterThan</a></span>(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>duration</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#multiply(int)">multiply</a></span>(<span class="nowrap">int <i>factor</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#multiply(java.math.BigDecimal)">multiply</a></span>(<span class="nowrap"><a href="../../../../reference/java/math/BigDecimal.html">BigDecimal</a> <i>factor</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#negate()">negate</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#normalizeWith(java.util.Calendar)">normalizeWith</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/Calendar.html">Calendar</a> <i>startTimeInstant</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#subtract(javax.xml.datatype.Duration)">subtract</a></span>(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>rhs</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/Duration.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="Duration()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>Duration</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="add(javax.xml.datatype.Duration)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </span>
+      <span class="sympad"><strong>add</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>rhs</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Computes a new duration whose value is <code>this+rhs</code>.</p>
+
+ <p>For example,</p>
+ <pre>
+ "1 day" + "-3 days" = "-2 days"
+ "1 year" + "1 day" = "1 year and 1 day"
+ "-(1 hour,50 minutes)" + "-20 minutes" = "-(1 hours,70 minutes)"
+ "15 hours" + "-3 days" = "-(2 days,9 hours)"
+ "1 year" + "-1 day" = IllegalStateException
+ </pre>
+
+ <p>Since there's no way to meaningfully subtract 1 day from 1 month,
+ there are cases where the operation fails in
+ <code><a href="reference/java/lang/IllegalStateException.html">IllegalStateException</a></code>.</p>
+
+ <p>
+ Formally, the computation is defined as follows.</p>
+ <p>
+ Firstly, we can assume that two <code>Duration</code>s to be added
+ are both positive without losing generality (i.e.,
+ <code>(-X)+Y=Y-X</code>, <code>X+(-Y)=X-Y</code>,
+ <code>(-X)+(-Y)=-(X+Y)</code>)
+
+ <p>
+ Addition of two positive <code>Duration</code>s are simply defined as
+ field by field addition where missing fields are treated as 0.
+ <p>
+ A field of the resulting <code>Duration</code> will be unset if and
+ only if respective fields of two input <code>Duration</code>s are unset.
+ <p>
+ Note that <code>lhs.add(rhs)</code> will be always successful if
+ <code>lhs.signum()*rhs.signum()!=-1</code> or both of them are
+ normalized.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">rhs</td>
+          <td class="jd-tagdescr"><code>Duration</code> to add to this <code>Duration</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>non-null valid Duration object.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">If the rhs parameter is null.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td class="jd-tagdescr">If two durations cannot be meaningfully added. For
+      example, adding negative one day to one month causes
+      this exception.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html#subtract(javax.xml.datatype.Duration)">subtract(Duration)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="addTo(java.util.Calendar)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>addTo</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/Calendar.html">Calendar</a> <i>calendar</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Adds this duration to a <code><a href="reference/java/util/Calendar.html">Calendar</a></code> object.
+
+ <p>
+ Calls <code><a href="reference/java/util/Calendar.html#add(int, int)">add(int, int)</a></code> in the
+ order of YEARS, MONTHS, DAYS, HOURS, MINUTES, SECONDS, and MILLISECONDS
+ if those fields are present. Because the <code><a href="reference/java/util/Calendar.html">Calendar</a></code> class
+ uses int to hold values, there are cases where this method
+ won't work correctly (for example if values of fields
+ exceed the range of int.)
+ </p>
+
+ <p>
+ Also, since this duration class is a Gregorian duration, this
+ method will not work correctly if the given <code><a href="reference/java/util/Calendar.html">Calendar</a></code>
+ object is based on some other calendar systems.
+ </p>
+
+ <p>
+ Any fractional parts of this <code>Duration</code> object
+ beyond milliseconds will be simply ignored. For example, if
+ this duration is "P1.23456S", then 1 is added to SECONDS,
+ 234 is added to MILLISECONDS, and the rest will be unused.
+ </p>
+
+ <p>
+ Note that because <code><a href="reference/java/util/Calendar.html#add(int, int)">add(int, int)</a></code> is using
+ <tt>int</tt>, <code>Duration</code> with values beyond the
+ range of <tt>int</tt> in its fields
+ will cause overflow/underflow to the given <code><a href="reference/java/util/Calendar.html">Calendar</a></code>.
+ <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#add(javax.xml.datatype.Duration)">add(Duration)</a></code> provides the same
+ basic operation as this method while avoiding
+ the overflow/underflow issues.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">calendar</td>
+          <td class="jd-tagdescr">A calendar object whose value will be modified.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the calendar parameter is null.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="addTo(java.util.Date)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>addTo</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/Date.html">Date</a> <i>date</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Adds this duration to a <code><a href="reference/java/util/Date.html">Date</a></code> object.
+
+ <p>
+ The given date is first converted into
+ a <code><a href="reference/java/util/GregorianCalendar.html">GregorianCalendar</a></code>, then the duration
+ is added exactly like the <code><a href="reference/javax/xml/datatype/Duration.html#addTo(java.util.Calendar)">addTo(Calendar)</a></code> method.
+
+ <p>
+ The updated time instant is then converted back into a
+ <code><a href="reference/java/util/Date.html">Date</a></code> object and used to update the given <code><a href="reference/java/util/Date.html">Date</a></code> object.
+
+ <p>
+ This somewhat redundant computation is necessary to unambiguously
+ determine the duration of months and years.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">date</td>
+          <td class="jd-tagdescr">A date object whose value will be modified.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the date parameter is null.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="compare(javax.xml.datatype.Duration)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>compare</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>duration</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Partial order relation comparison with this <code>Duration</code> instance.</p>
+
+ <p>Comparison result must be in accordance with
+ <a href="http://www.w3.org/TR/xmlschema-2/#duration-order">W3C XML Schema 1.0 Part 2, Section 3.2.7.6.2,
+ <i>Order relation on duration</i></a>.</p>
+
+ <p>Return:</p>
+ <ul>
+   <li><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#LESSER">LESSER</a></code> if this <code>Duration</code> is shorter than <code>duration</code> parameter</li>
+   <li><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#EQUAL">EQUAL</a></code> if this <code>Duration</code> is equal to <code>duration</code> parameter</li>
+   <li><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GREATER">GREATER</a></code> if this <code>Duration</code> is longer than <code>duration</code> parameter</li>
+   <li><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#INDETERMINATE">INDETERMINATE</a></code> if a conclusive partial order relation cannot be determined</li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">duration</td>
+          <td class="jd-tagdescr">to compare</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the relationship between <code>this</code> <code>Duration</code>and <code>duration</code> parameter as
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#LESSER">LESSER</a></code>, <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#EQUAL">EQUAL</a></code>, <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GREATER">GREATER</a></code>
+   or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#INDETERMINATE">INDETERMINATE</a></code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td class="jd-tagdescr">If the underlying implementation
+   cannot reasonably process the request, e.g. W3C XML Schema allows for
+   arbitrarily large/small/precise values, the request may be beyond the
+   implementations capability.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>duration</code> is <code>null</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html#isShorterThan(javax.xml.datatype.Duration)">isShorterThan(Duration)</a></code></li><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html#isLongerThan(javax.xml.datatype.Duration)">isLongerThan(Duration)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>duration</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Checks if this duration object has the same duration
+ as another <code>Duration</code> object.</p>
+
+ <p>For example, "P1D" (1 day) is equal to "PT24H" (24 hours).</p>
+
+ <p>Duration X is equal to Y if and only if time instant
+ t+X and t+Y are the same for all the test time instants
+ specified in the section 3.2.6.2 of the XML Schema 1.0
+ specification.</p>
+
+ <p>Note that there are cases where two <code>Duration</code>s are
+ "incomparable" to each other, like one month and 30 days.
+ For example,</p>
+ <pre>
+ !new Duration("P1M").isShorterThan(new Duration("P30D"))
+ !new Duration("P1M").isLongerThan(new Duration("P30D"))
+ !new Duration("P1M").equals(new Duration("P30D"))
+ </pre></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">duration</td>
+          <td class="jd-tagdescr">A non-null valid <code>Duration</code> object.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this duration is the same length as
+         <code>duration</code>.
+      <code>false</code> if <code>duration</code> is not a
+         <code>Duration</code> object, is <code>null</code>,
+         or its length is different from this duration.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td class="jd-tagdescr">If the underlying implementation
+   cannot reasonably process the request, e.g. W3C XML Schema allows for
+   arbitrarily large/small/precise values, the request may be beyond the
+   implementations capability.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html#compare(javax.xml.datatype.Duration)">compare(Duration)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getDays()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getDays</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Obtains the value of the DAYS field as an integer value,
+ or 0 if not present.
+
+ This method works just like <code><a href="reference/javax/xml/datatype/Duration.html#getYears()">getYears()</a></code> except
+ that this method works on the DAYS field.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>Days of this <code>Duration</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getField(javax.xml.datatype.DatatypeConstants.Field)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/Number.html">Number</a>
+      </span>
+      <span class="sympad"><strong>getField</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/DatatypeConstants.Field.html">DatatypeConstants.Field</a> <i>field</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the value of a field.
+
+ Fields of a duration object may contain arbitrary large value.
+ Therefore this method is designed to return a <code><a href="reference/java/lang/Number.html">Number</a></code> object.
+
+ In case of YEARS, MONTHS, DAYS, HOURS, and MINUTES, the returned
+ number will be a non-negative integer. In case of seconds,
+ the returned number may be a non-negative decimal value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">field</td>
+          <td class="jd-tagdescr">one of the six Field constants (YEARS,MONTHS,DAYS,HOURS,
+      MINUTES, or SECONDS.)</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>If the specified field is present, this method returns
+      a non-null non-negative <code><a href="reference/java/lang/Number.html">Number</a></code> object that
+      represents its value. If it is not present, return null.
+      For YEARS, MONTHS, DAYS, HOURS, and MINUTES, this method
+      returns a <code><a href="reference/java/math/BigInteger.html">BigInteger</a></code> object. For SECONDS, this
+      method returns a <code><a href="reference/java/math/BigDecimal.html">BigDecimal</a></code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">If the <code>field</code> is <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getHours()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getHours</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Obtains the value of the HOURS field as an integer value,
+ or 0 if not present.
+
+ This method works just like <code><a href="reference/javax/xml/datatype/Duration.html#getYears()">getYears()</a></code> except
+ that this method works on the HOURS field.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>Hours of this <code>Duration</code>.
+
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMinutes()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getMinutes</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Obtains the value of the MINUTES field as an integer value,
+ or 0 if not present.
+
+ This method works just like <code><a href="reference/javax/xml/datatype/Duration.html#getYears()">getYears()</a></code> except
+ that this method works on the MINUTES field.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>Minutes of this <code>Duration</code>.
+
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMonths()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getMonths</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Obtains the value of the MONTHS field as an integer value,
+ or 0 if not present.
+
+ This method works just like <code><a href="reference/javax/xml/datatype/Duration.html#getYears()">getYears()</a></code> except
+ that this method works on the MONTHS field.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>Months of this <code>Duration</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSeconds()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getSeconds</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Obtains the value of the SECONDS field as an integer value,
+ or 0 if not present.
+
+ This method works just like <code><a href="reference/javax/xml/datatype/Duration.html#getYears()">getYears()</a></code> except
+ that this method works on the SECONDS field.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>seconds in the integer value. The fraction of seconds
+   will be discarded (for example, if the actual value is 2.5,
+   this method returns 2)
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSign()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getSign</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the sign of this duration in -1,0, or 1.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>-1 if this duration is negative, 0 if the duration is zero,
+      and 1 if the duration is positive.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getTimeInMillis(java.util.Calendar)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>getTimeInMillis</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/Calendar.html">Calendar</a> <i>startInstant</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Returns the length of the duration in milliseconds.</p>
+
+ <p>If the seconds field carries more digits than millisecond order,
+ those will be simply discarded (or in other words, rounded to zero.)
+ For example, for any Calendar value <code>x</code>,</p>
+ <pre>
+ <code>new Duration("PT10.00099S").getTimeInMills(x) == 10000</code>.
+ <code>new Duration("-PT10.00099S").getTimeInMills(x) == -10000</code>.
+ </pre>
+
+ <p>
+ Note that this method uses the <code><a href="reference/javax/xml/datatype/Duration.html#addTo(java.util.Calendar)">addTo(Calendar)</a></code> method,
+ which may work incorrectly with <code>Duration</code> objects with
+ very large values in its fields. See the <code><a href="reference/javax/xml/datatype/Duration.html#addTo(java.util.Calendar)">addTo(Calendar)</a></code>
+ method for details.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">startInstant</td>
+          <td class="jd-tagdescr">The length of a month/year varies. The <code>startInstant</code> is
+      used to disambiguate this variance. Specifically, this method
+      returns the difference between <code>startInstant</code> and
+      <code>startInstant+duration</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>milliseconds between <code>startInstant</code> and
+   <code>startInstant</code> plus this <code>Duration</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>startInstant</code> parameter
+ is null.
+
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getTimeInMillis(java.util.Date)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>getTimeInMillis</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/Date.html">Date</a> <i>startInstant</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Returns the length of the duration in milliseconds.</p>
+
+ <p>If the seconds field carries more digits than millisecond order,
+ those will be simply discarded (or in other words, rounded to zero.)
+ For example, for any <code>Date</code> value <code>x</code>,</p>
+ <pre>
+ <code>new Duration("PT10.00099S").getTimeInMills(x) == 10000</code>.
+ <code>new Duration("-PT10.00099S").getTimeInMills(x) == -10000</code>.
+ </pre>
+
+ <p>
+ Note that this method uses the <code><a href="reference/javax/xml/datatype/Duration.html#addTo(java.util.Date)">addTo(Date)</a></code> method,
+ which may work incorrectly with <code>Duration</code> objects with
+ very large values in its fields. See the <code><a href="reference/javax/xml/datatype/Duration.html#addTo(java.util.Date)">addTo(Date)</a></code>
+ method for details.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">startInstant</td>
+          <td class="jd-tagdescr">The length of a month/year varies. The <code>startInstant</code> is
+      used to disambiguate this variance. Specifically, this method
+      returns the difference between <code>startInstant</code> and
+      <code>startInstant+duration</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>milliseconds between <code>startInstant</code> and
+   <code>startInstant</code> plus this <code>Duration</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">If the startInstant parameter is null.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html#getTimeInMillis(java.util.Calendar)">getTimeInMillis(Calendar)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getXMLSchemaType()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/javax/xml/namespace/QName.html">QName</a>
+      </span>
+      <span class="sympad"><strong>getXMLSchemaType</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Return the name of the XML Schema date/time type that this instance
+ maps to. Type is computed based on fields that are set,
+ i.e. <code><a href="reference/javax/xml/datatype/Duration.html#isSet(javax.xml.datatype.DatatypeConstants.Field)">isSet(DatatypeConstants.Field)</a></code> == <code>true</code>.</p>
+
+ <table border="2" rules="all" cellpadding="2">
+   <thead>
+     <tr>
+       <th align="center" colspan="7">
+         Required fields for XML Schema 1.0 Date/Time Datatypes.<br/>
+         <i>(timezone is optional for all date/time datatypes)</i>
+       </th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td>Datatype</td>
+       <td>year</td>
+       <td>month</td>
+       <td>day</td>
+       <td>hour</td>
+       <td>minute</td>
+       <td>second</td>
+     </tr>
+     <tr>
+       <td><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#DURATION">DURATION</a></code></td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+     </tr>
+     <tr>
+       <td><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#DURATION_DAYTIME">DURATION_DAYTIME</a></code></td>
+       <td></td>
+       <td></td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+     </tr>
+     <tr>
+       <td><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#DURATION_YEARMONTH">DURATION_YEARMONTH</a></code></td>
+       <td>X</td>
+       <td>X</td>
+       <td></td>
+       <td></td>
+       <td></td>
+       <td></td>
+     </tr>
+   </tbody>
+ </table></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>one of the following constants:
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#DURATION">DURATION</a></code>,
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#DURATION_DAYTIME">DURATION_DAYTIME</a></code> or
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#DURATION_YEARMONTH">DURATION_YEARMONTH</a></code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td class="jd-tagdescr">If the combination of set fields does not match one of the XML Schema date/time datatypes.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getYears()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getYears</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Get the years value of this <code>Duration</code> as an <code>int</code> or <code>0</code> if not present.</p>
+
+ <p><code>getYears()</code> is a convenience method for
+ <code><a href="reference/javax/xml/datatype/Duration.html#getField(javax.xml.datatype.DatatypeConstants.Field)">getField(DatatypeConstants.YEARS)</a></code>.</p>
+
+ <p>As the return value is an <code>int</code>, an incorrect value will be returned for <code>Duration</code>s
+ with years that go beyond the range of an <code>int</code>.
+ Use <code><a href="reference/javax/xml/datatype/Duration.html#getField(javax.xml.datatype.DatatypeConstants.Field)">getField(DatatypeConstants.YEARS)</a></code> to avoid possible loss of precision.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>If the years field is present, return its value as an <code>int</code>, else return <code>0</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="hashCode()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>hashCode</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a hash code consistent with the definition of the equals method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/lang/Object.html#hashCode()">hashCode()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isLongerThan(javax.xml.datatype.Duration)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isLongerThan</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>duration</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Checks if this duration object is strictly longer than
+ another <code>Duration</code> object.</p>
+
+ <p>Duration X is "longer" than Y if and only if X>Y
+ as defined in the section 3.2.6.2 of the XML Schema 1.0
+ specification.</p>
+
+ <p>For example, "P1D" (one day) > "PT12H" (12 hours) and
+ "P2Y" (two years) > "P23M" (23 months).</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">duration</td>
+          <td class="jd-tagdescr"><code>Duration</code> to test this <code>Duration</code> against.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>true if the duration represented by this object
+      is longer than the given duration. false otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td class="jd-tagdescr">If the underlying implementation
+   cannot reasonably process the request, e.g. W3C XML Schema allows for
+   arbitrarily large/small/precise values, the request may be beyond the
+   implementations capability.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">If <code>duration</code> is null.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html#isShorterThan(javax.xml.datatype.Duration)">isShorterThan(Duration)</a></code></li><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html#compare(javax.xml.datatype.Duration)">compare(Duration)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isSet(javax.xml.datatype.DatatypeConstants.Field)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isSet</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/DatatypeConstants.Field.html">DatatypeConstants.Field</a> <i>field</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Checks if a field is set.
+
+ A field of a duration object may or may not be present.
+ This method can be used to test if a field is present.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">field</td>
+          <td class="jd-tagdescr">one of the six Field constants (YEARS,MONTHS,DAYS,HOURS,
+      MINUTES, or SECONDS.)</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>true if the field is present. false if not.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">If the field parameter is null.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isShorterThan(javax.xml.datatype.Duration)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isShorterThan</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>duration</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Checks if this duration object is strictly shorter than
+ another <code>Duration</code> object.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">duration</td>
+          <td class="jd-tagdescr"><code>Duration</code> to test this <code>Duration</code> against.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if <code>duration</code> parameter is shorter than this <code>Duration</code>,
+   else <code>false</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+            <td class="jd-tagdescr">If the underlying implementation
+   cannot reasonably process the request, e.g. W3C XML Schema allows for
+   arbitrarily large/small/precise values, the request may be beyond the
+   implementations capability.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>duration</code> is null.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html#isLongerThan(javax.xml.datatype.Duration)">isLongerThan(Duration)</a></code></li><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html#compare(javax.xml.datatype.Duration)">compare(Duration)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="multiply(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </span>
+      <span class="sympad"><strong>multiply</strong></span>
+      <span class="params">(<span class="nowrap">int <i>factor</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Computes a new duration whose value is <code>factor</code> times
+ longer than the value of this duration.</p>
+
+ <p>This method is provided for the convenience.
+ It is functionally equivalent to the following code:</p>
+ <pre>
+ multiply(new BigDecimal(String.valueOf(factor)))
+ </pre></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">factor</td>
+          <td class="jd-tagdescr">Factor times longer of new <code>Duration</code> to create.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>New <code>Duration</code> that is <code>factor</code>times longer than this <code>Duration</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html#multiply(java.math.BigDecimal)">multiply(BigDecimal)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="multiply(java.math.BigDecimal)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </span>
+      <span class="sympad"><strong>multiply</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/math/BigDecimal.html">BigDecimal</a> <i>factor</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Computes a new duration whose value is <code>factor</code> times
+ longer than the value of this duration.
+
+ <p>
+ For example,
+ <pre>
+ "P1M" (1 month) * "12" = "P12M" (12 months)
+ "PT1M" (1 min) * "0.3" = "PT18S" (18 seconds)
+ "P1M" (1 month) * "1.5" = IllegalStateException
+ </pre>
+
+ <p>
+ Since the <code>Duration</code> class is immutable, this method
+ doesn't change the value of this object. It simply computes
+ a new Duration object and returns it.
+
+ <p>
+ The operation will be performed field by field with the precision
+ of <code><a href="reference/java/math/BigDecimal.html">BigDecimal</a></code>. Since all the fields except seconds are
+ restricted to hold integers,
+ any fraction produced by the computation will be
+ carried down toward the next lower unit. For example,
+ if you multiply "P1D" (1 day) with "0.5", then it will be 0.5 day,
+ which will be carried down to "PT12H" (12 hours).
+ When fractions of month cannot be meaningfully carried down
+ to days, or year to months, this will cause an
+ <code><a href="reference/java/lang/IllegalStateException.html">IllegalStateException</a></code> to be thrown.
+ For example if you multiple one month by 0.5.</p>
+
+ <p>
+ To avoid <code><a href="reference/java/lang/IllegalStateException.html">IllegalStateException</a></code>, use
+ the <code><a href="reference/javax/xml/datatype/Duration.html#normalizeWith(java.util.Calendar)">normalizeWith(Calendar)</a></code> method to remove the years
+ and months fields.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">factor</td>
+          <td class="jd-tagdescr">to multiply by</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>returns a non-null valid <code>Duration</code> object</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td class="jd-tagdescr">if operation produces fraction in
+ the months field.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the <code>factor</code> parameter is
+ <code>null</code>.
+
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="negate()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </span>
+      <span class="sympad"><strong>negate</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>Duration</code> object whose
+ value is <code>-this</code>.
+
+ <p>
+ Since the <code>Duration</code> class is immutable, this method
+ doesn't change the value of this object. It simply computes
+ a new Duration object and returns it.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>always return a non-null valid <code>Duration</code> object.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="normalizeWith(java.util.Calendar)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </span>
+      <span class="sympad"><strong>normalizeWith</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/Calendar.html">Calendar</a> <i>startTimeInstant</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Converts the years and months fields into the days field
+ by using a specific time instant as the reference point.</p>
+
+ <p>For example, duration of one month normalizes to 31 days
+ given the start time instance "July 8th 2003, 17:40:32".</p>
+
+ <p>Formally, the computation is done as follows:</p>
+ <ol>
+  <li>the given Calendar object is cloned</li>
+  <li>the years, months and days fields will be added to the <code><a href="reference/java/util/Calendar.html">Calendar</a></code> object
+      by using the <code><a href="reference/java/util/Calendar.html#add(int, int)">add(int, int)</a></code> method</li>
+  <li>the difference between the two Calendars in computed in milliseconds and converted to days,
+     if a remainder occurs due to Daylight Savings Time, it is discarded</li>
+  <li>the computed days, along with the hours, minutes and seconds
+      fields of this duration object is used to construct a new
+      Duration object.</li>
+ </ol>
+
+ <p>Note that since the Calendar class uses <code>int</code> to
+ hold the value of year and month, this method may produce
+ an unexpected result if this duration object holds
+ a very large value in the years or months fields.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">startTimeInstant</td>
+          <td class="jd-tagdescr"><code>Calendar</code> reference point.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>Duration</code> of years and months of this <code>Duration</code> as days.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">If the startTimeInstant parameter is null.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="subtract(javax.xml.datatype.Duration)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a>
+      </span>
+      <span class="sympad"><strong>subtract</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>rhs</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Computes a new duration whose value is <code>this-rhs</code>.</p>
+
+ <p>For example:</p>
+ <pre>
+ "1 day" - "-3 days" = "4 days"
+ "1 year" - "1 day" = IllegalStateException
+ "-(1 hour,50 minutes)" - "-20 minutes" = "-(1hours,30 minutes)"
+ "15 hours" - "-3 days" = "3 days and 15 hours"
+ "1 year" - "-1 day" = "1 year and 1 day"
+ </pre>
+
+ <p>Since there's no way to meaningfully subtract 1 day from 1 month,
+ there are cases where the operation fails in <code><a href="reference/java/lang/IllegalStateException.html">IllegalStateException</a></code>.</p>
+
+ <p>Formally the computation is defined as follows.
+ First, we can assume that two <code>Duration</code>s are both positive
+ without losing generality.  (i.e.,
+ <code>(-X)-Y=-(X+Y)</code>, <code>X-(-Y)=X+Y</code>,
+ <code>(-X)-(-Y)=-(X-Y)</code>)</p>
+
+ <p>Then two durations are subtracted field by field.
+ If the sign of any non-zero field <tt>F</tt> is different from
+ the sign of the most significant field,
+ 1 (if <tt>F</tt> is negative) or -1 (otherwise)
+ will be borrowed from the next bigger unit of <tt>F</tt>.</p>
+
+ <p>This process is repeated until all the non-zero fields have
+ the same sign.</p>
+
+ <p>If a borrow occurs in the days field (in other words, if
+ the computation needs to borrow 1 or -1 month to compensate
+ days), then the computation fails by throwing an
+ <code><a href="reference/java/lang/IllegalStateException.html">IllegalStateException</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">rhs</td>
+          <td class="jd-tagdescr"><code>Duration</code> to subtract from this <code>Duration</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>New <code>Duration</code> created from subtracting <code>rhs</code> from this <code>Duration</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td class="jd-tagdescr">If two durations cannot be meaningfully subtracted. For
+      example, subtracting one day from one month causes
+      this exception.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">If the rhs parameter is null.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html#add(javax.xml.datatype.Duration)">add(Duration)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Returns a <code>String</code> representation of this <code>Duration</code> <code>Object</code>.</p>
+
+ <p>The result is formatted according to the XML Schema 1.0 specification and can be always parsed back later into the
+ equivalent <code>Duration</code> <code>Object</code> by <code><a href="reference/javax/xml/datatype/DatatypeFactory.html#newDuration(java.lang.String)">newDuration(String)</a></code>.</p>
+
+ <p>Formally, the following holds for any <code>Duration</code>
+ <code>Object</code> x:</p>
+ <pre>
+ new Duration(x.toString()).equals(x)
+ </pre></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>A non-<code>null</code> valid <code>String</code> representation of this <code>Duration</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

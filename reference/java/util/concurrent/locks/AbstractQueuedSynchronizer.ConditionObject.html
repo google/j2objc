@@ -1,0 +1,1267 @@
+---
+
+title: AbstractQueuedSynchronizer.ConditionObject - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/Lock.html">Lock</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReadWriteLock.html">ReadWriteLock</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractOwnableSynchronizer.html">AbstractOwnableSynchronizer</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedLongSynchronizer.html">AbstractQueuedLongSynchronizer</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedLongSynchronizer.ConditionObject.html">AbstractQueuedLongSynchronizer.ConditionObject</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html">AbstractQueuedSynchronizer</a></li>
+          <li class="selected api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html">AbstractQueuedSynchronizer.ConditionObject</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/LockSupport.html">LockSupport</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html">ReentrantReadWriteLock</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.ReadLock.html">ReentrantReadWriteLock.ReadLock</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.WriteLock.html">ReentrantReadWriteLock.WriteLock</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">AbstractQueuedSynchronizer.ConditionObject</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Condition implementation for a <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html">AbstractQueuedSynchronizer</a></code> serving as the basis of a <code><a href="reference/java/util/concurrent/locks/Lock.html">Lock</a></code> implementation.
+
+ <p>Method documentation for this class describes mechanics,
+ not behavioral specifications from the point of view of Lock
+ and Condition users. Exported versions of this class will in
+ general need to be accompanied by documentation describing
+ condition semantics that rely on those of the associated
+ <tt>AbstractQueuedSynchronizer</tt>.
+
+ <p>This class is Serializable, but all fields are transient,
+ so deserialized conditions have no waiters.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html#ConditionObject()">ConditionObject</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html#await()">await</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html#await(long, java.util.concurrent.TimeUnit)">await</a></span>(<span class="nowrap">long <i>time</i></span>, <span class="nowrap"><a href="../../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html#awaitNanos(long)">awaitNanos</a></span>(<span class="nowrap">long <i>nanosTimeout</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html#awaitUninterruptibly()">awaitUninterruptibly</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html#awaitUntil(java.util.Date)">awaitUntil</a></span>(<span class="nowrap"><a href="../../../../../reference/java/util/Date.html">Date</a> <i>deadline</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html#signal()">signal</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html#signalAll()">signalAll</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html#getWaitQueueLength()">getWaitQueueLength</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../../../reference/java/lang/Thread.html">Thread</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html#getWaitingThreads()">getWaitingThreads</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html#hasWaiters()">hasWaiters</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="ConditionObject()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ConditionObject</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <tt>ConditionObject</tt> instance.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="await()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>await</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Implements interruptible condition wait.
+ <ol>
+ <li> If current thread is interrupted, throw InterruptedException.
+ <li> Save lock state returned by <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#getState()">getState()</a></code>.
+ <li> Invoke <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#release(int)">release(int)</a></code> with
+      saved state as argument, throwing
+      IllegalMonitorStateException if it fails.
+ <li> Block until signalled or interrupted.
+ <li> Reacquire by invoking specialized version of
+      <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#acquire(int)">acquire(int)</a></code> with saved state as argument.
+ <li> If interrupted while blocked in step 4, throw InterruptedException.
+ </ol>
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="await(long, java.util.concurrent.TimeUnit)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>await</strong></span>
+      <span class="params">(<span class="nowrap">long <i>time</i></span>, <span class="nowrap"><a href="../../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Implements timed condition wait.
+ <ol>
+ <li> If current thread is interrupted, throw InterruptedException.
+ <li> Save lock state returned by <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#getState()">getState()</a></code>.
+ <li> Invoke <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#release(int)">release(int)</a></code> with
+      saved state as argument, throwing
+      IllegalMonitorStateException if it fails.
+ <li> Block until signalled, interrupted, or timed out.
+ <li> Reacquire by invoking specialized version of
+      <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#acquire(int)">acquire(int)</a></code> with saved state as argument.
+ <li> If interrupted while blocked in step 4, throw InterruptedException.
+ <li> If timed out while blocked in step 4, return false, else true.
+ </ol>
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">time</td>
+          <td class="jd-tagdescr">the maximum time to wait</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">unit</td>
+          <td class="jd-tagdescr">the time unit of the <code>time</code> argument</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>false</code> if the waiting time detectably elapsed
+         before return from the method, else <code>true</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="awaitNanos(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>awaitNanos</strong></span>
+      <span class="params">(<span class="nowrap">long <i>nanosTimeout</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Implements timed condition wait.
+ <ol>
+ <li> If current thread is interrupted, throw InterruptedException.
+ <li> Save lock state returned by <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#getState()">getState()</a></code>.
+ <li> Invoke <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#release(int)">release(int)</a></code> with
+      saved state as argument, throwing
+      IllegalMonitorStateException if it fails.
+ <li> Block until signalled, interrupted, or timed out.
+ <li> Reacquire by invoking specialized version of
+      <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#acquire(int)">acquire(int)</a></code> with saved state as argument.
+ <li> If interrupted while blocked in step 4, throw InterruptedException.
+ </ol>
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">nanosTimeout</td>
+          <td class="jd-tagdescr">the maximum time to wait, in nanoseconds</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an estimate of the <code>nanosTimeout</code> value minus
+         the time spent waiting upon return from this method.
+         A positive value may be used as the argument to a
+         subsequent call to this method to finish waiting out
+         the desired time.  A value less than or equal to zero
+         indicates that no time remains.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="awaitUninterruptibly()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>awaitUninterruptibly</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Implements uninterruptible condition wait.
+ <ol>
+ <li> Save lock state returned by <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#getState()">getState()</a></code>.
+ <li> Invoke <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#release(int)">release(int)</a></code> with
+      saved state as argument, throwing
+      IllegalMonitorStateException if it fails.
+ <li> Block until signalled.
+ <li> Reacquire by invoking specialized version of
+      <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#acquire(int)">acquire(int)</a></code> with saved state as argument.
+ </ol>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="awaitUntil(java.util.Date)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>awaitUntil</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/util/Date.html">Date</a> <i>deadline</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Implements absolute timed condition wait.
+ <ol>
+ <li> If current thread is interrupted, throw InterruptedException.
+ <li> Save lock state returned by <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#getState()">getState()</a></code>.
+ <li> Invoke <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#release(int)">release(int)</a></code> with
+      saved state as argument, throwing
+      IllegalMonitorStateException if it fails.
+ <li> Block until signalled, interrupted, or timed out.
+ <li> Reacquire by invoking specialized version of
+      <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#acquire(int)">acquire(int)</a></code> with saved state as argument.
+ <li> If interrupted while blocked in step 4, throw InterruptedException.
+ <li> If timed out while blocked in step 4, return false, else true.
+ </ol>
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">deadline</td>
+          <td class="jd-tagdescr">the absolute time to wait until</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>false</code> if the deadline has elapsed upon return, else
+         <code>true</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="signal()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>signal</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Moves the longest-waiting thread, if one exists, from the
+ wait queue for this condition to the wait queue for the
+ owning lock.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td class="jd-tagdescr">if <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#isHeldExclusively()">isHeldExclusively()</a></code>
+         returns <code>false</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="signalAll()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>signalAll</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Moves all threads from the wait queue for this condition to
+ the wait queue for the owning lock.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td class="jd-tagdescr">if <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#isHeldExclusively()">isHeldExclusively()</a></code>
+         returns <code>false</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="getWaitQueueLength()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getWaitQueueLength</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an estimate of the number of threads waiting on
+ this condition.
+ Implements <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#getWaitQueueLength(java.util.concurrent.locks.AbstractQueuedSynchronizer.ConditionObject)">getWaitQueueLength(AbstractQueuedSynchronizer.ConditionObject)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the estimated number of waiting threads</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td class="jd-tagdescr">if <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#isHeldExclusively()">isHeldExclusively()</a></code>
+         returns <code>false</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getWaitingThreads()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        <a href="../../../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../../../reference/java/lang/Thread.html">Thread</a>&gt;
+      </span>
+      <span class="sympad"><strong>getWaitingThreads</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a collection containing those threads that may be
+ waiting on this Condition.
+ Implements <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#getWaitingThreads(java.util.concurrent.locks.AbstractQueuedSynchronizer.ConditionObject)">getWaitingThreads(AbstractQueuedSynchronizer.ConditionObject)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the collection of threads</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td class="jd-tagdescr">if <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#isHeldExclusively()">isHeldExclusively()</a></code>
+         returns <code>false</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="hasWaiters()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>hasWaiters</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Queries whether any threads are waiting on this condition.
+ Implements <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#hasWaiters(java.util.concurrent.locks.AbstractQueuedSynchronizer.ConditionObject)">hasWaiters(AbstractQueuedSynchronizer.ConditionObject)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if there are any waiting threads</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td class="jd-tagdescr">if <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html#isHeldExclusively()">isHeldExclusively()</a></code>
+         returns <code>false</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

@@ -1,0 +1,1583 @@
+---
+
+title: LSParser - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/DOMImplementationLS.html">DOMImplementationLS</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSInput.html">LSInput</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSOutput.html">LSOutput</a></li>
+          <li class="selected api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html">LSParser</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html">LSParserFilter</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSSerializer.html">LSSerializer</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../../reference/org/w3c/dom/ls/LSException.html">LSException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     interface
+  <h1 itemprop="name" class="devsite-page-title">LSParser</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>An interface to an object that is able to build, or augment, a DOM tree
+ from various input sources.
+ <p> <code>LSParser</code> provides an API for parsing XML and building the
+ corresponding DOM document structure. A <code>LSParser</code> instance
+ can be obtained by invoking the
+ <code>DOMImplementationLS.createLSParser()</code> method.
+ <p> As specified in [<a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>DOM Level 3 Core</a>]
+ , when a document is first made available via the LSParser:
+ <ul>
+ <li> there will
+ never be two adjacent nodes of type NODE_TEXT, and there will never be
+ empty text nodes.
+ </li>
+ <li> it is expected that the <code>value</code> and
+ <code>nodeValue</code> attributes of an <code>Attr</code> node initially
+ return the <a href='http://www.w3.org/TR/2004/REC-xml-20040204#AVNormalize'>XML 1.0
+ normalized value</a>. However, if the parameters "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-validate-if-schema'>
+ validate-if-schema</a>" and "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-datatype-normalization'>
+ datatype-normalization</a>" are set to <code>true</code>, depending on the attribute normalization
+ used, the attribute values may differ from the ones obtained by the XML
+ 1.0 attribute normalization. If the parameters "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-datatype-normalization'>
+ datatype-normalization</a>" is set to <code>false</code>, the XML 1.0 attribute normalization is
+ guaranteed to occur, and if the attributes list does not contain
+ namespace declarations, the <code>attributes</code> attribute on
+ <code>Element</code> node represents the property <b>[attributes]</b> defined in [<a href='http://www.w3.org/TR/2004/REC-xml-infoset-20040204/'>XML Information Set</a>]
+ .
+ </li>
+ </ul>
+ <p> Asynchronous <code>LSParser</code> objects are expected to also
+ implement the <code>events::EventTarget</code> interface so that event
+ listeners can be registered on asynchronous <code>LSParser</code>
+ objects.
+ <p> Events supported by asynchronous <code>LSParser</code> objects are:
+ <dl>
+ <dt>load</dt>
+ <dd>
+  The <code>LSParser</code> finishes to load the document. See also the
+ definition of the <code>LSLoadEvent</code> interface. </dd>
+ <dt>progress</dt>
+ <dd> The
+ <code>LSParser</code> signals progress as data is parsed.  This
+ specification does not attempt to define exactly when progress events
+ should be dispatched. That is intentionally left as
+ implementation-dependent. Here is one example of how an application might
+ dispatch progress events: Once the parser starts receiving data, a
+ progress event is dispatched to indicate that the parsing starts. From
+ there on, a progress event is dispatched for every 4096 bytes of data
+ that is received and processed. This is only one example, though, and
+ implementations can choose to dispatch progress events at any time while
+ parsing, or not dispatch them at all.  See also the definition of the
+ <code>LSProgressEvent</code> interface. </dd>
+ </dl>
+ <p ><b>Note:</b>  All events defined in this specification use the
+ namespace URI <code>"http://www.w3.org/2002/DOMLS"</code>.
+ <p> While parsing an input source, errors are reported to the application
+ through the error handler (<code>LSParser.domConfig</code>'s "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-error-handler'>
+ error-handler</a>" parameter). This specification does in no way try to define all possible
+ errors that can occur while parsing XML, or any other markup, but some
+ common error cases are defined. The types (<code>DOMError.type</code>) of
+ errors and warnings defined by this specification are:
+ <dl>
+ <dt>
+ <code>"check-character-normalization-failure" [error]</code> </dt>
+ <dd> Raised if
+ the parameter "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-check-character-normalization'>
+ check-character-normalization</a>" is set to true and a string is encountered that fails normalization
+ checking. </dd>
+ <dt><code>"doctype-not-allowed" [fatal]</code></dt>
+ <dd> Raised if the
+ configuration parameter "disallow-doctype" is set to <code>true</code>
+ and a doctype is encountered. </dd>
+ <dt><code>"no-input-specified" [fatal]</code></dt>
+ <dd>
+ Raised when loading a document and no input is specified in the
+ <code>LSInput</code> object. </dd>
+ <dt>
+ <code>"pi-base-uri-not-preserved" [warning]</code></dt>
+ <dd> Raised if a processing
+ instruction is encountered in a location where the base URI of the
+ processing instruction can not be preserved.  One example of a case where
+ this warning will be raised is if the configuration parameter "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-entities'>
+ entities</a>" is set to <code>false</code> and the following XML file is parsed:
+ <pre>
+ &lt;!DOCTYPE root [ &lt;!ENTITY e SYSTEM 'subdir/myentity.ent' ]&gt;
+ &lt;root&gt; &amp;e; &lt;/root&gt;</pre>
+  And <code>subdir/myentity.ent</code>
+ contains:
+ <pre>&lt;one&gt; &lt;two/&gt; &lt;/one&gt; &lt;?pi 3.14159?&gt;
+ &lt;more/&gt;</pre>
+ </dd>
+ <dt><code>"unbound-prefix-in-entity" [warning]</code></dt>
+ <dd> An
+ implementation dependent warning that may be raised if the configuration
+ parameter "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-namespaces'>
+ namespaces</a>" is set to <code>true</code> and an unbound namespace prefix is
+ encountered in an entity's replacement text. Raising this warning is not
+ enforced since some existing parsers may not recognize unbound namespace
+ prefixes in the replacement text of entities. </dd>
+ <dt>
+ <code>"unknown-character-denormalization" [fatal]</code></dt>
+ <dd> Raised if the
+ configuration parameter "ignore-unknown-character-denormalizations" is
+ set to <code>false</code> and a character is encountered for which the
+ processor cannot determine the normalization properties. </dd>
+ <dt>
+ <code>"unsupported-encoding" [fatal]</code></dt>
+ <dd> Raised if an unsupported
+ encoding is encountered. </dd>
+ <dt><code>"unsupported-media-type" [fatal]</code></dt>
+ <dd>
+ Raised if the configuration parameter "supported-media-types-only" is set
+ to <code>true</code> and an unsupported media type is encountered. </dd>
+ </dl>
+ <p> In addition to raising the defined errors and warnings, implementations
+ are expected to raise implementation specific errors and warnings for any
+ other error and warning cases such as IO errors (file not found,
+ permission denied,...), XML well-formedness errors, and so on.
+ <p>See also the <a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-LS-20040407'>Document Object Model (DOM) Level 3 Load
+and Save Specification</a>.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="constants"><h3>Constant Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#ACTION_APPEND_AS_CHILDREN">ACTION_APPEND_AS_CHILDREN</a></td>
+        <td class="jd-descrcol" width="100%">Append the result of the parse operation as children of the context
+ node.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#ACTION_INSERT_AFTER">ACTION_INSERT_AFTER</a></td>
+        <td class="jd-descrcol" width="100%">Insert the result of the parse operation as the immediately following
+ sibling of the context node.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#ACTION_INSERT_BEFORE">ACTION_INSERT_BEFORE</a></td>
+        <td class="jd-descrcol" width="100%">Insert the result of the parse operation as the immediately preceding
+ sibling of the context node.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#ACTION_REPLACE">ACTION_REPLACE</a></td>
+        <td class="jd-descrcol" width="100%">Replace the context node with the result of the parse operation.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#ACTION_REPLACE_CHILDREN">ACTION_REPLACE_CHILDREN</a></td>
+        <td class="jd-descrcol" width="100%">Replace all the children of the context node with the result of the
+ parse operation.</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#abort()">abort</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#getAsync()">getAsync</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#getBusy()">getBusy</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../../reference/org/w3c/dom/DOMConfiguration.html">DOMConfiguration</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#getDomConfig()">getDomConfig</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html">LSParserFilter</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#getFilter()">getFilter</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../../reference/org/w3c/dom/Document.html">Document</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#parse(org.w3c.dom.ls.LSInput)">parse</a></span>(<span class="nowrap"><a href="../../../../../reference/org/w3c/dom/ls/LSInput.html">LSInput</a> <i>input</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../../reference/org/w3c/dom/Document.html">Document</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#parseURI(java.lang.String)">parseURI</a></span>(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../../reference/org/w3c/dom/Node.html">Node</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#parseWithContext(org.w3c.dom.ls.LSInput, org.w3c.dom.Node, short)">parseWithContext</a></span>(<span class="nowrap"><a href="../../../../../reference/org/w3c/dom/ls/LSInput.html">LSInput</a> <i>input</i></span>, <span class="nowrap"><a href="../../../../../reference/org/w3c/dom/Node.html">Node</a> <i>contextArg</i></span>, <span class="nowrap">short <i>action</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/org/w3c/dom/ls/LSParser.html#setFilter(org.w3c.dom.ls.LSParserFilter)">setFilter</a></span>(<span class="nowrap"><a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html">LSParserFilter</a> <i>filter</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<section id="constants">
+  <h2>Constants</h2>
+  
+
+
+
+<A NAME="ACTION_APPEND_AS_CHILDREN"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>ACTION_APPEND_AS_CHILDREN</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Append the result of the parse operation as children of the context
+ node. For this action to work, the context node must be an
+ <code>Element</code> or a <code>DocumentFragment</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                1
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="ACTION_INSERT_AFTER"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>ACTION_INSERT_AFTER</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Insert the result of the parse operation as the immediately following
+ sibling of the context node. For this action to work the context
+ node's parent must be an <code>Element</code> or a
+ <code>DocumentFragment</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                4
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="ACTION_INSERT_BEFORE"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>ACTION_INSERT_BEFORE</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Insert the result of the parse operation as the immediately preceding
+ sibling of the context node. For this action to work the context
+ node's parent must be an <code>Element</code> or a
+ <code>DocumentFragment</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                3
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="ACTION_REPLACE"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>ACTION_REPLACE</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Replace the context node with the result of the parse operation. For
+ this action to work, the context node must have a parent, and the
+ parent must be an <code>Element</code> or a
+ <code>DocumentFragment</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                5
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="ACTION_REPLACE_CHILDREN"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          short
+        
+      </span>
+        <strong>ACTION_REPLACE_CHILDREN</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Replace all the children of the context node with the result of the
+ parse operation. For this action to work, the context node must be an
+ <code>Element</code>, a <code>Document</code>, or a
+ <code>DocumentFragment</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                2
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="abort()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>abort</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Abort the loading of the document that is currently being loaded by
+ the <code>LSParser</code>. If the <code>LSParser</code> is currently
+ not busy, a call to this method does nothing.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getAsync()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>getAsync</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><code>true</code> if the <code>LSParser</code> is asynchronous,
+ <code>false</code> if it is synchronous.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getBusy()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>getBusy</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><code>true</code> if the <code>LSParser</code> is currently busy
+ loading a document, otherwise <code>false</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getDomConfig()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../../reference/org/w3c/dom/DOMConfiguration.html">DOMConfiguration</a>
+      </span>
+      <span class="sympad"><strong>getDomConfig</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The <code>DOMConfiguration</code> object used when parsing an input
+ source. This <code>DOMConfiguration</code> is specific to the parse
+ operation. No parameter values from this <code>DOMConfiguration</code>
+  object are passed automatically to the <code>DOMConfiguration</code>
+ object on the <code>Document</code> that is created, or used, by the
+ parse operation. The DOM application is responsible for passing any
+ needed parameter values from this <code>DOMConfiguration</code>
+ object to the <code>DOMConfiguration</code> object referenced by the
+ <code>Document</code> object.
+ <br> In addition to the parameters recognized in on the <a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#DOMConfiguration'>
+ DOMConfiguration</a> interface defined in [<a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>DOM Level 3 Core</a>]
+ , the <code>DOMConfiguration</code> objects for <code>LSParser</code>
+ add or modify the following parameters:
+ <dl>
+ <dt>
+ <code>"charset-overrides-xml-encoding"</code></dt>
+ <dd>
+ <dl>
+ <dt><code>true</code></dt>
+ <dd>[<em>optional</em>] (<em>default</em>) If a higher level protocol such as HTTP [<a href='http://www.ietf.org/rfc/rfc2616.txt'>IETF RFC 2616</a>] provides an
+ indication of the character encoding of the input stream being
+ processed, that will override any encoding specified in the XML
+ declaration or the Text declaration (see also section 4.3.3,
+ "Character Encoding in Entities", in [<a href='http://www.w3.org/TR/2004/REC-xml-20040204'>XML 1.0</a>]).
+ Explicitly setting an encoding in the <code>LSInput</code> overrides
+ any encoding from the protocol. </dd>
+ <dt><code>false</code></dt>
+ <dd>[<em>required</em>] The parser ignores any character set encoding information from
+ higher-level protocols. </dd>
+ </dl></dd>
+ <dt><code>"disallow-doctype"</code></dt>
+ <dd>
+ <dl>
+ <dt>
+ <code>true</code></dt>
+ <dd>[<em>optional</em>] Throw a fatal <b>"doctype-not-allowed"</b> error if a doctype node is found while parsing the document. This is
+ useful when dealing with things like SOAP envelopes where doctype
+ nodes are not allowed. </dd>
+ <dt><code>false</code></dt>
+ <dd>[<em>required</em>] (<em>default</em>) Allow doctype nodes in the document. </dd>
+ </dl></dd>
+ <dt>
+ <code>"ignore-unknown-character-denormalizations"</code></dt>
+ <dd>
+ <dl>
+ <dt>
+ <code>true</code></dt>
+ <dd>[<em>required</em>] (<em>default</em>) If, while verifying full normalization when [<a href='http://www.w3.org/TR/2004/REC-xml11-20040204/'>XML 1.1</a>] is
+ supported, a processor encounters characters for which it cannot
+ determine the normalization properties, then the processor will
+ ignore any possible denormalizations caused by these characters.
+ This parameter is ignored for [<a href='http://www.w3.org/TR/2004/REC-xml-20040204'>XML 1.0</a>]. </dd>
+ <dt>
+ <code>false</code></dt>
+ <dd>[<em>optional</em>] Report an fatal <b>"unknown-character-denormalization"</b> error if a character is encountered for which the processor cannot
+ determine the normalization properties. </dd>
+ </dl></dd>
+ <dt><code>"infoset"</code></dt>
+ <dd> See
+ the definition of <code>DOMConfiguration</code> for a description of
+ this parameter. Unlike in [<a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>DOM Level 3 Core</a>]
+ , this parameter will default to <code>true</code> for
+ <code>LSParser</code>. </dd>
+ <dt><code>"namespaces"</code></dt>
+ <dd>
+ <dl>
+ <dt><code>true</code></dt>
+ <dd>[<em>required</em>] (<em>default</em>) Perform the namespace processing as defined in [<a href='http://www.w3.org/TR/1999/REC-xml-names-19990114/'>XML Namespaces</a>]
+  and [<a href='http://www.w3.org/TR/2004/REC-xml-names11-20040204/'>XML Namespaces 1.1</a>]
+ . </dd>
+ <dt><code>false</code></dt>
+ <dd>[<em>optional</em>] Do not perform the namespace processing. </dd>
+ </dl></dd>
+ <dt>
+ <code>"resource-resolver"</code></dt>
+ <dd>[<em>required</em>] A reference to a <code>LSResourceResolver</code> object, or null. If
+ the value of this parameter is not null when an external resource
+ (such as an external XML entity or an XML schema location) is
+ encountered, the implementation will request that the
+ <code>LSResourceResolver</code> referenced in this parameter resolves
+ the resource. </dd>
+ <dt><code>"supported-media-types-only"</code></dt>
+ <dd>
+ <dl>
+ <dt>
+ <code>true</code></dt>
+ <dd>[<em>optional</em>] Check that the media type of the parsed resource is a supported media
+ type. If an unsupported media type is encountered, a fatal error of
+ type <b>"unsupported-media-type"</b> will be raised. The media types defined in [<a href='http://www.ietf.org/rfc/rfc3023.txt'>IETF RFC 3023</a>] must always
+ be accepted. </dd>
+ <dt><code>false</code></dt>
+ <dd>[<em>required</em>] (<em>default</em>) Accept any media type. </dd>
+ </dl></dd>
+ <dt><code>"validate"</code></dt>
+ <dd> See the definition of
+ <code>DOMConfiguration</code> for a description of this parameter.
+ Unlike in [<a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>DOM Level 3 Core</a>]
+ , the processing of the internal subset is always accomplished, even
+ if this parameter is set to <code>false</code>. </dd>
+ <dt>
+ <code>"validate-if-schema"</code></dt>
+ <dd> See the definition of
+ <code>DOMConfiguration</code> for a description of this parameter.
+ Unlike in [<a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>DOM Level 3 Core</a>]
+ , the processing of the internal subset is always accomplished, even
+ if this parameter is set to <code>false</code>. </dd>
+ <dt>
+ <code>"well-formed"</code></dt>
+ <dd> See the definition of
+ <code>DOMConfiguration</code> for a description of this parameter.
+ Unlike in [<a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>DOM Level 3 Core</a>]
+ , this parameter cannot be set to <code>false</code>. </dd>
+ </dl>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getFilter()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html">LSParserFilter</a>
+      </span>
+      <span class="sympad"><strong>getFilter</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>When a filter is provided, the implementation will call out to the
+ filter as it is constructing the DOM tree structure. The filter can
+ choose to remove elements from the document being constructed, or to
+ terminate the parsing early.
+ <br> The filter is invoked after the operations requested by the
+ <code>DOMConfiguration</code> parameters have been applied. For
+ example, if "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-validate'>
+ validate</a>" is set to <code>true</code>, the validation is done before invoking the
+ filter.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="parse(org.w3c.dom.ls.LSInput)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../../reference/org/w3c/dom/Document.html">Document</a>
+      </span>
+      <span class="sympad"><strong>parse</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/org/w3c/dom/ls/LSInput.html">LSInput</a> <i>input</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse an XML document from a resource identified by a
+ <code>LSInput</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">input</td>
+          <td class="jd-tagdescr">The <code>LSInput</code> from which the source of the
+   document is to be read.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>If the <code>LSParser</code> is a synchronous
+   <code>LSParser</code>, the newly created and populated
+   <code>Document</code> is returned. If the <code>LSParser</code> is
+   asynchronous, <code>null</code> is returned since the document
+   object may not yet be constructed when this method returns.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/org/w3c/dom/DOMException.html">DOMException</a></td>
+            <td class="jd-tagdescr">INVALID_STATE_ERR: Raised if the <code>LSParser</code>'s
+   <code>LSParser.busy</code> attribute is <code>true</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/org/w3c/dom/ls/LSException.html">LSException</a></td>
+            <td class="jd-tagdescr">PARSE_ERR: Raised if the <code>LSParser</code> was unable to load
+   the XML document. DOM applications should attach a
+   <code>DOMErrorHandler</code> using the parameter "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-error-handler'>
+   error-handler</a>" if they wish to get details on the error.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parseURI(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../../reference/org/w3c/dom/Document.html">Document</a>
+      </span>
+      <span class="sympad"><strong>parseURI</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/lang/String.html">String</a> <i>uri</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse an XML document from a location identified by a URI reference [<a href='http://www.ietf.org/rfc/rfc2396.txt'>IETF RFC 2396</a>]. If the URI
+ contains a fragment identifier (see section 4.1 in [<a href='http://www.ietf.org/rfc/rfc2396.txt'>IETF RFC 2396</a>]), the
+ behavior is not defined by this specification, future versions of
+ this specification may define the behavior.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">uri</td>
+          <td class="jd-tagdescr">The location of the XML document to be read.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>If the <code>LSParser</code> is a synchronous
+   <code>LSParser</code>, the newly created and populated
+   <code>Document</code> is returned, or <code>null</code> if an error
+   occured. If the <code>LSParser</code> is asynchronous,
+   <code>null</code> is returned since the document object may not yet
+   be constructed when this method returns.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/org/w3c/dom/DOMException.html">DOMException</a></td>
+            <td class="jd-tagdescr">INVALID_STATE_ERR: Raised if the <code>LSParser.busy</code>
+   attribute is <code>true</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/org/w3c/dom/ls/LSException.html">LSException</a></td>
+            <td class="jd-tagdescr">PARSE_ERR: Raised if the <code>LSParser</code> was unable to load
+   the XML document. DOM applications should attach a
+   <code>DOMErrorHandler</code> using the parameter "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-error-handler'>
+   error-handler</a>" if they wish to get details on the error.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="parseWithContext(org.w3c.dom.ls.LSInput, org.w3c.dom.Node, short)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../../reference/org/w3c/dom/Node.html">Node</a>
+      </span>
+      <span class="sympad"><strong>parseWithContext</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/org/w3c/dom/ls/LSInput.html">LSInput</a> <i>input</i></span>, <span class="nowrap"><a href="../../../../../reference/org/w3c/dom/Node.html">Node</a> <i>contextArg</i></span>, <span class="nowrap">short <i>action</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse an XML fragment from a resource identified by a
+ <code>LSInput</code> and insert the content into an existing document
+ at the position specified with the <code>context</code> and
+ <code>action</code> arguments. When parsing the input stream, the
+ context node (or its parent, depending on where the result will be
+ inserted) is used for resolving unbound namespace prefixes. The
+ context node's <code>ownerDocument</code> node (or the node itself if
+ the node of type <code>DOCUMENT_NODE</code>) is used to resolve
+ default attributes and entity references.
+ <br> As the new data is inserted into the document, at least one
+ mutation event is fired per new immediate child or sibling of the
+ context node.
+ <br> If the context node is a <code>Document</code> node and the action
+ is <code>ACTION_REPLACE_CHILDREN</code>, then the document that is
+ passed as the context node will be changed such that its
+ <code>xmlEncoding</code>, <code>documentURI</code>,
+ <code>xmlVersion</code>, <code>inputEncoding</code>,
+ <code>xmlStandalone</code>, and all other such attributes are set to
+ what they would be set to if the input source was parsed using
+ <code>LSParser.parse()</code>.
+ <br> This method is always synchronous, even if the
+ <code>LSParser</code> is asynchronous (<code>LSParser.async</code> is
+ <code>true</code>).
+ <br> If an error occurs while parsing, the caller is notified through
+ the <code>ErrorHandler</code> instance associated with the "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-error-handler'>
+ error-handler</a>" parameter of the <code>DOMConfiguration</code>.
+ <br> When calling <code>parseWithContext</code>, the values of the
+ following configuration parameters will be ignored and their default
+ values will always be used instead: "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-validate'>
+ validate</a>", "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-validate-if-schema'>
+ validate-if-schema</a>", and "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-element-content-whitespace'>
+ element-content-whitespace</a>". Other parameters will be treated normally, and the parser is expected
+ to call the <code>LSParserFilter</code> just as if a whole document
+ was parsed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">input</td>
+          <td class="jd-tagdescr">The <code>LSInput</code> from which the source document
+   is to be read. The source document must be an XML fragment, i.e.
+   anything except a complete XML document (except in the case where
+   the context node of type <code>DOCUMENT_NODE</code>, and the action
+   is <code>ACTION_REPLACE_CHILDREN</code>), a DOCTYPE (internal
+   subset), entity declaration(s), notation declaration(s), or XML or
+   text declaration(s).</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">contextArg</td>
+          <td class="jd-tagdescr">The node that is used as the context for the data
+   that is being parsed. This node must be a <code>Document</code>
+   node, a <code>DocumentFragment</code> node, or a node of a type
+   that is allowed as a child of an <code>Element</code> node, e.g. it
+   cannot be an <code>Attribute</code> node.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">action</td>
+          <td class="jd-tagdescr">This parameter describes which action should be taken
+   between the new set of nodes being inserted and the existing
+   children of the context node. The set of possible actions is
+   defined in <code>ACTION_TYPES</code> above.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>Return the node that is the result of the parse operation. If
+   the result is more than one top-level node, the first one is
+   returned.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/org/w3c/dom/DOMException.html">DOMException</a></td>
+            <td class="jd-tagdescr">HIERARCHY_REQUEST_ERR: Raised if the content cannot replace, be
+   inserted before, after, or as a child of the context node (see also
+   <code>Node.insertBefore</code> or <code>Node.replaceChild</code> in [<a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>DOM Level 3 Core</a>]
+   ).
+   <br> NOT_SUPPORTED_ERR: Raised if the <code>LSParser</code> doesn't
+   support this method, or if the context node is of type
+   <code>Document</code> and the DOM implementation doesn't support
+   the replacement of the <code>DocumentType</code> child or
+   <code>Element</code> child.
+   <br> NO_MODIFICATION_ALLOWED_ERR: Raised if the context node is a
+   read only node and the content is being appended to its child list,
+   or if the parent node of the context node is read only node and the
+   content is being inserted in its child list.
+   <br> INVALID_STATE_ERR: Raised if the <code>LSParser.busy</code>
+   attribute is <code>true</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/org/w3c/dom/ls/LSException.html">LSException</a></td>
+            <td class="jd-tagdescr">PARSE_ERR: Raised if the <code>LSParser</code> was unable to load
+   the XML fragment. DOM applications should attach a
+   <code>DOMErrorHandler</code> using the parameter "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-error-handler'>
+   error-handler</a>" if they wish to get details on the error.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setFilter(org.w3c.dom.ls.LSParserFilter)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setFilter</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/org/w3c/dom/ls/LSParserFilter.html">LSParserFilter</a> <i>filter</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>When a filter is provided, the implementation will call out to the
+ filter as it is constructing the DOM tree structure. The filter can
+ choose to remove elements from the document being constructed, or to
+ terminate the parsing early.
+ <br> The filter is invoked after the operations requested by the
+ <code>DOMConfiguration</code> parameters have been applied. For
+ example, if "<a href='http://www.w3.org/TR/DOM-Level-3-Core/core.html#parameter-validate'>
+ validate</a>" is set to <code>true</code>, the validation is done before invoking the
+ filter.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

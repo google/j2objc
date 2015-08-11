@@ -1,0 +1,1706 @@
+---
+
+title: DataInput - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Closeable.html">Closeable</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/io/DataInput.html">DataInput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataOutput.html">DataOutput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Externalizable.html">Externalizable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileFilter.html">FileFilter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilenameFilter.html">FilenameFilter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Flushable.html">Flushable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputValidation.html">ObjectInputValidation</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectOutput.html">ObjectOutput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamConstants.html">ObjectStreamConstants</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Serializable.html">Serializable</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedInputStream.html">BufferedInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedOutputStream.html">BufferedOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedReader.html">BufferedReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedWriter.html">BufferedWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ByteArrayInputStream.html">ByteArrayInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ByteArrayOutputStream.html">ByteArrayOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharArrayReader.html">CharArrayReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharArrayWriter.html">CharArrayWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Console.html">Console</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataInputStream.html">DataInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataOutputStream.html">DataOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/File.html">File</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileDescriptor.html">FileDescriptor</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileInputStream.html">FileInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileOutputStream.html">FileOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilePermission.html">FilePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileReader.html">FileReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileWriter.html">FileWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterInputStream.html">FilterInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterOutputStream.html">FilterOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterReader.html">FilterReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterWriter.html">FilterWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InputStream.html">InputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InputStreamReader.html">InputStreamReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/LineNumberInputStream.html">LineNumberInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/LineNumberReader.html">LineNumberReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputStream.GetField.html">ObjectInputStream.GetField</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectOutputStream.html">ObjectOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectOutputStream.PutField.html">ObjectOutputStream.PutField</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamClass.html">ObjectStreamClass</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamField.html">ObjectStreamField</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OutputStream.html">OutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedInputStream.html">PipedInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedOutputStream.html">PipedOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedReader.html">PipedReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PrintStream.html">PrintStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PushbackInputStream.html">PushbackInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PushbackReader.html">PushbackReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/RandomAccessFile.html">RandomAccessFile</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Reader.html">Reader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SequenceInputStream.html">SequenceInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SerializablePermission.html">SerializablePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StreamTokenizer.html">StreamTokenizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringBufferInputStream.html">StringBufferInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringReader.html">StringReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringWriter.html">StringWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Writer.html">Writer</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharConversionException.html">CharConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/EOFException.html">EOFException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InterruptedIOException.html">InterruptedIOException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InvalidClassException.html">InvalidClassException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InvalidObjectException.html">InvalidObjectException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/IOException.html">IOException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/NotActiveException.html">NotActiveException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/NotSerializableException.html">NotSerializableException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamException.html">ObjectStreamException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OptionalDataException.html">OptionalDataException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StreamCorruptedException.html">StreamCorruptedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SyncFailedException.html">SyncFailedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/UnsupportedEncodingException.html">UnsupportedEncodingException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/UTFDataFormatException.html">UTFDataFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/WriteAbortedException.html">WriteAbortedException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/IOError.html">IOError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     interface
+  <h1 itemprop="name" class="devsite-page-title">DataInput</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;font-size:85%;">
+Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/io/DataInputStream.html">DataInputStream</a>,
+            
+              <a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a>,
+            
+              <a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a>,
+            
+              <a href="../../../reference/java/io/RandomAccessFile.html">RandomAccessFile</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/DataInputStream.html">DataInputStream</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/InputStream.html">InputStream</a></code> and reads big-endian typed data from it.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a></td>
+              <td class="jd-descrcol" width="100%">Defines an interface for classes that allow reading serialized objects.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/InputStream.html">InputStream</a></code> that is able to read (deserialize) Java
+ objects as well as primitive data types (int, byte, char etc.).&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/RandomAccessFile.html">RandomAccessFile</a></td>
+              <td class="jd-descrcol" width="100%">Allows reading from and writing to a file in a random-access manner.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<p>Defines an interface for classes that are able to read big-endian typed data from some
+ source. Typically, this data has been written by a class which implements
+ <code><a href="reference/java/io/DataOutput.html">DataOutput</a></code>. Types that can be read include byte, 16-bit short, 32-bit
+ int, 32-bit float, 64-bit long, 64-bit double, byte strings, and MUTF-8
+ strings.
+
+ <h3>MUTF-8 (Modified UTF-8) Encoding</h3>
+ <p>
+ When encoding strings as UTF, implementations of <code>DataInput</code> and
+ <code>DataOutput</code> use a slightly modified form of UTF-8, hereafter referred
+ to as MUTF-8. This form is identical to standard UTF-8, except:
+ <ul>
+ <li>Only the one-, two-, and three-byte encodings are used.</li>
+ <li>Code points in the range <code>U+10000</code> &hellip;
+ <code>U+10ffff</code> are encoded as a surrogate pair, each of which is
+ represented as a three-byte encoded value.</li>
+ <li>The code point <code>U+0000</code> is encoded in two-byte form.</li>
+ </ul>
+ <p>
+ Please refer to <a href="http://unicode.org">The Unicode Standard</a> for
+ further information about character encoding. MUTF-8 is actually closer to
+ the (relatively less well-known) encoding <a
+ href="http://www.unicode.org/reports/tr26/">CESU-8</a> than to UTF-8 per se.</p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataInputStream.html">DataInputStream</a></code></li><li><code><a href="../../../reference/java/io/RandomAccessFile.html">RandomAccessFile</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readBoolean()">readBoolean</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            byte
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readByte()">readByte</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            char
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readChar()">readChar</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readDouble()">readDouble</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readFloat()">readFloat</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readFully(byte[])">readFully</a></span>(<span class="nowrap">byte[] <i>dst</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readFully(byte[], int, int)">readFully</a></span>(<span class="nowrap">byte[] <i>dst</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readInt()">readInt</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readLine()">readLine</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readLong()">readLong</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            short
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readShort()">readShort</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readUTF()">readUTF</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readUnsignedByte()">readUnsignedByte</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readUnsignedShort()">readUnsignedShort</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/DataInput.html#skipBytes(int)">skipBytes</a></span>(<span class="nowrap">int <i>count</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="readBoolean()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>readBoolean</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a boolean.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next boolean value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeBoolean(boolean)">writeBoolean(boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readByte()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        byte
+      </span>
+      <span class="sympad"><strong>readByte</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads an 8-bit byte value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next byte value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeByte(int)">writeByte(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readChar()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        char
+      </span>
+      <span class="sympad"><strong>readChar</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 16-bit character value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next char value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeChar(int)">writeChar(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readDouble()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        double
+      </span>
+      <span class="sympad"><strong>readDouble</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 64-bit double value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next double value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeDouble(double)">writeDouble(double)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readFloat()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        float
+      </span>
+      <span class="sympad"><strong>readFloat</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 32-bit float value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next float value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeFloat(float)">writeFloat(float)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readFully(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>readFully</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>dst</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Equivalent to <code>readFully(dst, 0, dst.length);</code>.
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readFully(byte[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>readFully</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>dst</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads <code>byteCount</code> bytes from this stream and stores them in the byte
+ array <code>dst</code> starting at <code>offset</code>. If <code>byteCount</code> is zero, then this
+ method returns without reading any bytes. Otherwise, this method blocks until
+ <code>byteCount</code> bytes have been read. If insufficient bytes are available,
+ <code>EOFException</code> is thrown. If an I/O error occurs, <code>IOException</code> is
+ thrown. When an exception is thrown, some bytes may have been consumed from the stream
+ and written into the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">dst</td>
+          <td class="jd-tagdescr">the byte array into which the data is read.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the offset in <code>dst</code> at which to store the bytes.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">byteCount</td>
+          <td class="jd-tagdescr">the number of bytes to read.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the source stream is reached before enough
+             bytes have been read.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">if <code>offset < 0</code> or <code>byteCount < 0</code>, or
+             <code>offset + byteCount > dst.length</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if a problem occurs while reading from this stream.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>dst</code> is null.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readInt()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>readInt</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 32-bit integer value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next int value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeInt(int)">writeInt(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readLine()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>readLine</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing the next line of text available from this
+ stream. A line is made of zero or more characters followed by <code>'\n'</code>, <code>'\r'</code>, <code>"\r\n"</code> or the end of the stream. The string
+ does not include the newline sequence.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the contents of the line or null if no characters have been read
+         before the end of the stream.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readLong()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        long
+      </span>
+      <span class="sympad"><strong>readLong</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 64-bit long value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next long value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeLong(long)">writeLong(long)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readShort()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        short
+      </span>
+      <span class="sympad"><strong>readShort</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 16-bit short value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next short value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeShort(int)">writeShort(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readUTF()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>readUTF</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a string encoded with <code><a href="reference/java/io/DataInput.html">modified UTF-8</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next string encoded with <code><a href="reference/java/io/DataInput.html">modified UTF-8</a></code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeUTF(java.lang.String)">writeUTF(java.lang.String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readUnsignedByte()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>readUnsignedByte</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads an unsigned 8-bit byte value and returns it as an int.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next unsigned byte value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeByte(int)">writeByte(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readUnsignedShort()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>readUnsignedShort</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 16-bit unsigned short value and returns it as an int.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next unsigned short value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while reading.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeShort(int)">writeShort(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="skipBytes(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>skipBytes</strong></span>
+      <span class="params">(<span class="nowrap">int <i>count</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Skips <code>count</code> number of bytes. This method will not throw an
+ <code><a href="reference/java/io/EOFException.html">EOFException</a></code> if the end of the input is reached before
+ <code>count</code> bytes where skipped.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">count</td>
+          <td class="jd-tagdescr">the number of bytes to skip.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of bytes actually skipped.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if a problem occurs during skipping.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

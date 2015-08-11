@@ -1,0 +1,1215 @@
+---
+
+title: InetSocketAddress - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ContentHandlerFactory.html">ContentHandlerFactory</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookiePolicy.html">CookiePolicy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookieStore.html">CookieStore</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramSocketImplFactory.html">DatagramSocketImplFactory</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/FileNameMap.html">FileNameMap</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketImplFactory.html">SocketImplFactory</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketOptions.html">SocketOptions</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLStreamHandlerFactory.html">URLStreamHandlerFactory</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Authenticator.html">Authenticator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CacheRequest.html">CacheRequest</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CacheResponse.html">CacheResponse</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ContentHandler.html">ContentHandler</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookieHandler.html">CookieHandler</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookieManager.html">CookieManager</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramPacket.html">DatagramPacket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramSocket.html">DatagramSocket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramSocketImpl.html">DatagramSocketImpl</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/HttpCookie.html">HttpCookie</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/HttpURLConnection.html">HttpURLConnection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/IDN.html">IDN</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Inet4Address.html">Inet4Address</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Inet6Address.html">Inet6Address</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/InetAddress.html">InetAddress</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/net/InetSocketAddress.html">InetSocketAddress</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/InterfaceAddress.html">InterfaceAddress</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/MulticastSocket.html">MulticastSocket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/NetworkInterface.html">NetworkInterface</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/PasswordAuthentication.html">PasswordAuthentication</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Proxy.html">Proxy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ProxySelector.html">ProxySelector</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ResponseCache.html">ResponseCache</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SecureCacheResponse.html">SecureCacheResponse</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ServerSocket.html">ServerSocket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Socket.html">Socket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketAddress.html">SocketAddress</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketImpl.html">SocketImpl</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketPermission.html">SocketPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URI.html">URI</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URL.html">URL</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLClassLoader.html">URLClassLoader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLConnection.html">URLConnection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLDecoder.html">URLDecoder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLEncoder.html">URLEncoder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLStreamHandler.html">URLStreamHandler</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Authenticator.RequestorType.html">Authenticator.RequestorType</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Proxy.Type.html">Proxy.Type</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/BindException.html">BindException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ConnectException.html">ConnectException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/HttpRetryException.html">HttpRetryException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/MalformedURLException.html">MalformedURLException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/NoRouteToHostException.html">NoRouteToHostException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/PortUnreachableException.html">PortUnreachableException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ProtocolException.html">ProtocolException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketException.html">SocketException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketTimeoutException.html">SocketTimeoutException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/UnknownServiceException.html">UnknownServiceException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URISyntaxException.html">URISyntaxException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">InetSocketAddress</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>This class represents a socket endpoint described by a IP address and a port
+ number. It is a concrete implementation of <code>SocketAddress</code> for IP.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#InetSocketAddress(int)">InetSocketAddress</a></span>(<span class="nowrap">int <i>port</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#InetSocketAddress(java.net.InetAddress, int)">InetSocketAddress</a></span>(<span class="nowrap"><a href="../../../reference/java/net/InetAddress.html">InetAddress</a> <i>address</i></span>, <span class="nowrap">int <i>port</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#InetSocketAddress(java.lang.String, int)">InetSocketAddress</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/net/InetSocketAddress.html">InetSocketAddress</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#createUnresolved(java.lang.String, int)">createUnresolved</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#equals(java.lang.Object)">equals</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>socketAddr</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#getAddress()">getAddress</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#getHostName()">getHostName</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#getHostString()">getHostString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#getPort()">getPort</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#hashCode()">hashCode</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#isUnresolved()">isUnresolved</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetSocketAddress.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="InetSocketAddress(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>InetSocketAddress</strong></span>
+      <span class="params">(<span class="nowrap">int <i>port</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a socket endpoint with the given port number <code>port</code> and
+ no specified address. The range for valid port numbers is between 0 and
+ 65535 inclusive.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the specified port number to which this socket is bound.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="InetSocketAddress(java.net.InetAddress, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>InetSocketAddress</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/net/InetAddress.html">InetAddress</a> <i>address</i></span>, <span class="nowrap">int <i>port</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a socket endpoint with the given port number <code>port</code> and
+ <code>address</code>. The range for valid port numbers is between 0 and 65535
+ inclusive. If <code>address</code> is <code>null</code> this socket is bound to the
+ IPv4 wildcard address.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">address</td>
+          <td class="jd-tagdescr">the specified address to which this socket is bound.
+</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the specified port number to which this socket is bound.</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="InetSocketAddress(java.lang.String, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>InetSocketAddress</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a socket endpoint with the given port number <code>port</code> and the
+ hostname <code>host</code>. The hostname is tried to be resolved and cannot be
+ <code>null</code>. The range for valid port numbers is between 0 and 65535
+ inclusive.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">host</td>
+          <td class="jd-tagdescr">the specified hostname to which this socket is bound.
+</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the specified port number to which this socket is bound.</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="createUnresolved(java.lang.String, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/net/InetSocketAddress.html">InetSocketAddress</a>
+      </span>
+      <span class="sympad"><strong>createUnresolved</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an <code>InetSocketAddress</code> without trying to resolve the
+ hostname into an <code>InetAddress</code>. The address field is marked as
+ unresolved.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">host</td>
+          <td class="jd-tagdescr">the specified hostname to which this socket is bound.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the specified port number to which this socket is bound.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the created InetSocketAddress instance.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the hostname <code>host</code> is <code>null</code> or the port is
+             not in the range between 0 and 65535.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>socketAddr</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares two socket endpoints and returns true if they are equal. Two
+ socket endpoints are equal if the IP address or the hostname of both are
+ equal and they are bound to the same port.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">socketAddr</td>
+          <td class="jd-tagdescr">the object to be tested for equality.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this socket and the given socket object <code>socketAddr</code> are equal, <code>false</code> otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getAddress()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </span>
+      <span class="sympad"><strong>getAddress</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns this socket address' address.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getHostName()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getHostName</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the hostname, doing a reverse DNS lookup on the <code>InetAddress</code> if no
+ hostname string was provided at construction time. Use <code><a href="reference/java/net/InetSocketAddress.html#getHostString()">getHostString()</a></code> to
+ avoid the reverse DNS lookup.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getHostString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getHostString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the hostname if known, or the result of <code>InetAddress.getHostAddress</code>.
+ Unlike <code><a href="reference/java/net/InetSocketAddress.html#getHostName()">getHostName()</a></code>, this method will never cause a DNS lookup.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getPort()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getPort</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns this socket address' port.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="hashCode()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>hashCode</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isUnresolved()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isUnresolved</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this socket address is unresolved or not.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this socket address is unresolved, <code>false</code>
+         otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing the address (or the hostname for an
+ unresolved <code>InetSocketAddress</code>) and port number.
+ For example: <code>"www.google.com/74.125.224.115:80"</code> or <code>"/127.0.0.1:80"</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

@@ -1,0 +1,1224 @@
+---
+
+title: SQLClientInfoException - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Array.html">Array</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Blob.html">Blob</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/CallableStatement.html">CallableStatement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Clob.html">Clob</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Connection.html">Connection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/DatabaseMetaData.html">DatabaseMetaData</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Driver.html">Driver</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/NClob.html">NClob</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ParameterMetaData.html">ParameterMetaData</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/PreparedStatement.html">PreparedStatement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Ref.html">Ref</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ResultSetMetaData.html">ResultSetMetaData</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/RowId.html">RowId</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Savepoint.html">Savepoint</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLData.html">SQLData</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLInput.html">SQLInput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLOutput.html">SQLOutput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLXML.html">SQLXML</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Statement.html">Statement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Struct.html">Struct</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Wrapper.html">Wrapper</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Date.html">Date</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/DriverManager.html">DriverManager</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/DriverPropertyInfo.html">DriverPropertyInfo</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLPermission.html">SQLPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Time.html">Time</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Types.html">Types</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/RowIdLifetime.html">RowIdLifetime</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/BatchUpdateException.html">BatchUpdateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/DataTruncation.html">DataTruncation</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLDataException.html">SQLDataException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLIntegrityConstraintViolationException.html">SQLIntegrityConstraintViolationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLInvalidAuthorizationSpecException.html">SQLInvalidAuthorizationSpecException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLNonTransientConnectionException.html">SQLNonTransientConnectionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLNonTransientException.html">SQLNonTransientException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLRecoverableException.html">SQLRecoverableException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLSyntaxErrorException.html">SQLSyntaxErrorException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTimeoutException.html">SQLTimeoutException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransactionRollbackException.html">SQLTransactionRollbackException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransientConnectionException.html">SQLTransientConnectionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransientException.html">SQLTransientException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLWarning.html">SQLWarning</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">SQLClientInfoException</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>An exception, which is subclass of SQLException, is thrown when one or more
+ client info properties could not be set on a Connection.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException()">SQLClientInfoException</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)">SQLClientInfoException</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)">SQLClientInfoException</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Throwable.html">Throwable</a> <i>cause</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)">SQLClientInfoException</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)">SQLClientInfoException</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Throwable.html">Throwable</a> <i>cause</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)">SQLClientInfoException</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>sqlState</i></span>, <span class="nowrap">int <i>vendorCode</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)">SQLClientInfoException</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>sqlState</i></span>, <span class="nowrap">int <i>vendorCode</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Throwable.html">Throwable</a> <i>cause</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)">SQLClientInfoException</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>sqlState</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#SQLClientInfoException(java.lang.String, java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)">SQLClientInfoException</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>sqlState</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Throwable.html">Throwable</a> <i>cause</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/SQLClientInfoException.html#getFailedProperties()">getFailedProperties</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="SQLClientInfoException()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SQLClientInfoException</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
+ null, the SQLState string is set to null and the Error Code is set to 0.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="SQLClientInfoException(java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SQLClientInfoException</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to the
+ given reason string, the SQLState string is set to null and the Error
+ Code is set to 0, and the Map<String,ClientInfoStatus> object is set to
+ the failed properties.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">failedProperties</td>
+          <td class="jd-tagdescr">the Map<String,ClientInfoStatus> object to use as the
+            property values
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SQLClientInfoException(java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SQLClientInfoException</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Throwable.html">Throwable</a> <i>cause</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to the
+ null if cause == null or cause.toString() if cause!=null, the cause
+ Throwable object is set to the given cause Throwable object, and the Map<String,ClientInfoStatus>
+ object is set to the failed properties.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">failedProperties</td>
+          <td class="jd-tagdescr">the Map<String,ClientInfoStatus> object to use as the
+            property values</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">cause</td>
+          <td class="jd-tagdescr">the Throwable object for the underlying reason this
+            SQLException
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SQLClientInfoException(java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SQLClientInfoException</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
+ reason, and the Map<String,ClientInfoStatus> object is set to the failed
+ properties.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">reason</td>
+          <td class="jd-tagdescr">the string to use as the Reason string</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">failedProperties</td>
+          <td class="jd-tagdescr">the Map<String,ClientInfoStatus> object to use as the
+            property values
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SQLClientInfoException(java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SQLClientInfoException</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Throwable.html">Throwable</a> <i>cause</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
+ reason, the cause Throwable object is set to the given cause Throwable
+ object, and the Map<String,ClientInfoStatus> object is set to the failed
+ properties.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">reason</td>
+          <td class="jd-tagdescr">the string to use as the Reason string</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">failedProperties</td>
+          <td class="jd-tagdescr">the Map<String,ClientInfoStatus> object to use as the
+            property values</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">cause</td>
+          <td class="jd-tagdescr">the Throwable object for the underlying reason this
+            SQLException
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SQLClientInfoException</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>sqlState</i></span>, <span class="nowrap">int <i>vendorCode</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
+ reason, the SQLState string is set to the sqlState, the Error Code is set
+ to the vendorCode and the Map<String,ClientInfoStatus> object is set to
+ the failed properties.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">reason</td>
+          <td class="jd-tagdescr">the string to use as the Reason string</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">sqlState</td>
+          <td class="jd-tagdescr">the string to use as the SQLState string</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">vendorCode</td>
+          <td class="jd-tagdescr">the integer value for the error code</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">failedProperties</td>
+          <td class="jd-tagdescr">the Map<String,ClientInfoStatus> object to use as the
+            property values
+
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SQLClientInfoException(java.lang.String, java.lang.String, int, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SQLClientInfoException</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>sqlState</i></span>, <span class="nowrap">int <i>vendorCode</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Throwable.html">Throwable</a> <i>cause</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
+ reason, the SQLState string is set to the sqlState, the Error Code is set
+ to the vendorCode the cause Throwable object is set to the given cause
+ Throwable object, and the Map<String,ClientInfoStatus> object is set to
+ the failed properties.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">reason</td>
+          <td class="jd-tagdescr">the string to use as the Reason string</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">sqlState</td>
+          <td class="jd-tagdescr">the string to use as the SQLState string</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">vendorCode</td>
+          <td class="jd-tagdescr">the integer value for the error code</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">failedProperties</td>
+          <td class="jd-tagdescr">the Map<String,ClientInfoStatus> object to use as the
+            property values</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">cause</td>
+          <td class="jd-tagdescr">the Throwable object for the underlying reason this
+            SQLException
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SQLClientInfoException(java.lang.String, java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SQLClientInfoException</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>sqlState</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
+ reason, the SQLState string is set to the sqlState, and the Map<String,ClientInfoStatus>
+ object is set to the failed properties.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">reason</td>
+          <td class="jd-tagdescr">the string to use as the Reason string</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">sqlState</td>
+          <td class="jd-tagdescr">the string to use as the SQLState string</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">failedProperties</td>
+          <td class="jd-tagdescr">the Map<String,ClientInfoStatus> object to use as the
+            property values
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SQLClientInfoException(java.lang.String, java.lang.String, java.util.Map<java.lang.String, java.sql.ClientInfoStatus>, java.lang.Throwable)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SQLClientInfoException</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>reason</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>sqlState</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt; <i>failedProperties</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Throwable.html">Throwable</a> <i>cause</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an SQLClientInfoException object. The Reason string is set to
+ reason, the SQLState string is set to the sqlState, the Error Code is set
+ to the vendorCode, and the Map<String,ClientInfoStatus> object is set to
+ the failed properties.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">reason</td>
+          <td class="jd-tagdescr">the string to use as the Reason string</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">sqlState</td>
+          <td class="jd-tagdescr">the string to use as the SQLState string</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">failedProperties</td>
+          <td class="jd-tagdescr">the Map<String,ClientInfoStatus> object to use as the
+            property values</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">cause</td>
+          <td class="jd-tagdescr">the Throwable object for the underlying reason this
+            SQLException
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="getFailedProperties()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/util/Map.html">Map</a>&lt;<a href="../../../reference/java/lang/String.html">String</a>,&nbsp;<a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>&gt;
+      </span>
+      <span class="sympad"><strong>getFailedProperties</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>returns that the client info properties which could not be set</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the list of ClientInfoStatus objects indicate client info
+         properties
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

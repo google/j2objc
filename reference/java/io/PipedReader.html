@@ -1,0 +1,1261 @@
+---
+
+title: PipedReader - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Closeable.html">Closeable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataInput.html">DataInput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataOutput.html">DataOutput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Externalizable.html">Externalizable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileFilter.html">FileFilter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilenameFilter.html">FilenameFilter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Flushable.html">Flushable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputValidation.html">ObjectInputValidation</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectOutput.html">ObjectOutput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamConstants.html">ObjectStreamConstants</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Serializable.html">Serializable</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedInputStream.html">BufferedInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedOutputStream.html">BufferedOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedReader.html">BufferedReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedWriter.html">BufferedWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ByteArrayInputStream.html">ByteArrayInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ByteArrayOutputStream.html">ByteArrayOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharArrayReader.html">CharArrayReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharArrayWriter.html">CharArrayWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Console.html">Console</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataInputStream.html">DataInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataOutputStream.html">DataOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/File.html">File</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileDescriptor.html">FileDescriptor</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileInputStream.html">FileInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileOutputStream.html">FileOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilePermission.html">FilePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileReader.html">FileReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileWriter.html">FileWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterInputStream.html">FilterInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterOutputStream.html">FilterOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterReader.html">FilterReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterWriter.html">FilterWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InputStream.html">InputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InputStreamReader.html">InputStreamReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/LineNumberInputStream.html">LineNumberInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/LineNumberReader.html">LineNumberReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputStream.GetField.html">ObjectInputStream.GetField</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectOutputStream.html">ObjectOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectOutputStream.PutField.html">ObjectOutputStream.PutField</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamClass.html">ObjectStreamClass</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamField.html">ObjectStreamField</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OutputStream.html">OutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedInputStream.html">PipedInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedOutputStream.html">PipedOutputStream</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/io/PipedReader.html">PipedReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PrintStream.html">PrintStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PushbackInputStream.html">PushbackInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PushbackReader.html">PushbackReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/RandomAccessFile.html">RandomAccessFile</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Reader.html">Reader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SequenceInputStream.html">SequenceInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SerializablePermission.html">SerializablePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StreamTokenizer.html">StreamTokenizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringBufferInputStream.html">StringBufferInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringReader.html">StringReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringWriter.html">StringWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Writer.html">Writer</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharConversionException.html">CharConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/EOFException.html">EOFException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InterruptedIOException.html">InterruptedIOException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InvalidClassException.html">InvalidClassException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InvalidObjectException.html">InvalidObjectException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/IOException.html">IOException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/NotActiveException.html">NotActiveException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/NotSerializableException.html">NotSerializableException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamException.html">ObjectStreamException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OptionalDataException.html">OptionalDataException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StreamCorruptedException.html">StreamCorruptedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SyncFailedException.html">SyncFailedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/UnsupportedEncodingException.html">UnsupportedEncodingException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/UTFDataFormatException.html">UTFDataFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/WriteAbortedException.html">WriteAbortedException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/IOError.html">IOError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+   
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">PipedReader</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Receives information on a communications pipe. When two threads want to pass
+ data back and forth, one creates a piped writer and the other creates a piped
+ reader.</p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<section id="inhfields">
+  <h3>Inherited Field Summary</h3>
+  
+    
+    <div class="expandable api apilevel-">
+      <span class="showalways">
+        From class
+        <a href="../../../reference/java/io/Reader.html">java.io.Reader</a>
+      </span>
+      <div id="inherited-fields-java.io.Reader">
+        <div id="inherited-fields-java.io.Reader-list"
+              class="jd-inheritedlinks">
+        </div>
+        <div id="inherited-fields-java.io.Reader-summary">
+          <table class="jd-sumtable-expando">
+          
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          <a href="../../../reference/java/lang/Object.html">Object</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/io/Reader.html#lock">lock</a></td>
+          <td class="jd-descrcol" width="100%">The object used to synchronize access to the reader.</td>
+      </tr>
+      
+    
+
+          </table>
+        </div>
+      </div>
+    </div>
+    
+  
+    
+  
+    
+  
+    
+  
+  </section>
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/PipedReader.html#PipedReader()">PipedReader</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/PipedReader.html#PipedReader(java.io.PipedWriter)">PipedReader</a></span>(<span class="nowrap"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a> <i>out</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/PipedReader.html#PipedReader(int)">PipedReader</a></span>(<span class="nowrap">int <i>pipeSize</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/PipedReader.html#PipedReader(java.io.PipedWriter, int)">PipedReader</a></span>(<span class="nowrap"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a> <i>out</i></span>, <span class="nowrap">int <i>pipeSize</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/PipedReader.html#close()">close</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/PipedReader.html#connect(java.io.PipedWriter)">connect</a></span>(<span class="nowrap"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a> <i>src</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/PipedReader.html#read()">read</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/PipedReader.html#read(char[], int, int)">read</a></span>(<span class="nowrap">char[] <i>buffer</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>count</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/PipedReader.html#ready()">ready</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="PipedReader()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>PipedReader</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new unconnected <code>PipedReader</code>. The resulting reader
+ must be connected to a <code>PipedWriter</code> before data may be read from
+ it.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="PipedReader(java.io.PipedWriter)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>PipedReader</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a> <i>out</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PipedReader</code> connected to the <code><a href="reference/java/io/PipedWriter.html">PipedWriter</a></code>
+ <code>out</code>. Any data written to the writer can be read from the this
+ reader.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">out</td>
+          <td class="jd-tagdescr">the <code>PipedWriter</code> to connect to.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if <code>out</code> is already connected.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="PipedReader(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>PipedReader</strong></span>
+      <span class="params">(<span class="nowrap">int <i>pipeSize</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new unconnected <code>PipedReader</code> with the given buffer size.
+ The resulting reader must be connected to a <code>PipedWriter</code> before
+ data may be read from it.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">pipeSize</td>
+          <td class="jd-tagdescr">the size of the buffer in chars.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if pipeSize is less than or equal to zero.</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="PipedReader(java.io.PipedWriter, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>PipedReader</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a> <i>out</i></span>, <span class="nowrap">int <i>pipeSize</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>PipedReader</code> connected to the given <code>PipedWriter</code>,
+ with the given buffer size. Any data written to the writer can be read from
+ this reader.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">out</td>
+          <td class="jd-tagdescr">the <code>PipedWriter</code> to connect to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">pipeSize</td>
+          <td class="jd-tagdescr">the size of the buffer in chars.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if pipeSize is less than or equal to zero.</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="close()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>close</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Closes this reader. This implementation releases the buffer used for
+ the pipe and notifies all threads waiting to read or write.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while closing this reader.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="connect(java.io.PipedWriter)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>connect</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a> <i>src</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Connects this <code>PipedReader</code> to a <code><a href="reference/java/io/PipedWriter.html">PipedWriter</a></code>. Any data
+ written to the writer becomes readable in this reader.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">src</td>
+          <td class="jd-tagdescr">the writer to connect to.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this reader is closed or already connected, or if <code>src</code> is already connected.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="read()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>read</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a single character from this reader and returns it as an integer
+ with the two higher-order bytes set to 0. Returns -1 if the end of the
+ reader has been reached. If there is no data in the pipe, this method
+ blocks until data is available, the end of the reader is detected or an
+ exception is thrown.
+ <p>
+ Separate threads should be used to read from a <code>PipedReader</code> and to
+ write to the connected <code><a href="reference/java/io/PipedWriter.html">PipedWriter</a></code>. If the same thread is used,
+ a deadlock may occur.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the character read or -1 if the end of the reader has been
+         reached.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this reader is closed or some other I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="read(char[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        int
+      </span>
+      <span class="sympad"><strong>read</strong></span>
+      <span class="params">(<span class="nowrap">char[] <i>buffer</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>count</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads at most <code>count</code> characters from this reader and stores them
+ in the character array <code>buffer</code> starting at <code>offset</code>. If
+ there is no data in the pipe, this method blocks until at least one byte
+ has been read, the end of the reader is detected or an exception is
+ thrown.
+ <p>
+ Separate threads should be used to read from a <code>PipedReader</code> and to
+ write to the connected <code><a href="reference/java/io/PipedWriter.html">PipedWriter</a></code>. If the same thread is used, a
+ deadlock may occur.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">buffer</td>
+          <td class="jd-tagdescr">the character array in which to store the characters read.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the initial position in <code>bytes</code> to store the characters
+            read from this reader.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">count</td>
+          <td class="jd-tagdescr">the maximum number of characters to store in <code>buffer</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of characters read or -1 if the end of the reader has
+         been reached.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">if <code>offset < 0</code> or <code>count < 0</code>, or if <code>offset + count</code> is greater than the size of <code>buffer</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/InterruptedIOException.html">InterruptedIOException</a></td>
+            <td class="jd-tagdescr">if the thread reading from this reader is interrupted.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this reader is closed or not connected to a writer, or if
+             the thread writing to the connected writer is no longer
+             alive.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ready()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        boolean
+      </span>
+      <span class="sympad"><strong>ready</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether this reader is ready to be read without blocking.
+ Returns <code>true</code> if this reader will not block when <code>read</code> is
+ called, <code>false</code> if unknown or blocking will occur. This
+ implementation returns <code>true</code> if the internal buffer contains
+ characters that can be read.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>always <code>false</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this reader is closed or not connected, or if some other
+             I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/PipedReader.html#read()">read()</a></code></li><li><code><a href="../../../reference/java/io/PipedReader.html#read(char[], int, int)">read(char[], int, int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

@@ -1,0 +1,1498 @@
+---
+
+title: SecureRandom - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/security/DomainCombiner.html">DomainCombiner</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Guard.html">Guard</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Key.html">Key</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.Entry.html">KeyStore.Entry</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.LoadStoreParameter.html">KeyStore.LoadStoreParameter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.ProtectionParameter.html">KeyStore.ProtectionParameter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Policy.Parameters.html">Policy.Parameters</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Principal.html">Principal</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PrivateKey.html">PrivateKey</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PrivilegedAction.html">PrivilegedAction</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PrivilegedExceptionAction.html">PrivilegedExceptionAction</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PublicKey.html">PublicKey</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AccessControlContext.html">AccessControlContext</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AccessController.html">AccessController</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AlgorithmParameterGenerator.html">AlgorithmParameterGenerator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AlgorithmParameterGeneratorSpi.html">AlgorithmParameterGeneratorSpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AlgorithmParameters.html">AlgorithmParameters</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AlgorithmParametersSpi.html">AlgorithmParametersSpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AllPermission.html">AllPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/BasicPermission.html">BasicPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/CodeSource.html">CodeSource</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/GuardedObject.html">GuardedObject</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyFactory.html">KeyFactory</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyFactorySpi.html">KeyFactorySpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyPair.html">KeyPair</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyPairGenerator.html">KeyPairGenerator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyPairGeneratorSpi.html">KeyPairGeneratorSpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.html">KeyStore</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.Builder.html">KeyStore.Builder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.CallbackHandlerProtection.html">KeyStore.CallbackHandlerProtection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.PasswordProtection.html">KeyStore.PasswordProtection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.PrivateKeyEntry.html">KeyStore.PrivateKeyEntry</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.SecretKeyEntry.html">KeyStore.SecretKeyEntry</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStore.TrustedCertificateEntry.html">KeyStore.TrustedCertificateEntry</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStoreSpi.html">KeyStoreSpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/MessageDigest.html">MessageDigest</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/MessageDigestSpi.html">MessageDigestSpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Permission.html">Permission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PermissionCollection.html">PermissionCollection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Permissions.html">Permissions</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Policy.html">Policy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/ProtectionDomain.html">ProtectionDomain</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Provider.html">Provider</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Provider.Service.html">Provider.Service</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/SecureClassLoader.html">SecureClassLoader</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/security/SecureRandom.html">SecureRandom</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/SecureRandomSpi.html">SecureRandomSpi</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Security.html">Security</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/SecurityPermission.html">SecurityPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/Signature.html">Signature</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/SignatureSpi.html">SignatureSpi</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/security/AccessControlException.html">AccessControlException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/DigestException.html">DigestException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/GeneralSecurityException.html">GeneralSecurityException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html">InvalidAlgorithmParameterException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/InvalidKeyException.html">InvalidKeyException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/InvalidParameterException.html">InvalidParameterException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyException.html">KeyException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyManagementException.html">KeyManagementException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/KeyStoreException.html">KeyStoreException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/NoSuchAlgorithmException.html">NoSuchAlgorithmException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/NoSuchProviderException.html">NoSuchProviderException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/PrivilegedActionException.html">PrivilegedActionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/ProviderException.html">ProviderException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/SignatureException.html">SignatureException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/UnrecoverableEntryException.html">UnrecoverableEntryException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/security/UnrecoverableKeyException.html">UnrecoverableKeyException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">SecureRandom</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>This class generates cryptographically secure pseudo-random numbers.
+
+ It is best to invoke <code>SecureRandom</code> using the default constructor.
+ This will provide an instance of the most cryptographically strong
+ provider available:
+
+ <pre>SecureRandom sr = new SecureRandom();
+ byte[] output = new byte[16];
+ sr.nextBytes(output);</pre>
+
+ <p>The default algorithm is defined by the first <code>SecureRandomSpi</code>
+ provider found in the installed security providers. Use <code><a href="reference/java/security/Security.html">Security</a></code>
+ to install custom <code><a href="reference/java/security/SecureRandomSpi.html">SecureRandomSpi</a></code> providers.
+
+ <p>Note that the output of a <code>SecureRandom</code> instance should never
+ be relied upon to be deterministic. For deterministic output from a given
+ input, see <code><a href="reference/java/security/MessageDigest.html">MessageDigest</a></code> which provides one-way hash functions.
+
+ <h3><a name="insecure_seed">Seeding <code>SecureRandom</code> may be
+ insecure</a></h3>
+ A seed is an array of bytes used to bootstrap random number generation.
+ To produce cryptographically secure random numbers, both the seed and the
+ algorithm must be secure.
+
+ <p>By default, instances of this class will generate an initial seed using
+ an internal entropy source, such as <code>/dev/urandom</code>. This seed is
+ unpredictable and appropriate for secure use.
+
+ <p>Using the <code><a href="reference/java/security/SecureRandom.html#SecureRandom(byte[])">seeded constructor</a></code> or calling
+ <code><a href="reference/java/security/SecureRandom.html#setSeed(byte[])">setSeed(byte[])</a></code> may completely replace the cryptographically strong
+ default seed causing the instance to return a predictable sequence of
+ numbers unfit for secure use. Due to variations between implementations
+ it is not recommended to use <code>setSeed</code> at all.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#SecureRandom()">SecureRandom</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#SecureRandom(byte[])">SecureRandom</a></span>(<span class="nowrap">byte[] <i>seed</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#SecureRandom(java.security.SecureRandomSpi, java.security.Provider)">SecureRandom</a></span>(<span class="nowrap"><a href="../../../reference/java/security/SecureRandomSpi.html">SecureRandomSpi</a> <i>secureRandomSpi</i></span>, <span class="nowrap"><a href="../../../reference/java/security/Provider.html">Provider</a> <i>provider</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            byte[]
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#generateSeed(int)">generateSeed</a></span>(<span class="nowrap">int <i>numBytes</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#getAlgorithm()">getAlgorithm</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/security/SecureRandom.html">SecureRandom</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#getInstance(java.lang.String)">getInstance</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>algorithm</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/security/SecureRandom.html">SecureRandom</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#getInstance(java.lang.String, java.lang.String)">getInstance</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>algorithm</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>provider</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/security/SecureRandom.html">SecureRandom</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#getInstance(java.lang.String, java.security.Provider)">getInstance</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>algorithm</i></span>, <span class="nowrap"><a href="../../../reference/java/security/Provider.html">Provider</a> <i>provider</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/security/Provider.html">Provider</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#getProvider()">getProvider</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            byte[]
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#getSeed(int)">getSeed</a></span>(<span class="nowrap">int <i>numBytes</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#nextBytes(byte[])">nextBytes</a></span>(<span class="nowrap">byte[] <i>bytes</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#setSeed(long)">setSeed</a></span>(<span class="nowrap">long <i>seed</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#setSeed(byte[])">setSeed</a></span>(<span class="nowrap">byte[] <i>seed</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/security/SecureRandom.html#next(int)">next</a></span>(<span class="nowrap">int <i>numBits</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="SecureRandom()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SecureRandom</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>SecureRandom</code> that uses the default algorithm.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="SecureRandom(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SecureRandom</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>seed</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new seeded <code>SecureRandom</code> that uses the default
+ algorithm. <a href="#insecure_seed">Seeding <code>SecureRandom</code> may be
+ insecure</a>.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="SecureRandom(java.security.SecureRandomSpi, java.security.Provider)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SecureRandom</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/security/SecureRandomSpi.html">SecureRandomSpi</a> <i>secureRandomSpi</i></span>, <span class="nowrap"><a href="../../../reference/java/security/Provider.html">Provider</a> <i>provider</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>SecureRandom</code> using the given
+ implementation from the specified provider.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">secureRandomSpi</td>
+          <td class="jd-tagdescr">the implementation.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">provider</td>
+          <td class="jd-tagdescr">the security provider.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="generateSeed(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        byte[]
+      </span>
+      <span class="sympad"><strong>generateSeed</strong></span>
+      <span class="params">(<span class="nowrap">int <i>numBytes</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Generates and returns the specified number of seed bytes, computed using
+ the seed generation algorithm used by this <code>SecureRandom</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">numBytes</td>
+          <td class="jd-tagdescr">the number of seed bytes.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the seed bytes.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getAlgorithm()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getAlgorithm</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the name of the algorithm of this <code>SecureRandom</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the name of the algorithm of this <code>SecureRandom</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getInstance(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/security/SecureRandom.html">SecureRandom</a>
+      </span>
+      <span class="sympad"><strong>getInstance</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>algorithm</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new instance of <code>SecureRandom</code> that utilizes the
+ specified algorithm.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">algorithm</td>
+          <td class="jd-tagdescr">the name of the algorithm to use.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a new instance of <code>SecureRandom</code> that utilizes the
+         specified algorithm.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/security/NoSuchAlgorithmException.html">NoSuchAlgorithmException</a></td>
+            <td class="jd-tagdescr">if the specified algorithm is not available.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>algorithm</code> is <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getInstance(java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/security/SecureRandom.html">SecureRandom</a>
+      </span>
+      <span class="sympad"><strong>getInstance</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>algorithm</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>provider</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new instance of <code>SecureRandom</code> that utilizes the
+ specified algorithm from the specified provider.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">algorithm</td>
+          <td class="jd-tagdescr">the name of the algorithm to use.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">provider</td>
+          <td class="jd-tagdescr">the name of the provider.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a new instance of <code>SecureRandom</code> that utilizes the
+         specified algorithm from the specified provider.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/security/NoSuchAlgorithmException.html">NoSuchAlgorithmException</a></td>
+            <td class="jd-tagdescr">if the specified algorithm is not available.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/security/NoSuchProviderException.html">NoSuchProviderException</a></td>
+            <td class="jd-tagdescr">if the specified provider is not available.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>algorithm</code> is <code>null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>provider == null || provider.isEmpty()</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getInstance(java.lang.String, java.security.Provider)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/security/SecureRandom.html">SecureRandom</a>
+      </span>
+      <span class="sympad"><strong>getInstance</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>algorithm</i></span>, <span class="nowrap"><a href="../../../reference/java/security/Provider.html">Provider</a> <i>provider</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new instance of <code>SecureRandom</code> that utilizes the
+ specified algorithm from the specified provider.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">algorithm</td>
+          <td class="jd-tagdescr">the name of the algorithm to use.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">provider</td>
+          <td class="jd-tagdescr">the security provider.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a new instance of <code>SecureRandom</code> that utilizes the
+         specified algorithm from the specified provider.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/security/NoSuchAlgorithmException.html">NoSuchAlgorithmException</a></td>
+            <td class="jd-tagdescr">if the specified algorithm is not available.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>algorithm</code> is <code>null</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>provider == null</code>
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getProvider()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/security/Provider.html">Provider</a>
+      </span>
+      <span class="sympad"><strong>getProvider</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the provider associated with this <code>SecureRandom</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the provider associated with this <code>SecureRandom</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSeed(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        byte[]
+      </span>
+      <span class="sympad"><strong>getSeed</strong></span>
+      <span class="params">(<span class="nowrap">int <i>numBytes</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Generates and returns the specified number of seed bytes, computed using
+ the seed generation algorithm used by this <code>SecureRandom</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">numBytes</td>
+          <td class="jd-tagdescr">the number of seed bytes.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the seed bytes
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="nextBytes(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>nextBytes</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>bytes</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Generates and stores random bytes in the given <code>byte[]</code> for each
+ array element.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">bytes</td>
+          <td class="jd-tagdescr">the <code>byte[]</code> to be filled with random bytes.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setSeed(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setSeed</strong></span>
+      <span class="params">(<span class="nowrap">long <i>seed</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Seeds this <code>SecureRandom</code> instance with the specified eight-byte
+ <code>seed</code>. <a href="#insecure_seed">Seeding <code>SecureRandom</code> may
+ be insecure</a>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setSeed(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>setSeed</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>seed</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Seeds this <code>SecureRandom</code> instance with the specified <code>seed</code>. <a href="#insecure_seed">Seeding <code>SecureRandom</code> may be
+ insecure</a>.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="next(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>next</strong></span>
+      <span class="params">(<span class="nowrap">int <i>numBits</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Generates and returns an <code>int</code> containing the specified number of
+ random bits (right justified, with leading zeros).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">numBits</td>
+          <td class="jd-tagdescr">number of bits to be generated. An input value should be in
+            the range [0, 32].</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an <code>int</code> containing the specified number of random bits.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

@@ -1,0 +1,3777 @@
+---
+
+title: RandomAccessFile - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Closeable.html">Closeable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataInput.html">DataInput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataOutput.html">DataOutput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Externalizable.html">Externalizable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileFilter.html">FileFilter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilenameFilter.html">FilenameFilter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Flushable.html">Flushable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputValidation.html">ObjectInputValidation</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectOutput.html">ObjectOutput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamConstants.html">ObjectStreamConstants</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Serializable.html">Serializable</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedInputStream.html">BufferedInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedOutputStream.html">BufferedOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedReader.html">BufferedReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedWriter.html">BufferedWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ByteArrayInputStream.html">ByteArrayInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ByteArrayOutputStream.html">ByteArrayOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharArrayReader.html">CharArrayReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharArrayWriter.html">CharArrayWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Console.html">Console</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataInputStream.html">DataInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataOutputStream.html">DataOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/File.html">File</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileDescriptor.html">FileDescriptor</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileInputStream.html">FileInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileOutputStream.html">FileOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilePermission.html">FilePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileReader.html">FileReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileWriter.html">FileWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterInputStream.html">FilterInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterOutputStream.html">FilterOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterReader.html">FilterReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterWriter.html">FilterWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InputStream.html">InputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InputStreamReader.html">InputStreamReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/LineNumberInputStream.html">LineNumberInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/LineNumberReader.html">LineNumberReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputStream.GetField.html">ObjectInputStream.GetField</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectOutputStream.html">ObjectOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectOutputStream.PutField.html">ObjectOutputStream.PutField</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamClass.html">ObjectStreamClass</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamField.html">ObjectStreamField</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OutputStream.html">OutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedInputStream.html">PipedInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedOutputStream.html">PipedOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedReader.html">PipedReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PrintStream.html">PrintStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PushbackInputStream.html">PushbackInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PushbackReader.html">PushbackReader</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/io/RandomAccessFile.html">RandomAccessFile</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Reader.html">Reader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SequenceInputStream.html">SequenceInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SerializablePermission.html">SerializablePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StreamTokenizer.html">StreamTokenizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringBufferInputStream.html">StringBufferInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringReader.html">StringReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringWriter.html">StringWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Writer.html">Writer</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharConversionException.html">CharConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/EOFException.html">EOFException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InterruptedIOException.html">InterruptedIOException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InvalidClassException.html">InvalidClassException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InvalidObjectException.html">InvalidObjectException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/IOException.html">IOException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/NotActiveException.html">NotActiveException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/NotSerializableException.html">NotSerializableException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamException.html">ObjectStreamException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OptionalDataException.html">OptionalDataException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StreamCorruptedException.html">StreamCorruptedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SyncFailedException.html">SyncFailedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/UnsupportedEncodingException.html">UnsupportedEncodingException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/UTFDataFormatException.html">UTFDataFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/WriteAbortedException.html">WriteAbortedException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/IOError.html">IOError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">RandomAccessFile</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Allows reading from and writing to a file in a random-access manner. This is
+ different from the uni-directional sequential access that a
+ <code><a href="reference/java/io/FileInputStream.html">FileInputStream</a></code> or <code><a href="reference/java/io/FileOutputStream.html">FileOutputStream</a></code> provides. If the file is
+ opened in read/write mode, write operations are available as well. The
+ position of the next read or write operation can be moved forwards and
+ backwards after every operation.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#RandomAccessFile(java.io.File, java.lang.String)">RandomAccessFile</a></span>(<span class="nowrap"><a href="../../../reference/java/io/File.html">File</a> <i>file</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>mode</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#RandomAccessFile(java.lang.String, java.lang.String)">RandomAccessFile</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>fileName</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>mode</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#close()">close</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            final
+            
+            
+            <a href="../../../reference/java/nio/channels/FileChannel.html">FileChannel</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#getChannel()">getChannel</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/io/FileDescriptor.html">FileDescriptor</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#getFD()">getFD</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#getFilePointer()">getFilePointer</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#length()">length</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#read()">read</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#read(byte[])">read</a></span>(<span class="nowrap">byte[] <i>buffer</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#read(byte[], int, int)">read</a></span>(<span class="nowrap">byte[] <i>buffer</i></span>, <span class="nowrap">int <i>byteOffset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readBoolean()">readBoolean</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            byte
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readByte()">readByte</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            char
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readChar()">readChar</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            double
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readDouble()">readDouble</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            float
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readFloat()">readFloat</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readFully(byte[])">readFully</a></span>(<span class="nowrap">byte[] <i>dst</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readFully(byte[], int, int)">readFully</a></span>(<span class="nowrap">byte[] <i>dst</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readInt()">readInt</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readLine()">readLine</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readLong()">readLong</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            short
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readShort()">readShort</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readUTF()">readUTF</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readUnsignedByte()">readUnsignedByte</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#readUnsignedShort()">readUnsignedShort</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#seek(long)">seek</a></span>(<span class="nowrap">long <i>offset</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#setLength(long)">setLength</a></span>(<span class="nowrap">long <i>newLength</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#skipBytes(int)">skipBytes</a></span>(<span class="nowrap">int <i>count</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#write(byte[])">write</a></span>(<span class="nowrap">byte[] <i>buffer</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#write(byte[], int, int)">write</a></span>(<span class="nowrap">byte[] <i>buffer</i></span>, <span class="nowrap">int <i>byteOffset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#write(int)">write</a></span>(<span class="nowrap">int <i>oneByte</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#writeBoolean(boolean)">writeBoolean</a></span>(<span class="nowrap">boolean <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#writeByte(int)">writeByte</a></span>(<span class="nowrap">int <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#writeBytes(java.lang.String)">writeBytes</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>str</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#writeChar(int)">writeChar</a></span>(<span class="nowrap">int <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#writeChars(java.lang.String)">writeChars</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>str</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#writeDouble(double)">writeDouble</a></span>(<span class="nowrap">double <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#writeFloat(float)">writeFloat</a></span>(<span class="nowrap">float <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#writeInt(int)">writeInt</a></span>(<span class="nowrap">int <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#writeLong(long)">writeLong</a></span>(<span class="nowrap">long <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#writeShort(int)">writeShort</a></span>(<span class="nowrap">int <i>val</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#writeUTF(java.lang.String)">writeUTF</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>str</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/RandomAccessFile.html#finalize()">finalize</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="RandomAccessFile(java.io.File, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>RandomAccessFile</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/io/File.html">File</a> <i>file</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>mode</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>RandomAccessFile</code> based on <code>file</code> and opens
+ it according to the access string in <code>mode</code>.
+ <p><a id="accessmode"/>
+ <code>mode</code> may have one of following values:
+ <table border="0">
+ <tr>
+ <td><code>"r"</code></td>
+ <td>The file is opened in read-only mode. An <code>IOException</code> is
+ thrown if any of the <code>write</code> methods is called.</td>
+ </tr>
+ <tr>
+ <td><code>"rw"</code></td>
+ <td>The file is opened for reading and writing. If the file does not
+ exist, it will be created.</td>
+ </tr>
+ <tr>
+ <td><code>"rws"</code></td>
+ <td>The file is opened for reading and writing. Every change of the
+ file's content or metadata must be written synchronously to the target
+ device.</td>
+ </tr>
+ <tr>
+ <td><code>"rwd"</code></td>
+ <td>The file is opened for reading and writing. Every change of the
+ file's content must be written synchronously to the target device.</td>
+ </tr>
+ </table></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">file</td>
+          <td class="jd-tagdescr">the file to open.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">mode</td>
+          <td class="jd-tagdescr">the file access <a href="#accessmode">mode</a>, either <code>"r"</code>, <code>"rw"</code>, <code>"rws"</code> or <code>"rwd"</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></td>
+            <td class="jd-tagdescr">if the file cannot be opened or created according to <code>mode</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>mode</code> is not <code>"r"</code>, <code>"rw"</code>, <code>"rws"</code> or <code>"rwd"</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="RandomAccessFile(java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>RandomAccessFile</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>fileName</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>mode</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>RandomAccessFile</code> based on the file named <code>fileName</code> and opens it according to the access string in <code>mode</code>.
+ The file path may be specified absolutely or relative to the system
+ property <code>"user.dir"</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">fileName</td>
+          <td class="jd-tagdescr">the name of the file to open.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">mode</td>
+          <td class="jd-tagdescr">the file access <a href="#accessmode">mode</a>, either <code>"r"</code>, <code>"rw"</code>, <code>"rws"</code> or <code>"rwd"</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></td>
+            <td class="jd-tagdescr">if the file cannot be opened or created according to <code>mode</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>mode</code> is not <code>"r"</code>, <code>"rw"</code>, <code>"rws"</code> or <code>"rwd"</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="close()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>close</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Closes this file.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while closing this file.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getChannel()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        synchronized
+        <a href="../../../reference/java/nio/channels/FileChannel.html">FileChannel</a>
+      </span>
+      <span class="sympad"><strong>getChannel</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets this file's <code><a href="reference/java/nio/channels/FileChannel.html">FileChannel</a></code> object.
+ <p>
+ The file channel's <code><a href="reference/java/nio/channels/FileChannel.html#position()">position</a></code> is the same
+ as this file's file pointer offset (see <code><a href="reference/java/io/RandomAccessFile.html#getFilePointer()">getFilePointer()</a></code>). Any
+ changes made to this file's file pointer offset are also visible in the
+ file channel's position and vice versa.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>this file's file channel instance.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getFD()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/io/FileDescriptor.html">FileDescriptor</a>
+      </span>
+      <span class="sympad"><strong>getFD</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets this file's <code><a href="reference/java/io/FileDescriptor.html">FileDescriptor</a></code>. This represents the operating
+ system resource for this random access file.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>this file's file descriptor object.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while getting the file descriptor of this
+             file.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getFilePointer()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>getFilePointer</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the current position within this file. All reads and
+ writes take place at the current file pointer position.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the current offset in bytes from the beginning of the file.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while getting the file pointer of this
+             file.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="length()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>length</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the length of this file in bytes.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the file's length in bytes.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or some other I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="read()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>read</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a single byte from the current position in this file and returns it
+ as an integer in the range from 0 to 255. Returns -1 if the end of the
+ file has been reached. Blocks until one byte has been read, the end of
+ the file is detected, or an exception is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the byte read or -1 if the end of the file has been reached.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="read(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>read</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>buffer</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads bytes from the current position in this file and stores them in the
+ byte array <code>buffer</code>. The maximum number of bytes read corresponds
+ to the size of <code>buffer</code>. Blocks until at least one byte has been
+ read, the end of the file is detected, or an exception is thrown.
+ Returns the number of bytes actually read or -1 if the end of the file
+ has been reached. See also <code><a href="reference/java/io/RandomAccessFile.html#readFully(byte[])">readFully(byte[])</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="read(byte[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>read</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>buffer</i></span>, <span class="nowrap">int <i>byteOffset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads up to <code>byteCount</code> bytes from the current position in this file
+ and stores them in the byte array <code>buffer</code> starting at <code>byteOffset</code>. Blocks until at least one byte has been
+ read, the end of the file is detected, or an exception is thrown.
+ Returns the number of bytes actually read or -1 if the end of the stream has been reached.
+ See also <code><a href="reference/java/io/RandomAccessFile.html#readFully(byte[])">readFully(byte[])</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">if <code>byteOffset < 0 || byteCount < 0 || byteOffset + byteCount > buffer.length</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readBoolean()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>readBoolean</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a boolean from the current position in this file. Blocks until one
+ byte has been read, the end of the file is reached or an exception is
+ thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next boolean value from this file.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of this file is detected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#writeBoolean(boolean)">writeBoolean(boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readByte()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        byte
+      </span>
+      <span class="sympad"><strong>readByte</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads an 8-bit byte from the current position in this file. Blocks until
+ one byte has been read, the end of the file is reached or an exception is
+ thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next signed 8-bit byte value from this file.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of this file is detected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#writeBoolean(boolean)">writeBoolean(boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readChar()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        char
+      </span>
+      <span class="sympad"><strong>readChar</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 16-bit character from the current position in this file. Blocks until
+ two bytes have been read, the end of the file is reached or an exception is
+ thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next char value from this file.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of this file is detected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#writeChar(int)">writeChar(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readDouble()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        double
+      </span>
+      <span class="sympad"><strong>readDouble</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 64-bit double from the current position in this file. Blocks
+ until eight bytes have been read, the end of the file is reached or an
+ exception is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next double value from this file.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of this file is detected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#writeDouble(double)">writeDouble(double)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readFloat()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        float
+      </span>
+      <span class="sympad"><strong>readFloat</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 32-bit float from the current position in this file. Blocks
+ until four bytes have been read, the end of the file is reached or an
+ exception is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next float value from this file.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of this file is detected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#writeFloat(float)">writeFloat(float)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readFully(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>readFully</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>dst</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Equivalent to <code>readFully(dst, 0, dst.length);</code>.
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readFully(byte[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>readFully</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>dst</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads <code>byteCount</code> bytes from this stream and stores them in the byte
+ array <code>dst</code> starting at <code>offset</code>. If <code>byteCount</code> is zero, then this
+ method returns without reading any bytes. Otherwise, this method blocks until
+ <code>byteCount</code> bytes have been read. If insufficient bytes are available,
+ <code>EOFException</code> is thrown. If an I/O error occurs, <code>IOException</code> is
+ thrown. When an exception is thrown, some bytes may have been consumed from the stream
+ and written into the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">dst</td>
+          <td class="jd-tagdescr">the byte array into which the data is read.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the offset in <code>dst</code> at which to store the bytes.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">byteCount</td>
+          <td class="jd-tagdescr">the number of bytes to read.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of the source stream is reached before enough
+             bytes have been read.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">if <code>offset < 0</code> or <code>byteCount < 0</code>, or
+             <code>offset + byteCount > dst.length</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if a problem occurs while reading from this stream.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>dst</code> is null.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readInt()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>readInt</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 32-bit integer from the current position in this file. Blocks
+ until four bytes have been read, the end of the file is reached or an
+ exception is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next int value from this file.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of this file is detected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#writeInt(int)">writeInt(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readLine()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>readLine</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a line of text form the current position in this file. A line is
+ represented by zero or more characters followed by <code>'\n'</code>, <code>'\r'</code>, <code>"\r\n"</code> or the end of file marker. The string does not
+ include the line terminating sequence.
+ <p>
+ Blocks until a line terminating sequence has been read, the end of the
+ file is reached or an exception is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the contents of the line or <code>null</code> if no characters have
+         been read before the end of the file has been reached.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readLong()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>readLong</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 64-bit long from the current position in this file. Blocks until
+ eight bytes have been read, the end of the file is reached or an
+ exception is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next long value from this file.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of this file is detected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#writeLong(long)">writeLong(long)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readShort()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        short
+      </span>
+      <span class="sympad"><strong>readShort</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 16-bit short from the current position in this file. Blocks until
+ two bytes have been read, the end of the file is reached or an exception
+ is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next short value from this file.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of this file is detected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#writeShort(int)">writeShort(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readUTF()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>readUTF</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a string that is encoded in <code><a href="reference/java/io/DataInput.html">modified UTF-8</a></code> from
+ this file. The number of bytes that must be read for the complete string
+ is determined by the first two bytes read from the file. Blocks until all
+ required bytes have been read, the end of the file is reached or an
+ exception is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next string encoded in <code><a href="reference/java/io/DataInput.html">modified UTF-8</a></code> from
+         this file.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of this file is detected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/UTFDataFormatException.html">UTFDataFormatException</a></td>
+            <td class="jd-tagdescr">if the bytes read cannot be decoded into a character string.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#writeUTF(java.lang.String)">writeUTF(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readUnsignedByte()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>readUnsignedByte</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads an unsigned 8-bit byte from the current position in this file and
+ returns it as an integer. Blocks until one byte has been read, the end of
+ the file is reached or an exception is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next unsigned byte value from this file as an int.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of this file is detected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#writeByte(int)">writeByte(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readUnsignedShort()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>readUnsignedShort</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads an unsigned big-endian 16-bit short from the current position in this file and
+ returns it as an integer. Blocks until two bytes have been read, the end of
+ the file is reached or an exception is thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next unsigned short value from this file as an int.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td class="jd-tagdescr">if the end of this file is detected.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#writeShort(int)">writeShort(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="seek(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>seek</strong></span>
+      <span class="params">(<span class="nowrap">long <i>offset</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Moves this file's file pointer to a new position, from where following
+ <code>read</code>, <code>write</code> or <code>skip</code> operations are done. The
+ position may be greater than the current length of the file, but the
+ file's length will only change if the moving of the pointer is followed
+ by a <code>write</code> operation.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the new file pointer position.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed, <code>pos < 0</code> or another I/O error
+             occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setLength(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setLength</strong></span>
+      <span class="params">(<span class="nowrap">long <i>newLength</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the length of this file to <code>newLength</code>. If the current file is
+ smaller, it is expanded but the contents from the previous end of the
+ file to the new end are undefined. The file is truncated if its current
+ size is bigger than <code>newLength</code>. If the current file pointer
+ position is in the truncated part, it is set to the end of the file.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">newLength</td>
+          <td class="jd-tagdescr">the new file length in bytes.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>newLength < 0</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="skipBytes(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>skipBytes</strong></span>
+      <span class="params">(<span class="nowrap">int <i>count</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Skips over <code>count</code> bytes in this file. Less than <code>count</code>
+ bytes are skipped if the end of the file is reached or an exception is
+ thrown during the operation. Nothing is done if <code>count</code> is
+ negative.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">count</td>
+          <td class="jd-tagdescr">the number of bytes to skip.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of bytes actually skipped.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="write(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>write</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>buffer</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the entire contents of the byte array <code>buffer</code> to this file,
+ starting at the current file pointer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">buffer</td>
+          <td class="jd-tagdescr">the buffer to write.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while writing to this file.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="write(byte[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>write</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>buffer</i></span>, <span class="nowrap">int <i>byteOffset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>byteCount</code> bytes from the byte array <code>buffer</code> to this
+ file, starting at the current file pointer and using <code>byteOffset</code> as
+ the first position within <code>buffer</code> to get bytes.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">buffer</td>
+          <td class="jd-tagdescr">the buffer to write.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">byteOffset</td>
+          <td class="jd-tagdescr">the index of the first byte in <code>buffer</code> to write.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">byteCount</td>
+          <td class="jd-tagdescr">the number of bytes from the <code>buffer</code> to write.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">if <code>byteCount < 0</code>, <code>byteOffset < 0</code> or <code>byteCount +
+             byteOffset</code> is greater than the size of <code>buffer</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while writing to this file.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="write(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>write</strong></span>
+      <span class="params">(<span class="nowrap">int <i>oneByte</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a byte to this file, starting at the current file pointer. Only
+ the least significant byte of the integer <code>oneByte</code> is written.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">oneByte</td>
+          <td class="jd-tagdescr">the byte to write to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#read()">read()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeBoolean(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeBoolean</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a boolean to this file as a single byte (1 for true, 0 for false), starting at the
+ current file pointer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">the boolean to write to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#readBoolean()">readBoolean()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeByte(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeByte</strong></span>
+      <span class="params">(<span class="nowrap">int <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an 8-bit byte to this file, starting at the current file pointer.
+ Only the least significant byte of the integer <code>val</code> is written.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">the byte to write to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if this file is closed or another I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#readByte()">readByte()</a></code></li><li><code><a href="../../../reference/java/io/RandomAccessFile.html#readUnsignedByte()">readUnsignedByte()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeBytes(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeBytes</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>str</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the low order 8-bit bytes from a string to this file, starting at
+ the current file pointer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">str</td>
+          <td class="jd-tagdescr">the string containing the bytes to write to this file</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while writing to this file.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeChar(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeChar</strong></span>
+      <span class="params">(<span class="nowrap">int <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a big-endian 16-bit character to this file, starting at the current file
+ pointer. Only the two least significant bytes of the integer <code>val</code>
+ are written, with the high byte first.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">the char to write to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while writing to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#readChar()">readChar()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeChars(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeChars</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>str</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes big-endian 16-bit characters from <code>str</code> to this file, starting at the
+ current file pointer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">str</td>
+          <td class="jd-tagdescr">the string to write to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while writing to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#readChar()">readChar()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeDouble(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeDouble</strong></span>
+      <span class="params">(<span class="nowrap">double <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a big-endian 64-bit double to this file, starting at the current file
+ pointer. The bytes are those returned by
+ <code><a href="reference/java/lang/Double.html#doubleToLongBits(double)">doubleToLongBits(double)</a></code>, meaning a canonical NaN is used.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">the double to write to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while writing to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#readDouble()">readDouble()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeFloat(float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeFloat</strong></span>
+      <span class="params">(<span class="nowrap">float <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a big-endian 32-bit float to this file, starting at the current file pointer.
+ The bytes are those returned by <code><a href="reference/java/lang/Float.html#floatToIntBits(float)">floatToIntBits(float)</a></code>, meaning a canonical NaN
+ is used.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">the float to write to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while writing to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#readFloat()">readFloat()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeInt(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeInt</strong></span>
+      <span class="params">(<span class="nowrap">int <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a big-endian 32-bit integer to this file, starting at the current file
+ pointer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">the int to write to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while writing to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#readInt()">readInt()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeLong(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeLong</strong></span>
+      <span class="params">(<span class="nowrap">long <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a big-endian 64-bit long to this file, starting at the current file
+ pointer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">the long to write to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while writing to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#readLong()">readLong()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeShort(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeShort</strong></span>
+      <span class="params">(<span class="nowrap">int <i>val</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a big-endian 16-bit short to this file, starting at the current file
+ pointer. Only the two least significant bytes of the integer <code>val</code>
+ are written.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">val</td>
+          <td class="jd-tagdescr">the short to write to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while writing to this file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#readShort()">readShort()</a></code></li><li><code><a href="../../../reference/java/io/DataInput.html#readUnsignedShort()">readUnsignedShort()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeUTF(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeUTF</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>str</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a string encoded with <code><a href="reference/java/io/DataInput.html">modified UTF-8</a></code> to this
+ file, starting at the current file pointer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">str</td>
+          <td class="jd-tagdescr">the string to write in <code><a href="reference/java/io/DataInput.html">modified UTF-8</a></code>
+            format.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs while writing to this file.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/UTFDataFormatException.html">UTFDataFormatException</a></td>
+            <td class="jd-tagdescr">if the encoded string is longer than 65535 bytes.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/RandomAccessFile.html#readUTF()">readUTF()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="finalize()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>finalize</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/Throwable.html">Throwable</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

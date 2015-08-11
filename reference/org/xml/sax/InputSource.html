@@ -1,0 +1,1423 @@
+---
+
+title: InputSource - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/AttributeList.html">AttributeList</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/Attributes.html">Attributes</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/ContentHandler.html">ContentHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/DTDHandler.html">DTDHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/EntityResolver.html">EntityResolver</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/Locator.html">Locator</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/Parser.html">Parser</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/XMLFilter.html">XMLFilter</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/XMLReader.html">XMLReader</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/org/xml/sax/InputSource.html">InputSource</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/SAXNotRecognizedException.html">SAXNotRecognizedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/SAXNotSupportedException.html">SAXNotSupportedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/org/xml/sax/SAXParseException.html">SAXParseException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">InputSource</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>A single input source for an XML entity.
+
+ <blockquote>
+ <em>This module, both source code and documentation, is in the
+ Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
+ See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
+ for further information.
+ </blockquote>
+
+ <p>This class allows a SAX application to encapsulate information
+ about an input source in a single object, which may include
+ a public identifier, a system identifier, a byte stream (possibly
+ with a specified encoding), and/or a character stream.</p>
+
+ <p>There are two places that the application can deliver an
+ input source to the parser: as the argument to the Parser.parse
+ method, or as the return value of the EntityResolver.resolveEntity
+ method.</p>
+
+ <p>The SAX parser will use the InputSource object to determine how
+ to read XML input.  If there is a character stream available, the
+ parser will read that stream directly, disregarding any text
+ encoding declaration found in that stream.
+ If there is no character stream, but there is
+ a byte stream, the parser will use that byte stream, using the
+ encoding specified in the InputSource or else (if no encoding is
+ specified) autodetecting the character encoding using an algorithm
+ such as the one in the XML specification.  If neither a character
+ stream nor a
+ byte stream is available, the parser will attempt to open a URI
+ connection to the resource identified by the system
+ identifier.</p>
+
+ <p>An InputSource object belongs to the application: the SAX parser
+ shall never modify it in any way (it may modify a copy if
+ necessary).  However, standard processing of both byte and
+ character streams is to close them on as part of end-of-parse cleanup,
+ so applications should not attempt to re-use such streams after they
+ have been handed to a parser.  </p></p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/XMLReader.html#parse(org.xml.sax.InputSource)">parse(org.xml.sax.InputSource)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/EntityResolver.html#resolveEntity(java.lang.String, java.lang.String)">resolveEntity(String, String)</a></code></li><li><code><a href="../../../../reference/java/io/InputStream.html">InputStream</a></code></li><li><code><a href="../../../../reference/java/io/Reader.html">Reader</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#InputSource()">InputSource</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#InputSource(java.lang.String)">InputSource</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>systemId</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#InputSource(java.io.InputStream)">InputSource</a></span>(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>byteStream</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#InputSource(java.io.Reader)">InputSource</a></span>(<span class="nowrap"><a href="../../../../reference/java/io/Reader.html">Reader</a> <i>characterStream</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/io/InputStream.html">InputStream</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#getByteStream()">getByteStream</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/io/Reader.html">Reader</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#getCharacterStream()">getCharacterStream</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#getEncoding()">getEncoding</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#getPublicId()">getPublicId</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#getSystemId()">getSystemId</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#setByteStream(java.io.InputStream)">setByteStream</a></span>(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>byteStream</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#setCharacterStream(java.io.Reader)">setCharacterStream</a></span>(<span class="nowrap"><a href="../../../../reference/java/io/Reader.html">Reader</a> <i>characterStream</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#setEncoding(java.lang.String)">setEncoding</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>encoding</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#setPublicId(java.lang.String)">setPublicId</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>publicId</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/org/xml/sax/InputSource.html#setSystemId(java.lang.String)">setSystemId</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>systemId</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="InputSource()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>InputSource</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Zero-argument default constructor.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setPublicId(java.lang.String)">setPublicId(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setSystemId(java.lang.String)">setSystemId(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setByteStream(java.io.InputStream)">setByteStream(InputStream)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setCharacterStream(java.io.Reader)">setCharacterStream(Reader)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setEncoding(java.lang.String)">setEncoding(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="InputSource(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>InputSource</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>systemId</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Create a new input source with a system identifier.
+
+ <p>Applications may use setPublicId to include a
+ public identifier as well, or setEncoding to specify
+ the character encoding, if known.</p>
+
+ <p>If the system identifier is a URL, it must be fully
+ resolved (it may not be a relative URL).</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">systemId</td>
+          <td class="jd-tagdescr">The system identifier (URI).</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setPublicId(java.lang.String)">setPublicId(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setSystemId(java.lang.String)">setSystemId(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setByteStream(java.io.InputStream)">setByteStream(InputStream)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setEncoding(java.lang.String)">setEncoding(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setCharacterStream(java.io.Reader)">setCharacterStream(Reader)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="InputSource(java.io.InputStream)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>InputSource</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>byteStream</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Create a new input source with a byte stream.
+
+ <p>Application writers should use setSystemId() to provide a base
+ for resolving relative URIs, may use setPublicId to include a
+ public identifier, and may use setEncoding to specify the object's
+ character encoding.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">byteStream</td>
+          <td class="jd-tagdescr">The raw byte stream containing the document.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setPublicId(java.lang.String)">setPublicId(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setSystemId(java.lang.String)">setSystemId(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setEncoding(java.lang.String)">setEncoding(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setByteStream(java.io.InputStream)">setByteStream(InputStream)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setCharacterStream(java.io.Reader)">setCharacterStream(Reader)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="InputSource(java.io.Reader)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>InputSource</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/io/Reader.html">Reader</a> <i>characterStream</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Create a new input source with a character stream.
+
+ <p>Application writers should use setSystemId() to provide a base
+ for resolving relative URIs, and may use setPublicId to include a
+ public identifier.</p>
+
+ <p>The character stream shall not include a byte order mark.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">characterStream</td>
+          <td class="jd-tagdescr">The raw character stream containing the document.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setPublicId(java.lang.String)">setPublicId(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setSystemId(java.lang.String)">setSystemId(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setByteStream(java.io.InputStream)">setByteStream(InputStream)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setCharacterStream(java.io.Reader)">setCharacterStream(Reader)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="getByteStream()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/io/InputStream.html">InputStream</a>
+      </span>
+      <span class="sympad"><strong>getByteStream</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Get the byte stream for this input source.
+
+ <p>The getEncoding method will return the character
+ encoding for this byte stream, or null if unknown.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The byte stream, or null if none was supplied.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#getEncoding()">getEncoding()</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setByteStream(java.io.InputStream)">setByteStream(InputStream)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getCharacterStream()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/io/Reader.html">Reader</a>
+      </span>
+      <span class="sympad"><strong>getCharacterStream</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Get the character stream for this input source.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The character stream, or null if none was supplied.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setCharacterStream(java.io.Reader)">setCharacterStream(Reader)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getEncoding()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getEncoding</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Get the character encoding for a byte stream or URI.
+ This value will be ignored when the application provides a
+ character stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The encoding, or null if none was supplied.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setByteStream(java.io.InputStream)">setByteStream(InputStream)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#getSystemId()">getSystemId()</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#getByteStream()">getByteStream()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getPublicId()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getPublicId</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Get the public identifier for this input source.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The public identifier, or null if none was supplied.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setPublicId(java.lang.String)">setPublicId(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSystemId()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getSystemId</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Get the system identifier for this input source.
+
+ <p>The getEncoding method will return the character encoding
+ of the object pointed to, or null if unknown.</p>
+
+ <p>If the system ID is a URL, it will be fully resolved.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The system identifier, or null if none was supplied.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setSystemId(java.lang.String)">setSystemId(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#getEncoding()">getEncoding()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setByteStream(java.io.InputStream)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setByteStream</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/io/InputStream.html">InputStream</a> <i>byteStream</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the byte stream for this input source.
+
+ <p>The SAX parser will ignore this if there is also a character
+ stream specified, but it will use a byte stream in preference
+ to opening a URI connection itself.</p>
+
+ <p>If the application knows the character encoding of the
+ byte stream, it should set it with the setEncoding method.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">byteStream</td>
+          <td class="jd-tagdescr">A byte stream containing an XML document or
+        other entity.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setEncoding(java.lang.String)">setEncoding(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#getByteStream()">getByteStream()</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#getEncoding()">getEncoding()</a></code></li><li><code><a href="../../../../reference/java/io/InputStream.html">InputStream</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setCharacterStream(java.io.Reader)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setCharacterStream</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/io/Reader.html">Reader</a> <i>characterStream</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the character stream for this input source.
+
+ <p>If there is a character stream specified, the SAX parser
+ will ignore any byte stream and will not attempt to open
+ a URI connection to the system identifier.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">characterStream</td>
+          <td class="jd-tagdescr">The character stream containing the
+        XML document or other entity.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#getCharacterStream()">getCharacterStream()</a></code></li><li><code><a href="../../../../reference/java/io/Reader.html">Reader</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setEncoding(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setEncoding</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>encoding</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the character encoding, if known.
+
+ <p>The encoding must be a string acceptable for an
+ XML encoding declaration (see section 4.3.3 of the XML 1.0
+ recommendation).</p>
+
+ <p>This method has no effect when the application provides a
+ character stream.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">encoding</td>
+          <td class="jd-tagdescr">A string describing the character encoding.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setSystemId(java.lang.String)">setSystemId(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setByteStream(java.io.InputStream)">setByteStream(InputStream)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#getEncoding()">getEncoding()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setPublicId(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setPublicId</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>publicId</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the public identifier for this input source.
+
+ <p>The public identifier is always optional: if the application
+ writer includes one, it will be provided as part of the
+ location information.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">publicId</td>
+          <td class="jd-tagdescr">The public identifier as a string.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#getPublicId()">getPublicId()</a></code></li><li><code><a href="../../../../reference/org/xml/sax/Locator.html#getPublicId()">getPublicId()</a></code></li><li><code><a href="../../../../reference/org/xml/sax/SAXParseException.html#getPublicId()">getPublicId()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setSystemId(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setSystemId</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>systemId</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the system identifier for this input source.
+
+ <p>The system identifier is optional if there is a byte stream
+ or a character stream, but it is still useful to provide one,
+ since the application can use it to resolve relative URIs
+ and can include it in error messages and warnings (the parser
+ will attempt to open a connection to the URI only if
+ there is no byte stream or character stream specified).</p>
+
+ <p>If the application knows the character encoding of the
+ object pointed to by the system identifier, it can register
+ the encoding using the setEncoding method.</p>
+
+ <p>If the system identifier is a URL, it must be fully
+ resolved (it may not be a relative URL).</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">systemId</td>
+          <td class="jd-tagdescr">The system identifier as a string.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#setEncoding(java.lang.String)">setEncoding(String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html#getSystemId()">getSystemId()</a></code></li><li><code><a href="../../../../reference/org/xml/sax/Locator.html#getSystemId()">getSystemId()</a></code></li><li><code><a href="../../../../reference/org/xml/sax/SAXParseException.html#getSystemId()">getSystemId()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

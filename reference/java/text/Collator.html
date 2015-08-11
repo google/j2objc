@@ -1,0 +1,1760 @@
+---
+
+title: Collator - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/text/AttributedCharacterIterator.html">AttributedCharacterIterator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/CharacterIterator.html">CharacterIterator</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Annotation.html">Annotation</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/AttributedString.html">AttributedString</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/ChoiceFormat.html">ChoiceFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/CollationKey.html">CollationKey</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/text/Collator.html">Collator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DateFormat.html">DateFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DateFormat.Field.html">DateFormat.Field</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DateFormatSymbols.html">DateFormatSymbols</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DecimalFormat.html">DecimalFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/DecimalFormatSymbols.html">DecimalFormatSymbols</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/FieldPosition.html">FieldPosition</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Format.html">Format</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Format.Field.html">Format.Field</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/IOSCollator.html">IOSCollator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/MessageFormat.html">MessageFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/MessageFormat.Field.html">MessageFormat.Field</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Normalizer.html">Normalizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/NumberFormat.html">NumberFormat</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/NumberFormat.Field.html">NumberFormat.Field</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/ParsePosition.html">ParsePosition</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/text/SimpleDateFormat.html">SimpleDateFormat</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/text/Normalizer.Form.html">Normalizer.Form</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/text/ParseException.html">ParseException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">Collator</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;">
+Known Direct Subclasses
+
+  <div id="subclasses-direct">
+      <div id="subclasses-direct-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/text/IOSCollator.html">IOSCollator</a>
+            
+          
+      </div>
+      <div id="subclasses-direct-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/text/IOSCollator.html">IOSCollator</a></td>
+              <td class="jd-descrcol" width="100%">A concrete implementation class for <code>Collation</code> for iOS.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Performs locale-sensitive string comparison.
+ <p>
+ Following the <a href=http://www.unicode.org>Unicode Consortium</a>'s
+ specifications for the <a
+ href="http://www.unicode.org/unicode/reports/tr10/"> Unicode Collation
+ Algorithm (UCA)</a>, there are 4 different levels of strength used in
+ comparisons:
+ <ul>
+ <li>PRIMARY strength: Typically, this is used to denote differences between
+ base characters (for example, "a" &lt; "b"). It is the strongest difference.
+ For example, dictionaries are divided into different sections by base
+ character.
+ <li>SECONDARY strength: Accents in the characters are considered secondary
+ differences (for example, "as" &lt; "&agrave;s" &lt; "at"). Other differences
+ between letters can also be considered secondary differences, depending on
+ the language. A secondary difference is ignored when there is a primary
+ difference anywhere in the strings.
+ <li>TERTIARY strength: Upper and lower case differences in characters are
+ distinguished at tertiary strength (for example, "ao" &lt; "Ao" &lt;
+ "a&ograve;"). In addition, a variant of a letter differs from the base form
+ on the tertiary strength (such as "A" and "&#9398;"). Another example is the
+ difference between large and small Kana. A tertiary difference is ignored
+ when there is a primary or secondary difference anywhere in the strings.
+ <li>IDENTICAL strength: When all other strengths are equal, the IDENTICAL
+ strength is used as a tiebreaker. The Unicode code point values of the NFD
+ form of each string are compared, just in case there is no difference. For
+ example, Hebrew cantellation marks are only distinguished at this strength.
+ This strength should be used sparingly, as only code point value differences
+ between two strings are an extremely rare occurrence. Using this strength
+ substantially decreases the performance for both comparison and collation key
+ generation APIs. This strength also increases the size of the collation key.
+ </ul>
+ <p>
+ This <code>Collator</code> deals only with two decomposition modes, the canonical
+ decomposition mode and one that does not use any decomposition. The
+ compatibility decomposition mode
+ <code>java.text.Collator.FULL_DECOMPOSITION</code> is not supported here. If the
+ canonical decomposition mode is set, <code>Collator</code> handles un-normalized
+ text properly, producing the same results as if the text were normalized in
+ NFD. If canonical decomposition is turned off, it is the user's
+ responsibility to ensure that all text is already in the appropriate form
+ before performing a comparison or before getting a <code><a href="reference/java/text/CollationKey.html">CollationKey</a></code>.
+ <p>
+ <em>Examples:</em>
+ <blockquote>
+
+ <pre>
+ // Get the Collator for US English and set its strength to PRIMARY
+ Collator usCollator = Collator.getInstance(Locale.US);
+ usCollator.setStrength(Collator.PRIMARY);
+ if (usCollator.compare(&quot;abc&quot;, &quot;ABC&quot;) == 0) {
+     System.out.println(&quot;Strings are equivalent&quot;);
+ }
+ </pre>
+
+ </blockquote>
+ <p>
+ The following example shows how to compare two strings using the collator for
+ the default locale.
+ <blockquote>
+
+ <pre>
+ // Compare two strings in the default locale
+ Collator myCollator = Collator.getInstance();
+ myCollator.setDecomposition(Collator.NO_DECOMPOSITION);
+ if (myCollator.compare(&quot;ḁ̀&quot;, &quot;ḁ̀&quot;) != 0) {
+     System.out.println(&quot;ḁ̀ is not equal to ḁ̀ without decomposition&quot;);
+     myCollator.setDecomposition(Collator.CANONICAL_DECOMPOSITION);
+     if (myCollator.compare(&quot;ḁ̀&quot;, &quot;ḁ̀&quot;) != 0) {
+         System.out.println(&quot;Error: ḁ̀ should be equal to ḁ̀ with decomposition&quot;);
+     } else {
+         System.out.println(&quot;ḁ̀ is equal to ḁ̀ with decomposition&quot;);
+     }
+ } else {
+     System.out.println(&quot;Error: ḁ̀ should be not equal to ḁ̀ without decomposition&quot;);
+ }
+ </pre>
+
+ </blockquote></p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/text/CollationKey.html">CollationKey</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="constants"><h3>Constant Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/text/Collator.html#CANONICAL_DECOMPOSITION">CANONICAL_DECOMPOSITION</a></td>
+        <td class="jd-descrcol" width="100%">Constant used to specify the decomposition rule.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/text/Collator.html#FULL_DECOMPOSITION">FULL_DECOMPOSITION</a></td>
+        <td class="jd-descrcol" width="100%">Constant used to specify the decomposition rule.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/text/Collator.html#IDENTICAL">IDENTICAL</a></td>
+        <td class="jd-descrcol" width="100%">Constant used to specify the collation strength.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/text/Collator.html#NO_DECOMPOSITION">NO_DECOMPOSITION</a></td>
+        <td class="jd-descrcol" width="100%">Constant used to specify the decomposition rule.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/text/Collator.html#PRIMARY">PRIMARY</a></td>
+        <td class="jd-descrcol" width="100%">Constant used to specify the collation strength.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/text/Collator.html#SECONDARY">SECONDARY</a></td>
+        <td class="jd-descrcol" width="100%">Constant used to specify the collation strength.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/text/Collator.html#TERTIARY">TERTIARY</a></td>
+        <td class="jd-descrcol" width="100%">Constant used to specify the collation strength.</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#Collator()">Collator</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#clone()">clone</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#compare(java.lang.Object, java.lang.Object)">compare</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object1</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#compare(java.lang.String, java.lang.String)">compare</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string1</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#equals(java.lang.String, java.lang.String)">equals</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string1</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/util/Locale.html">Locale[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#getAvailableLocales()">getAvailableLocales</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/text/CollationKey.html">CollationKey</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#getCollationKey(java.lang.String)">getCollationKey</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#getDecomposition()">getDecomposition</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/text/Collator.html">Collator</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#getInstance()">getInstance</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/text/Collator.html">Collator</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#getInstance(java.util.Locale)">getInstance</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#getStrength()">getStrength</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#setDecomposition(int)">setDecomposition</a></span>(<span class="nowrap">int <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/text/Collator.html#setStrength(int)">setStrength</a></span>(<span class="nowrap">int <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<section id="constants">
+  <h2>Constants</h2>
+  
+
+
+
+<A NAME="CANONICAL_DECOMPOSITION"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>CANONICAL_DECOMPOSITION</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constant used to specify the decomposition rule.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                1
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="FULL_DECOMPOSITION"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>FULL_DECOMPOSITION</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constant used to specify the decomposition rule. This value for
+ decomposition is not supported.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                2
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="IDENTICAL"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>IDENTICAL</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constant used to specify the collation strength.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                3
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="NO_DECOMPOSITION"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>NO_DECOMPOSITION</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constant used to specify the decomposition rule.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                0
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="PRIMARY"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>PRIMARY</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constant used to specify the collation strength.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                0
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="SECONDARY"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>SECONDARY</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constant used to specify the collation strength.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                1
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="TERTIARY"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>TERTIARY</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constant used to specify the collation strength.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                2
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="Collator()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>Collator</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="clone()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad"><strong>clone</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="compare(java.lang.Object, java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>compare</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object1</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares two objects to determine their relative order. The objects must
+ be strings.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">object1</td>
+          <td class="jd-tagdescr">the first string to compare.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">object2</td>
+          <td class="jd-tagdescr">the second string to compare.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a negative value if <code>object1</code> is less than <code>object2</code>,
+         0 if they are equal, and a positive value if <code>object1</code> is
+         greater than <code>object2</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td class="jd-tagdescr">if <code>object1</code> or <code>object2</code> is not a <code>String</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="compare(java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>compare</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string1</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares two strings to determine their relative order.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string1</td>
+          <td class="jd-tagdescr">the first string to compare.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">string2</td>
+          <td class="jd-tagdescr">the second string to compare.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a negative value if <code>string1</code> is less than <code>string2</code>,
+         0 if they are equal and a positive value if <code>string1</code> is
+         greater than <code>string2</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="equals(java.lang.String, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string1</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares two strings using the collation rules to determine if they are
+ equal.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string1</td>
+          <td class="jd-tagdescr">the first string to compare.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">string2</td>
+          <td class="jd-tagdescr">the second string to compare.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if <code>string1</code> and <code>string2</code> are equal
+         using the collation rules, false otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getAvailableLocales()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/util/Locale.html">Locale[]</a>
+      </span>
+      <span class="sympad"><strong>getAvailableLocales</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an array of locales for which custom <code>Collator</code> instances
+ are available.
+ <p>Note that Android does not support user-supplied locale service providers.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getCollationKey(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/text/CollationKey.html">CollationKey</a>
+      </span>
+      <span class="sympad"><strong>getCollationKey</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>string</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code><a href="reference/java/text/CollationKey.html">CollationKey</a></code> for the specified string for this collator
+ with the current decomposition rule and strength value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">string</td>
+          <td class="jd-tagdescr">the source string that is converted into a collation key.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the collation key for <code>string</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getDecomposition()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getDecomposition</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the decomposition rule for this collator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the decomposition rule, either <code>NO_DECOMPOSITION</code> or
+         <code>CANONICAL_DECOMPOSITION</code>. <code>FULL_DECOMPOSITION</code> is
+         not supported.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getInstance()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/text/Collator.html">Collator</a>
+      </span>
+      <span class="sympad"><strong>getInstance</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Collator</code> instance which is appropriate for the user's default
+ <code>Locale</code>.
+ See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getInstance(java.util.Locale)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/text/Collator.html">Collator</a>
+      </span>
+      <span class="sympad"><strong>getInstance</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>Collator</code> instance which is appropriate for <code>locale</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getStrength()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getStrength</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the strength value for this collator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the strength value, either PRIMARY, SECONDARY, TERTIARY or
+         IDENTICAL.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setDecomposition(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setDecomposition</strong></span>
+      <span class="params">(<span class="nowrap">int <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the decomposition rule for this collator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the decomposition rule, either <code>NO_DECOMPOSITION</code> or
+            <code>CANONICAL_DECOMPOSITION</code>. <code>FULL_DECOMPOSITION</code>
+            is not supported.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the provided decomposition rule is not valid. This includes
+            <code>FULL_DECOMPOSITION</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setStrength(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setStrength</strong></span>
+      <span class="params">(<span class="nowrap">int <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the strength value for this collator.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the strength value, either PRIMARY, SECONDARY, TERTIARY, or
+            IDENTICAL.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the provided strength value is not valid.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

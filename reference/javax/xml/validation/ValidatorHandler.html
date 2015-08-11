@@ -1,0 +1,1529 @@
+---
+
+title: ValidatorHandler - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/validation/Schema.html">Schema</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/validation/SchemaFactory.html">SchemaFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/validation/SchemaFactoryLoader.html">SchemaFactoryLoader</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/validation/TypeInfoProvider.html">TypeInfoProvider</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/validation/Validator.html">Validator</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">ValidatorHandler</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Streaming validator that works on SAX stream.
+
+ <p>
+ A <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> object is a thread-unsafe, non-reentrant object.
+ In other words, it is the application's responsibility to make
+ sure that one <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> object is not used from
+ more than one thread at any given time.
+
+ <p>
+ <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> checks if the SAX events follow
+ the set of constraints described in the associated <code><a href="reference/javax/xml/validation/Schema.html">Schema</a></code>,
+ and additionally it may modify the SAX events (for example
+ by adding default values, etc.)
+
+ <p>
+ <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> extends from <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code>,
+ but it refines the underlying <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code> in
+ the following way:
+ <ol>
+  <li>startElement/endElement events must receive non-null String
+      for <code>uri</code>, <code>localName</code>, and <code>qname</code>,
+      even though SAX allows some of them to be null.
+      Similarly, the user-specified <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code> will receive non-null
+      Strings for all three parameters.
+
+  <li>Applications must ensure that <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>'s
+      <code><a href="reference/org/xml/sax/ContentHandler.html#startPrefixMapping(java.lang.String, java.lang.String)">startPrefixMapping(String, String)</a></code> and
+      <code><a href="reference/org/xml/sax/ContentHandler.html#endPrefixMapping(java.lang.String)">endPrefixMapping(String)</a></code> are invoked
+      properly. Similarly, the user-specified <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code>
+      will receive startPrefixMapping/endPrefixMapping events.
+      If the <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> introduces additional namespace
+      bindings, the user-specified <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code> will receive
+      additional startPrefixMapping/endPrefixMapping events.
+
+  <li><code><a href="reference/org/xml/sax/Attributes.html">Attributes</a></code> for the
+      <code><a href="reference/org/xml/sax/ContentHandler.html#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)">startElement(String, String, String, Attributes)</a></code> method
+      may or may not include xmlns* attributes.
+ </ol>
+
+ <p>
+ A <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> is automatically reset every time
+ the startDocument method is invoked.
+
+ <h2>Recognized Properties and Features</h2>
+ <p>
+ This spec defines the following feature that must be recognized
+ by all <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> implementations.
+
+ <h3><code>http://xml.org/sax/features/namespace-prefixes</code></h3>
+ <p>
+ This feature controls how a <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> introduces
+ namespace bindings that were not present in the original SAX event
+ stream.
+ When this feature is set to true, it must make
+ sure that the user's <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code> will see
+ the corresponding <code>xmlns*</code> attribute in
+ the <code><a href="reference/org/xml/sax/Attributes.html">Attributes</a></code> object of the
+ <code><a href="reference/org/xml/sax/ContentHandler.html#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)">startElement(String, String, String, Attributes)</a></code>
+ callback. Otherwise, <code>xmlns*</code> attributes must not be
+ added to <code><a href="reference/org/xml/sax/Attributes.html">Attributes</a></code> that's passed to the
+ user-specified <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code>.
+ <p>
+ (Note that regardless of this switch, namespace bindings are
+ always notified to applications through
+ <code><a href="reference/org/xml/sax/ContentHandler.html#startPrefixMapping(java.lang.String, java.lang.String)">startPrefixMapping(String, String)</a></code> and
+ <code><a href="reference/org/xml/sax/ContentHandler.html#endPrefixMapping(java.lang.String)">endPrefixMapping(String)</a></code> methods of the
+ <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code> specified by the user.)
+
+ <p>
+ Note that this feature does <em>NOT</em> affect the way
+ a <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> receives SAX events. It merely
+ changes the way it augments SAX events.
+
+ <p>This feature is set to <code>false</code> by default.</p></p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#ValidatorHandler()">ValidatorHandler</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/org/xml/sax/ContentHandler.html">ContentHandler</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#getContentHandler()">getContentHandler</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#getErrorHandler()">getErrorHandler</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#getFeature(java.lang.String)">getFeature</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/Object.html">Object</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#getProperty(java.lang.String)">getProperty</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#getResourceResolver()">getResourceResolver</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/xml/validation/TypeInfoProvider.html">TypeInfoProvider</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#getTypeInfoProvider()">getTypeInfoProvider</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#setContentHandler(org.xml.sax.ContentHandler)">setContentHandler</a></span>(<span class="nowrap"><a href="../../../../reference/org/xml/sax/ContentHandler.html">ContentHandler</a> <i>receiver</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#setErrorHandler(org.xml.sax.ErrorHandler)">setErrorHandler</a></span>(<span class="nowrap"><a href="../../../../reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a> <i>errorHandler</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#setFeature(java.lang.String, boolean)">setFeature</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap">boolean <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#setProperty(java.lang.String, java.lang.Object)">setProperty</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#setResourceResolver(org.w3c.dom.ls.LSResourceResolver)">setResourceResolver</a></span>(<span class="nowrap"><a href="../../../../reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a> <i>resourceResolver</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="ValidatorHandler()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ValidatorHandler</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructor for derived classes.
+
+ <p>
+ The constructor does nothing.
+
+ <p>
+ Derived classes must create <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> objects that have
+ <tt>null</tt> <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code> and
+ <tt>null</tt> <code><a href="reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a></code>.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="getContentHandler()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/org/xml/sax/ContentHandler.html">ContentHandler</a>
+      </span>
+      <span class="sympad"><strong>getContentHandler</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code> which receives the
+ augmented validation result.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>This method returns the object that was last set through
+      the <code><a href="reference/javax/xml/validation/ValidatorHandler.html#getContentHandler()">getContentHandler()</a></code> method, or null
+      if that method has never been called since this <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>
+      has created.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#setContentHandler(org.xml.sax.ContentHandler)">setContentHandler(ContentHandler)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getErrorHandler()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a>
+      </span>
+      <span class="sympad"><strong>getErrorHandler</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the current <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code> set to this <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>This method returns the object that was last set through
+      the <code><a href="reference/javax/xml/validation/ValidatorHandler.html#setErrorHandler(org.xml.sax.ErrorHandler)">setErrorHandler(ErrorHandler)</a></code> method, or null
+      if that method has never been called since this <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>
+      has created.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#setErrorHandler(org.xml.sax.ErrorHandler)">setErrorHandler(ErrorHandler)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getFeature(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>getFeature</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Look up the value of a feature flag.
+
+ <p>The feature name is any fully-qualified URI.  It is
+ possible for a <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> to recognize a feature name but
+ temporarily be unable to return its value.
+ Some feature values may be available only in specific
+ contexts, such as before, during, or after a validation.
+
+ <p>Implementors are free (and encouraged) to invent their own features,
+ using names built on their own URIs.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">The feature name, which is a non-null fully-qualified URI.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The current value of the feature (true or false).</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotRecognizedException.html">SAXNotRecognizedException</a></td>
+            <td class="jd-tagdescr">If the feature
+            value can't be assigned or retrieved.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotSupportedException.html">SAXNotSupportedException</a></td>
+            <td class="jd-tagdescr">When the
+            <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> recognizes the feature name but
+            cannot determine its value at this time.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">When the name parameter is null.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#setFeature(java.lang.String, boolean)">setFeature(String, boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getProperty(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad"><strong>getProperty</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Look up the value of a property.
+
+ <p>The property name is any fully-qualified URI.  It is
+ possible for a <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> to recognize a property name but
+ temporarily be unable to return its value.
+ Some property values may be available only in specific
+ contexts, such as before, during, or after a validation.</p>
+
+ <p><code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>s are not required to recognize any specific
+ property names.</p>
+
+ <p>Implementors are free (and encouraged) to invent their own properties,
+ using names built on their own URIs.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">The property name, which is a non-null fully-qualified URI.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The current value of the property.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotRecognizedException.html">SAXNotRecognizedException</a></td>
+            <td class="jd-tagdescr">If the property
+            value can't be assigned or retrieved.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotSupportedException.html">SAXNotSupportedException</a></td>
+            <td class="jd-tagdescr">When the
+            XMLReader recognizes the property name but
+            cannot determine its value at this time.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">When the name parameter is null.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#setProperty(java.lang.String, java.lang.Object)">setProperty(String, Object)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getResourceResolver()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a>
+      </span>
+      <span class="sympad"><strong>getResourceResolver</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the current <code><a href="reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a></code> set to this <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>This method returns the object that was last set through
+      the <code><a href="reference/javax/xml/validation/ValidatorHandler.html#setResourceResolver(org.w3c.dom.ls.LSResourceResolver)">setResourceResolver(LSResourceResolver)</a></code> method, or null
+      if that method has never been called since this <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>
+      has created.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#setErrorHandler(org.xml.sax.ErrorHandler)">setErrorHandler(ErrorHandler)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getTypeInfoProvider()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/xml/validation/TypeInfoProvider.html">TypeInfoProvider</a>
+      </span>
+      <span class="sympad"><strong>getTypeInfoProvider</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Obtains the <code><a href="reference/javax/xml/validation/TypeInfoProvider.html">TypeInfoProvider</a></code> implementation of this
+ <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>.
+
+ <p>
+ The obtained <code><a href="reference/javax/xml/validation/TypeInfoProvider.html">TypeInfoProvider</a></code> can be queried during a parse
+ to access the type information determined by the validator.
+
+ <p>
+ Some schema languages do not define the notion of type,
+ for those languages, this method may not be supported.
+ However, to be compliant with this specification, implementations
+ for W3C XML Schema 1.0 must support this operation.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>null if the validator / schema language does not support
+      the notion of <code><a href="reference/org/w3c/dom/TypeInfo.html">TypeInfo</a></code>.
+      Otherwise a non-null valid <code><a href="reference/javax/xml/validation/TypeInfoProvider.html">TypeInfoProvider</a></code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setContentHandler(org.xml.sax.ContentHandler)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setContentHandler</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/org/xml/sax/ContentHandler.html">ContentHandler</a> <i>receiver</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code> which receives
+ the augmented validation result.
+
+ <p>
+ When a <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code> is specified, a
+ <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> will work as a filter
+ and basically copy the incoming events to the
+ specified <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code>.
+
+ <p>
+ In doing so, a <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> may modify
+ the events, for example by adding defaulted attributes.
+
+ <p>
+ A <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> may buffer events to certain
+ extent, but to allow <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> to be used
+ by a parser, the following requirement has to be met.
+
+ <ol>
+  <li>When
+      <code><a href="reference/org/xml/sax/ContentHandler.html#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)">startElement(String, String, String, Attributes)</a></code>,
+      <code><a href="reference/org/xml/sax/ContentHandler.html#endElement(java.lang.String, java.lang.String, java.lang.String)">endElement(String, String, String)</a></code>,
+      <code><a href="reference/org/xml/sax/ContentHandler.html#startDocument()">startDocument()</a></code>, or
+      <code><a href="reference/org/xml/sax/ContentHandler.html#endDocument()">endDocument()</a></code>
+      are invoked on a <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>,
+      the same method on the user-specified <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code>
+      must be invoked for the same event before the callback
+      returns.
+  <li><code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> may not introduce new elements that
+      were not present in the input.
+
+  <li><code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> may not remove attributes that were
+      present in the input.
+ </ol>
+
+ <p>
+ When a callback method on the specified <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code>
+ throws an exception, the same exception object must be thrown
+ from the <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>. The <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code>
+ should not be notified of such an exception.
+
+ <p>
+ This method can be called even during a middle of a validation.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">receiver</td>
+          <td class="jd-tagdescr">A <code><a href="reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code> or a null value.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setErrorHandler(org.xml.sax.ErrorHandler)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setErrorHandler</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a> <i>errorHandler</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code> to receive errors encountered
+ during the validation.
+
+ <p>
+ Error handler can be used to customize the error handling process
+ during a validation. When an <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code> is set,
+ errors found during the validation will be first sent
+ to the <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code>.
+
+ <p>
+ The error handler can abort further validation immediately
+ by throwing <code><a href="reference/org/xml/sax/SAXException.html">SAXException</a></code> from the handler. Or for example
+ it can print an error to the screen and try to continue the
+ validation by returning normally from the <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code>
+
+ <p>
+ If any <code><a href="reference/java/lang/Throwable.html">Throwable</a></code> is thrown from an <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code>,
+ the same <code><a href="reference/java/lang/Throwable.html">Throwable</a></code> object will be thrown toward the
+ root of the call stack.
+
+ <p>
+ <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> is not allowed to
+ throw <code><a href="reference/org/xml/sax/SAXException.html">SAXException</a></code> without first reporting it to
+ <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code>.
+
+ <p>
+ When the <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code> is null, the implementation will
+ behave as if the following <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code> is set:
+ <pre>
+ class DraconianErrorHandler implements <code><a href="reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code> {
+     public void fatalError( <code><a href="reference/org/xml/sax/SAXParseException.html">SAXParseException</a></code> e ) throws <code><a href="reference/org/xml/sax/SAXException.html">SAXException</a></code> {
+         throw e;
+     }
+     public void error( <code><a href="reference/org/xml/sax/SAXParseException.html">SAXParseException</a></code> e ) throws <code><a href="reference/org/xml/sax/SAXException.html">SAXException</a></code> {
+         throw e;
+     }
+     public void warning( <code><a href="reference/org/xml/sax/SAXParseException.html">SAXParseException</a></code> e ) throws <code><a href="reference/org/xml/sax/SAXException.html">SAXException</a></code> {
+         // noop
+     }
+ }
+ </pre>
+
+ <p>
+ When a new <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> object is created, initially
+ this field is set to null.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">errorHandler</td>
+          <td class="jd-tagdescr">A new error handler to be set. This parameter can be null.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setFeature(java.lang.String, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setFeature</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap">boolean <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the value of a feature flag.
+
+ <p>
+ Feature can be used to control the way a <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>
+ parses schemas, although <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>s are not required
+ to recognize any specific property names.</p>
+
+ <p>The feature name is any fully-qualified URI.  It is
+ possible for a <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> to expose a feature value but
+ to be unable to change the current value.
+ Some feature values may be immutable or mutable only
+ in specific contexts, such as before, during, or after
+ a validation.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">The feature name, which is a non-null fully-qualified URI.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">The requested value of the feature (true or false).</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotRecognizedException.html">SAXNotRecognizedException</a></td>
+            <td class="jd-tagdescr">If the feature
+            value can't be assigned or retrieved.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotSupportedException.html">SAXNotSupportedException</a></td>
+            <td class="jd-tagdescr">When the
+            <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> recognizes the feature name but
+            cannot set the requested value.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">When the name parameter is null.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/validation/ValidatorHandler.html#getFeature(java.lang.String)">getFeature(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setProperty(java.lang.String, java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setProperty</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Set the value of a property.
+
+ <p>The property name is any fully-qualified URI.  It is
+ possible for a <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> to recognize a property name but
+ to be unable to change the current value.
+ Some property values may be immutable or mutable only
+ in specific contexts, such as before, during, or after
+ a validation.</p>
+
+ <p><code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code>s are not required to recognize setting
+ any specific property names.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">The property name, which is a non-null fully-qualified URI.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">object</td>
+          <td class="jd-tagdescr">The requested value for the property.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotRecognizedException.html">SAXNotRecognizedException</a></td>
+            <td class="jd-tagdescr">If the property
+            value can't be assigned or retrieved.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/org/xml/sax/SAXNotSupportedException.html">SAXNotSupportedException</a></td>
+            <td class="jd-tagdescr">When the
+            <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> recognizes the property name but
+            cannot set the requested value.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">When the name parameter is null.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setResourceResolver(org.w3c.dom.ls.LSResourceResolver)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setResourceResolver</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a> <i>resourceResolver</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the <code><a href="reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a></code> to customize
+ resource resolution while in a validation episode.
+
+ <p>
+ <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> uses a <code><a href="reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a></code>
+ when it needs to locate external resources while a validation,
+ although exactly what constitutes "locating external resources" is
+ up to each schema language.
+
+ <p>
+ When the <code><a href="reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a></code> is null, the implementation will
+ behave as if the following <code><a href="reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a></code> is set:
+ <pre>
+ class DumbLSResourceResolver implements <code><a href="reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a></code> {
+     public <code><a href="reference/org/w3c/dom/ls/LSInput.html">LSInput</a></code> resolveResource(
+         String publicId, String systemId, String baseURI) {
+
+         return null; // always return null
+     }
+ }
+ </pre>
+
+ <p>
+ If a <code><a href="reference/org/w3c/dom/ls/LSResourceResolver.html">LSResourceResolver</a></code> throws a <code><a href="reference/java/lang/RuntimeException.html">RuntimeException</a></code>
+  (or instances of its derived classes),
+ then the <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> will abort the parsing and
+ the caller of the <code>validate</code> method will receive
+ the same <code><a href="reference/java/lang/RuntimeException.html">RuntimeException</a></code>.
+
+ <p>
+ When a new <code><a href="reference/javax/xml/validation/ValidatorHandler.html">ValidatorHandler</a></code> object is created, initially
+ this field is set to null.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">resourceResolver</td>
+          <td class="jd-tagdescr">A new resource resolver to be set. This parameter can be null.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

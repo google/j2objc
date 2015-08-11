@@ -1,0 +1,2963 @@
+---
+
+title: ForkJoinTask - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BlockingDeque.html">BlockingDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BlockingQueue.html">BlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CompletionService.html">CompletionService</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentMap.html">ConcurrentMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentNavigableMap.html">ConcurrentNavigableMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Delayed.html">Delayed</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Executor.html">Executor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutorService.html">ExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.ForkJoinWorkerThreadFactory.html">ForkJoinPool.ForkJoinWorkerThreadFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.ManagedBlocker.html">ForkJoinPool.ManagedBlocker</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Future.html">Future</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RejectedExecutionHandler.html">RejectedExecutionHandler</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RunnableFuture.html">RunnableFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledExecutorService.html">ScheduledExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadFactory.html">ThreadFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TransferQueue.html">TransferQueue</a>&lt;E&gt;</li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/AbstractExecutorService.html">AbstractExecutorService</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ArrayBlockingQueue.html">ArrayBlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentHashMap.html">ConcurrentHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html">ConcurrentLinkedDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentLinkedQueue.html">ConcurrentLinkedQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListMap.html">ConcurrentSkipListMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ConcurrentSkipListSet.html">ConcurrentSkipListSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CopyOnWriteArrayList.html">CopyOnWriteArrayList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CopyOnWriteArraySet.html">CopyOnWriteArraySet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CountDownLatch.html">CountDownLatch</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CyclicBarrier.html">CyclicBarrier</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/DelayQueue.html">DelayQueue</a>&lt;E&nbsp;extends&nbsp;<a href="../../../../reference/java/util/concurrent/Delayed.html">Delayed</a>&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Exchanger.html">Exchanger</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutorCompletionService.html">ExecutorCompletionService</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Executors.html">Executors</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ForkJoinWorkerThread.html">ForkJoinWorkerThread</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/FutureTask.html">FutureTask</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedBlockingDeque.html">LinkedBlockingDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedBlockingQueue.html">LinkedBlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/LinkedTransferQueue.html">LinkedTransferQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Phaser.html">Phaser</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/PriorityBlockingQueue.html">PriorityBlockingQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RecursiveAction.html">RecursiveAction</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RecursiveTask.html">RecursiveTask</a>&lt;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ScheduledThreadPoolExecutor.html">ScheduledThreadPoolExecutor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/Semaphore.html">Semaphore</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/SynchronousQueue.html">SynchronousQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadLocalRandom.html">ThreadLocalRandom</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.html">ThreadPoolExecutor</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.AbortPolicy.html">ThreadPoolExecutor.AbortPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.CallerRunsPolicy.html">ThreadPoolExecutor.CallerRunsPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.DiscardOldestPolicy.html">ThreadPoolExecutor.DiscardOldestPolicy</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ThreadPoolExecutor.DiscardPolicy.html">ThreadPoolExecutor.DiscardPolicy</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/BrokenBarrierException.html">BrokenBarrierException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/CancellationException.html">CancellationException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/ExecutionException.html">ExecutionException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/concurrent/TimeoutException.html">TimeoutException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">ForkJoinTask</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;">
+Known Direct Subclasses
+
+  <div id="subclasses-direct">
+      <div id="subclasses-direct-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../../reference/java/util/concurrent/RecursiveAction.html">RecursiveAction</a>,
+            
+              <a href="../../../../reference/java/util/concurrent/RecursiveTask.html">RecursiveTask</a>&lt;V&gt;
+            
+          
+      </div>
+      <div id="subclasses-direct-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/concurrent/RecursiveAction.html">RecursiveAction</a></td>
+              <td class="jd-descrcol" width="100%">A recursive resultless <code><a href="reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/concurrent/RecursiveTask.html">RecursiveTask</a>&lt;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A recursive result-bearing <code><a href="reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a></code>.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+
+
+<div class="jd-descr">
+
+
+<p>Abstract base class for tasks that run within a <code><a href="reference/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a></code>.
+ A <code>ForkJoinTask</code> is a thread-like entity that is much
+ lighter weight than a normal thread.  Huge numbers of tasks and
+ subtasks may be hosted by a small number of actual threads in a
+ ForkJoinPool, at the price of some usage limitations.
+
+ <p>A "main" <code>ForkJoinTask</code> begins execution when it is
+ explicitly submitted to a <code><a href="reference/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a></code>, or, if not already
+ engaged in a ForkJoin computation, commenced in the <code>ForkJoinPool.commonPool()</code> via <code><a href="reference/java/util/concurrent/ForkJoinTask.html#fork()">fork()</a></code>, <code><a href="reference/java/util/concurrent/ForkJoinTask.html#invoke()">invoke()</a></code>, or
+ related methods.  Once started, it will usually in turn start other
+ subtasks.  As indicated by the name of this class, many programs
+ using <code>ForkJoinTask</code> employ only methods <code><a href="reference/java/util/concurrent/ForkJoinTask.html#fork()">fork()</a></code> and
+ <code><a href="reference/java/util/concurrent/ForkJoinTask.html#join()">join()</a></code>, or derivatives such as <code><a href="reference/java/util/concurrent/ForkJoinTask.html#invokeAll(java.util.concurrent.ForkJoinTask<?>...)">invokeAll</a></code>.  However, this class also
+ provides a number of other methods that can come into play in
+ advanced usages, as well as extension mechanics that allow support
+ of new forms of fork/join processing.
+
+ <p>A <code>ForkJoinTask</code> is a lightweight form of <code><a href="reference/java/util/concurrent/Future.html">Future</a></code>.
+ The efficiency of <code>ForkJoinTask</code>s stems from a set of
+ restrictions (that are only partially statically enforceable)
+ reflecting their main use as computational tasks calculating pure
+ functions or operating on purely isolated objects.  The primary
+ coordination mechanisms are <code><a href="reference/java/util/concurrent/ForkJoinTask.html#fork()">fork()</a></code>, that arranges
+ asynchronous execution, and <code><a href="reference/java/util/concurrent/ForkJoinTask.html#join()">join()</a></code>, that doesn't proceed
+ until the task's result has been computed.  Computations should
+ ideally avoid <code>synchronized</code> methods or blocks, and should
+ minimize other blocking synchronization apart from joining other
+ tasks or using synchronizers such as Phasers that are advertised to
+ cooperate with fork/join scheduling. Subdividable tasks should also
+ not perform blocking I/O, and should ideally access variables that
+ are completely independent of those accessed by other running
+ tasks. These guidelines are loosely enforced by not permitting
+ checked exceptions such as <code>IOExceptions</code> to be
+ thrown. However, computations may still encounter unchecked
+ exceptions, that are rethrown to callers attempting to join
+ them. These exceptions may additionally include <code><a href="reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></code> stemming from internal resource
+ exhaustion, such as failure to allocate internal task
+ queues. Rethrown exceptions behave in the same way as regular
+ exceptions, but, when possible, contain stack traces (as displayed
+ for example using <code>ex.printStackTrace()</code>) of both the thread
+ that initiated the computation as well as the thread actually
+ encountering the exception; minimally only the latter.
+
+ <p>It is possible to define and use ForkJoinTasks that may block,
+ but doing do requires three further considerations: (1) Completion
+ of few if any <em>other</em> tasks should be dependent on a task
+ that blocks on external synchronization or I/O. Event-style async
+ tasks that are never joined often fall into this category.
+ (2) To minimize resource impact, tasks should be small; ideally
+ performing only the (possibly) blocking action. (3) Unless the <code><a href="reference/java/util/concurrent/ForkJoinPool.ManagedBlocker.html">ForkJoinPool.ManagedBlocker</a></code> API is used, or the number of possibly
+ blocked tasks is known to be less than the pool's <code><a href="reference/java/util/concurrent/ForkJoinPool.html#getParallelism()">getParallelism()</a></code> level, the pool cannot guarantee that
+ enough threads will be available to ensure progress or good
+ performance.
+
+ <p>The primary method for awaiting completion and extracting
+ results of a task is <code><a href="reference/java/util/concurrent/ForkJoinTask.html#join()">join()</a></code>, but there are several variants:
+ The <code><a href="reference/java/util/concurrent/Future.html#get()">get()</a></code> methods support interruptible and/or timed
+ waits for completion and report results using <code>Future</code>
+ conventions. Method <code><a href="reference/java/util/concurrent/ForkJoinTask.html#invoke()">invoke()</a></code> is semantically
+ equivalent to <code>fork(); join()</code> but always attempts to begin
+ execution in the current thread. The "<em>quiet</em>" forms of
+ these methods do not extract results or report exceptions. These
+ may be useful when a set of tasks are being executed, and you need
+ to delay processing of results or exceptions until all complete.
+ Method <code>invokeAll</code> (available in multiple versions)
+ performs the most common form of parallel invocation: forking a set
+ of tasks and joining them all.
+
+ <p>In the most typical usages, a fork-join pair act like a call
+ (fork) and return (join) from a parallel recursive function. As is
+ the case with other forms of recursive calls, returns (joins)
+ should be performed innermost-first. For example, <code>a.fork();
+ b.fork(); b.join(); a.join();</code> is likely to be substantially more
+ efficient than joining <code>a</code> before <code>b</code>.
+
+ <p>The execution status of tasks may be queried at several levels
+ of detail: <code><a href="reference/java/util/concurrent/ForkJoinTask.html#isDone()">isDone()</a></code> is true if a task completed in any way
+ (including the case where a task was cancelled without executing);
+ <code><a href="reference/java/util/concurrent/ForkJoinTask.html#isCompletedNormally()">isCompletedNormally()</a></code> is true if a task completed without
+ cancellation or encountering an exception; <code><a href="reference/java/util/concurrent/ForkJoinTask.html#isCancelled()">isCancelled()</a></code> is
+ true if the task was cancelled (in which case <code><a href="reference/java/util/concurrent/ForkJoinTask.html#getException()">getException()</a></code>
+ returns a <code><a href="reference/java/util/concurrent/CancellationException.html">CancellationException</a></code>); and
+ <code><a href="reference/java/util/concurrent/ForkJoinTask.html#isCompletedAbnormally()">isCompletedAbnormally()</a></code> is true if a task was either
+ cancelled or encountered an exception, in which case <code><a href="reference/java/util/concurrent/ForkJoinTask.html#getException()">getException()</a></code> will return either the encountered exception or
+ <code><a href="reference/java/util/concurrent/CancellationException.html">CancellationException</a></code>.
+
+ <p>The ForkJoinTask class is not usually directly subclassed.
+ Instead, you subclass one of the abstract classes that support a
+ particular style of fork/join processing, typically <code><a href="reference/java/util/concurrent/RecursiveAction.html">RecursiveAction</a></code> for most computations that do not return results
+ and <code><a href="reference/java/util/concurrent/RecursiveTask.html">RecursiveTask</a></code> for those that do. Normally, a concrete
+ ForkJoinTask subclass declares fields comprising its parameters,
+ established in a constructor, and then defines a <code>compute</code>
+ method that somehow uses the control methods supplied by this base class.
+
+ <p>Method <code><a href="reference/java/util/concurrent/ForkJoinTask.html#join()">join()</a></code> and its variants are appropriate for use
+ only when completion dependencies are acyclic; that is, the
+ parallel computation can be described as a directed acyclic graph
+ (DAG). Otherwise, executions may encounter a form of deadlock as
+ tasks cyclically wait for each other.  However, this framework
+ supports other methods and techniques (for example the use of
+ <code><a href="reference/java/util/concurrent/Phaser.html">Phaser</a></code>, <code><a href="reference/java/util/concurrent/ForkJoinTask.html#helpQuiesce()">helpQuiesce()</a></code>, and <code><a href="reference/java/util/concurrent/ForkJoinTask.html#complete(V)">complete(V)</a></code>) that
+ may be of use in constructing custom subclasses for problems that
+ are not statically structured as DAGs. To support such usages, a
+ ForkJoinTask may be atomically <em>tagged</em> with a <code>short</code>
+ value using <code>setForkJoinTaskTag</code> or <code>compareAndSetForkJoinTaskTag</code> and checked using <code>getForkJoinTaskTag</code>. The ForkJoinTask implementation does not use
+ these <code>protected</code> methods or tags for any purpose, but they
+ may be of use in the construction of specialized subclasses.  For
+ example, parallel graph traversals can use the supplied methods to
+ avoid revisiting nodes/tasks that have already been processed.
+ (Method names for tagging are bulky in part to encourage definition
+ of methods that reflect their usage patterns.)
+
+ <p>Most base support methods are <code>final</code>, to prevent
+ overriding of implementations that are intrinsically tied to the
+ underlying lightweight task scheduling framework.  Developers
+ creating new basic styles of fork/join processing should minimally
+ implement <code>protected</code> methods <code><a href="reference/java/util/concurrent/ForkJoinTask.html#exec()">exec()</a></code>, <code><a href="reference/java/util/concurrent/ForkJoinTask.html#setRawResult(V)">setRawResult(V)</a></code>, and <code><a href="reference/java/util/concurrent/ForkJoinTask.html#getRawResult()">getRawResult()</a></code>, while also introducing
+ an abstract computational method that can be implemented in its
+ subclasses, possibly relying on other <code>protected</code> methods
+ provided by this class.
+
+ <p>ForkJoinTasks should perform relatively small amounts of
+ computation. Large tasks should be split into smaller subtasks,
+ usually via recursive decomposition. As a very rough rule of thumb,
+ a task should perform more than 100 and less than 10000 basic
+ computational steps, and should avoid indefinite looping. If tasks
+ are too big, then parallelism cannot improve throughput. If too
+ small, then memory and internal task maintenance overhead may
+ overwhelm processing.
+
+ <p>This class provides <code>adapt</code> methods for <code><a href="reference/java/lang/Runnable.html">Runnable</a></code>
+ and <code><a href="reference/java/util/concurrent/Callable.html">Callable</a></code>, that may be of use when mixing execution of
+ <code>ForkJoinTasks</code> with other kinds of tasks. When all tasks are
+ of this form, consider using a pool constructed in <em>asyncMode</em>.
+
+ <p>ForkJoinTasks are <code>Serializable</code>, which enables them to be
+ used in extensions such as remote execution frameworks. It is
+ sensible to serialize tasks only before or after, but not during,
+ execution. Serialization is not relied on during execution itself.</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#ForkJoinTask()">ForkJoinTask</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            &lt;T&gt;
+            <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;T&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#adapt(java.lang.Runnable, T)">adapt</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>runnable</i></span>, <span class="nowrap">T <i>result</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#adapt(java.lang.Runnable)">adapt</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>runnable</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            &lt;T&gt;
+            <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;T&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#adapt(java.util.concurrent.Callable<? extends T>)">adapt</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;?&nbsp;extends&nbsp;T&gt; <i>callable</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#cancel(boolean)">cancel</a></span>(<span class="nowrap">boolean <i>mayInterruptIfRunning</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#complete(V)">complete</a></span>(<span class="nowrap">V <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#completeExceptionally(java.lang.Throwable)">completeExceptionally</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Throwable.html">Throwable</a> <i>ex</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;V&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#fork()">fork</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            V
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#get(long, java.util.concurrent.TimeUnit)">get</a></span>(<span class="nowrap">long <i>timeout</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            V
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#get()">get</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../../reference/java/lang/Throwable.html">Throwable</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#getException()">getException</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#getPool()">getPool</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#getQueuedTaskCount()">getQueuedTaskCount</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            V
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#getRawResult()">getRawResult</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#getSurplusQueuedTaskCount()">getSurplusQueuedTaskCount</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#helpQuiesce()">helpQuiesce</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#inForkJoinPool()">inForkJoinPool</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            V
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#invoke()">invoke</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#invokeAll(java.util.concurrent.ForkJoinTask<?>...)">invokeAll</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask...</a>&lt;?&gt; <i>tasks</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#invokeAll(java.util.concurrent.ForkJoinTask<?>, java.util.concurrent.ForkJoinTask<?>)">invokeAll</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt; <i>t1</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt; <i>t2</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            &lt;T&nbsp;extends&nbsp;<a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt;&gt;
+            <a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#invokeAll(java.util.Collection<T>)">invokeAll</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt; <i>tasks</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#isCancelled()">isCancelled</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#isCompletedAbnormally()">isCompletedAbnormally</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#isCompletedNormally()">isCompletedNormally</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#isDone()">isDone</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            V
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#join()">join</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#quietlyInvoke()">quietlyInvoke</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#quietlyJoin()">quietlyJoin</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#reinitialize()">reinitialize</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#tryUnfork()">tryUnfork</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#exec()">exec</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#peekNextLocalTask()">peekNextLocalTask</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#pollNextLocalTask()">pollNextLocalTask</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#pollTask()">pollTask</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#setRawResult(V)">setRawResult</a></span>(<span class="nowrap">V <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="ForkJoinTask()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ForkJoinTask</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="adapt(java.lang.Runnable, T)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;T&gt;
+      </span>
+      <span class="sympad"><strong>adapt</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>runnable</i></span>, <span class="nowrap">T <i>result</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>ForkJoinTask</code> that performs the <code>run</code>
+ method of the given <code>Runnable</code> as its action, and returns
+ the given result upon <code><a href="reference/java/util/concurrent/ForkJoinTask.html#join()">join()</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">runnable</td>
+          <td class="jd-tagdescr">the runnable action</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">result</td>
+          <td class="jd-tagdescr">the result upon completion</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the task
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="adapt(java.lang.Runnable)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>adapt</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Runnable.html">Runnable</a> <i>runnable</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>ForkJoinTask</code> that performs the <code>run</code>
+ method of the given <code>Runnable</code> as its action, and returns
+ a null result upon <code><a href="reference/java/util/concurrent/ForkJoinTask.html#join()">join()</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">runnable</td>
+          <td class="jd-tagdescr">the runnable action</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the task
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="adapt(java.util.concurrent.Callable<? extends T>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;T&gt;
+      </span>
+      <span class="sympad"><strong>adapt</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/Callable.html">Callable</a>&lt;?&nbsp;extends&nbsp;T&gt; <i>callable</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>ForkJoinTask</code> that performs the <code>call</code>
+ method of the given <code>Callable</code> as its action, and returns
+ its result upon <code><a href="reference/java/util/concurrent/ForkJoinTask.html#join()">join()</a></code>, translating any checked exceptions
+ encountered into <code>RuntimeException</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">callable</td>
+          <td class="jd-tagdescr">the callable action</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the task
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="cancel(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>cancel</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>mayInterruptIfRunning</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Attempts to cancel execution of this task. This attempt will
+ fail if the task has already completed or could not be
+ cancelled for some other reason. If successful, and this task
+ has not started when <code>cancel</code> is called, execution of
+ this task is suppressed. After this method returns
+ successfully, unless there is an intervening call to <code><a href="reference/java/util/concurrent/ForkJoinTask.html#reinitialize()">reinitialize()</a></code>, subsequent calls to <code><a href="reference/java/util/concurrent/ForkJoinTask.html#isCancelled()">isCancelled()</a></code>,
+ <code><a href="reference/java/util/concurrent/ForkJoinTask.html#isDone()">isDone()</a></code>, and <code>cancel</code> will return <code>true</code>
+ and calls to <code><a href="reference/java/util/concurrent/ForkJoinTask.html#join()">join()</a></code> and related methods will result in
+ <code>CancellationException</code>.
+
+ <p>This method may be overridden in subclasses, but if so, must
+ still ensure that these properties hold. In particular, the
+ <code>cancel</code> method itself must not throw exceptions.
+
+ <p>This method is designed to be invoked by <em>other</em>
+ tasks. To terminate the current task, you can just return or
+ throw an unchecked exception from its computation method, or
+ invoke <code><a href="reference/java/util/concurrent/ForkJoinTask.html#completeExceptionally(java.lang.Throwable)">completeExceptionally(Throwable)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">mayInterruptIfRunning</td>
+          <td class="jd-tagdescr">this value has no effect in the
+ default implementation because interrupts are not used to
+ control cancellation.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this task is now cancelled
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="complete(V)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>complete</strong></span>
+      <span class="params">(<span class="nowrap">V <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Completes this task, and if not already aborted or cancelled,
+ returning the given value as the result of subsequent
+ invocations of <code>join</code> and related operations. This method
+ may be used to provide results for asynchronous tasks, or to
+ provide alternative handling for tasks that would not otherwise
+ complete normally. Its use in other situations is
+ discouraged. This method is overridable, but overridden
+ versions must invoke <code>super</code> implementation to maintain
+ guarantees.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the result value for this task
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="completeExceptionally(java.lang.Throwable)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>completeExceptionally</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Throwable.html">Throwable</a> <i>ex</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Completes this task abnormally, and if not already aborted or
+ cancelled, causes it to throw the given exception upon
+ <code>join</code> and related operations. This method may be used
+ to induce exceptions in asynchronous tasks, or to force
+ completion of tasks that would not otherwise complete.  Its use
+ in other situations is discouraged.  This method is
+ overridable, but overridden versions must invoke <code>super</code>
+ implementation to maintain guarantees.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">ex</td>
+          <td class="jd-tagdescr">the exception to throw. If this exception is not a
+ <code>RuntimeException</code> or <code>Error</code>, the actual exception
+ thrown will be a <code>RuntimeException</code> with cause <code>ex</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="fork()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;V&gt;
+      </span>
+      <span class="sympad"><strong>fork</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Arranges to asynchronously execute this task in the pool the
+ current task is running in, if applicable, or using the <code>ForkJoinPool.commonPool()</code> if not <code><a href="reference/java/util/concurrent/ForkJoinTask.html#inForkJoinPool()">inForkJoinPool()</a></code>.  While
+ it is not necessarily enforced, it is a usage error to fork a
+ task more than once unless it has completed and been
+ reinitialized.  Subsequent modifications to the state of this
+ task or any data it operates on are not necessarily
+ consistently observable by any thread other than the one
+ executing it unless preceded by a call to <code><a href="reference/java/util/concurrent/ForkJoinTask.html#join()">join()</a></code> or
+ related methods, or a call to <code><a href="reference/java/util/concurrent/ForkJoinTask.html#isDone()">isDone()</a></code> returning <code>true</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this</code>, to simplify usage
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="get(long, java.util.concurrent.TimeUnit)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        V
+      </span>
+      <span class="sympad"><strong>get</strong></span>
+      <span class="params">(<span class="nowrap">long <i>timeout</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a> <i>unit</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Waits if necessary for at most the given time for the computation
+ to complete, and then retrieves its result, if available.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">timeout</td>
+          <td class="jd-tagdescr">the maximum time to wait</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">unit</td>
+          <td class="jd-tagdescr">the time unit of the timeout argument</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the computed result</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/CancellationException.html">CancellationException</a></td>
+            <td class="jd-tagdescr">if the computation was cancelled</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/ExecutionException.html">ExecutionException</a></td>
+            <td class="jd-tagdescr">if the computation threw an
+ exception</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
+            <td class="jd-tagdescr">if the current thread is not a
+ member of a ForkJoinPool and was interrupted while waiting</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/TimeoutException.html">TimeoutException</a></td>
+            <td class="jd-tagdescr">if the wait timed out
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="get()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        V
+      </span>
+      <span class="sympad"><strong>get</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Waits if necessary for the computation to complete, and then
+ retrieves its result.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the computed result</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/CancellationException.html">CancellationException</a></td>
+            <td class="jd-tagdescr">if the computation was cancelled</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/util/concurrent/ExecutionException.html">ExecutionException</a></td>
+            <td class="jd-tagdescr">if the computation threw an
+ exception</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
+            <td class="jd-tagdescr">if the current thread is not a
+ member of a ForkJoinPool and was interrupted while waiting
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getException()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../../reference/java/lang/Throwable.html">Throwable</a>
+      </span>
+      <span class="sympad"><strong>getException</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the exception thrown by the base computation, or a
+ <code>CancellationException</code> if cancelled, or <code>null</code> if
+ none or if the method has not yet completed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the exception, or <code>null</code> if none
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getPool()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ForkJoinPool.html">ForkJoinPool</a>
+      </span>
+      <span class="sympad"><strong>getPool</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the pool hosting the current task execution, or null
+ if this task is executing outside of any ForkJoinPool.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the pool, or <code>null</code> if none
+</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html#inForkJoinPool()">inForkJoinPool()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getQueuedTaskCount()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getQueuedTaskCount</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an estimate of the number of tasks that have been
+ forked by the current worker thread but not yet executed. This
+ value may be useful for heuristic decisions about whether to
+ fork other tasks.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of tasks
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getRawResult()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        V
+      </span>
+      <span class="sympad"><strong>getRawResult</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the result that would be returned by <code><a href="reference/java/util/concurrent/ForkJoinTask.html#join()">join()</a></code>, even
+ if this task completed abnormally, or <code>null</code> if this task
+ is not known to have been completed.  This method is designed
+ to aid debugging, as well as to support extensions. Its use in
+ any other context is discouraged.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the result, or <code>null</code> if not completed
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSurplusQueuedTaskCount()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getSurplusQueuedTaskCount</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an estimate of how many more locally queued tasks are
+ held by the current worker thread than there are other worker
+ threads that might steal them, or zero if this thread is not
+ operating in a ForkJoinPool. This value may be useful for
+ heuristic decisions about whether to fork other tasks. In many
+ usages of ForkJoinTasks, at steady state, each worker should
+ aim to maintain a small constant surplus (for example, 3) of
+ tasks, and to process computations locally if this threshold is
+ exceeded.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the surplus number of tasks, which may be negative
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="helpQuiesce()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>helpQuiesce</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Possibly executes tasks until the pool hosting the current task
+ <code><a href="reference/java/util/concurrent/ForkJoinPool.html#isQuiescent()">is quiescent</a></code>. This method may
+ be of use in designs in which many tasks are forked, but none
+ are explicitly joined, instead executing them until all are
+ processed.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="inForkJoinPool()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>inForkJoinPool</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if the current thread is a <code><a href="reference/java/util/concurrent/ForkJoinWorkerThread.html">ForkJoinWorkerThread</a></code> executing as a ForkJoinPool computation.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the current thread is a <code><a href="reference/java/util/concurrent/ForkJoinWorkerThread.html">ForkJoinWorkerThread</a></code> executing as a ForkJoinPool computation,
+ or <code>false</code> otherwise
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="invoke()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        V
+      </span>
+      <span class="sympad"><strong>invoke</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Commences performing this task, awaits its completion if
+ necessary, and returns its result, or throws an (unchecked)
+ <code>RuntimeException</code> or <code>Error</code> if the underlying
+ computation did so.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the computed result
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="invokeAll(java.util.concurrent.ForkJoinTask<?>...)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>invokeAll</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask...</a>&lt;?&gt; <i>tasks</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Forks the given tasks, returning when <code>isDone</code> holds for
+ each task or an (unchecked) exception is encountered, in which
+ case the exception is rethrown. If more than one task
+ encounters an exception, then this method throws any one of
+ these exceptions. If any task encounters an exception, others
+ may be cancelled. However, the execution status of individual
+ tasks is not guaranteed upon exceptional return. The status of
+ each task may be obtained using <code><a href="reference/java/util/concurrent/ForkJoinTask.html#getException()">getException()</a></code> and
+ related methods to check if they have been cancelled, completed
+ normally or exceptionally, or left unprocessed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">tasks</td>
+          <td class="jd-tagdescr">the tasks</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if any task is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="invokeAll(java.util.concurrent.ForkJoinTask<?>, java.util.concurrent.ForkJoinTask<?>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>invokeAll</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt; <i>t1</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt; <i>t2</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Forks the given tasks, returning when <code>isDone</code> holds for
+ each task or an (unchecked) exception is encountered, in which
+ case the exception is rethrown. If more than one task
+ encounters an exception, then this method throws any one of
+ these exceptions. If any task encounters an exception, the
+ other may be cancelled. However, the execution status of
+ individual tasks is not guaranteed upon exceptional return. The
+ status of each task may be obtained using <code><a href="reference/java/util/concurrent/ForkJoinTask.html#getException()">getException()</a></code> and related methods to check if they have been
+ cancelled, completed normally or exceptionally, or left
+ unprocessed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">t1</td>
+          <td class="jd-tagdescr">the first task</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">t2</td>
+          <td class="jd-tagdescr">the second task</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if any task is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="invokeAll(java.util.Collection<T>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt;
+      </span>
+      <span class="sympad"><strong>invokeAll</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/Collection.html">Collection</a>&lt;T&gt; <i>tasks</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Forks all tasks in the specified collection, returning when
+ <code>isDone</code> holds for each task or an (unchecked) exception
+ is encountered, in which case the exception is rethrown. If
+ more than one task encounters an exception, then this method
+ throws any one of these exceptions. If any task encounters an
+ exception, others may be cancelled. However, the execution
+ status of individual tasks is not guaranteed upon exceptional
+ return. The status of each task may be obtained using <code><a href="reference/java/util/concurrent/ForkJoinTask.html#getException()">getException()</a></code> and related methods to check if they have been
+ cancelled, completed normally or exceptionally, or left
+ unprocessed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">tasks</td>
+          <td class="jd-tagdescr">the collection of tasks</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the tasks argument, to simplify usage</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if tasks or any element are null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isCancelled()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isCancelled</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this task was cancelled before it completed
+ normally.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this task was cancelled before it completed
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isCompletedAbnormally()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isCompletedAbnormally</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this task threw an exception or was cancelled.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this task threw an exception or was cancelled
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isCompletedNormally()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isCompletedNormally</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this task completed without throwing an
+ exception and was not cancelled.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this task completed without throwing an
+ exception and was not cancelled
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isDone()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isDone</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this task completed.
+
+ Completion may be due to normal termination, an exception, or
+ cancellation -- in all of these cases, this method will return
+ <code>true</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this task completed
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="join()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        V
+      </span>
+      <span class="sympad"><strong>join</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the result of the computation when it <code><a href="reference/java/util/concurrent/ForkJoinTask.html#isDone()">is
+ done</a></code>.  This method differs from <code><a href="reference/java/util/concurrent/ForkJoinTask.html#get()">get()</a></code> in that
+ abnormal completion results in <code>RuntimeException</code> or
+ <code>Error</code>, not <code>ExecutionException</code>, and that
+ interrupts of the calling thread do <em>not</em> cause the
+ method to abruptly return by throwing <code>InterruptedException</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the computed result
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="quietlyInvoke()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>quietlyInvoke</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Commences performing this task and awaits its completion if
+ necessary, without returning its result or throwing its
+ exception.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="quietlyJoin()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>quietlyJoin</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Joins this task, without returning its result or throwing its
+ exception. This method may be useful when processing
+ collections of tasks when some have been cancelled or otherwise
+ known to have aborted.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="reinitialize()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>reinitialize</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Resets the internal bookkeeping state of this task, allowing a
+ subsequent <code>fork</code>. This method allows repeated reuse of
+ this task, but only if reuse occurs when this task has either
+ never been forked, or has been forked, then completed and all
+ outstanding joins of this task have also completed. Effects
+ under any other usage conditions are not guaranteed.
+ This method may be useful when executing
+ pre-constructed trees of subtasks in loops.
+
+ <p>Upon completion of this method, <code>isDone()</code> reports
+ <code>false</code>, and <code>getException()</code> reports <code>null</code>. However, the value returned by <code>getRawResult</code> is
+ unaffected. To clear this value, you can invoke <code>setRawResult(null)</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="tryUnfork()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>tryUnfork</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tries to unschedule this task for execution. This method will
+ typically (but is not guaranteed to) succeed if this task is
+ the most recently forked task by the current thread, and has
+ not commenced executing in another thread.  This method may be
+ useful when arranging alternative local processing of tasks
+ that could have been, but were not, stolen.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if unforked
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="exec()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>exec</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Immediately performs the base action of this task and returns
+ true if, upon return from this method, this task is guaranteed
+ to have completed normally. This method may return false
+ otherwise, to indicate that this task is not necessarily
+ complete (or is not known to be complete), for example in
+ asynchronous actions that require explicit invocations of
+ completion methods. This method may also throw an (unchecked)
+ exception to indicate abnormal exit. This method is designed to
+ support extensions, and should not in general be called
+ otherwise.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this task is known to have completed normally
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="peekNextLocalTask()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        static
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>peekNextLocalTask</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns, but does not unschedule or execute, a task queued by
+ the current thread but not yet executed, if one is immediately
+ available. There is no guarantee that this task will actually
+ be polled or executed next. Conversely, this method may return
+ null even if a task exists but cannot be accessed without
+ contention with other threads.  This method is designed
+ primarily to support extensions, and is unlikely to be useful
+ otherwise.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next task, or <code>null</code> if none are available
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="pollNextLocalTask()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        static
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>pollNextLocalTask</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Unschedules and returns, without executing, the next task
+ queued by the current thread but not yet executed, if the
+ current thread is operating in a ForkJoinPool.  This method is
+ designed primarily to support extensions, and is unlikely to be
+ useful otherwise.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the next task, or <code>null</code> if none are available
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="pollTask()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        static
+        
+        
+        
+        <a href="../../../../reference/java/util/concurrent/ForkJoinTask.html">ForkJoinTask</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>pollTask</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If the current thread is operating in a ForkJoinPool,
+ unschedules and returns, without executing, the next task
+ queued by the current thread but not yet executed, if one is
+ available, or if not available, a task that was forked by some
+ other thread, if available. Availability may be transient, so a
+ <code>null</code> result does not necessarily imply quiescence of
+ the pool this task is operating in.  This method is designed
+ primarily to support extensions, and is unlikely to be useful
+ otherwise.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a task, or <code>null</code> if none are available
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setRawResult(V)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setRawResult</strong></span>
+      <span class="params">(<span class="nowrap">V <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Forces the given value to be returned as a result.  This method
+ is designed to support extensions, and should not in general be
+ called otherwise.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the value
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

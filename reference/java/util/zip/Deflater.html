@@ -1,0 +1,2355 @@
+---
+
+title: Deflater - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/Checksum.html">Checksum</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/Adler32.html">Adler32</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/CheckedInputStream.html">CheckedInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/CheckedOutputStream.html">CheckedOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/CRC32.html">CRC32</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/java/util/zip/Deflater.html">Deflater</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/DeflaterInputStream.html">DeflaterInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/DeflaterOutputStream.html">DeflaterOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/GZIPInputStream.html">GZIPInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/GZIPOutputStream.html">GZIPOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/Inflater.html">Inflater</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/InflaterInputStream.html">InflaterInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/InflaterOutputStream.html">InflaterOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/ZipEntry.html">ZipEntry</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/ZipFile.html">ZipFile</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/ZipInputStream.html">ZipInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/ZipOutputStream.html">ZipOutputStream</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/DataFormatException.html">DataFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/ZipException.html">ZipException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/util/zip/ZipError.html">ZipError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">Deflater</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>This class compresses data using the <i>DEFLATE</i> algorithm (see <a
+ href="http://www.gzip.org/algorithm.txt">specification</a>).
+
+ <p>It is usually more convenient to use <code><a href="reference/java/util/zip/DeflaterOutputStream.html">DeflaterOutputStream</a></code>.
+
+ <p>To compress an in-memory <code>byte[]</code> to another in-memory <code>byte[]</code> manually:
+ <pre>
+     byte[] originalBytes = ...
+
+     Deflater deflater = new Deflater();
+     deflater.setInput(originalBytes);
+     deflater.finish();
+
+     ByteArrayOutputStream baos = new ByteArrayOutputStream();
+     byte[] buf = new byte[8192];
+     while (!deflater.finished()) {
+         int byteCount = deflater.deflate(buf);
+         baos.write(buf, 0, byteCount);
+     }
+     deflater.end();
+
+     byte[] compressedBytes = baos.toByteArray();
+ </pre>
+ <p>In situations where you don't have all the input in one array (or have so much
+ input that you want to feed it to the deflater in chunks), it's possible to call
+ <code><a href="reference/java/util/zip/Deflater.html#setInput(byte[])">setInput</a></code> repeatedly, but you're much better off using
+ <code><a href="reference/java/util/zip/DeflaterOutputStream.html">DeflaterOutputStream</a></code> to handle all this for you. <code><a href="reference/java/util/zip/DeflaterOutputStream.html">DeflaterOutputStream</a></code> also helps
+ minimize memory requirements&nbsp;&mdash; the sample code above is very expensive.
+
+ <a name="compression_level"><h3>Compression levels</h3></a>
+ <p>A compression level must be <code><a href="reference/java/util/zip/Deflater.html#DEFAULT_COMPRESSION">DEFAULT_COMPRESSION</a></code> to compromise between speed and
+ compression (currently equivalent to level 6), or between 0 (<code><a href="reference/java/util/zip/Deflater.html#NO_COMPRESSION">NO_COMPRESSION</a></code>, where
+ the input is simply copied) and 9 (<code><a href="reference/java/util/zip/Deflater.html#BEST_COMPRESSION">BEST_COMPRESSION</a></code>). Level 1 (<code><a href="reference/java/util/zip/Deflater.html#BEST_SPEED">BEST_SPEED</a></code>)
+ performs some compression, but with minimal speed overhead.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="constants"><h3>Constant Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/zip/Deflater.html#BEST_COMPRESSION">BEST_COMPRESSION</a></td>
+        <td class="jd-descrcol" width="100%">This <a href="#compression_level">compression level</a> gives the best compression,
+ but takes the most time.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/zip/Deflater.html#BEST_SPEED">BEST_SPEED</a></td>
+        <td class="jd-descrcol" width="100%">This <a href="#compression_level">compression level</a> gives minimal compression,
+ but takes the least time (of any level that actually performs compression;
+ see <code><a href="reference/java/util/zip/Deflater.html#NO_COMPRESSION">NO_COMPRESSION</a></code>).</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/zip/Deflater.html#DEFAULT_COMPRESSION">DEFAULT_COMPRESSION</a></td>
+        <td class="jd-descrcol" width="100%">The default <a href="#compression_level">compression level</a>.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/zip/Deflater.html#DEFAULT_STRATEGY">DEFAULT_STRATEGY</a></td>
+        <td class="jd-descrcol" width="100%">The default compression strategy.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/zip/Deflater.html#DEFLATED">DEFLATED</a></td>
+        <td class="jd-descrcol" width="100%">The default compression method.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/zip/Deflater.html#FILTERED">FILTERED</a></td>
+        <td class="jd-descrcol" width="100%">A compression strategy.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/zip/Deflater.html#FULL_FLUSH">FULL_FLUSH</a></td>
+        <td class="jd-descrcol" width="100%">Flush buffers so recipients can immediately decode the data sent thus
+ far.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/zip/Deflater.html#HUFFMAN_ONLY">HUFFMAN_ONLY</a></td>
+        <td class="jd-descrcol" width="100%">A compression strategy.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/zip/Deflater.html#NO_COMPRESSION">NO_COMPRESSION</a></td>
+        <td class="jd-descrcol" width="100%">This <a href="#compression_level">compression level</a> does no compression.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/zip/Deflater.html#NO_FLUSH">NO_FLUSH</a></td>
+        <td class="jd-descrcol" width="100%">Use buffering for best compression.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../../reference/java/util/zip/Deflater.html#SYNC_FLUSH">SYNC_FLUSH</a></td>
+        <td class="jd-descrcol" width="100%">Flush buffers so recipients can immediately decode the data sent thus
+ far.</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#Deflater()">Deflater</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#Deflater(int)">Deflater</a></span>(<span class="nowrap">int <i>level</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#Deflater(int, boolean)">Deflater</a></span>(<span class="nowrap">int <i>level</i></span>, <span class="nowrap">boolean <i>noHeader</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#deflate(byte[], int, int)">deflate</a></span>(<span class="nowrap">byte[] <i>buf</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#deflate(byte[])">deflate</a></span>(<span class="nowrap">byte[] <i>buf</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#deflate(byte[], int, int, int)">deflate</a></span>(<span class="nowrap">byte[] <i>buf</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>, <span class="nowrap">int <i>flush</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#end()">end</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#finish()">finish</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#finished()">finished</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#getAdler()">getAdler</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#getBytesRead()">getBytesRead</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#getBytesWritten()">getBytesWritten</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#getTotalIn()">getTotalIn</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#getTotalOut()">getTotalOut</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#needsInput()">needsInput</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#reset()">reset</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#setDictionary(byte[], int, int)">setDictionary</a></span>(<span class="nowrap">byte[] <i>buf</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#setDictionary(byte[])">setDictionary</a></span>(<span class="nowrap">byte[] <i>dictionary</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#setInput(byte[], int, int)">setInput</a></span>(<span class="nowrap">byte[] <i>buf</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#setInput(byte[])">setInput</a></span>(<span class="nowrap">byte[] <i>buf</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#setLevel(int)">setLevel</a></span>(<span class="nowrap">int <i>level</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#setStrategy(int)">setStrategy</a></span>(<span class="nowrap">int <i>strategy</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/util/zip/Deflater.html#finalize()">finalize</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<section id="constants">
+  <h2>Constants</h2>
+  
+
+
+
+<A NAME="BEST_COMPRESSION"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>BEST_COMPRESSION</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>This <a href="#compression_level">compression level</a> gives the best compression,
+ but takes the most time.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                9
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="BEST_SPEED"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>BEST_SPEED</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>This <a href="#compression_level">compression level</a> gives minimal compression,
+ but takes the least time (of any level that actually performs compression;
+ see <code><a href="reference/java/util/zip/Deflater.html#NO_COMPRESSION">NO_COMPRESSION</a></code>).
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                1
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="DEFAULT_COMPRESSION"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>DEFAULT_COMPRESSION</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The default <a href="#compression_level">compression level</a>.
+ This is a trade-off between speed and compression, currently equivalent to level 6.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                -1
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="DEFAULT_STRATEGY"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>DEFAULT_STRATEGY</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The default compression strategy.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                0
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="DEFLATED"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>DEFLATED</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The default compression method.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                8
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="FILTERED"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>FILTERED</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>A compression strategy.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                1
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="FULL_FLUSH"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>FULL_FLUSH</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Flush buffers so recipients can immediately decode the data sent thus
+ far. The compression state is also reset to permit random access and
+ recovery for clients who have discarded or damaged their own copy. This
+ mode may degrade compression.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                3
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="HUFFMAN_ONLY"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>HUFFMAN_ONLY</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>A compression strategy.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                2
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="NO_COMPRESSION"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>NO_COMPRESSION</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>This <a href="#compression_level">compression level</a> does no compression.
+ It is even faster than <code><a href="reference/java/util/zip/Deflater.html#BEST_SPEED">BEST_SPEED</a></code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                0
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="NO_FLUSH"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>NO_FLUSH</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Use buffering for best compression.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                0
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="SYNC_FLUSH"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>SYNC_FLUSH</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Flush buffers so recipients can immediately decode the data sent thus
+ far. This mode may degrade compression.</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                2
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="Deflater()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>Deflater</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Deflater</code> instance using the
+ default <a href="#compression_level">compression level</a>.
+ The compression strategy can be specified with <code><a href="reference/java/util/zip/Deflater.html#setStrategy(int)">setStrategy(int)</a></code>. A
+ header is added to the output by default; use <code><a href="reference/java/util/zip/Deflater.html#Deflater(int, boolean)">Deflater(int, boolean)</a></code> if you need to omit the header.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="Deflater(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>Deflater</strong></span>
+      <span class="params">(<span class="nowrap">int <i>level</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Deflater</code> instance with the
+ given <a href="#compression_level">compression level</a>.
+ The compression strategy can be specified with <code><a href="reference/java/util/zip/Deflater.html#setStrategy(int)">setStrategy(int)</a></code>.
+ A header is added to the output by default; use
+ <code><a href="reference/java/util/zip/Deflater.html#Deflater(int, boolean)">Deflater(int, boolean)</a></code> if you need to omit the header.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="Deflater(int, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>Deflater</strong></span>
+      <span class="params">(<span class="nowrap">int <i>level</i></span>, <span class="nowrap">boolean <i>noHeader</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Deflater</code> instance with the
+ given <a href="#compression_level">compression level</a>.
+ If <code>noHeader</code> is true, no ZLIB header is added to the
+ output. In a zip file, every entry (compressed file) comes with such a
+ header. The strategy can be specified using <code><a href="reference/java/util/zip/Deflater.html#setStrategy(int)">setStrategy(int)</a></code>.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="deflate(byte[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        int
+      </span>
+      <span class="sympad"><strong>deflate</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>buf</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Deflates data (previously passed to <code><a href="reference/java/util/zip/Deflater.html#setInput(byte[])">setInput</a></code>) into a specific
+ region within the supplied buffer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of bytes of compressed data written to <code>buf</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="deflate(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>deflate</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>buf</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Deflates the data (previously passed to <code><a href="reference/java/util/zip/Deflater.html#setInput(byte[])">setInput</a></code>) into the
+ supplied buffer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>number of bytes of compressed data written to <code>buf</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="deflate(byte[], int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        int
+      </span>
+      <span class="sympad"><strong>deflate</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>buf</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>, <span class="nowrap">int <i>flush</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Deflates data (previously passed to <code><a href="reference/java/util/zip/Deflater.html#setInput(byte[])">setInput</a></code>) into a specific
+ region within the supplied buffer, optionally flushing the input buffer.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">flush</td>
+          <td class="jd-tagdescr">one of <code><a href="reference/java/util/zip/Deflater.html#NO_FLUSH">NO_FLUSH</a></code>, <code><a href="reference/java/util/zip/Deflater.html#SYNC_FLUSH">SYNC_FLUSH</a></code> or <code><a href="reference/java/util/zip/Deflater.html#FULL_FLUSH">FULL_FLUSH</a></code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of compressed bytes written to <code>buf</code>. If this
+      equals <code>byteCount</code>, the number of bytes of input to be flushed
+      may have exceeded the output buffer's capacity. In this case,
+      finishing a flush will require the output buffer to be drained
+      and additional calls to <code><a href="reference/java/util/zip/Deflater.html#deflate(byte[])">deflate(byte[])</a></code> to be made.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>flush</code> is invalid.</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="end()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>end</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Frees all resources held onto by this deflating algorithm. Any unused
+ input or output is discarded. This method should be called explicitly in
+ order to free native resources as soon as possible. After <code>end()</code> is
+ called, other methods will typically throw <code>IllegalStateException</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="finish()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>finish</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates to the <code>Deflater</code> that all uncompressed input has been provided
+ to it.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/java/util/zip/Deflater.html#finished()">finished()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="finished()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        boolean
+      </span>
+      <span class="sympad"><strong>finished</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if <code><a href="reference/java/util/zip/Deflater.html#finish()">finish</a></code> has been called and all
+ data provided by <code><a href="reference/java/util/zip/Deflater.html#setInput(byte[])">setInput</a></code> has been
+ successfully compressed and consumed by <code><a href="reference/java/util/zip/Deflater.html#deflate(byte[])">deflate</a></code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getAdler()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        int
+      </span>
+      <span class="sympad"><strong>getAdler</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code><a href="reference/java/util/zip/Adler32.html">Adler32</a></code> checksum of the uncompressed data read so far.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getBytesRead()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        long
+      </span>
+      <span class="sympad"><strong>getBytesRead</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the total number of bytes read by the <code>Deflater</code>. This
+ method is the same as <code><a href="reference/java/util/zip/Deflater.html#getTotalIn()">getTotalIn()</a></code> except that it returns a
+ <code>long</code> value instead of an integer.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getBytesWritten()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        long
+      </span>
+      <span class="sympad"><strong>getBytesWritten</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a the total number of bytes written by this <code>Deflater</code>. This
+ method is the same as <code>getTotalOut</code> except it returns a
+ <code>long</code> value instead of an integer.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getTotalIn()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        int
+      </span>
+      <span class="sympad"><strong>getTotalIn</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the total number of bytes of input read by this <code>Deflater</code>. This
+ method is limited to 32 bits; use <code><a href="reference/java/util/zip/Deflater.html#getBytesRead()">getBytesRead()</a></code> instead.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getTotalOut()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        int
+      </span>
+      <span class="sympad"><strong>getTotalOut</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the total number of bytes written to the output buffer by this <code>Deflater</code>. The method is limited to 32 bits; use <code><a href="reference/java/util/zip/Deflater.html#getBytesWritten()">getBytesWritten()</a></code> instead.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="needsInput()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        boolean
+      </span>
+      <span class="sympad"><strong>needsInput</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if <code><a href="reference/java/util/zip/Deflater.html#setInput(byte[])">setInput</a></code> must be called before deflation can continue.
+ If all uncompressed data has been provided to the <code>Deflater</code>,
+ <code><a href="reference/java/util/zip/Deflater.html#finish()">finish()</a></code> must be called to ensure the compressed data is output.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="reset()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>reset</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Resets the <code>Deflater</code> to accept new input without affecting any
+ previous compression strategy or level settings. This
+ operation <i>must</i> be called after <code><a href="reference/java/util/zip/Deflater.html#finished()">finished()</a></code> returns
+ true if the <code>Deflater</code> is to be reused.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setDictionary(byte[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>setDictionary</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>buf</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the dictionary to be used for compression by this <code>Deflater</code>.
+ This method can only be called if this <code>Deflater</code> supports the writing
+ of ZLIB headers. This is the default, but can be overridden
+ using <code><a href="reference/java/util/zip/Deflater.html#Deflater(int, boolean)">Deflater(int, boolean)</a></code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setDictionary(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setDictionary</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>dictionary</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the dictionary to be used for compression by this <code>Deflater</code>.
+ This method can only be called if this <code>Deflater</code> supports the writing
+ of ZLIB headers. This is the default, but can be overridden
+ using <code><a href="reference/java/util/zip/Deflater.html#Deflater(int, boolean)">Deflater(int, boolean)</a></code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setInput(byte[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>setInput</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>buf</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>byteCount</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the input buffer the <code>Deflater</code> will use to extract uncompressed bytes
+ for later compression.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setInput(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setInput</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>buf</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the input buffer the <code>Deflater</code> will use to extract uncompressed bytes
+ for later compression.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setLevel(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>setLevel</strong></span>
+      <span class="params">(<span class="nowrap">int <i>level</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the given <a href="#compression_level">compression level</a>
+ to be used when compressing data. This value must be set
+ prior to calling <code><a href="reference/java/util/zip/Deflater.html#setInput(byte[])">setInput</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the compression level is invalid.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setStrategy(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        void
+      </span>
+      <span class="sympad"><strong>setStrategy</strong></span>
+      <span class="params">(<span class="nowrap">int <i>strategy</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the compression strategy to be used. The strategy must be one of
+ FILTERED, HUFFMAN_ONLY or DEFAULT_STRATEGY. This value must be set prior
+ to calling <code><a href="reference/java/util/zip/Deflater.html#setInput(byte[])">setInput</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">If the strategy specified is not one of FILTERED,
+                HUFFMAN_ONLY or DEFAULT_STRATEGY.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="finalize()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>finalize</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

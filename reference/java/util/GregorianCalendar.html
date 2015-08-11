@@ -1,0 +1,2809 @@
+---
+
+title: GregorianCalendar - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Collection.html">Collection</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Deque.html">Deque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventListener.html">EventListener</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formattable.html">Formattable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Map.Entry.html">Map.Entry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Observer.html">Observer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Queue.html">Queue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/RandomAccess.html">RandomAccess</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;</li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractCollection.html">AbstractCollection</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractList.html">AbstractList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.html">AbstractMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleEntry.html">AbstractMap.SimpleEntry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleImmutableEntry.html">AbstractMap.SimpleImmutableEntry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractQueue.html">AbstractQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSequentialList.html">AbstractSequentialList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSet.html">AbstractSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ArrayDeque.html">ArrayDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Arrays.html">Arrays</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/BitSet.html">BitSet</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Calendar.html">Calendar</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Collections.html">Collections</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Currency.html">Currency</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Date.html">Date</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Dictionary.html">Dictionary</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EnumMap.html">EnumMap</a>&lt;K&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;K&gt;,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventObject.html">EventObject</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormattableFlags.html">FormattableFlags</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.html">Formatter</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/HashMap.html">HashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/HashSet.html">HashSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Hashtable.html">Hashtable</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IdentityHashMap.html">IdentityHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashMap.html">LinkedHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashSet.html">LinkedHashSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ListResourceBundle.html">ListResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Locale.html">Locale</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Objects.html">Objects</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Observable.html">Observable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Properties.html">Properties</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PropertyPermission.html">PropertyPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PropertyResourceBundle.html">PropertyResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Random.html">Random</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.html">ResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.Control.html">ResourceBundle.Control</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Scanner.html">Scanner</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ServiceLoader.html">ServiceLoader</a>&lt;S&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SimpleTimeZone.html">SimpleTimeZone</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Stack.html">Stack</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/StringTokenizer.html">StringTokenizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Timer.html">Timer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TimerTask.html">TimerTask</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TreeMap.html">TreeMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TreeSet.html">TreeSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UUID.html">UUID</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Vector.html">Vector</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/WeakHashMap.html">WeakHashMap</a>&lt;K,&nbsp;V&gt;</li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.BigDecimalLayoutForm.html">Formatter.BigDecimalLayoutForm</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/DuplicateFormatFlagsException.html">DuplicateFormatFlagsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EmptyStackException.html">EmptyStackException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormatFlagsConversionMismatchException.html">FormatFlagsConversionMismatchException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormatterClosedException.html">FormatterClosedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatCodePointException.html">IllegalFormatCodePointException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatConversionException.html">IllegalFormatConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatFlagsException.html">IllegalFormatFlagsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatPrecisionException.html">IllegalFormatPrecisionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatWidthException.html">IllegalFormatWidthException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/InputMismatchException.html">InputMismatchException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html">InvalidPropertiesFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatArgumentException.html">MissingFormatArgumentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatWidthException.html">MissingFormatWidthException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingResourceException.html">MissingResourceException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TooManyListenersException.html">TooManyListenersException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatConversionException.html">UnknownFormatConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatFlagsException.html">UnknownFormatFlagsException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ServiceConfigurationError.html">ServiceConfigurationError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+   
+  
+  
+   
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">GregorianCalendar</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p><code>GregorianCalendar</code> is a concrete subclass of <code><a href="reference/java/util/Calendar.html">Calendar</a></code>
+ and provides the standard calendar used by most of the world.
+
+ <p>
+ The standard (Gregorian) calendar has 2 eras, BC and AD.
+
+ <p>
+ This implementation handles a single discontinuity, which corresponds by
+ default to the date the Gregorian calendar was instituted (October 15, 1582
+ in some countries, later in others). The cutover date may be changed by the
+ caller by calling <code>setGregorianChange()</code>.
+
+ <p>
+ Historically, in those countries which adopted the Gregorian calendar first,
+ October 4, 1582 was thus followed by October 15, 1582. This calendar models
+ this correctly. Before the Gregorian cutover, <code>GregorianCalendar</code>
+ implements the Julian calendar. The only difference between the Gregorian and
+ the Julian calendar is the leap year rule. The Julian calendar specifies leap
+ years every four years, whereas the Gregorian calendar omits century years
+ which are not divisible by 400.
+
+ <p>
+ <code>GregorianCalendar</code> implements <em>proleptic</em> Gregorian
+ and Julian calendars. That is, dates are computed by extrapolating the
+ current rules indefinitely far backward and forward in time. As a result,
+ <code>GregorianCalendar</code> may be used for all years to generate
+ meaningful and consistent results. However, dates obtained using
+ <code>GregorianCalendar</code> are historically accurate only from March 1,
+ 4 AD onward, when modern Julian calendar rules were adopted. Before this
+ date, leap year rules were applied irregularly, and before 45 BC the Julian
+ calendar did not even exist.
+
+ <p>
+ Prior to the institution of the Gregorian calendar, New Year's Day was March
+ 25. To avoid confusion, this calendar always uses January 1. A manual
+ adjustment may be made if desired for dates that are prior to the Gregorian
+ changeover and which fall between January 1 and March 24.
+
+ <p>
+ Values calculated for the <code>WEEK_OF_YEAR</code> field range from 1 to
+ 53. Week 1 for a year is the earliest seven day period starting on
+ <code>getFirstDayOfWeek()</code> that contains at least
+ <code>getMinimalDaysInFirstWeek()</code> days from that year. It thus
+ depends on the values of <code>getMinimalDaysInFirstWeek()</code>,
+ <code>getFirstDayOfWeek()</code>, and the day of the week of January 1.
+ Weeks between week 1 of one year and week 1 of the following year are
+ numbered sequentially from 2 to 52 or 53 (as needed).
+
+ <p>
+ For example, January 1, 1998 was a Thursday. If
+ <code>getFirstDayOfWeek()</code> is <code>MONDAY</code> and
+ <code>getMinimalDaysInFirstWeek()</code> is 4 (these are the values
+ reflecting ISO 8601 and many national standards), then week 1 of 1998 starts
+ on December 29, 1997, and ends on January 4, 1998. If, however,
+ <code>getFirstDayOfWeek()</code> is <code>SUNDAY</code>, then week 1 of
+ 1998 starts on January 4, 1998, and ends on January 10, 1998; the first three
+ days of 1998 then are part of week 53 of 1997.
+
+ <p>
+ Values calculated for the <code>WEEK_OF_MONTH</code> field range from 0 or
+ 1 to 4 or 5. Week 1 of a month (the days with <code>WEEK_OF_MONTH =
+ 1</code>)
+ is the earliest set of at least <code>getMinimalDaysInFirstWeek()</code>
+ contiguous days in that month, ending on the day before
+ <code>getFirstDayOfWeek()</code>. Unlike week 1 of a year, week 1 of a
+ month may be shorter than 7 days, need not start on
+ <code>getFirstDayOfWeek()</code>, and will not include days of the
+ previous month. Days of a month before week 1 have a
+ <code>WEEK_OF_MONTH</code> of 0.
+
+ <p>
+ For example, if <code>getFirstDayOfWeek()</code> is <code>SUNDAY</code>
+ and <code>getMinimalDaysInFirstWeek()</code> is 4, then the first week of
+ January 1998 is Sunday, January 4 through Saturday, January 10. These days
+ have a <code>WEEK_OF_MONTH</code> of 1. Thursday, January 1 through
+ Saturday, January 3 have a <code>WEEK_OF_MONTH</code> of 0. If
+ <code>getMinimalDaysInFirstWeek()</code> is changed to 3, then January 1
+ through January 3 have a <code>WEEK_OF_MONTH</code> of 1.
+
+ <p>
+ <strong>Example:</strong> <blockquote>
+
+ <pre>
+ // get the supported ids for GMT-08:00 (Pacific Standard Time)
+ String[] ids = TimeZone.getAvailableIDs(-8 * 60 * 60 * 1000);
+ // if no ids were returned, something is wrong. get out.
+ if (ids.length == 0)
+     System.exit(0);
+
+  // begin output
+ System.out.println("Current Time");
+
+ // create a Pacific Standard Time time zone
+ SimpleTimeZone pdt = new SimpleTimeZone(-8 * 60 * 60 * 1000, ids[0]);
+
+ // set up rules for daylight savings time
+ pdt.setStartRule(Calendar.APRIL, 1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
+ pdt.setEndRule(Calendar.OCTOBER, -1, Calendar.SUNDAY, 2 * 60 * 60 * 1000);
+
+ // create a GregorianCalendar with the Pacific Daylight time zone
+ // and the current date and time
+ Calendar calendar = new GregorianCalendar(pdt);
+ Date trialTime = new Date();
+ calendar.setTime(trialTime);
+
+ // print out a bunch of interesting things
+ System.out.println("ERA: " + calendar.get(Calendar.ERA));
+ System.out.println("YEAR: " + calendar.get(Calendar.YEAR));
+ System.out.println("MONTH: " + calendar.get(Calendar.MONTH));
+ System.out.println("WEEK_OF_YEAR: " + calendar.get(Calendar.WEEK_OF_YEAR));
+ System.out.println("WEEK_OF_MONTH: " + calendar.get(Calendar.WEEK_OF_MONTH));
+ System.out.println("DATE: " + calendar.get(Calendar.DATE));
+ System.out.println("DAY_OF_MONTH: " + calendar.get(Calendar.DAY_OF_MONTH));
+ System.out.println("DAY_OF_YEAR: " + calendar.get(Calendar.DAY_OF_YEAR));
+ System.out.println("DAY_OF_WEEK: " + calendar.get(Calendar.DAY_OF_WEEK));
+ System.out.println("DAY_OF_WEEK_IN_MONTH: "
+                    + calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH));
+ System.out.println("AM_PM: " + calendar.get(Calendar.AM_PM));
+ System.out.println("HOUR: " + calendar.get(Calendar.HOUR));
+ System.out.println("HOUR_OF_DAY: " + calendar.get(Calendar.HOUR_OF_DAY));
+ System.out.println("MINUTE: " + calendar.get(Calendar.MINUTE));
+ System.out.println("SECOND: " + calendar.get(Calendar.SECOND));
+ System.out.println("MILLISECOND: " + calendar.get(Calendar.MILLISECOND));
+ System.out.println("ZONE_OFFSET: "
+                    + (calendar.get(Calendar.ZONE_OFFSET)/(60*60*1000)));
+ System.out.println("DST_OFFSET: "
+                    + (calendar.get(Calendar.DST_OFFSET)/(60*60*1000)));
+
+ System.out.println("Current Time, with hour reset to 3");
+ calendar.clear(Calendar.HOUR_OF_DAY); // so doesn't override
+ calendar.set(Calendar.HOUR, 3);
+ System.out.println("ERA: " + calendar.get(Calendar.ERA));
+ System.out.println("YEAR: " + calendar.get(Calendar.YEAR));
+ System.out.println("MONTH: " + calendar.get(Calendar.MONTH));
+ System.out.println("WEEK_OF_YEAR: " + calendar.get(Calendar.WEEK_OF_YEAR));
+ System.out.println("WEEK_OF_MONTH: " + calendar.get(Calendar.WEEK_OF_MONTH));
+ System.out.println("DATE: " + calendar.get(Calendar.DATE));
+ System.out.println("DAY_OF_MONTH: " + calendar.get(Calendar.DAY_OF_MONTH));
+ System.out.println("DAY_OF_YEAR: " + calendar.get(Calendar.DAY_OF_YEAR));
+ System.out.println("DAY_OF_WEEK: " + calendar.get(Calendar.DAY_OF_WEEK));
+ System.out.println("DAY_OF_WEEK_IN_MONTH: "
+                    + calendar.get(Calendar.DAY_OF_WEEK_IN_MONTH));
+ System.out.println("AM_PM: " + calendar.get(Calendar.AM_PM));
+ System.out.println("HOUR: " + calendar.get(Calendar.HOUR));
+ System.out.println("HOUR_OF_DAY: " + calendar.get(Calendar.HOUR_OF_DAY));
+ System.out.println("MINUTE: " + calendar.get(Calendar.MINUTE));
+ System.out.println("SECOND: " + calendar.get(Calendar.SECOND));
+ System.out.println("MILLISECOND: " + calendar.get(Calendar.MILLISECOND));
+ System.out.println("ZONE_OFFSET: "
+        + (calendar.get(Calendar.ZONE_OFFSET)/(60*60*1000))); // in hours
+ System.out.println("DST_OFFSET: "
+        + (calendar.get(Calendar.DST_OFFSET)/(60*60*1000))); // in hours
+ </pre>
+
+ </blockquote></p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Calendar.html">Calendar</a></code></li><li><code><a href="../../../reference/java/util/TimeZone.html">TimeZone</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="constants"><h3>Constant Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/GregorianCalendar.html#AD">AD</a></td>
+        <td class="jd-descrcol" width="100%">Value for the AD era.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/GregorianCalendar.html#BC">BC</a></td>
+        <td class="jd-descrcol" width="100%">Value for the BC era.</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="inhconstants">
+  <h3>Inherited Constant Summary</h3>
+  
+    
+      <div class="expandable api apilevel-">
+        <span class="showalways">
+          From class
+          <a href="../../../reference/java/util/Calendar.html">java.util.Calendar</a>
+        </span>
+        <div id="inherited-constants-java.util.Calendar">
+          <div id="inherited-constants-java.util.Calendar-list"
+                class="jd-inheritedlinks">
+          </div>
+          <div id="inherited-constants-java.util.Calendar-summary">
+            <table class="jd-sumtable-expando">
+              
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#ALL_STYLES">ALL_STYLES</a></td>
+        <td class="jd-descrcol" width="100%">Requests both <code>SHORT</code> and <code>LONG</code> styles in the map returned by
+ <code><a href="reference/java/util/Calendar.html#getDisplayNames(int, int, java.util.Locale)">getDisplayNames(int, int, Locale)</a></code>.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#AM">AM</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>AM_PM</code> field indicating the period of the day
+ from midnight to just before noon.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#AM_PM">AM_PM</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating
+ whether the <code>HOUR</code> is before or after noon.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#APRIL">APRIL</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the fourth month of
+ the year.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#AUGUST">AUGUST</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the eighth month of
+ the year.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#DATE">DATE</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ day of the month.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#DAY_OF_MONTH">DAY_OF_MONTH</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ day of the month.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#DAY_OF_WEEK">DAY_OF_WEEK</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ day of the week.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#DAY_OF_WEEK_IN_MONTH">DAY_OF_WEEK_IN_MONTH</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ ordinal number of the day of the week within the current month.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#DAY_OF_YEAR">DAY_OF_YEAR</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ day number within the current year.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#DECEMBER">DECEMBER</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the twelfth month of
+ the year.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#DST_OFFSET">DST_OFFSET</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ daylight savings offset in milliseconds.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#ERA">ERA</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ era, e.g., AD or BC in the Julian calendar.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#FEBRUARY">FEBRUARY</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the second month of
+ the year.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#FIELD_COUNT">FIELD_COUNT</a></td>
+        <td class="jd-descrcol" width="100%">This is the total number of fields in this calendar.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#FRIDAY">FRIDAY</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>DAY_OF_WEEK</code> field indicating Friday.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#HOUR">HOUR</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ hour of the morning or afternoon.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#HOUR_OF_DAY">HOUR_OF_DAY</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ hour of the day.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#JANUARY">JANUARY</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the first month of the
+ year.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#JULY">JULY</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the seventh month of
+ the year.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#JUNE">JUNE</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the sixth month of the
+ year.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#LONG">LONG</a></td>
+        <td class="jd-descrcol" width="100%">Requests long names (such as "January") from
+ <code><a href="reference/java/util/Calendar.html#getDisplayName(int, int, java.util.Locale)">getDisplayName(int, int, Locale)</a></code> or <code><a href="reference/java/util/Calendar.html#getDisplayNames(int, int, java.util.Locale)">getDisplayNames(int, int, Locale)</a></code>.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#MARCH">MARCH</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the third month of the
+ year.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#MAY">MAY</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the fifth month of the
+ year.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#MILLISECOND">MILLISECOND</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ millisecond within the second.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#MINUTE">MINUTE</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ minute within the hour.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#MONDAY">MONDAY</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>DAY_OF_WEEK</code> field indicating Monday.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#MONTH">MONTH</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ month.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#NOVEMBER">NOVEMBER</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the eleventh month of
+ the year.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#OCTOBER">OCTOBER</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the tenth month of the
+ year.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#PM">PM</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>AM_PM</code> field indicating the period of the day
+ from noon to just before midnight.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#SATURDAY">SATURDAY</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>DAY_OF_WEEK</code> field indicating Saturday.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#SECOND">SECOND</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ second within the minute.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#SEPTEMBER">SEPTEMBER</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the ninth month of the
+ year.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#SHORT">SHORT</a></td>
+        <td class="jd-descrcol" width="100%">Requests short names (such as "Jan") from
+ <code><a href="reference/java/util/Calendar.html#getDisplayName(int, int, java.util.Locale)">getDisplayName(int, int, Locale)</a></code> or <code><a href="reference/java/util/Calendar.html#getDisplayNames(int, int, java.util.Locale)">getDisplayNames(int, int, Locale)</a></code>.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#SUNDAY">SUNDAY</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>DAY_OF_WEEK</code> field indicating Sunday.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#THURSDAY">THURSDAY</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>DAY_OF_WEEK</code> field indicating Thursday.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#TUESDAY">TUESDAY</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>DAY_OF_WEEK</code> field indicating Tuesday.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#UNDECIMBER">UNDECIMBER</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>MONTH</code> field indicating the thirteenth month
+ of the year.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#WEDNESDAY">WEDNESDAY</a></td>
+        <td class="jd-descrcol" width="100%">Value of the <code>DAY_OF_WEEK</code> field indicating Wednesday.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#WEEK_OF_MONTH">WEEK_OF_MONTH</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ week number within the current month.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#WEEK_OF_YEAR">WEEK_OF_YEAR</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ week number within the current year.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#YEAR">YEAR</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ year.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#ZONE_OFFSET">ZONE_OFFSET</a></td>
+        <td class="jd-descrcol" width="100%">Field number for <code>get</code> and <code>set</code> indicating the
+ raw offset from GMT in milliseconds.</td>
+    </tr>
+    
+    
+
+            </table>
+          </div>
+        </div>
+      </div>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+</section>
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<section id="inhfields">
+  <h3>Inherited Field Summary</h3>
+  
+    
+    <div class="expandable api apilevel-">
+      <span class="showalways">
+        From class
+        <a href="../../../reference/java/util/Calendar.html">java.util.Calendar</a>
+      </span>
+      <div id="inherited-fields-java.util.Calendar">
+        <div id="inherited-fields-java.util.Calendar-list"
+              class="jd-inheritedlinks">
+        </div>
+        <div id="inherited-fields-java.util.Calendar-summary">
+          <table class="jd-sumtable-expando">
+          
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          boolean</td>
+          <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#areFieldsSet">areFieldsSet</a></td>
+          <td class="jd-descrcol" width="100%">True iff the values in <code>fields[]</code> correspond to <code>time</code>.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          int[]</td>
+          <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#fields">fields</a></td>
+          <td class="jd-descrcol" width="100%">Contains broken-down field values for the current value of <code>time</code> if
+ <code>areFieldsSet</code> is true, or stale data corresponding to some previous value otherwise.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          boolean[]</td>
+          <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#isSet">isSet</a></td>
+          <td class="jd-descrcol" width="100%">Whether the corresponding element in <code>field[]</code> has been set.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          boolean</td>
+          <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#isTimeSet">isTimeSet</a></td>
+          <td class="jd-descrcol" width="100%">Whether <code>time</code> corresponds to the values in <code>fields[]</code>.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          protected
+          
+          
+          long</td>
+          <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html#time">time</a></td>
+          <td class="jd-descrcol" width="100%">A time in milliseconds since January 1, 1970.</td>
+      </tr>
+      
+    
+
+          </table>
+        </div>
+      </div>
+    </div>
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+  </section>
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#GregorianCalendar()">GregorianCalendar</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#GregorianCalendar(int, int, int)">GregorianCalendar</a></span>(<span class="nowrap">int <i>year</i></span>, <span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#GregorianCalendar(int, int, int, int, int)">GregorianCalendar</a></span>(<span class="nowrap">int <i>year</i></span>, <span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>hour</i></span>, <span class="nowrap">int <i>minute</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#GregorianCalendar(int, int, int, int, int, int)">GregorianCalendar</a></span>(<span class="nowrap">int <i>year</i></span>, <span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>hour</i></span>, <span class="nowrap">int <i>minute</i></span>, <span class="nowrap">int <i>second</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#GregorianCalendar(java.util.Locale)">GregorianCalendar</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#GregorianCalendar(java.util.TimeZone)">GregorianCalendar</a></span>(<span class="nowrap"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a> <i>timezone</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#GregorianCalendar(java.util.TimeZone, java.util.Locale)">GregorianCalendar</a></span>(<span class="nowrap"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a> <i>timezone</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#add(int, int)">add</a></span>(<span class="nowrap">int <i>field</i></span>, <span class="nowrap">int <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#equals(java.lang.Object)">equals</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#getActualMaximum(int)">getActualMaximum</a></span>(<span class="nowrap">int <i>field</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#getActualMinimum(int)">getActualMinimum</a></span>(<span class="nowrap">int <i>field</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#getGreatestMinimum(int)">getGreatestMinimum</a></span>(<span class="nowrap">int <i>field</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/util/Date.html">Date</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#getGregorianChange()">getGregorianChange</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#getLeastMaximum(int)">getLeastMaximum</a></span>(<span class="nowrap">int <i>field</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#getMaximum(int)">getMaximum</a></span>(<span class="nowrap">int <i>field</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#getMinimum(int)">getMinimum</a></span>(<span class="nowrap">int <i>field</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#hashCode()">hashCode</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#isLeapYear(int)">isLeapYear</a></span>(<span class="nowrap">int <i>year</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#roll(int, boolean)">roll</a></span>(<span class="nowrap">int <i>field</i></span>, <span class="nowrap">boolean <i>increment</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#roll(int, int)">roll</a></span>(<span class="nowrap">int <i>field</i></span>, <span class="nowrap">int <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#setGregorianChange(java.util.Date)">setGregorianChange</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Date.html">Date</a> <i>date</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#computeFields()">computeFields</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#computeTime()">computeTime</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<section id="constants">
+  <h2>Constants</h2>
+  
+
+
+
+<A NAME="AD"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>AD</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Value for the AD era.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                1
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="BC"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>BC</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Value for the BC era.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                0
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="GregorianCalendar()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>GregorianCalendar</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>GregorianCalendar</code> initialized to the current date and
+ time with the default <code>Locale</code> and <code>TimeZone</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="GregorianCalendar(int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>GregorianCalendar</strong></span>
+      <span class="params">(<span class="nowrap">int <i>year</i></span>, <span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>GregorianCalendar</code> initialized to midnight in the default
+ <code>TimeZone</code> and <code>Locale</code> on the specified date.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">year</td>
+          <td class="jd-tagdescr">the year.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">month</td>
+          <td class="jd-tagdescr">the month.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">day</td>
+          <td class="jd-tagdescr">the day of the month.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="GregorianCalendar(int, int, int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>GregorianCalendar</strong></span>
+      <span class="params">(<span class="nowrap">int <i>year</i></span>, <span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>hour</i></span>, <span class="nowrap">int <i>minute</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>GregorianCalendar</code> initialized to the specified date and
+ time in the default <code>TimeZone</code> and <code>Locale</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">year</td>
+          <td class="jd-tagdescr">the year.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">month</td>
+          <td class="jd-tagdescr">the month.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">day</td>
+          <td class="jd-tagdescr">the day of the month.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">hour</td>
+          <td class="jd-tagdescr">the hour.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">minute</td>
+          <td class="jd-tagdescr">the minute.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="GregorianCalendar(int, int, int, int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>GregorianCalendar</strong></span>
+      <span class="params">(<span class="nowrap">int <i>year</i></span>, <span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>hour</i></span>, <span class="nowrap">int <i>minute</i></span>, <span class="nowrap">int <i>second</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>GregorianCalendar</code> initialized to the specified date and
+ time in the default <code>TimeZone</code> and <code>Locale</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">year</td>
+          <td class="jd-tagdescr">the year.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">month</td>
+          <td class="jd-tagdescr">the month.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">day</td>
+          <td class="jd-tagdescr">the day of the month.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">hour</td>
+          <td class="jd-tagdescr">the hour.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">minute</td>
+          <td class="jd-tagdescr">the minute.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">second</td>
+          <td class="jd-tagdescr">the second.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="GregorianCalendar(java.util.Locale)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>GregorianCalendar</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>GregorianCalendar</code> initialized to the current date and
+ time and using the specified <code>Locale</code> and the default <code>TimeZone</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">locale</td>
+          <td class="jd-tagdescr">the <code>Locale</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="GregorianCalendar(java.util.TimeZone)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>GregorianCalendar</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a> <i>timezone</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>GregorianCalendar</code> initialized to the current date and
+ time and using the specified <code>TimeZone</code> and the default <code>Locale</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">timezone</td>
+          <td class="jd-tagdescr">the <code>TimeZone</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="GregorianCalendar(java.util.TimeZone, java.util.Locale)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>GregorianCalendar</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a> <i>timezone</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Locale.html">Locale</a> <i>locale</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>GregorianCalendar</code> initialized to the current date and
+ time and using the specified <code>TimeZone</code> and <code>Locale</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">timezone</td>
+          <td class="jd-tagdescr">the <code>TimeZone</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">locale</td>
+          <td class="jd-tagdescr">the <code>Locale</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="add(int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>add</strong></span>
+      <span class="params">(<span class="nowrap">int <i>field</i></span>, <span class="nowrap">int <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Adds the specified amount to a <code>Calendar</code> field.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">field</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> field to modify.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the amount to add to the field.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the specified field is DST_OFFSET or ZONE_OFFSET.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if <code>object</code> is a GregorianCalendar with the same
+ properties.
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the given object is equal to this <code>Calendar</code>, <code>false</code>
+         otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getActualMaximum(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getActualMaximum</strong></span>
+      <span class="params">(<span class="nowrap">int <i>field</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the maximum value of the given field for the current date.
+ For example, the maximum number of days in the current month.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getActualMinimum(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getActualMinimum</strong></span>
+      <span class="params">(<span class="nowrap">int <i>field</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the minimum value of the specified field for the current date. For
+ the gregorian calendar, this value is the same as
+ <code>getMinimum()</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">field</td>
+          <td class="jd-tagdescr">the field.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the minimum value of the specified field.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getGreatestMinimum(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getGreatestMinimum</strong></span>
+      <span class="params">(<span class="nowrap">int <i>field</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the greatest minimum value of the specified field. For the gregorian
+ calendar, this value is the same as <code>getMinimum()</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">field</td>
+          <td class="jd-tagdescr">the field.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the greatest minimum value of the specified field.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getGregorianChange()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/util/Date.html">Date</a>
+      </span>
+      <span class="sympad"><strong>getGregorianChange</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the gregorian change date of this calendar. This is the date on
+ which the gregorian calendar came into effect.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a <code>Date</code> which represents the gregorian change date.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLeastMaximum(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getLeastMaximum</strong></span>
+      <span class="params">(<span class="nowrap">int <i>field</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the smallest maximum value of the specified field. For example, 28
+ for the day of month field.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">field</td>
+          <td class="jd-tagdescr">the field.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the smallest maximum value of the specified field.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMaximum(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getMaximum</strong></span>
+      <span class="params">(<span class="nowrap">int <i>field</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the greatest maximum value of the specified field. For example, 31
+ for the day of month field.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">field</td>
+          <td class="jd-tagdescr">the field.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the greatest maximum value of the specified field.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMinimum(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getMinimum</strong></span>
+      <span class="params">(<span class="nowrap">int <i>field</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the smallest minimum value of the specified field.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">field</td>
+          <td class="jd-tagdescr">the field.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the smallest minimum value of the specified field.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="hashCode()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>hashCode</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isLeapYear(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isLeapYear</strong></span>
+      <span class="params">(<span class="nowrap">int <i>year</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if <code>year</code> is a leap year.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="roll(int, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>roll</strong></span>
+      <span class="params">(<span class="nowrap">int <i>field</i></span>, <span class="nowrap">boolean <i>increment</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Increments or decrements the specified field and wraps the value of the
+ field when it goes beyond the maximum or minimum value for the current
+ date. Other fields will be adjusted as required to maintain a consistent
+ date. For example, March 31 will roll to April 30 when rolling the month
+ field.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">field</td>
+          <td class="jd-tagdescr">the field to roll.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">increment</td>
+          <td class="jd-tagdescr"><code>true</code> to increment the field, <code>false</code> to
+            decrement.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if an invalid field is specified.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="roll(int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>roll</strong></span>
+      <span class="params">(<span class="nowrap">int <i>field</i></span>, <span class="nowrap">int <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Adds the specified amount the specified field and wraps the value of the
+ field when it goes beyond the maximum or minimum value for the current
+ date. Other fields will be adjusted as required to maintain a consistent
+ date.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">field</td>
+          <td class="jd-tagdescr">the field to roll.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the amount to add.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if an invalid field is specified.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setGregorianChange(java.util.Date)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setGregorianChange</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Date.html">Date</a> <i>date</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the gregorian change date of this calendar.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="computeFields()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>computeFields</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Computes the <code>Calendar</code> fields from <code>time</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="computeTime()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>computeTime</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Computes <code>time</code> from the Calendar fields.</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

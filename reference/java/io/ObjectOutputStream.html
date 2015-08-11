@@ -1,0 +1,3264 @@
+---
+
+title: ObjectOutputStream - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Closeable.html">Closeable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataInput.html">DataInput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataOutput.html">DataOutput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Externalizable.html">Externalizable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileFilter.html">FileFilter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilenameFilter.html">FilenameFilter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Flushable.html">Flushable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputValidation.html">ObjectInputValidation</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectOutput.html">ObjectOutput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamConstants.html">ObjectStreamConstants</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Serializable.html">Serializable</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedInputStream.html">BufferedInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedOutputStream.html">BufferedOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedReader.html">BufferedReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/BufferedWriter.html">BufferedWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ByteArrayInputStream.html">ByteArrayInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ByteArrayOutputStream.html">ByteArrayOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharArrayReader.html">CharArrayReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharArrayWriter.html">CharArrayWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Console.html">Console</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataInputStream.html">DataInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/DataOutputStream.html">DataOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/File.html">File</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileDescriptor.html">FileDescriptor</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileInputStream.html">FileInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileOutputStream.html">FileOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilePermission.html">FilePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileReader.html">FileReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileWriter.html">FileWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterInputStream.html">FilterInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterOutputStream.html">FilterOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterReader.html">FilterReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FilterWriter.html">FilterWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InputStream.html">InputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InputStreamReader.html">InputStreamReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/LineNumberInputStream.html">LineNumberInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/LineNumberReader.html">LineNumberReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectInputStream.GetField.html">ObjectInputStream.GetField</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/io/ObjectOutputStream.html">ObjectOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectOutputStream.PutField.html">ObjectOutputStream.PutField</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamClass.html">ObjectStreamClass</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamField.html">ObjectStreamField</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OutputStream.html">OutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedInputStream.html">PipedInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedOutputStream.html">PipedOutputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedReader.html">PipedReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PrintStream.html">PrintStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PushbackInputStream.html">PushbackInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/PushbackReader.html">PushbackReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/RandomAccessFile.html">RandomAccessFile</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Reader.html">Reader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SequenceInputStream.html">SequenceInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SerializablePermission.html">SerializablePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StreamTokenizer.html">StreamTokenizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringBufferInputStream.html">StringBufferInputStream</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringReader.html">StringReader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StringWriter.html">StringWriter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/Writer.html">Writer</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/CharConversionException.html">CharConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/EOFException.html">EOFException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InterruptedIOException.html">InterruptedIOException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InvalidClassException.html">InvalidClassException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/InvalidObjectException.html">InvalidObjectException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/IOException.html">IOException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/NotActiveException.html">NotActiveException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/NotSerializableException.html">NotSerializableException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/ObjectStreamException.html">ObjectStreamException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/OptionalDataException.html">OptionalDataException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/StreamCorruptedException.html">StreamCorruptedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/SyncFailedException.html">SyncFailedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/UnsupportedEncodingException.html">UnsupportedEncodingException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/UTFDataFormatException.html">UTFDataFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/io/WriteAbortedException.html">WriteAbortedException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/io/IOError.html">IOError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+   
+  
+  
+   
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">ObjectOutputStream</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>A specialized <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> that is able to write (serialize) Java
+ objects as well as primitive data types (int, byte, char etc.). The data can
+ later be loaded using an ObjectInputStream.</p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a></code></li><li><code><a href="../../../reference/java/io/ObjectOutput.html">ObjectOutput</a></code></li><li><code><a href="../../../reference/java/io/Serializable.html">Serializable</a></code></li><li><code><a href="../../../reference/java/io/Externalizable.html">Externalizable</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<section>
+  <h3>Nested Class Summary</h3>
+  <table id="nestedclasses" class="jd-sumtable">
+    
+
+  
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+        
+        
+        
+        
+        class</td>
+      <td class="jd-linkcol" colspan="2"><a href="../../../reference/java/io/ObjectOutputStream.PutField.html">ObjectOutputStream.PutField</a></td>
+      <td class="jd-descrcol" width="100%">PutField is an inner class to provide access to the persistent fields
+ that are written to the target stream.&nbsp;</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="inhconstants">
+  <h3>Inherited Constant Summary</h3>
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+      <div class="expandable api apilevel-">
+        <span class="showalways">
+          From interface
+          <a href="../../../reference/java/io/ObjectStreamConstants.html">java.io.ObjectStreamConstants</a>
+        </span>
+        <div id="inherited-constants-java.io.ObjectStreamConstants">
+          <div id="inherited-constants-java.io.ObjectStreamConstants-list"
+                class="jd-inheritedlinks">
+          </div>
+          <div id="inherited-constants-java.io.ObjectStreamConstants-summary">
+            <table class="jd-sumtable-expando">
+              
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#PROTOCOL_VERSION_1">PROTOCOL_VERSION_1</a></td>
+        <td class="jd-descrcol" width="100%">Stream protocol version 1.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#PROTOCOL_VERSION_2">PROTOCOL_VERSION_2</a></td>
+        <td class="jd-descrcol" width="100%">Stream protocol version 2.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SC_BLOCK_DATA">SC_BLOCK_DATA</a></td>
+        <td class="jd-descrcol" width="100%">Bit mask for the <code>flag</code> field in ObjectStreamClass.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SC_ENUM">SC_ENUM</a></td>
+        <td class="jd-descrcol" width="100%">Bit mask for the <code>flag</code> field in ObjectStreamClass.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SC_EXTERNALIZABLE">SC_EXTERNALIZABLE</a></td>
+        <td class="jd-descrcol" width="100%">Bit mask for the <code>flag</code> field in ObjectStreamClass.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SC_SERIALIZABLE">SC_SERIALIZABLE</a></td>
+        <td class="jd-descrcol" width="100%">Bit mask for the <code>flag</code> field in ObjectStreamClass.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SC_WRITE_METHOD">SC_WRITE_METHOD</a></td>
+        <td class="jd-descrcol" width="100%">Bit mask for the <code>flag</code> field in ObjectStreamClass.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#STREAM_MAGIC">STREAM_MAGIC</a></td>
+        <td class="jd-descrcol" width="100%">The stream header's magic number.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#STREAM_VERSION">STREAM_VERSION</a></td>
+        <td class="jd-descrcol" width="100%">The stream header's version number.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_ARRAY">TC_ARRAY</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new array.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_BASE">TC_BASE</a></td>
+        <td class="jd-descrcol" width="100%">The minimum tag value.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_BLOCKDATA">TC_BLOCKDATA</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a block of optional data.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_BLOCKDATALONG">TC_BLOCKDATALONG</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a long block of data.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_CLASS">TC_CLASS</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a reference to a class.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_CLASSDESC">TC_CLASSDESC</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new class descriptor.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_ENDBLOCKDATA">TC_ENDBLOCKDATA</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark the end of block data blocks for an object.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_ENUM">TC_ENUM</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new enum.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_EXCEPTION">TC_EXCEPTION</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark an exception.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_LONGSTRING">TC_LONGSTRING</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a long string.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_MAX">TC_MAX</a></td>
+        <td class="jd-descrcol" width="100%">The maximum tag value.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_NULL">TC_NULL</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a <code>null</code> object reference.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_OBJECT">TC_OBJECT</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new object.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_PROXYCLASSDESC">TC_PROXYCLASSDESC</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new proxy class descriptor.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_REFERENCE">TC_REFERENCE</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a reference to an object that has already been written to the
+ stream.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_RESET">TC_RESET</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a stream reset.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_STRING">TC_STRING</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new string.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#baseWireHandle">baseWireHandle</a></td>
+        <td class="jd-descrcol" width="100%">Handle for the first object that gets serialized.</td>
+    </tr>
+    
+    
+
+            </table>
+          </div>
+        </div>
+      </div>
+    
+  
+    
+  
+</section>
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<section id="inhfields">
+  <h3>Inherited Field Summary</h3>
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+  
+    
+    <div class="expandable api apilevel-">
+      <span class="showalways">
+        From interface
+        <a href="../../../reference/java/io/ObjectStreamConstants.html">java.io.ObjectStreamConstants</a>
+      </span>
+      <div id="inherited-fields-java.io.ObjectStreamConstants">
+        <div id="inherited-fields-java.io.ObjectStreamConstants-list"
+              class="jd-inheritedlinks">
+        </div>
+        <div id="inherited-fields-java.io.ObjectStreamConstants-summary">
+          <table class="jd-sumtable-expando">
+          
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/io/SerializablePermission.html">SerializablePermission</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SUBCLASS_IMPLEMENTATION_PERMISSION">SUBCLASS_IMPLEMENTATION_PERMISSION</a></td>
+          <td class="jd-descrcol" width="100%">Permission constant to enable subclassing of ObjectInputStream and
+ ObjectOutputStream.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/io/SerializablePermission.html">SerializablePermission</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SUBSTITUTION_PERMISSION">SUBSTITUTION_PERMISSION</a></td>
+          <td class="jd-descrcol" width="100%">Permission constant to enable object substitution during serialization
+ and deserialization.</td>
+      </tr>
+      
+    
+
+          </table>
+        </div>
+      </div>
+    </div>
+    
+  
+    
+  
+  </section>
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#ObjectOutputStream(java.io.OutputStream)">ObjectOutputStream</a></span>(<span class="nowrap"><a href="../../../reference/java/io/OutputStream.html">OutputStream</a> <i>output</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#ObjectOutputStream()">ObjectOutputStream</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#close()">close</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#defaultWriteObject()">defaultWriteObject</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#flush()">flush</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/io/ObjectOutputStream.PutField.html">ObjectOutputStream.PutField</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#putFields()">putFields</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#reset()">reset</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#useProtocolVersion(int)">useProtocolVersion</a></span>(<span class="nowrap">int <i>version</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#write(byte[], int, int)">write</a></span>(<span class="nowrap">byte[] <i>buffer</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#write(int)">write</a></span>(<span class="nowrap">int <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeBoolean(boolean)">writeBoolean</a></span>(<span class="nowrap">boolean <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeByte(int)">writeByte</a></span>(<span class="nowrap">int <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeBytes(java.lang.String)">writeBytes</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeChar(int)">writeChar</a></span>(<span class="nowrap">int <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeChars(java.lang.String)">writeChars</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeDouble(double)">writeDouble</a></span>(<span class="nowrap">double <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeFields()">writeFields</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeFloat(float)">writeFloat</a></span>(<span class="nowrap">float <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeInt(int)">writeInt</a></span>(<span class="nowrap">int <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeLong(long)">writeLong</a></span>(<span class="nowrap">long <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeObject(java.lang.Object)">writeObject</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeShort(int)">writeShort</a></span>(<span class="nowrap">int <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeUTF(java.lang.String)">writeUTF</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeUnshared(java.lang.Object)">writeUnshared</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#annotateClass(java.lang.Class<?>)">annotateClass</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; <i>aClass</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#annotateProxyClass(java.lang.Class<?>)">annotateProxyClass</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; <i>aClass</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#drain()">drain</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#enableReplaceObject(boolean)">enableReplaceObject</a></span>(<span class="nowrap">boolean <i>enable</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#replaceObject(java.lang.Object)">replaceObject</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeClassDescriptor(java.io.ObjectStreamClass)">writeClassDescriptor</a></span>(<span class="nowrap"><a href="../../../reference/java/io/ObjectStreamClass.html">ObjectStreamClass</a> <i>classDesc</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeObjectOverride(java.lang.Object)">writeObjectOverride</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/io/ObjectOutputStream.html#writeStreamHeader()">writeStreamHeader</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="ObjectOutputStream(java.io.OutputStream)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ObjectOutputStream</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/io/OutputStream.html">OutputStream</a> <i>output</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new ObjectOutputStream that writes to the OutputStream
+ <code>output</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">output</td>
+          <td class="jd-tagdescr">the non-null OutputStream to filter writes on.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing the object stream
+             header
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="ObjectOutputStream()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ObjectOutputStream</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>ObjectOutputStream</code>. This default constructor can
+ be used by subclasses that do not want to use the public constructor if
+ it allocates unneeded data.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs when creating this stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="close()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>close</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Closes this stream. Any buffered data is flushed. This implementation
+ closes the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while closing this stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="defaultWriteObject()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>defaultWriteObject</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Default method to write objects to this stream. Serializable fields
+ defined in the object's class and superclasses are written to the output
+ stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/NotActiveException.html">NotActiveException</a></td>
+            <td class="jd-tagdescr">if this method is not called from <code>writeObject()</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputStream.html#defaultReadObject()">defaultReadObject()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="flush()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>flush</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes buffered data to the target stream and calls the <code>flush</code>
+ method of the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to or flushing the output
+             stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="putFields()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/io/ObjectOutputStream.PutField.html">ObjectOutputStream.PutField</a>
+      </span>
+      <span class="sympad"><strong>putFields</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets this stream's <code>PutField</code> object. This object provides access
+ to the persistent fields that are eventually written to the output
+ stream. It is used to transfer the values from the fields of the object
+ that is currently being written to the persistent fields.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the PutField object from which persistent fields can be accessed
+         by name.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/NotActiveException.html">NotActiveException</a></td>
+            <td class="jd-tagdescr">if this method is not called from <code>writeObject()</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputStream.html#defaultReadObject()">defaultReadObject()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="reset()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>reset</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Resets the state of this stream. A marker is written to the stream, so
+ that the corresponding input stream will also perform a reset at the same
+ point. Objects previously written are no longer remembered, so they will
+ be written again (instead of a cyclical reference) if found in the object
+ graph.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if <code>reset()</code> is called during the serialization of an
+             object.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="useProtocolVersion(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>useProtocolVersion</strong></span>
+      <span class="params">(<span class="nowrap">int <i>version</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the specified protocol version to be used by this stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">version</td>
+          <td class="jd-tagdescr">the protocol version to be used. Use a <code>PROTOCOL_VERSION_x</code> constant from <code>java.io.ObjectStreamConstants</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if an invalid <code>version</code> is specified.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectStreamConstants.html#PROTOCOL_VERSION_1">PROTOCOL_VERSION_1</a></code></li><li><code><a href="../../../reference/java/io/ObjectStreamConstants.html#PROTOCOL_VERSION_2">PROTOCOL_VERSION_2</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="write(byte[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>write</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>buffer</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes <code>count</code> bytes from the byte array <code>buffer</code> starting at
+ offset <code>index</code> to the target stream. Blocks until all bytes are
+ written.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">buffer</td>
+          <td class="jd-tagdescr">the buffer to write.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the index of the first byte in <code>buffer</code> to write.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the number of bytes from <code>buffer</code> to write to the output
+            stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="write(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>write</strong></span>
+      <span class="params">(<span class="nowrap">int <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a single byte to the target stream. Only the least significant
+ byte of the integer <code>value</code> is written to the stream. Blocks until
+ the byte is actually written.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the byte to write.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeBoolean(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeBoolean</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a boolean to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the boolean value to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeByte(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeByte</strong></span>
+      <span class="params">(<span class="nowrap">int <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a byte (8 bit) to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the byte to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeBytes(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeBytes</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the string <code>value</code> as a sequence of bytes to the target
+ stream. Only the least significant byte of each character in the string
+ is written.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the string to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeChar(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeChar</strong></span>
+      <span class="params">(<span class="nowrap">int <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a character (16 bit) to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the character to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeChars(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeChars</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the string <code>value</code> as a sequence of characters to the target
+ stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the string to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeDouble(double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeDouble</strong></span>
+      <span class="params">(<span class="nowrap">double <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a double (64 bit) to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the double to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeFields()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeFields</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the fields of the object currently being written to the target
+ stream. The field values are buffered in the currently active <code>PutField</code> object, which can be accessed by calling <code>putFields()</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/NotActiveException.html">NotActiveException</a></td>
+            <td class="jd-tagdescr">if there are no fields to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectOutputStream.html#putFields()">putFields()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeFloat(float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeFloat</strong></span>
+      <span class="params">(<span class="nowrap">float <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a float (32 bit) to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the float to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeInt(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeInt</strong></span>
+      <span class="params">(<span class="nowrap">int <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an integer (32 bit) to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the integer to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeLong(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeLong</strong></span>
+      <span class="params">(<span class="nowrap">long <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a long (64 bit) to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the long to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeObject(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeObject</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an object to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">object</td>
+          <td class="jd-tagdescr">the object to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputStream.html#readObject()">readObject()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeShort(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeShort</strong></span>
+      <span class="params">(<span class="nowrap">int <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a short (16 bit) to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the short to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeUTF(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeUTF</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a string encoded with <code><a href="reference/java/io/DataInput.html">modified UTF-8</a></code> to the
+ target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the string to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeUnshared(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeUnshared</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes an unshared object to the target stream. This method is identical
+ to <code>writeObject</code>, except that it always writes a new object to the
+ stream versus the use of back-referencing for identical objects by
+ <code>writeObject</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">object</td>
+          <td class="jd-tagdescr">the object to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputStream.html#readUnshared()">readUnshared()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="annotateClass(java.lang.Class<?>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>annotateClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; <i>aClass</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes optional information for class <code>aClass</code> to the output
+ stream. This optional data can be read when deserializing the class
+ descriptor (ObjectStreamClass) for this class from an input stream. By
+ default, no extra data is saved.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">aClass</td>
+          <td class="jd-tagdescr">the class to annotate.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputStream.html#resolveClass(java.io.ObjectStreamClass)">resolveClass(ObjectStreamClass)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="annotateProxyClass(java.lang.Class<?>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>annotateProxyClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; <i>aClass</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes optional information for a proxy class to the target stream. This
+ optional data can be read when deserializing the proxy class from an
+ input stream. By default, no extra data is saved.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">aClass</td>
+          <td class="jd-tagdescr">the proxy class to annotate.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectInputStream.html#resolveProxyClass(java.lang.String[])">resolveProxyClass(String[])</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="drain()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>drain</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes buffered data to the target stream. This is similar to <code>flush</code> but the flush is not propagated to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="enableReplaceObject(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>enableReplaceObject</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>enable</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Enables object replacement for this stream. By default this is not
+ enabled. Only trusted subclasses (loaded with system class loader) are
+ allowed to change this status.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">enable</td>
+          <td class="jd-tagdescr"><code>true</code> to enable object replacement; <code>false</code> to
+            disable it.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the previous setting.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectOutputStream.html#replaceObject(java.lang.Object)">replaceObject(Object)</a></code></li><li><code><a href="../../../reference/java/io/ObjectInputStream.html#enableResolveObject(boolean)">enableResolveObject(boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="replaceObject(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad"><strong>replaceObject</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Allows trusted subclasses to substitute the specified original <code>object</code> with a new object. Object substitution has to be activated first
+ with calling <code>enableReplaceObject(true)</code>. This implementation just
+ returns <code>object</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">object</td>
+          <td class="jd-tagdescr">the original object for which a replacement may be defined.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the replacement object for <code>object</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if any I/O error occurs while creating the replacement
+             object.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/ObjectOutputStream.html#enableReplaceObject(boolean)">enableReplaceObject(boolean)</a></code></li><li><code><a href="../../../reference/java/io/ObjectInputStream.html#enableResolveObject(boolean)">enableResolveObject(boolean)</a></code></li><li><code><a href="../../../reference/java/io/ObjectInputStream.html#resolveObject(java.lang.Object)">resolveObject(Object)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeClassDescriptor(java.io.ObjectStreamClass)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeClassDescriptor</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/io/ObjectStreamClass.html">ObjectStreamClass</a> <i>classDesc</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes a class descriptor to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">classDesc</td>
+          <td class="jd-tagdescr">the class descriptor to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeObjectOverride(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeObjectOverride</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Method to be overridden by subclasses to write <code>object</code> to the
+ target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">object</td>
+          <td class="jd-tagdescr">the object to write to the target stream.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeStreamHeader()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>writeStreamHeader</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Writes the <code><a href="reference/java/io/ObjectOutputStream.html">ObjectOutputStream</a></code> header to the target stream.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs while writing to the target stream.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

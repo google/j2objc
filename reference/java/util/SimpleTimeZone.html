@@ -1,0 +1,2625 @@
+---
+
+title: SimpleTimeZone - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Collection.html">Collection</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Deque.html">Deque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventListener.html">EventListener</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formattable.html">Formattable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/List.html">List</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ListIterator.html">ListIterator</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Map.html">Map</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Map.Entry.html">Map.Entry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NavigableMap.html">NavigableMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NavigableSet.html">NavigableSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Observer.html">Observer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Queue.html">Queue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/RandomAccess.html">RandomAccess</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Set.html">Set</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SortedMap.html">SortedMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/SortedSet.html">SortedSet</a>&lt;E&gt;</li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractCollection.html">AbstractCollection</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractList.html">AbstractList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.html">AbstractMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleEntry.html">AbstractMap.SimpleEntry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractMap.SimpleImmutableEntry.html">AbstractMap.SimpleImmutableEntry</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractQueue.html">AbstractQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSequentialList.html">AbstractSequentialList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/AbstractSet.html">AbstractSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ArrayDeque.html">ArrayDeque</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ArrayList.html">ArrayList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Arrays.html">Arrays</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/BitSet.html">BitSet</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Calendar.html">Calendar</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Collections.html">Collections</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Currency.html">Currency</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Date.html">Date</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Dictionary.html">Dictionary</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EnumMap.html">EnumMap</a>&lt;K&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;K&gt;,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EnumSet.html">EnumSet</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventListenerProxy.html">EventListenerProxy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EventObject.html">EventObject</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormattableFlags.html">FormattableFlags</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.html">Formatter</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/HashMap.html">HashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/HashSet.html">HashSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Hashtable.html">Hashtable</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IdentityHashMap.html">IdentityHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashMap.html">LinkedHashMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedHashSet.html">LinkedHashSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ListResourceBundle.html">ListResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Locale.html">Locale</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Objects.html">Objects</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Observable.html">Observable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PriorityQueue.html">PriorityQueue</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Properties.html">Properties</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PropertyPermission.html">PropertyPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/PropertyResourceBundle.html">PropertyResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Random.html">Random</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.html">ResourceBundle</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ResourceBundle.Control.html">ResourceBundle.Control</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Scanner.html">Scanner</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ServiceLoader.html">ServiceLoader</a>&lt;S&gt;</li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/util/SimpleTimeZone.html">SimpleTimeZone</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Stack.html">Stack</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/StringTokenizer.html">StringTokenizer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Timer.html">Timer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TimerTask.html">TimerTask</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TreeMap.html">TreeMap</a>&lt;K,&nbsp;V&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TreeSet.html">TreeSet</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UUID.html">UUID</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Vector.html">Vector</a>&lt;E&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/WeakHashMap.html">WeakHashMap</a>&lt;K,&nbsp;V&gt;</li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/Formatter.BigDecimalLayoutForm.html">Formatter.BigDecimalLayoutForm</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/DuplicateFormatFlagsException.html">DuplicateFormatFlagsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/EmptyStackException.html">EmptyStackException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormatFlagsConversionMismatchException.html">FormatFlagsConversionMismatchException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/FormatterClosedException.html">FormatterClosedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatCodePointException.html">IllegalFormatCodePointException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatConversionException.html">IllegalFormatConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatFlagsException.html">IllegalFormatFlagsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatPrecisionException.html">IllegalFormatPrecisionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/IllegalFormatWidthException.html">IllegalFormatWidthException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/InputMismatchException.html">InputMismatchException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html">InvalidPropertiesFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatArgumentException.html">MissingFormatArgumentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingFormatWidthException.html">MissingFormatWidthException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/MissingResourceException.html">MissingResourceException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/TooManyListenersException.html">TooManyListenersException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatConversionException.html">UnknownFormatConversionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/util/UnknownFormatFlagsException.html">UnknownFormatFlagsException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/util/ServiceConfigurationError.html">ServiceConfigurationError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+   
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">SimpleTimeZone</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p><code>SimpleTimeZone</code> is a concrete subclass of <code>TimeZone</code>
+ that represents a time zone for use with a Gregorian calendar. This class
+ does not handle historical changes.
+ <p>
+ Use a negative value for <code>dayOfWeekInMonth</code> to indicate that
+ <code>SimpleTimeZone</code> should count from the end of the month
+ backwards. For example, Daylight Savings Time ends at the last
+ (dayOfWeekInMonth = -1) Sunday in October, at 2 AM in standard time.</p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/Calendar.html">Calendar</a></code></li><li><code><a href="../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a></code></li><li><code><a href="../../../reference/java/util/TimeZone.html">TimeZone</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="constants"><h3>Constant Summary</h3>
+  <table class="jd-sumtable">
+    
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/SimpleTimeZone.html#STANDARD_TIME">STANDARD_TIME</a></td>
+        <td class="jd-descrcol" width="100%">The constant for representing a start or end time in standard local time mode,
+ based on timezone's raw offset from GMT; does not include Daylight
+ savings.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/SimpleTimeZone.html#UTC_TIME">UTC_TIME</a></td>
+        <td class="jd-descrcol" width="100%">The constant for representing a start or end time in GMT time mode.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/SimpleTimeZone.html#WALL_TIME">WALL_TIME</a></td>
+        <td class="jd-descrcol" width="100%">The constant for representing a start or end time in local wall clock time
+ mode, based on timezone's adjusted offset from GMT; includes
+ Daylight savings.</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="inhconstants">
+  <h3>Inherited Constant Summary</h3>
+  
+    
+      <div class="expandable api apilevel-">
+        <span class="showalways">
+          From class
+          <a href="../../../reference/java/util/TimeZone.html">java.util.TimeZone</a>
+        </span>
+        <div id="inherited-constants-java.util.TimeZone">
+          <div id="inherited-constants-java.util.TimeZone-list"
+                class="jd-inheritedlinks">
+          </div>
+          <div id="inherited-constants-java.util.TimeZone-summary">
+            <table class="jd-sumtable-expando">
+              
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/TimeZone.html#LONG">LONG</a></td>
+        <td class="jd-descrcol" width="100%">The long display name style, such as <code>Pacific Daylight Time</code>.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/util/TimeZone.html#SHORT">SHORT</a></td>
+        <td class="jd-descrcol" width="100%">The short display name style, such as <code>PDT</code>.</td>
+    </tr>
+    
+    
+
+            </table>
+          </div>
+        </div>
+      </div>
+    
+  
+    
+  
+    
+  
+    
+  
+</section>
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String)">SimpleTimeZone</a></span>(<span class="nowrap">int <i>offset</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int)">SimpleTimeZone</a></span>(<span class="nowrap">int <i>offset</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap">int <i>startMonth</i></span>, <span class="nowrap">int <i>startDay</i></span>, <span class="nowrap">int <i>startDayOfWeek</i></span>, <span class="nowrap">int <i>startTime</i></span>, <span class="nowrap">int <i>endMonth</i></span>, <span class="nowrap">int <i>endDay</i></span>, <span class="nowrap">int <i>endDayOfWeek</i></span>, <span class="nowrap">int <i>endTime</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int, int)">SimpleTimeZone</a></span>(<span class="nowrap">int <i>offset</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap">int <i>startMonth</i></span>, <span class="nowrap">int <i>startDay</i></span>, <span class="nowrap">int <i>startDayOfWeek</i></span>, <span class="nowrap">int <i>startTime</i></span>, <span class="nowrap">int <i>endMonth</i></span>, <span class="nowrap">int <i>endDay</i></span>, <span class="nowrap">int <i>endDayOfWeek</i></span>, <span class="nowrap">int <i>endTime</i></span>, <span class="nowrap">int <i>daylightSavings</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int, int, int, int)">SimpleTimeZone</a></span>(<span class="nowrap">int <i>offset</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap">int <i>startMonth</i></span>, <span class="nowrap">int <i>startDay</i></span>, <span class="nowrap">int <i>startDayOfWeek</i></span>, <span class="nowrap">int <i>startTime</i></span>, <span class="nowrap">int <i>startTimeMode</i></span>, <span class="nowrap">int <i>endMonth</i></span>, <span class="nowrap">int <i>endDay</i></span>, <span class="nowrap">int <i>endDayOfWeek</i></span>, <span class="nowrap">int <i>endTime</i></span>, <span class="nowrap">int <i>endTimeMode</i></span>, <span class="nowrap">int <i>daylightSavings</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#clone()">clone</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#equals(java.lang.Object)">equals</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#getDSTSavings()">getDSTSavings</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#getOffset(long)">getOffset</a></span>(<span class="nowrap">long <i>time</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#getOffset(int, int, int, int, int, int)">getOffset</a></span>(<span class="nowrap">int <i>era</i></span>, <span class="nowrap">int <i>year</i></span>, <span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>time</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#getRawOffset()">getRawOffset</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#hasSameRules(java.util.TimeZone)">hasSameRules</a></span>(<span class="nowrap"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a> <i>zone</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            synchronized
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#hashCode()">hashCode</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#inDaylightTime(java.util.Date)">inDaylightTime</a></span>(<span class="nowrap"><a href="../../../reference/java/util/Date.html">Date</a> <i>time</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#setDSTSavings(int)">setDSTSavings</a></span>(<span class="nowrap">int <i>milliseconds</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#setEndRule(int, int, int, int, boolean)">setEndRule</a></span>(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>time</i></span>, <span class="nowrap">boolean <i>after</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#setEndRule(int, int, int, int)">setEndRule</a></span>(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>time</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#setEndRule(int, int, int)">setEndRule</a></span>(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>dayOfMonth</i></span>, <span class="nowrap">int <i>time</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#setRawOffset(int)">setRawOffset</a></span>(<span class="nowrap">int <i>offset</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#setStartRule(int, int, int, int)">setStartRule</a></span>(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>time</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#setStartRule(int, int, int)">setStartRule</a></span>(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>dayOfMonth</i></span>, <span class="nowrap">int <i>time</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#setStartRule(int, int, int, int, boolean)">setStartRule</a></span>(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>time</i></span>, <span class="nowrap">boolean <i>after</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#setStartYear(int)">setStartYear</a></span>(<span class="nowrap">int <i>year</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/util/SimpleTimeZone.html#useDaylightTime()">useDaylightTime</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<section id="constants">
+  <h2>Constants</h2>
+  
+
+
+
+<A NAME="STANDARD_TIME"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>STANDARD_TIME</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The constant for representing a start or end time in standard local time mode,
+ based on timezone's raw offset from GMT; does not include Daylight
+ savings.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                1
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="UTC_TIME"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>UTC_TIME</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The constant for representing a start or end time in GMT time mode.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                2
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<A NAME="WALL_TIME"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        
+        
+          int
+        
+      </span>
+        <strong>WALL_TIME</strong>
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The constant for representing a start or end time in local wall clock time
+ mode, based on timezone's adjusted offset from GMT; includes
+ Daylight savings.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle jd-tagdescr">Constant Value: </span>
+        <span>
+            
+                0
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+</section>
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="SimpleTimeZone(int, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SimpleTimeZone</strong></span>
+      <span class="params">(<span class="nowrap">int <i>offset</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SimpleTimeZone</code> with the given base time zone offset from GMT
+ and time zone ID. Timezone IDs can be obtained from
+ <code>TimeZone.getAvailableIDs</code>. Normally you should use <code>TimeZone.getDefault</code> to
+ construct a <code>TimeZone</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the given base time zone offset to GMT.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">the time zone ID which is obtained from
+            <code>TimeZone.getAvailableIDs</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SimpleTimeZone</strong></span>
+      <span class="params">(<span class="nowrap">int <i>offset</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap">int <i>startMonth</i></span>, <span class="nowrap">int <i>startDay</i></span>, <span class="nowrap">int <i>startDayOfWeek</i></span>, <span class="nowrap">int <i>startTime</i></span>, <span class="nowrap">int <i>endMonth</i></span>, <span class="nowrap">int <i>endDay</i></span>, <span class="nowrap">int <i>endDayOfWeek</i></span>, <span class="nowrap">int <i>endTime</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SimpleTimeZone</code> with the given base time zone offset from GMT,
+ time zone ID, and times to start and end the daylight savings time. Timezone IDs can
+ be obtained from <code>TimeZone.getAvailableIDs</code>. Normally you should use
+ <code>TimeZone.getDefault</code> to create a <code>TimeZone</code>. For a time zone that does not
+ use daylight saving time, do not use this constructor; instead you should
+ use <code>SimpleTimeZone(rawOffset, ID)</code>.
+ <p>
+ By default, this constructor specifies day-of-week-in-month rules. That
+ is, if the <code>startDay</code> is 1, and the <code>startDayOfWeek</code> is <code>SUNDAY</code>, then this
+ indicates the first Sunday in the <code>startMonth</code>. A <code>startDay</code> of -1 likewise
+ indicates the last Sunday. However, by using negative or zero values for
+ certain parameters, other types of rules can be specified.
+ <p>
+ Day of month: To specify an exact day of the month, such as March 1, set
+ <code>startDayOfWeek</code> to zero.
+ <p>
+ Day of week after day of month: To specify the first day of the week
+ occurring on or after an exact day of the month, make the day of the week
+ negative. For example, if <code>startDay</code> is 5 and <code>startDayOfWeek</code> is <code>-MONDAY</code>,
+ this indicates the first Monday on or after the 5th day of the
+ <code>startMonth</code>.
+ <p>
+ Day of week before day of month: To specify the last day of the week
+ occurring on or before an exact day of the month, make the day of the
+ week and the day of the month negative. For example, if <code>startDay</code> is <code>-21</code>
+ and <code>startDayOfWeek</code> is <code>-WEDNESDAY</code>, this indicates the last Wednesday on or
+ before the 21st of the <code>startMonth</code>.
+ <p>
+ The above examples refer to the <code>startMonth</code>, <code>startDay</code>, and <code>startDayOfWeek</code>;
+ the same applies for the <code>endMonth</code>, <code>endDay</code>, and <code>endDayOfWeek</code>.
+ <p>
+ The daylight savings time difference is set to the default value: one hour.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the given base time zone offset to GMT.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">the time zone ID which is obtained from
+            <code>TimeZone.getAvailableIDs</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startMonth</td>
+          <td class="jd-tagdescr">the daylight savings starting month. The month indexing is 0-based. eg, 0
+            for January.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startDay</td>
+          <td class="jd-tagdescr">the daylight savings starting day-of-week-in-month. Please see
+            the member description for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startDayOfWeek</td>
+          <td class="jd-tagdescr">the daylight savings starting day-of-week. Please see the
+            member description for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startTime</td>
+          <td class="jd-tagdescr">the daylight savings starting time in local wall time, which
+            is standard time in this case. Please see the member
+            description for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endMonth</td>
+          <td class="jd-tagdescr">the daylight savings ending month. The month indexing is 0-based. eg, 0 for
+            January.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endDay</td>
+          <td class="jd-tagdescr">the daylight savings ending day-of-week-in-month. Please see
+            the member description for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endDayOfWeek</td>
+          <td class="jd-tagdescr">the daylight savings ending day-of-week. Please see the member
+            description for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endTime</td>
+          <td class="jd-tagdescr">the daylight savings ending time in local wall time, which is
+            daylight time in this case. Please see the member description
+            for an example.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the month, day, dayOfWeek, or time parameters are out of
+             range for the start or end rule.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SimpleTimeZone</strong></span>
+      <span class="params">(<span class="nowrap">int <i>offset</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap">int <i>startMonth</i></span>, <span class="nowrap">int <i>startDay</i></span>, <span class="nowrap">int <i>startDayOfWeek</i></span>, <span class="nowrap">int <i>startTime</i></span>, <span class="nowrap">int <i>endMonth</i></span>, <span class="nowrap">int <i>endDay</i></span>, <span class="nowrap">int <i>endDayOfWeek</i></span>, <span class="nowrap">int <i>endTime</i></span>, <span class="nowrap">int <i>daylightSavings</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a <code>SimpleTimeZone</code> with the given base time zone offset from GMT,
+ time zone ID, times to start and end the daylight savings time, and
+ the daylight savings time difference in milliseconds.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the given base time zone offset to GMT.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">the time zone ID which is obtained from
+            <code>TimeZone.getAvailableIDs</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startMonth</td>
+          <td class="jd-tagdescr">the daylight savings starting month. Month is 0-based. eg, 0
+            for January.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startDay</td>
+          <td class="jd-tagdescr">the daylight savings starting day-of-week-in-month. Please see
+            the description of <code><a href="reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int)">SimpleTimeZone(int, String, int, int, int, int, int, int, int, int)</a></code> for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startDayOfWeek</td>
+          <td class="jd-tagdescr">the daylight savings starting day-of-week. Please see the
+            description of <code><a href="reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int)">SimpleTimeZone(int, String, int, int, int, int, int, int, int, int)</a></code> for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startTime</td>
+          <td class="jd-tagdescr">The daylight savings starting time in local wall time, which
+            is standard time in this case. Please see the description of
+            <code><a href="reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int)">SimpleTimeZone(int, String, int, int, int, int, int, int, int, int)</a></code> for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endMonth</td>
+          <td class="jd-tagdescr">the daylight savings ending month. Month is 0-based. eg, 0 for
+            January.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endDay</td>
+          <td class="jd-tagdescr">the daylight savings ending day-of-week-in-month. Please see
+            the description of <code><a href="reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int)">SimpleTimeZone(int, String, int, int, int, int, int, int, int, int)</a></code> for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endDayOfWeek</td>
+          <td class="jd-tagdescr">the daylight savings ending day-of-week. Please see the description of
+            <code><a href="reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int)">SimpleTimeZone(int, String, int, int, int, int, int, int, int, int)</a></code> for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endTime</td>
+          <td class="jd-tagdescr">the daylight savings ending time in local wall time, which is
+            daylight time in this case. Please see the description of <code><a href="reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int)">SimpleTimeZone(int, String, int, int, int, int, int, int, int, int)</a></code>
+            for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">daylightSavings</td>
+          <td class="jd-tagdescr">the daylight savings time difference in milliseconds.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the month, day, dayOfWeek, or time parameters are out of
+                range for the start or end rule.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int, int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SimpleTimeZone</strong></span>
+      <span class="params">(<span class="nowrap">int <i>offset</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap">int <i>startMonth</i></span>, <span class="nowrap">int <i>startDay</i></span>, <span class="nowrap">int <i>startDayOfWeek</i></span>, <span class="nowrap">int <i>startTime</i></span>, <span class="nowrap">int <i>startTimeMode</i></span>, <span class="nowrap">int <i>endMonth</i></span>, <span class="nowrap">int <i>endDay</i></span>, <span class="nowrap">int <i>endDayOfWeek</i></span>, <span class="nowrap">int <i>endTime</i></span>, <span class="nowrap">int <i>endTimeMode</i></span>, <span class="nowrap">int <i>daylightSavings</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Construct a <code>SimpleTimeZone</code> with the given base time zone offset from GMT,
+ time zone ID, times to start and end the daylight savings time including a
+ mode specifier, the daylight savings time difference in milliseconds.
+ The mode specifies either <code><a href="reference/java/util/SimpleTimeZone.html#WALL_TIME">WALL_TIME</a></code>, <code><a href="reference/java/util/SimpleTimeZone.html#STANDARD_TIME">STANDARD_TIME</a></code>, or
+ <code><a href="reference/java/util/SimpleTimeZone.html#UTC_TIME">UTC_TIME</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the given base time zone offset to GMT.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">the time zone ID which is obtained from
+            <code>TimeZone.getAvailableIDs</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startMonth</td>
+          <td class="jd-tagdescr">the daylight savings starting month. The month indexing is 0-based. eg, 0
+            for January.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startDay</td>
+          <td class="jd-tagdescr">the daylight savings starting day-of-week-in-month. Please see
+            the description of <code><a href="reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int)">SimpleTimeZone(int, String, int, int, int, int, int, int, int, int)</a></code> for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startDayOfWeek</td>
+          <td class="jd-tagdescr">the daylight savings starting day-of-week. Please see the
+            description of <code><a href="reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int)">SimpleTimeZone(int, String, int, int, int, int, int, int, int, int)</a></code> for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startTime</td>
+          <td class="jd-tagdescr">the time of day in milliseconds on which daylight savings
+            time starts, based on the <code>startTimeMode</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">startTimeMode</td>
+          <td class="jd-tagdescr">the mode (UTC, standard, or wall time) of the start time
+            value.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endMonth</td>
+          <td class="jd-tagdescr">the daylight savings ending month. The month indexing is 0-based. eg, 0 for
+            January.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endDay</td>
+          <td class="jd-tagdescr">the day of the week on which daylight savings time ends.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endDayOfWeek</td>
+          <td class="jd-tagdescr">the daylight savings ending day-of-week. Please see the description of
+            <code><a href="reference/java/util/SimpleTimeZone.html#SimpleTimeZone(int, java.lang.String, int, int, int, int, int, int, int, int)">SimpleTimeZone(int, String, int, int, int, int, int, int, int, int)</a></code> for an example.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endTime</td>
+          <td class="jd-tagdescr">the time of day in milliseconds on which daylight savings
+            time ends, based on the <code>endTimeMode</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">endTimeMode</td>
+          <td class="jd-tagdescr">the mode (UTC, standard, or wall time) of the end time value.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">daylightSavings</td>
+          <td class="jd-tagdescr">the daylight savings time difference in milliseconds.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the month, day, dayOfWeek, or time parameters are out of
+             range for the start or end rule.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="clone()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad"><strong>clone</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new <code>SimpleTimeZone</code> with the same ID, <code>rawOffset</code> and daylight
+ savings time rules as this SimpleTimeZone.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a shallow copy of this <code>SimpleTimeZone</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Cloneable.html">Cloneable</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>object</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares the specified object to this <code>SimpleTimeZone</code> and returns whether they
+ are equal. The object must be an instance of <code>SimpleTimeZone</code> and have the
+ same internal data.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">object</td>
+          <td class="jd-tagdescr">the object to compare with this object.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the specified object is equal to this
+         <code>SimpleTimeZone</code>, <code>false</code> otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/SimpleTimeZone.html#hashCode()">hashCode()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getDSTSavings()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getDSTSavings</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the latest daylight savings in milliseconds for this time zone, relative
+ to this time zone's regular UTC offset (as returned by <code><a href="reference/java/util/TimeZone.html#getRawOffset()">getRawOffset()</a></code>).
+
+ <p>This class returns <code>3600000</code> (1 hour) for time zones
+ that use daylight savings time and <code>0</code> for timezones that do not,
+ leaving it to subclasses to override this method for other daylight savings
+ offsets. (There are time zones, such as <code>Australia/Lord_Howe</code>,
+ that use other values.)
+
+ <p>Note that this method doesn't tell you whether or not to <i>apply</i> the
+ offset: you need to call <code>inDaylightTime</code> for the specific time
+ you're interested in. If this method returns a non-zero offset, that only
+ tells you that this <code>TimeZone</code> sometimes observes daylight savings.
+
+ <p>Note also that this method doesn't necessarily return the value you need
+ to apply to the time you're working with. This value can and does change over
+ time for a given time zone.
+
+ <p>It's highly unlikely that you should ever call this method. You
+ probably want <code><a href="reference/java/util/TimeZone.html#getOffset(int, int, int, int, int, int)">getOffset(int, int, int, int, int, int)</a></code> instead, which tells you the offset
+ for a specific point in time, and takes daylight savings into account for you.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getOffset(long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getOffset</strong></span>
+      <span class="params">(<span class="nowrap">long <i>time</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the offset in milliseconds from UTC for this time zone at <code>time</code>. The offset includes daylight savings time if the specified
+ date is within the daylight savings time period.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">time</td>
+          <td class="jd-tagdescr">the date in milliseconds since January 1, 1970 00:00:00 UTC
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getOffset(int, int, int, int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getOffset</strong></span>
+      <span class="params">(<span class="nowrap">int <i>era</i></span>, <span class="nowrap">int <i>year</i></span>, <span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>time</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns this time zone's offset in milliseconds from UTC at the specified
+ date and time. The offset includes daylight savings time if the date
+ and time is within the daylight savings time period.
+
+ <p>This method is intended to be used by <code><a href="reference/java/util/Calendar.html">Calendar</a></code> to compute
+ <code><a href="reference/java/util/Calendar.html#DST_OFFSET">DST_OFFSET</a></code> and <code><a href="reference/java/util/Calendar.html#ZONE_OFFSET">ZONE_OFFSET</a></code>. Application
+ code should have no reason to call this method directly. Each parameter
+ is interpreted in the same way as the corresponding <code>Calendar</code>
+ field. Refer to <code><a href="reference/java/util/Calendar.html">Calendar</a></code> for specific definitions of this
+ method's parameters.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getRawOffset()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getRawOffset</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the offset in milliseconds from UTC of this time zone's standard
+ time.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="hasSameRules(java.util.TimeZone)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>hasSameRules</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/TimeZone.html">TimeZone</a> <i>zone</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if <code>timeZone</code> has the same rules as this time zone.
+
+ <p>The base implementation returns true if both time zones have the same
+ raw offset.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="hashCode()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        synchronized
+        int
+      </span>
+      <span class="sympad"><strong>hashCode</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for the receiver. Objects which are equal
+ return the same value for this method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the receiver's hash.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/util/SimpleTimeZone.html#equals(java.lang.Object)">equals(Object)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="inDaylightTime(java.util.Date)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>inDaylightTime</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/util/Date.html">Date</a> <i>time</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if <code>time</code> is in a daylight savings time period for
+ this time zone.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setDSTSavings(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setDSTSavings</strong></span>
+      <span class="params">(<span class="nowrap">int <i>milliseconds</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the daylight savings offset in milliseconds for this <code>SimpleTimeZone</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">milliseconds</td>
+          <td class="jd-tagdescr">the daylight savings offset in milliseconds.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setEndRule(int, int, int, int, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setEndRule</strong></span>
+      <span class="params">(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>time</i></span>, <span class="nowrap">boolean <i>after</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the rule which specifies the end of daylight savings time.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">month</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> month in which daylight savings time ends.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">day</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> day of the month.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">dayOfWeek</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> day of the week on which daylight savings time
+            ends.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">time</td>
+          <td class="jd-tagdescr">the time of day in milliseconds on which daylight savings time
+            ends.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">after</td>
+          <td class="jd-tagdescr">selects the day after or before the day of month.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setEndRule(int, int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setEndRule</strong></span>
+      <span class="params">(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>time</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the rule which specifies the end of daylight savings time.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">month</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> month in which daylight savings time ends.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">day</td>
+          <td class="jd-tagdescr">the occurrence of the day of the week on which daylight
+            savings time ends.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">dayOfWeek</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> day of the week on which daylight savings time
+            ends.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">time</td>
+          <td class="jd-tagdescr">the time of day in milliseconds standard time on which
+            daylight savings time ends.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setEndRule(int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setEndRule</strong></span>
+      <span class="params">(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>dayOfMonth</i></span>, <span class="nowrap">int <i>time</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the rule which specifies the end of daylight savings time.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">month</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> month in which daylight savings time ends.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">dayOfMonth</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> day of the month on which daylight savings time
+            ends.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">time</td>
+          <td class="jd-tagdescr">the time of day in milliseconds standard time on which
+            daylight savings time ends.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setRawOffset(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setRawOffset</strong></span>
+      <span class="params">(<span class="nowrap">int <i>offset</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the offset for standard time from GMT for this <code>SimpleTimeZone</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the offset from GMT of standard time in milliseconds.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setStartRule(int, int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setStartRule</strong></span>
+      <span class="params">(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>time</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the rule which specifies the start of daylight savings time.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">month</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> month in which daylight savings time starts.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">day</td>
+          <td class="jd-tagdescr">the occurrence of the day of the week on which daylight
+            savings time starts.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">dayOfWeek</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> day of the week on which daylight savings time
+            starts.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">time</td>
+          <td class="jd-tagdescr">the time of day in milliseconds on which daylight savings time
+            starts.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setStartRule(int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setStartRule</strong></span>
+      <span class="params">(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>dayOfMonth</i></span>, <span class="nowrap">int <i>time</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the rule which specifies the start of daylight savings time.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">month</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> month in which daylight savings time starts.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">dayOfMonth</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> day of the month on which daylight savings time
+            starts.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">time</td>
+          <td class="jd-tagdescr">the time of day in milliseconds on which daylight savings time
+            starts.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setStartRule(int, int, int, int, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setStartRule</strong></span>
+      <span class="params">(<span class="nowrap">int <i>month</i></span>, <span class="nowrap">int <i>day</i></span>, <span class="nowrap">int <i>dayOfWeek</i></span>, <span class="nowrap">int <i>time</i></span>, <span class="nowrap">boolean <i>after</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the rule which specifies the start of daylight savings time.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">month</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> month in which daylight savings time starts.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">day</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> day of the month.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">dayOfWeek</td>
+          <td class="jd-tagdescr">the <code>Calendar</code> day of the week on which daylight savings time
+            starts.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">time</td>
+          <td class="jd-tagdescr">the time of day in milliseconds on which daylight savings time
+            starts.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">after</td>
+          <td class="jd-tagdescr">selects the day after or before the day of month.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setStartYear(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setStartYear</strong></span>
+      <span class="params">(<span class="nowrap">int <i>year</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the starting year for daylight savings time in this <code>SimpleTimeZone</code>.
+ Years before this start year will always be in standard time.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">year</td>
+          <td class="jd-tagdescr">the starting year.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the string representation of this <code>SimpleTimeZone</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the string representation of this <code>SimpleTimeZone</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="useDaylightTime()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>useDaylightTime</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if this time zone has a future transition to or from
+ daylight savings time.
+
+ <p><strong>Warning:</strong> this returns false for time zones like
+ <code>Asia/Kuala_Lumpur</code> that have previously used DST but do not
+ currently. A hypothetical country that has never observed daylight
+ savings before but plans to start next year would return true.
+
+ <p><strong>Warning:</strong> this returns true for time zones that use
+ DST, even when it is not active.
+
+ <p>Use <code><a href="reference/java/util/TimeZone.html#inDaylightTime(java.util.Date)">inDaylightTime(Date)</a></code> to find out whether daylight savings is
+ in effect at a specific time.
+
+ <p>Most applications should not use this method.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

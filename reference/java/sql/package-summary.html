@@ -1,0 +1,553 @@
+---
+
+title: java.sql - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Array.html">Array</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Blob.html">Blob</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/CallableStatement.html">CallableStatement</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Clob.html">Clob</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Connection.html">Connection</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/DatabaseMetaData.html">DatabaseMetaData</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Driver.html">Driver</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/NClob.html">NClob</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/ParameterMetaData.html">ParameterMetaData</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/PreparedStatement.html">PreparedStatement</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Ref.html">Ref</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/ResultSetMetaData.html">ResultSetMetaData</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/RowId.html">RowId</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Savepoint.html">Savepoint</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLData.html">SQLData</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLInput.html">SQLInput</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLOutput.html">SQLOutput</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLXML.html">SQLXML</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Statement.html">Statement</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Struct.html">Struct</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Wrapper.html">Wrapper</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Date.html">Date</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/DriverManager.html">DriverManager</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/DriverPropertyInfo.html">DriverPropertyInfo</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLPermission.html">SQLPermission</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Time.html">Time</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/Types.html">Types</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/RowIdLifetime.html">RowIdLifetime</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/BatchUpdateException.html">BatchUpdateException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/DataTruncation.html">DataTruncation</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLDataException.html">SQLDataException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLIntegrityConstraintViolationException.html">SQLIntegrityConstraintViolationException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLInvalidAuthorizationSpecException.html">SQLInvalidAuthorizationSpecException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLNonTransientConnectionException.html">SQLNonTransientConnectionException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLNonTransientException.html">SQLNonTransientException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLRecoverableException.html">SQLRecoverableException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLSyntaxErrorException.html">SQLSyntaxErrorException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTimeoutException.html">SQLTimeoutException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransactionRollbackException.html">SQLTransactionRollbackException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransientConnectionException.html">SQLTransientConnectionException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransientException.html">SQLTransientException</a></li>
+        <li class="api apilevel-"><a href="../../../reference/java/sql/SQLWarning.html">SQLWarning</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="jd-header">
+  package
+  <h1>java.sql</h1>
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+  
+    <h3>Interfaces</h3>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Array.html">Array</a></td>
+              <td class="jd-descrcol" width="100%">A Java representation of the SQL <code>ARRAY</code> type.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Blob.html">Blob</a></td>
+              <td class="jd-descrcol" width="100%">A Java interface representing the SQL <code>BLOB</code> type.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/CallableStatement.html">CallableStatement</a></td>
+              <td class="jd-descrcol" width="100%">An interface used to call <i>Stored Procedures</i>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Clob.html">Clob</a></td>
+              <td class="jd-descrcol" width="100%">A Java interface mapping for the SQL CLOB type.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Connection.html">Connection</a></td>
+              <td class="jd-descrcol" width="100%">A connection represents a link from a Java application to a database.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/DatabaseMetaData.html">DatabaseMetaData</a></td>
+              <td class="jd-descrcol" width="100%">An interface which provides comprehensive information about the database
+ management system and its supported features.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Driver.html">Driver</a></td>
+              <td class="jd-descrcol" width="100%">An interface to a JDBC driver.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/NClob.html">NClob</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/ParameterMetaData.html">ParameterMetaData</a></td>
+              <td class="jd-descrcol" width="100%">An interface used to get information about the types and properties of
+ parameters in a <code>PreparedStatement</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/PreparedStatement.html">PreparedStatement</a></td>
+              <td class="jd-descrcol" width="100%">An interface for a precompiled SQL Statement.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Ref.html">Ref</a></td>
+              <td class="jd-descrcol" width="100%">This interface represents an SQL Ref - a data object containing a cursor
+ or pointer to a result table.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></td>
+              <td class="jd-descrcol" width="100%">An interface for an object which represents a database table entry, returned
+ as the result of the query to the database.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/ResultSetMetaData.html">ResultSetMetaData</a></td>
+              <td class="jd-descrcol" width="100%">Provides information about the columns returned in a <code>ResultSet</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/RowId.html">RowId</a></td>
+              <td class="jd-descrcol" width="100%">Maps SQL's ROWID type into Java.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Savepoint.html">Savepoint</a></td>
+              <td class="jd-descrcol" width="100%">A savepoint is an instant during the current transaction that can be utilized
+ by a rollback via the <code><a href="reference/java/sql/Connection.html#rollback()">rollback()</a></code> command.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLData.html">SQLData</a></td>
+              <td class="jd-descrcol" width="100%">An interface for the custom mapping of an SQL <i>User Defined Type</i> (UDT)
+ to a Java class.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLInput.html">SQLInput</a></td>
+              <td class="jd-descrcol" width="100%">The <code>SQLInput</code> interface defines operations which apply to a type of
+ input stream which carries a series of values representing an instance of
+ an SQL structured type or SQL distinct type.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLOutput.html">SQLOutput</a></td>
+              <td class="jd-descrcol" width="100%">The interface for an output stream used to write attributes of an SQL <i>User
+ Defined Type</i> (UDT) to the database.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLXML.html">SQLXML</a></td>
+              <td class="jd-descrcol" width="100%">Maps SQL's XML type into Java.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Statement.html">Statement</a></td>
+              <td class="jd-descrcol" width="100%">Interface used for executing static SQL statements to retrieve query results.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Struct.html">Struct</a></td>
+              <td class="jd-descrcol" width="100%">An interface which provides facilities for manipulating an SQL structured type
+ as a Java object.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Wrapper.html">Wrapper</a></td>
+              <td class="jd-descrcol" width="100%">This class is an actual usage of the wrapper pattern for JDBC classes.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h3>Classes</h3>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Date.html">Date</a></td>
+              <td class="jd-descrcol" width="100%">A class which can consume and produce dates in SQL <code>Date</code> format.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/DriverManager.html">DriverManager</a></td>
+              <td class="jd-descrcol" width="100%">Provides facilities for managing JDBC drivers.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/DriverPropertyInfo.html">DriverPropertyInfo</a></td>
+              <td class="jd-descrcol" width="100%">A class holding information about driver properties of a database connection.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLPermission.html">SQLPermission</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Time.html">Time</a></td>
+              <td class="jd-descrcol" width="100%">Java representation of an SQL <code>TIME</code> value.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a></td>
+              <td class="jd-descrcol" width="100%">A Java representation of the SQL <code>TIMESTAMP</code> type.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Types.html">Types</a></td>
+              <td class="jd-descrcol" width="100%">A class which defines constants used to identify generic SQL types, also
+ called JDBC types.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h3>Enums</h3>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a></td>
+              <td class="jd-descrcol" width="100%">An enumeration to describe the reason why a property cannot be set by calling
+ Connection.setClientInfo.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/RowIdLifetime.html">RowIdLifetime</a></td>
+              <td class="jd-descrcol" width="100%">An enumeration to describe the life-time of RowID.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h3>Exceptions</h3>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/BatchUpdateException.html">BatchUpdateException</a></td>
+              <td class="jd-descrcol" width="100%">This exception is thrown if a problem occurs during a batch update operation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/DataTruncation.html">DataTruncation</a></td>
+              <td class="jd-descrcol" width="100%">An exception which is thrown when a JDBC driver unexpectedly truncates a data
+ value either when reading (resulting in warning), or when writing data
+ (resulting in an error).&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when one or more
+ client info properties could not be set on a Connection.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLDataException.html">SQLDataException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when various data
+ errors arise.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+              <td class="jd-descrcol" width="100%">An exception that indicates a failed JDBC operation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
+ various the JDBC driver does not support an optional JDBC feature.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLIntegrityConstraintViolationException.html">SQLIntegrityConstraintViolationException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
+ various the an integrity constraint (foreign key, primary key or unique key)
+ has been violated.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLInvalidAuthorizationSpecException.html">SQLInvalidAuthorizationSpecException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
+ the authorization credentials presented during connection establishment are
+ not valid.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLNonTransientConnectionException.html">SQLNonTransientConnectionException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when the
+ connection operation that failed will not succeed when the operation is
+ retried without the cause of the failure being corrected.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLNonTransientException.html">SQLNonTransientException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLRecoverableException.html">SQLRecoverableException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLSyntaxErrorException.html">SQLSyntaxErrorException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTimeoutException.html">SQLTimeoutException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransactionRollbackException.html">SQLTransactionRollbackException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransientConnectionException.html">SQLTransientConnectionException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransientException.html">SQLTransientException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLWarning.html">SQLWarning</a></td>
+              <td class="jd-descrcol" width="100%">An exception class that holds information about Database access warnings.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+

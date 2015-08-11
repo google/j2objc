@@ -1,0 +1,3583 @@
+---
+
+title: XMLGregorianCalendar - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/datatype/DatatypeConstants.html">DatatypeConstants</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/datatype/DatatypeConstants.Field.html">DatatypeConstants.Field</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/datatype/DatatypeFactory.html">DatatypeFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html">XMLGregorianCalendar</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/xml/datatype/DatatypeConfigurationException.html">DatatypeConfigurationException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">XMLGregorianCalendar</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p><p>Representation for W3C XML Schema 1.0 date/time datatypes.
+ Specifically, these date/time datatypes are
+ <a href="#DATETIME"><code>dateTime</code></a>,
+ <a href="#TIME"><code>time</code></a>,
+ <a href="#DATE"><code>date</code></a>,
+ <a href="#GYEARMONTH"><code>gYearMonth</code></a>,
+ <a href="#GMONTHDAY"><code>gMonthDay</code></a>,
+ <a href="#GYEAR"><code>gYear</code></a>
+ <a href="#GMONTH"><code>gMonth</code></a> and
+ <a href="#GDAY"><code>gDay</code></a> defined in the XML Namespace
+ <code>"http://www.w3.org/2001/XMLSchema"</code>.
+ These datatypes are normatively defined in
+ <a href="http://www.w3.org/TR/xmlschema-2/#dateTime">W3C XML Schema 1.0 Part 2, Section 3.2.7-14</a>.</p>
+
+ <p>The table below defines the mapping between XML Schema 1.0
+ date/time datatype fields and this class' fields. It also summarizes
+ the value constraints for the date and time fields defined in
+ <a href="http://www.w3.org/TR/xmlschema-2/#isoformats">W3C XML Schema 1.0 Part 2, Appendix D,
+ <i>ISO 8601 Date and Time Formats</i></a>.</p>
+
+ <a name="datetimefieldsmapping"/>
+ <table border="2" rules="all" cellpadding="2">
+   <thead>
+     <tr>
+       <th align="center" colspan="3">
+         Date/Time Datatype Field Mapping Between XML Schema 1.0 and Java Representation
+       </th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <th>XML Schema 1.0<br/>
+           datatype<br/>
+            field</th>
+       <th>Related<br/>XMLGregorianCalendar<br/>Accessor(s)</th>
+       <th>Value Range</th>
+     </tr>
+     <a name="datetimefield-year"/>
+     <tr>
+       <td> year </td>
+       <td> <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getYear()">getYear()</a></code> + <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getEon()">getEon()</a></code> or<br/>
+            <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getEonAndYear()">getEonAndYear()</a></code>
+       </td>
+       <td> <code>getYear()</code> is a value between -(10^9-1) to (10^9)-1
+            or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.<br/>
+            <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getEon()">getEon()</a></code> is high order year value in billion of years.<br/>
+            <code>getEon()</code> has values greater than or equal to (10^9) or less than or equal to -(10^9).
+            A value of null indicates field is undefined.</br>
+            Given that <a href="http://www.w3.org/2001/05/xmlschema-errata#e2-63">XML Schema 1.0 errata</a> states that the year zero
+            will be a valid lexical value in a future version of XML Schema,
+            this class allows the year field to be set to zero. Otherwise,
+            the year field value is handled exactly as described
+            in the errata and [ISO-8601-1988]. Note that W3C XML Schema 1.0
+            validation does not allow for the year field to have a value of zero.
+            </td>
+     </tr>
+     <a name="datetimefield-month"/>
+     <tr>
+       <td> month </td>
+       <td> <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getMonth()">getMonth()</a></code> </td>
+       <td> 1 to 12 or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code> </td>
+     </tr>
+     <a name="datetimefield-day"/>
+     <tr>
+       <td> day </td>
+       <td> <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getDay()">getDay()</a></code> </td>
+       <td> Independent of month, max range is 1 to 31 or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.<br/>
+            The normative value constraint stated relative to month
+            field's value is in <a href="http://www.w3.org/TR/xmlschema-2/#isoformats">W3C XML Schema 1.0 Part 2, Appendix D</a>.
+       </td>
+     </tr>
+     <tr id="datetimefield-hour">
+       <td>hour</td>
+       <td><code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getHour()">getHour()</a></code></td>
+       <td>
+         0 to 24 or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.
+         For a value of 24, the minute and second field must be zero per
+         <a href="http://www.w3.org/2001/05/xmlschema-errata#e2-45">XML Schema Errata</a>.
+       </td>
+     </tr>
+     <a name="datetimefield-minute"/>
+     <tr>
+       <td> minute </td>
+       <td> <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getMinute()">getMinute()</a></code> </td>
+       <td> 0 to 59 or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code> </td>
+     </tr>
+     <a name="datetimefield-second"/>
+     <tr>
+       <td>second</td>
+       <td>
+         <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getSecond()">getSecond()</a></code> + <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getMillisecond()">getMillisecond()</a></code>/1000 or<br/>
+         <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getSecond()">getSecond()</a></code> + <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond()</a></code>
+       </td>
+       <td>
+         <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getSecond()">getSecond()</a></code> from 0 to 60 or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.<br/>
+         <i>(Note: 60 only allowable for leap second.)</i><br/>
+         <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond()</a></code> allows for infinite precision over the range from 0.0 to 1.0 when
+         the <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getSecond()">getSecond()</a></code> is defined.<br/>
+         <code>FractionalSecond</code> is optional and has a value of <code>null</code> when it is undefined.<br />
+            <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getMillisecond()">getMillisecond()</a></code> is the convenience
+            millisecond precision of value of <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond()</a></code>.
+       </td>
+     </tr>
+     <tr id="datetimefield-timezone">
+       <td> timezone </td>
+       <td> <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getTimezone()">getTimezone()</a></code> </td>
+       <td> Number of minutes or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.
+         Value range from -14 hours (-14 * 60 minutes) to 14 hours (14 * 60 minutes).
+       </td>
+     </tr>
+   </tbody>
+  </table>
+
+ <p>All maximum value space constraints listed for the fields in the table
+ above are checked by factory methods, @{link DatatypeFactory},
+ setter methods and parse methods of
+ this class. <code>IllegalArgumentException</code> is thrown when a
+ parameter's value is outside the value constraint for the field or
+ if the composite
+ values constitute an invalid XMLGregorianCalendar instance (for example, if
+ the 31st of June is specified).
+ </p>
+
+ <p>The following operations are defined for this class:
+ <ul>
+   <li>accessors/mutators for independent date/time fields</li>
+   <li>conversion between this class and W3C XML Schema 1.0 lexical representation,
+     <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#toString()">toString()</a></code>, <code><a href="reference/javax/xml/datatype/DatatypeFactory.html#newXMLGregorianCalendar(java.lang.String)">newXMLGregorianCalendar(String)</a></code></li>
+   <li>conversion between this class and <code><a href="reference/java/util/GregorianCalendar.html">GregorianCalendar</a></code>,
+     <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#toGregorianCalendar(java.util.TimeZone, java.util.Locale, javax.xml.datatype.XMLGregorianCalendar)">toGregorianCalendar(java.util.TimeZone, java.util.Locale, XMLGregorianCalendar)</a></code>,
+     <code><a href="reference/javax/xml/datatype/DatatypeFactory.html">DatatypeFactory</a></code></li>
+   <li>partial order relation comparator method, <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#compare(javax.xml.datatype.XMLGregorianCalendar)">compare(XMLGregorianCalendar)</a></code></li>
+   <li><code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#equals(java.lang.Object)">equals(Object)</a></code> defined relative to <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#compare(javax.xml.datatype.XMLGregorianCalendar)">compare(XMLGregorianCalendar)</a></code>.</li>
+   <li>addition operation with <code><a href="reference/javax/xml/datatype/Duration.html">Duration</a></code>
+      instance as defined in <a href="http://www.w3.org/TR/xmlschema-2/#adding-durations-to-dateTimes">
+      W3C XML Schema 1.0 Part 2, Appendix E, <i>Adding durations to dateTimes</i></a>.
+   </li>
+ </ul>
+ </p></p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a></code></li><li><code><a href="../../../../reference/javax/xml/datatype/DatatypeFactory.html">DatatypeFactory</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#XMLGregorianCalendar()">XMLGregorianCalendar</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#add(javax.xml.datatype.Duration)">add</a></span>(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>duration</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#clear()">clear</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/Object.html">Object</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#clone()">clone</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#compare(javax.xml.datatype.XMLGregorianCalendar)">compare</a></span>(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html">XMLGregorianCalendar</a> <i>xmlGregorianCalendar</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#equals(java.lang.Object)">equals</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>obj</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getDay()">getDay</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getEon()">getEon</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getEonAndYear()">getEonAndYear</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/math/BigDecimal.html">BigDecimal</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getHour()">getHour</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getMillisecond()">getMillisecond</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getMinute()">getMinute</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getMonth()">getMonth</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getSecond()">getSecond</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/TimeZone.html">TimeZone</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getTimeZone(int)">getTimeZone</a></span>(<span class="nowrap">int <i>defaultZoneoffset</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getTimezone()">getTimezone</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/xml/namespace/QName.html">QName</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getXMLSchemaType()">getXMLSchemaType</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getYear()">getYear</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#hashCode()">hashCode</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#isValid()">isValid</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html">XMLGregorianCalendar</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#normalize()">normalize</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#reset()">reset</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setDay(int)">setDay</a></span>(<span class="nowrap">int <i>day</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setFractionalSecond(java.math.BigDecimal)">setFractionalSecond</a></span>(<span class="nowrap"><a href="../../../../reference/java/math/BigDecimal.html">BigDecimal</a> <i>fractional</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setHour(int)">setHour</a></span>(<span class="nowrap">int <i>hour</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setMillisecond(int)">setMillisecond</a></span>(<span class="nowrap">int <i>millisecond</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setMinute(int)">setMinute</a></span>(<span class="nowrap">int <i>minute</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setMonth(int)">setMonth</a></span>(<span class="nowrap">int <i>month</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setSecond(int)">setSecond</a></span>(<span class="nowrap">int <i>second</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setTime(int, int, int, java.math.BigDecimal)">setTime</a></span>(<span class="nowrap">int <i>hour</i></span>, <span class="nowrap">int <i>minute</i></span>, <span class="nowrap">int <i>second</i></span>, <span class="nowrap"><a href="../../../../reference/java/math/BigDecimal.html">BigDecimal</a> <i>fractional</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setTime(int, int, int)">setTime</a></span>(<span class="nowrap">int <i>hour</i></span>, <span class="nowrap">int <i>minute</i></span>, <span class="nowrap">int <i>second</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setTime(int, int, int, int)">setTime</a></span>(<span class="nowrap">int <i>hour</i></span>, <span class="nowrap">int <i>minute</i></span>, <span class="nowrap">int <i>second</i></span>, <span class="nowrap">int <i>millisecond</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setTimezone(int)">setTimezone</a></span>(<span class="nowrap">int <i>offset</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setYear(java.math.BigInteger)">setYear</a></span>(<span class="nowrap"><a href="../../../../reference/java/math/BigInteger.html">BigInteger</a> <i>year</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setYear(int)">setYear</a></span>(<span class="nowrap">int <i>year</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#toGregorianCalendar()">toGregorianCalendar</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#toGregorianCalendar(java.util.TimeZone, java.util.Locale, javax.xml.datatype.XMLGregorianCalendar)">toGregorianCalendar</a></span>(<span class="nowrap"><a href="../../../../reference/java/util/TimeZone.html">TimeZone</a> <i>timezone</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/Locale.html">Locale</a> <i>aLocale</i></span>, <span class="nowrap"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html">XMLGregorianCalendar</a> <i>defaults</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#toXMLFormat()">toXMLFormat</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="XMLGregorianCalendar()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>XMLGregorianCalendar</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="add(javax.xml.datatype.Duration)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>add</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/Duration.html">Duration</a> <i>duration</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Add <code>duration</code> to this instance.</p>
+
+ <p>The computation is specified in
+ <a href="http://www.w3.org/TR/xmlschema-2/#adding-durations-to-dateTimes">XML Schema 1.0 Part 2, Appendix E,
+ <i>Adding durations to dateTimes</i>></a>.
+ <a href="#datetimefieldsmapping">date/time field mapping table</a>
+ defines the mapping from XML Schema 1.0 <code>dateTime</code> fields
+ to this class' representation of those fields.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">duration</td>
+          <td class="jd-tagdescr">Duration to add to this <code>XMLGregorianCalendar</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">when <code>duration</code> parameter is <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="clear()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>clear</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Unset all fields to undefined.</p>
+
+ <p>Set all int fields to <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code> and reference fields
+ to null.</p>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="clone()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad"><strong>clone</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Creates and returns a copy of this object.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>copy of this <code>Object</code>
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="compare(javax.xml.datatype.XMLGregorianCalendar)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>compare</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html">XMLGregorianCalendar</a> <i>xmlGregorianCalendar</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Compare two instances of W3C XML Schema 1.0 date/time datatypes
+ according to partial order relation defined in
+ <a href="http://www.w3.org/TR/xmlschema-2/#dateTime-order">W3C XML Schema 1.0 Part 2, Section 3.2.7.3,
+ <i>Order relation on dateTime</i></a>.</p>
+
+ <p><code>xsd:dateTime</code> datatype field mapping to accessors of
+ this class are defined in
+ <a href="#datetimefieldmapping">date/time field mapping table</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">xmlGregorianCalendar</td>
+          <td class="jd-tagdescr">Instance of <code>XMLGregorianCalendar</code> to compare</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>The relationship between <code>this</code> <code>XMLGregorianCalendar</code> and
+   the specified <code>xmlGregorianCalendar</code> as
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#LESSER">LESSER</a></code>,
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#EQUAL">EQUAL</a></code>,
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GREATER">GREATER</a></code> or
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#INDETERMINATE">INDETERMINATE</a></code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>xmlGregorianCalendar</code> is null.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/Object.html">Object</a> <i>obj</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Indicates whether parameter <code>obj</code> is "equal to" this one.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">obj</td>
+          <td class="jd-tagdescr">to compare.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> when <code>obj</code> is an instance of <code>XMLGregorianCalendar</code>
+   and  <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#compare(javax.xml.datatype.XMLGregorianCalendar)">compare(XMLGregorianCalendar)</a></code> returns <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#EQUAL">EQUAL</a></code>, otherwise <code>false</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getDay()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getDay</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return day in month or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p>
+
+ <p>Value constraints for this value are summarized in
+ <a href="#datetimefield-day">day field of date/time field mapping table</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setDay(int)">setDay(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getEon()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>getEon</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Return high order component for XML Schema 1.0 dateTime datatype field for
+ <code>year</code>.
+ <code>null</code> if this optional part of the year field is not defined.</p>
+
+ <p>Value constraints for this value are summarized in
+ <a href="#datetimefield-year">year field of date/time field mapping table</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>eon of this <code>XMLGregorianCalendar</code>. The value
+ returned is an integer multiple of 10^9.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getYear()">getYear()</a></code></li><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getEonAndYear()">getEonAndYear()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getEonAndYear()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/math/BigInteger.html">BigInteger</a>
+      </span>
+      <span class="sympad"><strong>getEonAndYear</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Return XML Schema 1.0 dateTime datatype field for
+ <code>year</code>.</p>
+
+ <p>Value constraints for this value are summarized in
+ <a href="#datetimefield-year">year field of date/time field mapping table</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>sum of <code>eon</code> and <code>BigInteger.valueOf(year)</code>
+ when both fields are defined. When only <code>year</code> is defined,
+ return it. When both <code>eon</code> and <code>year</code> are not
+ defined, return <code>null</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getEon()">getEon()</a></code></li><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getYear()">getYear()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getFractionalSecond()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/math/BigDecimal.html">BigDecimal</a>
+      </span>
+      <span class="sympad"><strong>getFractionalSecond</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Return fractional seconds.</p>
+
+ <p><code>null</code> is returned when this optional field is not defined.</p>
+
+ <p>Value constraints are detailed in
+ <a href="#datetimefield-second">second field of date/time field mapping table</a>.</p>
+
+ <p>This optional field can only have a defined value when the
+ xs:dateTime second field, represented by <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getSecond()">getSecond()</a></code>,
+ does not return <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>fractional seconds  of this <code>XMLGregorianCalendar</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getSecond()">getSecond()</a></code></li><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setTime(int, int, int, java.math.BigDecimal)">setTime(int, int, int, BigDecimal)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getHour()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getHour</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return hours or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.
+ Returns <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code> if this field is not defined.
+
+ <p>Value constraints for this value are summarized in
+ <a href="#datetimefield-hour">hour field of date/time field mapping table</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setTime(int, int, int)">setTime(int, int, int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMillisecond()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getMillisecond</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Return millisecond precision of <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond()</a></code>.</p>
+
+ <p>This method represents a convenience accessor to infinite
+ precision fractional second value returned by
+ <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond()</a></code>. The returned value is the rounded
+ down to milliseconds value of
+ <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond()</a></code>. When <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond()</a></code>
+ returns <code>null</code>, this method must return
+ <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p>
+
+ <p>Value constraints for this value are summarized in
+ <a href="#datetimefield-second">second field of date/time field mapping table</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>Millisecond  of this <code>XMLGregorianCalendar</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond()</a></code></li><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setTime(int, int, int)">setTime(int, int, int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMinute()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getMinute</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return minutes or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p>
+ Returns <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code> if this field is not defined.
+
+ <p>Value constraints for this value are summarized in
+ <a href="#datetimefield-minute">minute field of date/time field mapping table</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setTime(int, int, int)">setTime(int, int, int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMonth()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getMonth</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Return number of month or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p>
+
+ <p>Value constraints for this value are summarized in
+ <a href="#datetimefield-month">month field of date/time field mapping table</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>year  of this <code>XMLGregorianCalendar</code>.
+
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSecond()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getSecond</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Return seconds or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p>
+
+ <p>Returns <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code> if this field is not defined.
+ When this field is not defined, the optional xs:dateTime
+ fractional seconds field, represented by
+ <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond()</a></code> and <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getMillisecond()">getMillisecond()</a></code>,
+ must not be defined.</p>
+
+ <p>Value constraints for this value are summarized in
+ <a href="#datetimefield-second">second field of date/time field mapping table</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>Second  of this <code>XMLGregorianCalendar</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond()</a></code></li><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getMillisecond()">getMillisecond()</a></code></li><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setTime(int, int, int)">setTime(int, int, int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getTimeZone(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/util/TimeZone.html">TimeZone</a>
+      </span>
+      <span class="sympad"><strong>getTimeZone</strong></span>
+      <span class="params">(<span class="nowrap">int <i>defaultZoneoffset</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Returns a <code>java.util.TimeZone</code> for this class.</p>
+
+ <p>If timezone field is defined for this instance,
+ returns TimeZone initialized with custom timezone id
+ of zoneoffset. If timezone field is undefined,
+ try the defaultZoneoffset that was passed in.
+ If defaultZoneoffset is FIELD_UNDEFINED, return
+ default timezone for this host.
+ (Same default as java.util.GregorianCalendar).</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">defaultZoneoffset</td>
+          <td class="jd-tagdescr">default zoneoffset if this zoneoffset is
+ <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>TimeZone for this.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getTimezone()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getTimezone</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return timezone offset in minutes or
+ <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code> if this optional field is not defined.
+
+ <p>Value constraints for this value are summarized in
+ <a href="#datetimefield-timezone">timezone field of date/time field mapping table</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setTimezone(int)">setTimezone(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getXMLSchemaType()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/xml/namespace/QName.html">QName</a>
+      </span>
+      <span class="sympad"><strong>getXMLSchemaType</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Return the name of the XML Schema date/time type that this instance
+ maps to. Type is computed based on fields that are set.</p>
+
+ <table border="2" rules="all" cellpadding="2">
+   <thead>
+     <tr>
+       <th align="center" colspan="7">
+         Required fields for XML Schema 1.0 Date/Time Datatypes.<br/>
+         <i>(timezone is optional for all date/time datatypes)</i>
+       </th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+       <td>Datatype</td>
+       <td>year</td>
+       <td>month</td>
+       <td>day</td>
+       <td>hour</td>
+       <td>minute</td>
+       <td>second</td>
+     </tr>
+     <tr>
+       <td><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#DATETIME">DATETIME</a></code></td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+     </tr>
+     <tr>
+       <td><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#DATE">DATE</a></code></td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+       <td></td>
+       <td></td>
+       <td></td>
+     </tr>
+     <tr>
+       <td><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#TIME">TIME</a></code></td>
+       <td></td>
+       <td></td>
+       <td></td>
+       <td>X</td>
+       <td>X</td>
+       <td>X</td>
+     </tr>
+     <tr>
+       <td><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GYEARMONTH">GYEARMONTH</a></code></td>
+       <td>X</td>
+       <td>X</td>
+       <td></td>
+       <td></td>
+       <td></td>
+       <td></td>
+     </tr>
+     <tr>
+       <td><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GMONTHDAY">GMONTHDAY</a></code></td>
+       <td></td>
+       <td>X</td>
+       <td>X</td>
+       <td></td>
+       <td></td>
+       <td></td>
+     </tr>
+     <tr>
+       <td><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GYEAR">GYEAR</a></code></td>
+       <td>X</td>
+       <td></td>
+       <td></td>
+       <td></td>
+       <td></td>
+       <td></td>
+     </tr>
+     <tr>
+       <td><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GMONTH">GMONTH</a></code></td>
+       <td></td>
+       <td>X</td>
+       <td></td>
+       <td></td>
+       <td></td>
+       <td></td>
+     </tr>
+     <tr>
+       <td><code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GDAY">GDAY</a></code></td>
+       <td></td>
+       <td></td>
+       <td>X</td>
+       <td></td>
+       <td></td>
+       <td></td>
+     </tr>
+   </tbody>
+ </table></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>One of the following class constants:
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#DATETIME">DATETIME</a></code>,
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#TIME">TIME</a></code>,
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#DATE">DATE</a></code>,
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GYEARMONTH">GYEARMONTH</a></code>,
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GMONTHDAY">GMONTHDAY</a></code>,
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GYEAR">GYEAR</a></code>,
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GMONTH">GMONTH</a></code> or
+   <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#GDAY">GDAY</a></code>.
+</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td class="jd-tagdescr">if the combination of set fields
+    does not match one of the eight defined XML Schema builtin
+    date/time datatypes.</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getYear()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>getYear</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Return low order component for XML Schema 1.0 dateTime datatype field for
+ <code>year</code> or <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p>
+
+ <p>Value constraints for this value are summarized in
+ <a href="#datetimefield-year">year field of date/time field mapping table</a>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>year  of this <code>XMLGregorianCalendar</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getEon()">getEon()</a></code></li><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#getEonAndYear()">getEonAndYear()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="hashCode()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>hashCode</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Returns a hash code consistent with the definition of the equals method.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>hash code of this object.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isValid()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isValid</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Validate instance by <code>getXMLSchemaType()</code> constraints.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>true if data values are valid.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="normalize()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html">XMLGregorianCalendar</a>
+      </span>
+      <span class="sympad"><strong>normalize</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Normalize this instance to UTC.</p>
+
+ <p>2000-03-04T23:00:00+03:00 normalizes to 2000-03-04T20:00:00Z</p>
+ <p>Implements W3C XML Schema Part 2, Section 3.2.7.3 (A).</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>this</code> <code>XMLGregorianCalendar</code> normalized to UTC.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="reset()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>reset</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Reset this <code>XMLGregorianCalendar</code> to its original values.</p>
+
+ <p><code>XMLGregorianCalendar</code> is reset to the same values as when it was created with
+ <code><a href="reference/javax/xml/datatype/DatatypeFactory.html#newXMLGregorianCalendar()">newXMLGregorianCalendar()</a></code>,
+ <code><a href="reference/javax/xml/datatype/DatatypeFactory.html#newXMLGregorianCalendar(java.lang.String)">newXMLGregorianCalendar(String)</a></code>,
+ <code><a href="reference/javax/xml/datatype/DatatypeFactory.html#newXMLGregorianCalendar(java.math.BigInteger, int, int, int, int, int, java.math.BigDecimal, int)">newXMLGregorianCalendar(BigInteger, int, int, int, int, int, BigDecimal, int)</a></code>,
+ <code><a href="reference/javax/xml/datatype/DatatypeFactory.html#newXMLGregorianCalendar(int, int, int, int, int, int, int, int)">newXMLGregorianCalendar(int, int, int, int, int, int, int, int)</a></code>,
+ <code><a href="reference/javax/xml/datatype/DatatypeFactory.html#newXMLGregorianCalendar(java.util.GregorianCalendar)">newXMLGregorianCalendar(GregorianCalendar)</a></code>,
+ <code><a href="reference/javax/xml/datatype/DatatypeFactory.html#newXMLGregorianCalendarDate(int, int, int, int)">newXMLGregorianCalendarDate(int, int, int, int)</a></code>,
+ <code><a href="reference/javax/xml/datatype/DatatypeFactory.html#newXMLGregorianCalendarTime(int, int, int, int)">newXMLGregorianCalendarTime(int, int, int, int)</a></code>,
+ <code><a href="reference/javax/xml/datatype/DatatypeFactory.html#newXMLGregorianCalendarTime(int, int, int, java.math.BigDecimal, int)">newXMLGregorianCalendarTime(int, int, int, BigDecimal, int)</a></code> or
+ <code><a href="reference/javax/xml/datatype/DatatypeFactory.html#newXMLGregorianCalendarTime(int, int, int, int, int)">newXMLGregorianCalendarTime(int, int, int, int, int)</a></code>.
+ </p>
+
+ <p><code>reset()</code> is designed to allow the reuse of existing <code>XMLGregorianCalendar</code>s
+ thus saving resources associated with the creation of new <code>XMLGregorianCalendar</code>s.</p>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setDay(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setDay</strong></span>
+      <span class="params">(<span class="nowrap">int <i>day</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set days in month.</p>
+
+ <p>Unset this field by invoking the setter with a parameter value of <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">day</td>
+          <td class="jd-tagdescr">value constraints summarized in <a href="#datetimefield-day">day field of date/time field mapping table</a>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>day</code> parameter is
+ outside value constraints for the field as specified in
+ <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setFractionalSecond(java.math.BigDecimal)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setFractionalSecond</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/math/BigDecimal.html">BigDecimal</a> <i>fractional</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set fractional seconds.</p>
+
+ <p>Unset this field by invoking the setter with a parameter value of <code>null</code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">fractional</td>
+          <td class="jd-tagdescr">value constraints summarized in
+   <a href="#datetimefield-fractional">fractional field of date/time field mapping table</a>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>fractional</code> parameter is outside value constraints for the field as specified
+   in <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setHour(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setHour</strong></span>
+      <span class="params">(<span class="nowrap">int <i>hour</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set hours.</p>
+
+ <p>Unset this field by invoking the setter with a parameter value of <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">hour</td>
+          <td class="jd-tagdescr">value constraints summarized in <a href="#datetimefield-hour">hour field of date/time field mapping table</a>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>hour</code> parameter is outside value constraints for the field as specified in
+   <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setMillisecond(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setMillisecond</strong></span>
+      <span class="params">(<span class="nowrap">int <i>millisecond</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set milliseconds.</p>
+
+ <p>Unset this field by invoking the setter with a parameter value of <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">millisecond</td>
+          <td class="jd-tagdescr">value constraints summarized in
+   <a href="#datetimefield-millisecond">millisecond field of date/time field mapping table</a>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>millisecond</code> parameter is outside value constraints for the field as specified
+   in <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setMinute(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setMinute</strong></span>
+      <span class="params">(<span class="nowrap">int <i>minute</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set minutes.</p>
+
+ <p>Unset this field by invoking the setter with a parameter value of <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">minute</td>
+          <td class="jd-tagdescr">value constraints summarized in <a href="#datetimefield-minute">minute field of date/time field mapping table</a>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>minute</code> parameter is outside value constraints for the field as specified in
+   <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setMonth(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setMonth</strong></span>
+      <span class="params">(<span class="nowrap">int <i>month</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set month.</p>
+
+ <p>Unset this field by invoking the setter with a parameter value of <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">month</td>
+          <td class="jd-tagdescr">value constraints summarized in <a href="#datetimefield-month">month field of date/time field mapping table</a>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>month</code> parameter is
+ outside value constraints for the field as specified in
+ <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setSecond(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setSecond</strong></span>
+      <span class="params">(<span class="nowrap">int <i>second</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set seconds.</p>
+
+ <p>Unset this field by invoking the setter with a parameter value of <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">second</td>
+          <td class="jd-tagdescr">value constraints summarized in <a href="#datetimefield-second">second field of date/time field mapping table</a>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>second</code> parameter is outside value constraints for the field as specified in
+   <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setTime(int, int, int, java.math.BigDecimal)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setTime</strong></span>
+      <span class="params">(<span class="nowrap">int <i>hour</i></span>, <span class="nowrap">int <i>minute</i></span>, <span class="nowrap">int <i>second</i></span>, <span class="nowrap"><a href="../../../../reference/java/math/BigDecimal.html">BigDecimal</a> <i>fractional</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set time as one unit, including the optional infinite precision
+ fractional seconds.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">hour</td>
+          <td class="jd-tagdescr">value constraints are summarized in
+ <a href="#datetimefield-hour">hour field of date/time field mapping table</a>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">minute</td>
+          <td class="jd-tagdescr">value constraints are summarized in
+ <a href="#datetimefield-minute">minute field of date/time field mapping table</a>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">second</td>
+          <td class="jd-tagdescr">value constraints are summarized in
+ <a href="#datetimefield-second">second field of date/time field mapping table</a>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">fractional</td>
+          <td class="jd-tagdescr">value of <code>null</code> indicates this optional
+   field is not set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if any parameter is
+ outside value constraints for the field as specified in
+ <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setTime(int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setTime</strong></span>
+      <span class="params">(<span class="nowrap">int <i>hour</i></span>, <span class="nowrap">int <i>minute</i></span>, <span class="nowrap">int <i>second</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set time as one unit.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">hour</td>
+          <td class="jd-tagdescr">value constraints are summarized in
+ <a href="#datetimefield-hour">hour field of date/time field mapping table</a>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">minute</td>
+          <td class="jd-tagdescr">value constraints are summarized in
+ <a href="#datetimefield-minute">minute field of date/time field mapping table</a>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">second</td>
+          <td class="jd-tagdescr">value constraints are summarized in
+ <a href="#datetimefield-second">second field of date/time field mapping table</a>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if any parameter is
+ outside value constraints for the field as specified in
+ <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#setTime(int, int, int, java.math.BigDecimal)">setTime(int, int, int, BigDecimal)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setTime(int, int, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setTime</strong></span>
+      <span class="params">(<span class="nowrap">int <i>hour</i></span>, <span class="nowrap">int <i>minute</i></span>, <span class="nowrap">int <i>second</i></span>, <span class="nowrap">int <i>millisecond</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set time as one unit, including optional milliseconds.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">hour</td>
+          <td class="jd-tagdescr">value constraints are summarized in
+ <a href="#datetimefield-hour">hour field of date/time field mapping table</a>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">minute</td>
+          <td class="jd-tagdescr">value constraints are summarized in
+ <a href="#datetimefield-minute">minute field of date/time field mapping table</a>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">second</td>
+          <td class="jd-tagdescr">value constraints are summarized in
+ <a href="#datetimefield-second">second field of date/time field mapping table</a>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">millisecond</td>
+          <td class="jd-tagdescr">value of <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code> indicates this
+                    optional field is not set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if any parameter is
+ outside value constraints for the field as specified in
+ <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setTimezone(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setTimezone</strong></span>
+      <span class="params">(<span class="nowrap">int <i>offset</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set the number of minutes in the timezone offset.</p>
+
+ <p>Unset this field by invoking the setter with a parameter value of <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">value constraints summarized in <a href="#datetimefield-timezone">
+   timezone field of date/time field mapping table</a>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>offset</code> parameter is
+ outside value constraints for the field as specified in
+ <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setYear(java.math.BigInteger)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setYear</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/math/BigInteger.html">BigInteger</a> <i>year</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set low and high order component of XSD <code>dateTime</code> year field.</p>
+
+ <p>Unset this field by invoking the setter with a parameter value of <code>null</code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">year</td>
+          <td class="jd-tagdescr">value constraints summarized in <a href="#datetimefield-year">year field of date/time field mapping table</a>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>year</code> parameter is
+ outside value constraints for the field as specified in
+ <a href="#datetimefieldmapping">date/time field mapping table</a>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setYear(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setYear</strong></span>
+      <span class="params">(<span class="nowrap">int <i>year</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Set year of XSD <code>dateTime</code> year field.</p>
+
+ <p>Unset this field by invoking the setter with a parameter value of
+ <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>.</p>
+
+ <p>Note: if the absolute value of the <code>year</code> parameter
+ is less than 10^9, the eon component of the XSD year field is set to
+ <code>null</code> by this method.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">year</td>
+          <td class="jd-tagdescr">value constraints are summarized in <a href="#datetimefield-year">year field of date/time field mapping table</a>.
+   If year is <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#FIELD_UNDEFINED">FIELD_UNDEFINED</a></code>, then eon is set to <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toGregorianCalendar()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a>
+      </span>
+      <span class="sympad"><strong>toGregorianCalendar</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Convert this <code>XMLGregorianCalendar</code> to a <code><a href="reference/java/util/GregorianCalendar.html">GregorianCalendar</a></code>.</p>
+
+ <p>When <code>this</code> instance has an undefined field, this
+ conversion relies on the <code>java.util.GregorianCalendar</code> default
+ for its corresponding field. A notable difference between
+ XML Schema 1.0 date/time datatypes and <code>java.util.GregorianCalendar</code>
+ is that Timezone value is optional for date/time datatypes and it is
+ a required field for <code>java.util.GregorianCalendar</code>. See javadoc
+ for <code>java.util.TimeZone.getDefault()</code> on how the default
+ is determined. To explicitly specify the <code>TimeZone</code>
+ instance, see
+ <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#toGregorianCalendar(java.util.TimeZone, java.util.Locale, javax.xml.datatype.XMLGregorianCalendar)">toGregorianCalendar(TimeZone, Locale, XMLGregorianCalendar)</a></code>.</p>
+
+ <table border="2" rules="all" cellpadding="2">
+   <thead>
+     <tr>
+       <th align="center" colspan="2">
+          Field by Field Conversion from this class to
+          <code>java.util.GregorianCalendar</code>
+       </th>
+     </tr>
+   </thead>
+   <tbody>
+     <tr>
+        <td><code>java.util.GregorianCalendar</code> field</td>
+        <td><code>javax.xml.datatype.XMLGregorianCalendar</code> field</td>
+     </tr>
+     <tr>
+       <td><code>ERA</code></td>
+       <td><code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getEonAndYear()">getEonAndYear()</a></code><code>.signum() < 0 ? GregorianCalendar.BC : GregorianCalendar.AD</code></td>
+     </tr>
+     <tr>
+       <td><code>YEAR</code></td>
+       <td><code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getEonAndYear()">getEonAndYear()</a></code><code>.abs().intValue()</code><i>*</i></td>
+     </tr>
+     <tr>
+       <td><code>MONTH</code></td>
+       <td><code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getMonth()">getMonth()</a></code> - <code><a href="reference/javax/xml/datatype/DatatypeConstants.html#JANUARY">JANUARY</a></code> + <code><a href="reference/java/util/Calendar.html#JANUARY">JANUARY</a></code></td>
+     </tr>
+     <tr>
+       <td><code>DAY_OF_MONTH</code></td>
+       <td><code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getDay()">getDay()</a></code></td>
+     </tr>
+     <tr>
+       <td><code>HOUR_OF_DAY</code></td>
+       <td><code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getHour()">getHour()</a></code></td>
+     </tr>
+     <tr>
+       <td><code>MINUTE</code></td>
+       <td><code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getMinute()">getMinute()</a></code></td>
+     </tr>
+     <tr>
+       <td><code>SECOND</code></td>
+       <td><code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getSecond()">getSecond()</a></code></td>
+     </tr>
+     <tr>
+       <td><code>MILLISECOND</code></td>
+       <td>get millisecond order from <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getFractionalSecond()">getFractionalSecond()</a></code><i>*</i> </td>
+     </tr>
+     <tr>
+       <td><code>GregorianCalendar.setTimeZone(TimeZone)</code></td>
+       <td><code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getTimezone()">getTimezone()</a></code> formatted into Custom timezone id</td>
+     </tr>
+   </tbody>
+ </table>
+ <i>*</i> designates possible loss of precision during the conversion due
+ to source datatype having higher precision than target datatype.
+
+ <p>To ensure consistency in conversion implementations, the new
+ <code>GregorianCalendar</code> should be instantiated in following
+ manner.
+ <ul>
+   <li>Using <code>timeZone</code> value as defined above, create a new
+ <code>java.util.GregorianCalendar(timeZone,Locale.getDefault())</code>.
+   </li>
+   <li>Initialize all GregorianCalendar fields by calling {(@link GegorianCalendar#clear()}.</li>
+   <li>Obtain a pure Gregorian Calendar by invoking
+   <code>GregorianCalendar.setGregorianChange(
+   new Date(Long.MIN_VALUE))</code>.</li>
+   <li>Its fields ERA, YEAR, MONTH, DAY_OF_MONTH, HOUR_OF_DAY,
+       MINUTE, SECOND and MILLISECOND are set using the method
+       <code>Calendar.set(int,int)</code></li>
+ </ul>
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#toGregorianCalendar(java.util.TimeZone, java.util.Locale, javax.xml.datatype.XMLGregorianCalendar)">toGregorianCalendar(java.util.TimeZone, java.util.Locale, XMLGregorianCalendar)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toGregorianCalendar(java.util.TimeZone, java.util.Locale, javax.xml.datatype.XMLGregorianCalendar)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a>
+      </span>
+      <span class="sympad"><strong>toGregorianCalendar</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/util/TimeZone.html">TimeZone</a> <i>timezone</i></span>, <span class="nowrap"><a href="../../../../reference/java/util/Locale.html">Locale</a> <i>aLocale</i></span>, <span class="nowrap"><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html">XMLGregorianCalendar</a> <i>defaults</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Convert this <code>XMLGregorianCalendar</code> along with provided parameters
+ to a <code><a href="reference/java/util/GregorianCalendar.html">GregorianCalendar</a></code> instance.</p>
+
+ <p> Since XML Schema 1.0 date/time datetypes has no concept of
+ timezone ids or daylight savings timezone ids, this conversion operation
+ allows the user to explicitly specify one with
+ <code>timezone</code> parameter.</p>
+
+ <p>To compute the return value's <code>TimeZone</code> field,
+ <ul>
+ <li>when parameter <code>timeZone</code> is non-null,
+ it is the timezone field.</li>
+ <li>else when <code>this.getTimezone() != FIELD_UNDEFINED</code>,
+ create a <code>java.util.TimeZone</code> with a custom timezone id
+ using the <code>this.getTimezone()</code>.</li>
+ <li>else when <code>defaults.getTimezone() != FIELD_UNDEFINED</code>,
+ create a <code>java.util.TimeZone</code> with a custom timezone id
+ using <code>defaults.getTimezone()</code>.</li>
+ <li>else use the <code>GregorianCalendar</code> default timezone value
+ for the host is defined as specified by
+ <code>java.util.TimeZone.getDefault()</code>.</li></ul></p>
+
+ <p>To ensure consistency in conversion implementations, the new
+ <code>GregorianCalendar</code> should be instantiated in following
+ manner.
+ <ul>
+   <li>Create a new <code>java.util.GregorianCalendar(TimeZone,
+       Locale)</code> with TimeZone set as specified above and the
+       <code>Locale</code> parameter.
+   </li>
+   <li>Initialize all GregorianCalendar fields by calling <code><a href="reference/java/util/Calendar.html#clear()">clear()</a></code></li>
+   <li>Obtain a pure Gregorian Calendar by invoking
+   <code>GregorianCalendar.setGregorianChange(
+   new Date(Long.MIN_VALUE))</code>.</li>
+   <li>Its fields ERA, YEAR, MONTH, DAY_OF_MONTH, HOUR_OF_DAY,
+       MINUTE, SECOND and MILLISECOND are set using the method
+       <code>Calendar.set(int,int)</code></li>
+ </ul></p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">timezone</td>
+          <td class="jd-tagdescr">provide Timezone. <code>null</code> is a legal value.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">aLocale</td>
+          <td class="jd-tagdescr">provide explicit Locale. Use default GregorianCalendar locale if
+                 value is <code>null</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">defaults</td>
+          <td class="jd-tagdescr">provide default field values to use when corresponding
+                 field for this instance is FIELD_UNDEFINED or null.
+                 If <code>defaults</code>is <code>null</code> or a field
+                 within the specified <code>defaults</code> is undefined,
+                 just use <code>java.util.GregorianCalendar</code> defaults.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a java.util.GregorianCalendar conversion of this instance.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Returns a <code>String</code> representation of this <code>XMLGregorianCalendar</code> <code>Object</code>.</p>
+
+ <p>The result is a lexical representation generated by <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#toXMLFormat()">toXMLFormat()</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>A non-<code>null</code> valid <code>String</code> representation of this <code>XMLGregorianCalendar</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td class="jd-tagdescr">if the combination of set fields
+    does not match one of the eight defined XML Schema builtin date/time datatypes.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/javax/xml/datatype/XMLGregorianCalendar.html#toXMLFormat()">toXMLFormat()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toXMLFormat()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toXMLFormat</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p><p>Return the lexical representation of <code>this</code> instance.
+ The format is specified in
+ <a href="http://www.w3.org/TR/xmlschema-2/#dateTime-order">XML Schema 1.0 Part 2, Section 3.2.[7-14].1,
+ <i>Lexical Representation</i>".</a></p>
+
+ <p>Specific target lexical representation format is determined by
+ <code><a href="reference/javax/xml/datatype/XMLGregorianCalendar.html#getXMLSchemaType()">getXMLSchemaType()</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>XML, as <code>String</code>, representation of this <code>XMLGregorianCalendar</code></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td class="jd-tagdescr">if the combination of set fields
+    does not match one of the eight defined XML Schema builtin date/time datatypes.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

@@ -1,0 +1,5082 @@
+---
+
+title: PreparedStatement - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Array.html">Array</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Blob.html">Blob</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/CallableStatement.html">CallableStatement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Clob.html">Clob</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Connection.html">Connection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/DatabaseMetaData.html">DatabaseMetaData</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Driver.html">Driver</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/NClob.html">NClob</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ParameterMetaData.html">ParameterMetaData</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/sql/PreparedStatement.html">PreparedStatement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Ref.html">Ref</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ResultSetMetaData.html">ResultSetMetaData</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/RowId.html">RowId</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Savepoint.html">Savepoint</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLData.html">SQLData</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLInput.html">SQLInput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLOutput.html">SQLOutput</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLXML.html">SQLXML</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Statement.html">Statement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Struct.html">Struct</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Wrapper.html">Wrapper</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Date.html">Date</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/DriverManager.html">DriverManager</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/DriverPropertyInfo.html">DriverPropertyInfo</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLPermission.html">SQLPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Time.html">Time</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/Types.html">Types</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/RowIdLifetime.html">RowIdLifetime</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/BatchUpdateException.html">BatchUpdateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/DataTruncation.html">DataTruncation</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLDataException.html">SQLDataException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLIntegrityConstraintViolationException.html">SQLIntegrityConstraintViolationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLInvalidAuthorizationSpecException.html">SQLInvalidAuthorizationSpecException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLNonTransientConnectionException.html">SQLNonTransientConnectionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLNonTransientException.html">SQLNonTransientException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLRecoverableException.html">SQLRecoverableException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLSyntaxErrorException.html">SQLSyntaxErrorException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTimeoutException.html">SQLTimeoutException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransactionRollbackException.html">SQLTransactionRollbackException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransientConnectionException.html">SQLTransientConnectionException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLTransientException.html">SQLTransientException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/sql/SQLWarning.html">SQLWarning</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+   
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     interface
+  <h1 itemprop="name" class="devsite-page-title">PreparedStatement</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;font-size:85%;">
+Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/sql/CallableStatement.html">CallableStatement</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/CallableStatement.html">CallableStatement</a></td>
+              <td class="jd-descrcol" width="100%">An interface used to call <i>Stored Procedures</i>.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<p>An interface for a precompiled SQL Statement.
+ <p>
+ An SQL Statement is put into a <code>PreparedStatement</code> and is precompiled
+ so that it can be executed efficiently multiple times.
+ <p>
+ Setter methods are supplied in the <code>PreparedStatement</code> interface for
+ the setting of <code>IN</code> parameters for the statement. The setter method
+ used for each <code>IN</code> parameter must match the parameter's type.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<section id="inhconstants">
+  <h3>Inherited Constant Summary</h3>
+  
+    
+      <div class="expandable api apilevel-">
+        <span class="showalways">
+          From interface
+          <a href="../../../reference/java/sql/Statement.html">java.sql.Statement</a>
+        </span>
+        <div id="inherited-constants-java.sql.Statement">
+          <div id="inherited-constants-java.sql.Statement-list"
+                class="jd-inheritedlinks">
+          </div>
+          <div id="inherited-constants-java.sql.Statement-summary">
+            <table class="jd-sumtable-expando">
+              
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/sql/Statement.html#CLOSE_ALL_RESULTS">CLOSE_ALL_RESULTS</a></td>
+        <td class="jd-descrcol" width="100%">Passing this constant to <code><a href="reference/java/sql/Statement.html#getMoreResults()">getMoreResults()</a></code> implies that all <code>ResultSet</code> objects previously kept open should be closed.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/sql/Statement.html#CLOSE_CURRENT_RESULT">CLOSE_CURRENT_RESULT</a></td>
+        <td class="jd-descrcol" width="100%">Passing this constant to <code><a href="reference/java/sql/Statement.html#getMoreResults()">getMoreResults()</a></code> implies that the current
+ <code>ResultSet</code> object should be closed.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/sql/Statement.html#EXECUTE_FAILED">EXECUTE_FAILED</a></td>
+        <td class="jd-descrcol" width="100%">Indicates that an error was encountered during execution of a batch
+ statement.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/sql/Statement.html#KEEP_CURRENT_RESULT">KEEP_CURRENT_RESULT</a></td>
+        <td class="jd-descrcol" width="100%">Passing this constant to <i>getMoreResults</i> implies that the current
+ <code>ResultSet</code> object should not be closed.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/sql/Statement.html#NO_GENERATED_KEYS">NO_GENERATED_KEYS</a></td>
+        <td class="jd-descrcol" width="100%">Indicates that generated keys should not be accessible for retrieval.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/sql/Statement.html#RETURN_GENERATED_KEYS">RETURN_GENERATED_KEYS</a></td>
+        <td class="jd-descrcol" width="100%">Indicates that generated keys should be accessible for retrieval.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/sql/Statement.html#SUCCESS_NO_INFO">SUCCESS_NO_INFO</a></td>
+        <td class="jd-descrcol" width="100%">Indicates that a batch statement was executed with a successful result,
+ but a count of the number of rows it affected is unavailable.</td>
+    </tr>
+    
+    
+
+            </table>
+          </div>
+        </div>
+      </div>
+    
+  
+    
+  
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#addBatch()">addBatch</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#clearParameters()">clearParameters</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#execute()">execute</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/sql/ResultSet.html">ResultSet</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#executeQuery()">executeQuery</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#executeUpdate()">executeUpdate</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/sql/ResultSetMetaData.html">ResultSetMetaData</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#getMetaData()">getMetaData</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/sql/ParameterMetaData.html">ParameterMetaData</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#getParameterMetaData()">getParameterMetaData</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setArray(int, java.sql.Array)">setArray</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Array.html">Array</a> <i>theArray</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setAsciiStream(int, java.io.InputStream, long)">setAsciiStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>, <span class="nowrap">long <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setAsciiStream(int, java.io.InputStream)">setAsciiStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setAsciiStream(int, java.io.InputStream, int)">setAsciiStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>theInputStream</i></span>, <span class="nowrap">int <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setBigDecimal(int, java.math.BigDecimal)">setBigDecimal</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a> <i>theBigDecimal</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setBinaryStream(int, java.io.InputStream, long)">setBinaryStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>, <span class="nowrap">long <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setBinaryStream(int, java.io.InputStream)">setBinaryStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setBinaryStream(int, java.io.InputStream, int)">setBinaryStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>theInputStream</i></span>, <span class="nowrap">int <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setBlob(int, java.io.InputStream, long)">setBlob</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>, <span class="nowrap">long <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setBlob(int, java.io.InputStream)">setBlob</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setBlob(int, java.sql.Blob)">setBlob</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Blob.html">Blob</a> <i>theBlob</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setBoolean(int, boolean)">setBoolean</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">boolean <i>theBoolean</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setByte(int, byte)">setByte</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">byte <i>theByte</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setBytes(int, byte[])">setBytes</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">byte[] <i>theBytes</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setCharacterStream(int, java.io.Reader, long)">setCharacterStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>, <span class="nowrap">long <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setCharacterStream(int, java.io.Reader, int)">setCharacterStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>, <span class="nowrap">int <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setCharacterStream(int, java.io.Reader)">setCharacterStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setClob(int, java.sql.Clob)">setClob</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Clob.html">Clob</a> <i>theClob</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setClob(int, java.io.Reader, long)">setClob</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>, <span class="nowrap">long <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setClob(int, java.io.Reader)">setClob</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setDate(int, java.sql.Date)">setDate</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Date.html">Date</a> <i>theDate</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setDate(int, java.sql.Date, java.util.Calendar)">setDate</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Date.html">Date</a> <i>theDate</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Calendar.html">Calendar</a> <i>cal</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setDouble(int, double)">setDouble</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">double <i>theDouble</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setFloat(int, float)">setFloat</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">float <i>theFloat</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setInt(int, int)">setInt</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">int <i>theInt</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setLong(int, long)">setLong</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">long <i>theLong</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setNCharacterStream(int, java.io.Reader, long)">setNCharacterStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>, <span class="nowrap">long <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setNCharacterStream(int, java.io.Reader)">setNCharacterStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setNClob(int, java.io.Reader, long)">setNClob</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>, <span class="nowrap">long <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setNClob(int, java.sql.NClob)">setNClob</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/NClob.html">NClob</a> <i>value</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setNClob(int, java.io.Reader)">setNClob</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setNString(int, java.lang.String)">setNString</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>theString</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setNull(int, int, java.lang.String)">setNull</a></span>(<span class="nowrap">int <i>paramIndex</i></span>, <span class="nowrap">int <i>sqlType</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>typeName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setNull(int, int)">setNull</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">int <i>sqlType</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setObject(int, java.lang.Object, int)">setObject</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>theObject</i></span>, <span class="nowrap">int <i>targetSqlType</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setObject(int, java.lang.Object, int, int)">setObject</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>theObject</i></span>, <span class="nowrap">int <i>targetSqlType</i></span>, <span class="nowrap">int <i>scale</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setObject(int, java.lang.Object)">setObject</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>theObject</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setRef(int, java.sql.Ref)">setRef</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Ref.html">Ref</a> <i>theRef</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setRowId(int, java.sql.RowId)">setRowId</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/RowId.html">RowId</a> <i>theRowId</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setSQLXML(int, java.sql.SQLXML)">setSQLXML</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/SQLXML.html">SQLXML</a> <i>xmlObject</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setShort(int, short)">setShort</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">short <i>theShort</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setString(int, java.lang.String)">setString</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>theString</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setTime(int, java.sql.Time, java.util.Calendar)">setTime</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Time.html">Time</a> <i>theTime</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Calendar.html">Calendar</a> <i>cal</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setTime(int, java.sql.Time)">setTime</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Time.html">Time</a> <i>theTime</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setTimestamp(int, java.sql.Timestamp)">setTimestamp</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> <i>theTimestamp</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setTimestamp(int, java.sql.Timestamp, java.util.Calendar)">setTimestamp</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> <i>theTimestamp</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Calendar.html">Calendar</a> <i>cal</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setURL(int, java.net.URL)">setURL</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/net/URL.html">URL</a> <i>theURL</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/sql/PreparedStatement.html#setUnicodeStream(int, java.io.InputStream, int)">setUnicodeStream</a></span>(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>theInputStream</i></span>, <span class="nowrap">int <i>length</i></span>)
+            
+            <div class="jd-descrdiv">
+      <em>
+  This method is deprecated.
+      Use <code><a href="reference/java/sql/PreparedStatement.html#setCharacterStream(int, java.io.Reader, int)">setCharacterStream(int, Reader, int)</a></code></em></div>
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="addBatch()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>addBatch</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Add a set of parameters to the <code>PreparedStatement</code>'s command batch.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="clearParameters()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>clearParameters</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Clear the current parameter values.
+ <p>
+ Typically, parameter values are retained for multiple executions of the
+ <code>Statement</code>. Setting a parameter value replaces the previous value. This
+ method clears the values for all parameters, releasing all resources used
+ by those parameters.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="execute()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>execute</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Executes the SQL statement in this <code>PreparedStatement</code>.
+ <p>
+ A <code>PreparedStatement</code> may return multiple results. The execute
+ method executes the <code>PreparedStatement</code> and returns a flag
+ indicating the kind of result produced by the action. The methods
+ <code>getResultSet</code> or <code>getUpdateCount</code> are used to retrieve
+ the first result, and the second and subsequent results are
+ retrieved with <code>getMoreResults</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the result of the execution is a <code>ResultSet</code>, <code>false</code> if there is no result or if the result
+         is an update count.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="executeQuery()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/sql/ResultSet.html">ResultSet</a>
+      </span>
+      <span class="sympad"><strong>executeQuery</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Executes the SQL query in the <code>PreparedStatement</code> and returns the
+ <code>ResultSet</code> generated by the query.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>ResultSet</code> generated by the query, never <code>null</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens or if the SQL statement does not
+             produce a <code>ResultSet</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="executeUpdate()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad"><strong>executeUpdate</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Invokes the SQL command contained within the prepared statement. This
+ must be <code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>, or a command that
+ returns nothing.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of affected rows for <code>INSERT</code>, <code>UPDATE</code> or <code>DELETE</code> statements, <code>0</code> for statements that return nothing.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens or if the SQL statement returns a
+             <code>ResultSet</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMetaData()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/sql/ResultSetMetaData.html">ResultSetMetaData</a>
+      </span>
+      <span class="sympad"><strong>getMetaData</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a <code>ResultSetMetaData</code> describing the <code>ResultSet</code> that would be produced by execution of the <code>PreparedStatement</code>.
+ <p>
+ It is possible to know the metadata for the <code>ResultSet</code> without
+ executing the <code>PreparedStatement</code>, because the <code>PreparedStatement</code> is precompiled. As a result the metadata can be
+ queried ahead of time without actually executing the statement.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a <code>ResultSetMetaData</code> object with the information about the
+         columns of the <code>ResultSet</code>, if the driver can return a
+         <code>ResultSetMetaData</code>. <code>null</code> otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if there is a database error.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getParameterMetaData()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/sql/ParameterMetaData.html">ParameterMetaData</a>
+      </span>
+      <span class="sympad"><strong>getParameterMetaData</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets information about the parameters of the <code>PreparedStatement</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a <code>ParameterMetaData</code> object which holds information about
+         the number, type, and properties of the parameters of this <code>PreparedStatement</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setArray(int, java.sql.Array)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setArray</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Array.html">Array</a> <i>theArray</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to the supplied <code>Array</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theArray</td>
+          <td class="jd-tagdescr">a <code>java.sql.Array</code> giving the new value of the parameter at <code>parameterIndex</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Array.html">Array</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setAsciiStream(int, java.io.InputStream, long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setAsciiStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>, <span class="nowrap">long <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the next <code>length</code> bytes
+ from <code>inputStream</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">inputStream</td>
+          <td class="jd-tagdescr">the <code>InputStream</code></td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">character count</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setAsciiStream(int, java.io.InputStream)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setAsciiStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the bytes
+ from <code>inputStream</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">inputStream</td>
+          <td class="jd-tagdescr">the <code>InputStream</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setAsciiStream(int, java.io.InputStream, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setAsciiStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>theInputStream</i></span>, <span class="nowrap">int <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to the content of a supplied
+ <code>InputStream</code>, which has a specified number of bytes.
+ <p>
+ This is a good method for setting an SQL <code>LONGVARCHAR</code> parameter
+ where the length of the data is large. Data is read from the <code>InputStream</code> until end-of-file is reached or the specified number of
+ bytes is copied.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theInputStream</td>
+          <td class="jd-tagdescr">the ASCII <code>InputStream</code> carrying the data to which the
+            parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the number of bytes in the <code>InputStream</code> to copy to the
+            parameter.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setBigDecimal(int, java.math.BigDecimal)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setBigDecimal</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a> <i>theBigDecimal</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>java.math.BigDecimal</code> value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theBigDecimal</td>
+          <td class="jd-tagdescr">the value to which the parameter at <code>parameterIndex</code> is
+            set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setBinaryStream(int, java.io.InputStream, long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setBinaryStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>, <span class="nowrap">long <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the next <code>length</code> bytes
+ from <code>inputStream</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">inputStream</td>
+          <td class="jd-tagdescr">the <code>InputStream</code></td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">character count</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setBinaryStream(int, java.io.InputStream)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setBinaryStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the bytes
+ from <code>inputStream</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">inputStream</td>
+          <td class="jd-tagdescr">the <code>InputStream</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setBinaryStream(int, java.io.InputStream, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setBinaryStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>theInputStream</i></span>, <span class="nowrap">int <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to the content of a supplied
+ binary <code>InputStream</code>, which has a specified number of bytes.
+ <p>
+ Use this method when a large amount of data needs to be set into a
+ <code>LONGVARBINARY</code> parameter.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theInputStream</td>
+          <td class="jd-tagdescr">the binary <code>InputStream</code> carrying the data to update the
+            parameter.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the number of bytes in the <code>InputStream</code> to copy to the
+            parameter.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setBlob(int, java.io.InputStream, long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setBlob</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>, <span class="nowrap">long <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the next <code>length</code> bytes
+ from <code>inputStream</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">inputStream</td>
+          <td class="jd-tagdescr">the <code>InputStream</code></td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">character count</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setBlob(int, java.io.InputStream)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setBlob</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>inputStream</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the bytes
+ from <code>inputStream</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">inputStream</td>
+          <td class="jd-tagdescr">the <code>InputStream</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setBlob(int, java.sql.Blob)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setBlob</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Blob.html">Blob</a> <i>theBlob</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to the given <code>Blob</code> object.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theBlob</td>
+          <td class="jd-tagdescr">the <code>java.sql.Blob</code> to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Blob.html">Blob</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setBoolean(int, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setBoolean</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">boolean <i>theBoolean</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>boolean</code>
+ value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theBoolean</td>
+          <td class="jd-tagdescr">the boolean value to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setByte(int, byte)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setByte</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">byte <i>theByte</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>byte</code> value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theByte</td>
+          <td class="jd-tagdescr">the byte value to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setBytes(int, byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setBytes</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">byte[] <i>theBytes</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied array of bytes. The
+ array is mapped to a <code>VARBINARY</code> or <code>LONGVARBINARY</code> in the
+ database.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theBytes</td>
+          <td class="jd-tagdescr">the array of bytes to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setCharacterStream(int, java.io.Reader, long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setCharacterStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>, <span class="nowrap">long <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the next <code>length</code> characters
+ from <code>reader</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">reader</td>
+          <td class="jd-tagdescr">the <code>Reader</code></td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">character count</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setCharacterStream(int, java.io.Reader, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setCharacterStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>, <span class="nowrap">int <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to the character content of a
+ <code>Reader</code> object, with the specified length of character data.
+ <p>
+ Data is read from the <code>Reader</code> until end-of-file is reached or the specified number of
+ characters are copied.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">reader</td>
+          <td class="jd-tagdescr">the <code>java.io.Reader</code> containing the character data.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the number of characters to be read.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setCharacterStream(int, java.io.Reader)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setCharacterStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the characters
+ from <code>reader</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">reader</td>
+          <td class="jd-tagdescr">the <code>Reader</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setClob(int, java.sql.Clob)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setClob</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Clob.html">Clob</a> <i>theClob</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to the given <code>Clob</code> object.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theClob</td>
+          <td class="jd-tagdescr">a <code>java.sql.Clob</code> holding the data to which the
+            parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setClob(int, java.io.Reader, long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setClob</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>, <span class="nowrap">long <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the next <code>length</code> characters
+ from <code>reader</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">reader</td>
+          <td class="jd-tagdescr">the <code>Reader</code></td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">character count</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setClob(int, java.io.Reader)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setClob</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the characters
+ from <code>reader</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">reader</td>
+          <td class="jd-tagdescr">the <code>Reader</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setDate(int, java.sql.Date)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setDate</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Date.html">Date</a> <i>theDate</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>java.sql.Date</code> value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theDate</td>
+          <td class="jd-tagdescr">a <code>java.sql.Date</code> to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setDate(int, java.sql.Date, java.util.Calendar)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setDate</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Date.html">Date</a> <i>theDate</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Calendar.html">Calendar</a> <i>cal</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>java.sql.Date</code> value, using a supplied <code>Calendar</code> to map the Date.
+ The <code>Calendar</code> allows the application to control the timezone used
+ to compute the SQL <code>DATE</code> in the database - without the supplied
+ <code>Calendar</code>, the driver uses the VM defaults.
+ See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theDate</td>
+          <td class="jd-tagdescr">a <code>java.sql.Date</code> to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">cal</td>
+          <td class="jd-tagdescr">a <code>Calendar</code> to use to construct the SQL <code>DATE</code>
+            value.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Date.html">Date</a></code></li><li><code><a href="../../../reference/java/util/Calendar.html">Calendar</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setDouble(int, double)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setDouble</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">double <i>theDouble</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>double</code>
+ value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theDouble</td>
+          <td class="jd-tagdescr">the <code>double</code> value to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setFloat(int, float)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setFloat</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">float <i>theFloat</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to to a supplied <code>float</code>
+ value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theFloat</td>
+          <td class="jd-tagdescr">the <code>float</code> value to update the parameter.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setInt(int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setInt</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">int <i>theInt</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>int</code> value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theInt</td>
+          <td class="jd-tagdescr">the <code>int</code> value to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setLong(int, long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setLong</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">long <i>theLong</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>long</code> value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theLong</td>
+          <td class="jd-tagdescr">the <code>long</code> value to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setNCharacterStream(int, java.io.Reader, long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setNCharacterStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>, <span class="nowrap">long <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the next <code>length</code> characters
+ from <code>reader</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">reader</td>
+          <td class="jd-tagdescr">the <code>Reader</code></td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">character count</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setNCharacterStream(int, java.io.Reader)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setNCharacterStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the characters
+ from <code>reader</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">reader</td>
+          <td class="jd-tagdescr">the <code>Reader</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setNClob(int, java.io.Reader, long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setNClob</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>, <span class="nowrap">long <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the next <code>length</code> characters
+ from <code>reader</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">reader</td>
+          <td class="jd-tagdescr">the <code>Reader</code></td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">character count</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setNClob(int, java.sql.NClob)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setNClob</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/NClob.html">NClob</a> <i>value</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to <code>value</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">value</td>
+          <td class="jd-tagdescr">the <code>NClob</code> to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setNClob(int, java.io.Reader)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setNClob</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/Reader.html">Reader</a> <i>reader</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the characters
+ from <code>reader</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">reader</td>
+          <td class="jd-tagdescr">the <code>Reader</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setNString(int, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setNString</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>theString</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied string.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theString</td>
+          <td class="jd-tagdescr">the <code>String</code> to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setNull(int, int, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setNull</strong></span>
+      <span class="params">(<span class="nowrap">int <i>paramIndex</i></span>, <span class="nowrap">int <i>sqlType</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>typeName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to SQL <code>NULL</code>. This version
+ of <code>setNull</code> should be used for <i>User Defined Types</i> (UDTs)
+ and also REF types. UDTs can be <code>STRUCT</code>, <code>DISTINCT</code>, <code>JAVA_OBJECT</code> and named array types.
+ <p>
+ Applications must provide the SQL type code and also a fully qualified
+ SQL type name when supplying a <code>NULL</code> UDT or REF. For a UDT, the
+ type name is the type name of the parameter itself, but for a REF
+ parameter the type name is the type name of the referenced type.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">paramIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">sqlType</td>
+          <td class="jd-tagdescr">the SQL type of the parameter, as defined in <code>java.sql.Types</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">typeName</td>
+          <td class="jd-tagdescr">the fully qualified name of a UDT or REF type - ignored if the
+            parameter is not a UDT.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Types.html">Types</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setNull(int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setNull</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">int <i>sqlType</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to SQL <code>NULL</code>. Don't use
+ this version of <code>setNull</code> for <i>User Defined Types</i> (UDT) or
+ for REF type parameters.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">sqlType</td>
+          <td class="jd-tagdescr">the SQL type of the parameter, as defined in <code>java.sql.Types</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setObject(int, java.lang.Object, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setObject</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>theObject</i></span>, <span class="nowrap">int <i>targetSqlType</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter using a supplied object.
+ <p>
+ The object is converted to the given <code>targetSqlType</code> before it is
+ sent to the database. If the object has a custom mapping (its class
+ implements the interface <code>SQLData</code>), the JDBC driver will call the method
+ <code>SQLData.writeSQL</code> to write it to the SQL data stream. If the
+ object's class implements <code>Ref</code>, <code>Blob</code>, <code>Clob</code>,
+ <code>Struct</code>, or <code>Array</code>, the driver will pass it to the database
+ in the form of the relevant SQL type.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter index, where the first parameter has index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theObject</td>
+          <td class="jd-tagdescr">the Object containing the value to which the parameter at
+            <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">targetSqlType</td>
+          <td class="jd-tagdescr">the SQL type to send to the database, as defined in <code>java.sql.Types</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setObject(int, java.lang.Object, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setObject</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>theObject</i></span>, <span class="nowrap">int <i>targetSqlType</i></span>, <span class="nowrap">int <i>scale</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter using a supplied object.
+ <p>
+ The object is converted to the given <code>targetSqlType</code> before it is
+ sent to the database. If the object has a custom mapping (its class
+ implements the interface <code>SQLData</code>), the JDBC driver will call the method
+ <code>SQLData.writeSQL</code> to write it to the SQL data stream. If the
+ object's class implements <code>Ref</code>, <code>Blob</code>, <code>Clob</code>,
+ <code>Struct</code>, or <code>Array</code>, the driver will pass it to the database
+ in the form of the relevant SQL type.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter index, where the first parameter has index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theObject</td>
+          <td class="jd-tagdescr">the Object containing the value to which the parameter at
+            <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">targetSqlType</td>
+          <td class="jd-tagdescr">the SQL type to send to the database, as defined in <code>java.sql.Types</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">scale</td>
+          <td class="jd-tagdescr">the number of digits after the decimal point - only applies to
+            the types <code>java.sql.Types.DECIMAL</code> and <code>java.sql.Types.NUMERIC</code> - ignored for all other types.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setObject(int, java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setObject</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>theObject</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter using a supplied object.
+ <p>
+ There is a standard mapping from Java types to SQL types, defined in the
+ JDBC specification. The passed object is then transformed into the
+ appropriate SQL type, and then transferred to the database. <code>setObject</code> can be used to pass abstract data types unique to the
+ database, by using a JDBC driver specific Java type. If the object's
+ class implements the interface <code>SQLData</code>, the JDBC driver calls
+ <code>SQLData.writeSQL</code> to write it to the SQL data stream. If the
+ object's class implements <code>Ref</code>, <code>Blob</code>, <code>Clob</code>,
+ <code>Struct</code>, or <code>Array</code>, the driver passes it to the database as
+ a value of the corresponding SQL type.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theObject</td>
+          <td class="jd-tagdescr">the object containing the value to which the parameter at
+            <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setRef(int, java.sql.Ref)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setRef</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Ref.html">Ref</a> <i>theRef</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>REF(<structured-type>)</code> value. This is stored as an SQL <code>REF</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theRef</td>
+          <td class="jd-tagdescr">a <code>java.sql.Ref</code> value to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Ref.html">Ref</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setRowId(int, java.sql.RowId)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setRowId</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/RowId.html">RowId</a> <i>theRowId</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>java.sql.RowId</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theRowId</td>
+          <td class="jd-tagdescr">the <code>RowId</code> to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setSQLXML(int, java.sql.SQLXML)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setSQLXML</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/SQLXML.html">SQLXML</a> <i>xmlObject</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of the specified parameter to the value of <code>xmlObject</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">xmlObject</td>
+          <td class="jd-tagdescr">the <code>SQLXML</code></td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setShort(int, short)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setShort</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap">short <i>theShort</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>short</code>
+ value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theShort</td>
+          <td class="jd-tagdescr">a <code>short</code> value to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setString(int, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setString</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>theString</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied string.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theString</td>
+          <td class="jd-tagdescr">the value to which the parameter at <code>parameterIndex</code> is
+            set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setTime(int, java.sql.Time, java.util.Calendar)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setTime</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Time.html">Time</a> <i>theTime</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Calendar.html">Calendar</a> <i>cal</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>java.sql.Time</code> value, using a supplied <code>Calendar</code>.
+ <p>
+ The driver uses the supplied <code>Calendar</code> to create the SQL <code>TIME</code> value, which allows it to use a custom timezone - otherwise the
+ driver uses the VM defaults.
+ See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theTime</td>
+          <td class="jd-tagdescr">a <code>java.sql.Time</code> value to which the parameter at
+            <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">cal</td>
+          <td class="jd-tagdescr">a <code>Calendar</code> to use to construct the SQL <code>TIME</code>
+            value.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Time.html">Time</a></code></li><li><code><a href="../../../reference/java/util/Calendar.html">Calendar</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setTime(int, java.sql.Time)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setTime</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Time.html">Time</a> <i>theTime</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>java.sql.Time</code> value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theTime</td>
+          <td class="jd-tagdescr">a <code>java.sql.Time</code> value to which the parameter at
+            <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setTimestamp(int, java.sql.Timestamp)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setTimestamp</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> <i>theTimestamp</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied java.sql.Timestamp
+ value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theTimestamp</td>
+          <td class="jd-tagdescr">the java.sql.Timestamp value to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setTimestamp(int, java.sql.Timestamp, java.util.Calendar)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setTimestamp</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a> <i>theTimestamp</i></span>, <span class="nowrap"><a href="../../../reference/java/util/Calendar.html">Calendar</a> <i>cal</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>java.sql.Timestamp</code> value, using the supplied <code>Calendar</code>.
+ <p>
+ The driver uses the supplied <code>Calendar</code> to create the SQL <code>TIMESTAMP</code> value, which allows it to use a custom timezone - otherwise
+ the driver uses the VM defaults.
+ See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theTimestamp</td>
+          <td class="jd-tagdescr">the <code>java.sql.Timestamp</code> value to which the parameter at
+            <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">cal</td>
+          <td class="jd-tagdescr">a <code>Calendar</code> to use to construct the SQL <code>TIMESTAMP</code> value</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a></code></li><li><code><a href="../../../reference/java/util/Calendar.html">Calendar</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setURL(int, java.net.URL)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setURL</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/net/URL.html">URL</a> <i>theURL</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to a supplied <code>java.net.URL</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theURL</td>
+          <td class="jd-tagdescr">the <code>URL</code> to which the parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/net/URL.html">URL</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setUnicodeStream(int, java.io.InputStream, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setUnicodeStream</strong></span>
+      <span class="params">(<span class="nowrap">int <i>parameterIndex</i></span>, <span class="nowrap"><a href="../../../reference/java/io/InputStream.html">InputStream</a> <i>theInputStream</i></span>, <span class="nowrap">int <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      <p>
+  <p class="caution">
+      <strong>
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/sql/PreparedStatement.html#setCharacterStream(int, java.io.Reader, int)">setCharacterStream(int, Reader, int)</a></code>
+  </p>
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the value of a specified parameter to the characters from a supplied
+ <code>InputStream</code>, with a specified number of bytes.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parameterIndex</td>
+          <td class="jd-tagdescr">the parameter number index, where the first parameter has
+            index 1.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">theInputStream</td>
+          <td class="jd-tagdescr">the <code>InputStream</code> with the character data to which the
+            parameter at <code>parameterIndex</code> is set.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the number of bytes to read from the <code>InputStream</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td class="jd-tagdescr">if a database error happens.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

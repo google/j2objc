@@ -1,0 +1,1111 @@
+---
+
+title: FileLock - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ByteChannel.html">ByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Channel.html">Channel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/GatheringByteChannel.html">GatheringByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/InterruptibleChannel.html">InterruptibleChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ReadableByteChannel.html">ReadableByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ScatteringByteChannel.html">ScatteringByteChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/WritableByteChannel.html">WritableByteChannel</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Channels.html">Channels</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/DatagramChannel.html">DatagramChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/FileChannel.html">FileChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/FileChannel.MapMode.html">FileChannel.MapMode</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/java/nio/channels/FileLock.html">FileLock</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Pipe.html">Pipe</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Pipe.SinkChannel.html">Pipe.SinkChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Pipe.SourceChannel.html">Pipe.SourceChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/SelectableChannel.html">SelectableChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/SelectionKey.html">SelectionKey</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/Selector.html">Selector</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ServerSocketChannel.html">ServerSocketChannel</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/SocketChannel.html">SocketChannel</a></li>
+      </ul>
+    </li>
+              
+              
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/AlreadyConnectedException.html">AlreadyConnectedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/CancelledKeyException.html">CancelledKeyException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ClosedSelectorException.html">ClosedSelectorException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/ConnectionPendingException.html">ConnectionPendingException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/FileLockInterruptionException.html">FileLockInterruptionException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/IllegalBlockingModeException.html">IllegalBlockingModeException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/IllegalSelectorException.html">IllegalSelectorException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NoConnectionPendingException.html">NoConnectionPendingException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NonReadableChannelException.html">NonReadableChannelException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NonWritableChannelException.html">NonWritableChannelException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NotYetBoundException.html">NotYetBoundException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/NotYetConnectedException.html">NotYetConnectedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/OverlappingFileLockException.html">OverlappingFileLockException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/UnresolvedAddressException.html">UnresolvedAddressException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/java/nio/channels/UnsupportedAddressTypeException.html">UnsupportedAddressTypeException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">FileLock</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>A <code>FileLock</code> represents a locked region of a file.
+ <p>
+ Locks have certain properties that enable collaborating processes to avoid
+ the lost update problem or reading inconsistent data. Logically, a file lock
+ can be <em>exclusive</em> or <em>shared</em>. Multiple processes can hold
+ shared locks on the same region of a file, but only a single process can hold
+ an exclusive lock on a given region of a file and no other process can
+ simultaneously hold a shared lock overlapping the exclusive lock. An
+ application can determine whether a <code>FileLock</code> is shared or exclusive
+ via the <code>isShared()</code> method.
+ <p>
+ Locks held by a particular process cannot overlap one another. Applications
+ can determine whether a proposed lock will overlap by using the <code>overlaps(long, long)</code>) method. Locks held in other processes may overlap
+ locks held in this process. Locks are shared amongst all threads in the
+ acquiring process, and are therefore unsuitable for intra-process
+ synchronization.
+ <p>
+ Once a lock is acquired, it is immutable in all its state except <code>isValid()</code>. The lock will initially be valid, but may be rendered invalid by
+ explicit removal of the lock, using <code>release()</code>, or implicitly by
+ closing the channel or exiting the process (terminating the VM).
+ <h3>Platform dependencies</h3>
+ <p>
+ Locks are intended to be true platform operating system file locks, and
+ therefore locks held by the VM will be visible to other
+ operating system processes.
+ <p>
+ The characteristics of the underlying operating system locks will show
+ through in the Java implementation. For example, some platforms' locks are
+ 'mandatory' -- meaning the operating system enforces the locks on processes
+ that attempt to access locked regions of files; whereas other platforms'
+ locks are only 'advisory' -- meaning that processes are required to
+ collaborate to ensure locks are acquired and there is a potential for
+ processes to not play well. To be on the safe side, it is best to assume that
+ the platform is adopting advisory locks and always acquire shared locks when
+ reading a region of a file.
+ <p>
+ On some platforms, the presence of a lock will prevent the file from being
+ memory-mapped. On some platforms, closing a channel on a given file handle
+ will release all the locks held on that file -- even if there are other
+ channels open on the same file; their locks will also be released. The safe
+ option here is to ensure that you only acquire locks on a single channel for
+ a particular file and that becomes the synchronization point.
+ <p>
+ Further care should be exercised when locking files maintained on network
+ file systems, since they often have further limitations.
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/FileLock.html#FileLock(java.nio.channels.FileChannel, long, long, boolean)">FileLock</a></span>(<span class="nowrap"><a href="../../../../reference/java/nio/channels/FileChannel.html">FileChannel</a> <i>channel</i></span>, <span class="nowrap">long <i>position</i></span>, <span class="nowrap">long <i>size</i></span>, <span class="nowrap">boolean <i>shared</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../../reference/java/nio/channels/FileChannel.html">FileChannel</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/FileLock.html#channel()">channel</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/FileLock.html#close()">close</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/FileLock.html#isShared()">isShared</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/FileLock.html#isValid()">isValid</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/FileLock.html#overlaps(long, long)">overlaps</a></span>(<span class="nowrap">long <i>start</i></span>, <span class="nowrap">long <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/FileLock.html#position()">position</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/FileLock.html#release()">release</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            long
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/FileLock.html#size()">size</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/java/nio/channels/FileLock.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="FileLock(java.nio.channels.FileChannel, long, long, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>FileLock</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/nio/channels/FileChannel.html">FileChannel</a> <i>channel</i></span>, <span class="nowrap">long <i>position</i></span>, <span class="nowrap">long <i>size</i></span>, <span class="nowrap">boolean <i>shared</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new file lock instance for a given channel. The constructor
+ enforces the starting position, length and sharing mode of the lock.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">channel</td>
+          <td class="jd-tagdescr">the underlying file channel that holds the lock.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">position</td>
+          <td class="jd-tagdescr">the starting point for the lock.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">size</td>
+          <td class="jd-tagdescr">the length of the lock in number of bytes.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">shared</td>
+          <td class="jd-tagdescr">the lock's sharing mode of lock; <code>true</code> is shared,
+            <code>false</code> is exclusive.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="channel()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../../reference/java/nio/channels/FileChannel.html">FileChannel</a>
+      </span>
+      <span class="sympad"><strong>channel</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the lock's <code><a href="reference/java/nio/channels/FileChannel.html">FileChannel</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the channel.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="close()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>close</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Calls <code><a href="reference/java/nio/channels/FileLock.html#release()">release()</a></code> for <code>AutoCloseable</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isShared()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isShared</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates if the file lock is shared with other processes or if it is
+ exclusive.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the lock is a shared lock, <code>false</code> if it is
+         exclusive.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isValid()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isValid</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates whether this lock is a valid file lock. The lock is
+ valid unless the underlying channel has been closed or it has been
+ explicitly released.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the lock is valid, <code>false</code> otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="overlaps(long, long)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>overlaps</strong></span>
+      <span class="params">(<span class="nowrap">long <i>start</i></span>, <span class="nowrap">long <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Indicates if the receiver's lock region overlaps the region described
+ in the parameter list.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">start</td>
+          <td class="jd-tagdescr">the starting position for the comparative lock.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the length of the comparative lock.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if there is an overlap, <code>false</code> otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="position()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>position</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the lock's starting position in the file.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the lock position.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="release()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>release</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Releases this particular lock on the file. If the lock is invalid then
+ this method has no effect. Once released, the lock becomes invalid.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+            <td class="jd-tagdescr">if the channel is already closed when an attempt to release
+             the lock is made.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if another I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="size()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        long
+      </span>
+      <span class="sympad"><strong>size</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the length of the file lock in bytes.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the size of the file lock in bytes.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string that shows the details of the lock suitable for debugging.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

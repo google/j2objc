@@ -1,0 +1,2968 @@
+---
+
+title: ClassLoader - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Appendable.html">Appendable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/CharSequence.html">CharSequence</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Cloneable.html">Cloneable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Iterable.html">Iterable</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Readable.html">Readable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Runnable.html">Runnable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.UncaughtExceptionHandler.html">Thread.UncaughtExceptionHandler</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Boolean.html">Boolean</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Byte.html">Byte</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.html">Character</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.Subset.html">Character.Subset</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.UnicodeBlock.html">Character.UnicodeBlock</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt;</li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Double.html">Double</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Float.html">Float</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Integer.html">Integer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Long.html">Long</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Math.html">Math</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Number.html">Number</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Object.html">Object</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Package.html">Package</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Runtime.html">Runtime</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/RuntimePermission.html">RuntimePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SecurityManager.html">SecurityManager</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Short.html">Short</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StrictMath.html">StrictMath</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/String.html">String</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringBuffer.html">StringBuffer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringBuilder.html">StringBuilder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/System.html">System</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.html">Thread</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ThreadLocal.html">ThreadLocal</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Throwable.html">Throwable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Void.html">Void</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Annotations</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Deprecated.html">Deprecated</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Override.html">Override</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SafeVarargs.html">SafeVarargs</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SuppressWarnings.html">SuppressWarnings</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.State.html">Thread.State</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArrayStoreException.html">ArrayStoreException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/CloneNotSupportedException.html">CloneNotSupportedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Exception.html">Exception</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalAccessException.html">IllegalAccessException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalThreadStateException.html">IllegalThreadStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InstantiationException.html">InstantiationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NegativeArraySizeException.html">NegativeArraySizeException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchFieldException.html">NoSuchFieldException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchMethodException.html">NoSuchMethodException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ReflectiveOperationException.html">ReflectiveOperationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/RuntimeException.html">RuntimeException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/TypeNotPresentException.html">TypeNotPresentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/AbstractMethodError.html">AbstractMethodError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/AssertionError.html">AssertionError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Error.html">Error</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ExceptionInInitializerError.html">ExceptionInInitializerError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalAccessError.html">IllegalAccessError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IncompatibleClassChangeError.html">IncompatibleClassChangeError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InternalError.html">InternalError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/LinkageError.html">LinkageError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchFieldError.html">NoSuchFieldError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchMethodError.html">NoSuchMethodError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/OutOfMemoryError.html">OutOfMemoryError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StackOverflowError.html">StackOverflowError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ThreadDeath.html">ThreadDeath</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/VirtualMachineError.html">VirtualMachineError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">ClassLoader</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;">
+Known Direct Subclasses
+
+  <div id="subclasses-direct">
+      <div id="subclasses-direct-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/security/SecureClassLoader.html">SecureClassLoader</a>
+            
+          
+      </div>
+      <div id="subclasses-direct-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/SecureClassLoader.html">SecureClassLoader</a></td>
+              <td class="jd-descrcol" width="100%"><code>SecureClassLoader</code> represents a <code>ClassLoader</code> which associates
+ the classes it loads with a code source and provide mechanisms to allow the
+ relevant permissions to be retrieved.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;font-size:85%;">
+Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/net/URLClassLoader.html">URLClassLoader</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/URLClassLoader.html">URLClassLoader</a></td>
+              <td class="jd-descrcol" width="100%">This class loader is responsible for loading classes and resources from a
+ list of URLs which can refer to either directories or JAR files.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<p>Loads classes and resources from a repository. One or more class loaders are
+ installed at runtime. These are consulted whenever the runtime system needs a
+ specific class that is not yet available in-memory. Typically, class loaders
+ are grouped into a tree where child class loaders delegate all requests to
+ parent class loaders. Only if the parent class loader cannot satisfy the
+ request, the child class loader itself tries to handle it.
+ <p>
+ <code>ClassLoader</code> is an abstract class that implements the common
+ infrastructure required by all class loaders. J2ObjC provides a native
+ implementation of the class, SystemClassLoader, which is the one typically
+ used. Other applications may implement subclasses of <code>ClassLoader</code>
+ to provide special ways for loading classes.
+ </p><p>
+ Note: since classes cannot be dynamically created in iOS or OS X, class
+ loaders have a much more limited utility than with JVM-based systems like
+ Java and Android.
+ </p></p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Class.html">Class</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#ClassLoader()">ClassLoader</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#ClassLoader(java.lang.ClassLoader)">ClassLoader</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a> <i>parentLoader</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#clearAssertionStatus()">clearAssertionStatus</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getParent()">getParent</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/net/URL.html">URL</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getResource(java.lang.String)">getResource</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/io/InputStream.html">InputStream</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getResourceAsStream(java.lang.String)">getResourceAsStream</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/net/URL.html">URL</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getResources(java.lang.String)">getResources</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getSystemClassLoader()">getSystemClassLoader</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/net/URL.html">URL</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getSystemResource(java.lang.String)">getSystemResource</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/io/InputStream.html">InputStream</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getSystemResourceAsStream(java.lang.String)">getSystemResourceAsStream</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/net/URL.html">URL</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getSystemResources(java.lang.String)">getSystemResources</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#loadClass(java.lang.String)">loadClass</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#setClassAssertionStatus(java.lang.String, boolean)">setClassAssertionStatus</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>cname</i></span>, <span class="nowrap">boolean <i>enable</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#setDefaultAssertionStatus(boolean)">setDefaultAssertionStatus</a></span>(<span class="nowrap">boolean <i>enable</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#setPackageAssertionStatus(java.lang.String, boolean)">setPackageAssertionStatus</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>pname</i></span>, <span class="nowrap">boolean <i>enable</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#defineClass(java.lang.String, byte[], int, int, java.security.ProtectionDomain)">defineClass</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>, <span class="nowrap">byte[] <i>classRep</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>, <span class="nowrap"><a href="../../../reference/java/security/ProtectionDomain.html">ProtectionDomain</a> <i>protectionDomain</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#defineClass(java.lang.String, java.nio.ByteBuffer, java.security.ProtectionDomain)">defineClass</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap"><a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> <i>b</i></span>, <span class="nowrap"><a href="../../../reference/java/security/ProtectionDomain.html">ProtectionDomain</a> <i>protectionDomain</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#defineClass(byte[], int, int)">defineClass</a></span>(<span class="nowrap">byte[] <i>classRep</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>)
+            
+            <div class="jd-descrdiv">
+      <em>
+  This method is deprecated.
+      Use <code><a href="reference/java/lang/ClassLoader.html#defineClass(java.lang.String, byte[], int, int)">defineClass(String, byte[], int, int)</a></code>
+</em></div>
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#defineClass(java.lang.String, byte[], int, int)">defineClass</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>, <span class="nowrap">byte[] <i>classRep</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Package.html">Package</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#definePackage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.net.URL)">definePackage</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>specTitle</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>specVersion</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>specVendor</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>implTitle</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>implVersion</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>implVendor</i></span>, <span class="nowrap"><a href="../../../reference/java/net/URL.html">URL</a> <i>sealBase</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findClass(java.lang.String)">findClass</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findLibrary(java.lang.String)">findLibrary</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>libName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findLoadedClass(java.lang.String)">findLoadedClass</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/net/URL.html">URL</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findResource(java.lang.String)">findResource</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/net/URL.html">URL</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findResources(java.lang.String)">findResources</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#findSystemClass(java.lang.String)">findSystemClass</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Package.html">Package</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getPackage(java.lang.String)">getPackage</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Package.html">Package[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#getPackages()">getPackages</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#loadClass(java.lang.String, boolean)">loadClass</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>, <span class="nowrap">boolean <i>resolve</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#resolveClass(java.lang.Class<?>)">resolveClass</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; <i>clazz</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ClassLoader.html#setSigners(java.lang.Class<?>, java.lang.Object[])">setSigners</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; <i>c</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object[]</a> <i>signers</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="ClassLoader()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ClassLoader</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of this class with the system class loader as
+ its parent.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="ClassLoader(java.lang.ClassLoader)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ClassLoader</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a> <i>parentLoader</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of this class with the specified class loader
+ as its parent.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parentLoader</td>
+          <td class="jd-tagdescr">The <code>ClassLoader</code> to use as the new class loader's
+            parent.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="clearAssertionStatus()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>clearAssertionStatus</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the default assertion status for this class loader to <code>false</code>
+ and removes any package default and class assertion status settings.
+ <p>
+ <strong>Note:</strong> This method does nothing in the Android reference
+ implementation.
+ </p>
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getParent()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a>
+      </span>
+      <span class="sympad"><strong>getParent</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns this class loader's parent.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>this class loader's parent or <code>null</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getResource(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/net/URL.html">URL</a>
+      </span>
+      <span class="sympad"><strong>getResource</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the URL of the resource with the specified name. This
+ implementation first tries to use the parent class loader to find the
+ resource; if this fails then <code><a href="reference/java/lang/ClassLoader.html#findResource(java.lang.String)">findResource(String)</a></code> is called to
+ find the requested resource.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">resName</td>
+          <td class="jd-tagdescr">the name of the resource to find.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>URL</code> object for the requested resource or <code>null</code>
+         if the resource can not be found</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Class.html#getResource(java.lang.String)">getResource(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getResourceAsStream(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/io/InputStream.html">InputStream</a>
+      </span>
+      <span class="sympad"><strong>getResourceAsStream</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a stream for the resource with the specified name. See
+ <code><a href="reference/java/lang/ClassLoader.html#getResource(java.lang.String)">getResource(String)</a></code> for a description of the lookup algorithm
+ used to find the resource.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">resName</td>
+          <td class="jd-tagdescr">the name of the resource to find.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a stream for the resource or <code>null</code> if the resource can not be found</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Class.html#getResourceAsStream(java.lang.String)">getResourceAsStream(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getResources(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/net/URL.html">URL</a>&gt;
+      </span>
+      <span class="sympad"><strong>getResources</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration of URLs for the resource with the specified name.
+ This implementation first uses this class loader's parent to find the
+ resource, then it calls <code><a href="reference/java/lang/ClassLoader.html#findResources(java.lang.String)">findResources(String)</a></code> to get additional
+ URLs. The returned enumeration contains the <code>URL</code> objects of both
+ find operations.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">resName</td>
+          <td class="jd-tagdescr">the name of the resource to find.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an enumeration of <code>URL</code> objects for the requested resource.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSystemClassLoader()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a>
+      </span>
+      <span class="sympad"><strong>getSystemClassLoader</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the system class loader. This is the parent for new
+ <code>ClassLoader</code> instances and is typically the class loader used to
+ start the application.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getSystemResource(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/net/URL.html">URL</a>
+      </span>
+      <span class="sympad"><strong>getSystemResource</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Finds the URL of the resource with the specified name. The system class
+ loader's resource lookup algorithm is used to find the resource.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">resName</td>
+          <td class="jd-tagdescr">the name of the resource to find.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>URL</code> object for the requested resource or <code>null</code>
+         if the resource can not be found.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Class.html#getResource(java.lang.String)">getResource(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSystemResourceAsStream(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/io/InputStream.html">InputStream</a>
+      </span>
+      <span class="sympad"><strong>getSystemResourceAsStream</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a stream for the resource with the specified name. The system
+ class loader's resource lookup algorithm is used to find the resource.
+ Basically, the contents of the java.class.path are searched in order,
+ looking for a path which matches the specified resource.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">resName</td>
+          <td class="jd-tagdescr">the name of the resource to find.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a stream for the resource or <code>null</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Class.html#getResourceAsStream(java.lang.String)">getResourceAsStream(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSystemResources(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/net/URL.html">URL</a>&gt;
+      </span>
+      <span class="sympad"><strong>getSystemResources</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an enumeration of URLs for the resource with the specified name.
+ The system class loader's resource lookup algorithm is used to find the
+ resource.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">resName</td>
+          <td class="jd-tagdescr">the name of the resource to find.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an enumeration of <code>URL</code> objects containing the requested
+         resources.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="loadClass(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>loadClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Loads the class with the specified name. Invoking this method is
+ equivalent to calling <code>loadClass(className, false)</code>.
+ <p>
+ <strong>Note:</strong> In the Android reference implementation, the
+ second parameter of <code><a href="reference/java/lang/ClassLoader.html#loadClass(java.lang.String, boolean)">loadClass(String, boolean)</a></code> is ignored
+ anyway.
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">className</td>
+          <td class="jd-tagdescr">the name of the class to look for.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Class</code> object.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></td>
+            <td class="jd-tagdescr">if the class can not be found.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setClassAssertionStatus(java.lang.String, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setClassAssertionStatus</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>cname</i></span>, <span class="nowrap">boolean <i>enable</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the assertion status of the class with the specified name.
+ <p>
+ <strong>Note: </strong>This method does nothing in the Android reference
+ implementation.
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">cname</td>
+          <td class="jd-tagdescr">the name of the class for which to set the assertion status.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">enable</td>
+          <td class="jd-tagdescr">the new assertion status.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setDefaultAssertionStatus(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setDefaultAssertionStatus</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>enable</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the default assertion status for this class loader.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">enable</td>
+          <td class="jd-tagdescr">the new assertion status.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setPackageAssertionStatus(java.lang.String, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setPackageAssertionStatus</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>pname</i></span>, <span class="nowrap">boolean <i>enable</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the assertion status of the package with the specified name.
+ <p>
+ <strong>Note: </strong>This method does nothing in the Android reference
+ implementation.
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">pname</td>
+          <td class="jd-tagdescr">the name of the package for which to set the assertion status.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">enable</td>
+          <td class="jd-tagdescr">the new assertion status.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="defineClass(java.lang.String, byte[], int, int, java.security.ProtectionDomain)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>defineClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>, <span class="nowrap">byte[] <i>classRep</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>, <span class="nowrap"><a href="../../../reference/java/security/ProtectionDomain.html">ProtectionDomain</a> <i>protectionDomain</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new class from an array of bytes containing a class
+ definition in class file format and assigns the specified protection
+ domain to the new class. If the provided protection domain is
+ <code>null</code> then a default protection domain is assigned to the class.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">className</td>
+          <td class="jd-tagdescr">the expected name of the new class, may be <code>null</code> if not
+            known.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">classRep</td>
+          <td class="jd-tagdescr">the memory image of a class file.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the offset into <code>classRep</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the length of the class file.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">protectionDomain</td>
+          <td class="jd-tagdescr">the protection domain to assign to the loaded class, may be
+            <code>null</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Class</code> object created from the specified subset of
+         data in <code>classRep</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a></td>
+            <td class="jd-tagdescr">if <code>classRep</code> does not contain a valid class.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">if <code>offset < 0</code>, <code>length < 0</code> or if
+             <code>offset + length</code> is greater than the length of
+             <code>classRep</code>.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a></td>
+            <td class="jd-tagdescr">if <code>className</code> is not equal to the name of the class
+             contained in <code>classRep</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="defineClass(java.lang.String, java.nio.ByteBuffer, java.security.ProtectionDomain)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>defineClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap"><a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a> <i>b</i></span>, <span class="nowrap"><a href="../../../reference/java/security/ProtectionDomain.html">ProtectionDomain</a> <i>protectionDomain</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Defines a new class with the specified name, byte code from the byte
+ buffer and the optional protection domain. If the provided protection
+ domain is <code>null</code> then a default protection domain is assigned to
+ the class.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">the expected name of the new class, may be <code>null</code> if not
+            known.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">b</td>
+          <td class="jd-tagdescr">the byte buffer containing the byte code of the new class.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">protectionDomain</td>
+          <td class="jd-tagdescr">the protection domain to assign to the loaded class, may be
+            <code>null</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Class</code> object created from the data in <code>b</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a></td>
+            <td class="jd-tagdescr">if <code>b</code> does not contain a valid class.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a></td>
+            <td class="jd-tagdescr">if <code>className</code> is not equal to the name of the class
+             contained in <code>b</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="defineClass(byte[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>defineClass</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>classRep</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      <p>
+  <p class="caution">
+      <strong>
+  This method is deprecated.</strong><br/> Use <code><a href="reference/java/lang/ClassLoader.html#defineClass(java.lang.String, byte[], int, int)">defineClass(String, byte[], int, int)</a></code>
+
+  </p>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new class from an array of bytes containing a class
+ definition in class file format.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">classRep</td>
+          <td class="jd-tagdescr">the memory image of a class file.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the offset into <code>classRep</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the length of the class file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Class</code> object created from the specified subset of
+         data in <code>classRep</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a></td>
+            <td class="jd-tagdescr">if <code>classRep</code> does not contain a valid class.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">if <code>offset < 0</code>, <code>length < 0</code> or if
+             <code>offset + length</code> is greater than the length of
+             <code>classRep</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="defineClass(java.lang.String, byte[], int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>defineClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>, <span class="nowrap">byte[] <i>classRep</i></span>, <span class="nowrap">int <i>offset</i></span>, <span class="nowrap">int <i>length</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new class from an array of bytes containing a class
+ definition in class file format.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">className</td>
+          <td class="jd-tagdescr">the expected name of the new class, may be <code>null</code> if not
+            known.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">classRep</td>
+          <td class="jd-tagdescr">the memory image of a class file.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">offset</td>
+          <td class="jd-tagdescr">the offset into <code>classRep</code>.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">length</td>
+          <td class="jd-tagdescr">the length of the class file.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Class</code> object created from the specified subset of
+         data in <code>classRep</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a></td>
+            <td class="jd-tagdescr">if <code>classRep</code> does not contain a valid class.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td class="jd-tagdescr">if <code>offset < 0</code>, <code>length < 0</code> or if
+             <code>offset + length</code> is greater than the length of
+             <code>classRep</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="definePackage(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.net.URL)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Package.html">Package</a>
+      </span>
+      <span class="sympad"><strong>definePackage</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>specTitle</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>specVersion</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>specVendor</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>implTitle</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>implVersion</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>implVendor</i></span>, <span class="nowrap"><a href="../../../reference/java/net/URL.html">URL</a> <i>sealBase</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Defines and returns a new <code>Package</code> using the specified
+ information. If <code>sealBase</code> is <code>null</code>, the package is left
+ unsealed. Otherwise, the package is sealed using this URL.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">the name of the package.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">specTitle</td>
+          <td class="jd-tagdescr">the title of the specification.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">specVersion</td>
+          <td class="jd-tagdescr">the version of the specification.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">specVendor</td>
+          <td class="jd-tagdescr">the vendor of the specification.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">implTitle</td>
+          <td class="jd-tagdescr">the implementation title.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">implVersion</td>
+          <td class="jd-tagdescr">the implementation version.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">implVendor</td>
+          <td class="jd-tagdescr">the specification vendor.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">sealBase</td>
+          <td class="jd-tagdescr">the URL used to seal this package or <code>null</code> to leave the
+            package unsealed.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Package</code> object that has been created.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if a package with the specified name already exists.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="findClass(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>findClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Overridden by subclasses, throws a <code>ClassNotFoundException</code> by
+ default. This method is called by <code>loadClass</code> after the parent
+ <code>ClassLoader</code> has failed to find a loaded class of the same name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">className</td>
+          <td class="jd-tagdescr">the name of the class to look for.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Class</code> object that is found.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></td>
+            <td class="jd-tagdescr">if the class cannot be found.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="findLibrary(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>findLibrary</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>libName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the absolute path of the native library with the specified name,
+ or <code>null</code>. If this method returns <code>null</code> then the virtual
+ machine searches the directories specified by the system property
+ "java.library.path".
+ <p>
+ This implementation always returns <code>null</code>.
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">libName</td>
+          <td class="jd-tagdescr">the name of the library to find.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the absolute path of the library.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="findLoadedClass(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>findLoadedClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the class with the specified name if it has already been loaded
+ by the VM or <code>null</code> if it has not yet been loaded.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">className</td>
+          <td class="jd-tagdescr">the name of the class to look for.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Class</code> object or <code>null</code> if the requested class
+         has not been loaded.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="findResource(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../reference/java/net/URL.html">URL</a>
+      </span>
+      <span class="sympad"><strong>findResource</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Finds the URL of the resource with the specified name. This
+ implementation just returns <code>null</code>; it should be overridden in
+ subclasses.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">resName</td>
+          <td class="jd-tagdescr">the name of the resource to find.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>URL</code> object for the requested resource.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="findResources(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../reference/java/util/Enumeration.html">Enumeration</a>&lt;<a href="../../../reference/java/net/URL.html">URL</a>&gt;
+      </span>
+      <span class="sympad"><strong>findResources</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>resName</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Finds an enumeration of URLs for the resource with the specified name.
+ This implementation just returns an empty <code>Enumeration</code>; it should
+ be overridden in subclasses.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">resName</td>
+          <td class="jd-tagdescr">the name of the resource to find.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an enumeration of <code>URL</code> objects for the requested resource.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an I/O error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="findSystemClass(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>findSystemClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Finds the class with the specified name, loading it using the system
+ class loader if necessary.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">className</td>
+          <td class="jd-tagdescr">the name of the class to look for.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Class</code> object with the requested <code>className</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></td>
+            <td class="jd-tagdescr">if the class can not be found.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getPackage(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Package.html">Package</a>
+      </span>
+      <span class="sympad"><strong>getPackage</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the package with the specified name. Package information is
+ searched in this class loader.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">the name of the package to find.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the package with the requested name; <code>null</code> if the package
+         can not be found.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getPackages()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Package.html">Package[]</a>
+      </span>
+      <span class="sympad"><strong>getPackages</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns all the packages known to this class loader.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an array with all packages known to this class loader.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="loadClass(java.lang.String, boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+      </span>
+      <span class="sympad"><strong>loadClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>className</i></span>, <span class="nowrap">boolean <i>resolve</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Loads the class with the specified name, optionally linking it after
+ loading. The following steps are performed:
+ <ol>
+ <li> Call <code><a href="reference/java/lang/ClassLoader.html#findLoadedClass(java.lang.String)">findLoadedClass(String)</a></code> to determine if the requested
+ class has already been loaded.</li>
+ <li>If the class has not yet been loaded: Invoke this method on the
+ parent class loader.</li>
+ <li>If the class has still not been loaded: Call
+ <code><a href="reference/java/lang/ClassLoader.html#findClass(java.lang.String)">findClass(String)</a></code> to find the class.</li>
+ </ol>
+ <p>
+ <strong>Note:</strong> In the Android reference implementation, the
+ <code>resolve</code> parameter is ignored; classes are never linked.
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">className</td>
+          <td class="jd-tagdescr">the name of the class to look for.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">resolve</td>
+          <td class="jd-tagdescr">Indicates if the class should be resolved after loading. This
+            parameter is ignored on the Android reference implementation;
+            classes are not resolved.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>Class</code> object.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></td>
+            <td class="jd-tagdescr">if the class can not be found.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="resolveClass(java.lang.Class<?>)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>resolveClass</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; <i>clazz</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Forces a class to be linked (initialized). If the class has already been
+ linked this operation has no effect.
+ <p>
+ <strong>Note:</strong> In the Android reference implementation, this
+ method has no effect.
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">clazz</td>
+          <td class="jd-tagdescr">the class to link.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setSigners(java.lang.Class<?>, java.lang.Object[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setSigners</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; <i>c</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object[]</a> <i>signers</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the signers of the specified class. This implementation does
+ nothing.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">c</td>
+          <td class="jd-tagdescr">the <code>Class</code> object for which to set the signers.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">signers</td>
+          <td class="jd-tagdescr">the signers for <code>c</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

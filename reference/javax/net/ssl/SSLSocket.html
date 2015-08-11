@@ -1,0 +1,2895 @@
+---
+
+title: SSLSocket - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedListener.html">HandshakeCompletedListener</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/HostnameVerifier.html">HostnameVerifier</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/KeyManager.html">KeyManager</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/ManagerFactoryParameters.html">ManagerFactoryParameters</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSession.html">SSLSession</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSessionBindingListener.html">SSLSessionBindingListener</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSessionContext.html">SSLSessionContext</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/TrustManager.html">TrustManager</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/X509TrustManager.html">X509TrustManager</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html">HandshakeCompletedEvent</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/HttpsURLConnection.html">HttpsURLConnection</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/KeyManagerFactory.html">KeyManagerFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/KeyManagerFactorySpi.html">KeyManagerFactorySpi</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLContext.html">SSLContext</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html">SSLContextSpi</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngine.html">SSLEngine</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.html">SSLEngineResult</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLServerSocket.html">SSLServerSocket</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLServerSocketFactory.html">SSLServerSocketFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSessionBindingEvent.html">SSLSessionBindingEvent</a></li>
+          <li class="selected api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSocket.html">SSLSocket</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLSocketFactory.html">SSLSocketFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/TrustManagerFactory.html">TrustManagerFactory</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/TrustManagerFactorySpi.html">TrustManagerFactorySpi</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.HandshakeStatus.html">SSLEngineResult.HandshakeStatus</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.Status.html">SSLEngineResult.Status</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLException.html">SSLException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLHandshakeException.html">SSLHandshakeException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLPeerUnverifiedException.html">SSLPeerUnverifiedException</a></li>
+          <li class="api apilevel-"><a href="../../../../reference/javax/net/ssl/SSLProtocolException.html">SSLProtocolException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public    abstract class
+  <h1 itemprop="name" class="devsite-page-title">SSLSocket</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>The extension of <code>Socket</code> providing secure protocols like SSL (Secure
+ Sockets Layer) or TLS (Transport Layer Security).
+
+ <h3>Default configuration</h3>
+ <p><code>SSLSocket</code> instances obtained from default <code><a href="reference/javax/net/ssl/SSLSocketFactory.html">SSLSocketFactory</a></code>,
+ <code><a href="reference/javax/net/ssl/SSLServerSocketFactory.html">SSLServerSocketFactory</a></code>, and <code><a href="reference/javax/net/ssl/SSLContext.html">SSLContext</a></code> are configured as follows:
+
+ <h4>Protocols</h4>
+
+ <p>Client socket:
+ <table>
+     <thead>
+         <tr>
+             <th>Protocol</th>
+             <th>Supported (API Levels)</th>
+             <th>Enabled by default (API Levels)</th>
+         </tr>
+     </thead>
+     <tbody>
+         <tr>
+             <td>SSLv3</td>
+             <td>1+</td>
+             <td>1+</td>
+         </tr>
+         <tr>
+             <td>TLSv1</td>
+             <td>1+</td>
+             <td>1+</td>
+         </tr>
+         <tr>
+             <td>TLSv1.1</td>
+             <td>16+</td>
+             <td>20+</td>
+         </tr>
+         <tr>
+             <td>TLSv1.2</td>
+             <td>16+</td>
+             <td>20+</td>
+         </tr>
+     </tbody>
+ </table>
+
+ <p>Server socket:
+ <table>
+     <thead>
+         <tr>
+             <th>Protocol</th>
+             <th>Supported (API Levels)</th>
+             <th>Enabled by default (API Levels)</th>
+         </tr>
+     </thead>
+     <tbody>
+         <tr>
+             <td>SSLv3</td>
+             <td>1+</td>
+             <td>1+</td>
+         </tr>
+         <tr>
+             <td>TLSv1</td>
+             <td>1+</td>
+             <td>1+</td>
+         </tr>
+         <tr>
+             <td>TLSv1.1</td>
+             <td>16+</td>
+             <td>16+</td>
+         </tr>
+         <tr>
+             <td>TLSv1.2</td>
+             <td>16+</td>
+             <td>16+</td>
+         </tr>
+     </tbody>
+ </table>
+
+ <h4>Cipher suites</h4>
+
+ <p>Methods that operate with cipher suite names (for example,
+ <code><a href="reference/javax/net/ssl/SSLSocket.html#getSupportedCipherSuites()">getSupportedCipherSuites</a></code>,
+ <code><a href="reference/javax/net/ssl/SSLSocket.html#setEnabledCipherSuites(java.lang.String[])">setEnabledCipherSuites</a></code>) have used
+ standard names for cipher suites since API Level 9, as listed in the table
+ below. Prior to API Level 9, non-standard (OpenSSL) names had been used (see
+ the table following this table).
+ <!-- STOPSHIP: Update this table to reflect the removal of DSS cipher suites. -->
+ <table>
+     <thead>
+         <tr>
+             <th>Cipher suite</th>
+             <th>Supported (API Levels)</th>
+             <th>Enabled by default (API Levels)</th>
+         </tr>
+     </thead>
+     <tbody>
+         <tr>
+             <td>SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</td>
+             <td>9+</td>
+             <td>9-19</td>
+         </tr>
+         <tr>
+             <td>SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA</td>
+             <td>9+</td>
+             <td>9-19</td>
+         </tr>
+         <tr>
+             <td>SSL_DHE_DSS_WITH_DES_CBC_SHA</td>
+             <td>9+</td>
+             <td>9-19</td>
+         </tr>
+         <tr>
+             <td>SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</td>
+             <td>9+</td>
+             <td>9-19</td>
+         </tr>
+         <tr>
+             <td>SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA</td>
+             <td>9+</td>
+             <td>9-19</td>
+         </tr>
+         <tr>
+             <td>SSL_DHE_RSA_WITH_DES_CBC_SHA</td>
+             <td>9+</td>
+             <td>9-19</td>
+         </tr>
+         <tr>
+             <td>SSL_DH_anon_EXPORT_WITH_DES40_CBC_SHA</td>
+             <td>9+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>SSL_DH_anon_EXPORT_WITH_RC4_40_MD5</td>
+             <td>9+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>SSL_DH_anon_WITH_3DES_EDE_CBC_SHA</td>
+             <td>9+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>SSL_DH_anon_WITH_DES_CBC_SHA</td>
+             <td>9+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>SSL_DH_anon_WITH_RC4_128_MD5</td>
+             <td>9+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>SSL_RSA_EXPORT_WITH_DES40_CBC_SHA</td>
+             <td>9+</td>
+             <td>9-19</td>
+         </tr>
+         <tr>
+             <td>SSL_RSA_EXPORT_WITH_RC4_40_MD5</td>
+             <td>9+</td>
+             <td>9-19</td>
+         </tr>
+         <tr>
+             <td>SSL_RSA_WITH_3DES_EDE_CBC_SHA</td>
+             <td>9+</td>
+             <td>9-19</td>
+         </tr>
+         <tr>
+             <td>SSL_RSA_WITH_DES_CBC_SHA</td>
+             <td>9+</td>
+             <td>9-19</td>
+         </tr>
+         <tr>
+             <td>SSL_RSA_WITH_NULL_MD5</td>
+             <td>9+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>SSL_RSA_WITH_NULL_SHA</td>
+             <td>9+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>SSL_RSA_WITH_RC4_128_MD5</td>
+             <td>9+</td>
+             <td>9-19</td>
+         </tr>
+         <tr>
+             <td>SSL_RSA_WITH_RC4_128_SHA</td>
+             <td>9+</td>
+             <td>9+</td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_DSS_WITH_AES_128_CBC_SHA</td>
+             <td>9+</td>
+             <td>9+</td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_DSS_WITH_AES_128_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_DSS_WITH_AES_128_GCM_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_DSS_WITH_AES_256_CBC_SHA</td>
+             <td>9+</td>
+             <td>11+</td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_DSS_WITH_AES_256_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_DSS_WITH_AES_256_GCM_SHA384</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</td>
+             <td>9+</td>
+             <td>9+</td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_RSA_WITH_AES_128_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_RSA_WITH_AES_128_GCM_SHA256</td>
+             <td>20+</td>
+             <td>20+</td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_RSA_WITH_AES_256_CBC_SHA</td>
+             <td>9+</td>
+             <td>11+</td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_RSA_WITH_AES_256_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_DHE_RSA_WITH_AES_256_GCM_SHA384</td>
+             <td>20+</td>
+             <td>20+</td>
+         </tr>
+         <tr>
+             <td>TLS_DH_anon_WITH_AES_128_CBC_SHA</td>
+             <td>9+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_DH_anon_WITH_AES_128_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_DH_anon_WITH_AES_128_GCM_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_DH_anon_WITH_AES_256_CBC_SHA</td>
+             <td>9+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_DH_anon_WITH_AES_256_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_DH_anon_WITH_AES_256_GCM_SHA384</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_ECDSA_WITH_3DES_EDE_CBC_SHA</td>
+             <td>11+</td>
+             <td>11-19</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA</td>
+             <td>11+</td>
+             <td>11+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256</td>
+             <td>20+</td>
+             <td>20+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA</td>
+             <td>11+</td>
+             <td>11+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384</td>
+             <td>20+</td>
+             <td>20+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_ECDSA_WITH_NULL_SHA</td>
+             <td>11+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_ECDSA_WITH_RC4_128_SHA</td>
+             <td>11+</td>
+             <td>11+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_PSK_WITH_AES_128_CBC_SHA</td>
+             <td>21+</td>
+             <td>21+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_PSK_WITH_AES_256_CBC_SHA</td>
+             <td>21+</td>
+             <td>21+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_RSA_WITH_3DES_EDE_CBC_SHA</td>
+             <td>11+</td>
+             <td>11-19</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA</td>
+             <td>11+</td>
+             <td>11+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256</td>
+             <td>20+</td>
+             <td>20+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA</td>
+             <td>11+</td>
+             <td>11+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384</td>
+             <td>20+</td>
+             <td>20+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_RSA_WITH_NULL_SHA</td>
+             <td>11+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDHE_RSA_WITH_RC4_128_SHA</td>
+             <td>11+</td>
+             <td>11+</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_ECDSA_WITH_3DES_EDE_CBC_SHA</td>
+             <td>11+</td>
+             <td>11-19</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA</td>
+             <td>11+</td>
+             <td>11-19</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_ECDSA_WITH_AES_128_GCM_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA</td>
+             <td>11+</td>
+             <td>11-19</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_ECDSA_WITH_AES_256_CBC_SHA384</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_ECDSA_WITH_AES_256_GCM_SHA384</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_ECDSA_WITH_NULL_SHA</td>
+             <td>11+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_ECDSA_WITH_RC4_128_SHA</td>
+             <td>11+</td>
+             <td>11-19</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_RSA_WITH_3DES_EDE_CBC_SHA</td>
+             <td>11+</td>
+             <td>11-19</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_RSA_WITH_AES_128_CBC_SHA</td>
+             <td>11+</td>
+             <td>11-19</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_RSA_WITH_AES_128_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_RSA_WITH_AES_128_GCM_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_RSA_WITH_AES_256_CBC_SHA</td>
+             <td>11+</td>
+             <td>11-19</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_RSA_WITH_AES_256_CBC_SHA384</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_RSA_WITH_AES_256_GCM_SHA384</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_RSA_WITH_NULL_SHA</td>
+             <td>11+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_RSA_WITH_RC4_128_SHA</td>
+             <td>11+</td>
+             <td>11-19</td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_anon_WITH_3DES_EDE_CBC_SHA</td>
+             <td>11+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_anon_WITH_AES_128_CBC_SHA</td>
+             <td>11+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_anon_WITH_AES_256_CBC_SHA</td>
+             <td>11+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_anon_WITH_NULL_SHA</td>
+             <td>11+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_ECDH_anon_WITH_RC4_128_SHA</td>
+             <td>11+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_EMPTY_RENEGOTIATION_INFO_SCSV</td>
+             <td>11+</td>
+             <td>11+</td>
+         </tr>
+         <tr>
+             <td>TLS_FALLBACK_SCSV</td>
+             <td>21+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_PSK_WITH_3DES_EDE_CBC_SHA</td>
+             <td>21+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_PSK_WITH_AES_128_CBC_SHA</td>
+             <td>21+</td>
+             <td>21+</td>
+         </tr>
+         <tr>
+             <td>TLS_PSK_WITH_AES_256_CBC_SHA</td>
+             <td>21+</td>
+             <td>21+</td>
+         </tr>
+         <tr>
+             <td>TLS_PSK_WITH_RC4_128_SHA</td>
+             <td>21+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_RSA_WITH_AES_128_CBC_SHA</td>
+             <td>9+</td>
+             <td>9+</td>
+         </tr>
+         <tr>
+             <td>TLS_RSA_WITH_AES_128_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_RSA_WITH_AES_128_GCM_SHA256</td>
+             <td>20+</td>
+             <td>20+</td>
+         </tr>
+         <tr>
+             <td>TLS_RSA_WITH_AES_256_CBC_SHA</td>
+             <td>9+</td>
+             <td>11+</td>
+         </tr>
+         <tr>
+             <td>TLS_RSA_WITH_AES_256_CBC_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+         <tr>
+             <td>TLS_RSA_WITH_AES_256_GCM_SHA384</td>
+             <td>20+</td>
+             <td>20+</td>
+         </tr>
+         <tr>
+             <td>TLS_RSA_WITH_NULL_SHA256</td>
+             <td>20+</td>
+             <td></td>
+         </tr>
+     </tbody>
+ </table>
+
+ <p><em>NOTE</em>: PSK cipher suites are enabled by default only if the <code>SSLContext</code> through
+ which the socket was created has been initialized with a <code>PSKKeyManager</code>.
+
+ <p>API Levels 1 to 8 use OpenSSL names for cipher suites. The table below
+ lists these OpenSSL names and their corresponding standard names used in API
+ Levels 9 and newer.
+ <table>
+     <thead>
+         <tr>
+             <th>OpenSSL cipher suite</th>
+             <th>Standard cipher suite</th>
+             <th>Supported (API Levels)</th>
+             <th>Enabled by default (API Levels)</th>
+         </tr>
+     </thead>
+
+     <tbody>
+         <tr>
+             <td>AES128-SHA</td>
+             <td>TLS_RSA_WITH_AES_128_CBC_SHA</td>
+             <td>1+</td>
+             <td>1+</td>
+         </tr>
+         <tr>
+             <td>AES256-SHA</td>
+             <td>TLS_RSA_WITH_AES_256_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-8, 11+</td>
+         </tr>
+         <tr>
+             <td>DES-CBC-MD5</td>
+             <td>SSL_CK_DES_64_CBC_WITH_MD5</td>
+             <td>1-8</td>
+             <td>1-8</td>
+         </tr>
+         <tr>
+             <td>DES-CBC-SHA</td>
+             <td>SSL_RSA_WITH_DES_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-19</td>
+         </tr>
+         <tr>
+             <td>DES-CBC3-MD5</td>
+             <td>SSL_CK_DES_192_EDE3_CBC_WITH_MD5</td>
+             <td>1-8</td>
+             <td>1-8</td>
+         </tr>
+         <tr>
+             <td>DES-CBC3-SHA</td>
+             <td>SSL_RSA_WITH_3DES_EDE_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-19</td>
+         </tr>
+         <tr>
+             <td>DHE-DSS-AES128-SHA</td>
+             <td>TLS_DHE_DSS_WITH_AES_128_CBC_SHA</td>
+             <td>1+</td>
+             <td>1+</td>
+         </tr>
+         <tr>
+             <td>DHE-DSS-AES256-SHA</td>
+             <td>TLS_DHE_DSS_WITH_AES_256_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-8, 11+</td>
+         </tr>
+         <tr>
+             <td>DHE-RSA-AES128-SHA</td>
+             <td>TLS_DHE_RSA_WITH_AES_128_CBC_SHA</td>
+             <td>1+</td>
+             <td>1+</td>
+         </tr>
+         <tr>
+             <td>DHE-RSA-AES256-SHA</td>
+             <td>TLS_DHE_RSA_WITH_AES_256_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-8, 11+</td>
+         </tr>
+         <tr>
+             <td>EDH-DSS-DES-CBC-SHA</td>
+             <td>SSL_DHE_DSS_WITH_DES_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-19</td>
+         </tr>
+         <tr>
+             <td>EDH-DSS-DES-CBC3-SHA</td>
+             <td>SSL_DHE_DSS_WITH_3DES_EDE_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-19</td>
+         </tr>
+         <tr>
+             <td>EDH-RSA-DES-CBC-SHA</td>
+             <td>SSL_DHE_RSA_WITH_DES_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-19</td>
+         </tr>
+         <tr>
+             <td>EDH-RSA-DES-CBC3-SHA</td>
+             <td>SSL_DHE_RSA_WITH_3DES_EDE_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-19</td>
+         </tr>
+         <tr>
+             <td>EXP-DES-CBC-SHA</td>
+             <td>SSL_RSA_EXPORT_WITH_DES40_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-19</td>
+         </tr>
+         <tr>
+             <td>EXP-EDH-DSS-DES-CBC-SHA</td>
+             <td>SSL_DHE_DSS_EXPORT_WITH_DES40_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-19</td>
+         </tr>
+         <tr>
+             <td>EXP-EDH-RSA-DES-CBC-SHA</td>
+             <td>SSL_DHE_RSA_EXPORT_WITH_DES40_CBC_SHA</td>
+             <td>1+</td>
+             <td>1-19</td>
+         </tr>
+         <tr>
+             <td>EXP-RC2-CBC-MD5</td>
+             <td>SSL_RSA_EXPORT_WITH_RC2_CBC_40_MD5</td>
+             <td>1-8</td>
+             <td>1-8</td>
+         </tr>
+         <tr>
+             <td>EXP-RC4-MD5</td>
+             <td>SSL_RSA_EXPORT_WITH_RC4_40_MD5</td>
+             <td>1+</td>
+             <td>1-19</td>
+         </tr>
+         <tr>
+             <td>RC2-CBC-MD5</td>
+             <td>SSL_CK_RC2_128_CBC_WITH_MD5</td>
+             <td>1-8</td>
+             <td>1-8</td>
+         </tr>
+         <tr>
+             <td>RC4-MD5</td>
+             <td>SSL_RSA_WITH_RC4_128_MD5</td>
+             <td>1+</td>
+             <td>1-19</td>
+         </tr>
+         <tr>
+             <td>RC4-SHA</td>
+             <td>SSL_RSA_WITH_RC4_128_SHA</td>
+             <td>1+</td>
+             <td>1+</td>
+         </tr>
+     </tbody>
+ </table>
+</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Protected Constructor Summary</h3>
+  <table id="proctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#SSLSocket()">SSLSocket</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#SSLSocket(java.lang.String, int)">SSLSocket</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#SSLSocket(java.net.InetAddress, int)">SSLSocket</a></span>(<span class="nowrap"><a href="../../../../reference/java/net/InetAddress.html">InetAddress</a> <i>address</i></span>, <span class="nowrap">int <i>port</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#SSLSocket(java.lang.String, int, java.net.InetAddress, int)">SSLSocket</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>, <span class="nowrap"><a href="../../../../reference/java/net/InetAddress.html">InetAddress</a> <i>clientAddress</i></span>, <span class="nowrap">int <i>clientPort</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#SSLSocket(java.net.InetAddress, int, java.net.InetAddress, int)">SSLSocket</a></span>(<span class="nowrap"><a href="../../../../reference/java/net/InetAddress.html">InetAddress</a> <i>address</i></span>, <span class="nowrap">int <i>port</i></span>, <span class="nowrap"><a href="../../../../reference/java/net/InetAddress.html">InetAddress</a> <i>clientAddress</i></span>, <span class="nowrap">int <i>clientPort</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#addHandshakeCompletedListener(javax.net.ssl.HandshakeCompletedListener)">addHandshakeCompletedListener</a></span>(<span class="nowrap"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedListener.html">HandshakeCompletedListener</a> <i>listener</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#getEnableSessionCreation()">getEnableSessionCreation</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#getEnabledCipherSuites()">getEnabledCipherSuites</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#getEnabledProtocols()">getEnabledProtocols</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#getNeedClientAuth()">getNeedClientAuth</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#getSSLParameters()">getSSLParameters</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/javax/net/ssl/SSLSession.html">SSLSession</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#getSession()">getSession</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#getSupportedCipherSuites()">getSupportedCipherSuites</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#getSupportedProtocols()">getSupportedProtocols</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#getUseClientMode()">getUseClientMode</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#getWantClientAuth()">getWantClientAuth</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#removeHandshakeCompletedListener(javax.net.ssl.HandshakeCompletedListener)">removeHandshakeCompletedListener</a></span>(<span class="nowrap"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedListener.html">HandshakeCompletedListener</a> <i>listener</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#setEnableSessionCreation(boolean)">setEnableSessionCreation</a></span>(<span class="nowrap">boolean <i>flag</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#setEnabledCipherSuites(java.lang.String[])">setEnabledCipherSuites</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String[]</a> <i>suites</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#setEnabledProtocols(java.lang.String[])">setEnabledProtocols</a></span>(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String[]</a> <i>protocols</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#setNeedClientAuth(boolean)">setNeedClientAuth</a></span>(<span class="nowrap">boolean <i>need</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#setSSLParameters(javax.net.ssl.SSLParameters)">setSSLParameters</a></span>(<span class="nowrap"><a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a> <i>p</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#setUseClientMode(boolean)">setUseClientMode</a></span>(<span class="nowrap">boolean <i>mode</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#setWantClientAuth(boolean)">setWantClientAuth</a></span>(<span class="nowrap">boolean <i>want</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#shutdownInput()">shutdownInput</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#shutdownOutput()">shutdownOutput</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../reference/javax/net/ssl/SSLSocket.html#startHandshake()">startHandshake</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<section id="protected-constructors">
+  <h2>Protected Constructors</h2>
+  
+
+
+<A NAME="SSLSocket()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SSLSocket</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Only to be used by subclasses.
+ <p>
+ Creates a TCP socket.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="SSLSocket(java.lang.String, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SSLSocket</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Only to be used by subclasses.
+ <p>
+ Creates a TCP socket connection to the specified host at the specified
+ port.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">host</td>
+          <td class="jd-tagdescr">the host name to connect to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the port number to connect to.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if creating the socket fails.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></td>
+            <td class="jd-tagdescr">if the specified host is not known.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SSLSocket(java.net.InetAddress, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SSLSocket</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/net/InetAddress.html">InetAddress</a> <i>address</i></span>, <span class="nowrap">int <i>port</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Only to be used by subclasses.
+ <p>
+ Creates a TCP socket connection to the specified address at the specified
+ port.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">address</td>
+          <td class="jd-tagdescr">the address to connect to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the port number to connect to.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if creating the socket fails.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SSLSocket(java.lang.String, int, java.net.InetAddress, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SSLSocket</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String</a> <i>host</i></span>, <span class="nowrap">int <i>port</i></span>, <span class="nowrap"><a href="../../../../reference/java/net/InetAddress.html">InetAddress</a> <i>clientAddress</i></span>, <span class="nowrap">int <i>clientPort</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Only to be used by subclasses.
+ <p>
+ Creates a TCP socket connection to the specified host at the specified
+ port with the client side bound to the specified address and port.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">host</td>
+          <td class="jd-tagdescr">the host name to connect to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the port number to connect to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">clientAddress</td>
+          <td class="jd-tagdescr">the client address to bind to</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">clientPort</td>
+          <td class="jd-tagdescr">the client port number to bind to.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if creating the socket fails.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></td>
+            <td class="jd-tagdescr">if the specified host is not known.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="SSLSocket(java.net.InetAddress, int, java.net.InetAddress, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>SSLSocket</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/net/InetAddress.html">InetAddress</a> <i>address</i></span>, <span class="nowrap">int <i>port</i></span>, <span class="nowrap"><a href="../../../../reference/java/net/InetAddress.html">InetAddress</a> <i>clientAddress</i></span>, <span class="nowrap">int <i>clientPort</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Only to be used by subclasses.
+ <p>
+ Creates a TCP socket connection to the specified address at the specified
+ port with the client side bound to the specified address and port.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">address</td>
+          <td class="jd-tagdescr">the address to connect to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">port</td>
+          <td class="jd-tagdescr">the port number to connect to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">clientAddress</td>
+          <td class="jd-tagdescr">the client address to bind to.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">clientPort</td>
+          <td class="jd-tagdescr">the client port number to bind to.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if creating the socket fails.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="addHandshakeCompletedListener(javax.net.ssl.HandshakeCompletedListener)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>addHandshakeCompletedListener</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedListener.html">HandshakeCompletedListener</a> <i>listener</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Registers the specified listener to receive notification on completion of
+ a handshake on this connection.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">listener</td>
+          <td class="jd-tagdescr">the listener to register.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if <code>listener</code> is <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getEnableSessionCreation()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>getEnableSessionCreation</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether new SSL sessions may be created by this socket or if
+ existing sessions must be reused.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if new sessions may be created, otherwise
+         <code>false</code>.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getEnabledCipherSuites()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getEnabledCipherSuites</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the names of the enabled cipher suites.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getEnabledProtocols()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getEnabledProtocols</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the names of the enabled protocols.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getNeedClientAuth()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>getNeedClientAuth</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if the server socket should require client authentication.
+ This does not apply to sockets in <code><a href="reference/javax/net/ssl/SSLSocket.html#getUseClientMode()">client
+ mode</a></code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getSSLParameters()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a>
+      </span>
+      <span class="sympad"><strong>getSSLParameters</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a new SSLParameters based on this SSLSocket's current
+ cipher suites, protocols, and client authentication settings.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getSession()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/javax/net/ssl/SSLSession.html">SSLSession</a>
+      </span>
+      <span class="sympad"><strong>getSession</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the <code>SSLSession</code> for this connection. If necessary, a
+ handshake will be initiated, in which case this method will block until the handshake
+ has been established. If the handshake fails, an invalid session object
+ will be returned.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the session object.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getSupportedCipherSuites()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getSupportedCipherSuites</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the names of the supported cipher suites.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getSupportedProtocols()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad"><strong>getSupportedProtocols</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the names of the supported protocols.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getUseClientMode()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>getUseClientMode</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if this connection will act in client mode when handshaking.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getWantClientAuth()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>getWantClientAuth</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if the server should request client authentication. This
+ does not apply to sockets in <code><a href="reference/javax/net/ssl/SSLSocket.html#getUseClientMode()">client mode</a></code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="removeHandshakeCompletedListener(javax.net.ssl.HandshakeCompletedListener)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>removeHandshakeCompletedListener</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedListener.html">HandshakeCompletedListener</a> <i>listener</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the specified handshake completion listener.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">listener</td>
+          <td class="jd-tagdescr">the listener to remove.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the specified listener is not registered or <code>null</code>.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setEnableSessionCreation(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setEnableSessionCreation</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>flag</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets whether new SSL sessions may be created by this socket or if
+ existing sessions must be reused. If <code>flag</code> is false and there are
+ no sessions to resume, handshaking will fail.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">flag</td>
+          <td class="jd-tagdescr"><code>true</code> if new sessions may be created.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setEnabledCipherSuites(java.lang.String[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setEnabledCipherSuites</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String[]</a> <i>suites</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the names of the cipher suites to be enabled.
+ Only cipher suites returned by <code><a href="reference/javax/net/ssl/SSLSocket.html#getSupportedCipherSuites()">getSupportedCipherSuites()</a></code> are
+ allowed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">suites</td>
+          <td class="jd-tagdescr">the names of the to be enabled cipher suites.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if one of the cipher suite names is not supported.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setEnabledProtocols(java.lang.String[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setEnabledProtocols</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/java/lang/String.html">String[]</a> <i>protocols</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets the names of the protocols to be enabled. Only
+ protocols returned by <code><a href="reference/javax/net/ssl/SSLSocket.html#getSupportedProtocols()">getSupportedProtocols()</a></code> are allowed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">protocols</td>
+          <td class="jd-tagdescr">the names of the to be enabled protocols.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if one of the protocols is not supported.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setNeedClientAuth(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setNeedClientAuth</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>need</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets whether the server should require client authentication. This
+ does not apply to sockets in <code><a href="reference/javax/net/ssl/SSLSocket.html#getUseClientMode()">client mode</a></code>.
+ Client authentication is one of the following:
+ <ul>
+ <li>authentication required</li>
+ <li>authentication requested</li>
+ <li>no authentication needed</li>
+ </ul>
+ This method overrides the setting of <code><a href="reference/javax/net/ssl/SSLSocket.html#setWantClientAuth(boolean)">setWantClientAuth(boolean)</a></code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setSSLParameters(javax.net.ssl.SSLParameters)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setSSLParameters</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a> <i>p</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets various SSL handshake parameters based on the SSLParameter
+ argument. Specifically, sets the SSLSocket's enabled cipher
+ suites if the parameter's cipher suites are non-null. Similarly
+ sets the enabled protocols. If the parameters specify the want
+ or need for client authentication, those requirements are set
+ on the SSLSocket, otherwise both are set to false.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="setUseClientMode(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setUseClientMode</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>mode</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets whether this connection should act in client mode when handshaking.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">mode</td>
+          <td class="jd-tagdescr"><code>true</code> if this connection should act in client mode,
+            <code>false</code> if not.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setWantClientAuth(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>setWantClientAuth</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>want</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Sets whether the server should request client authentication. Unlike
+ <code><a href="reference/javax/net/ssl/SSLSocket.html#setNeedClientAuth(boolean)">setNeedClientAuth(boolean)</a></code> this won't stop the negotiation if the client
+ doesn't authenticate. This does not apply to sockets in <code><a href="reference/javax/net/ssl/SSLSocket.html#getUseClientMode()">client mode</a></code>.The client authentication is one of:
+ <ul>
+ <li>authentication required</li>
+ <li>authentication requested</li>
+ <li>no authentication needed</li>
+ </ul>
+ This method overrides the setting of <code><a href="reference/javax/net/ssl/SSLSocket.html#setNeedClientAuth(boolean)">setNeedClientAuth(boolean)</a></code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="shutdownInput()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>shutdownInput</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Unsupported for SSL because reading from an SSL socket may require
+ writing to the network.
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="shutdownOutput()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>shutdownOutput</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Unsupported for SSL because writing to an SSL socket may require reading
+ from the network.
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="startHandshake()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad"><strong>startHandshake</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Starts a new SSL handshake on this connection.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

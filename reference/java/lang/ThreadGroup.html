@@ -1,0 +1,1805 @@
+---
+
+title: ThreadGroup - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Appendable.html">Appendable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/CharSequence.html">CharSequence</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Cloneable.html">Cloneable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Iterable.html">Iterable</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Readable.html">Readable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Runnable.html">Runnable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.UncaughtExceptionHandler.html">Thread.UncaughtExceptionHandler</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Boolean.html">Boolean</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Byte.html">Byte</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.html">Character</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.Subset.html">Character.Subset</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Character.UnicodeBlock.html">Character.UnicodeBlock</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassLoader.html">ClassLoader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Double.html">Double</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Float.html">Float</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InheritableThreadLocal.html">InheritableThreadLocal</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Integer.html">Integer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Long.html">Long</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Math.html">Math</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Number.html">Number</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Object.html">Object</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Package.html">Package</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Runtime.html">Runtime</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/RuntimePermission.html">RuntimePermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SecurityManager.html">SecurityManager</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Short.html">Short</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StrictMath.html">StrictMath</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/String.html">String</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringBuffer.html">StringBuffer</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringBuilder.html">StringBuilder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/System.html">System</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.html">Thread</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ThreadLocal.html">ThreadLocal</a>&lt;T&gt;</li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Throwable.html">Throwable</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Void.html">Void</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Annotations</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Deprecated.html">Deprecated</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Override.html">Override</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SafeVarargs.html">SafeVarargs</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SuppressWarnings.html">SuppressWarnings</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Thread.State.html">Thread.State</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ArrayStoreException.html">ArrayStoreException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/CloneNotSupportedException.html">CloneNotSupportedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Exception.html">Exception</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalAccessException.html">IllegalAccessException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalThreadStateException.html">IllegalThreadStateException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InstantiationException.html">InstantiationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NegativeArraySizeException.html">NegativeArraySizeException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchFieldException.html">NoSuchFieldException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchMethodException.html">NoSuchMethodException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ReflectiveOperationException.html">ReflectiveOperationException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/RuntimeException.html">RuntimeException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/TypeNotPresentException.html">TypeNotPresentException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Errors</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/AbstractMethodError.html">AbstractMethodError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/AssertionError.html">AssertionError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ClassFormatError.html">ClassFormatError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/Error.html">Error</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ExceptionInInitializerError.html">ExceptionInInitializerError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IllegalAccessError.html">IllegalAccessError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/IncompatibleClassChangeError.html">IncompatibleClassChangeError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/InternalError.html">InternalError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/LinkageError.html">LinkageError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoClassDefFoundError.html">NoClassDefFoundError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchFieldError.html">NoSuchFieldError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/NoSuchMethodError.html">NoSuchMethodError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/OutOfMemoryError.html">OutOfMemoryError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/StackOverflowError.html">StackOverflowError</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/ThreadDeath.html">ThreadDeath</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/lang/VirtualMachineError.html">VirtualMachineError</a></li>
+      </ul>
+    </li>
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">ThreadGroup</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>A <code>ThreadGroup</code> is a means of organizing <code><a href="reference/java/lang/Thread.html">Thread</a></code>s into a
+ hierarchical structure. A <code>ThreadGroup</code> can contain zero or more
+ <code>Thread</code>s and zero or more other <code>ThreadGroup</code>s. Each <code>Thread</code> and each <code>ThreadGroup</code> (except the root group) has a unique
+ parent <code>ThreadGroup</code>. The result is a tree whose inner nodes are
+ <code>ThreadGroup</code>s and whose leaf nodes are <code>Threads</code>. The unique
+ root of the tree is a <code>ThreadGroup</code> that is created at VM startup and
+ has the name "system". The benefit of using <code>ThreadGroup</code>s, in addition
+ to the mere housekeeping aspect, is that all <code>Thread</code>s in a <code>ThreadGroup</code> can be manipulated together, that is, the <code>ThreadGroup</code>
+ has methods that delegate to all its all <code>Thread</code>s.</p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html">Thread</a></code></li><li><code><a href="../../../reference/java/lang/SecurityManager.html">SecurityManager</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#ThreadGroup(java.lang.String)">ThreadGroup</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#ThreadGroup(java.lang.ThreadGroup, java.lang.String)">ThreadGroup</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a> <i>parent</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#activeCount()">activeCount</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#activeGroupCount()">activeGroupCount</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#checkAccess()">checkAccess</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#destroy()">destroy</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.ThreadGroup[])">enumerate</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> <i>groups</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.ThreadGroup[], boolean)">enumerate</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> <i>groups</i></span>, <span class="nowrap">boolean <i>recurse</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.Thread[])">enumerate</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Thread.html">Thread[]</a> <i>threads</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#enumerate(java.lang.Thread[], boolean)">enumerate</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Thread.html">Thread[]</a> <i>threads</i></span>, <span class="nowrap">boolean <i>recurse</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#getMaxPriority()">getMaxPriority</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#getName()">getName</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#getParent()">getParent</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#isDestroyed()">isDestroyed</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#list()">list</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#parentOf(java.lang.ThreadGroup)">parentOf</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a> <i>g</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#setMaxPriority(int)">setMaxPriority</a></span>(<span class="nowrap">int <i>newMax</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/lang/ThreadGroup.html#uncaughtException(java.lang.Thread, java.lang.Throwable)">uncaughtException</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Thread.html">Thread</a> <i>t</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Throwable.html">Throwable</a> <i>e</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="ThreadGroup(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ThreadGroup</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new ThreadGroup with the name provided. The new ThreadGroup
+ will be child of the ThreadGroup to which the
+ <code>Thread.currentThread()</code> belongs.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">Name for the ThreadGroup being created</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td class="jd-tagdescr">if <code>checkAccess()</code> for the parent
+         group fails with a SecurityException</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Thread.html#currentThread()">currentThread()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="ThreadGroup(java.lang.ThreadGroup, java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ThreadGroup</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a> <i>parent</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>name</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new ThreadGroup with the name provided, as child of the
+ ThreadGroup <code>parent</code></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">parent</td>
+          <td class="jd-tagdescr">Parent ThreadGroup</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">name</td>
+          <td class="jd-tagdescr">Name for the ThreadGroup being created</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if <code>parent</code> is
+         <code>null</code></td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td class="jd-tagdescr">if <code>checkAccess()</code> for the parent
+         group fails with a SecurityException</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalThreadStateException.html">IllegalThreadStateException</a></td>
+            <td class="jd-tagdescr">if <code>parent</code> has been
+         destroyed already
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="activeCount()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>activeCount</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of Threads which are children of the receiver,
+ directly or indirectly and are running.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of children Threads
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="activeGroupCount()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>activeGroupCount</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of ThreadGroups which are children of the receiver,
+ directly or indirectly.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of children ThreadGroups
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="checkAccess()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>checkAccess</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Checks the accessibility of the ThreadGroup from the perspective of the
+ caller. If there is a SecurityManager installed, calls
+ <code>checkAccess</code> with the receiver as a parameter, otherwise does
+ nothing.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="destroy()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>destroy</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Destroys the receiver and recursively all its subgroups. It is only legal
+ to destroy a ThreadGroup that has no Threads in it.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalThreadStateException.html">IllegalThreadStateException</a></td>
+            <td class="jd-tagdescr">if the receiver or any of its
+         subgroups has been destroyed already or if it still contains
+         threads.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td class="jd-tagdescr">if <code>this.checkAccess()</code> fails with
+         a SecurityException
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="enumerate(java.lang.ThreadGroup[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>enumerate</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> <i>groups</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Iterates over all thread groups in this group (and its sub-groups) and
+ and stores the groups in the given array. Returns when the array is full
+ or no more groups remain, whichever happens first.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">groups</td>
+          <td class="jd-tagdescr">the array into which the ThreadGroups will be copied</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of ThreadGroups that were copied
+
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="enumerate(java.lang.ThreadGroup[], boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>enumerate</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup[]</a> <i>groups</i></span>, <span class="nowrap">boolean <i>recurse</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Iterates over all thread groups in this group (and, optionally, its
+ sub-groups) and stores the groups in the given array. Returns when
+ the array is full or no more groups remain, whichever happens first.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">groups</td>
+          <td class="jd-tagdescr">the array into which the ThreadGroups will be copied</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">recurse</td>
+          <td class="jd-tagdescr">indicates whether ThreadGroups in subgroups should be
+        recursively copied as well or not</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of ThreadGroups that were copied
+
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="enumerate(java.lang.Thread[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>enumerate</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Thread.html">Thread[]</a> <i>threads</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Iterates over all active threads in this group (and its sub-groups) and
+ stores the threads in the given array. Returns when the array is full or
+ no more threads remain, whichever happens first.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">threads</td>
+          <td class="jd-tagdescr">the array into which the Threads will be copied</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of Threads that were copied
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="enumerate(java.lang.Thread[], boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>enumerate</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Thread.html">Thread[]</a> <i>threads</i></span>, <span class="nowrap">boolean <i>recurse</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Iterates over all active threads in this group (and, optionally, its
+ sub-groups) and stores the threads in the given array. Returns when the
+ array is full or no more threads remain, whichever happens first.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">threads</td>
+          <td class="jd-tagdescr">the array into which the Threads will be copied</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">recurse</td>
+          <td class="jd-tagdescr">indicates whether Threads in subgroups should be
+        recursively copied as well</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of Threads that were copied
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getMaxPriority()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getMaxPriority</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the maximum allowed priority for a Thread in the receiver.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the maximum priority</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadGroup.html#setMaxPriority(int)">setMaxPriority(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getName()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getName</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the name of the receiver.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the receiver's name
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getParent()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        <a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a>
+      </span>
+      <span class="sympad"><strong>getParent</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the receiver's parent ThreadGroup. It can be <code>null</code>  if the
+ receiver is the the root ThreadGroup.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the parent ThreadGroup
+
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isDestroyed()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isDestroyed</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Checks whether the receiver has already been destroyed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>true if (and only if) the receiver has already been destroyed</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadGroup.html#destroy()">destroy()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="list()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>list</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Outputs to <code>System.out</code> a text representation of the
+ hierarchy of Threads and ThreadGroups in the receiver (and recursively).
+ Proper indentation is done to suggest the nesting of groups inside groups
+ and threads inside groups.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="parentOf(java.lang.ThreadGroup)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>parentOf</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/ThreadGroup.html">ThreadGroup</a> <i>g</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Checks whether the receiver is a direct or indirect parent group of a
+ given ThreadGroup.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">g</td>
+          <td class="jd-tagdescr">the potential child ThreadGroup</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>true if (and only if) the receiver is parent of <code>g</code>
+
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="setMaxPriority(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>setMaxPriority</strong></span>
+      <span class="params">(<span class="nowrap">int <i>newMax</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Configures the maximum allowed priority for a Thread in the receiver and
+ recursively in all its subgroups.
+
+ One can never change the maximum priority of a ThreadGroup to be higher
+ than it was. Such an attempt will not result in an exception, it will
+ simply leave the ThreadGroup with its current maximum priority.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">newMax</td>
+          <td class="jd-tagdescr">the new maximum priority to be set</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+            <td class="jd-tagdescr">if <code>checkAccess()</code> fails with a
+         SecurityException</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the new priority is greater than
+         Thread.MAX_PRIORITY or less than Thread.MIN_PRIORITY</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadGroup.html#getMaxPriority()">getMaxPriority()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of the
+ receiver.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a printable representation of the ThreadGroup
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="uncaughtException(java.lang.Thread, java.lang.Throwable)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad"><strong>uncaughtException</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Thread.html">Thread</a> <i>t</i></span>, <span class="nowrap"><a href="../../../reference/java/lang/Throwable.html">Throwable</a> <i>e</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Handles uncaught exceptions. Any uncaught exception in any Thread
+ is forwarded (by the VM) to the Thread's ThreadGroup by sending this
+ message (uncaughtException). This allows users to define custom
+ ThreadGroup classes and custom behavior for when a Thread has an
+ uncaughtException or when it does (ThreadDeath).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">t</td>
+          <td class="jd-tagdescr">the Thread that terminated with an uncaught exception</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">e</td>
+          <td class="jd-tagdescr">the uncaught exception itself</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/ThreadDeath.html">ThreadDeath</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

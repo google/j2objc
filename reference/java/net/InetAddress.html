@@ -1,0 +1,2283 @@
+---
+
+title: InetAddress - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../packages.html"  >Package Index</a> | 
+                <a href="../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ContentHandlerFactory.html">ContentHandlerFactory</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookiePolicy.html">CookiePolicy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookieStore.html">CookieStore</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramSocketImplFactory.html">DatagramSocketImplFactory</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/FileNameMap.html">FileNameMap</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketImplFactory.html">SocketImplFactory</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketOptions.html">SocketOptions</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLStreamHandlerFactory.html">URLStreamHandlerFactory</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Authenticator.html">Authenticator</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CacheRequest.html">CacheRequest</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CacheResponse.html">CacheResponse</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ContentHandler.html">ContentHandler</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookieHandler.html">CookieHandler</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/CookieManager.html">CookieManager</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramPacket.html">DatagramPacket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramSocket.html">DatagramSocket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/DatagramSocketImpl.html">DatagramSocketImpl</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/HttpCookie.html">HttpCookie</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/HttpURLConnection.html">HttpURLConnection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/IDN.html">IDN</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Inet4Address.html">Inet4Address</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Inet6Address.html">Inet6Address</a></li>
+          <li class="selected api apilevel-"><a href="../../../reference/java/net/InetAddress.html">InetAddress</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/InetSocketAddress.html">InetSocketAddress</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/InterfaceAddress.html">InterfaceAddress</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/MulticastSocket.html">MulticastSocket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/NetworkInterface.html">NetworkInterface</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/PasswordAuthentication.html">PasswordAuthentication</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Proxy.html">Proxy</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ProxySelector.html">ProxySelector</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ResponseCache.html">ResponseCache</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SecureCacheResponse.html">SecureCacheResponse</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ServerSocket.html">ServerSocket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Socket.html">Socket</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketAddress.html">SocketAddress</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketImpl.html">SocketImpl</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketPermission.html">SocketPermission</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URI.html">URI</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URL.html">URL</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLClassLoader.html">URLClassLoader</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLConnection.html">URLConnection</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLDecoder.html">URLDecoder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLEncoder.html">URLEncoder</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URLStreamHandler.html">URLStreamHandler</a></li>
+      </ul>
+    </li>
+              
+              
+    <li><h2>Enums</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Authenticator.RequestorType.html">Authenticator.RequestorType</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/Proxy.Type.html">Proxy.Type</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Exceptions</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../reference/java/net/BindException.html">BindException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ConnectException.html">ConnectException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/HttpRetryException.html">HttpRetryException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/MalformedURLException.html">MalformedURLException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/NoRouteToHostException.html">NoRouteToHostException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/PortUnreachableException.html">PortUnreachableException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/ProtocolException.html">ProtocolException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketException.html">SocketException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/SocketTimeoutException.html">SocketTimeoutException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/UnknownServiceException.html">UnknownServiceException</a></li>
+          <li class="api apilevel-"><a href="../../../reference/java/net/URISyntaxException.html">URISyntaxException</a></li>
+      </ul>
+    </li>
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../packages.html"  >Package Index</a> | 
+            <a href="../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">InetAddress</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="3" style="border:none;margin:0;padding:0;">
+Known Direct Subclasses
+
+  <div id="subclasses-direct">
+      <div id="subclasses-direct-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/net/Inet4Address.html">Inet4Address</a>,
+            
+              <a href="../../../reference/java/net/Inet6Address.html">Inet6Address</a>
+            
+          
+      </div>
+      <div id="subclasses-direct-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/Inet4Address.html">Inet4Address</a></td>
+              <td class="jd-descrcol" width="100%">An IPv4 address.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/Inet6Address.html">Inet6Address</a></td>
+              <td class="jd-descrcol" width="100%">An IPv6 address.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+
+
+<div class="jd-descr">
+
+
+<p>An Internet Protocol (IP) address. This can be either an IPv4 address or an IPv6 address, and
+ in practice you'll have an instance of either <code>Inet4Address</code> or <code>Inet6Address</code> (this
+ class cannot be instantiated directly). Most code does not need to distinguish between the two
+ families, and should use <code>InetAddress</code>.
+
+ <p>An <code>InetAddress</code> may have a hostname (accessible via <code>getHostName</code>), but may not,
+ depending on how the <code>InetAddress</code> was created.
+
+ <h4>IPv4 numeric address formats</h4>
+ <p>The <code>getAllByName</code> method accepts IPv4 addresses in the "decimal-dotted-quad" form only:
+ <ul>
+ <li><code>"1.2.3.4"</code> - 1.2.3.4
+ </ul>
+
+ <h4>IPv6 numeric address formats</h4>
+ <p>The <code>getAllByName</code> method accepts IPv6 addresses in the following forms (this text
+ comes from <a href="http://www.ietf.org/rfc/rfc2373.txt">RFC 2373</a>, which you should consult
+ for full details of IPv6 addressing):
+ <ul>
+ <li><p>The preferred form is <code>x:x:x:x:x:x:x:x</code>, where the 'x's are the
+ hexadecimal values of the eight 16-bit pieces of the address.
+ Note that it is not necessary to write the leading zeros in an
+ individual field, but there must be at least one numeral in every
+ field (except for the case described in the next bullet).
+ Examples:
+ <pre>
+     FEDC:BA98:7654:3210:FEDC:BA98:7654:3210
+     1080:0:0:0:8:800:200C:417A</pre>
+ </li>
+ <li>Due to some methods of allocating certain styles of IPv6
+ addresses, it will be common for addresses to contain long strings
+ of zero bits.  In order to make writing addresses containing zero
+ bits easier a special syntax is available to compress the zeros.
+ The use of "::" indicates multiple groups of 16-bits of zeros.
+ The "::" can only appear once in an address.  The "::" can also be
+ used to compress the leading and/or trailing zeros in an address.
+
+ For example the following addresses:
+ <pre>
+     1080:0:0:0:8:800:200C:417A  a unicast address
+     FF01:0:0:0:0:0:0:101        a multicast address
+     0:0:0:0:0:0:0:1             the loopback address
+     0:0:0:0:0:0:0:0             the unspecified addresses</pre>
+ may be represented as:
+ <pre>
+     1080::8:800:200C:417A       a unicast address
+     FF01::101                   a multicast address
+     ::1                         the loopback address
+     ::                          the unspecified addresses</pre>
+ </li>
+ <li><p>An alternative form that is sometimes more convenient when dealing
+ with a mixed environment of IPv4 and IPv6 nodes is
+ <code>x:x:x:x:x:x:d.d.d.d</code>, where the 'x's are the hexadecimal values of
+ the six high-order 16-bit pieces of the address, and the 'd's are
+ the decimal values of the four low-order 8-bit pieces of the
+ address (standard IPv4 representation).  Examples:
+ <pre>
+     0:0:0:0:0:0:13.1.68.3
+     0:0:0:0:0:FFFF:129.144.52.38</pre>
+ or in compressed form:
+ <pre>
+     ::13.1.68.3
+     ::FFFF:129.144.52.38</pre>
+ </li>
+ </ul>
+ <p>Scopes are given using a trailing <code>%</code> followed by the scope id, as in
+ <code>1080::8:800:200C:417A%2</code> or <code>1080::8:800:200C:417A%en0</code>.
+ See <a href="https://www.ietf.org/rfc/rfc4007.txt">RFC 4007</a> for more on IPv6's scoped
+ address architecture.
+
+ <p>Additionally, for backwards compatibility, IPv6 addresses may be surrounded by square
+ brackets.
+
+ <h4>DNS caching</h4>
+ <p>In Android 4.0 (Ice Cream Sandwich) and earlier, DNS caching was performed both by
+ InetAddress and by the C library, which meant that DNS TTLs could not be honored correctly.
+ In later releases, caching is done solely by the C library and DNS TTLs are honored.</p>
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/net/Inet4Address.html">Inet4Address</a></code></li><li><code><a href="../../../reference/java/net/Inet6Address.html">Inet6Address</a></code></li>
+      </ul>
+  </div>
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#equals(java.lang.Object)">equals</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>obj</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            byte[]
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getAddress()">getAddress</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/net/InetAddress.html">InetAddress[]</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getAllByName(java.lang.String)">getAllByName</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>host</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getByAddress(byte[])">getByAddress</a></span>(<span class="nowrap">byte[] <i>ipAddress</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getByAddress(java.lang.String, byte[], int)">getByAddress</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>hostName</i></span>, <span class="nowrap">byte[] <i>ipAddress</i></span>, <span class="nowrap">int <i>scopeId</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getByAddress(java.lang.String, byte[])">getByAddress</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>hostName</i></span>, <span class="nowrap">byte[] <i>ipAddress</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getByName(java.lang.String)">getByName</a></span>(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>host</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getCanonicalHostName()">getCanonicalHostName</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getFamily()">getFamily</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getHostAddress()">getHostAddress</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getHostName()">getHostName</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getLocalHost()">getLocalHost</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#getLoopbackAddress()">getLoopbackAddress</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#hashCode()">hashCode</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isAnyLocalAddress()">isAnyLocalAddress</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isLinkLocalAddress()">isLinkLocalAddress</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isLoopbackAddress()">isLoopbackAddress</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isMCGlobal()">isMCGlobal</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isMCLinkLocal()">isMCLinkLocal</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isMCNodeLocal()">isMCNodeLocal</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isMCOrgLocal()">isMCOrgLocal</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isMCSiteLocal()">isMCSiteLocal</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isMulticastAddress()">isMulticastAddress</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isReachable(int)">isReachable</a></span>(<span class="nowrap">int <i>timeout</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isReachable(java.net.NetworkInterface, int, int)">isReachable</a></span>(<span class="nowrap"><a href="../../../reference/java/net/NetworkInterface.html">NetworkInterface</a> <i>networkInterface</i></span>, <span class="nowrap">int <i>ttl</i></span>, <span class="nowrap">int <i>timeout</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#isSiteLocalAddress()">isSiteLocalAddress</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../reference/java/net/InetAddress.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="equals(java.lang.Object)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>equals</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/Object.html">Object</a> <i>obj</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this <code>InetAddress</code> instance against the specified address
+ in <code>obj</code>. Two addresses are equal if their address byte arrays have
+ the same length and if the bytes in the arrays are equal.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">obj</td>
+          <td class="jd-tagdescr">the object to be tested for equality.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if both objects are equal, <code>false</code> otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getAddress()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        byte[]
+      </span>
+      <span class="sympad"><strong>getAddress</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the IP address represented by this <code>InetAddress</code> instance
+ as a byte array. The elements are in network order (the highest order
+ address byte is in the zeroth element).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the address in form of a byte array.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getAllByName(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/net/InetAddress.html">InetAddress[]</a>
+      </span>
+      <span class="sympad"><strong>getAllByName</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>host</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets all IP addresses associated with the given <code>host</code> identified
+ by name or literal IP address. The IP address is resolved by the
+ configured name service. If the host name is empty or <code>null</code> an
+ <code>UnknownHostException</code> is thrown. If the host name is a literal IP
+ address string an array with the corresponding single <code>InetAddress</code>
+ is returned.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">host</td>
+          <td class="jd-tagdescr">the hostname or literal IP string to be resolved.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the array of addresses associated with the specified host.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></td>
+            <td class="jd-tagdescr">if the address lookup fails.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getByAddress(byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </span>
+      <span class="sympad"><strong>getByAddress</strong></span>
+      <span class="params">(<span class="nowrap">byte[] <i>ipAddress</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Equivalent to <code>getByAddress(null, ipAddress)</code>. Handy for addresses with
+ no associated hostname.
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getByAddress(java.lang.String, byte[], int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </span>
+      <span class="sympad"><strong>getByAddress</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>hostName</i></span>, <span class="nowrap">byte[] <i>ipAddress</i></span>, <span class="nowrap">int <i>scopeId</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></td>
+            <td class="jd-tagdescr"></td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getByAddress(java.lang.String, byte[])"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </span>
+      <span class="sympad"><strong>getByAddress</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>hostName</i></span>, <span class="nowrap">byte[] <i>ipAddress</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an <code>InetAddress</code> corresponding to the given network-order
+ bytes <code>ipAddress</code> and <code>scopeId</code>.
+
+ <p>For an IPv4 address, the byte array must be of length 4.
+ For IPv6, the byte array must be of length 16. Any other length will cause an <code>UnknownHostException</code>.
+
+ <p>No reverse lookup is performed. The given <code>hostName</code> (which may be null) is
+ associated with the new <code>InetAddress</code> with no validation done.
+
+ <p>(Note that numeric addresses such as <code>"127.0.0.1"</code> are names for the
+ purposes of this API. Most callers probably want <code><a href="reference/java/net/InetAddress.html#getAllByName(java.lang.String)">getAllByName(String)</a></code> instead.)</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></td>
+            <td class="jd-tagdescr">if <code>ipAddress</code> is null or the wrong length.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getByName(java.lang.String)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </span>
+      <span class="sympad"><strong>getByName</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/lang/String.html">String</a> <i>host</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the address of a host according to the given host string name
+ <code>host</code>. The host string may be either a machine name or a dotted
+ string IP address. If the latter, the <code>hostName</code> field is
+ determined upon demand. <code>host</code> can be <code>null</code> which means that
+ an address of the loopback interface is returned.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">host</td>
+          <td class="jd-tagdescr">the hostName to be resolved to an address or <code>null</code>.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the <code>InetAddress</code> instance representing the host.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></td>
+            <td class="jd-tagdescr">if the address lookup fails.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getCanonicalHostName()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getCanonicalHostName</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the fully qualified hostname corresponding to this IP address.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getFamily()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getFamily</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getHostAddress()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getHostAddress</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the numeric representation of this IP address (such as "127.0.0.1").
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getHostName()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>getHostName</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the host name corresponding to this IP address. This may or may not be a
+ fully-qualified name. If the IP address could not be resolved, the numeric representation
+ is returned instead (see <code><a href="reference/java/net/InetAddress.html#getHostAddress()">getHostAddress()</a></code>).
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="getLocalHost()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </span>
+      <span class="sympad"><strong>getLocalHost</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an <code>InetAddress</code> for the local host if possible, or the
+ loopback address otherwise. This method works by getting the hostname,
+ performing a DNS lookup, and then taking the first returned address.
+ For devices with multiple network interfaces and/or multiple addresses
+ per interface, this does not necessarily return the <code>InetAddress</code>
+ you want.
+
+ <p>Multiple interface/address configurations were relatively rare
+ when this API was designed, but multiple interfaces are the default for
+ modern mobile devices (with separate wifi and radio interfaces), and
+ the need to support both IPv4 and IPv6 has made multiple addresses
+ commonplace. New code should thus avoid this method except where it's
+ basically being used to get a loopback address or equivalent.
+
+ <p>There are two main ways to get a more specific answer:
+ <ul>
+ <li>If you have a connected socket, you should probably use
+ <code><a href="reference/java/net/Socket.html#getLocalAddress()">getLocalAddress()</a></code> instead: that will give you the address
+ that's actually in use for that connection. (It's not possible to ask
+ the question "what local address would a connection to a given remote
+ address use?"; you have to actually make the connection and see.)</li>
+ <li>For other use cases, see <code><a href="reference/java/net/NetworkInterface.html">NetworkInterface</a></code>, which lets you
+ enumerate all available network interfaces and their addresses.</li>
+ </ul>
+
+ <p>Note that if the host doesn't have a hostname set&nbsp;&ndash; as
+ Android devices typically don't&nbsp;&ndash; this method will
+ effectively return the loopback address, albeit by getting the name
+ <code>localhost</code> and then doing a lookup to translate that to
+ <code>127.0.0.1</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>an <code>InetAddress</code> representing the local host, or the
+ loopback address.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></td>
+            <td class="jd-tagdescr">if the address lookup fails.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getLoopbackAddress()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/net/InetAddress.html">InetAddress</a>
+      </span>
+      <span class="sympad"><strong>getLoopbackAddress</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the IPv6 loopback address <code>::1</code> or the IPv4 loopback address <code>127.0.0.1</code>.</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="hashCode()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>hashCode</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the hashcode of the represented IP address.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the appropriate hashcode value.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isAnyLocalAddress()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isAnyLocalAddress</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this is the IPv6 unspecified wildcard address <code>::</code>
+ or the IPv4 "any" address, <code>0.0.0.0</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isLinkLocalAddress()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isLinkLocalAddress</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this address is a link-local address or not.
+
+ <p>Valid IPv6 link-local addresses have the prefix <code>fe80::/10</code>.
+
+ <p><a href="http://www.ietf.org/rfc/rfc3484.txt">RFC 3484</a>
+ "Default Address Selection for Internet Protocol Version 6 (IPv6)" states
+ that both IPv4 auto-configuration addresses (prefix <code>169.254/16</code>) and
+ IPv4 loopback addresses (prefix <code>127/8</code>) have link-local scope, but
+ <code><a href="reference/java/net/Inet4Address.html">Inet4Address</a></code> only considers the auto-configuration addresses
+ to have link-local scope. That is: the IPv4 loopback address returns false.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isLoopbackAddress()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isLoopbackAddress</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this address is a loopback address or not.
+
+ <p>Valid IPv4 loopback addresses have the prefix <code>127/8</code>.
+
+ <p>The only valid IPv6 loopback address is <code>::1</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isMCGlobal()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isMCGlobal</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this address is a global multicast address or not.
+
+ <p>Valid IPv6 global multicast addresses have the prefix <code>ffxe::/16</code>,
+ where <code>x</code> is a set of flags and the additional 112 bits make
+ up the global multicast address space.
+
+ <p>Valid IPv4 global multicast addresses are the range of addresses
+ from <code>224.0.1.0</code> to <code>238.255.255.255</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isMCLinkLocal()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isMCLinkLocal</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this address is a link-local multicast address or not.
+
+ <p>Valid IPv6 link-local multicast addresses have the prefix <code>ffx2::/16</code>,
+ where x is a set of flags and the additional 112 bits make up the link-local multicast
+ address space.
+
+ <p>Valid IPv4 link-local multicast addresses have the prefix <code>224.0.0/24</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isMCNodeLocal()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isMCNodeLocal</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this address is a node-local multicast address or not.
+
+ <p>Valid IPv6 node-local multicast addresses have the prefix <code>ffx1::/16</code>,
+ where x is a set of flags and the additional 112 bits make up the link-local multicast
+ address space.
+
+ <p>There are no valid IPv4 node-local multicast addresses.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isMCOrgLocal()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isMCOrgLocal</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this address is a organization-local multicast address or not.
+
+ <p>Valid IPv6 organization-local multicast addresses have the prefix <code>ffx8::/16</code>,
+ where x is a set of flags and the additional 112 bits make up the link-local multicast
+ address space.
+
+ <p>Valid IPv4 organization-local multicast addresses have the prefix <code>239.192/14</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isMCSiteLocal()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isMCSiteLocal</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this address is a site-local multicast address or not.
+
+ <p>Valid IPv6 site-local multicast addresses have the prefix <code>ffx5::/16</code>,
+ where x is a set of flags and the additional 112 bits make up the link-local multicast
+ address space.
+
+ <p>Valid IPv4 site-local multicast addresses have the prefix <code>239.255/16</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isMulticastAddress()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isMulticastAddress</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this address is a multicast address or not.
+
+ <p>Valid IPv6 multicast addresses have the prefix <code>ff::/8</code>.
+
+ <p>Valid IPv4 multicast addresses have the prefix <code>224/4</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="isReachable(int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isReachable</strong></span>
+      <span class="params">(<span class="nowrap">int <i>timeout</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tries to reach this <code>InetAddress</code>. This method first tries to use
+ ICMP <i>(ICMP ECHO REQUEST)</i>, falling back to a TCP connection
+ on port 7 (Echo) of the remote host.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">timeout</td>
+          <td class="jd-tagdescr">timeout in milliseconds before the test fails if no connection
+            could be established.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this address is reachable, <code>false</code>
+         otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs during an I/O operation.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if timeout is less than zero.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isReachable(java.net.NetworkInterface, int, int)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isReachable</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../reference/java/net/NetworkInterface.html">NetworkInterface</a> <i>networkInterface</i></span>, <span class="nowrap">int <i>ttl</i></span>, <span class="nowrap">int <i>timeout</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tries to reach this <code>InetAddress</code>. This method first tries to use
+ ICMP <i>(ICMP ECHO REQUEST)</i>, falling back to a TCP connection
+ on port 7 (Echo) of the remote host.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">networkInterface</td>
+          <td class="jd-tagdescr">the network interface on which to connection should be
+            established.</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">ttl</td>
+          <td class="jd-tagdescr">the maximum count of hops (time-to-live).</td>
+        </tr>
+        
+        <tr>
+          <td class="jd-tagparamname">timeout</td>
+          <td class="jd-tagdescr">timeout in milliseconds before the test fails if no connection
+            could be established.</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this address is reachable, <code>false</code>
+         otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td class="jd-tagdescr">if an error occurs during an I/O operation.</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if ttl or timeout is less than zero.
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isSiteLocalAddress()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isSiteLocalAddress</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns whether this address is a site-local address or not.
+
+ <p>For the purposes of this method, valid IPv6 site-local addresses have
+ the deprecated prefix <code>fec0::/10</code> from
+ <a href="http://www.ietf.org/rfc/rfc1884.txt">RFC 1884</a>,
+ <i>not</i> the modern prefix <code>fc00::/7</code> from
+ <a href="http://www.ietf.org/rfc/rfc4193.txt">RFC 4193</a>.
+
+ <p><a href="http://www.ietf.org/rfc/rfc3484.txt">RFC 3484</a>
+ "Default Address Selection for Internet Protocol Version 6 (IPv6)" states
+ that IPv4 private addresses have the prefix <code>10/8</code>, <code>172.16/12</code>,
+ or <code>192.168/16</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this instance represents a site-local address,
+         <code>false</code> otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing the host name (if available) and host address.
+ For example: <code>"www.google.com/74.125.224.115"</code> or <code>"/127.0.0.1"</code>.
+
+ <p>IPv6 addresses may additionally include an interface name or scope id.
+ For example: <code>"www.google.com/2001:4860:4001:803::1013%eth0"</code> or
+ <code>"/2001:4860:4001:803::1013%2"</code>.
+</p></div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->

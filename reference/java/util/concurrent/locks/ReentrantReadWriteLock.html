@@ -1,0 +1,2016 @@
+---
+
+title: ReentrantReadWriteLock - JRE Emulation<
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="g-section g-tpl-240" id="body-content">
+    <div class="g-unit g-first side-nav-resizable" id="side-nav">
+      <div id="swapper">
+        <div id="nav-panels">
+          <div id="resize-packages-nav">
+            <div id="packages-nav">
+              <div id="index-links">
+                <a href="../../../../../packages.html"  >Package Index</a> | 
+                <a href="../../../../../classes.html" >Class Index</a>
+              </div>
+              <ul>
+                
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/os/package-summary.html">android.os</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/test/suitebuilder/annotation/package-summary.html">android.test.suitebuilder.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/package-summary.html">android.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/text/util/package-summary.html">android.text.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/android/util/package-summary.html">android.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/beans/package-summary.html">java.beans</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/io/package-summary.html">java.io</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/package-summary.html">java.lang</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/annotation/package-summary.html">java.lang.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/invoke/package-summary.html">java.lang.invoke</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/ref/package-summary.html">java.lang.ref</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/lang/reflect/package-summary.html">java.lang.reflect</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/math/package-summary.html">java.math</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/net/package-summary.html">java.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/package-summary.html">java.nio</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/package-summary.html">java.nio.channels</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/channels/spi/package-summary.html">java.nio.channels.spi</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/nio/charset/package-summary.html">java.nio.charset</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/package-summary.html">java.security</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/cert/package-summary.html">java.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/interfaces/package-summary.html">java.security.interfaces</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/security/spec/package-summary.html">java.security.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/sql/package-summary.html">java.sql</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/text/package-summary.html">java.text</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/package-summary.html">java.util</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/package-summary.html">java.util.concurrent</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/atomic/package-summary.html">java.util.concurrent.atomic</a></li>
+    <li class="selected api apilevel-">
+  <a href="../../../../../reference/java/util/concurrent/locks/package-summary.html">java.util.concurrent.locks</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/logging/package-summary.html">java.util.logging</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/regex/package-summary.html">java.util.regex</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/java/util/zip/package-summary.html">java.util.zip</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/annotation/package-summary.html">javax.annotation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/package-summary.html">javax.crypto</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/crypto/spec/package-summary.html">javax.crypto.spec</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/lang/model/element/package-summary.html">javax.lang.model.element</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/package-summary.html">javax.net</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/net/ssl/package-summary.html">javax.net.ssl</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/package-summary.html">javax.security.auth</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/callback/package-summary.html">javax.security.auth.callback</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/auth/x500/package-summary.html">javax.security.auth.x500</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/security/cert/package-summary.html">javax.security.cert</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/package-summary.html">javax.xml</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/datatype/package-summary.html">javax.xml.datatype</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/namespace/package-summary.html">javax.xml.namespace</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/parsers/package-summary.html">javax.xml.parsers</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/package-summary.html">javax.xml.transform</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/dom/package-summary.html">javax.xml.transform.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/sax/package-summary.html">javax.xml.transform.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/transform/stream/package-summary.html">javax.xml.transform.stream</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/validation/package-summary.html">javax.xml.validation</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/javax/xml/xpath/package-summary.html">javax.xml.xpath</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/json/package-summary.html">org.json</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/package-summary.html">org.w3c.dom</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/w3c/dom/ls/package-summary.html">org.w3c.dom.ls</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/package-summary.html">org.xml.sax</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/ext/package-summary.html">org.xml.sax.ext</a></li>
+    <li class="api apilevel-">
+  <a href="../../../../../reference/org/xml/sax/helpers/package-summary.html">org.xml.sax.helpers</a></li>
+              </ul><br/>
+            </div> <!-- end packages -->
+          </div> <!-- end resize-packages -->
+          <div id="classes-nav">
+            <ul>
+              
+    <li><h2>Interfaces</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/Lock.html">Lock</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReadWriteLock.html">ReadWriteLock</a></li>
+      </ul>
+    </li>
+              
+    <li><h2>Classes</h2>
+      <ul>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractOwnableSynchronizer.html">AbstractOwnableSynchronizer</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedLongSynchronizer.html">AbstractQueuedLongSynchronizer</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedLongSynchronizer.ConditionObject.html">AbstractQueuedLongSynchronizer.ConditionObject</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html">AbstractQueuedSynchronizer</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html">AbstractQueuedSynchronizer.ConditionObject</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/LockSupport.html">LockSupport</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></li>
+          <li class="selected api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html">ReentrantReadWriteLock</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.ReadLock.html">ReentrantReadWriteLock.ReadLock</a></li>
+          <li class="api apilevel-"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.WriteLock.html">ReentrantReadWriteLock.WriteLock</a></li>
+      </ul>
+    </li>
+              
+              
+              
+              
+            </ul><br/>
+          </div><!-- end classes -->
+        </div><!-- end nav-panels -->
+        <div id="nav-tree" style="display:none">
+          <div id="index-links">
+            <a href="../../../../../packages.html"  >Package Index</a> | 
+            <a href="../../../../../classes.html" >Class Index</a>
+          </div>
+        </div><!-- end nav-tree -->
+      </div><!-- end swapper -->
+    </div> <!-- end side-nav -->
+    <script>
+      if (!isMobile) {
+        $("<a href='#' id='nav-swap' onclick='swapNav();return false;' style='font-size:10px;line-height:9px;margin-left:1em;text-decoration:none;'><span id='tree-link'>Use Tree Navigation</span><span id='panel-link' style='display:none'>Use Panel Navigation</span></a>").appendTo("#side-nav");
+        chooseDefaultNav();
+        if ($("#nav-tree").is(':visible')) {
+          init_default_navtree("../../../../../");
+        } else {
+          addLoadEvent(function() {
+            scrollIntoView("packages-nav");
+            scrollIntoView("classes-nav");
+          });
+        }
+        $("#swapper").css({borderBottom:"2px solid #aaa"});
+      } else {
+        swapNav(); // tree view should be used on mobile
+      }
+    </script>
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+
+
+<div id="jd-header">
+  public     class
+  <h1 itemprop="name" class="devsite-page-title">ReentrantReadWriteLock</h1>
+</div><!-- end jd-header -->
+
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<p>An implementation of <code><a href="reference/java/util/concurrent/locks/ReadWriteLock.html">ReadWriteLock</a></code> supporting similar
+ semantics to <code><a href="reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></code>.
+ <p>This class has the following properties:
+
+ <ul>
+ <li><b>Acquisition order</b>
+
+ <p> This class does not impose a reader or writer preference
+ ordering for lock access.  However, it does support an optional
+ <em>fairness</em> policy.
+
+ <dl>
+ <dt><b><i>Non-fair mode (default)</i></b>
+ <dd>When constructed as non-fair (the default), the order of entry
+ to the read and write lock is unspecified, subject to reentrancy
+ constraints.  A nonfair lock that is continuously contended may
+ indefinitely postpone one or more reader or writer threads, but
+ will normally have higher throughput than a fair lock.
+ <p>
+
+ <dt><b><i>Fair mode</i></b>
+ <dd> When constructed as fair, threads contend for entry using an
+ approximately arrival-order policy. When the currently held lock
+ is released, either the longest-waiting single writer thread will
+ be assigned the write lock, or if there is a group of reader threads
+ waiting longer than all waiting writer threads, that group will be
+ assigned the read lock.
+
+ <p>A thread that tries to acquire a fair read lock (non-reentrantly)
+ will block if either the write lock is held, or there is a waiting
+ writer thread. The thread will not acquire the read lock until
+ after the oldest currently waiting writer thread has acquired and
+ released the write lock. Of course, if a waiting writer abandons
+ its wait, leaving one or more reader threads as the longest waiters
+ in the queue with the write lock free, then those readers will be
+ assigned the read lock.
+
+ <p>A thread that tries to acquire a fair write lock (non-reentrantly)
+ will block unless both the read lock and write lock are free (which
+ implies there are no waiting threads).  (Note that the non-blocking
+ <code><a href="reference/java/util/concurrent/locks/ReentrantReadWriteLock.ReadLock.html#tryLock()">tryLock()</a></code> and <code><a href="reference/java/util/concurrent/locks/ReentrantReadWriteLock.WriteLock.html#tryLock()">tryLock()</a></code> methods
+ do not honor this fair setting and will immediately acquire the lock
+ if it is possible, regardless of waiting threads.)
+ <p>
+ </dl>
+
+ <li><b>Reentrancy</b>
+
+ <p>This lock allows both readers and writers to reacquire read or
+ write locks in the style of a <code><a href="reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></code>. Non-reentrant
+ readers are not allowed until all write locks held by the writing
+ thread have been released.
+
+ <p>Additionally, a writer can acquire the read lock, but not
+ vice-versa.  Among other applications, reentrancy can be useful
+ when write locks are held during calls or callbacks to methods that
+ perform reads under read locks.  If a reader tries to acquire the
+ write lock it will never succeed.
+
+ <li><b>Lock downgrading</b>
+ <p>Reentrancy also allows downgrading from the write lock to a read lock,
+ by acquiring the write lock, then the read lock and then releasing the
+ write lock. However, upgrading from a read lock to the write lock is
+ <b>not</b> possible.
+
+ <li><b>Interruption of lock acquisition</b>
+ <p>The read lock and write lock both support interruption during lock
+ acquisition.
+
+ <li><b><code><a href="reference/java/util/concurrent/locks/Condition.html">Condition</a></code> support</b>
+ <p>The write lock provides a <code><a href="reference/java/util/concurrent/locks/Condition.html">Condition</a></code> implementation that
+ behaves in the same way, with respect to the write lock, as the
+ <code><a href="reference/java/util/concurrent/locks/Condition.html">Condition</a></code> implementation provided by
+ <code><a href="reference/java/util/concurrent/locks/ReentrantLock.html#newCondition()">newCondition()</a></code> does for <code><a href="reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></code>.
+ This <code><a href="reference/java/util/concurrent/locks/Condition.html">Condition</a></code> can, of course, only be used with the write lock.
+
+ <p>The read lock does not support a <code><a href="reference/java/util/concurrent/locks/Condition.html">Condition</a></code> and
+ <code>readLock().newCondition()</code> throws
+ <code>UnsupportedOperationException</code>.
+
+ <li><b>Instrumentation</b>
+ <p>This class supports methods to determine whether locks
+ are held or contended. These methods are designed for monitoring
+ system state, not for synchronization control.
+ </ul>
+
+ <p>Serialization of this class behaves in the same way as built-in
+ locks: a deserialized lock is in the unlocked state, regardless of
+ its state when serialized.
+
+ <p><b>Sample usages</b>. Here is a code sketch showing how to perform
+ lock downgrading after updating a cache (exception handling is
+ particularly tricky when handling multiple locks in a non-nested
+ fashion):
+
+ <pre> <code>class CachedData {
+   Object data;
+   volatile boolean cacheValid;
+   final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+
+   void processCachedData() {
+     rwl.readLock().lock();
+     if (!cacheValid) {
+       // Must release read lock before acquiring write lock
+       rwl.readLock().unlock();
+       rwl.writeLock().lock();
+       try {
+         // Recheck state because another thread might have
+         // acquired write lock and changed state before we did.
+         if (!cacheValid) {
+           data = ...
+           cacheValid = true;
+         </code>
+         // Downgrade by acquiring read lock before releasing write lock
+         rwl.readLock().lock();
+       } finally {
+         rwl.writeLock().unlock(); // Unlock write, still hold read
+       }
+     }
+
+     try {
+       use(data);
+     } finally {
+       rwl.readLock().unlock();
+     }
+   }
+ }}</pre>
+
+ ReentrantReadWriteLocks can be used to improve concurrency in some
+ uses of some kinds of Collections. This is typically worthwhile
+ only when the collections are expected to be large, accessed by
+ more reader threads than writer threads, and entail operations with
+ overhead that outweighs synchronization overhead. For example, here
+ is a class using a TreeMap that is expected to be large and
+ concurrently accessed.
+
+  <pre> <code>class RWDictionary {
+   private final Map<String, Data> m = new TreeMap<String, Data>();
+   private final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
+   private final Lock r = rwl.readLock();
+   private final Lock w = rwl.writeLock();
+
+   public Data get(String key) {
+     r.lock();
+     try { return m.get(key); </code>
+     finally { r.unlock(); }
+   }
+   public String[] allKeys() {
+     r.lock();
+     try { return m.keySet().toArray(); }
+     finally { r.unlock(); }
+   }
+   public Data put(String key, Data value) {
+     w.lock();
+     try { return m.put(key, value); }
+     finally { w.unlock(); }
+   }
+   public void clear() {
+     w.lock();
+     try { m.clear(); }
+     finally { w.unlock(); }
+   }
+ }}</pre>
+
+ <h3>Implementation Notes</h3>
+
+ <p>This lock supports a maximum of 65535 recursive write locks
+ and 65535 read locks. Attempts to exceed these limits result in
+ <code><a href="reference/java/lang/Error.html">Error</a></code> throws from locking methods.</p>
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<section id="xml-attributes">
+
+
+
+<!-- ======== NESTED CLASS SUMMARY ======== -->
+<section>
+  <h3>Nested Class Summary</h3>
+  <table id="nestedclasses" class="jd-sumtable">
+    
+
+  
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+        
+        
+        
+        
+        class</td>
+      <td class="jd-linkcol" colspan="2"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.ReadLock.html">ReentrantReadWriteLock.ReadLock</a></td>
+      <td class="jd-descrcol" width="100%">The lock returned by method <code><a href="reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#readLock()">readLock()</a></code>.&nbsp;</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+        
+        
+        
+        
+        class</td>
+      <td class="jd-linkcol" colspan="2"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.WriteLock.html">ReentrantReadWriteLock.WriteLock</a></td>
+      <td class="jd-descrcol" width="100%">The lock returned by method <code><a href="reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#writeLock()">writeLock()</a></code>.&nbsp;</td>
+    </tr>
+    
+    
+
+  </table>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<section>
+  <h3>Public Constructor Summary</h3>
+  <table id="pubctors" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#ReentrantReadWriteLock()">ReentrantReadWriteLock</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#ReentrantReadWriteLock(boolean)">ReentrantReadWriteLock</a></span>(<span class="nowrap">boolean <i>fair</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Public Method Summary</h3>
+  <table id="pubmethods" class="jd-sumtable">
+  
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#getQueueLength()">getQueueLength</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#getReadHoldCount()">getReadHoldCount</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#getReadLockCount()">getReadLockCount</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#getWaitQueueLength(java.util.concurrent.locks.Condition)">getWaitQueueLength</a></span>(<span class="nowrap"><a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a> <i>condition</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#getWriteHoldCount()">getWriteHoldCount</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#hasQueuedThread(java.lang.Thread)">hasQueuedThread</a></span>(<span class="nowrap"><a href="../../../../../reference/java/lang/Thread.html">Thread</a> <i>thread</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#hasQueuedThreads()">hasQueuedThreads</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#hasWaiters(java.util.concurrent.locks.Condition)">hasWaiters</a></span>(<span class="nowrap"><a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a> <i>condition</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#isFair()">isFair</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#isWriteLocked()">isWriteLocked</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#isWriteLockedByCurrentThread()">isWriteLockedByCurrentThread</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.ReadLock.html">ReentrantReadWriteLock.ReadLock</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#readLock()">readLock</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#toString()">toString</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.WriteLock.html">ReentrantReadWriteLock.WriteLock</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#writeLock()">writeLock</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<section>
+  <h3>Protected Method Summary</h3>
+  <table id="promethods" class="jd-sumtable">
+    
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/Thread.html">Thread</a>
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#getOwner()">getOwner</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../../../reference/java/lang/Thread.html">Thread</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#getQueuedReaderThreads()">getQueuedReaderThreads</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../../../reference/java/lang/Thread.html">Thread</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#getQueuedThreads()">getQueuedThreads</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class=" api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../../../reference/java/lang/Thread.html">Thread</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#getQueuedWriterThreads()">getQueuedWriterThreads</a></span>()
+            
+          </div>
+      </td>
+    </tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+      <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../../../reference/java/lang/Thread.html">Thread</a>&gt;
+      </td>
+      <td class="jd-linkcol" width="100%">
+          <div class="jd-hang">
+            <span class="sympad"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#getWaitingThreads(java.util.concurrent.locks.Condition)">getWaitingThreads</a></span>(<span class="nowrap"><a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a> <i>condition</i></span>)
+            
+          </div>
+      </td>
+    </tr>
+
+
+
+  </table>
+</section>
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+</section><!--xml-attributes-->
+<!--subcount(class.inners) || subcount(class.attrs) || ...-->
+</div><!-- class="jd-descr" (end of Summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<section id="public-constructors">
+  <h2>Public Constructors</h2>
+  
+
+
+<A NAME="ReentrantReadWriteLock()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ReentrantReadWriteLock</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>ReentrantReadWriteLock</code> with
+ default (nonfair) ordering properties.
+</p></div>
+
+    </div>
+</div>
+
+
+<A NAME="ReentrantReadWriteLock(boolean)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad"><strong>ReentrantReadWriteLock</strong></span>
+      <span class="params">(<span class="nowrap">boolean <i>fair</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new <code>ReentrantReadWriteLock</code> with
+ the given fairness policy.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">fair</td>
+          <td class="jd-tagdescr"><code>true</code> if this lock should use a fair ordering policy
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+<section id="public-methods">
+  <h2>Public Methods</h2>
+  
+
+
+<A NAME="getQueueLength()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getQueueLength</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an estimate of the number of threads waiting to acquire
+ either the read or write lock.  The value is only an estimate
+ because the number of threads may change dynamically while this
+ method traverses internal data structures.  This method is
+ designed for use in monitoring of the system state, not for
+ synchronization control.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the estimated number of threads waiting for this lock
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getReadHoldCount()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getReadHoldCount</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Queries the number of reentrant read holds on this lock by the
+ current thread.  A reader thread has a hold on a lock for
+ each lock action that is not matched by an unlock action.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of holds on the read lock by the current thread,
+         or zero if the read lock is not held by the current thread</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getReadLockCount()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getReadLockCount</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Queries the number of read locks held for this lock. This
+ method is designed for use in monitoring system state, not for
+ synchronization control.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of read locks held.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getWaitQueueLength(java.util.concurrent.locks.Condition)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getWaitQueueLength</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a> <i>condition</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an estimate of the number of threads waiting on the
+ given condition associated with the write lock. Note that because
+ timeouts and interrupts may occur at any time, the estimate
+ serves only as an upper bound on the actual number of waiters.
+ This method is designed for use in monitoring of the system
+ state, not for synchronization control.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">condition</td>
+          <td class="jd-tagdescr">the condition</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the estimated number of waiting threads</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td class="jd-tagdescr">if this lock is not held</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the given condition is
+         not associated with this lock</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the condition is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getWriteHoldCount()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad"><strong>getWriteHoldCount</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Queries the number of reentrant write holds on this lock by the
+ current thread.  A writer thread has a hold on a lock for
+ each lock action that is not matched by an unlock action.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the number of holds on the write lock by the current thread,
+         or zero if the write lock is not held by the current thread
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="hasQueuedThread(java.lang.Thread)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>hasQueuedThread</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/lang/Thread.html">Thread</a> <i>thread</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Queries whether the given thread is waiting to acquire either
+ the read or write lock. Note that because cancellations may
+ occur at any time, a <code>true</code> return does not guarantee
+ that this thread will ever acquire a lock.  This method is
+ designed primarily for use in monitoring of the system state.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">thread</td>
+          <td class="jd-tagdescr">the thread</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the given thread is queued waiting for this lock</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the thread is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="hasQueuedThreads()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>hasQueuedThreads</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Queries whether any threads are waiting to acquire the read or
+ write lock. Note that because cancellations may occur at any
+ time, a <code>true</code> return does not guarantee that any other
+ thread will ever acquire a lock.  This method is designed
+ primarily for use in monitoring of the system state.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if there may be other threads waiting to
+         acquire the lock
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="hasWaiters(java.util.concurrent.locks.Condition)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>hasWaiters</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a> <i>condition</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Queries whether any threads are waiting on the given condition
+ associated with the write lock. Note that because timeouts and
+ interrupts may occur at any time, a <code>true</code> return does
+ not guarantee that a future <code>signal</code> will awaken any
+ threads.  This method is designed primarily for use in
+ monitoring of the system state.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">condition</td>
+          <td class="jd-tagdescr">the condition</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if there are any waiting threads</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td class="jd-tagdescr">if this lock is not held</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the given condition is
+         not associated with this lock</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the condition is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isFair()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        final
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isFair</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <code>true</code> if this lock has fairness set true.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if this lock has fairness set true
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isWriteLocked()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isWriteLocked</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Queries if the write lock is held by any thread. This method is
+ designed for use in monitoring system state, not for
+ synchronization control.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if any thread holds the write lock and
+         <code>false</code> otherwise
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="isWriteLockedByCurrentThread()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad"><strong>isWriteLockedByCurrentThread</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Queries if the write lock is held by the current thread.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li><code>true</code> if the current thread holds the write lock and
+         <code>false</code> otherwise
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="readLock()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.ReadLock.html">ReentrantReadWriteLock.ReadLock</a>
+      </span>
+      <span class="sympad"><strong>readLock</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the lock used for reading.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the lock used for reading.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="toString()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad"><strong>toString</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string identifying this lock, as well as its lock state.
+ The state, in brackets, includes the String <code>"Write locks ="</code>
+ followed by the number of reentrantly held write locks, and the
+ String <code>"Read locks ="</code> followed by the number of held
+ read locks.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>a string identifying this lock, as well as its lock state
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="writeLock()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.WriteLock.html">ReentrantReadWriteLock.WriteLock</a>
+      </span>
+      <span class="sympad"><strong>writeLock</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the lock used for writing.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the lock used for writing.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+<section id="protected-methods">
+  <h2>Protected Methods</h2>
+  
+
+
+<A NAME="getOwner()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/Thread.html">Thread</a>
+      </span>
+      <span class="sympad"><strong>getOwner</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the thread that currently owns the write lock, or
+ <code>null</code> if not owned. When this method is called by a
+ thread that is not the owner, the return value reflects a
+ best-effort approximation of current lock status. For example,
+ the owner may be momentarily <code>null</code> even if there are
+ threads trying to acquire the lock but have not yet done so.
+ This method is designed to facilitate construction of
+ subclasses that provide more extensive lock monitoring
+ facilities.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the owner, or <code>null</code> if not owned
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getQueuedReaderThreads()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../../../reference/java/lang/Thread.html">Thread</a>&gt;
+      </span>
+      <span class="sympad"><strong>getQueuedReaderThreads</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a collection containing threads that may be waiting to
+ acquire the read lock.  Because the actual set of threads may
+ change dynamically while constructing this result, the returned
+ collection is only a best-effort estimate.  The elements of the
+ returned collection are in no particular order.  This method is
+ designed to facilitate construction of subclasses that provide
+ more extensive lock monitoring facilities.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the collection of threads
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getQueuedThreads()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../../../reference/java/lang/Thread.html">Thread</a>&gt;
+      </span>
+      <span class="sympad"><strong>getQueuedThreads</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a collection containing threads that may be waiting to
+ acquire either the read or write lock.  Because the actual set
+ of threads may change dynamically while constructing this
+ result, the returned collection is only a best-effort estimate.
+ The elements of the returned collection are in no particular
+ order.  This method is designed to facilitate construction of
+ subclasses that provide more extensive monitoring facilities.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the collection of threads
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getQueuedWriterThreads()"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../../../reference/java/lang/Thread.html">Thread</a>&gt;
+      </span>
+      <span class="sympad"><strong>getQueuedWriterThreads</strong></span>
+      <span class="params">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a collection containing threads that may be waiting to
+ acquire the write lock.  Because the actual set of threads may
+ change dynamically while constructing this result, the returned
+ collection is only a best-effort estimate.  The elements of the
+ returned collection are in no particular order.  This method is
+ designed to facilitate construction of subclasses that provide
+ more extensive lock monitoring facilities.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the collection of threads
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<A NAME="getWaitingThreads(java.util.concurrent.locks.Condition)"></A>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        <a href="../../../../../reference/java/util/Collection.html">Collection</a>&lt;<a href="../../../../../reference/java/lang/Thread.html">Thread</a>&gt;
+      </span>
+      <span class="sympad"><strong>getWaitingThreads</strong></span>
+      <span class="params">(<span class="nowrap"><a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a> <i>condition</i></span>)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a collection containing those threads that may be
+ waiting on the given condition associated with the write lock.
+ Because the actual set of threads may change dynamically while
+ constructing this result, the returned collection is only a
+ best-effort estimate. The elements of the returned collection
+ are in no particular order.  This method is designed to
+ facilitate construction of subclasses that provide more
+ extensive condition monitoring facilities.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        
+        <tr>
+          <td class="jd-tagparamname">condition</td>
+          <td class="jd-tagdescr">the condition</td>
+        </tr>
+        
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist jd-returns"><li>the collection of threads</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td class="jd-tagdescr">if this lock is not held</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td class="jd-tagdescr">if the given condition is
+         not associated with this lock</td>
+        </tr>
+          
+        <tr>
+            <td class="jd-tagthrowstype"><a href="../../../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td class="jd-tagdescr">if the condition is null
+</td>
+        </tr>
+        
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+</section>
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
