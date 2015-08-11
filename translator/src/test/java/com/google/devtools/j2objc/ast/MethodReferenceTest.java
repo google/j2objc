@@ -134,4 +134,12 @@ public class MethodReferenceTest extends GenerationTest {
         "return JavaLangInteger_valueOfWithInt_([self size]);", "^jint(id _self) {",
         "return [((JavaLangInteger *) nil_chk([self size2])) intValue];");
   }
+  
+  // Creation references can be initialized only for side effects, and have a void return.
+  public void testCreationReferenceVoidReturn() throws IOException {
+    String header = "interface V { void f(); }";
+    String translation = translateSourceFile(header + "class Test { V v = Test::new; }", "Test",
+        "Test.m");
+    assertTranslatedLines(translation, "^void(id _self) {", "[new_Test_init() autorelease];");
+  }
 }

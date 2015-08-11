@@ -113,4 +113,12 @@ public class CreationReferenceTest extends TestCase {
     assertEquals("12 [ 22 42 ]", ((I) f.apply(12, 22, "42")).getS());
     assertEquals("10 [ 20 20 10 ]", f2.apply(10, 20, "20", "10").s);
   }
+
+  // Creation references can be initialized only for side effects, and have a void return.
+  public void testVoidFunctionalInterface() throws Exception {
+    Lambdas.VoidThree f = I::new;
+    Lambdas.VoidFour<Object, Object, Object, Object> f2 = I::new;
+    f.apply(12, 22, "42");
+    f2.apply(10, 20, "20", "10");
+  }
 }

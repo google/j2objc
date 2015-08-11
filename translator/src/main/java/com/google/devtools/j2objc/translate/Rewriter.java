@@ -503,11 +503,18 @@ public class Rewriter extends TreeVisitor {
 
   public boolean visit(CreationReference node) {
     IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
+    IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
     Type type = node.getType().copy();
     ClassInstanceCreation invocation = new ClassInstanceCreation(methodBinding, type);
     List<Expression> invocationArguments = invocation.getArguments();
     buildMethodReferenceInvocationArguments(invocationArguments, node);
-    node.setInvocation(new ReturnStatement(invocation));
+    // The functional interface may return void, in which case the initialization is only being used
+    // for side effects.
+    if (BindingUtil.isVoid(functionalInterface.getReturnType())) {
+      node.setInvocation(new ExpressionStatement(invocation));
+    } else {
+      node.setInvocation(new ReturnStatement(invocation));
+    }
     return true;
   }
 
