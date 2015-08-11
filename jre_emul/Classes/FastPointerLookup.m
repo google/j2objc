@@ -71,6 +71,8 @@ static Store *NewStore(FastPointerLookup_t *lookup, size_t newSize) {
   return store;
 }
 
+// Creates a new store with double the capacity as oldStore, copies all entry
+// data then swaps in the new store and frees oldStore when it is safe to do so.
 static Store *Resize(FastPointerLookup_t *lookup, Store *oldStore) {
   size_t oldSize = oldStore->size;
   size_t newSize = oldSize << 1;
@@ -105,19 +107,8 @@ static Store *Resize(FastPointerLookup_t *lookup, Store *oldStore) {
   return newStore;
 }
 
-static Store *InitStore(FastPointerLookup_t *lookup) {
-  pthread_mutex_lock(&lookup->mutex);
-  // Double check that store is still null.
-  Store *store = __c11_atomic_load(&lookup->store, __ATOMIC_ACQUIRE);
-  if (!store) {
-    store = NewStore(lookup, INITIAL_CAPACITY);
-    // Atomic store with a barrier.
-    __c11_atomic_store(&lookup->store, store, __ATOMIC_RELEASE);
-  }
-  pthread_mutex_unlock(&lookup->mutex);
-  return store;
-}
-
+// Adds a new entry to the store by calling the provided factory, resizing if
+// necessary.
 static Entry *Put(FastPointerLookup_t *lookup, Store *store, void *key, uint32_t hash) {
   if (store->nextEntry > store->lastEntry) {
     store = Resize(lookup, store);
@@ -133,9 +124,16 @@ static Entry *Put(FastPointerLookup_t *lookup, Store *store, void *key, uint32_t
   return entry;
 }
 
+// Does a lookup under mutual exclusion. Lazily creates the initial store. Calls
+// Put() to add an entry if the key is not found.
 static void *LockedLookup(FastPointerLookup_t *lookup, void *key, uint32_t hash) {
   pthread_mutex_lock(&lookup->mutex);
   Store *store = __c11_atomic_load(&lookup->store, __ATOMIC_RELAXED);
+  if (!store) {
+    store = NewStore(lookup, INITIAL_CAPACITY);
+    // Atomic store with a barrier.
+    __c11_atomic_store(&lookup->store, store, __ATOMIC_RELEASE);
+  }
   size_t idx = hash & (store->size - 1);
   Entry *entry = __c11_atomic_load(&store->table[idx], __ATOMIC_RELAXED);
   while (entry) {
@@ -161,25 +159,23 @@ void *FastPointerLookup(FastPointerLookup_t *lookup, void *key) {
   // Atomic load with barrier.
   Store *store = __c11_atomic_load(&lookup->store, __ATOMIC_ACQUIRE);
 
-  if (!store) {
-    store = InitStore(lookup);
-  }
-
-  size_t idx = hash & (store->size - 1);
-  Entry *entry = __c11_atomic_load(&store->table[idx], __ATOMIC_ACQUIRE);
   void *result = NULL;
-  while (entry) {
-    if (entry->key == key) {
-      result = entry->value;
-      break;
+  if (store) {
+    size_t idx = hash & (store->size - 1);
+    Entry *entry = __c11_atomic_load(&store->table[idx], __ATOMIC_ACQUIRE);
+    while (entry) {
+      if (entry->key == key) {
+        result = entry->value;
+        break;
+      }
+      entry = entry->next;
     }
-    entry = entry->next;
   }
 
   // Exit protected read-only section. (Safe to delete store now)
   __c11_atomic_fetch_sub(&lookup->readers, 1, __ATOMIC_RELEASE);
 
-  if (entry) {
+  if (result) {
     return result;
   }
   return LockedLookup(lookup, key, hash);
