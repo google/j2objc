@@ -13,6 +13,8 @@
  */
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.Options;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
@@ -21,8 +23,6 @@ import java.util.List;
  * Abstract base class of AST nodes that represent an annotatable type (added in JLS8 API, section
  * 9.7.4).
  */
-// TODO(kirbs): Migrate Simple, Primitive, Qualified, and Wildcard Types to extend this
-// type, as changed in JLS8.
 public abstract class AnnotatableType extends Type {
 
   protected ChildList<Annotation> annotations = ChildList.create(Annotation.class, this);
@@ -30,8 +30,10 @@ public abstract class AnnotatableType extends Type {
   public AnnotatableType(org.eclipse.jdt.core.dom.AnnotatableType jdtNode) {
     super(jdtNode);
     typeBinding = jdtNode.resolveBinding();
-    for (Object x : jdtNode.annotations()){
-      annotations.add((Annotation) TreeConverter.convert(x));
+    if (Options.isJava8Translator()) {
+      for (Object x : jdtNode.annotations()) {
+        annotations.add((Annotation) TreeConverter.convert(x));
+      }
     }
   }
 

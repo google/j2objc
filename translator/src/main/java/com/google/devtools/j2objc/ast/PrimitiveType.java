@@ -19,7 +19,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 /**
  * Node type for a primitive type.
  */
-public class PrimitiveType extends Type {
+public class PrimitiveType extends AnnotatableType {
 
   public PrimitiveType(org.eclipse.jdt.core.dom.PrimitiveType jdtNode) {
     super(jdtNode);
@@ -45,7 +45,9 @@ public class PrimitiveType extends Type {
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      annotations.accept(visitor);
+    }
     visitor.endVisit(this);
   }
 

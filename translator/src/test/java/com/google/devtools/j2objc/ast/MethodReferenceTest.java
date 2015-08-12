@@ -80,7 +80,11 @@ public class MethodReferenceTest extends GenerationTest {
   }
 
   public void testTypeReference() throws IOException {
-    // TODO(kirbs): Find and test more examples of type method references.
+    // TODO(kirbs): Find and test more examples of type method references. Most of the examples that
+    // Eclipse is using are coming from special compiler flags to parse ExpressionMethodReferences
+    // as TypeMethodReferences. Using these specially compiled constructs breaks us currently, but
+    // I'm not sure if that is because of the special compilation, or an actual issue on our side.
+    // Thankfully, this should be a small use case anyway.
     String typeReferenceHeader = "interface H { Object copy(int[] i); }";
     String translation = translateSourceFile(
         typeReferenceHeader + "class Test { H h = int[]::clone; }", "Test", "Test.m");

@@ -89,14 +89,17 @@ public class Options {
       "1.5");
 
   // TODO(kirbs): Uncomment following lines and lines in OptionsTest when we enable automatic
-  // version detection.
+  // version detection. Currently this is breaking pulse builds using 64 bit Java 8, and upgrading
+  // to Eclipse 4.5 is gated by bytecode errors in compiling junit. I won't have time to do a
+  // more in depth root cause analysis on this.
   private String sourceVersion = "1.7";
   // // The default source version number if not passed with -source is determined from the system
   // // properties of the running java version after parsing the argument list.
   // private String sourceVersion = null;
-  
+
+  // TODO(kirbs): Remove when Java 8 is fully supported, or when we remove the
+  // -Xforce-incomplete-java8 flag.
   // Force JLS8 and conversion of JLS8 nodes.
-  // TODO(kirbs): Remove when Java 8 is fully supported.
   private boolean forceIncompleteJava8Support = false;
 
   private static File proGuardUsageFile = null;

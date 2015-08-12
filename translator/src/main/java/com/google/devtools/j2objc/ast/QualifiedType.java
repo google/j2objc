@@ -17,7 +17,7 @@ package com.google.devtools.j2objc.ast;
 /**
  * Node type for a qualified type.
  */
-public class QualifiedType extends Type {
+public class QualifiedType extends AnnotatableType {
 
   public QualifiedType(org.eclipse.jdt.core.dom.QualifiedType jdtNode) {
     super(jdtNode);
@@ -34,7 +34,9 @@ public class QualifiedType extends Type {
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      annotations.accept(visitor);
+    }
     visitor.endVisit(this);
   }
 

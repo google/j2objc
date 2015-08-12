@@ -45,7 +45,9 @@ public class OptionsTest extends GenerationTest {
 
   public void testSourceVersionFlags() throws IOException {
     // TODO(kirbs): Uncomment following lines and lines in Options when we enable automatic version
-    // detection.
+    // detection. Currently this is breaking pulse builds using 64 bit Java 8, and upgrading to
+    // Eclipse 4.5 is gated by bytecode errors in compiling junit. I won't have time to do a more in
+    // depth root cause analysis on this.
     // // Check that version default is correctly pulled from system properties.
     // String javaVersion = System.getProperty("java.version");
     //

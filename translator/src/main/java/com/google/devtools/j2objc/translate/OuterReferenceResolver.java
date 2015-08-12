@@ -212,7 +212,6 @@ public class OuterReferenceResolver extends TreeVisitor {
       if (type.equals(scope.type)) {
         break;
       }
-      // TODO(kirbs): Test instance method calls from containing class for lambdas.
       if (!(BindingUtil.isLambda(scope.type))) {
         path.add(getOrCreateOuterField(scope));
       }

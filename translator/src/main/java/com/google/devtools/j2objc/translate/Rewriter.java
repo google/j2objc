@@ -480,15 +480,13 @@ public class Rewriter extends TreeVisitor {
 
   @Override
   public boolean visit(LambdaExpression node) {
-    // We shouldn't be able to reach this if we aren't in a Java 8 translator, as we are in a
-    // LambdaExpression, but this will help to highlight Java 8 specific additions in the future.
-    // if (Options.isJava8Translator()) {
     if (!(node.getBody() instanceof Block)) {
       // Add explicit blocks for lambdas with expression bodies.
       Block block = new Block();
       Statement statement;
       Expression expression = (Expression) TreeUtil.remove(node.getBody());
-      if (BindingUtil.isVoid(node.getFunctionalInterfaceMethod().getReturnType())) {
+      if (BindingUtil.isVoid(
+          node.getTypeBinding().getFunctionalInterfaceMethod().getReturnType())) {
         statement = new ExpressionStatement(expression);
       } else {
         statement = new ReturnStatement(expression);
@@ -509,7 +507,7 @@ public class Rewriter extends TreeVisitor {
     List<Expression> invocationArguments = invocation.getArguments();
     buildMethodReferenceInvocationArguments(invocationArguments, node);
     // The functional interface may return void, in which case the initialization is only being used
-    // for side effects.
+    // for side effects, and we don't need a return.
     if (BindingUtil.isVoid(functionalInterface.getReturnType())) {
       node.setInvocation(new ExpressionStatement(invocation));
     } else {

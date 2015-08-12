@@ -19,7 +19,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 /**
  * Creates a type node by wrapping a name.
  */
-public class SimpleType extends Type {
+public class SimpleType extends AnnotatableType {
 
   public SimpleType(org.eclipse.jdt.core.dom.SimpleType jdtNode) {
     super(jdtNode);
@@ -40,7 +40,9 @@ public class SimpleType extends Type {
 
   @Override
   protected void acceptInner(TreeVisitor visitor) {
-    visitor.visit(this);
+    if (visitor.visit(this)) {
+      annotations.accept(visitor);
+    }
     visitor.endVisit(this);
   }
 

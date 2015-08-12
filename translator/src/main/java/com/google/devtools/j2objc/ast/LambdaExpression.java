@@ -33,8 +33,6 @@ public class LambdaExpression extends Expression {
   private ChildList<VariableDeclaration> parameters = ChildList.create(VariableDeclaration.class,
       this);
   protected ChildLink<TreeNode> body = ChildLink.create(TreeNode.class, this);
-  // TODO(kirbs) Remove when no longer needed for debugging.
-  public boolean fromAnonClass = false;
   private boolean isCapturing = false;
 
   public LambdaExpression(org.eclipse.jdt.core.dom.LambdaExpression jdtNode) {
@@ -62,28 +60,6 @@ public class LambdaExpression extends Expression {
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
     isCapturing = other.isCapturing();
-  }
-
-  // Added for conversion of Anonymous Classes to Lambda Expressions.
-  public LambdaExpression(ITypeBinding typeBinding, ITypeBinding generatedTypeBinding,
-      IMethodBinding methodBinding, List<VariableDeclarationFragment> parameters, Block body,
-      boolean fromAnonClass) {
-    this.resolvedTypeBinding = typeBinding;
-    this.generatedTypeBinding = generatedTypeBinding;
-    this.methodBinding = methodBinding;
-    this.parameters.addAll(parameters);
-    this.body.set(body);
-    this.fromAnonClass = fromAnonClass;
-  }
-
-  // Added for conversion of Anonymous Classes to Lambda Expressions.
-  public LambdaExpression(ITypeBinding typeBinding, ITypeBinding generatedTypeBinding,
-      IMethodBinding methodBinding,
-      boolean fromAnonClass) {
-    this.resolvedTypeBinding = typeBinding;
-    this.generatedTypeBinding = generatedTypeBinding;
-    this.methodBinding = methodBinding;
-    this.fromAnonClass = fromAnonClass;
   }
 
   @Override
@@ -123,15 +99,6 @@ public class LambdaExpression extends Expression {
       body.accept(visitor);
     }
     visitor.endVisit(this);
-  }
-
-  // For retrieving functionalInterfaceMethod of Anonymous Classes.
-  // TODO(kirbs): Handle this more naturally.
-  public IMethodBinding getFunctionalInterfaceMethod() {
-    if (resolvedTypeBinding.getFunctionalInterfaceMethod() != null) {
-      return resolvedTypeBinding.getFunctionalInterfaceMethod();
-    }
-    return methodBinding;
   }
 
   @Override

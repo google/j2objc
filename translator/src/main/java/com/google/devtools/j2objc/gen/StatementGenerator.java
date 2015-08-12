@@ -165,8 +165,10 @@ public class StatementGenerator extends TreeVisitor {
     }
   }
 
+  /**
+   * A temporary stub to show pseudocode in place of Java 8 features.
+   */
   private boolean assertIncompleteJava8Support(TreeNode node) {
-    // A temporary stub to show pseudocode in place of Java 8 features.
     // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     if (!Options.isJava8Translator()) {
       assert false : "not implemented yet";
@@ -429,7 +431,6 @@ public class StatementGenerator extends TreeVisitor {
    */
   @Override
   public boolean visit(CreationReference node) {
-    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "CreationReference in translator with -source less than 8.";
     return printMethodReference(node);
@@ -569,7 +570,6 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(ExpressionMethodReference node) {
-    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "ExpressionMethodReference in translator with -source less than 8.";
     return printMethodReference(node);
@@ -722,7 +722,6 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(LambdaExpression node) {
-    // TODO(kirbs): Implement correct conversion of Java 8 lambdas to Objective-C blocks.
     assert Options.isJava8Translator()
         : "Lambda expression in translator with -source less than 8.";
     printLambdaCall(node);
@@ -741,8 +740,7 @@ public class StatementGenerator extends TreeVisitor {
     boolean isSelector = false;
     ITypeBinding returnType = methodBinding.getReturnType();
     printBlockPreExpression(methodBinding, returnType);
-    buffer.append(nameTable.getSpecificObjCType(returnType));
-    buffer.append(" (^block)() = objc_getAssociatedObject(_self, (void *) 0);\n");
+    buffer.append("id (^block)() = objc_getAssociatedObject(_self, (void *) 0);\n");
     if (!BindingUtil.isVoid(returnType)) {
       buffer.append("return ");
     }
@@ -1105,7 +1103,6 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(SuperMethodReference node) {
-    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "SuperMethodReference in translator with -source less than 8.";
     return printMethodReference(node);
@@ -1318,7 +1315,6 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(TypeMethodReference node) {
-    // TODO(kirbs): Implement correct conversion of Java 8 features to Objective-C.
     assert Options
         .isJava8Translator() : "TypeMethodReference in translator with -source less than 8.";
     return printMethodReference(node);
