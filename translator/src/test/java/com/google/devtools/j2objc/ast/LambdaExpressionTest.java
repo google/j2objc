@@ -155,4 +155,12 @@ public class LambdaExpressionTest extends GenerationTest {
         "^id(id _self, id a, id b, id c, id d, id e, id f, id g, id h, id i, id j, id k, id l, ",
         "id bw, id bx, id by, id bz, id bar){");
   }
+
+  public void testCapturingBasicTypeReturn() throws IOException {
+    String header = "interface I { int foo(); }";
+    String translation = translateSourceFile(
+        header + "class Test { int f = 1234; " + "  void foo() { I i = () -> f; } }", "Test",
+        "Test.m");
+    assertTranslatedLines(translation, "^jint(id _self){", "return f_;");
+  }
 }
