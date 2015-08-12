@@ -519,8 +519,7 @@ public class Rewriter extends TreeVisitor {
   public boolean visit(ExpressionMethodReference node) {
     IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
     Expression expression = node.getExpression().copy();
-    SimpleName name = node.getName().copy();
-    MethodInvocation invocation = new MethodInvocation(methodBinding, expression, name);
+    MethodInvocation invocation = new MethodInvocation(methodBinding, expression);
     List<Expression> invocationArguments = invocation.getArguments();
     buildMethodReferenceInvocationArguments(invocationArguments, node);
     if (BindingUtil.isVoid(methodBinding.getReturnType())) {
@@ -534,8 +533,8 @@ public class Rewriter extends TreeVisitor {
   public boolean visit(SuperMethodReference node) {
     IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
     Name qualifier = node.getQualifier() == null ? null : node.getQualifier().copy();
-    SimpleName name = node.getName().copy();
-    SuperMethodInvocation invocation = new SuperMethodInvocation(methodBinding, qualifier, name);
+    SuperMethodInvocation invocation = new SuperMethodInvocation(methodBinding);
+    invocation.setQualifier(qualifier);
     List<Expression> invocationArguments = invocation.getArguments();
     buildMethodReferenceInvocationArguments(invocationArguments, node);
     if (BindingUtil.isVoid(methodBinding.getReturnType())) {
@@ -553,8 +552,10 @@ public class Rewriter extends TreeVisitor {
    * buildMethodReferenceInvocationArguments.
    */
   public boolean visit(TypeMethodReference node) {
-    GeneratedMethodBinding methodBinding = new GeneratedMethodBinding(node.getName().toString(),
-        node.getMethodBinding());
+    IMethodBinding oldMethodBinding = node.getMethodBinding();
+    GeneratedMethodBinding methodBinding = GeneratedMethodBinding.newNamedMethod(
+        node.getName().toString(), oldMethodBinding);
+    methodBinding.addParameters(oldMethodBinding);
     methodBinding.setModifiers(methodBinding.getModifiers() & ~Modifier.STATIC);
     methodBinding.getParameters().remove(0);
     IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
@@ -565,8 +566,7 @@ public class Rewriter extends TreeVisitor {
     IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
         functionalParam, false, true, null, null);
     SimpleName expression = new SimpleName(variableBinding);
-    SimpleName name = node.getName().copy();
-    MethodInvocation invocation = new MethodInvocation(methodBinding, expression, name);
+    MethodInvocation invocation = new MethodInvocation(methodBinding, expression);
     List<Expression> invocationArguments = invocation.getArguments();
     if (BindingUtil.isVoid(methodBinding.getReturnType())) {
       node.setInvocation(new ExpressionStatement(invocation));
