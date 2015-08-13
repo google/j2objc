@@ -103,47 +103,18 @@ void CGPInitDescriptor(
   }
 }
 
-CGPEnumDescriptor *CGPInitializeEnumType(
-    Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> **values,
-    NSString **names, jint *intValues) {
-  Ivar valueIvar = class_getInstanceVariable(enumClass, "value_");
-  ptrdiff_t valueOffset = ivar_getOffset(valueIvar);
-
-  // Put all enum instances and descriptors on the same allocation.
-  size_t enumSize = class_getInstanceSize(enumClass);
-  size_t enumDescSize = class_getInstanceSize([CGPEnumDescriptor class]);
-  size_t enumValueDescSize = class_getInstanceSize([CGPEnumValueDescriptor class]);
-  size_t allocSize = enumSize * valuesCount + enumDescSize + enumValueDescSize * valuesCount;
-  uintptr_t enumPtr = (uintptr_t)calloc(allocSize, 1);
-  uintptr_t enumDescPtr = enumPtr + enumSize * valuesCount;
-  uintptr_t enumValueDescPtr = enumDescPtr + enumDescSize;
-
-  IOSObjectArray *valuesArray = [IOSObjectArray newArrayWithLength:valuesCount
-      type:ComGoogleProtobufDescriptors_EnumValueDescriptor_class_()];
-  id *valueDescBuf = valuesArray->buffer_;
-
+CGPEnumDescriptor *CGPNewEnumDescriptor(
+    Class enumClass, jint valuesCount,
+    JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> **values) {
+  Ivar valuesIvar = class_getInstanceVariable(enumClass, "value_");
+  CGPEnumValueDescriptor *valuesBuf[valuesCount];
   for (jint i = 0; i < valuesCount; i++) {
-    // Construct the Java enum instance.
-    JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *newEnum =
-        objc_constructInstance(enumClass, (void *)enumPtr);
-    [newEnum initWithNSString:names[i] withInt:i];
-    *(int *)(enumPtr + valueOffset) = intValues[i];
-    values[i] = newEnum;
-    enumPtr += enumSize;
-
-    // Construct the enum value descriptor.
-    CGPEnumValueDescriptor *valueDesc =
-        objc_constructInstance([CGPEnumValueDescriptor class], (void *)enumValueDescPtr);
-    valueDesc->enum_ = newEnum;
-    valueDesc->number_ = intValues[i];
-    valueDescBuf[i] = valueDesc;
-    enumValueDescPtr += enumValueDescSize;
+    valuesBuf[i] = [[CGPEnumValueDescriptor alloc] initWithValue:values[i]];
   }
-
-  // Construct the enum descriptor.
-  CGPEnumDescriptor *enumDesc =
-      objc_constructInstance([CGPEnumDescriptor class], (void *)enumDescPtr);
-  return [enumDesc initWithValueOffset:valueOffset retainedValues:valuesArray];
+  IOSObjectArray *valuesArray = [IOSObjectArray arrayWithObjects:valuesBuf count:valuesCount
+      type:ComGoogleProtobufDescriptors_EnumValueDescriptor_class_()];
+  return [[CGPEnumDescriptor alloc] initWithValueOffset:ivar_getOffset(valuesIvar)
+                                                 values:valuesArray];
 }
 
 static inline ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum *GetTypeObj(CGPFieldType type) {
@@ -373,10 +344,10 @@ CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumTyp
 
 @implementation ComGoogleProtobufDescriptors_EnumDescriptor
 
-- (instancetype)initWithValueOffset:(ptrdiff_t)valueOffset retainedValues:(IOSObjectArray *)values {
+- (instancetype)initWithValueOffset:(ptrdiff_t)valueOffset values:(IOSObjectArray *)values {
   if (self = [super init]) {
     valueOffset_ = valueOffset;
-    values_ = values; // Already retained.
+    values_ = [values retain];
   }
   return self;
 }
@@ -392,6 +363,14 @@ J2OBJC_ETERNAL_SINGLETON
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_EnumDescriptor)
 
 @implementation ComGoogleProtobufDescriptors_EnumValueDescriptor
+
+- (instancetype)initWithValue:(JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *)value {
+  if (self = [super init]) {
+    enum_ = value;
+    number_ = [value getNumber];
+  }
+  return self;
+}
 
 - (int)getNumber {
   return number_;

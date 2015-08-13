@@ -118,7 +118,7 @@ typedef struct CGPFieldData {
   IOSObjectArray *values_;
 }
 
-- (instancetype)initWithValueOffset:(ptrdiff_t)valueOffset retainedValues:(IOSObjectArray *)values;
+- (instancetype)initWithValueOffset:(ptrdiff_t)valueOffset values:(IOSObjectArray *)values;
 
 @end
 
@@ -127,6 +127,9 @@ typedef struct CGPFieldData {
   JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *enum_;
   int number_;
 }
+
+- (instancetype)initWithValue:(JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *)value;
+
 @end
 
 // Functions that convert a value from its field storage type to the type
@@ -155,9 +158,8 @@ CGP_ALWAYS_INLINE inline BOOL CGPIsMessageSetWireFormat(const CGPDescriptor *des
   return descriptor->flags_ & CGPMessageFlagMessageSetWireFormat;
 }
 
-CGPEnumDescriptor *CGPInitializeEnumType(
-    Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> **values,
-    NSString **names, jint *intValues);
+CGPEnumDescriptor *CGPNewEnumDescriptor(
+    Class enumClass, jint valuesCount, JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> **values);
 
 void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor);
 
