@@ -24,7 +24,15 @@ import string
 
 
 def CamelCase(name):
-  return ''.join(string.capwords(name, '_').split('_'))
+  result = []
+  cap_next = True
+  for ch in name:
+    if cap_next and ch.islower():
+      result.append(ch.upper())
+    elif ch.isalnum():
+      result.append(ch)
+    cap_next = not ch.isalpha()
+  return ''.join(result)
 
 
 class ProtoMetadata:
