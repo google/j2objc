@@ -1388,9 +1388,3 @@ objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
 
-
-JAVADOC_STYLESHEET = ../doc/j2objc_javadoc.css
-
-javadoc: $(JAVA_SOURCES_MANIFEST) $(ANNOTATIONS_JAR)
-	@javadoc -d $(BUILD_DIR)/javadoc -classpath $(ANNOTATIONS_JAR) -quiet \
-	    -stylesheetfile $(JAVADOC_STYLESHEET) @$(JAVA_SOURCES_MANIFEST)
