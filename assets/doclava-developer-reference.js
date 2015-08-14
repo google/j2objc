@@ -1,8 +1,5 @@
 
 /* API LEVEL TOGGLE */
-<?cs if:reference.apilevels ?>
-addLoadEvent(changeApiLevel);
-<?cs /if ?>
 
 var API_LEVEL_ENABLED_COOKIE = "api_level_enabled";
 var API_LEVEL_COOKIE = "api_level";
@@ -36,7 +33,7 @@ function buildApiLevelSelector() {
     $("#apiLevelCheckbox").attr("checked","checked");
     $("#api-level-toggle label").removeClass("disabled");
   }
-  
+
   minLevel = $("body").attr("class");
   var select = $("#apiLevelSelector").html("").change(changeApiLevel);
   for (var i = maxLevel-1; i >= 0; i--) {
@@ -44,7 +41,7 @@ function buildApiLevelSelector() {
   //  if (SINCE_DATA[i] < minLevel) option.addClass("absent"); // always false for strings (codenames)
     select.append(option);
   }
-  
+
   // get the DOM element and use setAttribute cuz IE6 fails when using jquery .attr('selected',true)
   var selectedLevelItem = $("#apiLevelSelector option[value='"+userApiLevel+"']").get(0);
   selectedLevelItem.setAttribute('selected',true);
@@ -54,19 +51,19 @@ function changeApiLevel() {
   var maxLevel = SINCE_DATA.length;
   var userApiLevelEnabled = readCookie(API_LEVEL_ENABLED_COOKIE);
   var selectedLevel = maxLevel;
-  
+
   if (userApiLevelEnabled == 0) {
     toggleVisisbleApis(selectedLevel, "body");
   } else {
     selectedLevel = $("#apiLevelSelector option:selected").val();
     toggleVisisbleApis(selectedLevel, "body");
-    
+
     var date = new Date();
     date.setTime(date.getTime()+(10*365*24*60*60*1000)); // keep this for 10 years
     var expiration = date.toGMTString();
     writeCookie(API_LEVEL_COOKIE, selectedLevel, null, expiration);
   }
-  
+
   if (selectedLevel < minLevel) {
     var thing = ($("#jd-header").html().indexOf("package") != -1) ? "package" : "class";
     $("#naMessage").show().html("<div><p><strong>This " + thing + " is not available with API Level " + selectedLevel + ".</strong></p>"
@@ -158,7 +155,7 @@ function new_node(me, mom, text, link, children_data, api_level)
       node.expanded = false;
     }
   }
-  
+
 
   node.children_ul = null;
   node.get_children_ul = function() {
@@ -186,7 +183,7 @@ function expand_node(me, node)
     }
     node.plus_img.src = me.toroot + "assets/images/triangle-opened-small.png";
     node.expanded = true;
-    
+
     // perform api level toggling because new nodes are new to the DOM
     var selectedLevel = $("#apiLevelSelector option:selected").val();
     toggleVisisbleApis(selectedLevel, "#side-nav");
@@ -258,7 +255,7 @@ function load_navtree_data(toroot) {
 
 function init_default_navtree(toroot) {
   init_navtree("nav-tree", toroot, NAVTREE_DATA);
-  
+
   // perform api level toggling because because the whole tree is new to the DOM
   var selectedLevel = $("#apiLevelSelector option:selected").val();
   toggleVisisbleApis(selectedLevel, "#side-nav");
@@ -267,7 +264,7 @@ function init_default_navtree(toroot) {
 function init_navtree(navtree_id, toroot, root_nodes)
 {
   var me = new Object();
-  me.toroot = toroot;
+  me.toroot = window.location.hostname;
   me.node = new Object();
 
   me.node.li = document.getElementById(navtree_id);
@@ -313,13 +310,13 @@ function toggleInherited(linkObj, expand) {
     if ( (expand == null && a.hasClass("closed")) || expand ) {
         list.style.display = "none";
         summary.style.display = "block";
-        trigger.src = toRoot + "assets/images/triangle-opened.png";
+        // trigger.src = window.location.host + "/assets/images/triangle-opened.png";
         a.removeClass("closed");
         a.addClass("opened");
     } else if ( (expand == null && a.hasClass("opened")) || (expand == false) ) {
         list.style.display = "block";
         summary.style.display = "none";
-        trigger.src = toRoot + "assets/images/triangle-closed.png";
+        // trigger.src = window.location.host + "/assets/images/triangle-closed.png";
         a.removeClass("opened");
         a.addClass("closed");
     }
