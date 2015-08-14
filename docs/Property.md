@@ -20,9 +20,10 @@ Adds property declarations to generated Objective-C for annotated fields.
 See [Apple's @property documentation](https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/EncapsulatingData/EncapsulatingData.html).
 
 Notes:
- * Invalid attributes are reported as errors.
- * __readwrite__, __strong__, and __atomic__ attributes are removed since they are defaults.
- * Strings will include the __copy__ attribute.
+
+- Invalid attributes are reported as errors.
+- __readwrite__, __strong__, and __atomic__ attributes are removed since they are defaults.
+- Strings will include the __copy__ attribute.
 
 Example:
 
