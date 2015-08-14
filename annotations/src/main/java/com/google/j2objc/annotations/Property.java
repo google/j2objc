@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
  * See <a
  * href="https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/EncapsulatingData/EncapsulatingData.html"
  * >Apple's &#64;property documentation</a>.
- * <p/>
+ * <p>
  * Notes:
  * <ul>
  *   <li>Invalid attributes are reported as errors.</li>
@@ -33,14 +33,14 @@ import java.lang.annotation.Target;
  *     since they are defaults.</li>
  *   <li>Strings will include the <b>copy</b> attribute.</li>
  * </ul>
- * <p/>
+ * <p>
  * Example:
  * <pre>
  * class Foo {
  *   &#64;Property("copy, nonatomic") protected String bar;
  * }</pre>
  * generates:
- * <p/>
+ * <p>
  * <pre>
  * &#64;property (copy, nonatomic) NSString *bar;</pre>
  *

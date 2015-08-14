@@ -36,5 +36,5 @@ public @interface ObjectiveCName {
   /**
    * The Objective-C name to use.
    */
-  public String value();
+  String value();
 }
