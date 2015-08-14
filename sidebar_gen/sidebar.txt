@@ -6,8 +6,8 @@ User's Guide
   {{site_root}}docs/Xcode-Build-Rules.html Xcode Build Rules
   {{site_root}}docs/Adding-the-JreEmulation-project-to-your-Xcode-project.html The JreEmulation Project
   {{site_root}}docs/Using-J2ObjC-with-Make.html Using J2ObjC with Make
-  {{site_root}}docs/Using-J2ObjC-with-Eclipse.html Using J2ObjC with Eclipse
-  {{site_root}}docs/Using-J2ObjC-with-Gradle.html Using J2ObjC with Gradle
+  {{site_root}}docs/Using-J2ObjC-with-Eclipse.html Eclipse Plugin
+  {{site_root}}docs/Using-J2ObjC-with-Gradle.html Gradle Plugin
 Developing with J2ObjC
   {{site_root}}docs/Required-Link-Flags.html Required Link Flags
   {{site_root}}docs/Reading-Generated-Sources.html Reading Generated Sources
@@ -30,9 +30,11 @@ Reference Docs
   {{site_root}}docs/JRE-Emulation-Reference.html JRE Emulation Reference
 J2ObjC Annotations
   {{site_root}}docs/AutoreleasePool.html AutoreleasePool
+  {{site_root}}docs/J2ObjCIncompatible.html J2ObjCIncompatible
   {{site_root}}docs/LoopTranslation.html LoopTranslation
-  {{site_root}}docs/ObjectiveCIncompatible.html ObjectiveCIncompatible
   {{site_root}}docs/ObjectiveCName.html ObjectiveCName
+  {{site_root}}docs/Property.html Property
+  {{site_root}}docs/RetainedLocalRef.html RetainedLocalRef
   {{site_root}}docs/Weak.html Weak
   {{site_root}}docs/WeakOuter.html WeakOuter
 Community

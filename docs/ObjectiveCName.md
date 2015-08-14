@@ -7,7 +7,7 @@ layout: docs
 
 ## Annotation Type ObjectiveCName
 
-````
+```java
 @Target({ ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR })
 @Retention(RetentionPolicy.CLASS)
 public @interface ObjectiveCName {
@@ -16,6 +16,6 @@ public @interface ObjectiveCName {
    * The Objective-C name to use.
    */
   public String value();
-````
+```
 
 Annotation that specifies what the Objective-C class, protocol, method or constructor name should be when translated.

@@ -7,7 +7,7 @@ layout: docs
 
 ## Annotation Type LoopTranslation
 
-````
+```java
 @Target(ElementType.LOCAL_VARIABLE)
 @Retention(RetentionPolicy.SOURCE)
 public @interface LoopTranslation {
@@ -35,6 +35,6 @@ public @interface LoopTranslation {
   }
 
   LoopStyle value();
-````
+```
 
 Annotation that specifies how an enhanced for loop should be translated by the J2ObjC translator.
