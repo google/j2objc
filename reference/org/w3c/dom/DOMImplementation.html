@@ -1,0 +1,634 @@
+---
+
+title: DOMImplementation - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
+<title>
+
+  DOMImplementation - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>DOMImplementation</h1>
+
+
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">org.w3c.dom.DOMImplementation</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>The <code>DOMImplementation</code> interface provides a number of methods
+ for performing operations that are independent of any particular instance
+ of the document object model.
+ <p>See also the <a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document Object Model (DOM) Level 3 Core Specification</a>.
+</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/org/w3c/dom/Document.html">Document</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/w3c/dom/DOMImplementation.html#createDocument(java.lang.String, java.lang.String, org.w3c.dom.DocumentType)">createDocument</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> namespaceURI, <a href="../../../../reference/java/lang/String.html">String</a> qualifiedName, <a href="../../../../reference/org/w3c/dom/DocumentType.html">DocumentType</a> doctype)
+        
+        <div class="jd-descrdiv">Creates a DOM Document object of the specified type with its document
+ element.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/org/w3c/dom/DocumentType.html">DocumentType</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/w3c/dom/DOMImplementation.html#createDocumentType(java.lang.String, java.lang.String, java.lang.String)">createDocumentType</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> qualifiedName, <a href="../../../../reference/java/lang/String.html">String</a> publicId, <a href="../../../../reference/java/lang/String.html">String</a> systemId)
+        
+        <div class="jd-descrdiv">Creates an empty <code>DocumentType</code> node.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/w3c/dom/DOMImplementation.html#getFeature(java.lang.String, java.lang.String)">getFeature</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> feature, <a href="../../../../reference/java/lang/String.html">String</a> version)
+        
+        <div class="jd-descrdiv">This method returns a specialized object which implements the
+ specialized APIs of the specified feature and version, as specified
+ in .</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/w3c/dom/DOMImplementation.html#hasFeature(java.lang.String, java.lang.String)">hasFeature</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> feature, <a href="../../../../reference/java/lang/String.html">String</a> version)
+        
+        <div class="jd-descrdiv">Test if the DOM implementation implements a specific feature and
+ version, as specified in .</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="createDocument(java.lang.String, java.lang.String, org.w3c.dom.DocumentType)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/org/w3c/dom/Document.html">Document</a>
+      </span>
+      <span class="sympad">createDocument</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> namespaceURI, <a href="../../../../reference/java/lang/String.html">String</a> qualifiedName, <a href="../../../../reference/org/w3c/dom/DocumentType.html">DocumentType</a> doctype)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a DOM Document object of the specified type with its document
+ element.
+ <br>Note that based on the <code>DocumentType</code> given to create
+ the document, the implementation may instantiate specialized
+ <code>Document</code> objects that support additional features than
+ the "Core", such as "HTML" [<a href='http://www.w3.org/TR/2003/REC-DOM-Level-2-HTML-20030109'>DOM Level 2 HTML</a>]
+ . On the other hand, setting the <code>DocumentType</code> after the
+ document was created makes this very unlikely to happen.
+ Alternatively, specialized <code>Document</code> creation methods,
+ such as <code>createHTMLDocument</code> [<a href='http://www.w3.org/TR/2003/REC-DOM-Level-2-HTML-20030109'>DOM Level 2 HTML</a>]
+ , can be used to obtain specific types of <code>Document</code>
+ objects.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>namespaceURI</th>
+          <td>The namespace URI of the document element to
+   create or <code>null</code>.</td>
+        </tr>
+        <tr>
+          <th>qualifiedName</th>
+          <td>The qualified name of the document element to be
+   created or <code>null</code>.</td>
+        </tr>
+        <tr>
+          <th>doctype</th>
+          <td>The type of document to be created or <code>null</code>.
+   When <code>doctype</code> is not <code>null</code>, its
+   <code>Node.ownerDocument</code> attribute is set to the document
+   being created.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>A new <code>Document</code> object with its document element.
+   If the <code>NamespaceURI</code>, <code>qualifiedName</code>, and
+   <code>doctype</code> are <code>null</code>, the returned
+   <code>Document</code> is empty with no document element.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/org/w3c/dom/DOMException.html">DOMException</a></td>
+            <td>INVALID_CHARACTER_ERR: Raised if the specified qualified name is not
+   an XML name according to [<a href='http://www.w3.org/TR/2004/REC-xml-20040204'>XML 1.0</a>].
+   <br>NAMESPACE_ERR: Raised if the <code>qualifiedName</code> is
+   malformed, if the <code>qualifiedName</code> has a prefix and the
+   <code>namespaceURI</code> is <code>null</code>, or if the
+   <code>qualifiedName</code> is <code>null</code> and the
+   <code>namespaceURI</code> is different from <code>null</code>, or
+   if the <code>qualifiedName</code> has a prefix that is "xml" and
+   the <code>namespaceURI</code> is different from "<a href='http://www.w3.org/XML/1998/namespace'>
+   http://www.w3.org/XML/1998/namespace</a>" [<a href='http://www.w3.org/TR/1999/REC-xml-names-19990114/'>XML Namespaces</a>]
+   , or if the DOM implementation does not support the
+   <code>"XML"</code> feature but a non-null namespace URI was
+   provided, since namespaces were defined by XML.
+   <br>WRONG_DOCUMENT_ERR: Raised if <code>doctype</code> has already
+   been used with a different document or was created from a different
+   implementation.
+   <br>NOT_SUPPORTED_ERR: May be raised if the implementation does not
+   support the feature "XML" and the language exposed through the
+   Document does not support XML Namespaces (such as [<a href='http://www.w3.org/TR/1999/REC-html401-19991224/'>HTML 4.01</a>]).</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="createDocumentType(java.lang.String, java.lang.String, java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/org/w3c/dom/DocumentType.html">DocumentType</a>
+      </span>
+      <span class="sympad">createDocumentType</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> qualifiedName, <a href="../../../../reference/java/lang/String.html">String</a> publicId, <a href="../../../../reference/java/lang/String.html">String</a> systemId)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates an empty <code>DocumentType</code> node. Entity declarations
+ and notations are not made available. Entity reference expansions and
+ default attribute additions do not occur..</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>qualifiedName</th>
+          <td>The qualified name of the document type to be
+   created.</td>
+        </tr>
+        <tr>
+          <th>publicId</th>
+          <td>The external subset public identifier.</td>
+        </tr>
+        <tr>
+          <th>systemId</th>
+          <td>The external subset system identifier.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>A new <code>DocumentType</code> node with
+   <code>Node.ownerDocument</code> set to <code>null</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/org/w3c/dom/DOMException.html">DOMException</a></td>
+            <td>INVALID_CHARACTER_ERR: Raised if the specified qualified name is not
+   an XML name according to [<a href='http://www.w3.org/TR/2004/REC-xml-20040204'>XML 1.0</a>].
+   <br>NAMESPACE_ERR: Raised if the <code>qualifiedName</code> is
+   malformed.
+   <br>NOT_SUPPORTED_ERR: May be raised if the implementation does not
+   support the feature "XML" and the language exposed through the
+   Document does not support XML Namespaces (such as [<a href='http://www.w3.org/TR/1999/REC-html401-19991224/'>HTML 4.01</a>]).</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getFeature(java.lang.String, java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/Object.html">Object</a>
+      </span>
+      <span class="sympad">getFeature</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> feature, <a href="../../../../reference/java/lang/String.html">String</a> version)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>This method returns a specialized object which implements the
+ specialized APIs of the specified feature and version, as specified
+ in . The specialized object may also be obtained by using
+ binding-specific casting methods but is not necessarily expected to,
+ as discussed in . This method also allow the implementation to
+ provide specialized objects which do not support the
+ <code>DOMImplementation</code> interface.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>feature</th>
+          <td>The name of the feature requested. Note that any plus
+   sign "+" prepended to the name of the feature will be ignored since
+   it is not significant in the context of this method.</td>
+        </tr>
+        <tr>
+          <th>version</th>
+          <td>This is the version number of the feature to test.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>Returns an object which implements the specialized APIs of
+   the specified feature and version, if any, or <code>null</code> if
+   there is no object which implements interfaces associated with that
+   feature. If the <code>DOMObject</code> returned by this method
+   implements the <code>DOMImplementation</code> interface, it must
+   delegate to the primary core <code>DOMImplementation</code> and not
+   return results inconsistent with the primary core
+   <code>DOMImplementation</code> such as <code>hasFeature</code>,
+   <code>getFeature</code>, etc.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="hasFeature(java.lang.String, java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">hasFeature</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> feature, <a href="../../../../reference/java/lang/String.html">String</a> version)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Test if the DOM implementation implements a specific feature and
+ version, as specified in .</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>feature</th>
+          <td>The name of the feature to test.</td>
+        </tr>
+        <tr>
+          <th>version</th>
+          <td>This is the version number of the feature to test.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if the feature is implemented in the
+   specified version, <code>false</code> otherwise.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

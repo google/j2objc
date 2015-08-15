@@ -36,8 +36,6 @@ def buildSidebar(sidebarLines):
 	print '</nav>'
 	print '<nav class="devsite-page-nav devsite-nav" style="position: relative; left: auto; max-height: 737px; top: 0px;"></nav>'
 
-
-
 def removeBlankLines(ls):
 	return filter(lambda x: x, ls)
 

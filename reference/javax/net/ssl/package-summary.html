@@ -1,0 +1,337 @@
+---
+
+title: javax.net.ssl - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
+<title>
+
+  javax.net.ssl - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+<body class="">
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="api-info-block">
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div>
+
+<div id="jd-header">
+  package
+  <h1>javax.net.ssl</h1>
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+  <div class="jd-descr">
+    <p>
+This package provides classes and interfaces needed to use the Secure
+Sockets Layer (SSL) protocol and the successor Transport Layer
+Security (TLS) protocol.  The API allows for both client and server
+sockets, the selection of desired SSL and TLS protocol versions, and
+the selection of desired cipher suites. The <code><a href="reference/javax/net/ssl/X509TrustManager.html">X509TrustManager</a></code> interface allows
+customization of certificate chain verification. The
+<code><a href="reference/javax/net/ssl/X509KeyManager.html">X509KeyManager</a></code> interface and
+<code><a href="reference/javax/net/ssl/X509ExtendedKeyManager.html">X509ExtendedKeyManager</a></code>
+class allows the specification of a server's required certificate or a
+client's optional client certificate. Android uses code
+from <a href="http://www.bouncycastle.org">The Legion of the Bouncy
+Castle</a> and <a href="http://openssl.org">OpenSSL</a>.
+
+</p>
+
+  </div>
+
+
+
+
+
+  
+    <h2>Interfaces</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedListener.html">HandshakeCompletedListener</a></td>
+              <td class="jd-descrcol" width="100%">The listener to be implemented to receive event notifications on completion
+ of SSL handshake on an SSL connection.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/HostnameVerifier.html">HostnameVerifier</a></td>
+              <td class="jd-descrcol" width="100%">The interface to be used to provide hostname verification functionality.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/KeyManager.html">KeyManager</a></td>
+              <td class="jd-descrcol" width="100%">This is the interface to implement in order to mark a class as a JSSE key
+ managers so that key managers can be easily grouped.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/ManagerFactoryParameters.html">ManagerFactoryParameters</a></td>
+              <td class="jd-descrcol" width="100%">The marker interface for key manager factory parameters.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLSession.html">SSLSession</a></td>
+              <td class="jd-descrcol" width="100%">The interface representing an SSL session.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLSessionBindingListener.html">SSLSessionBindingListener</a></td>
+              <td class="jd-descrcol" width="100%">The interface to be implemented by any object that requires notification when
+ data objects are bound to (or unbound from) an <code>SSLSession</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLSessionContext.html">SSLSessionContext</a></td>
+              <td class="jd-descrcol" width="100%">A collection of <code>SSLSession</code>s.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/TrustManager.html">TrustManager</a></td>
+              <td class="jd-descrcol" width="100%">The marker interface for JSSE trust managers.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/X509TrustManager.html">X509TrustManager</a></td>
+              <td class="jd-descrcol" width="100%">The trust manager for X509 certificates to be used to perform authentication
+ for secure sockets.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Classes</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/HandshakeCompletedEvent.html">HandshakeCompletedEvent</a></td>
+              <td class="jd-descrcol" width="100%">The event object encapsulating the information about a completed SSL
+ handshake on a SSL connection.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/HttpsURLConnection.html">HttpsURLConnection</a></td>
+              <td class="jd-descrcol" width="100%">An <code><a href="reference/java/net/HttpURLConnection.html">HttpURLConnection</a></code> for HTTPS (<a
+ href="http://tools.ietf.org/html/rfc2818">RFC 2818</a>).&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/KeyManagerFactory.html">KeyManagerFactory</a></td>
+              <td class="jd-descrcol" width="100%">The public API for <code>KeyManagerFactory</code> implementations.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/KeyManagerFactorySpi.html">KeyManagerFactorySpi</a></td>
+              <td class="jd-descrcol" width="100%">The <i>Service Provider Interface</i> (SPI) for the
+ <code>KeyManagerFactory</code> class.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLContext.html">SSLContext</a></td>
+              <td class="jd-descrcol" width="100%">The public API for secure socket protocol implementations.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLContextSpi.html">SSLContextSpi</a></td>
+              <td class="jd-descrcol" width="100%">The <i>Service Provider Interface</i> (SPI) for the <code>SSLContext</code> class.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLEngine.html">SSLEngine</a></td>
+              <td class="jd-descrcol" width="100%">The abstract implementation of secure communications using SSL, TLS, or other
+ protocols.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.html">SSLEngineResult</a></td>
+              <td class="jd-descrcol" width="100%">The result object describing the state of the <code>SSLEngine</code> produced
+ by the <code>wrap()</code> and <code>unwrap()</code> operations.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLParameters.html">SSLParameters</a></td>
+              <td class="jd-descrcol" width="100%">SSL handshake parameters that include protocols, cipher suites, and
+ client authentication requirements.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLServerSocket.html">SSLServerSocket</a></td>
+              <td class="jd-descrcol" width="100%">The extension of <code>ServerSocket</code> which provides secure server sockets
+ based on protocols like SSL, TLS, or others.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLServerSocketFactory.html">SSLServerSocketFactory</a></td>
+              <td class="jd-descrcol" width="100%">The factory for SSL server sockets.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLSessionBindingEvent.html">SSLSessionBindingEvent</a></td>
+              <td class="jd-descrcol" width="100%">The event sent to an <code>SSLSessionBindingListener</code> when the listener
+ object is bound (<code><a href="reference/javax/net/ssl/SSLSession.html#putValue(java.lang.String, java.lang.Object)">putValue(String, Object)</a></code>) or unbound
+ (<code><a href="reference/javax/net/ssl/SSLSession.html#removeValue(java.lang.String)">removeValue(String)</a></code>) to an <code>SSLSession</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLSocket.html">SSLSocket</a></td>
+              <td class="jd-descrcol" width="100%">The extension of <code>Socket</code> providing secure protocols like SSL (Secure
+ Sockets Layer) or TLS (Transport Layer Security).&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLSocketFactory.html">SSLSocketFactory</a></td>
+              <td class="jd-descrcol" width="100%">The abstract factory implementation to create <code>SSLSocket</code>s.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/TrustManagerFactory.html">TrustManagerFactory</a></td>
+              <td class="jd-descrcol" width="100%">The factory for <code>TrustManager</code>s based on <code>KeyStore</code> or provider
+ specific implementation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/TrustManagerFactorySpi.html">TrustManagerFactorySpi</a></td>
+              <td class="jd-descrcol" width="100%">The <i>Service Provider Interface</i> (SPI) for the
+ <code>TrustManagerFactory</code> class.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Enums</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.HandshakeStatus.html">SSLEngineResult.HandshakeStatus</a></td>
+              <td class="jd-descrcol" width="100%">The <code>enum</code> describing the state of the current handshake.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLEngineResult.Status.html">SSLEngineResult.Status</a></td>
+              <td class="jd-descrcol" width="100%">The <code>enum</code> describing the result of the <code>SSLEngine</code>
+ operation.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Exceptions</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLException.html">SSLException</a></td>
+              <td class="jd-descrcol" width="100%">The base class for all SSL related exceptions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLHandshakeException.html">SSLHandshakeException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when a handshake could not be completed
+ successfully.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLPeerUnverifiedException.html">SSLPeerUnverifiedException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when the identity of a peer has not been
+ verified.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/net/ssl/SSLProtocolException.html">SSLProtocolException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when an error in the operation of the SSL
+ protocol is encountered.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div><!-- end jd-content -->
+</div><!-- doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>

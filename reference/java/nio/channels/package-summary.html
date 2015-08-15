@@ -1,0 +1,351 @@
+---
+
+title: java.nio.channels - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
+<title>
+
+  java.nio.channels - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+<body class="">
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="api-info-block">
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div>
+
+<div id="jd-header">
+  package
+  <h1>java.nio.channels</h1>
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+  
+    <h2>Interfaces</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/ByteChannel.html">ByteChannel</a></td>
+              <td class="jd-descrcol" width="100%">A ByteChannel is both readable and writable.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/Channel.html">Channel</a></td>
+              <td class="jd-descrcol" width="100%">A channel is a conduit to I/O services covering such items as files, sockets,
+ hardware devices, I/O ports or some software component.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/GatheringByteChannel.html">GatheringByteChannel</a></td>
+              <td class="jd-descrcol" width="100%">The interface for channels that can write a set of buffers in a single
+ operation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/InterruptibleChannel.html">InterruptibleChannel</a></td>
+              <td class="jd-descrcol" width="100%">Channels that implement this interface can be asynchronously closed and
+ interrupted.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/ReadableByteChannel.html">ReadableByteChannel</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ReadableByteChannel</code> is a type of <code><a href="reference/java/nio/channels/Channel.html">Channel</a></code> that can read
+ bytes.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/ScatteringByteChannel.html">ScatteringByteChannel</a></td>
+              <td class="jd-descrcol" width="100%">The interface for channels that can read data into a set of buffers in a
+ single operation.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/WritableByteChannel.html">WritableByteChannel</a></td>
+              <td class="jd-descrcol" width="100%">A <code>WritableByteChannel</code> is a type of <code><a href="reference/java/nio/channels/Channel.html">Channel</a></code> that can write
+ bytes.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Classes</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/Channels.html">Channels</a></td>
+              <td class="jd-descrcol" width="100%">This class provides several utilities to get I/O streams from channels.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/DatagramChannel.html">DatagramChannel</a></td>
+              <td class="jd-descrcol" width="100%">A <code>DatagramChannel</code> is a selectable channel that represents a partial
+ abstraction of a datagram socket.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/FileChannel.html">FileChannel</a></td>
+              <td class="jd-descrcol" width="100%">An abstract channel type for interaction with a platform file.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/FileChannel.MapMode.html">FileChannel.MapMode</a></td>
+              <td class="jd-descrcol" width="100%"><code>MapMode</code> defines file mapping mode constants.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/FileLock.html">FileLock</a></td>
+              <td class="jd-descrcol" width="100%">A <code>FileLock</code> represents a locked region of a file.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/Pipe.html">Pipe</a></td>
+              <td class="jd-descrcol" width="100%">A pipe contains two channels, forming a unidirectional pipe.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/Pipe.SinkChannel.html">Pipe.SinkChannel</a></td>
+              <td class="jd-descrcol" width="100%">Writable sink channel used to write to a pipe.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/Pipe.SourceChannel.html">Pipe.SourceChannel</a></td>
+              <td class="jd-descrcol" width="100%">Readable source channel used to read from a pipe.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/SelectableChannel.html">SelectableChannel</a></td>
+              <td class="jd-descrcol" width="100%">A channel that can be used with a <code><a href="reference/java/nio/channels/Selector.html">Selector</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/SelectionKey.html">SelectionKey</a></td>
+              <td class="jd-descrcol" width="100%">A <code>SelectionKey</code> represents the relationship between a channel and a
+ selector for which the channel is registered.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/Selector.html">Selector</a></td>
+              <td class="jd-descrcol" width="100%">A controller for the selection of <code><a href="reference/java/nio/channels/SelectableChannel.html">SelectableChannel</a></code> objects.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/ServerSocketChannel.html">ServerSocketChannel</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ServerSocketChannel</code> is a partial abstraction of a selectable,
+ stream-oriented listening socket.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/SocketChannel.html">SocketChannel</a></td>
+              <td class="jd-descrcol" width="100%">A <code>SocketChannel</code> is a selectable channel that provides a partial
+ abstraction of stream connecting socket.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+  
+    <h2>Exceptions</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/AlreadyConnectedException.html">AlreadyConnectedException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>AlreadyConnectedException</code> is thrown when an attempt is made to
+ connect a SocketChannel that is already connected.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>AsynchronousCloseException</code> is thrown when the underlying channel
+ for an I/O operation is closed by another thread.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/CancelledKeyException.html">CancelledKeyException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>CancelledKeyException</code> is thrown when an invalid selection key is
+ used.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ClosedByInterruptException</code> is thrown when a thread is interrupted
+ in a blocking I/O operation.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ClosedChannelException</code> is thrown when a channel is closed for the
+ type of operation attempted.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/ClosedSelectorException.html">ClosedSelectorException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ClosedSelectorException</code> is thrown when a <code><a href="reference/java/nio/channels/Selector.html">selector</a></code>
+ is closed and an I/O operation is attempted.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/ConnectionPendingException.html">ConnectionPendingException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ConnectionPendingException</code> is thrown when an attempt is made to
+ connect a <code><a href="reference/java/nio/channels/SocketChannel.html">SocketChannel</a></code> that has a non-blocking connection already
+ underway.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/FileLockInterruptionException.html">FileLockInterruptionException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>FileLockInterruptionException</code> is thrown when a thread is
+ interrupted while waiting to acquire a file lock.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/IllegalBlockingModeException.html">IllegalBlockingModeException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalBlockingModeException</code> is thrown when an operation that
+ requires a specific blocking mode is invoked on a channel that is in a
+ different blocking mode.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/IllegalSelectorException.html">IllegalSelectorException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalSelectorException</code> is thrown when a call is made to register
+ a channel on a selector that has been created by a different provider.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/NoConnectionPendingException.html">NoConnectionPendingException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>NoConnectionPendingException</code> is thrown if <code>SocketChannel</code>'s
+ <code><a href="reference/java/nio/channels/SocketChannel.html#finishConnect()">finishConnect</a></code> method is called before
+ the <code>SocketChannel</code>'s <code><a href="reference/java/nio/channels/SocketChannel.html#connect(java.net.SocketAddress)">connect(java.net.SocketAddress)</a></code> connect} method completed
+ without error.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/NonReadableChannelException.html">NonReadableChannelException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>NonReadableChannelException</code> is thrown when attempting to read from
+ a channel that is not open for reading.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/NonWritableChannelException.html">NonWritableChannelException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>NonWritableChannelException</code> is thrown when attempting to write to a
+ channel that is not open for writing.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/NotYetBoundException.html">NotYetBoundException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>NotYetBoundException</code> is thrown if the server socket channel is not
+ bound before an I/O operation is made.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/NotYetConnectedException.html">NotYetConnectedException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>NotYetConnectedException</code> is thrown if the socket channel is not
+ connected before an I/O operation is invoked.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/OverlappingFileLockException.html">OverlappingFileLockException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>OverlappingFileLockException</code> is thrown when attempting to acquire
+ a lock that overlaps an existing or pending lock held by this process.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/UnresolvedAddressException.html">UnresolvedAddressException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnresolvedAddressException</code> is thrown when trying to use an
+ unresolved network address in a network operation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/channels/UnsupportedAddressTypeException.html">UnsupportedAddressTypeException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnsupportedAddressTypeException</code> is thrown when connecting or
+ binding to an unsupported address type.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div><!-- end jd-content -->
+</div><!-- doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>

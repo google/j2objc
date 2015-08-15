@@ -1,0 +1,231 @@
+---
+
+title: java.nio.charset - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
+<title>
+
+  java.nio.charset - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+<body class="">
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="api-info-block">
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div>
+
+<div id="jd-header">
+  package
+  <h1>java.nio.charset</h1>
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+  
+
+
+  
+    <h2>Classes</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/Charset.html">Charset</a></td>
+              <td class="jd-descrcol" width="100%">A charset is a named mapping between Unicode characters and byte sequences.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/CharsetDecoder.html">CharsetDecoder</a></td>
+              <td class="jd-descrcol" width="100%">A converter that can convert a byte sequence from a charset into a 16-bit
+ Unicode character sequence.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/CharsetEncoder.html">CharsetEncoder</a></td>
+              <td class="jd-descrcol" width="100%">Transforms a sequence of 16-bit Java characters to a byte sequence in some encoding.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/CoderResult.html">CoderResult</a></td>
+              <td class="jd-descrcol" width="100%">Used to indicate the result of encoding/decoding.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/CodingErrorAction.html">CodingErrorAction</a></td>
+              <td class="jd-descrcol" width="100%">Used to indicate what kind of actions to take in case of encoding/decoding
+ errors.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/IOSCharsetDecoder.html">IOSCharsetDecoder</a></td>
+              <td class="jd-descrcol" width="100%">iOS native charset decoder.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/IOSCharsetEncoder.html">IOSCharsetEncoder</a></td>
+              <td class="jd-descrcol" width="100%">iOS native charset encoder.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/StandardCharsets.html">StandardCharsets</a></td>
+              <td class="jd-descrcol" width="100%">Constant definitions for the standard Charsets.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+  
+    <h2>Exceptions</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/CharacterCodingException.html">CharacterCodingException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>CharacterCodingException</code> is thrown when an encoding or decoding
+ error occurs.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/IllegalCharsetNameException.html">IllegalCharsetNameException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalCharsetNameException</code> is thrown when an illegal charset name
+ is encountered.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/MalformedInputException.html">MalformedInputException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>MalformedInputException</code> is thrown when a malformed input is
+ encountered, for example if a byte sequence is illegal for the given charset.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/UnmappableCharacterException.html">UnmappableCharacterException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnmappableCharacterException</code> is thrown when an unmappable
+ character for the given charset is encountered.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/UnsupportedCharsetException.html">UnsupportedCharsetException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnsupportedCharsetException</code> is thrown when an unsupported charset
+ name is encountered.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Errors</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/nio/charset/CoderMalfunctionError.html">CoderMalfunctionError</a></td>
+              <td class="jd-descrcol" width="100%">A <code>CoderMalfunctionError</code> is thrown when the encoder/decoder is
+ malfunctioning.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div><!-- end jd-content -->
+</div><!-- doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>

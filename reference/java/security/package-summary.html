@@ -1,0 +1,485 @@
+---
+
+title: java.security - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  java.security - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+<body class="">
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="api-info-block">
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div>
+
+<div id="jd-header">
+  package
+  <h1>java.security</h1>
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+  <div class="jd-descr">
+    <p>
+Extensible cryptographic <i>service provider infrastructure</i> (SPI) for using
+and defining services such as <code><a href="reference/java/security/cert/Certificate.html">Certificates</a></code>,
+<code><a href="reference/java/security/Key.html">Keys</a></code>, <code><a href="reference/java/security/KeyStore.html">KeyStores</a></code>, <code><a href="reference/java/security/MessageDigest.html">MessageDigests</a></code>, and <code><a href="reference/java/security/Signature.html">Signatures</a></code>.
+</p>
+
+  </div>
+
+
+
+
+
+  
+    <h2>Interfaces</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/DomainCombiner.html">DomainCombiner</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/Guard.html">Guard</a></td>
+              <td class="jd-descrcol" width="100%"><code>Guard</code> implementors protect access to other objects.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/Key.html">Key</a></td>
+              <td class="jd-descrcol" width="100%"><code>Key</code> is the common interface for all keys.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStore.Entry.html">KeyStore.Entry</a></td>
+              <td class="jd-descrcol" width="100%"><code>Entry</code> is the common marker interface for a <code>KeyStore</code>
+ entry.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStore.LoadStoreParameter.html">KeyStore.LoadStoreParameter</a></td>
+              <td class="jd-descrcol" width="100%"><code>LoadStoreParameter</code> represents a parameter that specifies how a
+ <code>KeyStore</code> can be loaded and stored.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStore.ProtectionParameter.html">KeyStore.ProtectionParameter</a></td>
+              <td class="jd-descrcol" width="100%"><code>ProtectionParameter</code> is a marker interface for protection
+ parameters.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/Policy.Parameters.html">Policy.Parameters</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/Principal.html">Principal</a></td>
+              <td class="jd-descrcol" width="100%"><code>Principal</code>s are objects which have identities.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/PrivateKey.html">PrivateKey</a></td>
+              <td class="jd-descrcol" width="100%"><code>PrivateKey</code> is the common interface for private keys.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/PrivilegedAction.html">PrivilegedAction</a>&lt;T&gt;</td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/PrivilegedExceptionAction.html">PrivilegedExceptionAction</a>&lt;T&gt;</td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/PublicKey.html">PublicKey</a></td>
+              <td class="jd-descrcol" width="100%"><code>PublicKey</code> is the common interface for public keys.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Classes</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/AccessControlContext.html">AccessControlContext</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/AccessController.html">AccessController</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/AlgorithmParameterGenerator.html">AlgorithmParameterGenerator</a></td>
+              <td class="jd-descrcol" width="100%"><code>AlgorithmParameterGenerator</code> is an engine class which is capable of
+ generating parameters for the algorithm it was initialized with.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/AlgorithmParameterGeneratorSpi.html">AlgorithmParameterGeneratorSpi</a></td>
+              <td class="jd-descrcol" width="100%"><code>AlgorithmParameterGeneratorSpi</code> is the Service Provider Interface
+ (SPI) definition for <code>AlgorithmParameterGenerator</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/AlgorithmParameters.html">AlgorithmParameters</a></td>
+              <td class="jd-descrcol" width="100%"><code>AlgorithmParameters</code> is an engine class which provides algorithm
+ parameters.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/AlgorithmParametersSpi.html">AlgorithmParametersSpi</a></td>
+              <td class="jd-descrcol" width="100%"><code>AlgorithmParametersSpi</code> is the Service Provider Interface (SPI)
+ definition for <code>AlgorithmParameters</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/AllPermission.html">AllPermission</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/BasicPermission.html">BasicPermission</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/CodeSource.html">CodeSource</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/GuardedObject.html">GuardedObject</a></td>
+              <td class="jd-descrcol" width="100%"><code>GuardedObject</code> controls access to an object, by checking all requests
+ for the object with a <code>Guard</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyFactory.html">KeyFactory</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyFactory</code> is an engine class that can be used to translate between
+ public and private key objects and convert keys between their external
+ representation, that can be easily transported and their internal
+ representation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyFactorySpi.html">KeyFactorySpi</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyFactorySpi</code> is the Service Provider Interface (SPI) definition for
+ <code><a href="reference/java/security/KeyFactory.html">KeyFactory</a></code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyPair.html">KeyPair</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyPair</code> is a container for a public key and a private key.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyPairGenerator.html">KeyPairGenerator</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyPairGenerator</code> is an engine class which is capable of generating a
+ private key and its related public key utilizing the algorithm it was
+ initialized with.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyPairGeneratorSpi.html">KeyPairGeneratorSpi</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyPairGeneratorSpi</code> is the Service Provider Interface (SPI)
+ definition for <code><a href="reference/java/security/KeyPairGenerator.html">KeyPairGenerator</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStore.html">KeyStore</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyStore</code> is responsible for maintaining cryptographic keys and their
+ owners.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStore.Builder.html">KeyStore.Builder</a></td>
+              <td class="jd-descrcol" width="100%"><code>Builder</code> is used to construct new instances of <code>KeyStore</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStore.CallbackHandlerProtection.html">KeyStore.CallbackHandlerProtection</a></td>
+              <td class="jd-descrcol" width="100%"><code>CallbackHandlerProtection</code> is a <code>ProtectionParameter</code> that
+ encapsulates a <code><a href="reference/javax/security/auth/callback/CallbackHandler.html">CallbackHandler</a></code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStore.PasswordProtection.html">KeyStore.PasswordProtection</a></td>
+              <td class="jd-descrcol" width="100%"><code>PasswordProtection</code> is a <code>ProtectionParameter</code> that protects
+ a <code>KeyStore</code> using a password.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStore.PrivateKeyEntry.html">KeyStore.PrivateKeyEntry</a></td>
+              <td class="jd-descrcol" width="100%"><code>PrivateKeyEntry</code> represents a <code>KeyStore</code> entry that
+ holds a private key.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStore.SecretKeyEntry.html">KeyStore.SecretKeyEntry</a></td>
+              <td class="jd-descrcol" width="100%"><code>SecretKeyEntry</code> represents a <code>KeyStore</code> entry that
+ holds a secret key.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStore.TrustedCertificateEntry.html">KeyStore.TrustedCertificateEntry</a></td>
+              <td class="jd-descrcol" width="100%"><code>TrustedCertificateEntry</code> represents a <code>KeyStore</code> entry that
+ holds a trusted certificate.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStoreSpi.html">KeyStoreSpi</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyStoreSpi</code> is the Service Provider Interface (SPI) definition for
+ <code><a href="reference/java/security/KeyStore.html">KeyStore</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/MessageDigest.html">MessageDigest</a></td>
+              <td class="jd-descrcol" width="100%">Uses a one-way hash function to turn an arbitrary number of bytes into a
+ fixed-length byte sequence.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/MessageDigestSpi.html">MessageDigestSpi</a></td>
+              <td class="jd-descrcol" width="100%"><code>MessageDigestSpi</code> is the Service Provider Interface (SPI) definition
+ for <code><a href="reference/java/security/MessageDigest.html">MessageDigest</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/Permission.html">Permission</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/PermissionCollection.html">PermissionCollection</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/Permissions.html">Permissions</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/Policy.html">Policy</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/ProtectionDomain.html">ProtectionDomain</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/Provider.html">Provider</a></td>
+              <td class="jd-descrcol" width="100%"><code>Provider</code> is the abstract superclass for all security providers in the
+ Java security infrastructure.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/Provider.Service.html">Provider.Service</a></td>
+              <td class="jd-descrcol" width="100%"><code>Service</code> represents a service in the Java Security infrastructure.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/SecureClassLoader.html">SecureClassLoader</a></td>
+              <td class="jd-descrcol" width="100%"><code>SecureClassLoader</code> represents a <code>ClassLoader</code> which associates
+ the classes it loads with a code source and provide mechanisms to allow the
+ relevant permissions to be retrieved.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/SecureRandom.html">SecureRandom</a></td>
+              <td class="jd-descrcol" width="100%">This class generates cryptographically secure pseudo-random numbers.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/SecureRandomSpi.html">SecureRandomSpi</a></td>
+              <td class="jd-descrcol" width="100%"><code>SecureRandomSpi</code> is the <i>Service Provider Interface</i> (<b>SPI</b>) definition
+ for <code><a href="reference/java/security/SecureRandom.html">SecureRandom</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/Security.html">Security</a></td>
+              <td class="jd-descrcol" width="100%"><code>Security</code> is the central class in the Java Security API.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/SecurityPermission.html">SecurityPermission</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/Signature.html">Signature</a></td>
+              <td class="jd-descrcol" width="100%"><code>Signature</code> is an engine class which is capable of creating and
+ verifying digital signatures, using different algorithms that have been
+ registered with the <code><a href="reference/java/security/Security.html">Security</a></code> class.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/SignatureSpi.html">SignatureSpi</a></td>
+              <td class="jd-descrcol" width="100%"><code>SignatureSpi</code> is the <i>Service Provider Interface</i> (<b>SPI</b>)
+ definition for <code><a href="reference/java/security/Signature.html">Signature</a></code>.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+  
+    <h2>Exceptions</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/AccessControlException.html">AccessControlException</a></td>
+              <td class="jd-descrcol" width="100%"><code>AccessControlException</code> is thrown if the access control infrastructure
+ denies protected access due to missing permissions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/DigestException.html">DigestException</a></td>
+              <td class="jd-descrcol" width="100%"><code>DigestException</code> is a general message digest exception.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/GeneralSecurityException.html">GeneralSecurityException</a></td>
+              <td class="jd-descrcol" width="100%"><code>GeneralSecurityException</code> is a general security exception and the
+ superclass for all security specific exceptions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html">InvalidAlgorithmParameterException</a></td>
+              <td class="jd-descrcol" width="100%"><code>InvalidAlgorithmParameterException</code> indicates the occurrence of
+ invalid algorithm parameters.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidKeyException.html">InvalidKeyException</a></td>
+              <td class="jd-descrcol" width="100%"><code>InvalidKeyException</code> indicates exceptional conditions, caused by an
+ invalid key.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidParameterException.html">InvalidParameterException</a></td>
+              <td class="jd-descrcol" width="100%"><code>InvalidParameterException</code> indicates exceptional conditions, caused by
+ invalid parameters.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyException.html">KeyException</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyException</code> is the common superclass of all key related exceptions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyManagementException.html">KeyManagementException</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyManagementException</code> is a general exception, thrown to indicate an
+ exception during processing an operation concerning key management.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStoreException.html">KeyStoreException</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyStoreException</code> is a general <code>KeyStore</code> exception.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/NoSuchAlgorithmException.html">NoSuchAlgorithmException</a></td>
+              <td class="jd-descrcol" width="100%"><code>NoSuchAlgorithmException</code> indicates that a requested algorithm could
+ not be found.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/NoSuchProviderException.html">NoSuchProviderException</a></td>
+              <td class="jd-descrcol" width="100%"><code>NoSuchProviderException</code> indicates that a requested security provider
+ could not be found.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/PrivilegedActionException.html">PrivilegedActionException</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/ProviderException.html">ProviderException</a></td>
+              <td class="jd-descrcol" width="100%"><code>ProviderException</code> is a general exception, thrown by security <code>Providers</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/SignatureException.html">SignatureException</a></td>
+              <td class="jd-descrcol" width="100%"><code>SignatureException</code> is a general <code>Signature</code> exception.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/UnrecoverableEntryException.html">UnrecoverableEntryException</a></td>
+              <td class="jd-descrcol" width="100%"><code>UnrecoverableEntryException</code> indicates, that a <code>KeyStore.Entry</code>
+ cannot be recovered from a <code>KeyStore</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/UnrecoverableKeyException.html">UnrecoverableKeyException</a></td>
+              <td class="jd-descrcol" width="100%"><code>UnrecoverableKeyException</code> indicates, that a key cannot be recovered
+ from a <code>KeyStore</code>.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div><!-- end jd-content -->
+</div><!-- doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>

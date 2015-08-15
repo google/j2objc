@@ -1,0 +1,498 @@
+---
+
+title: Wrapper - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  Wrapper - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>Wrapper</h1>
+
+
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">java.sql.Wrapper</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-indirect" class="jd-expando-trigger closed"
+          ><a id="subclasses-indirect-trigger"
+          class="jd-expando-trigger-img" /></a>Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/sql/CallableStatement.html">CallableStatement</a>,
+            
+              <a href="../../../reference/java/sql/Connection.html">Connection</a>,
+            
+              <a href="../../../reference/java/sql/DatabaseMetaData.html">DatabaseMetaData</a>,
+            
+              <a href="../../../reference/java/sql/ParameterMetaData.html">ParameterMetaData</a>,
+            
+              <a href="../../../reference/java/sql/PreparedStatement.html">PreparedStatement</a>,
+            
+              <a href="../../../reference/java/sql/ResultSet.html">ResultSet</a>,
+            
+              <a href="../../../reference/java/sql/ResultSetMetaData.html">ResultSetMetaData</a>,
+            
+              <a href="../../../reference/java/sql/Statement.html">Statement</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/CallableStatement.html">CallableStatement</a></td>
+              <td class="jd-descrcol" width="100%">An interface used to call <i>Stored Procedures</i>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Connection.html">Connection</a></td>
+              <td class="jd-descrcol" width="100%">A connection represents a link from a Java application to a database.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/DatabaseMetaData.html">DatabaseMetaData</a></td>
+              <td class="jd-descrcol" width="100%">An interface which provides comprehensive information about the database
+ management system and its supported features.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/ParameterMetaData.html">ParameterMetaData</a></td>
+              <td class="jd-descrcol" width="100%">An interface used to get information about the types and properties of
+ parameters in a <code>PreparedStatement</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/PreparedStatement.html">PreparedStatement</a></td>
+              <td class="jd-descrcol" width="100%">An interface for a precompiled SQL Statement.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/ResultSet.html">ResultSet</a></td>
+              <td class="jd-descrcol" width="100%">An interface for an object which represents a database table entry, returned
+ as the result of the query to the database.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/ResultSetMetaData.html">ResultSetMetaData</a></td>
+              <td class="jd-descrcol" width="100%">Provides information about the columns returned in a <code>ResultSet</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Statement.html">Statement</a></td>
+              <td class="jd-descrcol" width="100%">Interface used for executing static SQL statements to retrieve query results.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>This class is an actual usage of the wrapper pattern for JDBC classes.
+ Developers can get the delegate instance when the instance may be a proxy
+ class.</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/sql/Wrapper.html#isWrapperFor(java.lang.Class<?>)">isWrapperFor</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; iface)
+        
+        <div class="jd-descrdiv">If the caller is a wrapper of the class or implements the given
+ interface, the methods return false and vice versa.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            &lt;T&gt;
+            T
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/sql/Wrapper.html#unwrap(java.lang.Class<T>)">unwrap</a></span>(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; iface)
+        
+        <div class="jd-descrdiv">Returns an object that implements the given interface.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="isWrapperFor(java.lang.Class<?>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">isWrapperFor</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt; iface)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>If the caller is a wrapper of the class or implements the given
+ interface, the methods return false and vice versa.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>iface</th>
+          <td>-
+            the class that defines the interface</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>- true if the instance implements the interface</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td>-
+             when an error occurs when judges the object
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="unwrap(java.lang.Class<T>)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        T
+      </span>
+      <span class="sympad">unwrap</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Class.html">Class</a>&lt;T&gt; iface)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an object that implements the given interface. If the caller is
+ not a wrapper, a SQLException will be thrown.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>iface</th>
+          <td>-
+            the class that defines the interface</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>- an object that implements the interface</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+            <td>-
+             if there is no object implementing the specific interface
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

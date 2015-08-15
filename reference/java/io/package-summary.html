@@ -1,0 +1,544 @@
+---
+
+title: java.io - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  java.io - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+<body class="">
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="api-info-block">
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div>
+
+<div id="jd-header">
+  package
+  <h1>java.io</h1>
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+  
+    <h2>Interfaces</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/Closeable.html">Closeable</a></td>
+              <td class="jd-descrcol" width="100%">An <code>AutoCloseable</code> whose close method may throw an <code><a href="reference/java/io/IOException.html">IOException</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/DataInput.html">DataInput</a></td>
+              <td class="jd-descrcol" width="100%">Defines an interface for classes that are able to read big-endian typed data from some
+ source.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/DataOutput.html">DataOutput</a></td>
+              <td class="jd-descrcol" width="100%">Defines an interface for classes that are able to write big-endian typed data to some
+ target.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/Externalizable.html">Externalizable</a></td>
+              <td class="jd-descrcol" width="100%">Defines an interface for classes that want to be serializable, but have their
+ own binary representation.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FileFilter.html">FileFilter</a></td>
+              <td class="jd-descrcol" width="100%">An interface for filtering <code><a href="reference/java/io/File.html">File</a></code> objects based on their names
+ or other information.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FilenameFilter.html">FilenameFilter</a></td>
+              <td class="jd-descrcol" width="100%">An interface for filtering <code><a href="reference/java/io/File.html">File</a></code> objects based on their names
+ or the directory they reside in.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/Flushable.html">Flushable</a></td>
+              <td class="jd-descrcol" width="100%">Defines an interface for classes that can (or need to) be flushed, typically
+ before some output processing is considered to be finished and the object
+ gets closed.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a></td>
+              <td class="jd-descrcol" width="100%">Defines an interface for classes that allow reading serialized objects.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectInputValidation.html">ObjectInputValidation</a></td>
+              <td class="jd-descrcol" width="100%">A callback interface for post-deserialization checks on objects.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectOutput.html">ObjectOutput</a></td>
+              <td class="jd-descrcol" width="100%">Defines an interface for classes that allow reading serialized objects.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html">ObjectStreamConstants</a></td>
+              <td class="jd-descrcol" width="100%">A helper interface with constants used by the serialization implementation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/Serializable.html">Serializable</a></td>
+              <td class="jd-descrcol" width="100%">Marks classes that can be serialized by <code><a href="reference/java/io/ObjectOutputStream.html">ObjectOutputStream</a></code> and
+ deserialized by <code><a href="reference/java/io/ObjectInputStream.html">ObjectInputStream</a></code>.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Classes</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/BufferedInputStream.html">BufferedInputStream</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/InputStream.html">InputStream</a></code> and <em>buffers</em> the input.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/BufferedOutputStream.html">BufferedOutputStream</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> and <em>buffers</em> the output.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/BufferedReader.html">BufferedReader</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and <em>buffers</em> the input.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/BufferedWriter.html">BufferedWriter</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Writer.html">Writer</a></code> and <em>buffers</em> the output.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ByteArrayInputStream.html">ByteArrayInputStream</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/InputStream.html">InputStream</a></code> for reading the contents of a byte array.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ByteArrayOutputStream.html">ByteArrayOutputStream</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> for class for writing content to an
+ (internal) byte array.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/CharArrayReader.html">CharArrayReader</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Reader.html">Reader</a></code> for reading the contents of a char array.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/CharArrayWriter.html">CharArrayWriter</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Writer.html">Writer</a></code> for class for writing content to an (internal)
+ char array.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/Console.html">Console</a></td>
+              <td class="jd-descrcol" width="100%">Provides access to the console, if available.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/DataInputStream.html">DataInputStream</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/InputStream.html">InputStream</a></code> and reads big-endian typed data from it.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/DataOutputStream.html">DataOutputStream</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> and writes big-endian typed data to it.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/File.html">File</a></td>
+              <td class="jd-descrcol" width="100%">An "abstract" representation of a file system entity identified by a
+ pathname.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FileDescriptor.html">FileDescriptor</a></td>
+              <td class="jd-descrcol" width="100%">Wraps a Unix file descriptor.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FileInputStream.html">FileInputStream</a></td>
+              <td class="jd-descrcol" width="100%">An input stream that reads bytes from a file.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FileOutputStream.html">FileOutputStream</a></td>
+              <td class="jd-descrcol" width="100%">An output stream that writes bytes to a file.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FilePermission.html">FilePermission</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FileReader.html">FileReader</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Reader.html">Reader</a></code> that reads from a file in the file system.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FileWriter.html">FileWriter</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Writer.html">Writer</a></code> that writes to a file in the file system.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FilterInputStream.html">FilterInputStream</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/InputStream.html">InputStream</a></code> and performs some transformation on
+ the input data while it is being read.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FilterOutputStream.html">FilterOutputStream</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> and performs some transformation on
+ the output data while it is being written.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FilterReader.html">FilterReader</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and performs some transformation on the
+ input data while it is being read.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FilterWriter.html">FilterWriter</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Writer.html">Writer</a></code> and performs some transformation on the
+ output data while it is being written.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/InputStream.html">InputStream</a></td>
+              <td class="jd-descrcol" width="100%">A readable source of bytes.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/InputStreamReader.html">InputStreamReader</a></td>
+              <td class="jd-descrcol" width="100%">A class for turning a byte stream into a character stream.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/LineNumberInputStream.html">LineNumberInputStream</a></td>
+              <td class="jd-descrcol" width="100%">
+      <em>
+  This class is deprecated.
+      Use <code><a href="reference/java/io/LineNumberReader.html">LineNumberReader</a></code> instead.
+</em>&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/LineNumberReader.html">LineNumberReader</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and counts the line terminators encountered
+ while reading the data.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/InputStream.html">InputStream</a></code> that is able to read (deserialize) Java
+ objects as well as primitive data types (int, byte, char etc.).&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectInputStream.GetField.html">ObjectInputStream.GetField</a></td>
+              <td class="jd-descrcol" width="100%">GetField is an inner class that provides access to the persistent fields
+ read from the source stream.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectOutputStream.html">ObjectOutputStream</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> that is able to write (serialize) Java
+ objects as well as primitive data types (int, byte, char etc.).&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectOutputStream.PutField.html">ObjectOutputStream.PutField</a></td>
+              <td class="jd-descrcol" width="100%">PutField is an inner class to provide access to the persistent fields
+ that are written to the target stream.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamClass.html">ObjectStreamClass</a></td>
+              <td class="jd-descrcol" width="100%">Represents a descriptor for identifying a class during serialization and
+ deserialization.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamField.html">ObjectStreamField</a></td>
+              <td class="jd-descrcol" width="100%">Describes a field for the purpose of serialization.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/OutputStream.html">OutputStream</a></td>
+              <td class="jd-descrcol" width="100%">A writable sink for bytes.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/OutputStreamWriter.html">OutputStreamWriter</a></td>
+              <td class="jd-descrcol" width="100%">A class for turning a character stream into a byte stream.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/PipedInputStream.html">PipedInputStream</a></td>
+              <td class="jd-descrcol" width="100%">Receives information from a communications pipe.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/PipedOutputStream.html">PipedOutputStream</a></td>
+              <td class="jd-descrcol" width="100%">Places information on a communications pipe.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/PipedReader.html">PipedReader</a></td>
+              <td class="jd-descrcol" width="100%">Receives information on a communications pipe.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/PipedWriter.html">PipedWriter</a></td>
+              <td class="jd-descrcol" width="100%">Places information on a communications pipe.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/PrintStream.html">PrintStream</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> and provides convenience methods for
+ writing common data types in a human readable format.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a></td>
+              <td class="jd-descrcol" width="100%">Wraps either an existing <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> or an existing <code><a href="reference/java/io/Writer.html">Writer</a></code>
+ and provides convenience methods for printing common data types in a human
+ readable format.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/PushbackInputStream.html">PushbackInputStream</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/InputStream.html">InputStream</a></code> and adds functionality to "push back"
+ bytes that have been read, so that they can be read again.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/PushbackReader.html">PushbackReader</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and adds functionality to "push back"
+ characters that have been read, so that they can be read again.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/RandomAccessFile.html">RandomAccessFile</a></td>
+              <td class="jd-descrcol" width="100%">Allows reading from and writing to a file in a random-access manner.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/Reader.html">Reader</a></td>
+              <td class="jd-descrcol" width="100%">The base class for all readers.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/SequenceInputStream.html">SequenceInputStream</a></td>
+              <td class="jd-descrcol" width="100%">Concatenates two or more existing <code><a href="reference/java/io/InputStream.html">InputStream</a></code>s.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/SerializablePermission.html">SerializablePermission</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/StreamTokenizer.html">StreamTokenizer</a></td>
+              <td class="jd-descrcol" width="100%">Parses a stream into a set of defined tokens, one at a time.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/StringBufferInputStream.html">StringBufferInputStream</a></td>
+              <td class="jd-descrcol" width="100%">
+      <em>
+  This class is deprecated.
+      Use <code><a href="reference/java/io/StringReader.html">StringReader</a></code> instead.
+</em>&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/StringReader.html">StringReader</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Reader.html">Reader</a></code> that reads characters from a <code>String</code> in
+ a sequential manner.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/StringWriter.html">StringWriter</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Writer.html">Writer</a></code> that writes characters to a <code>StringBuffer</code>
+ in a sequential manner, appending them in the process.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/Writer.html">Writer</a></td>
+              <td class="jd-descrcol" width="100%">The base class for all writers.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+  
+    <h2>Exceptions</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/CharConversionException.html">CharConversionException</a></td>
+              <td class="jd-descrcol" width="100%">The top level class for character conversion exceptions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program encounters the end of a file or stream during an input
+ operation.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a file specified by a program cannot be found.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/InterruptedIOException.html">InterruptedIOException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that a blocking I/O operation has been interrupted.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/InvalidClassException.html">InvalidClassException</a></td>
+              <td class="jd-descrcol" width="100%">Signals a problem during the serialization or or deserialization of an
+ object.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/InvalidObjectException.html">InvalidObjectException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that, during deserialization, the validation of an object has failed.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+              <td class="jd-descrcol" width="100%">Signals a general, I/O-related error.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/NotActiveException.html">NotActiveException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that a serialization-related method has been invoked in the wrong
+ place.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/NotSerializableException.html">NotSerializableException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that an object that is not serializable has been passed into the
+ <code>ObjectOutput.writeObject()</code> method.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamException.html">ObjectStreamException</a></td>
+              <td class="jd-descrcol" width="100%">Signals some sort of problem during either serialization or deserialization
+ of objects.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/OptionalDataException.html">OptionalDataException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that the <code><a href="reference/java/io/ObjectInputStream.html">ObjectInputStream</a></code> class encountered a primitive type
+ (<code>int</code>, <code>char</code> etc.) instead of an object instance in the input
+ stream.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/StreamCorruptedException.html">StreamCorruptedException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that the <code><a href="reference/java/io/ObjectInputStream.html#readObject()">readObject()</a></code> method could not
+ read an object due to missing information (for example, a cyclic reference
+ that doesn't match a previous instance, or a missing class descriptor for the
+ object to be loaded).&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/SyncFailedException.html">SyncFailedException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that the <code><a href="reference/java/io/FileDescriptor.html#sync()">sync()</a></code> method has failed to
+ complete.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/UnsupportedEncodingException.html">UnsupportedEncodingException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program asks for a particular character converter that is
+ unavailable.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/UTFDataFormatException.html">UTFDataFormatException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that an incorrectly encoded UTF-8 string has been encountered, most
+ likely while reading some <code><a href="reference/java/io/DataInputStream.html">DataInputStream</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/WriteAbortedException.html">WriteAbortedException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that the <code><a href="reference/java/io/ObjectInputStream.html#readObject()">readObject()</a></code> method has detected
+ an exception marker in the input stream.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Errors</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/IOError.html">IOError</a></td>
+              <td class="jd-descrcol" width="100%">This error is thrown when a severe I/O error has happened.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div><!-- end jd-content -->
+</div><!-- doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>

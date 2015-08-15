@@ -1,0 +1,1440 @@
+---
+
+title: DataInput - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  DataInput - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>DataInput</h1>
+
+
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">java.io.DataInput</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-indirect" class="jd-expando-trigger closed"
+          ><a id="subclasses-indirect-trigger"
+          class="jd-expando-trigger-img" /></a>Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/io/DataInputStream.html">DataInputStream</a>,
+            
+              <a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a>,
+            
+              <a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a>,
+            
+              <a href="../../../reference/java/io/RandomAccessFile.html">RandomAccessFile</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/DataInputStream.html">DataInputStream</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/InputStream.html">InputStream</a></code> and reads big-endian typed data from it.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectInput.html">ObjectInput</a></td>
+              <td class="jd-descrcol" width="100%">Defines an interface for classes that allow reading serialized objects.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/InputStream.html">InputStream</a></code> that is able to read (deserialize) Java
+ objects as well as primitive data types (int, byte, char etc.).&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/RandomAccessFile.html">RandomAccessFile</a></td>
+              <td class="jd-descrcol" width="100%">Allows reading from and writing to a file in a random-access manner.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>Defines an interface for classes that are able to read big-endian typed data from some
+ source. Typically, this data has been written by a class which implements
+ <code><a href="reference/java/io/DataOutput.html">DataOutput</a></code>. Types that can be read include byte, 16-bit short, 32-bit
+ int, 32-bit float, 64-bit long, 64-bit double, byte strings, and MUTF-8
+ strings.
+
+ <h3>MUTF-8 (Modified UTF-8) Encoding</h3>
+ <p>
+ When encoding strings as UTF, implementations of <code>DataInput</code> and
+ <code>DataOutput</code> use a slightly modified form of UTF-8, hereafter referred
+ to as MUTF-8. This form is identical to standard UTF-8, except:
+ <ul>
+ <li>Only the one-, two-, and three-byte encodings are used.</li>
+ <li>Code points in the range <code>U+10000</code> &hellip;
+ <code>U+10ffff</code> are encoded as a surrogate pair, each of which is
+ represented as a three-byte encoded value.</li>
+ <li>The code point <code>U+0000</code> is encoded in two-byte form.</li>
+ </ul>
+ <p>
+ Please refer to <a href="http://unicode.org">The Unicode Standard</a> for
+ further information about character encoding. MUTF-8 is actually closer to
+ the (relatively less well-known) encoding <a
+ href="http://www.unicode.org/reports/tr26/">CESU-8</a> than to UTF-8 per se.</p>
+
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataInputStream.html">DataInputStream</a></code></li><li><code><a href="../../../reference/java/io/RandomAccessFile.html">RandomAccessFile</a></code></li>
+      </ul>
+  </div>
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readBoolean()">readBoolean</a></span>()
+        
+        <div class="jd-descrdiv">Reads a boolean.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            byte
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readByte()">readByte</a></span>()
+        
+        <div class="jd-descrdiv">Reads an 8-bit byte value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            char
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readChar()">readChar</a></span>()
+        
+        <div class="jd-descrdiv">Reads a big-endian 16-bit character value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            double
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readDouble()">readDouble</a></span>()
+        
+        <div class="jd-descrdiv">Reads a big-endian 64-bit double value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            float
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readFloat()">readFloat</a></span>()
+        
+        <div class="jd-descrdiv">Reads a big-endian 32-bit float value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readFully(byte[])">readFully</a></span>(byte[] dst)
+        
+        <div class="jd-descrdiv">Equivalent to <code>readFully(dst, 0, dst.length);</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readFully(byte[], int, int)">readFully</a></span>(byte[] dst, int offset, int byteCount)
+        
+        <div class="jd-descrdiv">Reads <code>byteCount</code> bytes from this stream and stores them in the byte
+ array <code>dst</code> starting at <code>offset</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readInt()">readInt</a></span>()
+        
+        <div class="jd-descrdiv">Reads a big-endian 32-bit integer value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readLine()">readLine</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing the next line of text available from this
+ stream.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            long
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readLong()">readLong</a></span>()
+        
+        <div class="jd-descrdiv">Reads a big-endian 64-bit long value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            short
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readShort()">readShort</a></span>()
+        
+        <div class="jd-descrdiv">Reads a big-endian 16-bit short value.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readUTF()">readUTF</a></span>()
+        
+        <div class="jd-descrdiv">Reads a string encoded with <code><a href="reference/java/io/DataInput.html">modified UTF-8</a></code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readUnsignedByte()">readUnsignedByte</a></span>()
+        
+        <div class="jd-descrdiv">Reads an unsigned 8-bit byte value and returns it as an int.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#readUnsignedShort()">readUnsignedShort</a></span>()
+        
+        <div class="jd-descrdiv">Reads a big-endian 16-bit unsigned short value and returns it as an int.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/io/DataInput.html#skipBytes(int)">skipBytes</a></span>(int count)
+        
+        <div class="jd-descrdiv">Skips <code>count</code> number of bytes.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="readBoolean()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">readBoolean</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a boolean.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the next boolean value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeBoolean(boolean)">writeBoolean(boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readByte()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        byte
+      </span>
+      <span class="sympad">readByte</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads an 8-bit byte value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the next byte value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeByte(int)">writeByte(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readChar()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        char
+      </span>
+      <span class="sympad">readChar</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 16-bit character value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the next char value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeChar(int)">writeChar(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readDouble()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        double
+      </span>
+      <span class="sympad">readDouble</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 64-bit double value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the next double value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeDouble(double)">writeDouble(double)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readFloat()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        float
+      </span>
+      <span class="sympad">readFloat</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 32-bit float value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the next float value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeFloat(float)">writeFloat(float)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readFully(byte[])"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">readFully</span>
+      <span class="normal">(byte[] dst)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Equivalent to <code>readFully(dst, 0, dst.length);</code>.
+</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td></td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readFully(byte[], int, int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">readFully</span>
+      <span class="normal">(byte[] dst, int offset, int byteCount)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads <code>byteCount</code> bytes from this stream and stores them in the byte
+ array <code>dst</code> starting at <code>offset</code>. If <code>byteCount</code> is zero, then this
+ method returns without reading any bytes. Otherwise, this method blocks until
+ <code>byteCount</code> bytes have been read. If insufficient bytes are available,
+ <code>EOFException</code> is thrown. If an I/O error occurs, <code>IOException</code> is
+ thrown. When an exception is thrown, some bytes may have been consumed from the stream
+ and written into the array.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>dst</th>
+          <td>the byte array into which the data is read.</td>
+        </tr>
+        <tr>
+          <th>offset</th>
+          <td>the offset in <code>dst</code> at which to store the bytes.</td>
+        </tr>
+        <tr>
+          <th>byteCount</th>
+          <td>the number of bytes to read.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the source stream is reached before enough
+             bytes have been read.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+            <td>if <code>offset < 0</code> or <code>byteCount < 0</code>, or
+             <code>offset + byteCount > dst.length</code>.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if a problem occurs while reading from this stream.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if <code>dst</code> is null.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readInt()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad">readInt</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 32-bit integer value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the next int value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeInt(int)">writeInt(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readLine()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">readLine</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing the next line of text available from this
+ stream. A line is made of zero or more characters followed by <code>'\n'</code>, <code>'\r'</code>, <code>"\r\n"</code> or the end of the stream. The string
+ does not include the newline sequence.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the contents of the line or null if no characters have been read
+         before the end of the stream.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readLong()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        long
+      </span>
+      <span class="sympad">readLong</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 64-bit long value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the next long value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeLong(long)">writeLong(long)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readShort()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        short
+      </span>
+      <span class="sympad">readShort</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 16-bit short value.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the next short value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeShort(int)">writeShort(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readUTF()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">readUTF</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a string encoded with <code><a href="reference/java/io/DataInput.html">modified UTF-8</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the next string encoded with <code><a href="reference/java/io/DataInput.html">modified UTF-8</a></code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeUTF(java.lang.String)">writeUTF(java.lang.String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readUnsignedByte()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad">readUnsignedByte</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads an unsigned 8-bit byte value and returns it as an int.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the next unsigned byte value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeByte(int)">writeByte(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="readUnsignedShort()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad">readUnsignedShort</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads a big-endian 16-bit unsigned short value and returns it as an int.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the next unsigned short value.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+            <td>if the end of the input is reached before the read
+         request can be satisfied.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs while reading.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/io/DataOutput.html#writeShort(int)">writeShort(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="skipBytes(int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad">skipBytes</span>
+      <span class="normal">(int count)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Skips <code>count</code> number of bytes. This method will not throw an
+ <code><a href="reference/java/io/EOFException.html">EOFException</a></code> if the end of the input is reached before
+ <code>count</code> bytes where skipped.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>count</th>
+          <td>the number of bytes to skip.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the number of bytes actually skipped.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if a problem occurs during skipping.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

@@ -1,0 +1,2133 @@
+---
+
+title: Exception - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  Exception - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    class
+<h1>Exception</h1>
+
+
+
+  
+  
+  
+
+  
+    extends <a href="../../../reference/java/lang/Throwable.html">Throwable</a><br/>
+  
+  
+  
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="3" class="jd-inheritance-class-cell"><a href="../../../reference/java/lang/Object.html">java.lang.Object</a></td>
+    </tr>
+    
+
+    <tr>
+        
+            <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
+        
+        <td colspan="2" class="jd-inheritance-class-cell"><a href="../../../reference/java/lang/Throwable.html">java.lang.Throwable</a></td>
+    </tr>
+    
+
+    <tr>
+        
+            <td class="jd-inheritance-space">&nbsp;</td>
+        
+            <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">java.lang.Exception</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-direct" class="jd-expando-trigger closed"
+          ><a id="subclasses-direct-trigger"
+          class="jd-expando-trigger-img" /></a>Known Direct Subclasses
+
+  <div id="subclasses-direct">
+      <div id="subclasses-direct-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+            
+              
+                <a href="../../../reference/java/util/concurrent/BrokenBarrierException.html">BrokenBarrierException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/javax/security/cert/CertificateException.html">CertificateException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/lang/CloneNotSupportedException.html">CloneNotSupportedException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/util/zip/DataFormatException.html">DataFormatException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/javax/xml/datatype/DatatypeConfigurationException.html">DatatypeConfigurationException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/javax/security/auth/DestroyFailedException.html">DestroyFailedException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/util/concurrent/ExecutionException.html">ExecutionException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/security/GeneralSecurityException.html">GeneralSecurityException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/io/IOException.html">IOException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/org/json/JSONException.html">JSONException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/text/ParseException.html">ParseException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/javax/xml/parsers/ParserConfigurationException.html">ParserConfigurationException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/security/PrivilegedActionException.html">PrivilegedActionException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/lang/ReflectiveOperationException.html">ReflectiveOperationException</a>,
+              
+              and
+                <a href="#" onclick="return toggleInherited(document.getElementById('subclasses-direct', null))">9 others.</a>
+              
+            
+          
+      </div>
+      <div id="subclasses-direct-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/BrokenBarrierException.html">BrokenBarrierException</a></td>
+              <td class="jd-descrcol" width="100%">Exception thrown when a thread tries to wait upon a barrier that is
+ in a broken state, or which enters the broken state while the thread
+ is waiting.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/security/cert/CertificateException.html">CertificateException</a></td>
+              <td class="jd-descrcol" width="100%">The base class for all <code>Certificate</code> related exceptions.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/CloneNotSupportedException.html">CloneNotSupportedException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program attempts to clone an object which does not support the
+ <code><a href="reference/java/lang/Cloneable.html">Cloneable</a></code> interface.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/zip/DataFormatException.html">DataFormatException</a></td>
+              <td class="jd-descrcol" width="100%"><code>DataFormatException</code> is used to indicate an error in the format of a
+ particular data stream which is to be uncompressed.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/xml/datatype/DatatypeConfigurationException.html">DatatypeConfigurationException</a></td>
+              <td class="jd-descrcol" width="100%"><p>Indicates a serious configuration error.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/security/auth/DestroyFailedException.html">DestroyFailedException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that the <code><a href="reference/javax/security/auth/Destroyable.html#destroy()">destroy()</a></code> method failed.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ExecutionException.html">ExecutionException</a></td>
+              <td class="jd-descrcol" width="100%">Exception thrown when attempting to retrieve the result of a task
+ that aborted by throwing an exception.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/GeneralSecurityException.html">GeneralSecurityException</a></td>
+              <td class="jd-descrcol" width="100%"><code>GeneralSecurityException</code> is a general security exception and the
+ superclass for all security specific exceptions.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+              <td class="jd-descrcol" width="100%">Signals a general, I/O-related error.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a waiting thread is activated before the condition it was waiting
+ for has been satisfied.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/org/json/JSONException.html">JSONException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown to indicate a problem with the JSON API.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/text/ParseException.html">ParseException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the string being parsed is not in the correct form.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/xml/parsers/ParserConfigurationException.html">ParserConfigurationException</a></td>
+              <td class="jd-descrcol" width="100%">Indicates a serious configuration error.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/PrivilegedActionException.html">PrivilegedActionException</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ReflectiveOperationException.html">ReflectiveOperationException</a></td>
+              <td class="jd-descrcol" width="100%">Superclass of exceptions related to reflection.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/RuntimeException.html">RuntimeException</a></td>
+              <td class="jd-descrcol" width="100%"><code>RuntimeException</code> is the superclass of all classes that represent
+ exceptional conditions which occur as a result of executing an application in
+ the VM.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+              <td class="jd-descrcol" width="100%">Encapsulate a general SAX error or warning.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLException.html">SQLException</a></td>
+              <td class="jd-descrcol" width="100%">An exception that indicates a failed JDBC operation.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/TimeoutException.html">TimeoutException</a></td>
+              <td class="jd-descrcol" width="100%">Exception thrown when a blocking operation times out.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/TooManyListenersException.html">TooManyListenersException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>TooManyListenersException</code> is thrown when an attempt is made to add
+ more than one listener to an event source which only supports a single
+ listener.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/xml/transform/TransformerException.html">TransformerException</a></td>
+              <td class="jd-descrcol" width="100%">This class specifies an exceptional condition that occurred
+ during the transformation process.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/URISyntaxException.html">URISyntaxException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>URISyntaxException</code> will be thrown if some information could not be parsed
+ while creating a URI.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/security/auth/callback/UnsupportedCallbackException.html">UnsupportedCallbackException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a <code><a href="reference/javax/security/auth/callback/CallbackHandler.html">CallbackHandler</a></code> does not support a particular <code><a href="reference/javax/security/auth/callback/Callback.html">Callback</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/xml/xpath/XPathException.html">XPathException</a></td>
+              <td class="jd-descrcol" width="100%"><code>XPathException</code> represents a generic XPath exception.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-indirect" class="jd-expando-trigger closed"
+          ><a id="subclasses-indirect-trigger"
+          class="jd-expando-trigger-img" /></a>Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+            
+              
+                <a href="../../../reference/java/security/AccessControlException.html">AccessControlException</a>,
+              
+              
+            
+              
+              
+            
+              
+                <a href="../../../reference/java/nio/channels/AlreadyConnectedException.html">AlreadyConnectedException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/lang/annotation/AnnotationTypeMismatchException.html">AnnotationTypeMismatchException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/lang/ArrayStoreException.html">ArrayStoreException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/android/util/Base64DataException.html">Base64DataException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/sql/BatchUpdateException.html">BatchUpdateException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/net/BindException.html">BindException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/nio/BufferOverflowException.html">BufferOverflowException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/nio/BufferUnderflowException.html">BufferUnderflowException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/security/cert/CRLException.html">CRLException</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/util/concurrent/CancellationException.html">CancellationException</a>,
+              
+              and
+                <a href="#" onclick="return toggleInherited(document.getElementById('subclasses-indirect', null))">140 others.</a>
+              
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/AccessControlException.html">AccessControlException</a></td>
+              <td class="jd-descrcol" width="100%"><code>AccessControlException</code> is thrown if the access control infrastructure
+ denies protected access due to missing permissions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/AlreadyConnectedException.html">AlreadyConnectedException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>AlreadyConnectedException</code> is thrown when an attempt is made to
+ connect a SocketChannel that is already connected.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/annotation/AnnotationTypeMismatchException.html">AnnotationTypeMismatchException</a></td>
+              <td class="jd-descrcol" width="100%">Indicates that an annotation type has changed since it was compiled or
+ serialized.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ArithmeticException.html">ArithmeticException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the an invalid arithmetic operation is attempted.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ArrayIndexOutOfBoundsException.html">ArrayIndexOutOfBoundsException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the an array is indexed with a value less than zero, or greater
+ than or equal to the size of the array.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ArrayStoreException.html">ArrayStoreException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program attempts to store an element of an incompatible type in
+ an array.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/AsynchronousCloseException.html">AsynchronousCloseException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>AsynchronousCloseException</code> is thrown when the underlying channel
+ for an I/O operation is closed by another thread.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/android/util/Base64DataException.html">Base64DataException</a></td>
+              <td class="jd-descrcol" width="100%">This exception is thrown by <code><a href="reference/android/util/Base64InputStream.html">Base64InputStream</a></code> or <code><a href="reference/android/util/Base64OutputStream.html">Base64OutputStream</a></code>
+ when an error is detected in the data being decoded.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/BatchUpdateException.html">BatchUpdateException</a></td>
+              <td class="jd-descrcol" width="100%">This exception is thrown if a problem occurs during a batch update operation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/BindException.html">BindException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>BindException</code> is thrown when a process cannot bind a local
+ address/port, either because it is already bound or reserved by the OS.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/BufferOverflowException.html">BufferOverflowException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>BufferOverflowException</code> is thrown when elements are written
+ to a buffer but there is not enough remaining space in the buffer.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/BufferUnderflowException.html">BufferUnderflowException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>BufferUnderflowException</code> is thrown when elements are read
+ from a buffer but there are not enough remaining elements in the buffer.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CRLException.html">CRLException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown if errors occur during handling of <code>CRL</code>s.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/CancellationException.html">CancellationException</a></td>
+              <td class="jd-descrcol" width="100%">Exception indicating that the result of a value-producing task,
+ such as a <code><a href="reference/java/util/concurrent/FutureTask.html">FutureTask</a></code>, cannot be retrieved because the task
+ was cancelled.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/CancelledKeyException.html">CancelledKeyException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>CancelledKeyException</code> is thrown when an invalid selection key is
+ used.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/security/cert/CertificateEncodingException.html">CertificateEncodingException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when an error occurs while a <code>Certificate</code>
+ is being encoded.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertificateException.html">CertificateException</a></td>
+              <td class="jd-descrcol" width="100%">The base class for all <code>Certificate</code> related exceptions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/security/cert/CertificateExpiredException.html">CertificateExpiredException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> has expired.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/security/cert/CertificateNotYetValidException.html">CertificateNotYetValidException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> is not yet valid.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertificateParsingException.html">CertificateParsingException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> can not be parsed.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/CharConversionException.html">CharConversionException</a></td>
+              <td class="jd-descrcol" width="100%">The top level class for character conversion exceptions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/charset/CharacterCodingException.html">CharacterCodingException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>CharacterCodingException</code> is thrown when an encoding or decoding
+ error occurs.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program attempts to cast a an object to a type with which it is
+ not compatible.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/ClassNotFoundException.html">ClassNotFoundException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a class loader is unable to find a class.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/ClosedByInterruptException.html">ClosedByInterruptException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ClosedByInterruptException</code> is thrown when a thread is interrupted
+ in a blocking I/O operation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/ClosedChannelException.html">ClosedChannelException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ClosedChannelException</code> is thrown when a channel is closed for the
+ type of operation attempted.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/ClosedSelectorException.html">ClosedSelectorException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ClosedSelectorException</code> is thrown when a <code><a href="reference/java/nio/channels/Selector.html">selector</a></code>
+ is closed and an I/O operation is attempted.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/ConcurrentModificationException.html">ConcurrentModificationException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>ConcurrentModificationException</code> is thrown when a Collection is
+ modified and an existing iterator on the Collection is used to modify the
+ Collection as well.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/ConnectException.html">ConnectException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ConnectException</code> is thrown if a connection cannot be established to
+ a remote host on a specific port.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/ConnectionPendingException.html">ConnectionPendingException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ConnectionPendingException</code> is thrown when an attempt is made to
+ connect a <code><a href="reference/java/nio/channels/SocketChannel.html">SocketChannel</a></code> that has a non-blocking connection already
+ underway.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/org/w3c/dom/DOMException.html">DOMException</a></td>
+              <td class="jd-descrcol" width="100%">DOM operations only raise exceptions in "exceptional" circumstances, i.e.,
+ when an operation is impossible to perform (either for logical reasons,
+ because data is lost, or because the implementation has become unstable).&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/DataTruncation.html">DataTruncation</a></td>
+              <td class="jd-descrcol" width="100%">An exception which is thrown when a JDBC driver unexpectedly truncates a data
+ value either when reading (resulting in warning), or when writing data
+ (resulting in an error).&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/DigestException.html">DigestException</a></td>
+              <td class="jd-descrcol" width="100%"><code>DigestException</code> is a general message digest exception.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/DuplicateFormatFlagsException.html">DuplicateFormatFlagsException</a></td>
+              <td class="jd-descrcol" width="100%">The unchecked exception will be thrown out if there are duplicate flags given
+ out in the format specifier.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/EOFException.html">EOFException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program encounters the end of a file or stream during an input
+ operation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/EmptyStackException.html">EmptyStackException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>EmptyStackException</code> is thrown if the pop/peek method of a stack is
+ executed on an empty stack.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/FileLockInterruptionException.html">FileLockInterruptionException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>FileLockInterruptionException</code> is thrown when a thread is
+ interrupted while waiting to acquire a file lock.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FileNotFoundException.html">FileNotFoundException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a file specified by a program cannot be found.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/FormatFlagsConversionMismatchException.html">FormatFlagsConversionMismatchException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>FormatFlagsConversionMismatchException</code> will be thrown if a
+ conversion and the flags are incompatible.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/FormatterClosedException.html">FormatterClosedException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>FormatterClosedException</code> will be thrown if the formatter has been
+ closed.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/HttpRetryException.html">HttpRetryException</a></td>
+              <td class="jd-descrcol" width="100%">If a HTTP request has to be retried, this exception will be thrown if the
+ request cannot be retried automatically.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalAccessException.html">IllegalAccessException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program attempts to access a field or method which is not
+ accessible from the location where the reference is made.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a method is invoked with an argument which it can not reasonably
+ deal with.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/IllegalBlockingModeException.html">IllegalBlockingModeException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalBlockingModeException</code> is thrown when an operation that
+ requires a specific blocking mode is invoked on a channel that is in a
+ different blocking mode.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/charset/IllegalCharsetNameException.html">IllegalCharsetNameException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalCharsetNameException</code> is thrown when an illegal charset name
+ is encountered.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatCodePointException.html">IllegalFormatCodePointException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatCodePointException</code> will be thrown if an invalid
+ Unicode code point (defined by <code><a href="reference/java/lang/Character.html#isValidCodePoint(int)">isValidCodePoint(int)</a></code>) is
+ passed as a parameter to a Formatter.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatConversionException.html">IllegalFormatConversionException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatConversionException</code> will be thrown when the parameter
+ is incompatible with the corresponding format specifier.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatException.html">IllegalFormatException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatException</code> is thrown when a format string that
+ contains either an illegal syntax or format specifier is transferred as a
+ parameter.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatFlagsException.html">IllegalFormatFlagsException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatFlagsException</code> will be thrown if the combination of
+ the format flags is illegal.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatPrecisionException.html">IllegalFormatPrecisionException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatPrecisionException</code> will be thrown if the precision is
+ a negative other than -1 or in other cases where precision is not supported.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/IllegalFormatWidthException.html">IllegalFormatWidthException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalFormatWidthException</code> will be thrown if the width is a
+ negative value other than -1 or in other cases where a width is not
+ supported.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a monitor operation is attempted when the monitor is not in the
+ correct state, for example when a thread attempts to exit a monitor which it
+ does not own.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/IllegalSelectorException.html">IllegalSelectorException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>IllegalSelectorException</code> is thrown when a call is made to register
+ a channel on a selector that has been created by a different provider.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an action is attempted at a time when the VM is not
+ in the correct state.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/IllegalThreadStateException.html">IllegalThreadStateException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an operation is attempted which is not possible given the state
+ that the executing thread is in.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/annotation/IncompleteAnnotationException.html">IncompleteAnnotationException</a></td>
+              <td class="jd-descrcol" width="100%">Indicates that an element of an annotation type was accessed that was added
+ after the type was compiled or serialized.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/IndexOutOfBoundsException.html">IndexOutOfBoundsException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program attempts to access a value in an indexable collection
+ using a value which is outside of the range of valid indices.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/InputMismatchException.html">InputMismatchException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>InputMismatchException</code> is thrown by a scanner to indicate that the
+ next token does not match or is out of range for the type specified in the
+ pattern.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/InstantiationException.html">InstantiationException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program attempts to access a constructor which is not
+ accessible from the location where the reference is made.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/InterruptedIOException.html">InterruptedIOException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that a blocking I/O operation has been interrupted.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html">InvalidAlgorithmParameterException</a></td>
+              <td class="jd-descrcol" width="100%"><code>InvalidAlgorithmParameterException</code> indicates the occurrence of
+ invalid algorithm parameters.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/InvalidClassException.html">InvalidClassException</a></td>
+              <td class="jd-descrcol" width="100%">Signals a problem during the serialization or or deserialization of an
+ object.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidKeyException.html">InvalidKeyException</a></td>
+              <td class="jd-descrcol" width="100%"><code>InvalidKeyException</code> indicates exceptional conditions, caused by an
+ invalid key.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/spec/InvalidKeySpecException.html">InvalidKeySpecException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when an invalid key specification is
+ encountered.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/InvalidMarkException.html">InvalidMarkException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>InvalidMarkException</code> is thrown when <code>reset()</code> is called on a
+ buffer, but no mark has been set previously.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/InvalidObjectException.html">InvalidObjectException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that, during deserialization, the validation of an object has failed.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidParameterException.html">InvalidParameterException</a></td>
+              <td class="jd-descrcol" width="100%"><code>InvalidParameterException</code> indicates exceptional conditions, caused by
+ invalid parameters.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/spec/InvalidParameterSpecException.html">InvalidParameterSpecException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when an invalid parameter specification is
+ encountered.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/InvalidPropertiesFormatException.html">InvalidPropertiesFormatException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>InvalidPropertiesFormatException</code> is thrown if loading the XML
+ document defining the properties does not follow the <code>Properties</code>
+ specification.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/reflect/InvocationTargetException.html">InvocationTargetException</a></td>
+              <td class="jd-descrcol" width="100%">This class provides a wrapper for an exception thrown by a <code>Method</code> or
+ <code>Constructor</code> invocation.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyException.html">KeyException</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyException</code> is the common superclass of all key related exceptions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyManagementException.html">KeyManagementException</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyManagementException</code> is a general exception, thrown to indicate an
+ exception during processing an operation concerning key management.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStoreException.html">KeyStoreException</a></td>
+              <td class="jd-descrcol" width="100%"><code>KeyStoreException</code> is a general <code>KeyStore</code> exception.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/org/w3c/dom/ls/LSException.html">LSException</a></td>
+              <td class="jd-descrcol" width="100%">Parser or write operations may throw an <code>LSException</code> if the
+ processing is stopped.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/charset/MalformedInputException.html">MalformedInputException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>MalformedInputException</code> is thrown when a malformed input is
+ encountered, for example if a byte sequence is illegal for the given charset.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/reflect/MalformedParameterizedTypeException.html">MalformedParameterizedTypeException</a></td>
+              <td class="jd-descrcol" width="100%">Indicates that a malformed parameterized type has been encountered by a
+ reflective method.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/MalformedURLException.html">MalformedURLException</a></td>
+              <td class="jd-descrcol" width="100%">This exception is thrown when a program attempts to create an URL from an
+ incorrect specification.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/MissingFormatArgumentException.html">MissingFormatArgumentException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>MissingFormatArgumentException</code> will be thrown if there is no
+ corresponding argument with the specified conversion or an argument index
+ that refers to a missing argument.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/MissingFormatWidthException.html">MissingFormatWidthException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>MissingFormatWidthException</code> will be thrown if the format width is
+ missing but is required.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/MissingResourceException.html">MissingResourceException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>MissingResourceException</code> is thrown by ResourceBundle when a
+ resource bundle cannot be found or a resource is missing from a resource
+ bundle.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/NegativeArraySizeException.html">NegativeArraySizeException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an attempt is made to create an array with a size of less than
+ zero.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/NoConnectionPendingException.html">NoConnectionPendingException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>NoConnectionPendingException</code> is thrown if <code>SocketChannel</code>'s
+ <code><a href="reference/java/nio/channels/SocketChannel.html#finishConnect()">finishConnect</a></code> method is called before
+ the <code>SocketChannel</code>'s <code><a href="reference/java/nio/channels/SocketChannel.html#connect(java.net.SocketAddress)">connect(java.net.SocketAddress)</a></code> connect} method completed
+ without error.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/NoRouteToHostException.html">NoRouteToHostException</a></td>
+              <td class="jd-descrcol" width="100%">The <code>NoRouteToHostException</code> will be thrown while attempting to connect
+ to a remote host but the host cannot be reached for instance because of a
+ badly configured router or a blocking firewall.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/NoSuchAlgorithmException.html">NoSuchAlgorithmException</a></td>
+              <td class="jd-descrcol" width="100%"><code>NoSuchAlgorithmException</code> indicates that a requested algorithm could
+ not be found.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when trying to retrieve an element
+ past the end of an Enumeration or Iterator.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchFieldException.html">NoSuchFieldException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
+ on a class or object, a field that does not exist.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/NoSuchMethodException.html">NoSuchMethodException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the VM notices that a program tries to reference,
+ on a class or object, a method that does not exist.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/NoSuchProviderException.html">NoSuchProviderException</a></td>
+              <td class="jd-descrcol" width="100%"><code>NoSuchProviderException</code> indicates that a requested security provider
+ could not be found.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/NonReadableChannelException.html">NonReadableChannelException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>NonReadableChannelException</code> is thrown when attempting to read from
+ a channel that is not open for reading.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/NonWritableChannelException.html">NonWritableChannelException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>NonWritableChannelException</code> is thrown when attempting to write to a
+ channel that is not open for writing.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/NotActiveException.html">NotActiveException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that a serialization-related method has been invoked in the wrong
+ place.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/NotSerializableException.html">NotSerializableException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that an object that is not serializable has been passed into the
+ <code>ObjectOutput.writeObject()</code> method.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/NotYetBoundException.html">NotYetBoundException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>NotYetBoundException</code> is thrown if the server socket channel is not
+ bound before an I/O operation is made.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/NotYetConnectedException.html">NotYetConnectedException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>NotYetConnectedException</code> is thrown if the socket channel is not
+ connected before an I/O operation is invoked.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program tries to access a field or method of an object or an
+ element of an array when there is no instance or array to use, that is if the
+ object or array points to <code>null</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/NumberFormatException.html">NumberFormatException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an invalid value is passed to a string-to-number conversion
+ method.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamException.html">ObjectStreamException</a></td>
+              <td class="jd-descrcol" width="100%">Signals some sort of problem during either serialization or deserialization
+ of objects.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/OptionalDataException.html">OptionalDataException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that the <code><a href="reference/java/io/ObjectInputStream.html">ObjectInputStream</a></code> class encountered a primitive type
+ (<code>int</code>, <code>char</code> etc.) instead of an object instance in the input
+ stream.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/OverlappingFileLockException.html">OverlappingFileLockException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>OverlappingFileLockException</code> is thrown when attempting to acquire
+ a lock that overlaps an existing or pending lock held by this process.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/regex/PatternSyntaxException.html">PatternSyntaxException</a></td>
+              <td class="jd-descrcol" width="100%">Encapsulates a syntax error that occurred during the compilation of a
+ <code><a href="reference/java/util/regex/Pattern.html">Pattern</a></code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/PortUnreachableException.html">PortUnreachableException</a></td>
+              <td class="jd-descrcol" width="100%">This <code>PortUnreachableException</code> will be thrown if an <code>ICMP_Port_Unreachable</code> message has been received.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/ProtocolException.html">ProtocolException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that either a connection attempt to a socket of the wrong type, the
+ application of an unsupported operation or that a general error in the
+ underlying protocol has occurred.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/ProviderException.html">ProviderException</a></td>
+              <td class="jd-descrcol" width="100%"><code>ProviderException</code> is a general exception, thrown by security <code>Providers</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/ReadOnlyBufferException.html">ReadOnlyBufferException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ReadOnlyBufferException</code> is thrown when some write operation is
+ called on a read-only buffer.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/RejectedExecutionException.html">RejectedExecutionException</a></td>
+              <td class="jd-descrcol" width="100%">Exception thrown by an <code><a href="reference/java/util/concurrent/Executor.html">Executor</a></code> when a task cannot be
+ accepted for execution.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/org/xml/sax/SAXNotRecognizedException.html">SAXNotRecognizedException</a></td>
+              <td class="jd-descrcol" width="100%">Exception class for an unrecognized identifier.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/org/xml/sax/SAXNotSupportedException.html">SAXNotSupportedException</a></td>
+              <td class="jd-descrcol" width="100%">Exception class for an unsupported operation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/org/xml/sax/SAXParseException.html">SAXParseException</a></td>
+              <td class="jd-descrcol" width="100%">Encapsulate an XML parse error or warning.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLClientInfoException.html">SQLClientInfoException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when one or more
+ client info properties could not be set on a Connection.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLDataException.html">SQLDataException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when various data
+ errors arise.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLFeatureNotSupportedException.html">SQLFeatureNotSupportedException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
+ various the JDBC driver does not support an optional JDBC feature.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLIntegrityConstraintViolationException.html">SQLIntegrityConstraintViolationException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
+ various the an integrity constraint (foreign key, primary key or unique key)
+ has been violated.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLInvalidAuthorizationSpecException.html">SQLInvalidAuthorizationSpecException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLNonTransientException, is thrown when
+ the authorization credentials presented during connection establishment are
+ not valid.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLNonTransientConnectionException.html">SQLNonTransientConnectionException</a></td>
+              <td class="jd-descrcol" width="100%">An exception, which is subclass of SQLException, is thrown when the
+ connection operation that failed will not succeed when the operation is
+ retried without the cause of the failure being corrected.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLNonTransientException.html">SQLNonTransientException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLRecoverableException.html">SQLRecoverableException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLSyntaxErrorException.html">SQLSyntaxErrorException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTimeoutException.html">SQLTimeoutException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransactionRollbackException.html">SQLTransactionRollbackException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransientConnectionException.html">SQLTransientConnectionException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLTransientException.html">SQLTransientException</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/SQLWarning.html">SQLWarning</a></td>
+              <td class="jd-descrcol" width="100%">An exception class that holds information about Database access warnings.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/net/ssl/SSLException.html">SSLException</a></td>
+              <td class="jd-descrcol" width="100%">The base class for all SSL related exceptions.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/net/ssl/SSLHandshakeException.html">SSLHandshakeException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when a handshake could not be completed
+ successfully.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/net/ssl/SSLPeerUnverifiedException.html">SSLPeerUnverifiedException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when the identity of a peer has not been
+ verified.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/net/ssl/SSLProtocolException.html">SSLProtocolException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when an error in the operation of the SSL
+ protocol is encountered.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/SecurityException.html">SecurityException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a security manager check fails.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/crypto/ShortBufferException.html">ShortBufferException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when the result of an operation is attempted to
+ store in a user provided buffer that is too small.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/SignatureException.html">SignatureException</a></td>
+              <td class="jd-descrcol" width="100%"><code>SignatureException</code> is a general <code>Signature</code> exception.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/SocketException.html">SocketException</a></td>
+              <td class="jd-descrcol" width="100%">This <code>SocketException</code> may be thrown during socket creation or setting
+ options, and is the superclass of all other socket related exceptions.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/SocketTimeoutException.html">SocketTimeoutException</a></td>
+              <td class="jd-descrcol" width="100%">This exception is thrown when a timeout expired on a socket <code>read</code> or
+ <code>accept</code> operation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/StreamCorruptedException.html">StreamCorruptedException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that the <code><a href="reference/java/io/ObjectInputStream.html#readObject()">readObject()</a></code> method could not
+ read an object due to missing information (for example, a cyclic reference
+ that doesn't match a previous instance, or a missing class descriptor for the
+ object to be loaded).&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/StringIndexOutOfBoundsException.html">StringIndexOutOfBoundsException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when the a string is indexed with a value less than zero, or greater
+ than or equal to the size of the array.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/SyncFailedException.html">SyncFailedException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that the <code><a href="reference/java/io/FileDescriptor.html#sync()">sync()</a></code> method has failed to
+ complete.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/xml/transform/TransformerConfigurationException.html">TransformerConfigurationException</a></td>
+              <td class="jd-descrcol" width="100%">Indicates a serious configuration error.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/TypeNotPresentException.html">TypeNotPresentException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program tries to access a class, interface, enum or annotation
+ type through a string that contains the type's name and the type cannot be
+ found.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/UTFDataFormatException.html">UTFDataFormatException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that an incorrectly encoded UTF-8 string has been encountered, most
+ likely while reading some <code><a href="reference/java/io/DataInputStream.html">DataInputStream</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/reflect/UndeclaredThrowableException.html">UndeclaredThrowableException</a></td>
+              <td class="jd-descrcol" width="100%">This class provides a wrapper for an undeclared, checked exception thrown by
+ an InvocationHandler.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/UnknownFormatConversionException.html">UnknownFormatConversionException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnknownFormatConversionException</code> will be thrown if the format
+ conversion is unknown.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/UnknownFormatFlagsException.html">UnknownFormatFlagsException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnknownFormatFlagsException</code> will be thrown if there is
+ an unknown flag.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/UnknownHostException.html">UnknownHostException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a hostname can not be resolved.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/UnknownServiceException.html">UnknownServiceException</a></td>
+              <td class="jd-descrcol" width="100%">Is thrown if no appropriate <code>ContentHandler</code> could be found for a
+ particular service requested by the URL connection.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/charset/UnmappableCharacterException.html">UnmappableCharacterException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnmappableCharacterException</code> is thrown when an unmappable
+ character for the given charset is encountered.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/UnrecoverableEntryException.html">UnrecoverableEntryException</a></td>
+              <td class="jd-descrcol" width="100%"><code>UnrecoverableEntryException</code> indicates, that a <code>KeyStore.Entry</code>
+ cannot be recovered from a <code>KeyStore</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/UnrecoverableKeyException.html">UnrecoverableKeyException</a></td>
+              <td class="jd-descrcol" width="100%"><code>UnrecoverableKeyException</code> indicates, that a key cannot be recovered
+ from a <code>KeyStore</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/UnresolvedAddressException.html">UnresolvedAddressException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnresolvedAddressException</code> is thrown when trying to use an
+ unresolved network address in a network operation.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/channels/UnsupportedAddressTypeException.html">UnsupportedAddressTypeException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnsupportedAddressTypeException</code> is thrown when connecting or
+ binding to an unsupported address type.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/charset/UnsupportedCharsetException.html">UnsupportedCharsetException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>UnsupportedCharsetException</code> is thrown when an unsupported charset
+ name is encountered.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/UnsupportedEncodingException.html">UnsupportedEncodingException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when a program asks for a particular character converter that is
+ unavailable.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/UnsupportedOperationException.html">UnsupportedOperationException</a></td>
+              <td class="jd-descrcol" width="100%">Thrown when an unsupported operation is attempted.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/WriteAbortedException.html">WriteAbortedException</a></td>
+              <td class="jd-descrcol" width="100%">Signals that the <code><a href="reference/java/io/ObjectInputStream.html#readObject()">readObject()</a></code> method has detected
+ an exception marker in the input stream.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/xml/xpath/XPathExpressionException.html">XPathExpressionException</a></td>
+              <td class="jd-descrcol" width="100%"><code>XPathExpressionException</code> represents an error in an XPath expression.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/xml/xpath/XPathFactoryConfigurationException.html">XPathFactoryConfigurationException</a></td>
+              <td class="jd-descrcol" width="100%"><code>XPathFactoryConfigurationException</code> represents a configuration error in a <code>XPathFactory</code> environment.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/xml/xpath/XPathFunctionException.html">XPathFunctionException</a></td>
+              <td class="jd-descrcol" width="100%"><code>XPathFunctionException</code> represents an error with an XPath function.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/zip/ZipException.html">ZipException</a></td>
+              <td class="jd-descrcol" width="100%">This runtime exception is thrown by <code>ZipFile</code> and <code>ZipInputStream</code> when the file or stream is not a valid zip file.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p><code>Exception</code> is the superclass of all classes that represent recoverable
+ exceptions. When exceptions are thrown, they may be caught by application
+ code.</p>
+
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Throwable.html">Throwable</a></code></li><li><code><a href="../../../reference/java/lang/Error.html">Error</a></code></li><li><code><a href="../../../reference/java/lang/RuntimeException.html">RuntimeException</a></code></li>
+      </ul>
+  </div>
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<table id="pubctors" class="jd-sumtable"><tr><th colspan="12">Public Constructors</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Exception.html#Exception()">Exception</a></span>()
+        
+        <div class="jd-descrdiv">Constructs a new <code>Exception</code> that includes the current stack trace.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Exception.html#Exception(java.lang.String)">Exception</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)
+        
+        <div class="jd-descrdiv">Constructs a new <code>Exception</code> with the current stack trace and the
+ specified detail message.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Exception.html#Exception(java.lang.String, java.lang.Throwable)">Exception</a></span>(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> throwable)
+        
+        <div class="jd-descrdiv">Constructs a new <code>Exception</code> with the current stack trace, the
+ specified detail message and the specified cause.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Exception.html#Exception(java.lang.Throwable)">Exception</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> throwable)
+        
+        <div class="jd-descrdiv">Constructs a new <code>Exception</code> with the current stack trace and the
+ specified cause.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<table id="proctors" class="jd-sumtable"><tr><th colspan="12">Protected Constructors</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Exception.html#Exception(java.lang.String, java.lang.Throwable, boolean, boolean)">Exception</a></span>(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause, boolean enableSuppression, boolean writableStackTrace)
+        
+        <div class="jd-descrdiv">Constructs a new <code>Exception</code> with the current stack trace,
+ the specified detail message, the specified cause, and whether suppression
+ and/or writable stack trace is enabled.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="inhmethods" class="jd-sumtable"><tr><th>
+  <div style="clear:left;">Inherited Methods</div>
+  <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
+  </th></tr>
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Throwable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.Throwable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From class
+
+  <a href="../../../reference/java/lang/Throwable.html">java.lang.Throwable</a>
+
+<div id="inherited-methods-java.lang.Throwable">
+  <div id="inherited-methods-java.lang.Throwable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.Throwable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#addSuppressed(java.lang.Throwable)">addSuppressed</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> exception)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Throwable.html">Throwable</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#fillInStackTrace()">fillInStackTrace</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Throwable.html">Throwable</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#getCause()">getCause</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#getLocalizedMessage()">getLocalizedMessage</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#getMessage()">getMessage</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#getStackTrace()">getStackTrace</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/Throwable.html">Throwable[]</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#getSuppressed()">getSuppressed</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Throwable.html">Throwable</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#initCause(java.lang.Throwable)">initCause</a></span>(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause)
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#printStackTrace()">printStackTrace</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#printStackTrace(java.io.PrintWriter)">printStackTrace</a></span>(<a href="../../../reference/java/io/PrintWriter.html">PrintWriter</a> w)
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#printStackTrace(java.io.PrintStream)">printStackTrace</a></span>(<a href="../../../reference/java/io/PrintStream.html">PrintStream</a> ps)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Throwable.html#setStackTrace(java.lang.StackTraceElement[])">setStackTrace</a></span>(<a href="../../../reference/java/lang/StackTraceElement.html">StackTraceElement[]</a> stackTrace)
+        
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Object" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.Object-trigger"
+          class="jd-expando-trigger-img" /></a>
+From class
+
+  <a href="../../../reference/java/lang/Object.html">java.lang.Object</a>
+
+<div id="inherited-methods-java.lang.Object">
+  <div id="inherited-methods-java.lang.Object-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.Object-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#clone()">clone</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#finalize()">finalize</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#getClass()">getClass</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#notify()">notify</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#notifyAll()">notifyAll</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#toString()">toString</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait</a></span>(long timeout, int nanos)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long)">wait</a></span>(long timeout)
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait()">wait</a></span>()
+        
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+
+</table>
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<h2>Public Constructors</h2>
+
+
+
+<a id="Exception()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">Exception</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Exception</code> that includes the current stack trace.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="Exception(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">Exception</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Exception</code> with the current stack trace and the
+ specified detail message.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>detailMessage</th>
+          <td>the detail message for this exception.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="Exception(java.lang.String, java.lang.Throwable)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">Exception</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> detailMessage, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> throwable)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Exception</code> with the current stack trace, the
+ specified detail message and the specified cause.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>detailMessage</th>
+          <td>the detail message for this exception.</td>
+        </tr>
+        <tr>
+          <th>throwable</th>
+          <td>the cause of this exception.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="Exception(java.lang.Throwable)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">Exception</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Throwable.html">Throwable</a> throwable)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Exception</code> with the current stack trace and the
+ specified cause.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>throwable</th>
+          <td>the cause of this exception.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<h2>Protected Constructors</h2>
+
+
+
+<a id="Exception(java.lang.String, java.lang.Throwable, boolean, boolean)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">Exception</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> message, <a href="../../../reference/java/lang/Throwable.html">Throwable</a> cause, boolean enableSuppression, boolean writableStackTrace)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new <code>Exception</code> with the current stack trace,
+ the specified detail message, the specified cause, and whether suppression
+ and/or writable stack trace is enabled.</p></div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

@@ -1,0 +1,2601 @@
+---
+
+title: URI - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  URI - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    final
+    
+    class
+<h1>URI</h1>
+
+
+
+  
+    extends <a href="../../../reference/java/lang/Object.html">Object</a><br/>
+  
+  
+  
+
+  
+  
+      implements
+      
+        <a href="../../../reference/java/lang/Comparable.html">Comparable</a>&lt;<a href="../../../reference/java/net/URI.html">URI</a>&gt;
+      
+        <a href="../../../reference/java/io/Serializable.html">Serializable</a>
+      
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="2" class="jd-inheritance-class-cell"><a href="../../../reference/java/lang/Object.html">java.lang.Object</a></td>
+    </tr>
+    
+
+    <tr>
+        
+            <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">java.net.URI</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>A Uniform Resource Identifier that identifies an abstract or physical
+ resource, as specified by <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC
+ 2396</a>.
+
+ <h3>Parts of a URI</h3>
+ A URI is composed of many parts. This class can both parse URI strings into
+ parts and compose URI strings from parts. For example, consider the parts of
+ this URI:
+ <code>http://username:password@host:8080/directory/file?query#fragment</code>
+ <table>
+ <tr><th>Component                                            </th><th>Example value                                                      </th><th>Also known as</th></tr>
+ <tr><td><code><a href="reference/java/net/URI.html#getScheme()">Scheme</a></code>                          </td><td><code>http</code>                                                       </td><td>protocol</td></tr>
+ <tr><td><code><a href="reference/java/net/URI.html#getSchemeSpecificPart()">Scheme-specific part</a></code></td><td><code>//username:password@host:8080/directory/file?query#fragment</code></td><td></td></tr>
+ <tr><td><code><a href="reference/java/net/URI.html#getAuthority()">Authority</a></code>                    </td><td><code>username:password@host:8080</code>                                </td><td></td></tr>
+ <tr><td><code><a href="reference/java/net/URI.html#getUserInfo()">User Info</a></code>                     </td><td><code>username:password</code>                                          </td><td></td></tr>
+ <tr><td><code><a href="reference/java/net/URI.html#getHost()">Host</a></code>                              </td><td><code>host</code>                                                       </td><td></td></tr>
+ <tr><td><code><a href="reference/java/net/URI.html#getPort()">Port</a></code>                              </td><td><code>8080</code>                                                       </td><td></td></tr>
+ <tr><td><code><a href="reference/java/net/URI.html#getPath()">Path</a></code>                              </td><td><code>/directory/file</code>                                            </td><td></td></tr>
+ <tr><td><code><a href="reference/java/net/URI.html#getQuery()">Query</a></code>                            </td><td><code>query</code>                                                      </td><td></td></tr>
+ <tr><td><code><a href="reference/java/net/URI.html#getFragment()">Fragment</a></code>                      </td><td><code>fragment</code>                                                   </td><td>ref</td></tr>
+ </table>
+
+ <h3>Absolute vs. Relative URIs</h3>
+ URIs are either <code><a href="reference/java/net/URI.html#isAbsolute()">absolute or relative</a></code>.
+ <ul>
+     <li><strong>Absolute:</strong> <code>http://android.com/robots.txt</code>
+     <li><strong>Relative:</strong> <code>robots.txt</code>
+ </ul>
+
+ <p>Absolute URIs always have a scheme. If its scheme is supported by <code><a href="reference/java/net/URL.html">URL</a></code>, you can use <code><a href="reference/java/net/URI.html#toURL()">toURL()</a></code> to convert an absolute URI to a URL.
+
+ <p>Relative URIs do not have a scheme and cannot be converted to URLs. If you
+ have the absolute URI that a relative URI is relative to, you can use <code><a href="reference/java/net/URI.html#resolve(java.lang.String)">resolve(String)</a></code> to compute the referenced absolute URI. Symmetrically, you can use
+ <code><a href="reference/java/net/URI.html#relativize(java.net.URI)">relativize(URI)</a></code> to compute the relative URI from one URI to another.
+ <pre>   <code>URI absolute = new URI("http://android.com/");
+   URI relative = new URI("robots.txt");
+   URI resolved = new URI("http://android.com/robots.txt");
+
+   // print "http://android.com/robots.txt"
+   System.out.println(absolute.resolve(relative));
+
+   // print "robots.txt"
+   System.out.println(absolute.relativize(resolved));
+ </code></pre>
+
+ <h3>Opaque vs. Hierarchical URIs</h3>
+ Absolute URIs are either <code><a href="reference/java/net/URI.html#isOpaque()">opaque or hierarchical</a></code>. Relative
+ URIs are always hierarchical.
+ <ul>
+     <li><strong>Hierarchical:</strong> <code>http://android.com/robots.txt</code>
+     <li><strong>Opaque:</strong> <code>mailto:robots@example.com</code>
+ </ul>
+
+ <p>Opaque URIs have both a scheme and a scheme-specific part that does not
+ begin with the slash character: <code>/</code>. The contents of the
+ scheme-specific part of an opaque URI is not parsed so an opaque URI never
+ has an authority, user info, host, port, path or query. An opaque URIs may
+ have a fragment, however. A typical opaque URI is
+ <code>mailto:robots@example.com</code>.
+ <table>
+ <tr><th>Component           </th><th>Example value             </th></tr>
+ <tr><td>Scheme              </td><td><code>mailto</code>            </td></tr>
+ <tr><td>Scheme-specific part</td><td><code>robots@example.com</code></td></tr>
+ <tr><td>Fragment            </td><td>                          </td></tr>
+ </table>
+ <p>Hierarchical URIs may have values for any URL component. They always
+ have a non-null path, though that path may be the empty string.
+
+ <h3>Encoding and Decoding URI Components</h3>
+ Each component of a URI permits a limited set of legal characters. Other
+ characters must first be <i>encoded</i> before they can be embedded in a URI.
+ To recover the original characters from a URI, they may be <i>decoded</i>.
+ <strong>Contrary to what you might expect,</strong> this class uses the
+ term <i>raw</i> to refer to encoded strings. The non-<i>raw</i> accessors
+ return decoded strings. For example, consider how this URI is decoded:
+ <code>http://user:pa55w%3Frd@host:80/doc%7Csearch?q=green%20robots#over%206%22</code>
+ <table>
+ <tr><th>Component           </th><th>Legal Characters                                                    </th><th>Other Constraints                                  </th><th>Raw Value                                                      </th><th>Value</th></tr>
+ <tr><td>Scheme              </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>+-.</code>                  </td><td>First character must be in <code>a-z</code>, <code>A-Z</code></td><td>                                                               </td><td><code>http</code></td></tr>
+ <tr><td>Scheme-specific part</td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=?/[]@</code></td><td>Non-ASCII characters okay                          </td><td><code>//user:pa55w%3Frd@host:80/doc%7Csearch?q=green%20robots</code></td><td><code>//user:pa55w?rd@host:80/doc|search?q=green robots</code></td></tr>
+ <tr><td>Authority           </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=@[]</code>  </td><td>Non-ASCII characters okay                          </td><td><code>user:pa55w%3Frd@host:80</code>                                </td><td><code>user:pa55w?rd@host:80</code></td></tr>
+ <tr><td>User Info           </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=</code>     </td><td>Non-ASCII characters okay                          </td><td><code>user:pa55w%3Frd</code>                                        </td><td><code>user:pa55w?rd</code></td></tr>
+ <tr><td>Host                </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>-.[]</code>                 </td><td>Domain name, IPv4 address or [IPv6 address]        </td><td>                                                               </td><td>host</td></tr>
+ <tr><td>Port                </td><td><code>0-9</code>                                                         </td><td>                                                   </td><td>                                                               </td><td><code>80</code></td></tr>
+ <tr><td>Path                </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=/@</code>   </td><td>Non-ASCII characters okay                          </td><td><code>/doc%7Csearch</code>                                          </td><td><code>/doc|search</code></td></tr>
+ <tr><td>Query               </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=?/[]@</code></td><td>Non-ASCII characters okay                          </td><td><code>q=green%20robots</code>                                       </td><td><code>q=green robots</code></td></tr>
+ <tr><td>Fragment            </td><td><code>0-9</code>, <code>a-z</code>, <code>A-Z</code>, <code>_-!.~'()*,;:$&+=?/[]@</code></td><td>Non-ASCII characters okay                          </td><td><code>over%206%22</code>                                            </td><td><code>over 6"</code></td></tr>
+ </table>
+ A URI's host, port and scheme are not eligible for encoding and must not
+ contain illegal characters.
+
+ <p>To encode a URI, invoke any of the multiple-parameter constructors of this
+ class. These constructors accept your original strings and encode them into
+ their raw form.
+
+ <p>To decode a URI, invoke the single-string constructor, and then use the
+ appropriate accessor methods to get the decoded components.
+
+ <p>The <code><a href="reference/java/net/URL.html">URL</a></code> class can be used to retrieve resources by their URI.
+</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<table id="pubctors" class="jd-sumtable"><tr><th colspan="12">Public Constructors</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#URI(java.lang.String)">URI</a></span>(<a href="../../../reference/java/lang/String.html">String</a> spec)
+        
+        <div class="jd-descrdiv">Creates a new URI instance by parsing <code>spec</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#URI(java.lang.String, java.lang.String, java.lang.String)">URI</a></span>(<a href="../../../reference/java/lang/String.html">String</a> scheme, <a href="../../../reference/java/lang/String.html">String</a> schemeSpecificPart, <a href="../../../reference/java/lang/String.html">String</a> fragment)
+        
+        <div class="jd-descrdiv">Creates a new URI instance of the given unencoded component parts.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#URI(java.lang.String, java.lang.String, java.lang.String, int, java.lang.String, java.lang.String, java.lang.String)">URI</a></span>(<a href="../../../reference/java/lang/String.html">String</a> scheme, <a href="../../../reference/java/lang/String.html">String</a> userInfo, <a href="../../../reference/java/lang/String.html">String</a> host, int port, <a href="../../../reference/java/lang/String.html">String</a> path, <a href="../../../reference/java/lang/String.html">String</a> query, <a href="../../../reference/java/lang/String.html">String</a> fragment)
+        
+        <div class="jd-descrdiv">Creates a new URI instance of the given unencoded component parts.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#URI(java.lang.String, java.lang.String, java.lang.String, java.lang.String)">URI</a></span>(<a href="../../../reference/java/lang/String.html">String</a> scheme, <a href="../../../reference/java/lang/String.html">String</a> host, <a href="../../../reference/java/lang/String.html">String</a> path, <a href="../../../reference/java/lang/String.html">String</a> fragment)
+        
+        <div class="jd-descrdiv">Creates a new URI instance of the given unencoded component parts.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#URI(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)">URI</a></span>(<a href="../../../reference/java/lang/String.html">String</a> scheme, <a href="../../../reference/java/lang/String.html">String</a> authority, <a href="../../../reference/java/lang/String.html">String</a> path, <a href="../../../reference/java/lang/String.html">String</a> query, <a href="../../../reference/java/lang/String.html">String</a> fragment)
+        
+        <div class="jd-descrdiv">Creates a new URI instance of the given unencoded component parts.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#compareTo(java.net.URI)">compareTo</a></span>(<a href="../../../reference/java/net/URI.html">URI</a> uri)
+        
+        <div class="jd-descrdiv">Compares this URI with the given argument <code>uri</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            static
+            
+            <a href="../../../reference/java/net/URI.html">URI</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#create(java.lang.String)">create</a></span>(<a href="../../../reference/java/lang/String.html">String</a> uri)
+        
+        <div class="jd-descrdiv">Returns the URI formed by parsing <code>uri</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getAuthority()">getAuthority</a></span>()
+        
+        <div class="jd-descrdiv">Returns the decoded authority part of this URI, or null if this URI has
+ no authority.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getFragment()">getFragment</a></span>()
+        
+        <div class="jd-descrdiv">Returns the decoded fragment of this URI, or null if this URI has no
+ fragment.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getHost()">getHost</a></span>()
+        
+        <div class="jd-descrdiv">Returns the host of this URI, or null if this URI has no host.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getPath()">getPath</a></span>()
+        
+        <div class="jd-descrdiv">Returns the decoded path of this URI, or null if this URI has no path.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getPort()">getPort</a></span>()
+        
+        <div class="jd-descrdiv">Returns the port number of this URI, or <code>-1</code> if this URI has no
+ explicit port.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getQuery()">getQuery</a></span>()
+        
+        <div class="jd-descrdiv">Returns the decoded query of this URI, or null if this URI has no query.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getRawAuthority()">getRawAuthority</a></span>()
+        
+        <div class="jd-descrdiv">Returns the encoded authority of this URI, or null if this URI has no
+ authority.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getRawFragment()">getRawFragment</a></span>()
+        
+        <div class="jd-descrdiv">Gets the encoded fragment of this URI, or null if this URI has no
+ fragment.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getRawPath()">getRawPath</a></span>()
+        
+        <div class="jd-descrdiv">Returns the encoded path of this URI, or null if this URI has no path.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getRawQuery()">getRawQuery</a></span>()
+        
+        <div class="jd-descrdiv">Returns the encoded query of this URI, or null if this URI has no query.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getRawSchemeSpecificPart()">getRawSchemeSpecificPart</a></span>()
+        
+        <div class="jd-descrdiv">Returns the encoded scheme-specific part of this URI, or null if this URI
+ has no scheme-specific part.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getRawUserInfo()">getRawUserInfo</a></span>()
+        
+        <div class="jd-descrdiv">Returns the encoded user info of this URI, or null if this URI has no
+ user info.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getScheme()">getScheme</a></span>()
+        
+        <div class="jd-descrdiv">Returns the scheme of this URI, or null if this URI has no scheme.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getSchemeSpecificPart()">getSchemeSpecificPart</a></span>()
+        
+        <div class="jd-descrdiv">Returns the decoded scheme-specific part of this URI, or null if this URI
+ has no scheme-specific part.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#getUserInfo()">getUserInfo</a></span>()
+        
+        <div class="jd-descrdiv">Returns the decoded user info of this URI, or null if this URI has no
+ user info.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#hashCode()">hashCode</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#isAbsolute()">isAbsolute</a></span>()
+        
+        <div class="jd-descrdiv">Returns true if this URI is absolute, which means that a scheme is
+ defined.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#isOpaque()">isOpaque</a></span>()
+        
+        <div class="jd-descrdiv">Returns true if this URI is opaque.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/net/URI.html">URI</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#normalize()">normalize</a></span>()
+        
+        <div class="jd-descrdiv">Normalizes the path part of this URI.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/net/URI.html">URI</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#parseServerAuthority()">parseServerAuthority</a></span>()
+        
+        <div class="jd-descrdiv">Tries to parse the authority component of this URI to divide it into the
+ host, port, and user-info.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/net/URI.html">URI</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#relativize(java.net.URI)">relativize</a></span>(<a href="../../../reference/java/net/URI.html">URI</a> relative)
+        
+        <div class="jd-descrdiv">Makes the given URI <code>relative</code> to a relative URI against the URI
+ represented by this instance.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/net/URI.html">URI</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#resolve(java.net.URI)">resolve</a></span>(<a href="../../../reference/java/net/URI.html">URI</a> relative)
+        
+        <div class="jd-descrdiv">Resolves the given URI <code>relative</code> against the URI represented by
+ this instance.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/net/URI.html">URI</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#resolve(java.lang.String)">resolve</a></span>(<a href="../../../reference/java/lang/String.html">String</a> relative)
+        
+        <div class="jd-descrdiv">Creates a new URI instance by parsing the given string <code>relative</code>
+ and resolves the created URI against the URI represented by this
+ instance.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#toASCIIString()">toASCIIString</a></span>()
+        
+        <div class="jd-descrdiv">Returns the textual string representation of this URI instance using the
+ US-ASCII encoding.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns the encoded URI.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/net/URL.html">URL</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/URI.html#toURL()">toURL</a></span>()
+        
+        <div class="jd-descrdiv">Converts this URI instance to a URL.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="inhmethods" class="jd-sumtable"><tr><th>
+  <div style="clear:left;">Inherited Methods</div>
+  <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
+  </th></tr>
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Object" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.Object-trigger"
+          class="jd-expando-trigger-img" /></a>
+From class
+
+  <a href="../../../reference/java/lang/Object.html">java.lang.Object</a>
+
+<div id="inherited-methods-java.lang.Object">
+  <div id="inherited-methods-java.lang.Object-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.Object-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#clone()">clone</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#finalize()">finalize</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#getClass()">getClass</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#notify()">notify</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#notifyAll()">notifyAll</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#toString()">toString</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait</a></span>(long timeout, int nanos)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long)">wait</a></span>(long timeout)
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait()">wait</a></span>()
+        
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Comparable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.Comparable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/Comparable.html">java.lang.Comparable</a>
+
+<div id="inherited-methods-java.lang.Comparable">
+  <div id="inherited-methods-java.lang.Comparable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.Comparable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(<a href="../../../reference/java/net/URI.html">URI</a> another)
+        
+        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
+ order.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+
+</table>
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<h2>Public Constructors</h2>
+
+
+
+<a id="URI(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">URI</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> spec)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new URI instance by parsing <code>spec</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>spec</th>
+          <td>a URI whose illegal characters have all been encoded.
+</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/net/URISyntaxException.html">URISyntaxException</a></td>
+            <td></td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="URI(java.lang.String, java.lang.String, java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">URI</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> scheme, <a href="../../../reference/java/lang/String.html">String</a> schemeSpecificPart, <a href="../../../reference/java/lang/String.html">String</a> fragment)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new URI instance of the given unencoded component parts.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>scheme</th>
+          <td>the URI scheme, or null for a non-absolute URI.
+</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/net/URISyntaxException.html">URISyntaxException</a></td>
+            <td></td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="URI(java.lang.String, java.lang.String, java.lang.String, int, java.lang.String, java.lang.String, java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">URI</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> scheme, <a href="../../../reference/java/lang/String.html">String</a> userInfo, <a href="../../../reference/java/lang/String.html">String</a> host, int port, <a href="../../../reference/java/lang/String.html">String</a> path, <a href="../../../reference/java/lang/String.html">String</a> query, <a href="../../../reference/java/lang/String.html">String</a> fragment)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new URI instance of the given unencoded component parts.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>scheme</th>
+          <td>the URI scheme, or null for a non-absolute URI.
+</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/net/URISyntaxException.html">URISyntaxException</a></td>
+            <td></td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="URI(java.lang.String, java.lang.String, java.lang.String, java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">URI</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> scheme, <a href="../../../reference/java/lang/String.html">String</a> host, <a href="../../../reference/java/lang/String.html">String</a> path, <a href="../../../reference/java/lang/String.html">String</a> fragment)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new URI instance of the given unencoded component parts.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>scheme</th>
+          <td>the URI scheme, or null for a non-absolute URI.
+</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/net/URISyntaxException.html">URISyntaxException</a></td>
+            <td></td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="URI(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">URI</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> scheme, <a href="../../../reference/java/lang/String.html">String</a> authority, <a href="../../../reference/java/lang/String.html">String</a> path, <a href="../../../reference/java/lang/String.html">String</a> query, <a href="../../../reference/java/lang/String.html">String</a> fragment)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new URI instance of the given unencoded component parts.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>scheme</th>
+          <td>the URI scheme, or null for a non-absolute URI.
+</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/net/URISyntaxException.html">URISyntaxException</a></td>
+            <td></td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="compareTo(java.net.URI)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">compareTo</span>
+      <span class="normal">(<a href="../../../reference/java/net/URI.html">URI</a> uri)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this URI with the given argument <code>uri</code>. This method will
+ return a negative value if this URI instance is less than the given
+ argument and a positive value if this URI instance is greater than the
+ given argument. The return value <code>0</code> indicates that the two
+ instances represent the same URI. To define the order the single parts of
+ the URI are compared with each other. String components will be ordered
+ in the natural case-sensitive way. A hierarchical URI is less than an
+ opaque URI and if one part is <code>null</code> the URI with the undefined
+ part is less than the other one.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>uri</th>
+          <td>the URI this instance has to compare with.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the value representing the order of the two instances.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="create(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        
+        
+        
+        <a href="../../../reference/java/net/URI.html">URI</a>
+      </span>
+      <span class="sympad">create</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> uri)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the URI formed by parsing <code>uri</code>. This method behaves
+ identically to the string constructor but throws a different exception
+ on failure. The constructor fails with a checked <code><a href="reference/java/net/URISyntaxException.html">URISyntaxException</a></code>; this method fails with an unchecked <code><a href="reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></code>.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="equals(java.lang.Object)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">equals</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<a id="getAuthority()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getAuthority</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the decoded authority part of this URI, or null if this URI has
+ no authority.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getFragment()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getFragment</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the decoded fragment of this URI, or null if this URI has no
+ fragment.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getHost()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getHost</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the host of this URI, or null if this URI has no host.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getPath()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getPath</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the decoded path of this URI, or null if this URI has no path.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getPort()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">getPort</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the port number of this URI, or <code>-1</code> if this URI has no
+ explicit port.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getQuery()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getQuery</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the decoded query of this URI, or null if this URI has no query.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getRawAuthority()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getRawAuthority</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the encoded authority of this URI, or null if this URI has no
+ authority.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getRawFragment()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getRawFragment</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Gets the encoded fragment of this URI, or null if this URI has no
+ fragment.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getRawPath()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getRawPath</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the encoded path of this URI, or null if this URI has no path.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getRawQuery()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getRawQuery</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the encoded query of this URI, or null if this URI has no query.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getRawSchemeSpecificPart()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getRawSchemeSpecificPart</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the encoded scheme-specific part of this URI, or null if this URI
+ has no scheme-specific part.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getRawUserInfo()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getRawUserInfo</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the encoded user info of this URI, or null if this URI has no
+ user info.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getScheme()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getScheme</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the scheme of this URI, or null if this URI has no scheme. This
+ is also known as the protocol.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getSchemeSpecificPart()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getSchemeSpecificPart</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the decoded scheme-specific part of this URI, or null if this URI
+ has no scheme-specific part.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="getUserInfo()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getUserInfo</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the decoded user info of this URI, or null if this URI has no
+ user info.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="hashCode()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        int
+      </span>
+      <span class="sympad">hashCode</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    </div>
+</div>
+
+
+<a id="isAbsolute()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">isAbsolute</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if this URI is absolute, which means that a scheme is
+ defined.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="isOpaque()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">isOpaque</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if this URI is opaque. Opaque URIs are absolute and have a
+ scheme-specific part that does not start with a slash character. All
+ parts except scheme, scheme-specific and fragment are undefined.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="normalize()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/net/URI.html">URI</a>
+      </span>
+      <span class="sympad">normalize</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Normalizes the path part of this URI.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an URI object which represents this instance with a normalized
+         path.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="parseServerAuthority()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/net/URI.html">URI</a>
+      </span>
+      <span class="sympad">parseServerAuthority</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tries to parse the authority component of this URI to divide it into the
+ host, port, and user-info. If this URI is already determined as a
+ ServerAuthority this instance will be returned without changes.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this instance with the components of the parsed server authority.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/net/URISyntaxException.html">URISyntaxException</a></td>
+            <td>if the authority part could not be parsed as a server-based
+             authority.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="relativize(java.net.URI)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/net/URI.html">URI</a>
+      </span>
+      <span class="sympad">relativize</span>
+      <span class="normal">(<a href="../../../reference/java/net/URI.html">URI</a> relative)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Makes the given URI <code>relative</code> to a relative URI against the URI
+ represented by this instance.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>relative</th>
+          <td>the URI which has to be relativized against this URI.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the relative URI.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="resolve(java.net.URI)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/net/URI.html">URI</a>
+      </span>
+      <span class="sympad">resolve</span>
+      <span class="normal">(<a href="../../../reference/java/net/URI.html">URI</a> relative)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Resolves the given URI <code>relative</code> against the URI represented by
+ this instance.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>relative</th>
+          <td>the URI which has to be resolved against this URI.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the resolved URI.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="resolve(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/net/URI.html">URI</a>
+      </span>
+      <span class="sympad">resolve</span>
+      <span class="normal">(<a href="../../../reference/java/lang/String.html">String</a> relative)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Creates a new URI instance by parsing the given string <code>relative</code>
+ and resolves the created URI against the URI represented by this
+ instance.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>relative</th>
+          <td>the given string to create the new URI instance which has to
+            be resolved later on.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the created and resolved URI.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="toASCIIString()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">toASCIIString</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the textual string representation of this URI instance using the
+ US-ASCII encoding.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the US-ASCII string representation of this URI.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="toString()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">toString</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the encoded URI.
+</p></div>
+
+    </div>
+</div>
+
+
+<a id="toURL()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../reference/java/net/URL.html">URL</a>
+      </span>
+      <span class="sympad">toURL</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Converts this URI instance to a URL.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the created URL representing the same resource as this URI.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/net/MalformedURLException.html">MalformedURLException</a></td>
+            <td>if an error occurs while creating the URL or no protocol
+             handler could be found.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

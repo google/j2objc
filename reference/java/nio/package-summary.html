@@ -1,0 +1,221 @@
+---
+
+title: java.nio - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  java.nio - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+<body class="">
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="api-info-block">
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div>
+
+<div id="jd-header">
+  package
+  <h1>java.nio</h1>
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+  
+
+
+  
+    <h2>Classes</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/Buffer.html">Buffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer is a list of elements of a specific primitive type.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer for bytes.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/ByteOrder.html">ByteOrder</a></td>
+              <td class="jd-descrcol" width="100%">Defines byte order constants.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of chars.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/DoubleBuffer.html">DoubleBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of doubles.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/FloatBuffer.html">FloatBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of floats.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/IntBuffer.html">IntBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of ints.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/LongBuffer.html">LongBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of longs.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/MappedByteBuffer.html">MappedByteBuffer</a></td>
+              <td class="jd-descrcol" width="100%"><code>MappedByteBuffer</code> is a special kind of direct byte buffer which maps a
+ region of file to memory.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/ShortBuffer.html">ShortBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of shorts.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+  
+    <h2>Exceptions</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/BufferOverflowException.html">BufferOverflowException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>BufferOverflowException</code> is thrown when elements are written
+ to a buffer but there is not enough remaining space in the buffer.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/BufferUnderflowException.html">BufferUnderflowException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>BufferUnderflowException</code> is thrown when elements are read
+ from a buffer but there are not enough remaining elements in the buffer.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/InvalidMarkException.html">InvalidMarkException</a></td>
+              <td class="jd-descrcol" width="100%">An <code>InvalidMarkException</code> is thrown when <code>reset()</code> is called on a
+ buffer, but no mark has been set previously.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/ReadOnlyBufferException.html">ReadOnlyBufferException</a></td>
+              <td class="jd-descrcol" width="100%">A <code>ReadOnlyBufferException</code> is thrown when some write operation is
+ called on a read-only buffer.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div><!-- end jd-content -->
+</div><!-- doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>

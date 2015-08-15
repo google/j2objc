@@ -1,0 +1,314 @@
+---
+
+title: KeySpec - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
+<title>
+
+  KeySpec - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>KeySpec</h1>
+
+
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">java.security.spec.KeySpec</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-indirect" class="jd-expando-trigger closed"
+          ><a id="subclasses-indirect-trigger"
+          class="jd-expando-trigger-img" /></a>Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../../reference/java/security/spec/ECPrivateKeySpec.html">ECPrivateKeySpec</a>,
+            
+              <a href="../../../../reference/java/security/spec/ECPublicKeySpec.html">ECPublicKeySpec</a>,
+            
+              <a href="../../../../reference/java/security/spec/EncodedKeySpec.html">EncodedKeySpec</a>,
+            
+              <a href="../../../../reference/java/security/spec/PKCS8EncodedKeySpec.html">PKCS8EncodedKeySpec</a>,
+            
+              <a href="../../../../reference/java/security/spec/RSAMultiPrimePrivateCrtKeySpec.html">RSAMultiPrimePrivateCrtKeySpec</a>,
+            
+              <a href="../../../../reference/java/security/spec/RSAPrivateCrtKeySpec.html">RSAPrivateCrtKeySpec</a>,
+            
+              <a href="../../../../reference/java/security/spec/RSAPrivateKeySpec.html">RSAPrivateKeySpec</a>,
+            
+              <a href="../../../../reference/java/security/spec/RSAPublicKeySpec.html">RSAPublicKeySpec</a>,
+            
+              <a href="../../../../reference/javax/crypto/spec/SecretKeySpec.html">SecretKeySpec</a>,
+            
+              <a href="../../../../reference/java/security/spec/X509EncodedKeySpec.html">X509EncodedKeySpec</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/spec/ECPrivateKeySpec.html">ECPrivateKeySpec</a></td>
+              <td class="jd-descrcol" width="100%">The parameters specifying an Elliptic Curve (EC) private key.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/spec/ECPublicKeySpec.html">ECPublicKeySpec</a></td>
+              <td class="jd-descrcol" width="100%">The parameters specifying an Elliptic Curve (EC) public key.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/spec/EncodedKeySpec.html">EncodedKeySpec</a></td>
+              <td class="jd-descrcol" width="100%">The abstract key specification for a public or a private key in encoded
+ format.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/spec/PKCS8EncodedKeySpec.html">PKCS8EncodedKeySpec</a></td>
+              <td class="jd-descrcol" width="100%">The key specification for an encoded private key in ASN.1 format as defined
+ in the PKCS#8 standard.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/spec/RSAMultiPrimePrivateCrtKeySpec.html">RSAMultiPrimePrivateCrtKeySpec</a></td>
+              <td class="jd-descrcol" width="100%">The key specification of a RSA multi-prime private key with the Chinese
+ Remainder Theorem (CRT) information values used.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/spec/RSAPrivateCrtKeySpec.html">RSAPrivateCrtKeySpec</a></td>
+              <td class="jd-descrcol" width="100%">The key specification of a RSA private key using Chinese Remainder Theorem
+ (CRT) values.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/spec/RSAPrivateKeySpec.html">RSAPrivateKeySpec</a></td>
+              <td class="jd-descrcol" width="100%">The key specification of a RSA private key.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/spec/RSAPublicKeySpec.html">RSAPublicKeySpec</a></td>
+              <td class="jd-descrcol" width="100%">The key specification of a RSA public key.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/javax/crypto/spec/SecretKeySpec.html">SecretKeySpec</a></td>
+              <td class="jd-descrcol" width="100%">A key specification for a <code>SecretKey</code> and also a secret key
+ implementation that is provider-independent.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/spec/X509EncodedKeySpec.html">X509EncodedKeySpec</a></td>
+              <td class="jd-descrcol" width="100%">The key specification of an X.509 encoded key in ASN.1 format.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>The marker interface for key specifications. The purpose is
+ to group key specifications for cryptographic keys.
+</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

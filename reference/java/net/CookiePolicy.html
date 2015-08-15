@@ -1,0 +1,485 @@
+---
+
+title: CookiePolicy - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  CookiePolicy - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>CookiePolicy</h1>
+
+
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">java.net.CookiePolicy</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>CookiePolicy has three pre-defined policy. They are ACCEPT_ALL, ACCEPT_NONE
+ and ACCEPT_ORIGINAL_SERVER respectively. They are used to decide which
+ cookies should be accepted and which should not be.
+
+ See <a href="http://www.ietf.org/rfc/rfc2965.txt">RFC 2965</a> sections 3.3 and 7 for more detail.</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<table id="lfields" class="jd-sumtable"><tr><th colspan="12">Fields</th></tr>
+
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/net/CookiePolicy.html">CookiePolicy</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/net/CookiePolicy.html#ACCEPT_ALL">ACCEPT_ALL</a></td>
+          <td class="jd-descrcol" width="100%">A pre-defined policy, accepts all cookies.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/net/CookiePolicy.html">CookiePolicy</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/net/CookiePolicy.html#ACCEPT_NONE">ACCEPT_NONE</a></td>
+          <td class="jd-descrcol" width="100%">A pre-defined policy, accepts no cookies at all.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/net/CookiePolicy.html">CookiePolicy</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/net/CookiePolicy.html#ACCEPT_ORIGINAL_SERVER">ACCEPT_ORIGINAL_SERVER</a></td>
+          <td class="jd-descrcol" width="100%">A pre-defined policy, only accepts cookies from original server.</td>
+      </tr>
+      
+    
+
+</table>
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/net/CookiePolicy.html#shouldAccept(java.net.URI, java.net.HttpCookie)">shouldAccept</a></span>(<a href="../../../reference/java/net/URI.html">URI</a> uri, <a href="../../../reference/java/net/HttpCookie.html">HttpCookie</a> cookie)
+        
+        <div class="jd-descrdiv">This method is used to determine whether or not the specified cookie
+ should be accepted.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- ========= FIELD DETAIL ======== -->
+<h2>Fields</h2>
+
+
+
+
+<a id="ACCEPT_ALL"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../reference/java/net/CookiePolicy.html">CookiePolicy</a>
+      </span>
+        ACCEPT_ALL
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>A pre-defined policy, accepts all cookies.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="ACCEPT_NONE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../reference/java/net/CookiePolicy.html">CookiePolicy</a>
+      </span>
+        ACCEPT_NONE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>A pre-defined policy, accepts no cookies at all.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="ACCEPT_ORIGINAL_SERVER"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../reference/java/net/CookiePolicy.html">CookiePolicy</a>
+      </span>
+        ACCEPT_ORIGINAL_SERVER
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>A pre-defined policy, only accepts cookies from original server.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="shouldAccept(java.net.URI, java.net.HttpCookie)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">shouldAccept</span>
+      <span class="normal">(<a href="../../../reference/java/net/URI.html">URI</a> uri, <a href="../../../reference/java/net/HttpCookie.html">HttpCookie</a> cookie)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>This method is used to determine whether or not the specified cookie
+ should be accepted.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>uri</th>
+          <td>the URI to used to determine acceptability</td>
+        </tr>
+        <tr>
+          <th>cookie</th>
+          <td>the HttpCookie to be determined</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>true if this cookie should be accepted; false otherwise
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

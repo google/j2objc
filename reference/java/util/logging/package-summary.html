@@ -1,0 +1,231 @@
+---
+
+title: java.util.logging - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
+<title>
+
+  java.util.logging - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+<body class="">
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="api-info-block">
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div>
+
+<div id="jd-header">
+  package
+  <h1>java.util.logging</h1>
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+  
+    <h2>Interfaces</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/Filter.html">Filter</a></td>
+              <td class="jd-descrcol" width="100%">A <code>Filter</code> provides a mechanism for exercising fine-grained control
+ over which records get logged.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/LoggingMXBean.html">LoggingMXBean</a></td>
+              <td class="jd-descrcol" width="100%"><code>LoggingMXBean</code> is the management interface for the logging sub-system.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Classes</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/ConsoleHandler.html">ConsoleHandler</a></td>
+              <td class="jd-descrcol" width="100%">A handler that writes log messages to the standard output stream
+ <code>System.err</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/ErrorManager.html">ErrorManager</a></td>
+              <td class="jd-descrcol" width="100%">An error reporting facility for <code><a href="reference/java/util/logging/Handler.html">Handler</a></code> implementations to record any
+ error that may happen during logging.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/Formatter.html">Formatter</a></td>
+              <td class="jd-descrcol" width="100%"><code>Formatter</code> objects are used to format <code><a href="reference/java/util/logging/LogRecord.html">LogRecord</a></code> objects into a
+ string representation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/Handler.html">Handler</a></td>
+              <td class="jd-descrcol" width="100%">A <code>Handler</code> object accepts a logging request and exports the desired
+ messages to a target, for example, a file, the console, etc.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/Level.html">Level</a></td>
+              <td class="jd-descrcol" width="100%"><code>Level</code> objects are used to indicate the level of logging.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/Logger.html">Logger</a></td>
+              <td class="jd-descrcol" width="100%">Loggers are used to log records to a variety of destinations such as log files or
+ the console.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/LoggingPermission.html">LoggingPermission</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/LogManager.html">LogManager</a></td>
+              <td class="jd-descrcol" width="100%"><code>LogManager</code> is used to maintain configuration properties of the
+ logging framework, and to manage a hierarchical namespace of all named
+ <code>Logger</code> objects.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/LogRecord.html">LogRecord</a></td>
+              <td class="jd-descrcol" width="100%">A <code>LogRecord</code> object represents a logging request.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/MemoryHandler.html">MemoryHandler</a></td>
+              <td class="jd-descrcol" width="100%">A <code>Handler</code> put the description of log events into a cycled memory
+ buffer.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/SimpleFormatter.html">SimpleFormatter</a></td>
+              <td class="jd-descrcol" width="100%"><code>SimpleFormatter</code> can be used to print a summary of the information
+ contained in a <code>LogRecord</code> object in a human readable format.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/StreamHandler.html">StreamHandler</a></td>
+              <td class="jd-descrcol" width="100%">A <code>StreamHandler</code> object writes log messages to an output stream, that
+ is, objects of the class <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/util/logging/XMLFormatter.html">XMLFormatter</a></td>
+              <td class="jd-descrcol" width="100%">Formatter to convert a <code><a href="reference/java/util/logging/LogRecord.html">LogRecord</a></code> into an XML string.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div><!-- end jd-content -->
+</div><!-- doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>

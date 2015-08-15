@@ -1,0 +1,440 @@
+---
+
+title: Readable - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  Readable - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>Readable</h1>
+
+
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">java.lang.Readable</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-indirect" class="jd-expando-trigger closed"
+          ><a id="subclasses-indirect-trigger"
+          class="jd-expando-trigger-img" /></a>Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/io/BufferedReader.html">BufferedReader</a>,
+            
+              <a href="../../../reference/java/io/CharArrayReader.html">CharArrayReader</a>,
+            
+              <a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a>,
+            
+              <a href="../../../reference/java/io/FileReader.html">FileReader</a>,
+            
+              <a href="../../../reference/java/io/FilterReader.html">FilterReader</a>,
+            
+              <a href="../../../reference/java/io/InputStreamReader.html">InputStreamReader</a>,
+            
+              <a href="../../../reference/java/io/LineNumberReader.html">LineNumberReader</a>,
+            
+              <a href="../../../reference/java/io/PipedReader.html">PipedReader</a>,
+            
+              <a href="../../../reference/java/io/PushbackReader.html">PushbackReader</a>,
+            
+              <a href="../../../reference/java/io/Reader.html">Reader</a>,
+            
+              <a href="../../../reference/java/io/StringReader.html">StringReader</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/BufferedReader.html">BufferedReader</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and <em>buffers</em> the input.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/CharArrayReader.html">CharArrayReader</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Reader.html">Reader</a></code> for reading the contents of a char array.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of chars.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FileReader.html">FileReader</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Reader.html">Reader</a></code> that reads from a file in the file system.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/FilterReader.html">FilterReader</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and performs some transformation on the
+ input data while it is being read.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/InputStreamReader.html">InputStreamReader</a></td>
+              <td class="jd-descrcol" width="100%">A class for turning a byte stream into a character stream.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/LineNumberReader.html">LineNumberReader</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and counts the line terminators encountered
+ while reading the data.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/PipedReader.html">PipedReader</a></td>
+              <td class="jd-descrcol" width="100%">Receives information on a communications pipe.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/PushbackReader.html">PushbackReader</a></td>
+              <td class="jd-descrcol" width="100%">Wraps an existing <code><a href="reference/java/io/Reader.html">Reader</a></code> and adds functionality to "push back"
+ characters that have been read, so that they can be read again.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/Reader.html">Reader</a></td>
+              <td class="jd-descrcol" width="100%">The base class for all readers.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/StringReader.html">StringReader</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/Reader.html">Reader</a></code> that reads characters from a <code>String</code> in
+ a sequential manner.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>Represents a sequence of characters that can be incrementally read (copied)
+ into a <code><a href="reference/java/nio/CharBuffer.html">CharBuffer</a></code>.
+</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Readable.html#read(java.nio.CharBuffer)">read</a></span>(<a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a> cb)
+        
+        <div class="jd-descrdiv">Reads characters into the specified <code>CharBuffer</code>.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="read(java.nio.CharBuffer)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad">read</span>
+      <span class="normal">(<a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a> cb)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reads characters into the specified <code>CharBuffer</code>. The maximum
+ number of characters read is <code>CharBuffer.remaining()</code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>cb</th>
+          <td>the buffer to be filled with characters read.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the number of characters actually read, or -1 if this
+         <code>Readable</code> reaches its end</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>if an I/O error occurs.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

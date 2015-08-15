@@ -1,0 +1,2948 @@
+---
+
+title: Deque - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  Deque - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>Deque</h1>
+
+
+
+  
+  
+      implements
+      
+        <a href="../../../reference/java/util/Queue.html">Queue</a>&lt;E&gt;
+      
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">java.util.Deque&lt;E&gt;</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-indirect" class="jd-expando-trigger closed"
+          ><a id="subclasses-indirect-trigger"
+          class="jd-expando-trigger-img" /></a>Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/util/ArrayDeque.html">ArrayDeque</a>&lt;E&gt;,
+            
+              <a href="../../../reference/java/util/concurrent/BlockingDeque.html">BlockingDeque</a>&lt;E&gt;,
+            
+              <a href="../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html">ConcurrentLinkedDeque</a>&lt;E&gt;,
+            
+              <a href="../../../reference/java/util/concurrent/LinkedBlockingDeque.html">LinkedBlockingDeque</a>&lt;E&gt;,
+            
+              <a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/ArrayDeque.html">ArrayDeque</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">Resizable-array implementation of the <code><a href="reference/java/util/Deque.html">Deque</a></code> interface.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/BlockingDeque.html">BlockingDeque</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">A <code><a href="reference/java/util/Deque.html">Deque</a></code> that additionally supports blocking operations that wait
+ for the deque to become non-empty when retrieving an element, and wait for
+ space to become available in the deque when storing an element.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ConcurrentLinkedDeque.html">ConcurrentLinkedDeque</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">An unbounded concurrent {@linkplain Deque deque} based on linked nodes.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/LinkedBlockingDeque.html">LinkedBlockingDeque</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">An optionally-bounded {@linkplain BlockingDeque blocking deque} based on
+ linked nodes.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/LinkedList.html">LinkedList</a>&lt;E&gt;</td>
+              <td class="jd-descrcol" width="100%">LinkedList is an implementation of <code><a href="reference/java/util/List.html">List</a></code>, backed by a doubly-linked list.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>A linear collection that supports element insertion and removal at
+ both ends.  The name <i>deque</i> is short for "double ended queue"
+ and is usually pronounced "deck".  Most <tt>Deque</tt>
+ implementations place no fixed limits on the number of elements
+ they may contain, but this interface supports capacity-restricted
+ deques as well as those with no fixed size limit.
+
+ <p>This interface defines methods to access the elements at both
+ ends of the deque.  Methods are provided to insert, remove, and
+ examine the element.  Each of these methods exists in two forms:
+ one throws an exception if the operation fails, the other returns a
+ special value (either <tt>null</tt> or <tt>false</tt>, depending on
+ the operation).  The latter form of the insert operation is
+ designed specifically for use with capacity-restricted
+ <tt>Deque</tt> implementations; in most implementations, insert
+ operations cannot fail.
+
+ <p>The twelve methods described above are summarized in the
+ following table:
+
+ <p>
+ <table BORDER CELLPADDING=3 CELLSPACING=1>
+  <tr>
+    <td></td>
+    <td ALIGN=CENTER COLSPAN = 2> <b>First Element (Head)</b></td>
+    <td ALIGN=CENTER COLSPAN = 2> <b>Last Element (Tail)</b></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td ALIGN=CENTER><em>Throws exception</em></td>
+    <td ALIGN=CENTER><em>Special value</em></td>
+    <td ALIGN=CENTER><em>Throws exception</em></td>
+    <td ALIGN=CENTER><em>Special value</em></td>
+  </tr>
+  <tr>
+    <td><b>Insert</b></td>
+    <td><code><a href="reference/java/util/Deque.html#addFirst(E)">addFirst(e)</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#offerFirst(E)">offerFirst(e)</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#addLast(E)">addLast(e)</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#offerLast(E)">offerLast(e)</a></code></td>
+  </tr>
+  <tr>
+    <td><b>Remove</b></td>
+    <td><code><a href="reference/java/util/Deque.html#removeFirst()">removeFirst()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#pollFirst()">pollFirst()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#removeLast()">removeLast()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#pollLast()">pollLast()</a></code></td>
+  </tr>
+  <tr>
+    <td><b>Examine</b></td>
+    <td><code><a href="reference/java/util/Deque.html#getFirst()">getFirst()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#peekFirst()">peekFirst()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#getLast()">getLast()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#peekLast()">peekLast()</a></code></td>
+  </tr>
+ </table>
+
+ <p>This interface extends the <code><a href="reference/java/util/Queue.html">Queue</a></code> interface.  When a deque is
+ used as a queue, FIFO (First-In-First-Out) behavior results.  Elements are
+ added at the end of the deque and removed from the beginning.  The methods
+ inherited from the <tt>Queue</tt> interface are precisely equivalent to
+ <tt>Deque</tt> methods as indicated in the following table:
+
+ <p>
+ <table BORDER CELLPADDING=3 CELLSPACING=1>
+  <tr>
+    <td ALIGN=CENTER> <b><tt>Queue</tt> Method</b></td>
+    <td ALIGN=CENTER> <b>Equivalent <tt>Deque</tt> Method</b></td>
+  </tr>
+  <tr>
+    <td><code><a href="reference/java/util/Queue.html#add(E)">add(e)</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#addLast(E)">addLast(e)</a></code></td>
+  </tr>
+  <tr>
+    <td><code><a href="reference/java/util/Queue.html#offer(E)">offer(e)</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#offerLast(E)">offerLast(e)</a></code></td>
+  </tr>
+  <tr>
+    <td><code><a href="reference/java/util/Queue.html#remove()">remove()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#removeFirst()">removeFirst()</a></code></td>
+  </tr>
+  <tr>
+    <td><code><a href="reference/java/util/Queue.html#poll()">poll()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#pollFirst()">pollFirst()</a></code></td>
+  </tr>
+  <tr>
+    <td><code><a href="reference/java/util/Queue.html#element()">element()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#getFirst()">getFirst()</a></code></td>
+  </tr>
+  <tr>
+    <td><code><a href="reference/java/util/Queue.html#peek()">peek()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#peek()">peekFirst()</a></code></td>
+  </tr>
+ </table>
+
+ <p>Deques can also be used as LIFO (Last-In-First-Out) stacks.  This
+ interface should be used in preference to the legacy <code><a href="reference/java/util/Stack.html">Stack</a></code> class.
+ When a deque is used as a stack, elements are pushed and popped from the
+ beginning of the deque.  Stack methods are precisely equivalent to
+ <tt>Deque</tt> methods as indicated in the table below:
+
+ <p>
+ <table BORDER CELLPADDING=3 CELLSPACING=1>
+  <tr>
+    <td ALIGN=CENTER> <b>Stack Method</b></td>
+    <td ALIGN=CENTER> <b>Equivalent <tt>Deque</tt> Method</b></td>
+  </tr>
+  <tr>
+    <td><code><a href="reference/java/util/Deque.html#push(E)">push(e)</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#addFirst(E)">addFirst(e)</a></code></td>
+  </tr>
+  <tr>
+    <td><code><a href="reference/java/util/Deque.html#pop()">pop()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#removeFirst()">removeFirst()</a></code></td>
+  </tr>
+  <tr>
+    <td><code><a href="reference/java/util/Deque.html#peek()">peek()</a></code></td>
+    <td><code><a href="reference/java/util/Deque.html#peekFirst()">peekFirst()</a></code></td>
+  </tr>
+ </table>
+
+ <p>Note that the <code><a href="reference/java/util/Deque.html#peek()">peek</a></code> method works equally well when
+ a deque is used as a queue or a stack; in either case, elements are
+ drawn from the beginning of the deque.
+
+ <p>This interface provides two methods to remove interior
+ elements, <code><a href="reference/java/util/Deque.html#removeFirstOccurrence(java.lang.Object)">removeFirstOccurrence</a></code> and
+ <code><a href="reference/java/util/Deque.html#removeLastOccurrence(java.lang.Object)">removeLastOccurrence</a></code>.
+
+ <p>Unlike the <code><a href="reference/java/util/List.html">List</a></code> interface, this interface does not
+ provide support for indexed access to elements.
+
+ <p>While <tt>Deque</tt> implementations are not strictly required
+ to prohibit the insertion of null elements, they are strongly
+ encouraged to do so.  Users of any <tt>Deque</tt> implementations
+ that do allow null elements are strongly encouraged <i>not</i> to
+ take advantage of the ability to insert nulls.  This is so because
+ <tt>null</tt> is used as a special return value by various methods
+ to indicated that the deque is empty.
+
+ <p><tt>Deque</tt> implementations generally do not define
+ element-based versions of the <tt>equals</tt> and <tt>hashCode</tt>
+ methods, but instead inherit the identity-based versions from class
+ <tt>Object</tt>.</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#add(E)">add</a></span>(E e)
+        
+        <div class="jd-descrdiv">Inserts the specified element into the queue represented by this deque
+ (in other words, at the tail of this deque) if it is possible to do so
+ immediately without violating capacity restrictions, returning
+ <tt>true</tt> upon success and throwing an
+ <tt>IllegalStateException</tt> if no space is currently available.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#addFirst(E)">addFirst</a></span>(E e)
+        
+        <div class="jd-descrdiv">Inserts the specified element at the front of this deque if it is
+ possible to do so immediately without violating capacity restrictions.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#addLast(E)">addLast</a></span>(E e)
+        
+        <div class="jd-descrdiv">Inserts the specified element at the end of this deque if it is
+ possible to do so immediately without violating capacity restrictions.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        
+        <div class="jd-descrdiv">Returns <tt>true</tt> if this deque contains the specified element.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#descendingIterator()">descendingIterator</a></span>()
+        
+        <div class="jd-descrdiv">Returns an iterator over the elements in this deque in reverse
+ sequential order.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#element()">element</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves, but does not remove, the head of the queue represented by
+ this deque (in other words, the first element of this deque).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#getFirst()">getFirst</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves, but does not remove, the first element of this deque.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#getLast()">getLast</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves, but does not remove, the last element of this deque.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#iterator()">iterator</a></span>()
+        
+        <div class="jd-descrdiv">Returns an iterator over the elements in this deque in proper sequence.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#offer(E)">offer</a></span>(E e)
+        
+        <div class="jd-descrdiv">Inserts the specified element into the queue represented by this deque
+ (in other words, at the tail of this deque) if it is possible to do so
+ immediately without violating capacity restrictions, returning
+ <tt>true</tt> upon success and <tt>false</tt> if no space is currently
+ available.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#offerFirst(E)">offerFirst</a></span>(E e)
+        
+        <div class="jd-descrdiv">Inserts the specified element at the front of this deque unless it would
+ violate capacity restrictions.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#offerLast(E)">offerLast</a></span>(E e)
+        
+        <div class="jd-descrdiv">Inserts the specified element at the end of this deque unless it would
+ violate capacity restrictions.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#peek()">peek</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves, but does not remove, the head of the queue represented by
+ this deque (in other words, the first element of this deque), or
+ returns <tt>null</tt> if this deque is empty.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#peekFirst()">peekFirst</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves, but does not remove, the first element of this deque,
+ or returns <tt>null</tt> if this deque is empty.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#peekLast()">peekLast</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves, but does not remove, the last element of this deque,
+ or returns <tt>null</tt> if this deque is empty.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#poll()">poll</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves and removes the head of the queue represented by this deque
+ (in other words, the first element of this deque), or returns
+ <tt>null</tt> if this deque is empty.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#pollFirst()">pollFirst</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves and removes the first element of this deque,
+ or returns <tt>null</tt> if this deque is empty.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#pollLast()">pollLast</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves and removes the last element of this deque,
+ or returns <tt>null</tt> if this deque is empty.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#pop()">pop</a></span>()
+        
+        <div class="jd-descrdiv">Pops an element from the stack represented by this deque.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#push(E)">push</a></span>(E e)
+        
+        <div class="jd-descrdiv">Pushes an element onto the stack represented by this deque (in other
+ words, at the head of this deque) if it is possible to do so
+ immediately without violating capacity restrictions, returning
+ <tt>true</tt> upon success and throwing an
+ <tt>IllegalStateException</tt> if no space is currently available.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#remove()">remove</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves and removes the head of the queue represented by this deque
+ (in other words, the first element of this deque).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        
+        <div class="jd-descrdiv">Removes the first occurrence of the specified element from this deque.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#removeFirst()">removeFirst</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves and removes the first element of this deque.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#removeFirstOccurrence(java.lang.Object)">removeFirstOccurrence</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        
+        <div class="jd-descrdiv">Removes the first occurrence of the specified element from this deque.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#removeLast()">removeLast</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves and removes the last element of this deque.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#removeLastOccurrence(java.lang.Object)">removeLastOccurrence</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> o)
+        
+        <div class="jd-descrdiv">Removes the last occurrence of the specified element from this deque.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Deque.html#size()">size</a></span>()
+        
+        <div class="jd-descrdiv">Returns the number of elements in this deque.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="inhmethods" class="jd-sumtable"><tr><th>
+  <div style="clear:left;">Inherited Methods</div>
+  <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
+  </th></tr>
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.util.Queue" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.util.Queue-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/util/Queue.html">java.util.Queue</a>
+
+<div id="inherited-methods-java.util.Queue">
+  <div id="inherited-methods-java.util.Queue-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.util.Queue-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Queue.html#add(E)">add</a></span>(E e)
+        
+        <div class="jd-descrdiv">Inserts the specified element into this queue if it is possible to do so
+ immediately without violating capacity restrictions, returning
+ <tt>true</tt> upon success and throwing an <tt>IllegalStateException</tt>
+ if no space is currently available.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Queue.html#element()">element</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves, but does not remove, the head of this queue.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Queue.html#offer(E)">offer</a></span>(E e)
+        
+        <div class="jd-descrdiv">Inserts the specified element into this queue if it is possible to do
+ so immediately without violating capacity restrictions.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Queue.html#peek()">peek</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves, but does not remove, the head of this queue,
+ or returns <tt>null</tt> if this queue is empty.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Queue.html#poll()">poll</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves and removes the head of this queue,
+ or returns <tt>null</tt> if this queue is empty.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            E
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Queue.html#remove()">remove</a></span>()
+        
+        <div class="jd-descrdiv">Retrieves and removes the head of this queue.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.util.Collection" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.util.Collection-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/util/Collection.html">java.util.Collection</a>
+
+<div id="inherited-methods-java.util.Collection">
+  <div id="inherited-methods-java.util.Collection-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.util.Collection-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#add(E)">add</a></span>(E object)
+        
+        <div class="jd-descrdiv">Attempts to add <code>object</code> to the contents of this
+ <code>Collection</code> (optional).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#addAll(java.util.Collection<? extends E>)">addAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&nbsp;extends&nbsp;E&gt; collection)
+        
+        <div class="jd-descrdiv">Attempts to add all of the objects contained in <code>Collection</code>
+ to the contents of this <code>Collection</code> (optional).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#clear()">clear</a></span>()
+        
+        <div class="jd-descrdiv">Removes all elements from this <code>Collection</code>, leaving it empty (optional).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#contains(java.lang.Object)">contains</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        
+        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains the specified object.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#containsAll(java.util.Collection<?>)">containsAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        
+        <div class="jd-descrdiv">Tests whether this <code>Collection</code> contains all objects contained in the
+ specified <code>Collection</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        
+        <div class="jd-descrdiv">Compares the argument to the receiver, and returns true if they represent
+ the <em>same</em> object using a class specific comparison.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#hashCode()">hashCode</a></span>()
+        
+        <div class="jd-descrdiv">Returns an integer hash code for the receiver.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#isEmpty()">isEmpty</a></span>()
+        
+        <div class="jd-descrdiv">Returns if this <code>Collection</code> contains no elements.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#iterator()">iterator</a></span>()
+        
+        <div class="jd-descrdiv">Returns an instance of <code><a href="reference/java/util/Iterator.html">Iterator</a></code> that may be used to access the
+ objects contained by this <code>Collection</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#remove(java.lang.Object)">remove</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> object)
+        
+        <div class="jd-descrdiv">Removes one instance of the specified object from this <code>Collection</code> if one
+ is contained (optional).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#removeAll(java.util.Collection<?>)">removeAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        
+        <div class="jd-descrdiv">Removes all occurrences in this <code>Collection</code> of each object in the
+ specified <code>Collection</code> (optional).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#retainAll(java.util.Collection<?>)">retainAll</a></span>(<a href="../../../reference/java/util/Collection.html">Collection</a>&lt;?&gt; collection)
+        
+        <div class="jd-descrdiv">Removes all objects from this <code>Collection</code> that are not also found in the
+ <code>Collection</code> passed (optional).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#size()">size</a></span>()
+        
+        <div class="jd-descrdiv">Returns a count of how many objects this <code>Collection</code> contains.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            &lt;T&gt;
+            T[]
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray(T[])">toArray</a></span>(T[] array)
+        
+        <div class="jd-descrdiv">Returns an array containing all elements contained in this <code>Collection</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/lang/Object.html">Object[]</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/util/Collection.html#toArray()">toArray</a></span>()
+        
+        <div class="jd-descrdiv">Returns a new array containing all elements contained in this <code>Collection</code>.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Iterable" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.Iterable-trigger"
+          class="jd-expando-trigger-img" /></a>
+From interface
+
+  <a href="../../../reference/java/lang/Iterable.html">java.lang.Iterable</a>
+
+<div id="inherited-methods-java.lang.Iterable">
+  <div id="inherited-methods-java.lang.Iterable-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.Iterable-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Iterable.html#iterator()">iterator</a></span>()
+        
+        <div class="jd-descrdiv">Returns an <code><a href="reference/java/util/Iterator.html">Iterator</a></code> for the elements in this object.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+</table>
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="add(E)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">add</span>
+      <span class="normal">(E e)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element into the queue represented by this deque
+ (in other words, at the tail of this deque) if it is possible to do so
+ immediately without violating capacity restrictions, returning
+ <tt>true</tt> upon success and throwing an
+ <tt>IllegalStateException</tt> if no space is currently available.
+ When using a capacity-restricted deque, it is generally preferable to
+ use <code><a href="reference/java/util/Deque.html#offer(E)">offer</a></code>.
+
+ <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#addLast(E)">addLast(E)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>e</th>
+          <td>the element to add</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><tt>true</tt> (as specified by <code><a href="reference/java/util/Collection.html#add(E)">add(E)</a></code>)</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td>if the element cannot be added at this
+         time due to capacity restrictions</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of the specified element
+         prevents it from being added to this deque</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         deque does not permit null elements</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if some property of the specified
+         element prevents it from being added to this deque
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="addFirst(E)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">addFirst</span>
+      <span class="normal">(E e)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element at the front of this deque if it is
+ possible to do so immediately without violating capacity restrictions.
+ When using a capacity-restricted deque, it is generally preferable to
+ use method <code><a href="reference/java/util/Deque.html#offerFirst(E)">offerFirst(E)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>e</th>
+          <td>the element to add</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td>if the element cannot be added at this
+         time due to capacity restrictions</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of the specified element
+         prevents it from being added to this deque</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         deque does not permit null elements</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if some property of the specified
+         element prevents it from being added to this deque
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="addLast(E)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">addLast</span>
+      <span class="normal">(E e)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element at the end of this deque if it is
+ possible to do so immediately without violating capacity restrictions.
+ When using a capacity-restricted deque, it is generally preferable to
+ use method <code><a href="reference/java/util/Deque.html#offerLast(E)">offerLast(E)</a></code>.
+
+ <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#add(E)">add(E)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>e</th>
+          <td>the element to add</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td>if the element cannot be added at this
+         time due to capacity restrictions</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of the specified element
+         prevents it from being added to this deque</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         deque does not permit null elements</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if some property of the specified
+         element prevents it from being added to this deque
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="contains(java.lang.Object)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">contains</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns <tt>true</tt> if this deque contains the specified element.
+ More formally, returns <tt>true</tt> if and only if this deque contains
+ at least one element <tt>e</tt> such that
+ <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>o</th>
+          <td>element whose presence in this deque is to be tested</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><tt>true</tt> if this deque contains the specified element</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the type of the specified element
+         is incompatible with this deque (optional)</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         deque does not permit null elements (optional)
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="descendingIterator()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+      </span>
+      <span class="sympad">descendingIterator</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an iterator over the elements in this deque in reverse
+ sequential order.  The elements will be returned in order from
+ last (tail) to first (head).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an iterator over the elements in this deque in reverse
+ sequence
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="element()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">element</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the head of the queue represented by
+ this deque (in other words, the first element of this deque).
+ This method differs from <code><a href="reference/java/util/Deque.html#peek()">peek</a></code> only in that it throws an
+ exception if this deque is empty.
+
+ <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#getFirst()">getFirst()</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the head of the queue represented by this deque</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if this deque is empty
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getFirst()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">getFirst</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the first element of this deque.
+
+ This method differs from <code><a href="reference/java/util/Deque.html#peekFirst()">peekFirst</a></code> only in that it
+ throws an exception if this deque is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the head of this deque</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if this deque is empty
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getLast()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">getLast</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the last element of this deque.
+ This method differs from <code><a href="reference/java/util/Deque.html#peekLast()">peekLast</a></code> only in that it
+ throws an exception if this deque is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the tail of this deque</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if this deque is empty
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="iterator()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../reference/java/util/Iterator.html">Iterator</a>&lt;E&gt;
+      </span>
+      <span class="sympad">iterator</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an iterator over the elements in this deque in proper sequence.
+ The elements will be returned in order from first (head) to last (tail).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>an iterator over the elements in this deque in proper sequence
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="offer(E)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">offer</span>
+      <span class="normal">(E e)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element into the queue represented by this deque
+ (in other words, at the tail of this deque) if it is possible to do so
+ immediately without violating capacity restrictions, returning
+ <tt>true</tt> upon success and <tt>false</tt> if no space is currently
+ available.  When using a capacity-restricted deque, this method is
+ generally preferable to the <code><a href="reference/java/util/Deque.html#add(E)">add(E)</a></code> method, which can fail to
+ insert an element only by throwing an exception.
+
+ <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#offerLast(E)">offerLast(E)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>e</th>
+          <td>the element to add</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><tt>true</tt> if the element was added to this deque, else
+         <tt>false</tt></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of the specified element
+         prevents it from being added to this deque</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         deque does not permit null elements</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if some property of the specified
+         element prevents it from being added to this deque
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="offerFirst(E)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">offerFirst</span>
+      <span class="normal">(E e)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element at the front of this deque unless it would
+ violate capacity restrictions.  When using a capacity-restricted deque,
+ this method is generally preferable to the <code><a href="reference/java/util/Deque.html#addFirst(E)">addFirst(E)</a></code> method,
+ which can fail to insert an element only by throwing an exception.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>e</th>
+          <td>the element to add</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><tt>true</tt> if the element was added to this deque, else
+         <tt>false</tt></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of the specified element
+         prevents it from being added to this deque</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         deque does not permit null elements</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if some property of the specified
+         element prevents it from being added to this deque
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="offerLast(E)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">offerLast</span>
+      <span class="normal">(E e)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Inserts the specified element at the end of this deque unless it would
+ violate capacity restrictions.  When using a capacity-restricted deque,
+ this method is generally preferable to the <code><a href="reference/java/util/Deque.html#addLast(E)">addLast(E)</a></code> method,
+ which can fail to insert an element only by throwing an exception.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>e</th>
+          <td>the element to add</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><tt>true</tt> if the element was added to this deque, else
+         <tt>false</tt></li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of the specified element
+         prevents it from being added to this deque</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         deque does not permit null elements</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if some property of the specified
+         element prevents it from being added to this deque
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="peek()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">peek</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the head of the queue represented by
+ this deque (in other words, the first element of this deque), or
+ returns <tt>null</tt> if this deque is empty.
+
+ <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#peekFirst()">peekFirst()</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the head of the queue represented by this deque, or
+         <tt>null</tt> if this deque is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="peekFirst()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">peekFirst</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the first element of this deque,
+ or returns <tt>null</tt> if this deque is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the head of this deque, or <tt>null</tt> if this deque is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="peekLast()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">peekLast</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves, but does not remove, the last element of this deque,
+ or returns <tt>null</tt> if this deque is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the tail of this deque, or <tt>null</tt> if this deque is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="poll()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">poll</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the head of the queue represented by this deque
+ (in other words, the first element of this deque), or returns
+ <tt>null</tt> if this deque is empty.
+
+ <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#pollFirst()">pollFirst()</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the first element of this deque, or <tt>null</tt> if
+         this deque is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="pollFirst()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">pollFirst</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the first element of this deque,
+ or returns <tt>null</tt> if this deque is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the head of this deque, or <tt>null</tt> if this deque is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="pollLast()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">pollLast</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the last element of this deque,
+ or returns <tt>null</tt> if this deque is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the tail of this deque, or <tt>null</tt> if this deque is empty
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="pop()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">pop</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Pops an element from the stack represented by this deque.  In other
+ words, removes and returns the first element of this deque.
+
+ <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#removeFirst()">removeFirst()</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the element at the front of this deque (which is the top
+         of the stack represented by this deque)</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if this deque is empty
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="push(E)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">push</span>
+      <span class="normal">(E e)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Pushes an element onto the stack represented by this deque (in other
+ words, at the head of this deque) if it is possible to do so
+ immediately without violating capacity restrictions, returning
+ <tt>true</tt> upon success and throwing an
+ <tt>IllegalStateException</tt> if no space is currently available.
+
+ <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#addFirst(E)">addFirst(E)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>e</th>
+          <td>the element to push</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td>if the element cannot be added at this
+         time due to capacity restrictions</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of the specified element
+         prevents it from being added to this deque</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         deque does not permit null elements</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if some property of the specified
+         element prevents it from being added to this deque
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="remove()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">remove</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the head of the queue represented by this deque
+ (in other words, the first element of this deque).
+ This method differs from <code><a href="reference/java/util/Deque.html#poll()">poll</a></code> only in that it throws an
+ exception if this deque is empty.
+
+ <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#removeFirst()">removeFirst()</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the head of the queue represented by this deque</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if this deque is empty
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="remove(java.lang.Object)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">remove</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the first occurrence of the specified element from this deque.
+ If the deque does not contain the element, it is unchanged.
+ More formally, removes the first element <tt>e</tt> such that
+ <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>
+ (if such an element exists).
+ Returns <tt>true</tt> if this deque contained the specified element
+ (or equivalently, if this deque changed as a result of the call).
+
+ <p>This method is equivalent to <code><a href="reference/java/util/Deque.html#removeFirstOccurrence(java.lang.Object)">removeFirstOccurrence(Object)</a></code>.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>o</th>
+          <td>element to be removed from this deque, if present</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><tt>true</tt> if an element was removed as a result of this call</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of the specified element
+         is incompatible with this deque (optional)</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         deque does not permit null elements (optional)
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="removeFirst()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">removeFirst</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the first element of this deque.  This method
+ differs from <code><a href="reference/java/util/Deque.html#pollFirst()">pollFirst</a></code> only in that it throws an
+ exception if this deque is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the head of this deque</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if this deque is empty
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="removeFirstOccurrence(java.lang.Object)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">removeFirstOccurrence</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the first occurrence of the specified element from this deque.
+ If the deque does not contain the element, it is unchanged.
+ More formally, removes the first element <tt>e</tt> such that
+ <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>
+ (if such an element exists).
+ Returns <tt>true</tt> if this deque contained the specified element
+ (or equivalently, if this deque changed as a result of the call).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>o</th>
+          <td>element to be removed from this deque, if present</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><tt>true</tt> if an element was removed as a result of this call</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of the specified element
+         is incompatible with this deque (optional)</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         deque does not permit null elements (optional)
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="removeLast()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        E
+      </span>
+      <span class="sympad">removeLast</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Retrieves and removes the last element of this deque.  This method
+ differs from <code><a href="reference/java/util/Deque.html#pollLast()">pollLast</a></code> only in that it throws an
+ exception if this deque is empty.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the tail of this deque</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/util/NoSuchElementException.html">NoSuchElementException</a></td>
+            <td>if this deque is empty
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="removeLastOccurrence(java.lang.Object)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        boolean
+      </span>
+      <span class="sympad">removeLastOccurrence</span>
+      <span class="normal">(<a href="../../../reference/java/lang/Object.html">Object</a> o)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Removes the last occurrence of the specified element from this deque.
+ If the deque does not contain the element, it is unchanged.
+ More formally, removes the last element <tt>e</tt> such that
+ <tt>(o==null&nbsp;?&nbsp;e==null&nbsp;:&nbsp;o.equals(e))</tt>
+ (if such an element exists).
+ Returns <tt>true</tt> if this deque contained the specified element
+ (or equivalently, if this deque changed as a result of the call).</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>o</th>
+          <td>element to be removed from this deque, if present</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><tt>true</tt> if an element was removed as a result of this call</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if the class of the specified element
+         is incompatible with this deque (optional)</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/NullPointerException.html">NullPointerException</a></td>
+            <td>if the specified element is null and this
+         deque does not permit null elements (optional)
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="size()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad">size</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the number of elements in this deque.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>the number of elements in this deque
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

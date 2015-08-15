@@ -1,0 +1,265 @@
+---
+
+title: java.util.concurrent.locks - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../../favicon.ico" />
+<title>
+
+  java.util.concurrent.locks - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+<body class="">
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="api-info-block">
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div>
+
+<div id="jd-header">
+  package
+  <h1>java.util.concurrent.locks</h1>
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+  <div class="jd-descr">
+    Interfaces and classes providing a framework for locking and waiting
+ for conditions that is distinct from built-in synchronization and
+ monitors.  The framework permits much greater flexibility in the use of
+ locks and conditions, at the expense of more awkward syntax.
+
+ <p>The <code><a href="reference/java/util/concurrent/locks/Lock.html">Lock</a></code> interface supports
+ locking disciplines that differ in semantics (reentrant, fair, etc),
+ and that can be used in non-block-structured contexts including
+ hand-over-hand and lock reordering algorithms.  The main implementation
+ is <code><a href="reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></code>.
+
+ <p>The <code><a href="reference/java/util/concurrent/locks/ReadWriteLock.html">ReadWriteLock</a></code> interface
+ similarly defines locks that may be shared among readers but are
+ exclusive to writers.  Only a single implementation, <code><a href="reference/java/util/concurrent/locks/ReentrantReadWriteLock.html">ReentrantReadWriteLock</a></code>, is provided, since
+ it covers most standard usage contexts.  But programmers may create
+ their own implementations to cover nonstandard requirements.
+
+ <p>The <code><a href="reference/java/util/concurrent/locks/Condition.html">Condition</a></code> interface
+ describes condition variables that may be associated with Locks.
+ These are similar in usage to the implicit monitors accessed using
+ <code>Object.wait</code>, but offer extended capabilities.
+ In particular, multiple <code>Condition</code> objects may be associated
+ with a single <code>Lock</code>.  To avoid compatibility issues, the
+ names of <code>Condition</code> methods are different from the
+ corresponding <code>Object</code> versions.
+
+ <p>The <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html">AbstractQueuedSynchronizer</a></code>
+ class serves as a useful superclass for defining locks and other
+ synchronizers that rely on queuing blocked threads.  The <code><a href="reference/java/util/concurrent/locks/AbstractQueuedLongSynchronizer.html">AbstractQueuedLongSynchronizer</a></code> class
+ provides the same functionality but extends support to 64 bits of
+ synchronization state.  Both extend class <code><a href="reference/java/util/concurrent/locks/AbstractOwnableSynchronizer.html">AbstractOwnableSynchronizer</a></code>, a simple
+ class that helps record the thread currently holding exclusive
+ synchronization.  The <code><a href="reference/java/util/concurrent/locks/LockSupport.html">LockSupport</a></code>
+ class provides lower-level blocking and unblocking support that is
+ useful for those developers implementing their own customized lock
+ classes.
+  </div>
+
+
+
+
+
+  
+    <h2>Interfaces</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/Condition.html">Condition</a></td>
+              <td class="jd-descrcol" width="100%"><code>Condition</code> factors out the <code>Object</code> monitor
+ methods (<code><a href="reference/java/lang/Object.html#wait()">wait</a></code>, <code><a href="reference/java/lang/Object.html#notify()">notify</a></code>
+ and <code><a href="reference/java/lang/Object.html#notifyAll()">notifyAll</a></code>) into distinct objects to
+ give the effect of having multiple wait-sets per object, by
+ combining them with the use of arbitrary <code><a href="reference/java/util/concurrent/locks/Lock.html">Lock</a></code> implementations.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/Lock.html">Lock</a></td>
+              <td class="jd-descrcol" width="100%"><code>Lock</code> implementations provide more extensive locking
+ operations than can be obtained using <code>synchronized</code> methods
+ and statements.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/ReadWriteLock.html">ReadWriteLock</a></td>
+              <td class="jd-descrcol" width="100%">A <tt>ReadWriteLock</tt> maintains a pair of associated <code><a href="reference/java/util/concurrent/locks/Lock.html">locks</a></code>, one for read-only operations and one for writing.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Classes</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/AbstractOwnableSynchronizer.html">AbstractOwnableSynchronizer</a></td>
+              <td class="jd-descrcol" width="100%">A synchronizer that may be exclusively owned by a thread.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedLongSynchronizer.html">AbstractQueuedLongSynchronizer</a></td>
+              <td class="jd-descrcol" width="100%">A version of <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html">AbstractQueuedSynchronizer</a></code> in
+ which synchronization state is maintained as a <tt>long</tt>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedLongSynchronizer.ConditionObject.html">AbstractQueuedLongSynchronizer.ConditionObject</a></td>
+              <td class="jd-descrcol" width="100%">Condition implementation for a <code><a href="reference/java/util/concurrent/locks/AbstractQueuedLongSynchronizer.html">AbstractQueuedLongSynchronizer</a></code> serving as the basis of a <code><a href="reference/java/util/concurrent/locks/Lock.html">Lock</a></code> implementation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html">AbstractQueuedSynchronizer</a></td>
+              <td class="jd-descrcol" width="100%">Provides a framework for implementing blocking locks and related
+ synchronizers (semaphores, events, etc) that rely on
+ first-in-first-out (FIFO) wait queues.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.ConditionObject.html">AbstractQueuedSynchronizer.ConditionObject</a></td>
+              <td class="jd-descrcol" width="100%">Condition implementation for a <code><a href="reference/java/util/concurrent/locks/AbstractQueuedSynchronizer.html">AbstractQueuedSynchronizer</a></code> serving as the basis of a <code><a href="reference/java/util/concurrent/locks/Lock.html">Lock</a></code> implementation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/LockSupport.html">LockSupport</a></td>
+              <td class="jd-descrcol" width="100%">Basic thread blocking primitives for creating locks and other
+ synchronization classes.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></td>
+              <td class="jd-descrcol" width="100%">A reentrant mutual exclusion <code><a href="reference/java/util/concurrent/locks/Lock.html">Lock</a></code> with the same basic
+ behavior and semantics as the implicit monitor lock accessed using
+ <code>synchronized</code> methods and statements, but with extended
+ capabilities.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.html">ReentrantReadWriteLock</a></td>
+              <td class="jd-descrcol" width="100%">An implementation of <code><a href="reference/java/util/concurrent/locks/ReadWriteLock.html">ReadWriteLock</a></code> supporting similar
+ semantics to <code><a href="reference/java/util/concurrent/locks/ReentrantLock.html">ReentrantLock</a></code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.ReadLock.html">ReentrantReadWriteLock.ReadLock</a></td>
+              <td class="jd-descrcol" width="100%">The lock returned by method <code><a href="reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#readLock()">readLock()</a></code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../../reference/java/util/concurrent/locks/ReentrantReadWriteLock.WriteLock.html">ReentrantReadWriteLock.WriteLock</a></td>
+              <td class="jd-descrcol" width="100%">The lock returned by method <code><a href="reference/java/util/concurrent/locks/ReentrantReadWriteLock.html#writeLock()">writeLock()</a></code>.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+  
+
+
+  
+
+
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div><!-- end jd-content -->
+</div><!-- doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>

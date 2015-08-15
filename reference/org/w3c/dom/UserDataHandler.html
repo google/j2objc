@@ -1,0 +1,618 @@
+---
+
+title: UserDataHandler - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
+<title>
+
+  UserDataHandler - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>UserDataHandler</h1>
+
+
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">org.w3c.dom.UserDataHandler</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>When associating an object to a key on a node using
+ <code>Node.setUserData()</code> the application can provide a handler
+ that gets called when the node the object is associated to is being
+ cloned, imported, or renamed. This can be used by the application to
+ implement various behaviors regarding the data it associates to the DOM
+ nodes. This interface defines that handler.
+ <p>See also the <a href='http://www.w3.org/TR/2004/REC-DOM-Level-3-Core-20040407'>Document Object Model (DOM) Level 3 Core Specification</a>.</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<table id="constants" class="jd-sumtable"><tr><th colspan="12">Constants</th></tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/UserDataHandler.html#NODE_ADOPTED">NODE_ADOPTED</a></td>
+        <td class="jd-descrcol" width="100%">The node is adopted, using <code>Document.adoptNode()</code>.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/UserDataHandler.html#NODE_CLONED">NODE_CLONED</a></td>
+        <td class="jd-descrcol" width="100%">The node is cloned, using <code>Node.cloneNode()</code>.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/UserDataHandler.html#NODE_DELETED">NODE_DELETED</a></td>
+        <td class="jd-descrcol" width="100%">The node is deleted.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/UserDataHandler.html#NODE_IMPORTED">NODE_IMPORTED</a></td>
+        <td class="jd-descrcol" width="100%">The node is imported, using <code>Document.importNode()</code>.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../../reference/org/w3c/dom/UserDataHandler.html#NODE_RENAMED">NODE_RENAMED</a></td>
+        <td class="jd-descrcol" width="100%">The node is renamed, using <code>Document.renameNode()</code>.</td>
+    </tr>
+    
+    
+
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/w3c/dom/UserDataHandler.html#handle(short, java.lang.String, java.lang.Object, org.w3c.dom.Node, org.w3c.dom.Node)">handle</a></span>(short operation, <a href="../../../../reference/java/lang/String.html">String</a> key, <a href="../../../../reference/java/lang/Object.html">Object</a> data, <a href="../../../../reference/org/w3c/dom/Node.html">Node</a> src, <a href="../../../../reference/org/w3c/dom/Node.html">Node</a> dst)
+        
+        <div class="jd-descrdiv">This method is called whenever the node for which this handler is
+ registered is imported or cloned.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<h2>Constants</h2>
+
+
+
+
+<a id="NODE_ADOPTED"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        short
+      </span>
+        NODE_ADOPTED
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The node is adopted, using <code>Document.adoptNode()</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                5
+                (0x00000005)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="NODE_CLONED"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        short
+      </span>
+        NODE_CLONED
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The node is cloned, using <code>Node.cloneNode()</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                1
+                (0x00000001)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="NODE_DELETED"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        short
+      </span>
+        NODE_DELETED
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The node is deleted.
+ <p ><b>Note:</b> This may not be supported or may not be reliable in
+ certain environments, such as Java, where the implementation has no
+ real control over when objects are actually deleted.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                3
+                (0x00000003)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="NODE_IMPORTED"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        short
+      </span>
+        NODE_IMPORTED
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The node is imported, using <code>Document.importNode()</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                2
+                (0x00000002)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="NODE_RENAMED"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        short
+      </span>
+        NODE_RENAMED
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The node is renamed, using <code>Document.renameNode()</code>.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                4
+                (0x00000004)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="handle(short, java.lang.String, java.lang.Object, org.w3c.dom.Node, org.w3c.dom.Node)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">handle</span>
+      <span class="normal">(short operation, <a href="../../../../reference/java/lang/String.html">String</a> key, <a href="../../../../reference/java/lang/Object.html">Object</a> data, <a href="../../../../reference/org/w3c/dom/Node.html">Node</a> src, <a href="../../../../reference/org/w3c/dom/Node.html">Node</a> dst)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>This method is called whenever the node for which this handler is
+ registered is imported or cloned.
+ <br> DOM applications must not raise exceptions in a
+ <code>UserDataHandler</code>. The effect of throwing exceptions from
+ the handler is DOM implementation dependent.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>operation</th>
+          <td>Specifies the type of operation that is being
+   performed on the node.</td>
+        </tr>
+        <tr>
+          <th>key</th>
+          <td>Specifies the key for which this handler is being called.</td>
+        </tr>
+        <tr>
+          <th>data</th>
+          <td>Specifies the data for which this handler is being called.</td>
+        </tr>
+        <tr>
+          <th>src</th>
+          <td>Specifies the node being cloned, adopted, imported, or
+   renamed. This is <code>null</code> when the node is being deleted.</td>
+        </tr>
+        <tr>
+          <th>dst</th>
+          <td>Specifies the node newly created if any, or
+   <code>null</code>.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

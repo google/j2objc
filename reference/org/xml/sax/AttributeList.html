@@ -1,0 +1,807 @@
+---
+
+title: AttributeList - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
+<title>
+
+  AttributeList - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>AttributeList</h1>
+
+
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">org.xml.sax.AttributeList</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-indirect" class="jd-expando-trigger closed"
+          ><a id="subclasses-indirect-trigger"
+          class="jd-expando-trigger-img" /></a>Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../../reference/org/xml/sax/helpers/AttributeListImpl.html">AttributeListImpl</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/org/xml/sax/helpers/AttributeListImpl.html">AttributeListImpl</a></td>
+              <td class="jd-descrcol" width="100%">
+      <em>
+  This class is deprecated.
+      This class implements a deprecated interface,
+             <code><a href="reference/org/xml/sax/AttributeList.html">AttributeList</a></code>;
+             that interface has been replaced by
+             <code><a href="reference/org/xml/sax/Attributes.html">Attributes</a></code>,
+             which is implemented in the
+             <code><a href="reference/org/xml/sax/helpers/AttributesImpl.html">AttributesImpl</a></code> helper class.</em>&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+<p>
+  <p class="caution">
+      <strong>
+  This interface is deprecated.</strong><br/> This interface has been replaced by the SAX2
+             <code><a href="reference/org/xml/sax/Attributes.html">Attributes</a></code>
+             interface, which includes Namespace support.
+  </p>
+
+<h2>Class Overview</h2>
+<p>Interface for an element's attribute specifications.
+
+ <blockquote>
+ <em>This module, both source code and documentation, is in the
+ Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
+ See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
+ for further information.
+ </blockquote>
+
+ <p>This is the original SAX1 interface for reporting an element's
+ attributes.  Unlike the new <code><a href="reference/org/xml/sax/Attributes.html">Attributes</a></code>
+ interface, it does not support Namespace-related information.</p>
+
+ <p>When an attribute list is supplied as part of a
+ <code><a href="reference/org/xml/sax/DocumentHandler.html#startElement(java.lang.String, org.xml.sax.AttributeList)">startElement</a></code>
+ event, the list will return valid results only during the
+ scope of the event; once the event handler returns control
+ to the parser, the attribute list is invalid.  To save a
+ persistent copy of the attribute list, use the SAX1
+ <code><a href="reference/org/xml/sax/helpers/AttributeListImpl.html">AttributeListImpl</a></code>
+ helper class.</p>
+
+ <p>An attribute list includes only attributes that have been
+ specified or defaulted: #IMPLIED attributes will not be included.</p>
+
+ <p>There are two ways for the SAX application to obtain information
+ from the AttributeList.  First, it can iterate through the entire
+ list:</p>
+
+ <pre>
+ public void startElement (String name, AttributeList atts) {
+   for (int i = 0; i < atts.getLength(); i++) {
+     String name = atts.getName(i);
+     String type = atts.getType(i);
+     String value = atts.getValue(i);
+     [...]
+   }
+ }
+ </pre>
+
+ <p>(Note that the result of getLength() will be zero if there
+ are no attributes.)
+
+ <p>As an alternative, the application can request the value or
+ type of specific attributes:</p>
+
+ <pre>
+ public void startElement (String name, AttributeList atts) {
+   String identifier = atts.getValue("id");
+   String label = atts.getValue("label");
+   [...]
+ }
+ </pre></p>
+
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html#startElement(java.lang.String, org.xml.sax.AttributeList)">startElement</a></code></li><li><code><a href="../../../../reference/org/xml/sax/helpers/AttributeListImpl.html">AttributeListImpl
+</a></code></li>
+      </ul>
+  </div>
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/AttributeList.html#getLength()">getLength</a></span>()
+        
+        <div class="jd-descrdiv">Return the number of attributes in this list.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/AttributeList.html#getName(int)">getName</a></span>(int i)
+        
+        <div class="jd-descrdiv">Return the name of an attribute in this list (by position).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/AttributeList.html#getType(java.lang.String)">getType</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> name)
+        
+        <div class="jd-descrdiv">Return the type of an attribute in the list (by name).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/AttributeList.html#getType(int)">getType</a></span>(int i)
+        
+        <div class="jd-descrdiv">Return the type of an attribute in the list (by position).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/AttributeList.html#getValue(java.lang.String)">getValue</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> name)
+        
+        <div class="jd-descrdiv">Return the value of an attribute in the list (by name).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/AttributeList.html#getValue(int)">getValue</a></span>(int i)
+        
+        <div class="jd-descrdiv">Return the value of an attribute in the list (by position).</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="getLength()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad">getLength</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return the number of attributes in this list.
+
+ <p>The SAX parser may provide attributes in any
+ arbitrary order, regardless of the order in which they were
+ declared or specified.  The number of attributes may be
+ zero.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The number of attributes in the list.
+</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getName(int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getName</span>
+      <span class="normal">(int i)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return the name of an attribute in this list (by position).
+
+ <p>The names must be unique: the SAX parser shall not include the
+ same attribute twice.  Attributes without values (those declared
+ #IMPLIED without a value specified in the start tag) will be
+ omitted from the list.</p>
+
+ <p>If the attribute name has a namespace prefix, the prefix
+ will still be attached.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>i</th>
+          <td>The index of the attribute in the list (starting at 0).</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The name of the indexed attribute, or null
+         if the index is out of range.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/AttributeList.html#getLength()">getLength()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getType(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getType</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> name)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return the type of an attribute in the list (by name).
+
+ <p>The return value is the same as the return value for
+ getType(int).</p>
+
+ <p>If the attribute name has a namespace prefix in the document,
+ the application must include the prefix here.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>name</th>
+          <td>The name of the attribute.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The attribute type as a string, or null if no
+         such attribute exists.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/AttributeList.html#getType(int)">getType(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getType(int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getType</span>
+      <span class="normal">(int i)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return the type of an attribute in the list (by position).
+
+ <p>The attribute type is one of the strings "CDATA", "ID",
+ "IDREF", "IDREFS", "NMTOKEN", "NMTOKENS", "ENTITY", "ENTITIES",
+ or "NOTATION" (always in upper case).</p>
+
+ <p>If the parser has not read a declaration for the attribute,
+ or if the parser does not report attribute types, then it must
+ return the value "CDATA" as stated in the XML 1.0 Recommentation
+ (clause 3.3.3, "Attribute-Value Normalization").</p>
+
+ <p>For an enumerated attribute that is not a notation, the
+ parser will report the type as "NMTOKEN".</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>i</th>
+          <td>The index of the attribute in the list (starting at 0).</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The attribute type as a string, or
+         null if the index is out of range.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/AttributeList.html#getLength()">getLength()</a></code></li><li><code><a href="../../../../reference/org/xml/sax/AttributeList.html#getType(java.lang.String)">getType(java.lang.String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getValue(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getValue</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> name)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return the value of an attribute in the list (by name).
+
+ <p>The return value is the same as the return value for
+ getValue(int).</p>
+
+ <p>If the attribute name has a namespace prefix in the document,
+ the application must include the prefix here.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>name</th>
+          <td>the name of the attribute to return</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The attribute value as a string, or null if
+         no such attribute exists.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/AttributeList.html#getValue(int)">getValue(int)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getValue(int)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        <a href="../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getValue</span>
+      <span class="normal">(int i)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return the value of an attribute in the list (by position).
+
+ <p>If the attribute value is a list of tokens (IDREFS,
+ ENTITIES, or NMTOKENS), the tokens will be concatenated
+ into a single string separated by whitespace.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>i</th>
+          <td>The index of the attribute in the list (starting at 0).</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The attribute value as a string, or
+         null if the index is out of range.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/AttributeList.html#getLength()">getLength()</a></code></li><li><code><a href="../../../../reference/org/xml/sax/AttributeList.html#getValue(java.lang.String)">getValue(java.lang.String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

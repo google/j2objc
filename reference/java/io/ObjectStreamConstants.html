@@ -1,0 +1,1720 @@
+---
+
+title: ObjectStreamConstants - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  ObjectStreamConstants - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>ObjectStreamConstants</h1>
+
+
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">java.io.ObjectStreamConstants</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-indirect" class="jd-expando-trigger closed"
+          ><a id="subclasses-indirect-trigger"
+          class="jd-expando-trigger-img" /></a>Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a>,
+            
+              <a href="../../../reference/java/io/ObjectOutputStream.html">ObjectOutputStream</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectInputStream.html">ObjectInputStream</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/InputStream.html">InputStream</a></code> that is able to read (deserialize) Java
+ objects as well as primitive data types (int, byte, char etc.).&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectOutputStream.html">ObjectOutputStream</a></td>
+              <td class="jd-descrcol" width="100%">A specialized <code><a href="reference/java/io/OutputStream.html">OutputStream</a></code> that is able to write (serialize) Java
+ objects as well as primitive data types (int, byte, char etc.).&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>A helper interface with constants used by the serialization implementation.
+</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<table id="constants" class="jd-sumtable"><tr><th colspan="12">Constants</th></tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#PROTOCOL_VERSION_1">PROTOCOL_VERSION_1</a></td>
+        <td class="jd-descrcol" width="100%">Stream protocol version 1.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#PROTOCOL_VERSION_2">PROTOCOL_VERSION_2</a></td>
+        <td class="jd-descrcol" width="100%">Stream protocol version 2.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SC_BLOCK_DATA">SC_BLOCK_DATA</a></td>
+        <td class="jd-descrcol" width="100%">Bit mask for the <code>flag</code> field in ObjectStreamClass.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SC_ENUM">SC_ENUM</a></td>
+        <td class="jd-descrcol" width="100%">Bit mask for the <code>flag</code> field in ObjectStreamClass.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SC_EXTERNALIZABLE">SC_EXTERNALIZABLE</a></td>
+        <td class="jd-descrcol" width="100%">Bit mask for the <code>flag</code> field in ObjectStreamClass.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SC_SERIALIZABLE">SC_SERIALIZABLE</a></td>
+        <td class="jd-descrcol" width="100%">Bit mask for the <code>flag</code> field in ObjectStreamClass.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SC_WRITE_METHOD">SC_WRITE_METHOD</a></td>
+        <td class="jd-descrcol" width="100%">Bit mask for the <code>flag</code> field in ObjectStreamClass.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#STREAM_MAGIC">STREAM_MAGIC</a></td>
+        <td class="jd-descrcol" width="100%">The stream header's magic number.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">short</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#STREAM_VERSION">STREAM_VERSION</a></td>
+        <td class="jd-descrcol" width="100%">The stream header's version number.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_ARRAY">TC_ARRAY</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new array.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_BASE">TC_BASE</a></td>
+        <td class="jd-descrcol" width="100%">The minimum tag value.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_BLOCKDATA">TC_BLOCKDATA</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a block of optional data.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_BLOCKDATALONG">TC_BLOCKDATALONG</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a long block of data.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_CLASS">TC_CLASS</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a reference to a class.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_CLASSDESC">TC_CLASSDESC</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new class descriptor.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_ENDBLOCKDATA">TC_ENDBLOCKDATA</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark the end of block data blocks for an object.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_ENUM">TC_ENUM</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new enum.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_EXCEPTION">TC_EXCEPTION</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark an exception.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_LONGSTRING">TC_LONGSTRING</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a long string.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_MAX">TC_MAX</a></td>
+        <td class="jd-descrcol" width="100%">The maximum tag value.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_NULL">TC_NULL</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a <code>null</code> object reference.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_OBJECT">TC_OBJECT</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new object.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_PROXYCLASSDESC">TC_PROXYCLASSDESC</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new proxy class descriptor.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_REFERENCE">TC_REFERENCE</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a reference to an object that has already been written to the
+ stream.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_RESET">TC_RESET</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a stream reset.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">byte</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#TC_STRING">TC_STRING</a></td>
+        <td class="jd-descrcol" width="100%">Tag to mark a new string.</td>
+    </tr>
+    
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">int</td>
+        <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#baseWireHandle">baseWireHandle</a></td>
+        <td class="jd-descrcol" width="100%">Handle for the first object that gets serialized.</td>
+    </tr>
+    
+    
+
+</table>
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<table id="lfields" class="jd-sumtable"><tr><th colspan="12">Fields</th></tr>
+
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/io/SerializablePermission.html">SerializablePermission</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SUBCLASS_IMPLEMENTATION_PERMISSION">SUBCLASS_IMPLEMENTATION_PERMISSION</a></td>
+          <td class="jd-descrcol" width="100%">Permission constant to enable subclassing of ObjectInputStream and
+ ObjectOutputStream.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../reference/java/io/SerializablePermission.html">SerializablePermission</a></td>
+          <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamConstants.html#SUBSTITUTION_PERMISSION">SUBSTITUTION_PERMISSION</a></td>
+          <td class="jd-descrcol" width="100%">Permission constant to enable object substitution during serialization
+ and deserialization.</td>
+      </tr>
+      
+    
+
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<h2>Constants</h2>
+
+
+
+
+<a id="PROTOCOL_VERSION_1"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        int
+      </span>
+        PROTOCOL_VERSION_1
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Stream protocol version 1.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                1
+                (0x00000001)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="PROTOCOL_VERSION_2"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        int
+      </span>
+        PROTOCOL_VERSION_2
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Stream protocol version 2.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                2
+                (0x00000002)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="SC_BLOCK_DATA"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        SC_BLOCK_DATA
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Bit mask for the <code>flag</code> field in ObjectStreamClass. Indicates
+ that an externalizable class is written in block data mode.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                8
+                (0x00000008)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="SC_ENUM"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        SC_ENUM
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Bit mask for the <code>flag</code> field in ObjectStreamClass. Indicates
+ that a class is an enum type.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                16
+                (0x00000010)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="SC_EXTERNALIZABLE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        SC_EXTERNALIZABLE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Bit mask for the <code>flag</code> field in ObjectStreamClass. Indicates
+ that a class is externalizable.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                4
+                (0x00000004)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="SC_SERIALIZABLE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        SC_SERIALIZABLE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Bit mask for the <code>flag</code> field in ObjectStreamClass. Indicates
+ that a class is serializable.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                2
+                (0x00000002)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="SC_WRITE_METHOD"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        SC_WRITE_METHOD
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Bit mask for the <code>flag</code> field in ObjectStreamClass. Indicates
+ that a serializable class has its own <code>writeObject</code> method.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                1
+                (0x00000001)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="STREAM_MAGIC"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        short
+      </span>
+        STREAM_MAGIC
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The stream header's magic number.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                -21267
+                (0xffffaced)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="STREAM_VERSION"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        short
+      </span>
+        STREAM_VERSION
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The stream header's version number.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                5
+                (0x00000005)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_ARRAY"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_ARRAY
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a new array.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                117
+                (0x00000075)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_BASE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_BASE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The minimum tag value.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                112
+                (0x00000070)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_BLOCKDATA"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_BLOCKDATA
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a block of optional data. The byte following this tag
+ indicates the size of the block.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                119
+                (0x00000077)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_BLOCKDATALONG"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_BLOCKDATALONG
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a long block of data. The long following this tag
+ indicates the size of the block.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                122
+                (0x0000007a)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_CLASS"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_CLASS
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a reference to a class.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                118
+                (0x00000076)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_CLASSDESC"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_CLASSDESC
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a new class descriptor.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                114
+                (0x00000072)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_ENDBLOCKDATA"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_ENDBLOCKDATA
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark the end of block data blocks for an object.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                120
+                (0x00000078)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_ENUM"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_ENUM
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a new enum.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                126
+                (0x0000007e)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_EXCEPTION"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_EXCEPTION
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark an exception.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                123
+                (0x0000007b)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_LONGSTRING"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_LONGSTRING
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a long string.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                124
+                (0x0000007c)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_MAX"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_MAX
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The maximum tag value.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                126
+                (0x0000007e)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_NULL"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_NULL
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a <code>null</code> object reference.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                112
+                (0x00000070)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_OBJECT"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_OBJECT
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a new object.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                115
+                (0x00000073)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_PROXYCLASSDESC"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_PROXYCLASSDESC
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a new proxy class descriptor.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                125
+                (0x0000007d)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_REFERENCE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_REFERENCE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a reference to an object that has already been written to the
+ stream.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                113
+                (0x00000071)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_RESET"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_RESET
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a stream reset.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                121
+                (0x00000079)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="TC_STRING"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        byte
+      </span>
+        TC_STRING
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Tag to mark a new string.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                116
+                (0x00000074)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="baseWireHandle"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        int
+      </span>
+        baseWireHandle
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Handle for the first object that gets serialized.
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                8257536
+                (0x007e0000)
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+
+<!-- Fields -->
+
+
+<!-- ========= FIELD DETAIL ======== -->
+<h2>Fields</h2>
+
+
+
+
+<a id="SUBCLASS_IMPLEMENTATION_PERMISSION"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../reference/java/io/SerializablePermission.html">SerializablePermission</a>
+      </span>
+        SUBCLASS_IMPLEMENTATION_PERMISSION
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Permission constant to enable subclassing of ObjectInputStream and
+ ObjectOutputStream.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="SUBSTITUTION_PERMISSION"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../reference/java/io/SerializablePermission.html">SerializablePermission</a>
+      </span>
+        SUBSTITUTION_PERMISSION
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Permission constant to enable object substitution during serialization
+ and deserialization.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

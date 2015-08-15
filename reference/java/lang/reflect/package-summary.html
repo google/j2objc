@@ -1,0 +1,263 @@
+---
+
+title: java.lang.reflect - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
+<title>
+
+  java.lang.reflect - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+<body class="">
+
+
+<div class="g-unit" id="doc-content">
+
+<div id="api-info-block">
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div>
+
+<div id="jd-header">
+  package
+  <h1>java.lang.reflect</h1>
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+
+
+
+
+
+
+  
+    <h2>Interfaces</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/AnnotatedElement.html">AnnotatedElement</a></td>
+              <td class="jd-descrcol" width="100%">This interface provides reflective access to annotation information.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/GenericArrayType.html">GenericArrayType</a></td>
+              <td class="jd-descrcol" width="100%">This interface represents an array type with a component type that is either
+ a parameterized type or a type variable.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/GenericDeclaration.html">GenericDeclaration</a></td>
+              <td class="jd-descrcol" width="100%">Common interface for language constructs that declare type parameters.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/InvocationHandler.html">InvocationHandler</a></td>
+              <td class="jd-descrcol" width="100%">Implementors of this interface dispatch methods invoked on proxy instances.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Member.html">Member</a></td>
+              <td class="jd-descrcol" width="100%">Common interface providing access to reflective information on class members.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/ParameterizedType.html">ParameterizedType</a></td>
+              <td class="jd-descrcol" width="100%">This interface represents a parameterized type such as <code>'Set&lt;String&gt;'</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Type.html">Type</a></td>
+              <td class="jd-descrcol" width="100%">Common interface implemented by all Java types.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/TypeVariable.html">TypeVariable</a>&lt;D&nbsp;extends&nbsp;<a href="../../../../reference/java/lang/reflect/GenericDeclaration.html">GenericDeclaration</a>&gt;</td>
+              <td class="jd-descrcol" width="100%">This interface represents a type variables such as <code>'T'</code> in <code>'public interface Comparable<T>'</code>, the bounded <code>'T'</code> in <code>'public interface A<T extends Number>'</code> or the multiple bounded <code>'T'</code> in <code>'public interface B<T extends Number & Cloneable>'</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/WildcardType.html">WildcardType</a></td>
+              <td class="jd-descrcol" width="100%">A pattern type, such as the upper bounded wildcard <code>? extends Closeable</code> or the lower bounded wildcard <code>? super String</code>.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Classes</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/AccessibleObject.html">AccessibleObject</a></td>
+              <td class="jd-descrcol" width="100%">Stub implementation of AccessibleObject.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Array.html">Array</a></td>
+              <td class="jd-descrcol" width="100%">Provides static methods to create and access arrays dynamically.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Constructor.html">Constructor</a>&lt;T&gt;</td>
+              <td class="jd-descrcol" width="100%">Stub implementation of Constructor.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Field.html">Field</a></td>
+              <td class="jd-descrcol" width="100%">Stub implementation of Field.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Method.html">Method</a></td>
+              <td class="jd-descrcol" width="100%">Stub implementation of Method.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Modifier.html">Modifier</a></td>
+              <td class="jd-descrcol" width="100%">This class provides static methods to decode class and member modifiers.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/Proxy.html">Proxy</a></td>
+              <td class="jd-descrcol" width="100%"><code>Proxy</code> defines methods for creating dynamic proxy classes and instances.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/ReflectPermission.html">ReflectPermission</a></td>
+              <td class="jd-descrcol" width="100%">Legacy security code; do not use.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+
+
+  
+    <h2>Exceptions</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/InvocationTargetException.html">InvocationTargetException</a></td>
+              <td class="jd-descrcol" width="100%">This class provides a wrapper for an exception thrown by a <code>Method</code> or
+ <code>Constructor</code> invocation.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/MalformedParameterizedTypeException.html">MalformedParameterizedTypeException</a></td>
+              <td class="jd-descrcol" width="100%">Indicates that a malformed parameterized type has been encountered by a
+ reflective method.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/UndeclaredThrowableException.html">UndeclaredThrowableException</a></td>
+              <td class="jd-descrcol" width="100%">This class provides a wrapper for an undeclared, checked exception thrown by
+ an InvocationHandler.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+  
+    <h2>Errors</h2>
+    <div class="jd-sumtable">
+    
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/lang/reflect/GenericSignatureFormatError.html">GenericSignatureFormatError</a></td>
+              <td class="jd-descrcol" width="100%">Indicates that a malformed signature has been encountered via a reflective
+ method.&nbsp;</td>
+          </tr>
+  </table>
+    </div>
+  
+
+
+<div id="footer">
+Generated by <a href="http://code.google.com/p/doclava/">Doclava</a>.
+</div> <!-- end footer -->
+
+</div><!-- end jd-content -->
+</div><!-- doc-content -->
+
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
+
+</body>
+</html>

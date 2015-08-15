@@ -1,0 +1,684 @@
+---
+
+title: Comparable - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../favicon.ico" />
+<title>
+
+  Comparable - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>Comparable</h1>
+
+
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">java.lang.Comparable&lt;T&gt;</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-indirect" class="jd-expando-trigger closed"
+          ><a id="subclasses-indirect-trigger"
+          class="jd-expando-trigger-img" /></a>Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+            
+              
+                <a href="../../../reference/android/os/AsyncTask.Status.html">AsyncTask.Status</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/net/Authenticator.RequestorType.html">Authenticator.RequestorType</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/math/BigInteger.html">BigInteger</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/lang/Boolean.html">Boolean</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/lang/Byte.html">Byte</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/util/Calendar.html">Calendar</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/lang/Character.html">Character</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/nio/charset/Charset.html">Charset</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/text/CollationKey.html">CollationKey</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/util/Date.html">Date</a>,
+              
+              
+            
+              
+                <a href="../../../reference/java/util/concurrent/Delayed.html">Delayed</a>,
+              
+              and
+                <a href="#" onclick="return toggleInherited(document.getElementById('subclasses-indirect', null))">36 others.</a>
+              
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/android/os/AsyncTask.Status.html">AsyncTask.Status</a></td>
+              <td class="jd-descrcol" width="100%">Indicates the current status of the task.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/Authenticator.RequestorType.html">Authenticator.RequestorType</a></td>
+              <td class="jd-descrcol" width="100%">Enumeration class for the origin of the authentication request.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/math/BigDecimal.html">BigDecimal</a></td>
+              <td class="jd-descrcol" width="100%">This class represents immutable arbitrary precision decimal numbers.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/math/BigInteger.html">BigInteger</a></td>
+              <td class="jd-descrcol" width="100%">This class represents immutable integer numbers of arbitrary length.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Boolean.html">Boolean</a></td>
+              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>boolean</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Byte.html">Byte</a></td>
+              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>byte</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/ByteBuffer.html">ByteBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer for bytes.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Calendar.html">Calendar</a></td>
+              <td class="jd-descrcol" width="100%"><code>Calendar</code> is an abstract base class for converting between a
+ <code>Date</code> object and a set of integer fields such as
+ <code>YEAR</code>, <code>MONTH</code>, <code>DAY</code>,
+ <code>HOUR</code>, and so on.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/CharBuffer.html">CharBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of chars.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Character.html">Character</a></td>
+              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>char</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/charset/Charset.html">Charset</a></td>
+              <td class="jd-descrcol" width="100%">A charset is a named mapping between Unicode characters and byte sequences.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/ClientInfoStatus.html">ClientInfoStatus</a></td>
+              <td class="jd-descrcol" width="100%">An enumeration to describe the reason why a property cannot be set by calling
+ Connection.setClientInfo.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/text/CollationKey.html">CollationKey</a></td>
+              <td class="jd-descrcol" width="100%">Represents a string under the rules of a specific <code>Collator</code> object.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Date.html">Date</a></td>
+              <td class="jd-descrcol" width="100%">A specific moment in time, with millisecond precision.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/Delayed.html">Delayed</a></td>
+              <td class="jd-descrcol" width="100%">A mix-in style interface for marking objects that should be
+ acted upon after a given delay.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Double.html">Double</a></td>
+              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>double</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/DoubleBuffer.html">DoubleBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of doubles.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/annotation/ElementType.html">ElementType</a></td>
+              <td class="jd-descrcol" width="100%">Defines an enumeration for Java program elements.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&nbsp;extends&nbsp;<a href="../../../reference/java/lang/Enum.html">Enum</a>&lt;E&gt;&gt;</td>
+              <td class="jd-descrcol" width="100%">The superclass of all enumerated types.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/File.html">File</a></td>
+              <td class="jd-descrcol" width="100%">An "abstract" representation of a file system entity identified by a
+ pathname.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Float.html">Float</a></td>
+              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>float</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/FloatBuffer.html">FloatBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of floats.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/Formatter.BigDecimalLayoutForm.html">Formatter.BigDecimalLayoutForm</a></td>
+              <td class="jd-descrcol" width="100%">The enumeration giving the available styles for formatting very large
+ decimal numbers.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/GregorianCalendar.html">GregorianCalendar</a></td>
+              <td class="jd-descrcol" width="100%"><code>GregorianCalendar</code> is a concrete subclass of <code><a href="reference/java/util/Calendar.html">Calendar</a></code>
+ and provides the standard calendar used by most of the world.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/IntBuffer.html">IntBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of ints.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Integer.html">Integer</a></td>
+              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>int</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Long.html">Long</a></td>
+              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>long</code>.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/LongBuffer.html">LongBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of longs.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/MappedByteBuffer.html">MappedByteBuffer</a></td>
+              <td class="jd-descrcol" width="100%"><code>MappedByteBuffer</code> is a special kind of direct byte buffer which maps a
+ region of file to memory.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/lang/model/element/Modifier.html">Modifier</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/text/Normalizer.Form.html">Normalizer.Form</a></td>
+              <td class="jd-descrcol" width="100%">The normalization forms supported by the Normalizer.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/io/ObjectStreamField.html">ObjectStreamField</a></td>
+              <td class="jd-descrcol" width="100%">Describes a field for the purpose of serialization.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/Proxy.Type.html">Proxy.Type</a></td>
+              <td class="jd-descrcol" width="100%"><code>Enum</code> class for the proxy type.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/annotation/Resource.AuthenticationType.html">Resource.AuthenticationType</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/annotation/RetentionPolicy.html">RetentionPolicy</a></td>
+              <td class="jd-descrcol" width="100%">Defines an enumeration for annotation retention policies.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/math/RoundingMode.html">RoundingMode</a></td>
+              <td class="jd-descrcol" width="100%">Specifies the rounding behavior for operations whose results cannot be
+ represented exactly.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/RowIdLifetime.html">RowIdLifetime</a></td>
+              <td class="jd-descrcol" width="100%">An enumeration to describe the life-time of RowID.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/RunnableScheduledFuture.html">RunnableScheduledFuture</a>&lt;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A <code><a href="reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a></code> that is <code><a href="reference/java/lang/Runnable.html">Runnable</a></code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/net/ssl/SSLEngineResult.HandshakeStatus.html">SSLEngineResult.HandshakeStatus</a></td>
+              <td class="jd-descrcol" width="100%">The <code>enum</code> describing the state of the current handshake.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/javax/net/ssl/SSLEngineResult.Status.html">SSLEngineResult.Status</a></td>
+              <td class="jd-descrcol" width="100%">The <code>enum</code> describing the result of the <code>SSLEngine</code>
+ operation.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/ScheduledFuture.html">ScheduledFuture</a>&lt;V&gt;</td>
+              <td class="jd-descrcol" width="100%">A delayed result-bearing action that can be cancelled.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Short.html">Short</a></td>
+              <td class="jd-descrcol" width="100%">The wrapper for the primitive type <code>short</code>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/nio/ShortBuffer.html">ShortBuffer</a></td>
+              <td class="jd-descrcol" width="100%">A buffer of shorts.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/String.html">String</a></td>
+              <td class="jd-descrcol" width="100%">Stub implementation of java.lang.String.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/android/text/TextUtils.TruncateAt.html">TextUtils.TruncateAt</a></td>
+              <td class="jd-descrcol" width="100%">&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/lang/Thread.State.html">Thread.State</a></td>
+              <td class="jd-descrcol" width="100%">A representation of a thread's state.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Time.html">Time</a></td>
+              <td class="jd-descrcol" width="100%">Java representation of an SQL <code>TIME</code> value.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/concurrent/TimeUnit.html">TimeUnit</a></td>
+              <td class="jd-descrcol" width="100%">A <code>TimeUnit</code> represents time durations at a given unit of
+ granularity and provides utility methods to convert across units,
+ and to perform timing and delay operations in these units.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/sql/Timestamp.html">Timestamp</a></td>
+              <td class="jd-descrcol" width="100%">A Java representation of the SQL <code>TIMESTAMP</code> type.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/net/URI.html">URI</a></td>
+              <td class="jd-descrcol" width="100%">A Uniform Resource Identifier that identifies an abstract or physical
+ resource, as specified by <a href="http://www.ietf.org/rfc/rfc2396.txt">RFC
+ 2396</a>.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/util/UUID.html">UUID</a></td>
+              <td class="jd-descrcol" width="100%">UUID is an immutable representation of a 128-bit universally unique
+ identifier (UUID).&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>This interface should be implemented by all classes that wish to define a
+ <em>natural order</em> of their instances.
+ <code><a href="reference/java/util/Collections.html#sort(java.util.List<T>)">sort(List<T>)</a></code> and <code>java.util.Arrays#sort</code> can then
+ be used to automatically sort lists of classes that implement this interface.
+ <p>
+ The order rule must be both transitive (if <code>x.compareTo(y) < 0</code> and
+ <code>y.compareTo(z) < 0</code>, then <code>x.compareTo(z) < 0</code> must hold) and
+ invertible (the sign of the result of x.compareTo(y) must be equal to the
+ negation of the sign of the result of y.compareTo(x) for all combinations of
+ x and y).
+ <p>
+ In addition, it is recommended (but not required) that if and only if the
+ result of x.compareTo(y) is zero, then the result of x.equals(y) should be
+ <code>true</code>.
+</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../reference/java/lang/Comparable.html#compareTo(T)">compareTo</a></span>(T another)
+        
+        <div class="jd-descrdiv">Compares this object to the specified object to determine their relative
+ order.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="compareTo(T)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        int
+      </span>
+      <span class="sympad">compareTo</span>
+      <span class="normal">(T another)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this object to the specified object to determine their relative
+ order.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>another</th>
+          <td>the object to compare to this instance.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a negative integer if this instance is less than <code>another</code>;
+         a positive integer if this instance is greater than
+         <code>another</code>; 0 if this instance has the same order as
+         <code>another</code>.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
+            <td>if <code>another</code> cannot be converted into something
+             comparable to <code>this</code> instance.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

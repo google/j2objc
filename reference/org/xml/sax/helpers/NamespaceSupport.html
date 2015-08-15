@@ -1,0 +1,1645 @@
+---
+
+title: NamespaceSupport - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../../favicon.ico" />
+<title>
+
+  NamespaceSupport - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    class
+<h1>NamespaceSupport</h1>
+
+
+
+  
+    extends <a href="../../../../../reference/java/lang/Object.html">Object</a><br/>
+  
+  
+  
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="2" class="jd-inheritance-class-cell"><a href="../../../../../reference/java/lang/Object.html">java.lang.Object</a></td>
+    </tr>
+    
+
+    <tr>
+        
+            <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">org.xml.sax.helpers.NamespaceSupport</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>Encapsulate Namespace logic for use by applications using SAX,
+ or internally by SAX drivers.
+
+ <blockquote>
+ <em>This module, both source code and documentation, is in the
+ Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
+ See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
+ for further information.
+ </blockquote>
+
+ <p>This class encapsulates the logic of Namespace processing: it
+ tracks the declarations currently in force for each context and
+ automatically processes qualified XML names into their Namespace
+ parts; it can also be used in reverse for generating XML qnames
+ from Namespaces.</p>
+
+ <p>Namespace support objects are reusable, but the reset method
+ must be invoked between each session.</p>
+
+ <p>Here is a simple session:</p>
+
+ <pre>
+ String parts[] = new String[3];
+ NamespaceSupport support = new NamespaceSupport();
+
+ support.pushContext();
+ support.declarePrefix("", "http://www.w3.org/1999/xhtml");
+ support.declarePrefix("dc", "http://www.purl.org/dc#");
+
+ parts = support.processName("p", parts, false);
+ System.out.println("Namespace URI: " + parts[0]);
+ System.out.println("Local name: " + parts[1]);
+ System.out.println("Raw name: " + parts[2]);
+
+ parts = support.processName("dc:title", parts, false);
+ System.out.println("Namespace URI: " + parts[0]);
+ System.out.println("Local name: " + parts[1]);
+ System.out.println("Raw name: " + parts[2]);
+
+ support.popContext();
+ </pre>
+
+ <p>Note that this class is optimized for the use case where most
+ elements do not contain Namespace declarations: if the same
+ prefix/URI mapping is repeated for each context (for example), this
+ class will be somewhat less efficient.</p>
+
+ <p>Although SAX drivers (parsers) may choose to use this class to
+ implement namespace handling, they are not required to do so.
+ Applications must track namespace information themselves if they
+ want to use namespace information.</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== ENUM CONSTANT SUMMARY =========== -->
+<table id="constants" class="jd-sumtable"><tr><th colspan="12">Constants</th></tr>
+
+
+    
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol"><a href="../../../../../reference/java/lang/String.html">String</a></td>
+        <td class="jd-linkcol"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#NSDECL">NSDECL</a></td>
+        <td class="jd-descrcol" width="100%">The namespace declaration URI as a constant.</td>
+    </tr>
+    
+    
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol"><a href="../../../../../reference/java/lang/String.html">String</a></td>
+        <td class="jd-linkcol"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#XMLNS">XMLNS</a></td>
+        <td class="jd-descrcol" width="100%">The XML Namespace URI as a constant.</td>
+    </tr>
+    
+    
+
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<table id="pubctors" class="jd-sumtable"><tr><th colspan="12">Public Constructors</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#NamespaceSupport()">NamespaceSupport</a></span>()
+        
+        <div class="jd-descrdiv">Create a new Namespace support object.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#declarePrefix(java.lang.String, java.lang.String)">declarePrefix</a></span>(<a href="../../../../../reference/java/lang/String.html">String</a> prefix, <a href="../../../../../reference/java/lang/String.html">String</a> uri)
+        
+        <div class="jd-descrdiv">Declare a Namespace prefix.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/util/Enumeration.html">Enumeration</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getDeclaredPrefixes()">getDeclaredPrefixes</a></span>()
+        
+        <div class="jd-descrdiv">Return an enumeration of all prefixes declared in this context.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefix(java.lang.String)">getPrefix</a></span>(<a href="../../../../../reference/java/lang/String.html">String</a> uri)
+        
+        <div class="jd-descrdiv">Return one of the prefixes mapped to a Namespace URI.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/util/Enumeration.html">Enumeration</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefixes()">getPrefixes</a></span>()
+        
+        <div class="jd-descrdiv">Return an enumeration of all prefixes whose declarations are
+ active in the current context.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/util/Enumeration.html">Enumeration</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefixes(java.lang.String)">getPrefixes</a></span>(<a href="../../../../../reference/java/lang/String.html">String</a> uri)
+        
+        <div class="jd-descrdiv">Return an enumeration of all prefixes for a given URI whose
+ declarations are active in the current context.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getURI(java.lang.String)">getURI</a></span>(<a href="../../../../../reference/java/lang/String.html">String</a> prefix)
+        
+        <div class="jd-descrdiv">Look up a prefix and get the currently-mapped Namespace URI.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#isNamespaceDeclUris()">isNamespaceDeclUris</a></span>()
+        
+        <div class="jd-descrdiv">Returns true if namespace declaration attributes are placed into
+ a namespace.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#popContext()">popContext</a></span>()
+        
+        <div class="jd-descrdiv">Revert to the previous Namespace context.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String[]</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#processName(java.lang.String, java.lang.String[], boolean)">processName</a></span>(<a href="../../../../../reference/java/lang/String.html">String</a> qName, <a href="../../../../../reference/java/lang/String.html">String[]</a> parts, boolean isAttribute)
+        
+        <div class="jd-descrdiv">Process a raw XML qualified name, after all declarations in the
+ current context have been handled by <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#declarePrefix(java.lang.String, java.lang.String)">declarePrefix()</a></code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#pushContext()">pushContext</a></span>()
+        
+        <div class="jd-descrdiv">Start a new Namespace context.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#reset()">reset</a></span>()
+        
+        <div class="jd-descrdiv">Reset this Namespace support object for reuse.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#setNamespaceDeclUris(boolean)">setNamespaceDeclUris</a></span>(boolean value)
+        
+        <div class="jd-descrdiv">Controls whether namespace declaration attributes are placed
+ into the <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#NSDECL">NSDECL</a></code> namespace
+ by <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#processName(java.lang.String, java.lang.String[], boolean)">processName()</a></code>.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="inhmethods" class="jd-sumtable"><tr><th>
+  <div style="clear:left;">Inherited Methods</div>
+  <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
+  </th></tr>
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Object" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.Object-trigger"
+          class="jd-expando-trigger-img" /></a>
+From class
+
+  <a href="../../../../../reference/java/lang/Object.html">java.lang.Object</a>
+
+<div id="inherited-methods-java.lang.Object">
+  <div id="inherited-methods-java.lang.Object-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.Object-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/java/lang/Object.html#clone()">clone</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../../reference/java/lang/Object.html">Object</a> obj)
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/java/lang/Object.html#finalize()">finalize</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/java/lang/Object.html#getClass()">getClass</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/java/lang/Object.html#hashCode()">hashCode</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/java/lang/Object.html#notify()">notify</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/java/lang/Object.html#notifyAll()">notifyAll</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/java/lang/Object.html#toString()">toString</a></span>()
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/java/lang/Object.html#wait(long, int)">wait</a></span>(long timeout, int nanos)
+        
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/java/lang/Object.html#wait(long)">wait</a></span>(long timeout)
+        
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../../reference/java/lang/Object.html#wait()">wait</a></span>()
+        
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+</table>
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- ========= ENUM CONSTANTS DETAIL ======== -->
+<h2>Constants</h2>
+
+
+
+
+<a id="NSDECL"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+        NSDECL
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The namespace declaration URI as a constant.
+ The value is <code>http://www.w3.org/xmlns/2000/</code>, as defined
+ in a backwards-incompatible erratum to the "Namespaces in XML"
+ recommendation.  Because that erratum postdated SAX2, SAX2 defaults
+ to the original recommendation, and does not normally use this URI.
+
+
+ <p>This is the Namespace URI that is optionally applied to
+ <em>xmlns</em> and <em>xmlns:*</em> attributes, which are used to
+ declare namespaces.  </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#setNamespaceDeclUris(boolean)">setNamespaceDeclUris(boolean)</a></code></li><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#isNamespaceDeclUris()">isNamespaceDeclUris()</a></code></li>
+      </ul>
+  </div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                "http://www.w3.org/xmlns/2000/"
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+<a id="XMLNS"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+        XMLNS
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The XML Namespace URI as a constant.
+ The value is <code>http://www.w3.org/XML/1998/namespace</code>
+ as defined in the "Namespaces in XML" * recommendation.
+
+ <p>This is the Namespace URI that is automatically mapped
+ to the "xml" prefix.</p>
+</p></div>
+
+    
+        <div class="jd-tagdata">
+        <span class="jd-tagtitle">Constant Value: </span>
+        <span>
+            
+                "http://www.w3.org/XML/1998/namespace"
+            
+        </span>
+        </div>
+    
+    </div>
+</div>
+
+
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<h2>Public Constructors</h2>
+
+
+
+<a id="NamespaceSupport()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">NamespaceSupport</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Create a new Namespace support object.
+</p></div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="declarePrefix(java.lang.String, java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">declarePrefix</span>
+      <span class="normal">(<a href="../../../../../reference/java/lang/String.html">String</a> prefix, <a href="../../../../../reference/java/lang/String.html">String</a> uri)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Declare a Namespace prefix.  All prefixes must be declared
+ before they are referenced.  For example, a SAX driver (parser)
+ would scan an element's attributes
+ in two passes:  first for namespace declarations,
+ then a second pass using <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#processName(java.lang.String, java.lang.String[], boolean)">processName()</a></code> to
+ interpret prefixes against (potentially redefined) prefixes.
+
+ <p>This method declares a prefix in the current Namespace
+ context; the prefix will remain in force until this context
+ is popped, unless it is shadowed in a descendant context.</p>
+
+ <p>To declare the default element Namespace, use the empty string as
+ the prefix.</p>
+
+ <p>Note that you must <em>not</em> declare a prefix after
+ you've pushed and popped another Namespace context, or
+ treated the declarations phase as complete by processing
+ a prefixed name.</p>
+
+ <p>Note that there is an asymmetry in this library: <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefix(java.lang.String)">getPrefix</a></code> will not return the "" prefix,
+ even if you have declared a default element namespace.
+ To check for a default namespace,
+ you have to look it up explicitly using <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#getURI(java.lang.String)">getURI</a></code>.
+ This asymmetry exists to make it easier to look up prefixes
+ for attribute names, where the default prefix is not allowed.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>prefix</th>
+          <td>The prefix to declare, or the empty string to
+    indicate the default element namespace.  This may never have
+    the value "xml" or "xmlns".</td>
+        </tr>
+        <tr>
+          <th>uri</th>
+          <td>The Namespace URI to associate with the prefix.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>true if the prefix was legal, false otherwise</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#processName(java.lang.String, java.lang.String[], boolean)">processName(String, String[], boolean)</a></code></li><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getURI(java.lang.String)">getURI(String)</a></code></li><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefix(java.lang.String)">getPrefix(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getDeclaredPrefixes()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/util/Enumeration.html">Enumeration</a>
+      </span>
+      <span class="sympad">getDeclaredPrefixes</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an enumeration of all prefixes declared in this context.
+
+ <p>The empty (default) prefix will be included in this
+ enumeration; note that this behaviour differs from that of
+ <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefix(java.lang.String)">getPrefix(String)</a></code> and <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefixes()">getPrefixes()</a></code>.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>An enumeration of all prefixes declared in this
+         context.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefixes()">getPrefixes()</a></code></li><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getURI(java.lang.String)">getURI(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getPrefix(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getPrefix</span>
+      <span class="normal">(<a href="../../../../../reference/java/lang/String.html">String</a> uri)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return one of the prefixes mapped to a Namespace URI.
+
+ <p>If more than one prefix is currently mapped to the same
+ URI, this method will make an arbitrary selection; if you
+ want all of the prefixes, use the <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefixes()">getPrefixes()</a></code>
+ method instead.</p>
+
+ <p><strong>Note:</strong> this will never return the empty (default) prefix;
+ to check for a default prefix, use the <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#getURI(java.lang.String)">getURI</a></code>
+ method with an argument of "".</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>uri</th>
+          <td>the namespace URI</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>one of the prefixes currently mapped to the URI supplied,
+         or null if none is mapped or if the URI is assigned to
+         the default namespace</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefixes(java.lang.String)">getPrefixes(java.lang.String)</a></code></li><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getURI(java.lang.String)">getURI(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getPrefixes()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/util/Enumeration.html">Enumeration</a>
+      </span>
+      <span class="sympad">getPrefixes</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an enumeration of all prefixes whose declarations are
+ active in the current context.
+ This includes declarations from parent contexts that have
+ not been overridden.
+
+ <p><strong>Note:</strong> if there is a default prefix, it will not be
+ returned in this enumeration; check for the default prefix
+ using the <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#getURI(java.lang.String)">getURI</a></code> with an argument of "".</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>An enumeration of prefixes (never empty).</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getDeclaredPrefixes()">getDeclaredPrefixes()</a></code></li><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getURI(java.lang.String)">getURI(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getPrefixes(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/util/Enumeration.html">Enumeration</a>
+      </span>
+      <span class="sympad">getPrefixes</span>
+      <span class="normal">(<a href="../../../../../reference/java/lang/String.html">String</a> uri)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Return an enumeration of all prefixes for a given URI whose
+ declarations are active in the current context.
+ This includes declarations from parent contexts that have
+ not been overridden.
+
+ <p>This method returns prefixes mapped to a specific Namespace
+ URI.  The xml: prefix will be included.  If you want only one
+ prefix that's mapped to the Namespace URI, and you don't care
+ which one you get, use the <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefix(java.lang.String)">getPrefix</a></code>
+  method instead.</p>
+
+ <p><strong>Note:</strong> the empty (default) prefix is <em>never</em> included
+ in this enumeration; to check for the presence of a default
+ Namespace, use the <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#getURI(java.lang.String)">getURI</a></code> method with an
+ argument of "".</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>uri</th>
+          <td>The Namespace URI.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>An enumeration of prefixes (never empty).</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefix(java.lang.String)">getPrefix(String)</a></code></li><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getDeclaredPrefixes()">getDeclaredPrefixes()</a></code></li><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getURI(java.lang.String)">getURI(String)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="getURI(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String</a>
+      </span>
+      <span class="sympad">getURI</span>
+      <span class="normal">(<a href="../../../../../reference/java/lang/String.html">String</a> prefix)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Look up a prefix and get the currently-mapped Namespace URI.
+
+ <p>This method looks up the prefix in the current context.
+ Use the empty string ("") for the default Namespace.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>prefix</th>
+          <td>The prefix to look up.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The associated Namespace URI, or null if the prefix
+         is undeclared in this context.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefix(java.lang.String)">getPrefix(String)</a></code></li><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#getPrefixes()">getPrefixes()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="isNamespaceDeclUris()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        boolean
+      </span>
+      <span class="sympad">isNamespaceDeclUris</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Returns true if namespace declaration attributes are placed into
+ a namespace.  This behavior is not the default.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>true if namespace declaration attributes are enabled, false
+         otherwise.</li></ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="popContext()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">popContext</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Revert to the previous Namespace context.
+
+ <p>Normally, you should pop the context at the end of each
+ XML element.  After popping the context, all Namespace prefix
+ mappings that were previously in force are restored.</p>
+
+ <p>You must not attempt to declare additional Namespace
+ prefixes after popping a context, unless you push another
+ context first.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#pushContext()">pushContext()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="processName(java.lang.String, java.lang.String[], boolean)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        <a href="../../../../../reference/java/lang/String.html">String[]</a>
+      </span>
+      <span class="sympad">processName</span>
+      <span class="normal">(<a href="../../../../../reference/java/lang/String.html">String</a> qName, <a href="../../../../../reference/java/lang/String.html">String[]</a> parts, boolean isAttribute)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Process a raw XML qualified name, after all declarations in the
+ current context have been handled by <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#declarePrefix(java.lang.String, java.lang.String)">declarePrefix()</a></code>.
+
+ <p>This method processes a raw XML qualified name in the
+ current context by removing the prefix and looking it up among
+ the prefixes currently declared.  The return value will be the
+ array supplied by the caller, filled in as follows:</p>
+
+ <dl>
+ <dt>parts[0]</dt>
+ <dd>The Namespace URI, or an empty string if none is
+  in use.</dd>
+ <dt>parts[1]</dt>
+ <dd>The local name (without prefix).</dd>
+ <dt>parts[2]</dt>
+ <dd>The original raw name.</dd>
+ </dl>
+
+ <p>All of the strings in the array will be internalized.  If
+ the raw name has a prefix that has not been declared, then
+ the return value will be null.</p>
+
+ <p>Note that attribute names are processed differently than
+ element names: an unprefixed element name will receive the
+ default Namespace (if any), while an unprefixed attribute name
+ will not.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>qName</th>
+          <td>The XML qualified name to be processed.</td>
+        </tr>
+        <tr>
+          <th>parts</th>
+          <td>An array supplied by the caller, capable of
+        holding at least three members.</td>
+        </tr>
+        <tr>
+          <th>isAttribute</th>
+          <td>A flag indicating whether this is an
+        attribute name (true) or an element name (false).</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>The supplied array holding three internalized strings
+        representing the Namespace URI (or empty string), the
+        local name, and the XML qualified name; or null if there
+        is an undeclared prefix.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#declarePrefix(java.lang.String, java.lang.String)">declarePrefix(String, String)</a></code></li><li><code><a href="../../../../../reference/java/lang/String.html#intern()">intern()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="pushContext()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">pushContext</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Start a new Namespace context.
+ The new context will automatically inherit
+ the declarations of its parent context, but it will also keep
+ track of which declarations were made within this context.
+
+ <p>Event callback code should start a new context once per element.
+ This means being ready to call this in either of two places.
+ For elements that don't include namespace declarations, the
+ <em>ContentHandler.startElement()</em> callback is the right place.
+ For elements with such a declaration, it'd done in the first
+ <em>ContentHandler.startPrefixMapping()</em> callback.
+ A boolean flag can be used to
+ track whether a context has been started yet.  When either of
+ those methods is called, it checks the flag to see if a new context
+ needs to be started.  If so, it starts the context and sets the
+ flag.  After <em>ContentHandler.startElement()</em>
+ does that, it always clears the flag.
+
+ <p>Normally, SAX drivers would push a new context at the beginning
+ of each XML element.  Then they perform a first pass over the
+ attributes to process all namespace declarations, making
+ <em>ContentHandler.startPrefixMapping()</em> callbacks.
+ Then a second pass is made, to determine the namespace-qualified
+ names for all attributes and for the element name.
+ Finally all the information for the
+ <em>ContentHandler.startElement()</em> callback is available,
+ so it can then be made.
+
+ <p>The Namespace support object always starts with a base context
+ already in force: in this context, only the "xml" prefix is
+ declared.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/ContentHandler.html">ContentHandler</a></code></li><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#popContext()">popContext()</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="reset()"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">reset</span>
+      <span class="normal">()</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Reset this Namespace support object for reuse.
+
+ <p>It is necessary to invoke this method before reusing the
+ Namespace support object for a new session.  If namespace
+ declaration URIs are to be supported, that flag must also
+ be set to a non-default value.
+ </p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../../reference/org/xml/sax/helpers/NamespaceSupport.html#setNamespaceDeclUris(boolean)">setNamespaceDeclUris(boolean)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="setNamespaceDeclUris(boolean)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        
+        
+        void
+      </span>
+      <span class="sympad">setNamespaceDeclUris</span>
+      <span class="normal">(boolean value)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Controls whether namespace declaration attributes are placed
+ into the <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#NSDECL">NSDECL</a></code> namespace
+ by <code><a href="reference/org/xml/sax/helpers/NamespaceSupport.html#processName(java.lang.String, java.lang.String[], boolean)">processName()</a></code>.  This may only be
+ changed before any contexts have been pushed.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>value</th>
+          <td>the namespace declaration attribute state. A value of true
+              enables this feature, a value of false disables it.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../../reference/java/lang/IllegalStateException.html">IllegalStateException</a></td>
+            <td>when attempting to set this
+    after any context has been pushed.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>

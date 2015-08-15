@@ -1,0 +1,882 @@
+---
+
+title: Parser - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
+<title>
+
+  Parser - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    
+    
+    interface
+<h1>Parser</h1>
+
+
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">org.xml.sax.Parser</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+<table class="jd-sumtable jd-sumtable-subclasses"><tr><td colspan="12" style="border:none;margin:0;padding:0;">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="subclasses-indirect" class="jd-expando-trigger closed"
+          ><a id="subclasses-indirect-trigger"
+          class="jd-expando-trigger-img" /></a>Known Indirect Subclasses
+
+  <div id="subclasses-indirect">
+      <div id="subclasses-indirect-list"
+              class="jd-inheritedlinks"
+              
+              >
+          
+            
+              <a href="../../../../reference/org/xml/sax/helpers/XMLReaderAdapter.html">XMLReaderAdapter</a>
+            
+          
+      </div>
+      <div id="subclasses-indirect-summary"
+              style="display: none;"
+              >
+  <table class="jd-sumtable-expando">
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/org/xml/sax/helpers/XMLReaderAdapter.html">XMLReaderAdapter</a></td>
+              <td class="jd-descrcol" width="100%">Adapt a SAX2 XMLReader as a SAX1 Parser.&nbsp;</td>
+          </tr>
+  </table>
+      </div>
+  </div>
+</td></tr></table>
+
+
+<div class="jd-descr">
+<p>
+  <p class="caution">
+      <strong>
+  This interface is deprecated.</strong><br/> This interface has been replaced by the SAX2
+             <code><a href="reference/org/xml/sax/XMLReader.html">XMLReader</a></code>
+             interface, which includes Namespace support.
+  </p>
+
+<h2>Class Overview</h2>
+<p>Basic interface for SAX (Simple API for XML) parsers.
+
+ <blockquote>
+ <em>This module, both source code and documentation, is in the
+ Public Domain, and comes with <strong>NO WARRANTY</strong>.</em>
+ See <a href='http://www.saxproject.org'>http://www.saxproject.org</a>
+ for further information.
+ </blockquote>
+
+ <p>This was the main event supplier interface for SAX1; it has
+ been replaced in SAX2 by <code><a href="reference/org/xml/sax/XMLReader.html">XMLReader</a></code>,
+ which includes Namespace support and sophisticated configurability
+ and extensibility.</p>
+
+ <p>All SAX1 parsers must implement this basic interface: it allows
+ applications to register handlers for different types of events
+ and to initiate a parse from a URI, or a character stream.</p>
+
+ <p>All SAX1 parsers must also implement a zero-argument constructor
+ (though other constructors are also allowed).</p>
+
+ <p>SAX1 parsers are reusable but not re-entrant: the application
+ may reuse a parser object (possibly with a different input source)
+ once the first parse has completed successfully, but it may not
+ invoke the parse() methods recursively within a parse.</p></p>
+
+
+
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/EntityResolver.html">EntityResolver</a></code></li><li><code><a href="../../../../reference/org/xml/sax/DTDHandler.html">DTDHandler</a></code></li><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></code></li><li><code><a href="../../../../reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code></li><li><code><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a></code></li><li><code><a href="../../../../reference/org/xml/sax/InputSource.html">InputSource</a></code></li>
+      </ul>
+  </div>
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="pubmethods" class="jd-sumtable"><tr><th colspan="12">Public Methods</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/Parser.html#parse(org.xml.sax.InputSource)">parse</a></span>(<a href="../../../../reference/org/xml/sax/InputSource.html">InputSource</a> source)
+        
+        <div class="jd-descrdiv">Parse an XML document.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/Parser.html#parse(java.lang.String)">parse</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> systemId)
+        
+        <div class="jd-descrdiv">Parse an XML document from a system identifier (URI).</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/Parser.html#setDTDHandler(org.xml.sax.DTDHandler)">setDTDHandler</a></span>(<a href="../../../../reference/org/xml/sax/DTDHandler.html">DTDHandler</a> handler)
+        
+        <div class="jd-descrdiv">Allow an application to register a DTD event handler.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/Parser.html#setDocumentHandler(org.xml.sax.DocumentHandler)">setDocumentHandler</a></span>(<a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a> handler)
+        
+        <div class="jd-descrdiv">Allow an application to register a document event handler.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/Parser.html#setEntityResolver(org.xml.sax.EntityResolver)">setEntityResolver</a></span>(<a href="../../../../reference/org/xml/sax/EntityResolver.html">EntityResolver</a> resolver)
+        
+        <div class="jd-descrdiv">Allow an application to register a custom entity resolver.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/Parser.html#setErrorHandler(org.xml.sax.ErrorHandler)">setErrorHandler</a></span>(<a href="../../../../reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a> handler)
+        
+        <div class="jd-descrdiv">Allow an application to register an error event handler.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            abstract
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/org/xml/sax/Parser.html#setLocale(java.util.Locale)">setLocale</a></span>(<a href="../../../../reference/java/util/Locale.html">Locale</a> locale)
+        
+        <div class="jd-descrdiv">Allow an application to request a locale for errors and warnings.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+<h2>Public Methods</h2>
+
+
+
+<a id="parse(org.xml.sax.InputSource)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">parse</span>
+      <span class="normal">(<a href="../../../../reference/org/xml/sax/InputSource.html">InputSource</a> source)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse an XML document.
+
+ <p>The application can use this method to instruct the SAX parser
+ to begin parsing an XML document from any valid input
+ source (a character stream, a byte stream, or a URI).</p>
+
+ <p>Applications may not invoke this method while a parse is in
+ progress (they should create a new Parser instead for each
+ additional XML document).  Once a parse is complete, an
+ application may reuse the same Parser object, possibly with a
+ different input source.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>source</th>
+          <td>The input source for the top-level of the
+        XML document.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td>Any SAX exception, possibly
+            wrapping another exception.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>An IO exception from the parser,
+            possibly from a byte stream or character stream
+            supplied by the application.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/InputSource.html">InputSource</a></code></li><li><code><a href="../../../../reference/org/xml/sax/Parser.html#parse(java.lang.String)">parse(java.lang.String)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/Parser.html#setEntityResolver(org.xml.sax.EntityResolver)">setEntityResolver(EntityResolver)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/Parser.html#setDTDHandler(org.xml.sax.DTDHandler)">setDTDHandler(DTDHandler)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/Parser.html#setDocumentHandler(org.xml.sax.DocumentHandler)">setDocumentHandler(DocumentHandler)</a></code></li><li><code><a href="../../../../reference/org/xml/sax/Parser.html#setErrorHandler(org.xml.sax.ErrorHandler)">setErrorHandler(ErrorHandler)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="parse(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">parse</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> systemId)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Parse an XML document from a system identifier (URI).
+
+ <p>This method is a shortcut for the common case of reading a
+ document from a system identifier.  It is the exact
+ equivalent of the following:</p>
+
+ <pre>
+ parse(new InputSource(systemId));
+ </pre>
+
+ <p>If the system identifier is a URL, it must be fully resolved
+ by the application before it is passed to the parser.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>systemId</th>
+          <td>The system identifier (URI).</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td>Any SAX exception, possibly
+            wrapping another exception.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../../reference/java/io/IOException.html">IOException</a></td>
+            <td>An IO exception from the parser,
+            possibly from a byte stream or character stream
+            supplied by the application.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/Parser.html#parse(org.xml.sax.InputSource)">parse(org.xml.sax.InputSource)</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="setDTDHandler(org.xml.sax.DTDHandler)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">setDTDHandler</span>
+      <span class="normal">(<a href="../../../../reference/org/xml/sax/DTDHandler.html">DTDHandler</a> handler)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Allow an application to register a DTD event handler.
+
+ <p>If the application does not register a DTD handler, all DTD
+ events reported by the SAX parser will be silently
+ ignored (this is the default behaviour implemented by
+ HandlerBase).</p>
+
+ <p>Applications may register a new or different
+ handler in the middle of a parse, and the SAX parser must
+ begin using the new handler immediately.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>handler</th>
+          <td>The DTD handler.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DTDHandler.html">DTDHandler</a></code></li><li><code><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="setDocumentHandler(org.xml.sax.DocumentHandler)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">setDocumentHandler</span>
+      <span class="normal">(<a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a> handler)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Allow an application to register a document event handler.
+
+ <p>If the application does not register a document handler, all
+ document events reported by the SAX parser will be silently
+ ignored (this is the default behaviour implemented by
+ HandlerBase).</p>
+
+ <p>Applications may register a new or different handler in the
+ middle of a parse, and the SAX parser must begin using the new
+ handler immediately.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>handler</th>
+          <td>The document handler.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/DocumentHandler.html">DocumentHandler</a></code></li><li><code><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="setEntityResolver(org.xml.sax.EntityResolver)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">setEntityResolver</span>
+      <span class="normal">(<a href="../../../../reference/org/xml/sax/EntityResolver.html">EntityResolver</a> resolver)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Allow an application to register a custom entity resolver.
+
+ <p>If the application does not register an entity resolver, the
+ SAX parser will resolve system identifiers and open connections
+ to entities itself (this is the default behaviour implemented in
+ HandlerBase).</p>
+
+ <p>Applications may register a new or different entity resolver
+ in the middle of a parse, and the SAX parser must begin using
+ the new resolver immediately.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>resolver</th>
+          <td>The object for resolving entities.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/EntityResolver.html">EntityResolver</a></code></li><li><code><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="setErrorHandler(org.xml.sax.ErrorHandler)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">setErrorHandler</span>
+      <span class="normal">(<a href="../../../../reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a> handler)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Allow an application to register an error event handler.
+
+ <p>If the application does not register an error event handler,
+ all error events reported by the SAX parser will be silently
+ ignored, except for fatalError, which will throw a SAXException
+ (this is the default behaviour implemented by HandlerBase).</p>
+
+ <p>Applications may register a new or different handler in the
+ middle of a parse, and the SAX parser must begin using the new
+ handler immediately.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>handler</th>
+          <td>The error handler.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/ErrorHandler.html">ErrorHandler</a></code></li><li><code><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></code></li><li><code><a href="../../../../reference/org/xml/sax/HandlerBase.html">HandlerBase</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+<a id="setLocale(java.util.Locale)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        
+        
+        abstract
+        
+        void
+      </span>
+      <span class="sympad">setLocale</span>
+      <span class="normal">(<a href="../../../../reference/java/util/Locale.html">Locale</a> locale)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Allow an application to request a locale for errors and warnings.
+
+ <p>SAX parsers are not required to provide localisation for errors
+ and warnings; if they cannot support the requested locale,
+ however, they must throw a SAX exception.  Applications may
+ not request a locale change in the middle of a parse.</p></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>locale</th>
+          <td>A Java Locale object.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></td>
+            <td>Throws an exception
+            (using the previous or default locale) if the
+            requested locale is not supported.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../../reference/org/xml/sax/SAXException.html">SAXException</a></code></li><li><code><a href="../../../../reference/org/xml/sax/SAXParseException.html">SAXParseException</a></code></li>
+      </ul>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
