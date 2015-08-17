@@ -41,7 +41,7 @@ def removeBlankLines(ls):
 
 if __name__ == "__main__":
 	import sys
-	sidebarLocation = '../_includes/sidebar.html'
+	sidebarLocation = '../_includes/docs_sidebar.html'
 	oldStdout = sys.stdout
 	sys.stdout = open(sidebarLocation, 'w')
 	sidebarLines = open("sidebar.txt").readlines()
