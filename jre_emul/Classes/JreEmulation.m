@@ -62,11 +62,11 @@ static inline id JreStrongAssignInner(id *pIvar, NS_RELEASES_ARGUMENT id value) 
   return *pIvar = value;
 }
 
-id JreStrongAssign(id *pIvar, id value) {
+id JreStrongAssign(__strong id *pIvar, id value) {
   return JreStrongAssignInner(pIvar, [value retain]);
 }
 
-id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT id value) {
+id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value) {
   return JreStrongAssignInner(pIvar, value);
 }
 
@@ -355,7 +355,7 @@ id JreStrAppendInner(id lhs, const char *types, va_list va) {
   return JreStringBuilder_toStringAndDealloc(&sb);
 }
 
-id JreStrAppend(id *lhs, const char *types, ...) {
+id JreStrAppend(__weak id *lhs, const char *types, ...) {
   va_list va;
   va_start(va, types);
   NSString *result = JreStrAppendInner(*lhs, types, va);
@@ -363,7 +363,7 @@ id JreStrAppend(id *lhs, const char *types, ...) {
   return *lhs = result;
 }
 
-id JreStrAppendStrong(id *lhs, const char *types, ...) {
+id JreStrAppendStrong(__strong id *lhs, const char *types, ...) {
   va_list va;
   va_start(va, types);
   NSString *result = JreStrAppendInner(*lhs, types, va);

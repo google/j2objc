@@ -74,8 +74,8 @@ int j2objc_nil_chk_count;
 void JrePrintNilChkCount();
 void JrePrintNilChkCountAtExit();
 
-id JreStrongAssign(id *pIvar, id value);
-id JreStrongAssignAndConsume(id *pIvar, NS_RELEASES_ARGUMENT id value);
+id JreStrongAssign(__strong id *pIvar, id value);
+id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
 
 id JreVolatileStrongAssign(volatile_id *pIvar, id value);
 id JreVolatileStrongAssignAndConsume(volatile_id *pIvar, NS_RELEASES_ARGUMENT id value);
