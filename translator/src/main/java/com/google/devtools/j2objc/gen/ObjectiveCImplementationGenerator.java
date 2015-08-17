@@ -42,7 +42,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
 
   private ObjectiveCImplementationGenerator(GenerationUnit unit) {
     super(unit, Options.emitLineDirectives());
-    suffix = Options.getImplementationFileSuffix();
+    suffix = Options.getLanguage().suffix();
   }
 
   @Override

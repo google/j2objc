@@ -741,7 +741,9 @@ public class StatementGenerator extends TreeVisitor {
     ITypeBinding returnType = methodBinding.getReturnType();
     printBlockPreExpression(methodBinding, returnType);
     buffer.append(nameTable.getSpecificObjCType(returnType));
-    buffer.append(" (^block)() = objc_getAssociatedObject(_self, (void *) 0);\n");
+    buffer.append(" (^block)");
+    buffer.append(Options.getLanguage() == Options.OutputLanguageOption.OBJECTIVE_CPLUSPLUS ? "(...)" : "()");
+    buffer.append(" = objc_getAssociatedObject(_self, (void *) 0);\n");
     if (!BindingUtil.isVoid(returnType)) {
       buffer.append("return ");
     }

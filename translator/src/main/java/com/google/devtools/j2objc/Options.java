@@ -63,7 +63,7 @@ public class Options {
   private List<String> classPathEntries = Lists.newArrayList(".");
   private File outputDirectory = new File(".");
   private OutputStyleOption outputStyle = OutputStyleOption.PACKAGE;
-  private String implementationSuffix = ".m";
+  private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
   private MemoryManagementOption memoryManagementOption = null;
   private boolean emitLineDirectives = false;
   private boolean warningsAsErrors = false;
@@ -168,6 +168,24 @@ public class Options {
       OutputStyleOption.PACKAGE;
 
   /**
+   * What languages can be generated.
+   */
+  public static enum OutputLanguageOption {
+    OBJECTIVE_C(".m"),
+    OBJECTIVE_CPLUSPLUS(".mm");
+
+    private String suffix;
+
+    OutputLanguageOption(String suffix) {
+      this.suffix = suffix;
+    }
+
+    public String suffix() {
+      return suffix;
+    }
+  }
+
+  /**
    * Set all log handlers in this package with a common level.
    */
   private static void setLogLevel(Level level) {
@@ -266,9 +284,9 @@ public class Options {
         }
         String s = args[nArg];
         if (s.equals("objective-c")) {
-          implementationSuffix = ".m";
+          language = OutputLanguageOption.OBJECTIVE_C;
         } else if (s.equals("objective-c++")) {
-          implementationSuffix = ".mm";
+          language = OutputLanguageOption.OBJECTIVE_CPLUSPLUS;
         } else {
           usage("unsupported language: " + s);
         }
@@ -567,8 +585,13 @@ public class Options {
     instance.outputStyle = style;
   }
 
-  public static String getImplementationFileSuffix() {
-    return instance.implementationSuffix;
+  public static OutputLanguageOption getLanguage() {
+    return instance.language;
+  }
+
+  @VisibleForTesting
+  public static void setOutputLanguage(OutputLanguageOption language) {
+    instance.language = language;
   }
 
   public static boolean useReferenceCounting() {
