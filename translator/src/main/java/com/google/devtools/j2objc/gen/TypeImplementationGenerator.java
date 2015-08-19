@@ -175,7 +175,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
         ITypeBinding type = varBinding.getType();
         boolean isVolatile = BindingUtil.isVolatile(varBinding);
         boolean isPrimitive = type.isPrimitive();
-        String accessorName = nameTable.getVariableBaseName(varBinding);
+        String accessorName = nameTable.getStaticAccessorName(varBinding);
         String varName = nameTable.getVariableQualifiedName(varBinding);
         String objcType = nameTable.getObjCType(type);
         String typeSuffix = isPrimitive ? NameTable.capitalize(type.getName()) : "Id";
@@ -204,7 +204,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
         IVariableBinding varBinding = constant.getVariableBinding();
         printf("\n+ (%s *)%s {\n  return %s;\n}\n",
-            typeName, nameTable.getVariableBaseName(varBinding),
+            typeName, nameTable.getStaticAccessorName(varBinding),
             nameTable.getVariableQualifiedName(varBinding));
       }
     }

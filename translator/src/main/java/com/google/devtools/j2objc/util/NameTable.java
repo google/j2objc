@@ -329,13 +329,24 @@ public class NameTable {
    * or suffix attached.
    */
   public String getVariableBaseName(IVariableBinding var) {
+    return getVarBaseName(var, BindingUtil.isPrimitiveConstant(var) || var.isEnumConstant());
+  }
+
+  /**
+   * Gets the name of the accessor method for a static variable.
+   */
+  public String getStaticAccessorName(IVariableBinding var) {
+    return getVarBaseName(var, false);
+  }
+
+  private String getVarBaseName(IVariableBinding var, boolean allowReservedName) {
     var = var.getVariableDeclaration();
     String name = variableNames.get(var);
     if (name != null) {
       return name;
     }
     name = var.getName();
-    if (BindingUtil.isPrimitiveConstant(var) || var.isEnumConstant()) {
+    if (allowReservedName) {
       return name;
     }
     if (isReservedName(name)) {

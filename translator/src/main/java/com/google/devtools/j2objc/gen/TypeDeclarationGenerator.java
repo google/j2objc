@@ -216,7 +216,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     if (Options.staticAccessorMethods()) {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         IVariableBinding var = fragment.getVariableBinding();
-        String accessorName = nameTable.getVariableBaseName(var);
+        String accessorName = nameTable.getStaticAccessorName(var);
         String objcType = nameTable.getObjCType(var.getType());
         printf("\n+ (%s)%s;\n", objcType, accessorName);
         if (!Modifier.isFinal(var.getModifiers())) {
@@ -225,8 +225,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       if (typeNode instanceof EnumDeclaration) {
         for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
-          String varName = nameTable.getVariableBaseName(constant.getVariableBinding());
-          printf("\n+ (%s *)%s;\n", typeName, varName);
+          String accessorName = nameTable.getStaticAccessorName(constant.getVariableBinding());
+          printf("\n+ (%s *)%s;\n", typeName, accessorName);
         }
       }
     }
