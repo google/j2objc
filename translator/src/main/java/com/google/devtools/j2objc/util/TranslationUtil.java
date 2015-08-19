@@ -196,7 +196,7 @@ public final class TranslationUtil {
     if (BindingUtil.isVolatile(var)) {
       modifier += "Volatile";
     }
-    if (var.isField() && !BindingUtil.isWeakReference(var)) {
+    if (!BindingUtil.isWeakReference(var) && (var.isField() || Options.useARC())) {
       modifier += "Strong";
     }
     return modifier;
