@@ -101,7 +101,7 @@ static Store *Resize(FastPointerLookup_t *lookup, Store *oldStore) {
   __c11_atomic_thread_fence(__ATOMIC_SEQ_CST);
   // We need to busy wait until there are no lock-free readers before it is safe
   // to free the old store.
-  while (__c11_atomic_load(&lookup->readers, __ATOMIC_RELAXED) > 0);
+  while (__c11_atomic_load(&lookup->readers, __ATOMIC_ACQUIRE) > 0);
   free(oldStore);
 
   return newStore;
@@ -152,7 +152,7 @@ static void *LockedLookup(FastPointerLookup_t *lookup, void *key, uint32_t hash)
 // Attempts a fast lock-free lookup before grabbing any locks.
 void *FastPointerLookup(FastPointerLookup_t *lookup, void *key) {
   uint32_t hash = Hash(key);
-  __c11_atomic_fetch_add(&lookup->readers, 1, __ATOMIC_ACQUIRE);
+  __c11_atomic_fetch_add(&lookup->readers, 1, __ATOMIC_RELAXED);
   // Synchronize with "Resize()" above to ensure it reads the increment of
   // "readers" and doesn't deallocate the store while we read from it.
   __c11_atomic_thread_fence(__ATOMIC_SEQ_CST);
