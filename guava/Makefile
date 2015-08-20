@@ -54,7 +54,10 @@ DIST_LIBRARY = $(ARCH_LIB_DIR)/libguava.a
 JAR = $(BUILD_DIR)/j2objc_guava.jar
 DIST_JAR = $(DIST_JAR_DIR)/j2objc_guava.jar
 
-dist: $(DIST_LIBRARY) $(DIST_JAR)
+GUAVA_LICENSE = LICENSE
+GUAVA_LICENSE_DIST = $(DIST_LICENSE_DIR)/guava_license.txt
+
+dist: $(DIST_LIBRARY) $(DIST_JAR) $(GUAVA_LICENSE_DIST)
 	@(cd $(GEN_OBJC_DIR) && tar cf - $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
 	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
 
@@ -63,6 +66,7 @@ test: $(FAT_LIB_LIBRARY)
 
 clean:
 	@rm -rf $(BUILD_DIR) $(DIST_LIBRARY) $(ARCH_INCLUDE_DIR)/com/google/common $(DIST_JAR)
+	@rm -rf $(GUAVA_LICENSE_DIST)
 
 java: $(DIST_JAR)
 
@@ -80,6 +84,10 @@ $(DIST_JAR): $(JAR) | $(DIST_JAR_DIR)
 
 $(DIST_LIBRARY): $(FAT_LIB_LIBRARY) | $(ARCH_LIB_DIR)
 	install -m 0644 $< $@
+
+$(GUAVA_LICENSE_DIST): $(GUAVA_LICENSE)
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
 
 $(JAVA_SOURCES_MANIFEST): $(JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "Building $$(basename $@)"

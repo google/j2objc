@@ -86,11 +86,14 @@ FAT_LIB_COMPILE = $(J2OBJCC) $(C_FLAGS) $(INCLUDE_DIRS:%=-I%)
 include $(J2OBJC_ROOT)/make/fat_lib.mk
 fat_lib_dependencies: jre_emul_dist $(DESCRIPTOR_PROTO_H)
 
+PROTOBUF_LICENSE = ../LICENSE
+PROTOBUF_LICENSE_DIST = $(DIST_LICENSE_DIR)/protobuf_license.txt
+
 PROTOC = $(DIST_DIR)/j2objc_protoc
 $(PROTOC): protobuf_compiler_dist
 	@:
 
-dist: $(DIST_JAR) $(DIST_LIBRARY) $(ARCH_BUILD_DIR)/.dist_headers
+dist: $(DIST_JAR) $(DIST_LIBRARY) $(ARCH_BUILD_DIR)/.dist_headers $(PROTOBUF_LICENSE_DIST)
 	@:
 
 java: $(DIST_JAR)
@@ -109,8 +112,13 @@ $(OBJC_SOURCES_MANIFEST):
 	  echo $$i >> $@; \
 	done
 
+$(PROTOBUF_LICENSE_DIST): $(PROTOBUF_LICENSE)
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
+
 clean:
 	@rm -rf $(BUILD_DIR) $(DIST_JAR) $(DIST_LIBRARY) $(DIST_HEADERS)
+	@rm -rf $(PROTOBUF_LICENSE_DIST)
 
 $(DESCRIPTOR_PROTO_M): $(DESCRIPTOR_PROTO) $(PROTOC)
 	@mkdir -p $(@D)

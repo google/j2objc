@@ -44,6 +44,9 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC) -fobjc-abi-version=2 -fobjc-legacy-dispatch
 include ../make/fat_lib.mk
 
+JSR305_LICENSE = LICENSE
+JSR305_LICENSE_DIST = $(DIST_LICENSE_DIR)/jsr305_license.txt
+
 default: lib
 
 java: classes jar
@@ -78,6 +81,10 @@ $(ARCH_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
+$(JSR305_LICENSE_DIST): $(JSR305_LICENSE)
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
+
 $(JAVA_SOURCES_MANIFEST): $(EXTRACTED_JAVA) | $(BUILD_DIR)
 	@echo "Building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
@@ -100,7 +107,7 @@ $(BUILD_DIR):
 	@mkdir -p $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(JSR305_LIB_DIST)
+	@rm -rf $(BUILD_DIR) $(JSR305_LIB_DIST) $(JSR305_LICENSE_DIST)
 	@rm -rf $(ARCH_INCLUDE_DIR)/javax/annotation
 
-dist: $(JSR305_LIB_DIST) $(ARCH_HEADERS)
+dist: $(JSR305_LIB_DIST) $(ARCH_HEADERS) $(JSR305_LICENSE_DIST)

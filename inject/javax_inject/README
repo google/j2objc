@@ -1,4 +1,6 @@
-This package creates an Objective-C library of the javax.inject annotations.
+This package creates an Objective-C library of the javax.inject annotations,
+specified in JSR 330 (https://www.jcp.org/en/jsr/detail?id=330).
+
 This project's Java files are extracted from the javax.inject source jar when
 building.
 

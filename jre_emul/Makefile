@@ -1281,6 +1281,12 @@ FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DI
 endif
 include ../make/fat_lib.mk
 
+JRE_EMUL_LICENSES = \
+  $(DIST_LICENSE_DIR)/android_license.txt \
+  $(DIST_LICENSE_DIR)/apache_harmony_license.txt \
+  $(DIST_LICENSE_DIR)/apple_license.txt \
+  $(DIST_LICENSE_DIR)/icu_license.txt
+
 fat_lib_dependencies: translate
 
 libs: $(FAT_LIB_LIBRARY) $(MAIN_LIB)
@@ -1339,8 +1345,9 @@ clean:
 	@rm -rf $(BUILD_DIR) $(GEN_OBJC_DIR)
 	@rm -f $(DIST_DIR)/j2objcc $(EMULATION_JAR_DIST) $(EMULATION_LIB_DIST) $(MAIN_LIB_DIST)
 	@rm -f $(DIST_INCLUDES)
+	@rm -f $(JRE_EMUL_LICENSES)
 
-dist: emul_jar_dist libs_dist $(DIST_DIR)/j2objcc
+dist: emul_jar_dist libs_dist $(DIST_DIR)/j2objcc licenses
 
 libs_dist: libs dist_includes $(EMULATION_LIB_DIST) $(MAIN_LIB_DIST)
 
@@ -1387,4 +1394,21 @@ objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 
 find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
+
+licenses: $(JRE_EMUL_LICENSES)
+	@:
+
+# Both Android and Apache Harmony have same license.
+$(DIST_LICENSE_DIR)/android_license.txt \
+$(DIST_LICENSE_DIR)/apache_harmony_license.txt: apache_harmony/LICENSE
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
+
+$(DIST_LICENSE_DIR)/apple_license.txt: apple_apsl/LICENSE
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
+
+$(DIST_LICENSE_DIR)/icu_license.txt: icu4c/LICENSE
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
 

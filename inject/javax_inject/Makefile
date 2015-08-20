@@ -48,6 +48,9 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC) -fobjc-abi-version=2 -fobjc-legacy-dispatch
 include $(J2OBJC_ROOT)/make/fat_lib.mk
 
+JSR330_LICENSE = LICENSE
+JSR330_LICENSE_DIST = $(DIST_LICENSE_DIR)/jsr330_license.txt
+
 default: lib
 
 java: jar
@@ -72,6 +75,10 @@ $(ARCH_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
+$(JSR330_LICENSE_DIST): $(JSR330_LICENSE)
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
+
 $(JAVA_SOURCES_MANIFEST): $(EXTRACTED_JAVA) | $(BUILD_DIR)
 	@echo "Building $$(basename $@)"
 	@if [ -e $@ ]; then rm $@; fi
@@ -94,7 +101,7 @@ $(BUILD_DIR):
 	@mkdir -p $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(INJECT_LIB_DIST)
+	@rm -rf $(BUILD_DIR) $(INJECT_LIB_DIST) $(JSR330_LICENSE_DIST)
 	@rm -rf $(ARCH_INCLUDE_DIR)/javax/inject
 
-dist: $(INJECT_LIB_DIST) $(ARCH_HEADERS)
+dist: $(INJECT_LIB_DIST) $(ARCH_HEADERS) $(JSR330_LICENSE_DIST)

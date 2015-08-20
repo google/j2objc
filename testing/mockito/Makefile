@@ -307,6 +307,9 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC)
 include $(J2OBJC_ROOT)/make/fat_lib.mk
 
+MOCKITO_LICENSE = LICENSE
+MOCKITO_LICENSE_DIST = $(DIST_LICENSE_DIR)/mockito_license.txt
+
 java: jar
 
 lib: $(FAT_LIB_LIBRARY)
@@ -327,6 +330,10 @@ $(MOCKITO_LIB_DIST): $(FAT_LIB_LIBRARY)
 $(ARCH_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
+
+$(MOCKITO_LICENSE_DIST): $(MOCKITO_LICENSE)
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
 
 $(JAVA_SOURCES_MANIFEST): $(EXTRACTED_JAVA) $(SUPERSOURCE_JAVA) | $(BUILD_DIR)
 	@echo "Building $$(basename $@)"
@@ -350,7 +357,7 @@ $(BUILD_DIR):
 	@mkdir -p $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(MOCKITO_LIB_DIST)
+	@rm -rf $(BUILD_DIR) $(MOCKITO_LIB_DIST) $(MOCKITO_LICENSE_DIST)
 	@rm -rf $(ARCH_INCLUDE_DIR)/org/mockito
 
-dist: $(MOCKITO_LIB_DIST) $(ARCH_HEADERS)
+dist: $(MOCKITO_LIB_DIST) $(ARCH_HEADERS) $(MOCKITO_LICENSE_DIST)

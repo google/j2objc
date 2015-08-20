@@ -239,6 +239,9 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(GEN_OBJC_DIR) -I$(ARCH_INCLUDE_DIR)
 include ../make/fat_lib.mk
 
+JUNIT_LICENSE = LICENSE
+JUNIT_LICENSE_DIST = $(DIST_LICENSE_DIR)/junit_license.txt
+
 fat_lib_dependencies: jre_emul_dist
 
 java: $(JUNIT_DIST_JAR)
@@ -284,14 +287,18 @@ $(ARCH_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
+$(JUNIT_LICENSE_DIST): $(JUNIT_LICENSE)
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
+
 $(BUILD_DIR):
 	@mkdir -p $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST)
+	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST) $(JUNIT_LICENSE_DIST)
 	@rm -rf $(ARCH_INCLUDE_DIR)/junit $(ARCH_INCLUDE_DIR)/org/junit
 
-dist: lib $(JUNIT_LIB_DIST) $(ARCH_HEADERS)
+dist: lib $(JUNIT_LIB_DIST) $(ARCH_HEADERS) $(JUNIT_LICENSE_DIST)
 
 find_cycles: $(JAVA_SOURCES_MANIFEST) | cycle_finder_dist jre_emul_java_manifest
 	$(DIST_DIR)/cycle_finder -sourcepath $(JAVA_SRC_DIR) \
