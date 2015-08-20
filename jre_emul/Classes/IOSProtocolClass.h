@@ -22,10 +22,7 @@
 
 #import "IOSClass.h"
 
-@interface IOSProtocolClass : IOSClass {
-  Protocol *protocol_;
-  IOSObjectArray *interfaces_;
-}
+@interface IOSProtocolClass : IOSClass
 
 - (instancetype)initWithProtocol:(Protocol *)protocol;
 

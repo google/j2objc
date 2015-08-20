@@ -23,6 +23,12 @@
 #import "java/lang/reflect/Modifier.h"
 #import "objc/runtime.h"
 
+@interface IOSProtocolClass () {
+  Protocol *protocol_;
+  _Atomic(IOSObjectArray *) interfaces_;
+}
+@end
+
 @implementation IOSProtocolClass
 
 @synthesize objcProtocol = protocol_;
@@ -186,18 +192,16 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (IOSObjectArray *)getInterfacesInternal {
-  IOSObjectArray *result = interfaces_;
-  OSMemoryBarrier();
+  IOSObjectArray *result = __c11_atomic_load(&interfaces_, __ATOMIC_ACQUIRE);
   if (!result) {
     @synchronized(self) {
-      result = interfaces_;
+      result = __c11_atomic_load(&interfaces_, __ATOMIC_RELAXED);
       if (!result) {
         unsigned int count;
         Protocol **protocolList = protocol_copyProtocolList(protocol_, &count);
         result = IOSClass_NewInterfacesFromProtocolList(protocolList, count);
+        __c11_atomic_store(&interfaces_, result, __ATOMIC_RELEASE);
         free(protocolList);
-        OSMemoryBarrier();
-        interfaces_ = result;
       }
     }
   }

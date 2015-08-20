@@ -31,6 +31,11 @@
 #import "java/lang/reflect/ParameterizedTypeImpl.h"
 #import "objc/runtime.h"
 
+@interface IOSConcreteClass () {
+  _Atomic(IOSObjectArray *) interfaces_;
+}
+@end
+
 @implementation IOSConcreteClass
 
 @synthesize objcClass = class_;
@@ -276,18 +281,16 @@ static JavaLangReflectConstructor *GetConstructorImpl(
 }
 
 - (IOSObjectArray *)getInterfacesInternal {
-  IOSObjectArray *result = interfaces_;
-  OSMemoryBarrier();
+  IOSObjectArray *result = __c11_atomic_load(&interfaces_, __ATOMIC_ACQUIRE);
   if (!result) {
     @synchronized(self) {
-      result = interfaces_;
+      result = __c11_atomic_load(&interfaces_, __ATOMIC_RELAXED);
       if (!result) {
         unsigned int count;
         Protocol **protocolList = class_copyProtocolList(class_, &count);
         result = IOSClass_NewInterfacesFromProtocolList(protocolList, count);
+        __c11_atomic_store(&interfaces_, result, __ATOMIC_RELEASE);
         free(protocolList);
-        OSMemoryBarrier();
-        interfaces_ = result;
       }
     }
   }

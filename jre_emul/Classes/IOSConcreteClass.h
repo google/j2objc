@@ -24,7 +24,6 @@
 
 @interface IOSConcreteClass : IOSClass {
   Class class_;
-  IOSObjectArray *interfaces_;
 }
 
 - (instancetype)initWithClass:(Class)cls;
