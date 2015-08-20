@@ -72,6 +72,7 @@ import com.google.devtools.j2objc.util.DeadCodeMapTest;
 import com.google.devtools.j2objc.util.ErrorUtilTest;
 import com.google.devtools.j2objc.util.FileUtilTest;
 import com.google.devtools.j2objc.util.NameTableTest;
+import com.google.devtools.j2objc.util.PackagePrefixesTest;
 import com.google.devtools.j2objc.util.ProGuardUsageParserTest;
 import com.google.devtools.j2objc.util.UnicodeUtilsTest;
 
@@ -125,6 +126,7 @@ public class SmallTests {
     OptionsTest.class,
     OuterReferenceFixerTest.class,
     OuterReferenceResolverTest.class,
+    PackagePrefixesTest.class,
     PrimitiveArrayTest.class,
     PrivateDeclarationResolverTest.class,
     ProGuardUsageParserTest.class,

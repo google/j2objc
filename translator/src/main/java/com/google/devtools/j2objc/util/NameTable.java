@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
@@ -26,7 +25,6 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
-import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
@@ -41,7 +39,6 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -274,7 +271,7 @@ public class NameTable {
    * can share a prefix; for example, the com.google.common packages in
    * Guava could share a "GG" (Google Guava) or simply "Guava" prefix.
    */
-  private final Map<String, String> prefixMap;
+  private final PackagePrefixes prefixMap;
 
   private final Map<String, String> methodMappings;
 
@@ -286,7 +283,7 @@ public class NameTable {
     // Currently a shared map.
     // TODO(kstanger): For thread safety this will either need to be a
     // concurrent map, or make a copy for each NameTable.
-    private Map<String, String> prefixMap = Options.getPackagePrefixes();
+    private PackagePrefixes prefixMap = Options.getPackagePrefixes();
 
     private final Map<String, String> methodMappings = ImmutableMap.copyOf(
         Maps.transformValues(Options.getMethodMappings(), EXTRACT_SELECTOR_FUNC));
@@ -308,7 +305,7 @@ public class NameTable {
   };
 
   private NameTable(
-      Types typeEnv, Map<String, String> prefixMap, Map<String, String> methodMappings) {
+      Types typeEnv, PackagePrefixes prefixMap, Map<String, String> methodMappings) {
     this.typeEnv = typeEnv;
     this.prefixMap = prefixMap;
     this.methodMappings = methodMappings;
@@ -943,104 +940,11 @@ public class NameTable {
     }
   }
 
-  @VisibleForTesting
-  public void mapPackageToPrefix(String packageName, String prefix) {
-    prefixMap.put(packageName, prefix);
-  }
-
-  /**
-   * Return the prefix for a specified package. If a prefix was specified
-   * for the package, then that prefix is returned. Otherwise, a camel-cased
-   * prefix is created from the package name.
-   */
   public String getPrefix(IPackageBinding packageBinding) {
-    String packageName = packageBinding.getName();
-    if (hasPrefix(packageName)) {
-      return prefixMap.get(packageName);
-    }
-
-    for (IAnnotationBinding annotation : packageBinding.getAnnotations()) {
-      if (annotation.getName().endsWith("ObjectiveCName")) {
-        String prefix = (String) BindingUtil.getAnnotationValue(annotation, "value");
-        prefixMap.put(packageName, prefix);
-        // Don't return, as there may be a prefix annotation that overrides this value.
-      }
-    }
-
-    String prefix = getPrefixFromPackageInfoSource(packageBinding);
-    if (prefix == null) {
-      prefix = getPrefixFromPackageInfoClass(packageName);
-    }
-    if (prefix == null) {
-      prefix = camelCaseQualifiedName(packageName);
-    }
-    prefixMap.put(packageName, prefix);
-    return prefix;
-  }
-
-  /**
-   * Check if there is a package-info.java source file with a prefix annotation.
-   */
-  private static String getPrefixFromPackageInfoSource(IPackageBinding packageBinding) {
-    try {
-      String qualifiedName = "package-info";
-      String packageName = packageBinding.getName();
-      // Path will be null if this is the empty package.
-      if (packageName != null) {
-        qualifiedName = packageName + '.' + qualifiedName;
-      }
-      InputFile file = FileUtil.findOnSourcePath(qualifiedName);
-      if (file != null) {
-        String pkgInfo = FileUtil.readFile(file);
-        int i = pkgInfo.indexOf("@ObjectiveCName");
-        if (i == -1) {
-          i = pkgInfo.indexOf("@com.google.j2objc.annotations.ObjectiveCName");
-        }
-        if (i > -1) {
-          // Extract annotation's value string.
-          i = pkgInfo.indexOf('"', i + 1);
-          if (i > -1) {
-            int j = pkgInfo.indexOf('"', i + 1);
-            if (j > -1) {
-              return pkgInfo.substring(i + 1, j);
-            }
-          }
-        }
-      }
-    } catch (IOException e) {
-      // Continue, as there's no package-info to check.
-    }
-    return null;
-  }
-
-  /**
-   * Check if there is a package-info class with a prefix annotation.
-   */
-  private static String getPrefixFromPackageInfoClass(String packageName) {
-    List<String> paths = Options.getBootClasspath();
-    paths.addAll(Options.getClassPathEntries());
-    PathClassLoader classLoader = new PathClassLoader(paths);
-    try {
-      Class<?> clazz = classLoader.loadClass(packageName + ".package-info");
-      ObjectiveCName objectiveCName = clazz.getAnnotation(ObjectiveCName.class);
-      if (objectiveCName != null) {
-        return objectiveCName.value();
-      }
-    } catch (ClassNotFoundException e) {
-      // Class does not exist -- ignore exception.
-    } catch (SecurityException e) {
-      // Failed fetching a package-info class from a secure package -- ignore exception.
-    } finally {
-      try {
-        classLoader.close();
-      } catch (IOException e) {
-        // Ignore, any open files will be closed on exit.
-      }
-    }
-    return null;
+    return prefixMap.getPrefix(packageBinding);
   }
 
   public boolean hasPrefix(String packageName) {
-    return prefixMap.containsKey(packageName);
+    return prefixMap.hasPrefix(packageName);
   }
 }

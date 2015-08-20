@@ -35,26 +35,6 @@ import java.io.IOException;
  */
 public class NameTableTest extends GenerationTest {
 
-  // Verify class name with prefix.
-  public void testGetFullNameWithPrefix() {
-    String source = "package foo.bar; public class SomeClass {}";
-    CompilationUnit unit = translateType("SomeClass", source);
-    NameTable nameTable = unit.getNameTable();
-    AbstractTypeDeclaration decl = unit.getTypes().get(0);
-    nameTable.mapPackageToPrefix("foo.bar", "FB");
-    assertEquals("FBSomeClass", nameTable.getFullName(decl.getTypeBinding()));
-  }
-
-  // Verify inner class name with prefix.
-  public void testGetFullNameWithInnerClassAndPrefix() {
-    String source = "package foo.bar; public class SomeClass { static class Inner {}}";
-    CompilationUnit unit = translateType("SomeClass", source);
-    NameTable nameTable = unit.getNameTable();
-    AbstractTypeDeclaration decl = unit.getTypes().get(1);
-    nameTable.mapPackageToPrefix("foo.bar", "FB");
-    assertEquals("FBSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
-  }
-
   // Verify class name without package is unchanged.
   public void testGetFullNameNoPackage() {
     String source = "public class SomeClass {}";

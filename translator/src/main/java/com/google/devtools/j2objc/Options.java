@@ -26,6 +26,7 @@ import com.google.common.io.Resources;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
+import com.google.devtools.j2objc.util.PackagePrefixes;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -83,7 +84,8 @@ public class Options {
   private boolean staticAccessorMethods = false;
   private int batchTranslateMaximum = 0;
   private List<String> headerMappingFiles = null;
-  private Map<String, String> packagePrefixes = Maps.newHashMap();
+
+  private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
   private static final Set<String> VALID_JAVA_VERSIONS = ImmutableSet.of("1.8", "1.7", "1.6",
       "1.5");
@@ -441,14 +443,7 @@ public class Options {
     FileInputStream fis = new FileInputStream(filename);
     props.load(fis);
     fis.close();
-    addPrefixProperties(props);
-  }
-
-  @VisibleForTesting
-  static void addPrefixProperties(Properties props) {
-    for (String pkg : props.stringPropertyNames()) {
-      addPackagePrefix(pkg, props.getProperty(pkg).trim());
-    }
+    instance.packagePrefixes.addPrefixProperties(props);
   }
 
   private void addMappingsFiles(String[] filenames) throws IOException {
@@ -682,12 +677,12 @@ public class Options {
     return getPathArgument(bootclasspath);
   }
 
-  public static Map<String, String> getPackagePrefixes() {
+  public static PackagePrefixes getPackagePrefixes() {
     return instance.packagePrefixes;
   }
 
   public static void addPackagePrefix(String pkg, String prefix) {
-    addMapping(instance.packagePrefixes, pkg, prefix, "package prefix");
+    instance.packagePrefixes.addPrefix(pkg, prefix);
   }
 
   public static String fileEncoding() {
