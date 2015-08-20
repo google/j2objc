@@ -27,6 +27,11 @@
 #import "NSString+JavaString.h"
 #import "jni.h"
 
+// "I" is defined in complex.h, which results in errors if that file is also
+// included.
+#pragma push_macro("I")
+#undef I
+
 __attribute__((always_inline)) inline id check_protocol_cast(
     id __unsafe_unretained p, IOSClass *protocol) {
 #if !defined(J2OBJC_DISABLE_CAST_CHECKS)
@@ -215,5 +220,7 @@ BIT_OPERATORS_DEFN(Int, jint)
 BIT_OPERATORS_DEFN(Long, jlong)
 #undef BIT_OPERATOR_DEFN
 #undef BIT_OPERATORS_DEFN
+
+#pragma pop_macro("I")
 
 #endif  // _J2OBJC_SOURCE_H_
