@@ -80,19 +80,18 @@ fat_lib_dependencies:
 # Args:
 #   1: output directory
 #   2: input directory
-#   3: precompiled header file, if J2OBJC_PRECOMPILED_HEADER is defined
-#   4: precompiled header include, if J2OBJC_PRECOMPILED_HEADER is defined
-#   5: other compiler flags
+#   3: precompiled header file, or empty
+#   4: other compiler flags
 define compile_rule
-$(1)/%.o: $(2)/%.m $(3) | fat_lib_dependencies
+$(1)/%.o: $(2)/%.m $(3:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(FAT_LIB_COMPILE) $(4) $(5) -MD -c '$$<' -o '$$@'
+	@$(FAT_LIB_COMPILE) $(3:%=-include $(1)/%) $(4) -MD -c '$$<' -o '$$@'
 
-$(1)/%.o: $(2)/%.mm $(3) | fat_lib_dependencies
+$(1)/%.o: $(2)/%.mm $(3:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(FAT_LIB_COMPILE) -x objective-c++ $(4) $(5) -MD -c '$$<' -o '$$@'
+	@$(FAT_LIB_COMPILE) -x objective-c++ $(3:%=-include $(1)/%) $(4) -MD -c '$$<' -o '$$@'
 endef
 
 # Generates rule to build precompiled headers file.
@@ -130,11 +129,7 @@ $(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),$(eval $(call analyze_rule,$(src_dir)))
 #   2: compilation flags
 emit_general_compile_rules = $(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),\
   $(eval $(call compile_pch_rule,$(1)/%.pch,$(src_dir)/%,$(2)))\
-  $(if $(J2OBJC_PRECOMPILED_HEADER),\
-  $(eval $(call compile_rule,$(1),$(src_dir),\
-    $(1)/$(J2OBJC_PRECOMPILED_HEADER).pch,\
-    -include $(1)/$(J2OBJC_PRECOMPILED_HEADER),$(2))),\
-  $(eval $(call compile_rule,$(1),$(src_dir),,,$(2)))))
+  $(eval $(call compile_rule,$(1),$(src_dir),$(J2OBJC_PRECOMPILED_HEADER),$(2))))
 
 FAT_LIB_OBJS = $(foreach file,$(FAT_LIB_SOURCES_RELATIVE),$(basename $(file)).o)
 
