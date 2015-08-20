@@ -31,7 +31,6 @@
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
-#import <libkern/OSAtomic.h>
 
 CF_EXTERN_C_BEGIN
 
