@@ -24,6 +24,10 @@
 
 #import "JreEmulation.h"
 
+/**
+ * Instances of classes that implement this interface can be used with
+ * the enhanced for loop.
+ */
 @protocol JavaLangIterable < NSObject, JavaObject, NSFastEnumeration >
 - (id<JavaUtilIterator>)iterator;
 @end

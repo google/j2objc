@@ -21,10 +21,31 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
 
-/**
+/*
  * Stub implementation of java.lang.Throwable.
  *
  * @see java.lang.Object
+ */
+
+/**
+ * The superclass of all classes which can be thrown by the VM. The
+ * two direct subclasses are recoverable exceptions ({@code Exception}) and
+ * unrecoverable errors ({@code Error}). This class provides common methods for
+ * accessing a string message which provides extra information about the
+ * circumstances in which the {@code Throwable} was created (basically an error
+ * message in most cases), and for saving a stack trace (that is, a record of
+ * the call stack at a particular point in time) which can be printed later.
+ *
+ * <p>A {@code Throwable} can also include a cause, which is a nested {@code
+ * Throwable} that represents the original problem that led to this {@code
+ * Throwable}. It is often used for wrapping various types of errors into a
+ * common {@code Throwable} without losing the detailed original error
+ * information. When printing the stack trace, the trace of the cause is
+ * included.
+ *
+ * @see Error
+ * @see Exception
+ * @see RuntimeException
  */
 public class Throwable implements Serializable {
 

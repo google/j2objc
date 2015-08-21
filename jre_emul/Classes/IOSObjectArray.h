@@ -34,8 +34,10 @@ typedef struct JreArrayRef {
   __strong id *pValue;
 } JreArrayRef;
 
-// An emulation class that represents a Java object array.  Like a Java array,
-// an IOSObjectArray is fixed-size but its elements are mutable.
+/**
+ * An emulation class that represents a Java object array.  Like a Java array,
+ * an IOSObjectArray is fixed-size but its elements are mutable.
+ */
 @interface IOSObjectArray : IOSArray <NSFastEnumeration> {
  @package
   BOOL isRetained_;

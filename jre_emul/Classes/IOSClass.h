@@ -39,11 +39,13 @@
 @class JavaClassMetadata;
 @class JavaNetURL;
 
-// A wrapper class for an Objective-C Class or Protocol,
-// similar in functionality to java.lang.Class.  Its
-// methods are limited to those that can be derived
-// from a Class instance, so instances can be created
-// and released as needed.
+/**
+ * The representation of a Java class, which serves as the starting
+ * point for querying class-related information, a process usually
+ * called "reflection". There are basically three types of @c Class
+ * instances: those representing real classes and interfaces, those
+ * representing primitive types, and those representing array classes.
+ */
 @interface IOSClass : NSObject <JavaLangReflectAnnotatedElement,
     JavaLangReflectGenericDeclaration, JavaIoSerializable,
     JavaLangReflectType, NSCopying> {

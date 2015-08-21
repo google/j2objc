@@ -24,7 +24,7 @@
 
 @class IOSClass;
 
-// A protocol that defines Java Object-compatible methods.
+/// A protocol that defines Java Object-compatible methods.
 @protocol JavaObject
 
 // Returns a copy of the object, if it implements java.lang.Cloneable.

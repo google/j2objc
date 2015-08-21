@@ -27,8 +27,10 @@
 
 @class IOSClass;
 
-// An abstract class that represents a Java array.  Like a Java array,
-// an IOSArray is fixed-size but its elements are mutable.
+/**
+ * An abstract class that represents a Java array.  Like a Java array,
+ * an IOSArray is fixed-size but its elements are mutable.
+ */
 @interface IOSArray : NSObject < NSCopying > {
  @public
   jint size_;

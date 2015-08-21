@@ -1482,6 +1482,9 @@
 		0661AA8219F848FF00EFD1F5 /* java_lang_RealToString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = java_lang_RealToString.h; path = android/libcore/luni/src/main/native/java_lang_RealToString.h; sourceTree = SOURCE_ROOT; };
 		0661AA8319F848FF00EFD1F5 /* java_lang_StringToReal.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_lang_StringToReal.m; path = android/libcore/luni/src/main/native/java_lang_StringToReal.m; sourceTree = SOURCE_ROOT; };
 		0666CCC41978457C00A22C57 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = text; path = README.md; sourceTree = "<group>"; };
+		0667E21E1B866E9C007E0CC2 /* J2ObjC_types.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_types.h; sourceTree = "<group>"; };
+		0667E21F1B866EE9007E0CC2 /* Resource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Resource.h; path = javax/annotation/Resource.h; sourceTree = "<group>"; };
+		0667E2201B866EE9007E0CC2 /* Resource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Resource.m; path = javax/annotation/Resource.m; sourceTree = "<group>"; };
 		066B71F617B94DC100A4CBBD /* objc-sync.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "objc-sync.h"; path = "apple_apsl/objc-sync.h"; sourceTree = SOURCE_ROOT; };
 		066B71F717B94DC100A4CBBD /* objc-sync.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "objc-sync.m"; path = "apple_apsl/objc-sync.m"; sourceTree = SOURCE_ROOT; };
 		0671FC1518529E28005D9D56 /* NSNumber+JavaNumber.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSNumber+JavaNumber.h"; sourceTree = "<group>"; };
@@ -4132,6 +4135,7 @@
 				06BED66A18EDE33F004EA17D /* J2ObjC_common.h */,
 				064914361AC47ED000E98733 /* J2ObjC_header.h */,
 				064914331AC47ED000E98733 /* J2ObjC_source.h */,
+				0667E21E1B866E9C007E0CC2 /* J2ObjC_types.h */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
 				0661AA8019F848FF00EFD1F5 /* java_lang_IntegralToString.h */,
 				0661AA8119F848FF00EFD1F5 /* java_lang_IntegralToString.m */,
@@ -4170,6 +4174,8 @@
 				06AFD3DB183E785D001C90C6 /* ParameterizedTypeImpl.h */,
 				06AFD3DC183E785D001C90C6 /* ParameterizedTypeImpl.m */,
 				06F6ECFE18AAABD500875541 /* Portability.h */,
+				0667E21F1B866EE9007E0CC2 /* Resource.h */,
+				0667E2201B866EE9007E0CC2 /* Resource.m */,
 				06734320171DF62600F26D4F /* TempFailureRetry.h */,
 				067228F2158FB002005318BD /* Throwable.h */,
 				06721BA31559DE3800645E1B /* Throwable.m */,
