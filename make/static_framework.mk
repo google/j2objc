@@ -58,6 +58,30 @@ STATIC_FRAMEWORK_DIR = $(DIST_FRAMEWORK_DIR)/$(STATIC_FRAMEWORK_NAME).framework
 STATIC_LIBRARY = $(BUILD_DIR)/lib$(STATIC_LIBRARY_NAME).a
 FRAMEWORK_HEADER = $(BUILD_DIR)/$(STATIC_FRAMEWORK_NAME).h
 
+# These are warnings that are suppressed for J2ObjC headers and generated code.
+#
+# direct-ivar-access: direct access is faster than accessor invocations.
+# documentation: Javadoc formatting is more lenient than clang's.
+# dollar-in-identifier-extension: follows Java inner-class naming.
+# objc-interface-ivars: non-private fields are valid in Java.
+# overriding-method-mismatch: supports parameterized types.
+# reserved-id-macro: external headers (Apple, ICU) have header guards with leading underscores.
+# undef: less noisy header guards.
+# zero-length-array: avoids allocating extra word of memory in arrays, and needing to deallocate it.
+DISALLOWED_WARNINGS = \
+  -Wno-direct-ivar-access \
+  -Wno-documentation \
+  -Wno-dollar-in-identifier-extension \
+  -Wno-objc-interface-ivars \
+  -Wno-overriding-method-mismatch \
+  -Wno-reserved-id-macro \
+  -Wno-undef \
+  -Wno-zero-length-array
+
+# Check that headers compile with most compiler flags.
+VERIFY_FLAGS := -I$(STATIC_FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
+  -Werror -Weverything $(DISALLOWED_WARNINGS)
+
 framework: dist $(STATIC_FRAMEWORK_DIR)
 	@:
 
@@ -75,7 +99,18 @@ $(STATIC_FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER)
 	@cp $(FRAMEWORK_HEADER) $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers
 	@touch $@
 
+# Creates a framework "master" header file that includes all the framework's header files.
+# This header is then test-compiled with all allowed warnings to verify it can be included
+# by other projects.
 $(FRAMEWORK_HEADER):
 	@echo "//\n// $(STATIC_FRAMEWORK_NAME).h\n//\n" > $@
 	@for f in $(STATIC_FRAMEWORK_PUBLIC_HEADERS:$(STATIC_HEADERS_DIR)/%=%); do\
 	    echo '#include <'$${f}'>'; done >> $@
+	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c -std=c11 $@
+	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c -std=c11 -fobjc-arc $@
+	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c -std=c11 -fno-objc-arc $@
+	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c++ -std=c++11 $@
+	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c++ -std=c++11 -fobjc-arc $@
+	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c++ -std=c++11 \
+	    -fno-objc-arc $@
+	@rm $(FRAMEWORK_HEADER:%.h=%.o)

@@ -30,7 +30,9 @@
 
 @end
 
-__attribute__((always_inline)) inline void NSNumber_init(NSObject *self) {}
+__attribute__((always_inline)) inline void NSNumber_init(NSObject *self) {
+  #pragma unused(self)
+}
 
 J2OBJC_EMPTY_STATIC_INIT(NSNumber)
 

@@ -51,7 +51,9 @@
 
 @end
 
-__attribute__((always_inline)) inline void NSObject_init(NSObject *self) {}
+__attribute__((always_inline)) inline void NSObject_init(NSObject *self) {
+  #pragma unused(self)
+}
 __attribute__((always_inline)) NS_RETURNS_RETAINED inline NSObject *new_NSObject_init() {
   return [NSObject alloc];
 }
