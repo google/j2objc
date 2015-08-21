@@ -34,9 +34,6 @@ JSR305_LIB_DIST = $(ARCH_LIB_DIR)/libjsr305.a
 
 WARNINGS = -Wall -Werror
 
-C_FLAGS = $(DEBUGFLAGS) -Werror $(ARCH_FLAGS) $(SDK_FLAGS) \
-  -fobjc-abi-version=2 -fobjc-legacy-dispatch
-
 OBJCFLAGS := -ObjC $(WARNINGS) $(DEBUGFLAGS)
 
 # J2ObjC settings
