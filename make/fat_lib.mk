@@ -30,7 +30,6 @@
 # Author: Keith Stanger
 
 FAT_LIB_LIBRARY = $(ARCH_BUILD_DIR)/lib$(FAT_LIB_NAME).a
-FAT_LIB_ARCH_LIBS = $(J2OBJC_ARCHS:%=$(BUILD_DIR)/%-lib$(FAT_LIB_NAME).a)
 
 FAT_LIB_PLIST_DIR = $(BUILD_DIR)/plists
 FAT_LIB_PLISTS = \
@@ -50,14 +49,8 @@ FAT_LIB_IPHONEV7S_FLAGS = -arch armv7s -DJ2OBJC_BUILD_ARCH=armv7s -miphoneos-ver
   -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_SIMULATOR_FLAGS = -arch i386 -DJ2OBJC_BUILD_ARCH=i386 -miphoneos-version-min=5.0 \
   -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
-FAT_LIB_XCODE_FLAGS = $(ARCH_FLAGS) -DJ2OBJC_BUILD_ARCH=$(CURRENT_ARCH) -miphoneos-version-min=5.0 \
+FAT_LIB_XCODE_FLAGS = -arch $(1) -DJ2OBJC_BUILD_ARCH=$(1) -miphoneos-version-min=5.0 \
   -isysroot $(SDKROOT)
-
-ifdef FAT_LIB_PRECOMPILED_HEADER
-ifndef CONFIGURATION_BUILD_DIR
-J2OBJC_PRECOMPILED_HEADER = $(FAT_LIB_PRECOMPILED_HEADER)
-endif
-endif
 
 # Command-line pattern for calling libtool and filtering the "same member name"
 # errors from having object files of the same name. (but in different directory)
@@ -129,49 +122,55 @@ $(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),$(eval $(call analyze_rule,$(src_dir)))
 #   2: compilation flags
 emit_general_compile_rules = $(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),\
   $(eval $(call compile_pch_rule,$(1)/%.pch,$(src_dir)/%,$(2)))\
-  $(eval $(call compile_rule,$(1),$(src_dir),$(J2OBJC_PRECOMPILED_HEADER),$(2))))
+  $(eval $(call compile_rule,$(1),$(src_dir),$(FAT_LIB_PRECOMPILED_HEADER),$(2)))) \
+  $(eval .SECONDARY: $(FAT_LIB_PRECOMPILED_HEADER:%=$(1)/%.pch))
 
 FAT_LIB_OBJS = $(foreach file,$(FAT_LIB_SOURCES_RELATIVE),$(basename $(file)).o)
+
+define arch_lib_rule
+-include $(FAT_LIB_OBJS:%.o=$(1)/%.d)
+-include $(1)/$(FAT_LIB_PRECOMPILED_HEADER).d
+
+$(1)/lib$(FAT_LIB_NAME).a: $$(FAT_LIB_OBJS:%=$(1)/%)
+	@echo "Building $$(notdir $$@)"
+	$$(call long_list_to_file,$(1)/fat_lib_objs_list,$$^)
+	@$$(call fat_lib_filtered_libtool,$$@,$(1)/fat_lib_objs_list)
+endef
 
 ifdef TARGET_TEMP_DIR
 # Targets specific to an xcode build
 
--include $(FAT_LIB_OBJS:%.o=$(TARGET_TEMP_DIR)/%.d)
--include $(TARGET_TEMP_DIR)/$(J2OBJC_PRECOMPILED_HEADER).d
+XCODE_ARCHS = $(ARCHS)
+# Xcode seems to set ARCHS incorrectly in command-line builds when the only
+# active architecture setting is on. Use NATIVE_ARCH instead.
+ifeq ($(ONLY_ACTIVE_ARCH), YES)
+ifdef CURRENT_ARCH
+XCODE_ARCHS = $(CURRENT_ARCH)
+endif
+endif
 
-$(FAT_LIB_LIBRARY): $(FAT_LIB_OBJS:%=$(TARGET_TEMP_DIR)/%)
-	@mkdir -p $(@D)
-	@echo "Building $(notdir $@)"
-	$(call long_list_to_file,$(ARCH_BUILD_DIR)/fat_lib_objs_list,$^)
-	@$(call fat_lib_filtered_libtool,$@,$(ARCH_BUILD_DIR)/fat_lib_objs_list)
+FAT_LIB_ARCH_LIBS = $(XCODE_ARCHS:%=$(TARGET_TEMP_DIR)/%/lib$(FAT_LIB_NAME).a)
 
-$(call emit_general_compile_rules,$(TARGET_TEMP_DIR),$(FAT_LIB_XCODE_FLAGS))
+$(foreach arch,$(XCODE_ARCHS),$(eval $(call arch_lib_rule,$(TARGET_TEMP_DIR)/$(arch))))
+
+$(foreach arch,$(XCODE_ARCHS),\
+  $(call emit_general_compile_rules,$(TARGET_TEMP_DIR)/$(arch),$(call FAT_LIB_XCODE_FLAGS,$(arch))))
 
 else
 # Targets specific to a command-line build
 
-$(FAT_LIB_LIBRARY): $(FAT_LIB_ARCH_LIBS)
-	$(LIPO) -create $^ -output $@
+FAT_LIB_ARCH_LIBS = $(J2OBJC_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(FAT_LIB_NAME).a)
 
-define arch_lib_rule
--include $(FAT_LIB_OBJS:%.o=$(BUILD_DIR)/objs-$(1)/%.d)
--include $(BUILD_DIR)/objs-$(1)/$(J2OBJC_PRECOMPILED_HEADER).d
-
-$(BUILD_DIR)/$(1)-lib$(FAT_LIB_NAME).a: \
-    $(J2OBJC_PRECOMPILED_HEADER:%=$(BUILD_DIR)/objs-$(1)/%.pch) \
-    $$(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%)
-	@echo "Building $$(notdir $$@)"
-	$$(call long_list_to_file,$(BUILD_DIR)/objs-$(1)/fat_lib_objs_list,\
-	  $$(FAT_LIB_OBJS:%=$(BUILD_DIR)/objs-$(1)/%))
-	@$$(call fat_lib_filtered_libtool,$$@,$(BUILD_DIR)/objs-$(1)/fat_lib_objs_list)
-endef
-
-$(foreach arch,$(J2OBJC_ARCHS),$(eval $(call arch_lib_rule,$(arch))))
+$(foreach arch,$(J2OBJC_ARCHS),$(eval $(call arch_lib_rule,$(BUILD_DIR)/objs-$(arch))))
 
 $(foreach arch,$(J2OBJC_ARCHS),\
   $(call emit_general_compile_rules,$(BUILD_DIR)/objs-$(arch),$(call arch_flags,$(arch))))
 
 endif
+
+$(FAT_LIB_LIBRARY): $(FAT_LIB_ARCH_LIBS)
+	@mkdir -p $(@D)
+	$(LIPO) -create $^ -output $@
 
 analyze: $(FAT_LIB_PLISTS)
 	@:
