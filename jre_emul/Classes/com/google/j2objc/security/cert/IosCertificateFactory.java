@@ -67,8 +67,8 @@ public class IosCertificateFactory extends CertificateFactorySpi {
       @throw AUTORELEASE([[JavaSecurityCertCertificateException alloc]
                           initWithNSString:@"not a valid DER-encoded X.509 certificate"]);
     }
-    return [[ComGoogleJ2objcSecurityCertIosX509Certificate alloc]
-            initWithLong:(long long) newCertificate];
+    return AUTORELEASE([[ComGoogleJ2objcSecurityCertIosX509Certificate alloc]
+                        initWithLong:(long long) newCertificate]);
   ]-*/;
 
   @Override

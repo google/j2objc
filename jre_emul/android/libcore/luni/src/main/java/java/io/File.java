@@ -780,9 +780,11 @@ public class File implements Serializable, Comparable<File> {
       NSMutableDictionary *newAttrs = [[NSMutableDictionary alloc] init];
       [newAttrs addEntriesFromDictionary:attrs];
       [newAttrs setObject:newPermissions forKey:NSFilePosixPermissions];
-      return [[NSFileManager defaultManager] setAttributes:newAttrs
-                                              ofItemAtPath:self->path_
-                                                     error:nil];
+      BOOL result = [[NSFileManager defaultManager] setAttributes:newAttrs
+                                                     ofItemAtPath:self->path_
+                                                            error:nil];
+      [newAttrs release];
+      return result;
     ]-*/;
 
     /**
