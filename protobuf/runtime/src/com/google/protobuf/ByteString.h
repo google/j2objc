@@ -65,7 +65,7 @@ J2OBJC_STATIC_INIT(ComGoogleProtobufByteString)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufByteString)
 
-FOUNDATION_EXPORT ComGoogleProtobufByteString *ComGoogleProtobufByteString_EMPTY_;
+inline ComGoogleProtobufByteString *ComGoogleProtobufByteString_get_EMPTY_();
 J2OBJC_STATIC_FIELD_GETTER(ComGoogleProtobufByteString, EMPTY_, ComGoogleProtobufByteString *)
 
 #endif // __ComGoogleProtobufByteString_H__

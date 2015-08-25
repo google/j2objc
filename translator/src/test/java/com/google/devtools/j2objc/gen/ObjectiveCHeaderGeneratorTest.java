@@ -368,8 +368,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today; }",
         "Example", "Example.h");
     assertTranslatedLines(translation,
-        "FOUNDATION_EXPORT JavaUtilDate *Example_today_;",
+        "inline JavaUtilDate *Example_get_today_();",
         "J2OBJC_STATIC_FIELD_GETTER(Example, today_, JavaUtilDate *)",
+        "inline JavaUtilDate *Example_set_today_(JavaUtilDate *value);",
         "J2OBJC_STATIC_FIELD_SETTER(Example, today_, JavaUtilDate *)");
     assertFalse(translation.contains("initialize"));
     assertFalse(translation.contains("dealloc"));
@@ -380,8 +381,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today = new java.util.Date(); }",
         "Example", "Example.h");
     assertTranslatedLines(translation,
-        "FOUNDATION_EXPORT JavaUtilDate *Example_today_;",
+        "inline JavaUtilDate *Example_get_today_();",
         "J2OBJC_STATIC_FIELD_GETTER(Example, today_, JavaUtilDate *)",
+        "inline JavaUtilDate *Example_set_today_(JavaUtilDate *value);",
         "J2OBJC_STATIC_FIELD_SETTER(Example, today_, JavaUtilDate *)");
     assertFalse(translation.contains("+ (void)initialize;"));
     assertFalse(translation.contains("dealloc"));

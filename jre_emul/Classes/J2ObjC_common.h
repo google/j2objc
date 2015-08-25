@@ -264,6 +264,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  *   inline int Foo_get_bar_();
  *
  * @define J2OBJC_STATIC_FIELD_GETTER
+ * @define J2OBJC_STATIC_PRIMITIVE_CONSTANT_GETTER
  * @define J2OBJC_STATIC_VOLATILE_FIELD_GETTER
  * @define J2OBJC_STATIC_VOLATILE_OBJ_FIELD_GETTER
  * @param CLASS The class containing the static variable.
@@ -271,16 +272,24 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param TYPE The type of the static variable.
  */
 #define J2OBJC_STATIC_FIELD_GETTER(CLASS, FIELD, TYPE) \
+  FOUNDATION_EXPORT TYPE CLASS##_##FIELD; \
+  __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD() { \
+    CLASS##_initialize(); \
+    return CLASS##_##FIELD; \
+  }
+#define J2OBJC_STATIC_PRIMITIVE_CONSTANT_GETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD() { \
     CLASS##_initialize(); \
     return CLASS##_##FIELD; \
   }
 #define J2OBJC_STATIC_VOLATILE_FIELD_GETTER(CLASS, FIELD, TYPE) \
+  FOUNDATION_EXPORT volatile_##TYPE CLASS##_##FIELD; \
   __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD() { \
     CLASS##_initialize(); \
     return __c11_atomic_load(&CLASS##_##FIELD, __ATOMIC_SEQ_CST); \
   }
 #define J2OBJC_STATIC_VOLATILE_OBJ_FIELD_GETTER(CLASS, FIELD, TYPE) \
+  FOUNDATION_EXPORT volatile_id CLASS##_##FIELD; \
   __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD() { \
     CLASS##_initialize(); \
     return (__bridge TYPE)__c11_atomic_load(&CLASS##_##FIELD, __ATOMIC_SEQ_CST); \
@@ -297,6 +306,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  * @param TYPE The type of the static variable.
  */
 #define J2OBJC_STATIC_FIELD_REF_GETTER(CLASS, FIELD, TYPE) \
+  FOUNDATION_EXPORT TYPE CLASS##_##FIELD; \
   __attribute__((always_inline)) inline TYPE *CLASS##_getRef_##FIELD() { \
     CLASS##_initialize(); \
     return &CLASS##_##FIELD; \
@@ -315,12 +325,14 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  */
 #if __has_feature(objc_arc)
 #define J2OBJC_STATIC_FIELD_SETTER(CLASS, FIELD, TYPE) \
+  FOUNDATION_EXPORT TYPE CLASS##_##FIELD; \
   __attribute__((always_inline)) inline TYPE CLASS##_set_##FIELD(TYPE value) { \
     CLASS##_initialize(); \
     return CLASS##_##FIELD = value; \
   }
 #else
 #define J2OBJC_STATIC_FIELD_SETTER(CLASS, FIELD, TYPE) \
+  FOUNDATION_EXPORT TYPE CLASS##_##FIELD; \
   __attribute__((always_inline)) inline TYPE CLASS##_set_##FIELD(TYPE value) { \
     CLASS##_initialize(); \
     return JreStrongAssign(&CLASS##_##FIELD, value); \
@@ -332,12 +344,14 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #endif
 
 #define J2OBJC_STATIC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
+  FOUNDATION_EXPORT volatile_##TYPE CLASS##_##FIELD; \
   __attribute__((always_inline)) inline TYPE CLASS##_set_##FIELD(TYPE value) { \
     CLASS##_initialize(); \
     __c11_atomic_store(&CLASS##_##FIELD, value, __ATOMIC_SEQ_CST); \
     return value; \
   }
 #define J2OBJC_STATIC_VOLATILE_OBJ_FIELD_SETTER(CLASS, FIELD, TYPE) \
+  FOUNDATION_EXPORT volatile_id CLASS##_##FIELD; \
   __attribute__((always_inline)) inline TYPE CLASS##_set_##FIELD(TYPE value) { \
     CLASS##_initialize(); \
     return JreVolatileStrongAssign(&CLASS##_##FIELD, value); \

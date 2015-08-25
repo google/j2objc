@@ -422,13 +422,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   protected void printStaticFieldDeclaration(
       VariableDeclarationFragment fragment, String baseDeclaration) {
-    println("FOUNDATION_EXPORT " + baseDeclaration + ";");
   }
 
   private void printStaticFieldFullDeclaration(VariableDeclarationFragment fragment) {
     IVariableBinding var = fragment.getVariableBinding();
     boolean isVolatile = BindingUtil.isVolatile(var);
     String objcType = nameTable.getSpecificObjCType(var.getType());
+    String objcTypeDecl = objcType + (objcType.endsWith("*") ? "" : " ");
     String declType = getDeclarationType(var);
     declType += (declType.endsWith("*") ? "" : " ");
     String name = nameTable.getVariableShortName(var);
@@ -438,14 +438,19 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     newline();
     if (BindingUtil.isPrimitiveConstant(var)) {
       name = var.getName();
+      printf("J2OBJC_STATIC_PRIMITIVE_CONSTANT_GETTER(%s, %s, %s)\n", typeName, name, objcType);
     } else {
       printStaticFieldDeclaration(fragment, String.format("%s%s_%s", declType, typeName, name));
+      printf("inline %s%s_get_%s();\n", objcTypeDecl, typeName, name);
+      printf("J2OBJC_STATIC%s_FIELD_GETTER(%s, %s, %s)\n", volatileStr, typeName, name, objcType);
     }
-    printf("J2OBJC_STATIC%s_FIELD_GETTER(%s, %s, %s)\n", volatileStr, typeName, name, objcType);
     if (!isFinal) {
       if (isPrimitive && !isVolatile) {
+        printf("inline %s*%s_getRef_%s();\n", objcTypeDecl, typeName, name);
         printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)", typeName, name, objcType);
       } else {
+        printf("inline %s%s_set_%s(%svalue);\n",
+            objcTypeDecl, typeName, name, objcTypeDecl);
         printf("J2OBJC_STATIC%s_FIELD_SETTER(%s, %s, %s)\n", volatileStr, typeName, name, objcType);
       }
     }

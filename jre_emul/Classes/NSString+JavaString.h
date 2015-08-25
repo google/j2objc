@@ -325,11 +325,8 @@ __attribute__((always_inline)) inline void NSString_initialize() {
   }
 }
 
-FOUNDATION_EXPORT id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER_;
+inline id<JavaUtilComparator> NSString_get_CASE_INSENSITIVE_ORDER_();
 J2OBJC_STATIC_FIELD_GETTER(NSString, CASE_INSENSITIVE_ORDER_, id<JavaUtilComparator>)
-
-FOUNDATION_EXPORT IOSObjectArray *NSString_serialPersistentFields_;
-J2OBJC_STATIC_FIELD_GETTER(NSString, serialPersistentFields_, IOSObjectArray *)
 
 J2OBJC_TYPE_LITERAL_HEADER(NSString)
 
