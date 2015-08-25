@@ -141,7 +141,7 @@ FAT_LIB_OBJS = $(foreach file,$(FAT_LIB_SOURCES_RELATIVE),$(basename $(file)).o)
 define arch_lib_rule
 -include $(3:%.o=$(1)/%.d)
 
-$(1)/lib$(2).a: $(3:%=$(1)/%)
+$(1)/lib$(2).a: $(subst $$,$$$$,$(3:%=$(1)/%))
 	@echo "Building $$(notdir $$@)"
 	$$(call long_list_to_file,$(1)/fat_lib_objs_list,$$^)
 	@$$(call fat_lib_filtered_libtool,$$@,$(1)/fat_lib_objs_list)
