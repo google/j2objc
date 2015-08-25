@@ -871,6 +871,17 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     }
   }
 
+  public void testPackageInfoPrefixMethod() throws IOException {
+    String translation = translateSourceFile(
+        "@ObjectiveCName(\"FBM\")\npackage foo.bar.mumble;\n"
+        + "import com.google.j2objc.annotations.ObjectiveCName;",
+        "foo.bar.mumble.package-info", "foo/bar/mumble/package-info.m");
+    assertTranslatedLines(translation,
+        "+ (NSString *)__prefix {",
+        "  return @\"FBM\";",
+        "}");
+  }
+
   public void testInitializeNotInClassExtension() throws IOException {
     String translation = translateSourceFile(
         "class Test { static Integer i = new Integer(5); }", "Test", "Test.m");

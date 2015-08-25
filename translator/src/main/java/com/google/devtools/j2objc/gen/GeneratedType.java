@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
@@ -26,8 +27,10 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -161,12 +164,21 @@ public class GeneratedType {
         generatePackageInfo(unit));
   }
 
+  private static String getPackagePrefix(PackageDeclaration pkg) {
+    Annotation objcName = TreeUtil.getAnnotation(ObjectiveCName.class, pkg.getAnnotations());
+    if (objcName != null) {
+      return (String) BindingUtil.getAnnotationValue(objcName.getAnnotationBinding(), "value");
+    }
+    return null;
+  }
+
   private static String generatePackageInfo(CompilationUnit unit) {
     if (!unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_MAIN_TYPE)) {
       return "";
     }
     PackageDeclaration pkg = unit.getPackage();
-    if (TreeUtil.getRuntimeAnnotationsList(pkg.getAnnotations()).isEmpty()
+    String prefix = getPackagePrefix(pkg);
+    if ((TreeUtil.getRuntimeAnnotationsList(pkg.getAnnotations()).isEmpty() && prefix == null)
         || !TranslationUtil.needsReflection(pkg)) {
       return "";
     }
@@ -178,6 +190,9 @@ public class GeneratedType {
     builder.printf("@interface %s : NSObject\n", typeName);
     builder.printf("@end\n\n");
     builder.printf("@implementation %s\n", typeName);
+    if (prefix != null) {
+      builder.printf("\n+ (NSString *)__prefix {\n  return @\"%s\";\n}\n", prefix);
+    }
     RuntimeAnnotationGenerator.printPackageAnnotationMethod(builder, pkg);
     builder.println("\n@end");
 

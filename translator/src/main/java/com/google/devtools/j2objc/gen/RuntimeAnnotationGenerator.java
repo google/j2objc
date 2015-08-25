@@ -66,8 +66,10 @@ public class RuntimeAnnotationGenerator extends AbstractSourceGenerator {
 
   public void printPackageAnnotationMethod(PackageDeclaration node) {
     List<Annotation> runtimeAnnotations = TreeUtil.getRuntimeAnnotationsList(node.getAnnotations());
-    println("\n+ (IOSObjectArray *)__annotations {");
-    printAnnotationCreate(runtimeAnnotations);
+    if (runtimeAnnotations.size() > 0) {
+      println("\n+ (IOSObjectArray *)__annotations {");
+      printAnnotationCreate(runtimeAnnotations);
+    }
   }
 
   public void printTypeAnnotationsMethod(AbstractTypeDeclaration decl) {

@@ -35,7 +35,6 @@
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
-#import "com/google/j2objc/annotations/ObjectiveCName.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/ClassLoader.h"
@@ -443,17 +442,13 @@ static IOSClass *FindMappedClass(NSString *name) {
   NSString *package = [name substringToIndex:lastDot.location];
   NSString *prefix = nil;
 
-  // Check for a package-info class that has an ObjectiveCName annotation.
+  // Check for a package-info class that has a __prefix method.
   NSString *pkgInfoName =
       IOSClass_JavaToIOSName([package stringByAppendingString:@".package_info"]);
-  IOSClass *pkgInfo = ClassForIosName(pkgInfoName);
-  if (pkgInfo) {
-    IOSClass *objcNameClass = IOSClass_fromClass([ComGoogleJ2objcAnnotationsObjectiveCName class]);
-    ComGoogleJ2objcAnnotationsObjectiveCName *ann =
-        [pkgInfo getAnnotationWithIOSClass:objcNameClass];
-    if (ann) {
-      prefix = ann.value;
-    }
+  Class pkgInfoCls = NSClassFromString(pkgInfoName);
+  Method prefixMethod = JreFindClassMethod(pkgInfoCls, "__prefix");
+  if (prefixMethod) {
+    prefix = method_invoke(pkgInfoCls, prefixMethod);
   }
   if (!prefix) {
     // Check whether package has a mapped prefix property.
