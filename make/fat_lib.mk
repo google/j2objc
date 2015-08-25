@@ -73,68 +73,88 @@ fat_lib_dependencies:
 # Args:
 #   1: output directory
 #   2: input directory
-#   3: precompiled header file, or empty
-#   4: other compiler flags
+#   3: compile command
+#   4: precompiled header file, or empty
+#   5: other compiler flags
 define compile_rule
-$(1)/%.o: $(2)/%.m $(3:%=$(1)/%.pch) | fat_lib_dependencies
+$(1)/%.o: $(2)/%.m $(4:%=$(1)/%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(FAT_LIB_COMPILE) $(3:%=-include $(1)/%) $(4) -MD -c '$$<' -o '$$@'
+	@$(3) $(4:%=-include $(1)/%) $(5) -MD -c '$$<' -o '$$@'
 
-$(1)/%.o: $(2)/%.mm $(3:%=$(1)/%.pch) | fat_lib_dependencies
+$(1)/%.o: $(2)/%.mm $(4:%=%.pch) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(FAT_LIB_COMPILE) -x objective-c++ $(3:%=-include $(1)/%) $(4) -MD -c '$$<' -o '$$@'
+	@$(3) -x objective-c++ $(4:%=-include %) $(5) -MD -c '$$<' -o '$$@'
 endef
 
 # Generates rule to build precompiled headers file.
 # Args:
 #   1: output file name
 #   2: input file
-#   3: other compiler flags
+#   3: compile command
+#   4: other compiler flags
 define compile_pch_rule
 $(1): $(2) | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(FAT_LIB_COMPILE) -x objective-c-header $(3) -MD -c $$< -o $$@
+	@$(3) -x objective-c-header $(4) -MD -c $$< -o $$@
 endef
 
 # Generates analyze rule.
 # Args:
 #   1: source directory
+#   2: compile command
 define analyze_rule
 $(FAT_LIB_PLIST_DIR)/%.plist: $(1)/%.m | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(FAT_LIB_COMPILE) $(STATIC_ANALYZER_FLAGS) -c '$$<' -o '$$@'
+	@$(2) $(STATIC_ANALYZER_FLAGS) -c '$$<' -o '$$@'
 
 $(FAT_LIB_PLIST_DIR)/%.plist: $(1)/%.mm | fat_lib_dependencies
 	@mkdir -p $$(@D)
 	@echo compiling '$$<'
-	@$(FAT_LIB_COMPILE) -x objective-c++ $(STATIC_ANALYZER_FLAGS) -c '$$<' -o '$$@'
+	@$(2) -x objective-c++ $(STATIC_ANALYZER_FLAGS) -c '$$<' -o '$$@'
 endef
-
-$(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),$(eval $(call analyze_rule,$(src_dir))))
 
 # Generates compile rules.
 # Args:
-#   1: output directory
-#   2: compilation flags
-emit_general_compile_rules = $(foreach src_dir,$(FAT_LIB_SOURCE_DIRS),\
-  $(eval $(call compile_pch_rule,$(1)/%.pch,$(src_dir)/%,$(2)))\
-  $(eval $(call compile_rule,$(1),$(src_dir),$(FAT_LIB_PRECOMPILED_HEADER),$(2)))) \
-  $(eval .SECONDARY: $(FAT_LIB_PRECOMPILED_HEADER:%=$(1)/%.pch))
+#   1: list of source directories
+#   2: output directory
+#   3: compile command
+#   4: precompiled header file, or empty
+#   5: compilation flags
+emit_compile_rules_for_arch = $(foreach src_dir,$(1),\
+  $(eval $(call compile_pch_rule,$(2)/%.pch,$(src_dir)/%,$(3),$(5)))\
+  $(eval $(call compile_rule,$(2),$(src_dir),$(3),$(4),$(5)))) \
+  $(if $(4),\
+    $(eval .SECONDARY: $(2)/$(4).pch) \
+    $(eval -include $(2)/$(4).d),)
 
 FAT_LIB_OBJS = $(foreach file,$(FAT_LIB_SOURCES_RELATIVE),$(basename $(file)).o)
 
+# Generate the library rule for a single architecture.
+# Args:
+#   1. Architecture specific output directory.
+#   2. Library name.
+#   3. Object file list (relative dirs).
 define arch_lib_rule
--include $(FAT_LIB_OBJS:%.o=$(1)/%.d)
--include $(1)/$(FAT_LIB_PRECOMPILED_HEADER).d
+-include $(3:%.o=$(1)/%.d)
 
-$(1)/lib$(FAT_LIB_NAME).a: $$(FAT_LIB_OBJS:%=$(1)/%)
+$(1)/lib$(2).a: $(3:%=$(1)/%)
 	@echo "Building $$(notdir $$@)"
 	$$(call long_list_to_file,$(1)/fat_lib_objs_list,$$^)
 	@$$(call fat_lib_filtered_libtool,$$@,$(1)/fat_lib_objs_list)
+endef
+
+# Generate the rule to create the fat library.
+# Args:
+#   1. Library name.
+#   2. List of architecture specific libraries.
+define fat_lib_rule
+$(ARCH_BUILD_DIR)/lib$(1).a: $(2)
+	@mkdir -p $$(@D)
+	$$(LIPO) -create $$^ -output $$@
 endef
 
 ifdef TARGET_TEMP_DIR
@@ -149,28 +169,38 @@ XCODE_ARCHS = $(CURRENT_ARCH)
 endif
 endif
 
-FAT_LIB_ARCH_LIBS = $(XCODE_ARCHS:%=$(TARGET_TEMP_DIR)/%/lib$(FAT_LIB_NAME).a)
+emit_library_rules = $(foreach arch,$(XCODE_ARCHS),\
+  $(eval $(call arch_lib_rule,$(TARGET_TEMP_DIR)/$(arch),$(1),$(2)))) \
+  $(eval $(call fat_lib_rule,$(1),$(XCODE_ARCHS:%=$(TARGET_TEMP_DIR)/%/lib$(1).a)))
 
-$(foreach arch,$(XCODE_ARCHS),$(eval $(call arch_lib_rule,$(TARGET_TEMP_DIR)/$(arch))))
-
-$(foreach arch,$(XCODE_ARCHS),\
-  $(call emit_general_compile_rules,$(TARGET_TEMP_DIR)/$(arch),$(call FAT_LIB_XCODE_FLAGS,$(arch))))
+emit_arch_specific_compile_rules = $(foreach arch,$(XCODE_ARCHS),\
+  $(call emit_compile_rules_for_arch,$(1),$(TARGET_TEMP_DIR)/$(arch),$(2),$(3),\
+    $(call FAT_LIB_XCODE_FLAGS,$(arch))))
 
 else
 # Targets specific to a command-line build
 
-FAT_LIB_ARCH_LIBS = $(J2OBJC_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(FAT_LIB_NAME).a)
+emit_library_rules = $(foreach arch,$(J2OBJC_ARCHS),\
+  $(eval $(call arch_lib_rule,$(BUILD_DIR)/objs-$(arch),$(1),$(2)))) \
+  $(eval $(call fat_lib_rule,$(1),$(J2OBJC_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a)))
 
-$(foreach arch,$(J2OBJC_ARCHS),$(eval $(call arch_lib_rule,$(BUILD_DIR)/objs-$(arch))))
-
-$(foreach arch,$(J2OBJC_ARCHS),\
-  $(call emit_general_compile_rules,$(BUILD_DIR)/objs-$(arch),$(call arch_flags,$(arch))))
+emit_arch_specific_compile_rules = $(foreach arch,$(J2OBJC_ARCHS),\
+  $(call emit_compile_rules_for_arch,$(1),$(BUILD_DIR)/objs-$(arch),$(2),$(3),\
+    $(call arch_flags,$(arch))))
 
 endif
 
-$(FAT_LIB_LIBRARY): $(FAT_LIB_ARCH_LIBS)
-	@mkdir -p $(@D)
-	$(LIPO) -create $^ -output $@
+# Generate the compile and analyze rules for ObjC files.
+# Args:
+#   1. List of source directories.
+#   2. Compile command.
+#   3. Precompiled header file, or empty.
+emit_compile_rules = $(call emit_arch_specific_compile_rules,$(1),$(2),$(3)) \
+  $(foreach src_dir,$(1),$(eval $(call analyze_rule,$(src_dir),$(2))))
+
+$(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
+
+$(call emit_library_rules,$(FAT_LIB_NAME),$(FAT_LIB_OBJS))
 
 analyze: $(FAT_LIB_PLISTS)
 	@:
