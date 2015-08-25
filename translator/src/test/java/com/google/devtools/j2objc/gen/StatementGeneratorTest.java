@@ -209,7 +209,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "JreStrongAssign(&self->foo_, Example_Bar_FOO_)");
     assertTranslation(translation, "NSString *Example_Bar_FOO_ = @\"Mumble\";");
     translation = getTranslatedFile("Example.h");
-    assertTranslation(translation, "inline NSString *Example_Bar_get_FOO_();");
+    assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_Bar_FOO_;");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Example_Bar, FOO_, NSString *)");
   }
 

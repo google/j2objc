@@ -47,8 +47,6 @@
 
 #define JavaLangString_serialVersionUID -6849794470754667710LL
 
-J2OBJC_STATIC_FIELD_GETTER(NSString, serialPersistentFields_, IOSObjectArray *)
-
 @implementation NSString (JavaString)
 
 id makeException(Class exceptionClass) {

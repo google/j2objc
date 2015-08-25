@@ -721,7 +721,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "@interface Test { String FOO = \"foo\"; int I = 5; }", "Test", "Test.h");
     assertTranslation(translation, "#define Test_I 5");
-    assertTranslation(translation, "inline NSString *Test_get_FOO_();");
+    assertTranslation(translation, "FOUNDATION_EXPORT NSString *Test_FOO_;");
     assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, FOO_, NSString *)");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "NSString *Test_FOO_ = @\"foo\";");
