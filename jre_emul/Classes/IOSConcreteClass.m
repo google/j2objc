@@ -28,7 +28,6 @@
 #import "java/lang/reflect/Constructor.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
-#import "java/lang/reflect/ParameterizedTypeImpl.h"
 #import "objc/runtime.h"
 
 @interface IOSConcreteClass () {

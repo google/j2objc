@@ -54,7 +54,6 @@ IOS_OBJS = \
 	java_util_regex_Matcher.o \
 	java_util_regex_Pattern.o \
 	java/lang/reflect/ExecutableMember.o \
-	java/lang/reflect/ParameterizedTypeImpl.o \
 	java/lang/reflect/TypeVariableImpl.o \
 	jni.o
 
