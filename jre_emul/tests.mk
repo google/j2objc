@@ -163,6 +163,7 @@ TEST_SOURCES := \
     libcore/icu/LocaleDataTest.java \
     libcore/io/MemoryTest.java \
     libcore/io/PosixTest.java \
+    libcore/java/awt/font/TextAttributeTest.java \
     libcore/java/io/CharArrayWriterTest.java \
     libcore/java/io/DataOutputStreamTest.java \
     libcore/java/io/FileDescriptorTest.java \

@@ -494,6 +494,16 @@ public class Thread implements Runnable {
     this.isDaemon = isDaemon;
   }
 
+  /**
+   * Prints to the standard error stream a text representation of the current
+   * stack for this Thread.
+   *
+   * @see Throwable#printStackTrace()
+   */
+  public static void dumpStack() {
+    new Throwable("stack dump").printStackTrace();
+  }
+
   public static int enumerate(Thread[] threads) {
     Thread thread = Thread.currentThread();
     return thread.getThreadGroup().enumerate(threads);

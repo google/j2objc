@@ -141,6 +141,8 @@ JAVA_SOURCES = \
 	com/google/j2objc/util/ScopedLocalRef.java \
 	dalvik/system/BlockGuard.java \
 	dalvik/system/CloseGuard.java \
+	java/awt/font/NumericShaper.java \
+	java/awt/font/TextAttribute.java \
 	java/beans/IndexedPropertyChangeEvent.java \
 	java/beans/PropertyChangeEvent.java \
 	java/beans/PropertyChangeListener.java \
@@ -693,6 +695,7 @@ JAVA_SOURCES = \
 	java/text/ParseException.java \
 	java/text/ParsePosition.java \
 	java/text/SimpleDateFormat.java \
+	java/text/StringCharacterIterator.java \
 	java/util/AbstractCollection.java \
 	java/util/AbstractList.java \
 	java/util/AbstractMap.java \
