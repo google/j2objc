@@ -85,3 +85,4 @@ layout: docs
 - **[CocoaPods](http://cocoapods.org/?q=j2objc)**: J2ObjC libraries for the CocoaPods dependency manager
 - **[GDJson](https://github.com/goodow/realtime-json)**: Minimalistic JSON library for Java/Android/iOS/GWT/J2ObjC
 - **[realtime-store](https://github.com/goodow/realtime-store)**: Google Docs–style collaboration via the use of operational transforms
+- **[sqlighter-4-j2objc](https://github.com/vals-productions/sqlighter)**: Library that provides a cross-platform API for SQLite for J2ObjC and Android
