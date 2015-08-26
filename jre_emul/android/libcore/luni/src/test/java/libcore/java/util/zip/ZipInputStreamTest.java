@@ -20,15 +20,24 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import junit.framework.TestCase;
 
+import tests.support.resource.Support_Resources;
+
 public final class ZipInputStreamTest extends TestCase {
+
     public void testShortMessage() throws IOException {
         byte[] data = "Hello World".getBytes("UTF-8");
         byte[] zipped = ZipOutputStreamTest.zip("short", data);
@@ -58,5 +67,19 @@ public final class ZipInputStreamTest extends TestCase {
 
         in.close();
         return out.toByteArray();
+    }
+
+    /**
+     * Reference implementation allows reading of empty zip using a {@link ZipInputStream}.
+     */
+    public void testReadEmpty() throws IOException {
+        InputStream emptyZipIn = Support_Resources.getStream("java/util/zip/EmptyArchive.zip");
+        ZipInputStream in = new ZipInputStream(emptyZipIn);
+        try {
+            ZipEntry entry = in.getNextEntry();
+            assertNull("An empty zip has no entries", entry);
+        } finally {
+            in.close();
+        }
     }
 }

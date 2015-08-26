@@ -82,4 +82,26 @@ public class DeflaterTest extends TestCase {
         assertTrue(totalDeflated > 0); // the deflated form should be non-empty
         assertEquals(0, totalInflated);
     }
+
+    public void testDeflaterCounts() throws Exception {
+        deflater.setInput(new byte[] { 1, 2, 3 });
+        assertEquals(11, deflater.deflate(compressed, 0, compressed.length, Deflater.FULL_FLUSH));
+        assertEquals(3, deflater.getBytesRead());
+        assertEquals(3, deflater.getTotalIn());
+        assertEquals(11, deflater.getBytesWritten());
+        assertEquals(11, deflater.getTotalOut());
+
+        deflater.setInput(new byte[] { 1, 2, 3 });
+        assertEquals(9, deflater.deflate(compressed, 0, compressed.length, Deflater.FULL_FLUSH));
+        assertEquals(6, deflater.getBytesRead());
+        assertEquals(6, deflater.getTotalIn());
+        assertEquals(20, deflater.getBytesWritten());
+
+
+        deflater.reset();
+        assertEquals(0, deflater.getBytesRead());
+        assertEquals(0, deflater.getBytesWritten());
+        assertEquals(0, deflater.getTotalIn());
+        assertEquals(0, deflater.getTotalOut());
+    }
 }

@@ -122,4 +122,35 @@ public class InflaterTest extends TestCase {
         adler32.update(bytes);
         return (int) adler32.getValue();
     }
+
+    public void testInflaterCounts() throws Exception {
+        Inflater inflater = new Inflater();
+
+        byte[] decompressed = new byte[32];
+        byte[] compressed = deflate(new byte[] { 1, 2, 3}, null);
+        assertEquals(11, compressed.length);
+
+        // Feed in bytes [0, 5) to the first iteration.
+        inflater.setInput(compressed, 0, 5);
+        inflater.inflate(decompressed, 0, decompressed.length);
+        assertEquals(5, inflater.getBytesRead());
+        assertEquals(5, inflater.getTotalIn());
+        assertEquals(2, inflater.getBytesWritten());
+        assertEquals(2, inflater.getTotalOut());
+
+        // Feed in bytes [5, 11) to the second iteration.
+        assertEquals(true, inflater.needsInput());
+        inflater.setInput(compressed, 5, 6);
+        assertEquals(1, inflater.inflate(decompressed, 0, decompressed.length));
+        assertEquals(11, inflater.getBytesRead());
+        assertEquals(11, inflater.getTotalIn());
+        assertEquals(3, inflater.getBytesWritten());
+        assertEquals(3, inflater.getTotalOut());
+
+        inflater.reset();
+        assertEquals(0, inflater.getBytesRead());
+        assertEquals(0, inflater.getTotalIn());
+        assertEquals(0, inflater.getBytesWritten());
+        assertEquals(0, inflater.getTotalOut());
+    }
 }

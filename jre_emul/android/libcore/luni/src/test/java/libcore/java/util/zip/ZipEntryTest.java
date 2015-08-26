@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -79,6 +80,18 @@ public class ZipEntryTest extends junit.framework.TestCase {
     in.close();
   }
 
+  // TODO(tball): enable when java.util.jar is supported.
+//  public void testClone() {
+//    byte[] extra = { 5, 7, 9 };
+//    JarEntry jarEntry = new JarEntry("foo");
+//    jarEntry.setExtra(extra);
+//    assertSame("Expected no defensive copy of extra", extra, jarEntry.getExtra());
+//
+//    ZipEntry clone = (ZipEntry) jarEntry.clone();
+//    assertEquals(JarEntry.class, clone.getClass());
+//    assertNotSame(extra, clone.getExtra());
+//  }
+
   public void testTooLongName() throws Exception {
     String tooLongName = makeString(65536, "z");
     try {
@@ -119,6 +132,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
     File f = createTemporaryZipFile();
     ZipOutputStream out = createZipOutputStream(f);
     ZipEntry ze = new ZipEntry("x");
+    ze.setSize(0);
     ze.setExtra(maxLengthExtra);
     out.putNextEntry(ze);
     out.closeEntry();
@@ -129,6 +143,25 @@ public class ZipEntryTest extends junit.framework.TestCase {
     assertEquals(maxLengthExtra.length, zipFile.getEntry("x").getExtra().length);
     zipFile.close();
   }
+
+  public void testMaxLengthExtra_zip64() throws Exception {
+    // Not quite the max length (65535), but large enough that there's no space
+    // for the zip64 extended info header.
+    byte[] maxLengthExtra = new byte[65530];
+
+    File f = createTemporaryZipFile();
+    ZipOutputStream out = new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(f)),
+            true /* forceZip64 */);
+    ZipEntry ze = new ZipEntry("x");
+
+    ze.setExtra(maxLengthExtra);
+    try {
+      out.putNextEntry(ze);
+      fail();
+    } catch (ZipException expected) {
+    }
+  }
+
 
   public void testTooLongComment() throws Exception {
     String tooLongComment = makeString(65536, "z");
@@ -163,7 +196,17 @@ public class ZipEntryTest extends junit.framework.TestCase {
 
     File f = createTemporaryZipFile();
     ZipOutputStream out = createZipOutputStream(f);
+
+    // Regular (non zip64) format.
     ZipEntry ze = new ZipEntry("x");
+    ze.setSize(0);
+    ze.setExtra(extra);
+    ze.setComment(comment);
+    out.putNextEntry(ze);
+    out.closeEntry();
+
+    // An entry without a length is assumed to be zip64.
+    ze = new ZipEntry("y");
     ze.setExtra(extra);
     ze.setComment(comment);
     out.putNextEntry(ze);
@@ -175,6 +218,9 @@ public class ZipEntryTest extends junit.framework.TestCase {
     try {
       assertEquals(comment, zipFile.getEntry("x").getComment());
       assertTrue(Arrays.equals(extra, zipFile.getEntry("x").getExtra()));
+
+      assertEquals(comment, zipFile.getEntry("y").getComment());
+      assertTrue(Arrays.equals(extra, zipFile.getEntry("y").getExtra()));
     } finally {
       zipFile.close();
     }

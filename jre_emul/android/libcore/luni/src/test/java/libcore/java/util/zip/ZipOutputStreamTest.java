@@ -16,11 +16,15 @@
 
 package libcore.java.util.zip;
 
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
 import java.util.zip.ZipOutputStream;
 import junit.framework.TestCase;
 
@@ -54,5 +58,31 @@ public final class ZipOutputStreamTest extends TestCase {
 
         zippedOut.close();
         return bytesOut.toByteArray();
+    }
+
+    /**
+     * Reference implementation does NOT allow writing of an empty zip using a
+     * {@link ZipOutputStream}.
+     */
+    public void testCreateEmpty() throws IOException {
+        File result = File.createTempFile("ZipFileTest", "zip");
+        ZipOutputStream out =
+                new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(result)));
+        try {
+            out.close();
+            fail("Close on empty stream failed to throw exception");
+        } catch (ZipException e) {
+            // expected
+        }
+    }
+
+    /** Regression test for null comment causing a NullPointerException during write. */
+    public void testNullComment() throws IOException {
+        ZipOutputStream out = new ZipOutputStream(new ByteArrayOutputStream());
+        out.setComment(null);
+        out.putNextEntry(new ZipEntry("name"));
+        out.write(new byte[1]);
+        out.closeEntry();
+        out.finish();
     }
 }

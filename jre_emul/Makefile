@@ -908,6 +908,7 @@ JAVA_SOURCES = \
 	java/util/zip/Inflater.java \
 	java/util/zip/InflaterInputStream.java \
 	java/util/zip/InflaterOutputStream.java \
+	java/util/zip/Zip64.java \
 	java/util/zip/ZipConstants.java \
 	java/util/zip/ZipEntry.java \
 	java/util/zip/ZipError.java \
@@ -1078,6 +1079,7 @@ JAVA_SOURCES = \
 	libcore/reflect/TypeVariableImpl.java \
 	libcore/reflect/WildcardTypeImpl.java \
 	libcore/util/BasicLruCache.java \
+	libcore/util/CountingOutputStream.java \
 	libcore/util/EmptyArray.java \
 	libcore/util/MutableInt.java \
 	libcore/util/MutableLong.java \

@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.PushbackInputStream;
 import java.nio.ByteOrder;
 import java.nio.charset.ModifiedUtf8;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import libcore.io.Memory;
 import libcore.io.Streams;
@@ -80,16 +81,20 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
 
     private ZipEntry currentEntry;
 
-    private final byte[] hdrBuf = new byte[LOCHDR - LOCVER];
+    private boolean currentEntryIsZip64;
+
+    private final byte[] hdrBuf = new byte[LOCHDR - LOCVER + 8];
 
     private final CRC32 crc = new CRC32();
 
-    private byte[] nameBuf = new byte[256];
+    private byte[] stringBytesBuf = new byte[256];
 
-    private char[] charBuf = new char[256];
+    private char[] stringCharBuf = new char[256];
 
     /**
      * Constructs a new {@code ZipInputStream} to read zip entries from the given input stream.
+     *
+     * <p>UTF-8 is used to decode all strings in the file.
      */
     public ZipInputStream(InputStream stream) {
         super(new PushbackInputStream(stream, BUF_SIZE), new Inflater(true));
@@ -156,7 +161,7 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
         }
 
         try {
-            readAndVerifyDataDescriptor(inB, out);
+            readAndVerifyDataDescriptor(inB, out, currentEntryIsZip64);
         } catch (Exception e) {
             if (failure == null) { // otherwise we're already going to throw
                 failure = e;
@@ -180,16 +185,31 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
         }
     }
 
-    private void readAndVerifyDataDescriptor(int inB, int out) throws IOException {
+    private void readAndVerifyDataDescriptor(long inB, long out, boolean isZip64) throws IOException {
         if (hasDD) {
-            Streams.readFully(in, hdrBuf, 0, EXTHDR);
+            if (isZip64) {
+                // 8 additional bytes since the compressed / uncompressed size fields
+                // in the extended header are 8 bytes each, instead of 4 bytes each.
+                Streams.readFully(in, hdrBuf, 0, EXTHDR + 8);
+            } else {
+                Streams.readFully(in, hdrBuf, 0, EXTHDR);
+            }
+
             int sig = Memory.peekInt(hdrBuf, 0, ByteOrder.LITTLE_ENDIAN);
             if (sig != (int) EXTSIG) {
                 throw new ZipException(String.format("unknown format (EXTSIG=%x)", sig));
             }
             currentEntry.crc = ((long) Memory.peekInt(hdrBuf, EXTCRC, ByteOrder.LITTLE_ENDIAN)) & 0xffffffffL;
-            currentEntry.compressedSize = ((long) Memory.peekInt(hdrBuf, EXTSIZ, ByteOrder.LITTLE_ENDIAN)) & 0xffffffffL;
-            currentEntry.size = ((long) Memory.peekInt(hdrBuf, EXTLEN, ByteOrder.LITTLE_ENDIAN)) & 0xffffffffL;
+
+            if (isZip64) {
+                currentEntry.compressedSize = Memory.peekLong(hdrBuf, EXTSIZ, ByteOrder.LITTLE_ENDIAN);
+                // Note that we apply an adjustment of 4 bytes to the offset of EXTLEN to account
+                // for the 8 byte size for zip64.
+                currentEntry.size = Memory.peekLong(hdrBuf, EXTLEN + 4, ByteOrder.LITTLE_ENDIAN);
+            } else {
+                currentEntry.compressedSize = ((long) Memory.peekInt(hdrBuf, EXTSIZ, ByteOrder.LITTLE_ENDIAN)) & 0xffffffffL;
+                currentEntry.size = ((long) Memory.peekInt(hdrBuf, EXTLEN, ByteOrder.LITTLE_ENDIAN)) & 0xffffffffL;
+            }
         }
         if (currentEntry.crc != crc.getValue()) {
             throw new ZipException("CRC mismatch");
@@ -249,14 +269,8 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
         }
         int extraLength = peekShort(LOCEXT - LOCVER);
 
-        if (nameLength > nameBuf.length) {
-            nameBuf = new byte[nameLength];
-            // The bytes are modified UTF-8, so the number of chars will always be less than or
-            // equal to the number of bytes. It's fine if this buffer is too long.
-            charBuf = new char[nameLength];
-        }
-        Streams.readFully(in, nameBuf, 0, nameLength);
-        currentEntry = createZipEntry(ModifiedUtf8.decode(nameBuf, charBuf, 0, nameLength));
+        String name = readString(nameLength);
+        currentEntry = createZipEntry(name);
         currentEntry.time = ceLastModifiedTime;
         currentEntry.modDate = ceLastModifiedDate;
         currentEntry.setMethod(ceCompressionMethod);
@@ -269,8 +283,28 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
             byte[] extraData = new byte[extraLength];
             Streams.readFully(in, extraData, 0, extraLength);
             currentEntry.setExtra(extraData);
+            currentEntryIsZip64 = Zip64.parseZip64ExtendedInfo(currentEntry, false /* from central directory */);
+        } else {
+            currentEntryIsZip64 = false;
         }
+
         return currentEntry;
+    }
+
+    /**
+     * Reads bytes from the current stream position returning the string representation.
+     */
+    private String readString(int byteLength) throws IOException {
+        if (byteLength > stringBytesBuf.length) {
+            stringBytesBuf = new byte[byteLength];
+        }
+        Streams.readFully(in, stringBytesBuf, 0, byteLength);
+        // The number of chars will always be less than or equal to the number of bytes. It's
+        // fine if this buffer is too long.
+        if (byteLength > stringCharBuf.length) {
+            stringCharBuf = new char[byteLength];
+        }
+        return ModifiedUtf8.decode(stringBytesBuf, stringCharBuf, 0, byteLength);
     }
 
     private int peekShort(int offset) {

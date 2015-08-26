@@ -19,22 +19,60 @@ package libcore.java.util.zip;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 import junit.framework.TestCase;
+import libcore.io.IoUtils;
+import libcore.io.Streams;
 
 public final class GZIPInputStreamTest extends TestCase {
 
     private static final byte[] HELLO_WORLD_GZIPPED = new byte[] {
-        31, -117, 8, 0, 0, 0, 0, 0, 0, 0, -13, 72, -51, -55, -55, 87, 8, -49,
-        47, -54, 73, 1, 0, 86, -79, 23, 74, 11, 0, 0, 0
+        31, -117, 8, 0, 0, 0, 0, 0, 0, 0,  // 10 byte header
+        -13, 72, -51, -55, -55, 87, 8, -49, 47, -54, 73, 1, 0, 86, -79, 23, 74, 11, 0, 0, 0  // data
+    };
+
+    /**
+     * This is the same as the above, except that the 4th header byte is 2 (FHCRC flag)
+     * and the 2 bytes after the header make up the CRC.
+     *
+     * Constructed manually because none of the commonly used tools appear to emit header CRCs.
+     */
+    private static final byte[] HELLO_WORLD_GZIPPED_WITH_HEADER_CRC = new byte[] {
+        31, -117, 8, 2, 0, 0, 0, 0, 0, 0,  // 10 byte header
+        29, 38, // 2 byte CRC.
+        -13, 72, -51, -55, -55, 87, 8, -49, 47, -54, 73, 1, 0, 86, -79, 23, 74, 11, 0, 0, 0  // data
+    };
+
+    /*(
+     * This is the same as {@code HELLO_WORLD_GZIPPED} except that the 4th header byte is 4
+     * (FEXTRA flag) and that the 8 bytes after the header make up the extra.
+     *
+     * Constructed manually because none of the commonly used tools appear to emit header CRCs.
+     */
+    private static final byte[] HELLO_WORLD_GZIPPED_WITH_EXTRA = new byte[] {
+        31, -117, 8, 4, 0, 0, 0, 0, 0, 0,  // 10 byte header
+        6, 0, 4, 2, 4, 2, 4, 2,  // 2 byte extra length + 6 byte extra.
+        -13, 72, -51, -55, -55, 87, 8, -49, 47, -54, 73, 1, 0, 86, -79, 23, 74, 11, 0, 0, 0  // data
     };
 
     public void testShortMessage() throws IOException {
         assertEquals("Hello World", new String(gunzip(HELLO_WORLD_GZIPPED), "UTF-8"));
+    }
+
+    public void testShortMessageWithCrc() throws IOException {
+        assertEquals("Hello World", new String(gunzip(HELLO_WORLD_GZIPPED_WITH_HEADER_CRC), "UTF-8"));
+    }
+
+    public void testShortMessageWithHeaderExtra() throws IOException {
+        assertEquals("Hello World", new String(gunzip(HELLO_WORLD_GZIPPED_WITH_EXTRA), "UTF-8"));
     }
 
     public void testLongMessage() throws IOException {
@@ -108,6 +146,49 @@ public final class GZIPInputStreamTest extends TestCase {
             gunzip(data);
             fail();
         } catch (EOFException expected) {
+        }
+    }
+
+    // https://code.google.com/p/android/issues/detail?id=66409
+    public void testMultipleMembersWithCustomBufferSize() throws Exception {
+        final int[] memberSizes = new int[] { 1000, 2000 };
+
+        // We don't care what the exact contents of this file is, as long
+        // as the file has multiple members, and that the (compressed) size of
+        // the second member is larger than the size of the input buffer.
+        //
+        // There's no way to achieve this for a GZIPOutputStream so we generate
+        // pseudo-random sequence of bytes and assert that they don't compress
+        // well.
+        final Random r = new Random(10);
+        byte[] bytes = new byte[3000];
+        r.nextBytes(bytes);
+
+        File f = File.createTempFile("GZIPInputStreamTest", ".gzip");
+        int offset = 0;
+        for (int size : memberSizes) {
+            GZIPOutputStream gzos = null;
+            try {
+                FileOutputStream fos = new FileOutputStream(f, true /* append */);
+                gzos = new GZIPOutputStream(fos, size + 1);
+                gzos.write(bytes, offset, size);
+                offset += size;
+                gzos.finish();
+            } finally {
+                IoUtils.closeQuietly(gzos);
+            }
+        }
+
+        assertTrue(f.length() > 2048);
+
+        FileInputStream fis = new FileInputStream(f);
+        GZIPInputStream gzip = null;
+        try {
+            gzip = new GZIPInputStream(fis, memberSizes[0]);
+            byte[] unzipped = Streams.readFully(gzip);
+            assertTrue(Arrays.equals(bytes, unzipped));
+        } finally {
+            IoUtils.closeQuietly(gzip);
         }
     }
 

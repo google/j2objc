@@ -20,14 +20,15 @@ package java.util.zip;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import libcore.io.Streams;
 import libcore.io.BufferIterator;
 import libcore.io.HeapBufferIterator;
+import libcore.io.Streams;
 
 /**
  * An entry within a zip file.
@@ -51,8 +52,9 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     byte[] extra;
 
-    int nameLength = -1;
     long localHeaderRelOffset = -1;
+
+    long dataOffset = -1;
 
     /**
      * Zip entry state: Deflated.
@@ -63,6 +65,22 @@ public class ZipEntry implements ZipConstants, Cloneable {
      * Zip entry state: Stored.
      */
     public static final int STORED = 0;
+
+    ZipEntry(String name, String comment, long crc, long compressedSize,
+            long size, int compressionMethod, int time, int modDate, byte[] extra,
+            long localHeaderRelOffset, long dataOffset) {
+        this.name = name;
+        this.comment = comment;
+        this.crc = crc;
+        this.compressedSize = compressedSize;
+        this.size = size;
+        this.compressionMethod = compressionMethod;
+        this.time = time;
+        this.modDate = modDate;
+        this.extra = extra;
+        this.localHeaderRelOffset = localHeaderRelOffset;
+        this.dataOffset = dataOffset;
+    }
 
     /**
      * Constructs a new {@code ZipEntry} with the specified name. The name is actually a path,
@@ -75,9 +93,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
         if (name == null) {
             throw new NullPointerException("name == null");
         }
-        if (name.length() > 0xFFFF) {
-            throw new IllegalArgumentException("Name too long: " + name.length());
-        }
+        validateStringLength("Name", name);
         this.name = name;
     }
 
@@ -130,6 +146,11 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /**
      * Gets the name of this {@code ZipEntry}.
+     *
+     * <p><em>Security note:</em> Entry names can represent relative paths. {@code foo/../bar} or
+     * {@code ../bar/baz}, for example. If the entry name is being used to construct a filename
+     * or as a path component, it must be validated or sanitized to ensure that files are not
+     * written outside of the intended destination directory.
      *
      * @return the entry name.
      */
@@ -184,11 +205,8 @@ public class ZipEntry implements ZipConstants, Cloneable {
             this.comment = null;
             return;
         }
+        validateStringLength("Comment", comment);
 
-        byte[] commentBytes = comment.getBytes(StandardCharsets.UTF_8);
-        if (commentBytes.length > 0xffff) {
-            throw new IllegalArgumentException("Comment too long: " + commentBytes.length);
-        }
         this.comment = comment;
     }
 
@@ -250,17 +268,15 @@ public class ZipEntry implements ZipConstants, Cloneable {
     /**
      * Sets the uncompressed size of this {@code ZipEntry}.
      *
-     * @param value
-     *            the uncompressed size for this entry.
-     * @throws IllegalArgumentException
-     *             if {@code value} < 0 or {@code value} > 0xFFFFFFFFL.
+     * @param value the uncompressed size for this entry.
+     * @throws IllegalArgumentException if {@code value < 0}.
      */
     public void setSize(long value) {
-        if (value >= 0 && value <= 0xFFFFFFFFL) {
-            size = value;
-        } else {
+        if (value < 0) {
             throw new IllegalArgumentException("Bad size: " + value);
         }
+
+        size = value;
     }
 
     /**
@@ -279,12 +295,23 @@ public class ZipEntry implements ZipConstants, Cloneable {
             time = 0;
         } else {
             modDate = cal.get(Calendar.DATE);
-            modDate = ((cal.get(Calendar.MONTH) + 1) << 5) | modDate;
+            modDate = (cal.get(Calendar.MONTH) + 1 << 5) | modDate;
             modDate = ((cal.get(Calendar.YEAR) - 1980) << 9) | modDate;
             time = cal.get(Calendar.SECOND) >> 1;
             time = (cal.get(Calendar.MINUTE) << 5) | time;
             time = (cal.get(Calendar.HOUR_OF_DAY) << 11) | time;
         }
+    }
+
+
+    /** @hide */
+    public void setDataOffset(long value) {
+        dataOffset = value;
+    }
+
+    /** @hide */
+    public long getDataOffset() {
+        return dataOffset;
     }
 
     /**
@@ -314,8 +341,8 @@ public class ZipEntry implements ZipConstants, Cloneable {
         compressionMethod = ze.compressionMethod;
         modDate = ze.modDate;
         extra = ze.extra;
-        nameLength = ze.nameLength;
         localHeaderRelOffset = ze.localHeaderRelOffset;
+        dataOffset = ze.dataOffset;
     }
 
     /**
@@ -343,19 +370,23 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
     /*
      * Internal constructor.  Creates a new ZipEntry by reading the
-     * Central Directory Entry from "in", which must be positioned at
-     * the CDE signature.
+     * Central Directory Entry (CDE) from "in", which must be positioned
+     * at the CDE signature. If the GPBF_UTF8_FLAG is set in the CDE then
+     * UTF-8 is used to decode the string information, otherwise the
+     * defaultCharset is used.
      *
-     * On exit, "in" will be positioned at the start of the next entry.
+     * On exit, "in" will be positioned at the start of the next entry
+     * in the Central Directory.
      */
-    ZipEntry(byte[] hdrBuf, InputStream in) throws IOException {
-        Streams.readFully(in, hdrBuf, 0, hdrBuf.length);
+    ZipEntry(byte[] cdeHdrBuf, InputStream cdStream, Charset defaultCharset, boolean isZip64) throws IOException {
+        Streams.readFully(cdStream, cdeHdrBuf, 0, cdeHdrBuf.length);
 
-        BufferIterator it = HeapBufferIterator.iterator(hdrBuf, 0, hdrBuf.length, ByteOrder.LITTLE_ENDIAN);
+        BufferIterator it = HeapBufferIterator.iterator(cdeHdrBuf, 0, cdeHdrBuf.length,
+                ByteOrder.LITTLE_ENDIAN);
 
         int sig = it.readInt();
         if (sig != CENSIG) {
-             throw new ZipException("Central Directory Entry not found");
+            ZipFile.throwZipException("Central Directory Entry", sig);
         }
 
         it.seek(8);
@@ -363,6 +394,13 @@ public class ZipEntry implements ZipConstants, Cloneable {
 
         if ((gpbf & ZipFile.GPBF_UNSUPPORTED_MASK) != 0) {
             throw new ZipException("Invalid General Purpose Bit Flag: " + gpbf);
+        }
+
+        // If the GPBF_UTF8_FLAG is set then the character encoding is UTF-8 whatever the default
+        // provided.
+        Charset charset = defaultCharset;
+        if ((gpbf & ZipFile.GPBF_UTF8_FLAG) != 0) {
+            charset = StandardCharsets.UTF_8;
         }
 
         compressionMethod = it.readShort() & 0xffff;
@@ -374,7 +412,7 @@ public class ZipEntry implements ZipConstants, Cloneable {
         compressedSize = ((long) it.readInt()) & 0xffffffffL;
         size = ((long) it.readInt()) & 0xffffffffL;
 
-        nameLength = it.readShort() & 0xffff;
+        int nameLength = it.readShort() & 0xffff;
         int extraLength = it.readShort() & 0xffff;
         int commentByteCount = it.readShort() & 0xffff;
 
@@ -383,26 +421,28 @@ public class ZipEntry implements ZipConstants, Cloneable {
         localHeaderRelOffset = ((long) it.readInt()) & 0xffffffffL;
 
         byte[] nameBytes = new byte[nameLength];
-        Streams.readFully(in, nameBytes, 0, nameBytes.length);
+        Streams.readFully(cdStream, nameBytes, 0, nameBytes.length);
         if (containsNulByte(nameBytes)) {
-           throw new ZipException("Filename contains NUL byte: " + Arrays.toString(nameBytes));
+            throw new ZipException("Filename contains NUL byte: " + Arrays.toString(nameBytes));
         }
-        name = new String(nameBytes, 0, nameBytes.length, StandardCharsets.UTF_8);
+        name = new String(nameBytes, 0, nameBytes.length, charset);
 
         if (extraLength > 0) {
             extra = new byte[extraLength];
-            Streams.readFully(in, extra, 0, extraLength);
+            Streams.readFully(cdStream, extra, 0, extraLength);
         }
 
-        // The RI has always assumed UTF-8. (If GPBF_UTF8_FLAG isn't set, the encoding is
-        // actually IBM-437.)
         if (commentByteCount > 0) {
             byte[] commentBytes = new byte[commentByteCount];
-            Streams.readFully(in, commentBytes, 0, commentByteCount);
-            comment = new String(commentBytes, 0, commentBytes.length, StandardCharsets.UTF_8);
+            Streams.readFully(cdStream, commentBytes, 0, commentByteCount);
+            comment = new String(commentBytes, 0, commentBytes.length, charset);
+        }
+
+        if (isZip64) {
+            Zip64.parseZip64ExtendedInfo(this, true /* from central directory */);
         }
     }
-    
+
     private static boolean containsNulByte(byte[] bytes) {
         for (byte b : bytes) {
             if (b == 0) {
@@ -410,5 +450,15 @@ public class ZipEntry implements ZipConstants, Cloneable {
             }
         }
         return false;
+    }
+
+    private static void validateStringLength(String argument, String string) {
+        // This check is not perfect: the character encoding is determined when the entry is
+        // written out. UTF-8 is probably a worst-case: most alternatives should be single byte per
+        // character.
+        byte[] bytes = string.getBytes(StandardCharsets.UTF_8);
+        if (bytes.length > 0xffff) {
+            throw new IllegalArgumentException(argument + " too long: " + bytes.length);
+        }
     }
 }

@@ -35,6 +35,7 @@ SUPPORT_SOURCES = \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
     libcore/java/util/ServiceLoaderTestInterface.java \
+    libcore/java/util/zip/AbstractZipFileTest.java \
     libcore/util/SerializationTester.java \
     org/apache/harmony/logging/tests/java/util/logging/LevelTestResource.java \
     org/apache/harmony/logging/tests/java/util/logging/util/EnvironmentHelper.java \
@@ -296,6 +297,7 @@ TEST_SOURCES := \
     libcore/java/util/zip/OldAndroidZipStreamTest.java \
     libcore/java/util/zip/OldDataFormatExceptionTest.java \
     libcore/java/util/zip/OldZipExceptionTest.java \
+    libcore/java/util/zip/Zip64FileTest.java \
     libcore/java/util/zip/ZipEntryTest.java \
     libcore/java/util/zip/ZipFileTest.java \
     libcore/java/util/zip/ZipInputStreamTest.java \
@@ -514,6 +516,7 @@ TEST_SOURCES := \
 SUITE_SOURCES = \
     ConcurrencyTests.java \
     libcore/java/io/SmallTests.java \
+    libcore/java/util/zip/LargeTests.java \
     libcore/java/util/zip/SmallTests.java \
     org/apache/harmony/logging/tests/java/util/logging/AllTests.java \
     org/json/SmallTests.java \
@@ -610,6 +613,7 @@ LOGGING_TEST_RESOURCES_SRCS = \
     bundles/java/util/logging/res_en_US.properties \
     bundles/java/util/logging/res_zh_CN.properties \
     config/java/util/logging/logging.config
+ZIP_TEST_RESOURCES_SRCS = tests/resources/java/util/zip/EmptyArchive.zip
 
 TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/luni/src/test/resources
 ANDROID_TEST_RESOURCES_ROOT = android/libcore/luni/src/test/resources
@@ -617,7 +621,8 @@ LOGGING_TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/logging/src/test/r
 TEST_RESOURCES = \
     $(TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
     $(ANDROID_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
-    $(LOGGING_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%)
+    $(LOGGING_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
+    $(ZIP_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%)
 
 # Broken tests, plus associated bug id.  Once bug is fixed, move line(s) up.
 # $(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o     b/8842295
@@ -708,6 +713,9 @@ run-net-tests: link resources $(TEST_BIN)
 
 run-zip-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.util.zip.SmallTests
+
+run-zip-tests-large: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.util.zip.LargeTests
 
 # Run this when the above has errors and JUnit doesn't report which
 # test failed or hung.
