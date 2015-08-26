@@ -50,46 +50,6 @@ public final class Zip64FileTest extends AbstractZipFileTest {
         }
     }
 
-    public void testZip64Support_totalLargerThan4G() throws IOException {
-        final File file = createZipFile(5, 1073741824L, false /* setEntrySize */);
-        ZipFile zf = null;
-        try {
-            zf = new ZipFile(file);
-            assertEquals(5, zf.size());
-            Enumeration<? extends ZipEntry> entries = zf.entries();
-            assertTrue(entries.hasMoreElements());
-            ZipEntry ze = entries.nextElement();
-            assertEquals(1073741824L, ze.getSize());
-        } finally {
-            if (zf != null) {
-                zf.close();
-            }
-        }
-    }
-
-    public void testZip64Support_hugeEntry() throws IOException {
-        try {
-            createZipFile(1, 4294967410L, false /* setEntrySize */);
-            fail();
-        } catch (IOException expected) {
-        }
-
-        final File file = createZipFile(1, 4294967410L, true /* setEntrySize */);
-        ZipFile zf = null;
-        try {
-            zf = new ZipFile(file);
-            assertEquals(1, zf.size());
-            Enumeration<? extends ZipEntry> entries = zf.entries();
-            assertTrue(entries.hasMoreElements());
-            ZipEntry ze = entries.nextElement();
-            assertEquals(4294967410L, ze.getSize());
-        } finally {
-            if (zf != null) {
-                zf.close();
-            }
-        }
-    }
-
     private File createZipFile(int numEntries, long entrySize, boolean setEntrySize)
             throws IOException {
         File file = createTemporaryZipFile();
