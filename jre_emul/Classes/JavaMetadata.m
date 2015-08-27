@@ -112,7 +112,7 @@ static jint countArgs(char *s) {
       strcpy(buffer, cname);
       strcat(buffer, "With");
       if (strncmp(buffer, data_->methods[i].selector, strlen(buffer)) != 0) {
-        return [[JavaMethodMetadata alloc] initWithMetadata:&data_->methods[i]];
+        return [[[JavaMethodMetadata alloc] initWithMetadata:&data_->methods[i]] autorelease];
       }
     }
   }
@@ -161,7 +161,8 @@ static jint countArgs(char *s) {
   J2ObjcFieldInfo *fields = (J2ObjcFieldInfo *) data_->fields;
   for (int i = 0; i < data_->fieldCount; i++) {
     [result replaceObjectAtIndex:i
-                      withObject:[[JavaFieldMetadata alloc] initWithMetadata:fields++]];
+                      withObject:[[[JavaFieldMetadata alloc] initWithMetadata:fields++]
+                                  autorelease]];
   }
   return result;
 }
@@ -172,7 +173,8 @@ static jint countArgs(char *s) {
   J2ObjcMethodInfo *methods = (J2ObjcMethodInfo *) data_->methods;
   for (int i = 0; i < data_->methodCount; i++) {
     [result replaceObjectAtIndex:i
-                      withObject:[[JavaMethodMetadata alloc] initWithMetadata:methods++]];
+                      withObject:[[[JavaMethodMetadata alloc] initWithMetadata:methods++]
+                                  autorelease]];
   }
   return result;
 }
