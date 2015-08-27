@@ -41,6 +41,7 @@ public @interface LoopTranslation {
   }
 
   LoopStyle value();
+}
 ```
 
 
