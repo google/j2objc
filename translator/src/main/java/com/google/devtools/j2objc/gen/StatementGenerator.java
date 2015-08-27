@@ -238,9 +238,9 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(AssertStatement node) {
-    buffer.append("JreAssert(");
+    buffer.append("JreAssert((");
     node.getExpression().accept(this);
-    buffer.append(", ");
+    buffer.append("), (");
     if (node.getMessage() != null) {
       node.getMessage().accept(this);
     } else {
@@ -254,7 +254,7 @@ public class StatementGenerator extends TreeVisitor {
           + " condition failed: " + assertStatementString;
       buffer.append(LiteralGenerator.generateStringLiteral(msg));
     }
-    buffer.append(");\n");
+    buffer.append("));\n");
     return false;
   }
 

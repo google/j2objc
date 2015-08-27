@@ -146,6 +146,7 @@ TEST_SOURCES := \
     android/text/TextUtilsTest.java \
     android/util/Base64Test.java \
     com/google/j2objc/ArrayTest.java \
+    com/google/j2objc/AssertTest.java \
     com/google/j2objc/ClassTest.java \
     com/google/j2objc/PackageTest.java \
     com/google/j2objc/ThrowableTest.java \
