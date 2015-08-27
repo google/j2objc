@@ -6,7 +6,14 @@ layout: docs
 #### com.google.j2objc.annotations
 
 ## Annotation Type LoopTranslation
-
+Annotation that specifies how an enhanced for loop should be translated by the J2ObjC translator.
+#### Example Usage
+```java
+for (@LoopTranslation(LoopStyle.JAVA_ITERATOR) Runnable r : tasks) {
+  r.run();
+}
+```
+#### Full Declaration
 ```java
 @Target(ElementType.LOCAL_VARIABLE)
 @Retention(RetentionPolicy.SOURCE)
@@ -18,16 +25,15 @@ public @interface LoopTranslation {
    */
   enum LoopStyle {
     /*
-     * for (id var in expr) {
+     * id<JavaUtilIterator> iter__ = [expr iterator];
+     * while ([iter__ hasNext]) {
+     *   id var = [iter__ next];
      *   ...
      * }
      */
     JAVA_ITERATOR,
-
     /*
-     * id<JavaUtilIterator> iter__ = [expr iterator];
-     * while ([iter__ hasNext]) {
-     *   id var = [iter__ next];
+     * for (id var in expr) {
      *   ...
      * }
      */
@@ -37,4 +43,4 @@ public @interface LoopTranslation {
   LoopStyle value();
 ```
 
-Annotation that specifies how an enhanced for loop should be translated by the J2ObjC translator.
+
