@@ -1205,7 +1205,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "int a = 5;\nint b = 6;\nassert a < b;\n}\n}\n",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreAssert(a < b, @\"Test.java:4 condition failed: assert a < b;\")");
+        "JreAssert((a < b), (@\"Test.java:4 condition failed: assert a < b;\"))");
   }
 
   public void testAssertWithDescription() throws IOException {
@@ -1214,7 +1214,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "int a = 5; int b = 6; assert a < b : \"a should be lower than b\";}}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreAssert(a < b, @\"a should be lower than b\")");
+        "JreAssert((a < b), (@\"a should be lower than b\"))");
   }
 
   public void testAssertWithDynamicDescription() throws IOException {
@@ -1223,7 +1223,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "int a = 5; int b = 6; assert a < b : a + \" should be lower than \" + b;}}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "JreAssert(a < b, JreStrcat(\"I$I\", a, @\" should be lower than \", b));");
+        "JreAssert((a < b), (JreStrcat(\"I$I\", a, @\" should be lower than \", b)));");
   }
 
   // Verify that a Unicode escape sequence is preserved with string

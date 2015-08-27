@@ -45,4 +45,13 @@ public class AssertTest extends TestCase {
     String x = null;
     assert x == null: "x should be null, but is a string of length " + x.length();
   }
+
+  /**
+   * Ensure that the condition and the expression passed to the JreAssert macro are wrapped with
+   * parentheses in the translated code.
+   */
+  public void testTranslationCorrectness() throws Exception {
+    assert new Integer[]{1, 2} != null;
+    assert true: new Integer[]{1, 2};
+  }
 }
