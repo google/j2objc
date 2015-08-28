@@ -1,0 +1,59 @@
+.\" Copyright 2012 Google Inc. All Rights Reserved.
+.\"
+.\" Licensed under the Apache License, Version 2.0 (the "License");
+.\" you may not use this file except in compliance with the License.
+.\" You may obtain a copy of the License at
+.\"
+.\" http://www.apache.org/licenses/LICENSE-2.0
+.\"
+.\" Unless required by applicable law or agreed to in writing, software
+.\" distributed under the License is distributed on an "AS IS" BASIS,
+.\" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+.\" See the License for the specific language governing permissions and
+.\" limitations under the License.
+.na
+.TH CYCLE_FINDER "1" "July 2013" "cycle_finder" "User Commands"
+.SH NAME
+.B cycle_finder
+\- find reference cycles in Java source files
+.SH SYNOPSIS
+.B cycle_finder
+[
+.I options
+] \fIfile1.java\fR ...
+.SH DESCRIPTION
+The
+.B cycle_finder
+tool builds a reference graph from the types found in Java sources and prints to
+stdout any cycles found in the graph.
+
+The following options are available:
+.TP 25
+.BI \-sourcepath " path "
+Specify where to find input source files
+.TP
+.BI \-classpath " path "
+Specify where to find user class files
+.TP
+\fB-w\fR, \fB--whitelist\fR \fIfile\fR
+Specify a file that lists approved fields and types to suppress cycles.
+.TP
+\fB-s\fR, \fB--sourcefilelist\fR \fIfile\fR
+Specify a file that lists the source files to be analyzed.
+.TP
+.BI -encoding " encoding "
+Specify character encoding used by source files
+.TP
+\fB-Xbootclasspath\fR:\fIpath\fR
+Boot path used to compile the input sources. (not the tool itself)
+.TP
+\fB-h\fR, \fB--help\fR
+Print this message.
+.PP
+.SH "SEE ALSO"
+.BR j2objc (1)
+.PP
+The full documentation for
+.B cycle_finder
+is maintained on the project site at
+\fIhttp://j2objc.org/\fR.

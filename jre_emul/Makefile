@@ -1364,7 +1364,7 @@ clean:
 	@rm -f $(DIST_INCLUDES)
 	@rm -f $(JRE_EMUL_LICENSES)
 
-dist: emul_jar_dist libs_dist $(DIST_DIR)/j2objcc licenses
+dist: emul_jar_dist libs_dist $(DIST_DIR)/j2objcc licenses emul_src_jar_dist
 
 libs_dist: libs dist_includes $(DIST_LIBS) $(MAIN_LIB_DIST)
 
@@ -1380,7 +1380,13 @@ java: emul_jar_dist java_sources_manifest
 emul_jar_dist: $(EMULATION_JAR_DIST)
 	@:
 
+emul_src_jar_dist: $(EMULATION_SRC_JAR_DIST)
+	@:
+
 $(EMULATION_JAR_DIST): $(EMULATION_JAR) | $(DIST_JAR_DIR)
+	@install -m 0644 $< $@
+
+$(EMULATION_SRC_JAR_DIST): $(EMULATION_SRC_JAR) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
 
 $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
@@ -1391,6 +1397,10 @@ $(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	    -d $$stage_dir -encoding UTF-8 -source 1.7 -target 1.7 -nowarn $^; \
 	jar cf $(EMULATION_JAR) -C $$stage_dir .; \
 	rm -rf $$stage_dir
+
+$(EMULATION_SRC_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
+	@echo "building jre_emul-src.jar"
+	@../scripts/gen_java_source_jar.py -sourcepath $(JRE_SRC):$(STUBS_DIR) -o $(EMULATION_SRC_JAR) $^
 
 $(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building $$(basename $@)"

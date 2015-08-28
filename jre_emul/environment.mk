@@ -79,6 +79,8 @@ include ../java_deps/jars.mk
 CLASS_DIR = $(BUILD_DIR)/Classes
 EMULATION_JAR = $(BUILD_DIR)/jre_emul.jar
 EMULATION_JAR_DIST = $(DIST_JAR_DIR)/jre_emul.jar
+EMULATION_SRC_JAR = $(BUILD_DIR)/jre_emul-src.jar
+EMULATION_SRC_JAR_DIST = $(DIST_JAR_DIR)/jre_emul-src.jar
 EMULATION_LIB_DIST = $(ARCH_LIB_DIR)/libjre_emul.a
 MAIN_LIB = $(BUILD_DIR)/libj2objc_main.a
 MAIN_LIB_DIST = $(DIST_LIB_DIR)/libj2objc_main.a
