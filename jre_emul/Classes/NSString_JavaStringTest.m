@@ -20,7 +20,7 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "JreEmulation.h"
+#import "NSString+JavaString.h"
 
 @interface NSString_JavaStringTest : XCTestCase {
 }

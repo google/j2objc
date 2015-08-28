@@ -18,6 +18,7 @@
 //
 
 #import "IOSLocaleData.h"
+#import "J2ObjC_source.h"
 #import "java/lang/Integer.h"
 #import "libcore/icu/LocaleData.h"
 

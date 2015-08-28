@@ -20,7 +20,7 @@
 #ifndef JreEmulation_DebugUtils_h
 #define JreEmulation_DebugUtils_h
 
-#import "JreEmulation.h"
+#import <Foundation/Foundation.h>
 
 @interface DebugUtils : NSObject {
 }

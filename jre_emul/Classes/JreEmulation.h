@@ -1,5 +1,3 @@
-// Copyright 2011 Google Inc. All Rights Reserved.
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -13,8 +11,7 @@
 // limitations under the License.
 
 //
-// Prefix header for all source files of the 'JreEmulation' target in
-// the 'JreEmulation' project.
+// Prefix header for all source files of the 'JreEmulation' framework.
 //
 
 #ifndef _JreEmulation_H_
@@ -31,14 +28,6 @@
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
-
-CF_EXTERN_C_BEGIN
-
-// Converts main() arguments into an IOSObjectArray of NSStrings.
-IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]);
-
-CF_EXTERN_C_END
-
 #endif // __OBJC__
 
 #endif // _JreEmulation_H_

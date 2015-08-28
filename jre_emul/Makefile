@@ -38,9 +38,9 @@ IOS_OBJS = \
 	IOSProtocolClass.o \
 	IOSReference.o \
 	IOSReflection.o \
+	J2ObjC_common.o \
 	JavaMetadata.o \
 	JavaToIOSInputStreamAdapter.o \
-	JreEmulation.o \
 	NSCopying+JavaCloneable.o \
 	NSDataInputStream.o \
 	NSDataOutputStream.o \

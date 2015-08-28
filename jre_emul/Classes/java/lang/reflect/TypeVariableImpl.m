@@ -19,7 +19,6 @@
 
 #import "java/lang/reflect/TypeVariableImpl.h"
 
-#import "JreEmulation.h"
 #import "java/lang/AssertionError.h"
 
 @implementation JavaLangReflectTypeVariableImpl

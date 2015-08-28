@@ -18,7 +18,8 @@
 //
 
 #import "JavaToIOSInputStreamAdapter.h"
-#import "JreEmulation.h"
+
+#import "IOSPrimitiveArray.h"
 #import "java/io/InputStream.h"
 
 @implementation JavaToIOSInputStreamAdapter

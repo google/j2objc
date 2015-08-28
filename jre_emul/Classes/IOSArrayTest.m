@@ -24,7 +24,6 @@
 #import "IOSArray.h"
 #import "IOSClass.h"
 #import "IOSPrimitiveArray.h"
-#import "JreEmulation.h"
 #import "java/lang/IndexOutOfBoundsException.h"
 #import "java/util/Calendar.h"
 #import "java/util/Date.h"

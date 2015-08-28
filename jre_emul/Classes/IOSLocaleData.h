@@ -17,7 +17,7 @@
 //  Created by Tom Ball on 8/23/13.
 //
 
-#import "JreEmulation.h"
+#import <Foundation/Foundation.h>
 
 @class LibcoreIcuLocaleData;
 

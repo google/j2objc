@@ -20,7 +20,7 @@
 #ifndef _IOSREFERENCE_H_
 #define _IOSREFERENCE_H_
 
-#import "JreEmulation.h"
+#import <Foundation/Foundation.h>
 
 @class JavaLangRefReference;
 

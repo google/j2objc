@@ -13,7 +13,7 @@
 #ifndef _JavaLangAbstractStringBuilder_H_
 #define _JavaLangAbstractStringBuilder_H_
 
-#import "JreEmulation.h"
+#import "J2ObjC_header.h"
 
 @class IOSCharArray;
 

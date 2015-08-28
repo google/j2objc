@@ -1469,7 +1469,6 @@
 		066193B2155849BC0004DAFE /* IOSPrimitiveClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSPrimitiveClass.h; sourceTree = "<group>"; };
 		066193B3155849BC0004DAFE /* IOSPrimitiveClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSPrimitiveClass.m; sourceTree = "<group>"; };
 		066193B8155849BC0004DAFE /* JavaObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaObject.h; sourceTree = "<group>"; };
-		066193B9155849BC0004DAFE /* JreEmulation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JreEmulation.m; sourceTree = "<group>"; };
 		066193E4155849F80004DAFE /* NSObject+JavaObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+JavaObject.h"; sourceTree = "<group>"; };
 		066193E5155849F80004DAFE /* NSObject+JavaObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+JavaObject.m"; sourceTree = "<group>"; };
 		066193E6155849F80004DAFE /* NSString+JavaString.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+JavaString.h"; sourceTree = "<group>"; };
@@ -1887,6 +1886,7 @@
 		069FC49D1AF2A2290095A289 /* AbstractStringBuilder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AbstractStringBuilder.h; path = java/lang/AbstractStringBuilder.h; sourceTree = "<group>"; };
 		069FC49E1AF2A9770095A289 /* java_util_regex_Matcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Matcher.m; path = android/libcore/luni/src/main/native/java_util_regex_Matcher.m; sourceTree = SOURCE_ROOT; };
 		069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Pattern.m; path = android/libcore/luni/src/main/native/java_util_regex_Pattern.m; sourceTree = SOURCE_ROOT; };
+		06A4CD131B8B9FEA0082FEB2 /* J2ObjC_common.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = J2ObjC_common.m; sourceTree = "<group>"; };
 		06AA054817E110D00017C34A /* CharacterCodingException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharacterCodingException.h; path = build_result/Classes/java/nio/charset/CharacterCodingException.h; sourceTree = "<group>"; };
 		06AA054917E110D00017C34A /* CharacterCodingException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharacterCodingException.m; path = build_result/Classes/java/nio/charset/CharacterCodingException.m; sourceTree = "<group>"; };
 		06AA054A17E110D00017C34A /* Charset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Charset.h; path = build_result/Classes/java/nio/charset/Charset.h; sourceTree = "<group>"; };
@@ -4133,6 +4133,7 @@
 				06B1E04F17F6403100F8940B /* Iterable.h */,
 				06B1E05017F6403100F8940B /* Iterable.m */,
 				06BED66A18EDE33F004EA17D /* J2ObjC_common.h */,
+				06A4CD131B8B9FEA0082FEB2 /* J2ObjC_common.m */,
 				064914361AC47ED000E98733 /* J2ObjC_header.h */,
 				064914331AC47ED000E98733 /* J2ObjC_source.h */,
 				0667E21E1B866E9C007E0CC2 /* J2ObjC_types.h */,
@@ -4152,7 +4153,6 @@
 				062272AA1816DB0B009BB2A2 /* jni.h */,
 				0692DF5E1AE8560300C14F19 /* jni.m */,
 				0661938D155848D70004DAFE /* JreEmulation.h */,
-				066193B9155849BC0004DAFE /* JreEmulation.m */,
 				067228F1158FB002005318BD /* Method.h */,
 				06721BA21559DE3800645E1B /* Method.m */,
 				064914341AC47ED000E98733 /* NSCopying+JavaCloneable.h */,

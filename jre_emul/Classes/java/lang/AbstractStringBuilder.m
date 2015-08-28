@@ -12,6 +12,7 @@
 
 #include "java/lang/AbstractStringBuilder.h"
 
+#include "J2ObjC_source.h"
 #include "java/io/InvalidObjectException.h"
 #include "java/lang/ArrayIndexOutOfBoundsException.h"
 #include "java/lang/Character.h"

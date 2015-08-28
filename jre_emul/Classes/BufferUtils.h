@@ -20,7 +20,6 @@
 #ifndef JreEmulation_BufferUtils_h
 #define JreEmulation_BufferUtils_h
 
-#import "JreEmulation.h"
 #import "IOSPrimitiveArray.h"
 #import "java/nio/ByteArrayBuffer.h"
 

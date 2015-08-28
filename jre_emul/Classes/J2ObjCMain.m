@@ -59,6 +59,24 @@ void handleUncaughtException(JavaLangThrowable *t) {
   [uncaughtHandler uncaughtExceptionWithJavaLangThread:currentThread withJavaLangThrowable:t];
 }
 
+// Converts main() arguments into an IOSObjectArray of NSStrings.  The first
+// argument, the program name, is skipped so the returned array matches what
+// is passed to a Java main method.
+IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]) {
+  IOSClass *stringType = NSString_class_();
+  if (argc <= 1) {
+    return [IOSObjectArray arrayWithLength:0 type:stringType];
+  }
+  IOSObjectArray *args = [IOSObjectArray arrayWithLength:argc - 1 type:stringType];
+  for (int i = 1; i < argc; i++) {
+    NSString *arg =
+    [NSString stringWithCString:argv[i]
+                       encoding:[NSString defaultCStringEncoding]];
+    IOSObjectArray_Set(args, i - 1, arg);
+  }
+  return args;
+}
+
 int main( int argc, const char *argv[] ) {
   if (argc < 2) {
     printf("Usage: %s class [args...]\n", *argv);

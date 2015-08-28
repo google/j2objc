@@ -18,8 +18,6 @@
 //
 //
 
-#import "JreEmulation.h"
-
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
 #import "java/lang/Double.h"

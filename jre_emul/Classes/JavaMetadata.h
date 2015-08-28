@@ -17,7 +17,9 @@
 //  Created by Tom Ball on 9/23/13.
 //
 
-#import "JreEmulation.h"
+#import <Foundation/Foundation.h>
+#import "IOSObjectArray.h"
+#import "IOSReflection.h"
 
 // Internal-use-only value classes that contain the reflection metadata
 // for an IOSClass.

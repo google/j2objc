@@ -1,5 +1,3 @@
-// Copyright 2011 Google Inc. All Rights Reserved.
-//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -13,14 +11,12 @@
 // limitations under the License.
 
 //
-//  JreEmulation.m
+//  J2ObjC_common.m
 //  J2ObjC
 //
-//  Created by Tom Ball on 4/23/12.
-//
-//  Implements definitions from both J2ObjC_common.h and JreEmulation.h.
+//  Implements definitions from J2ObjC_common.h.
 
-#import "JreEmulation.h"
+#import "J2ObjC_common.h"
 
 #import "FastPointerLookup.h"
 #import "IOSClass.h"
@@ -188,25 +184,6 @@ id GetCapturingLambda(Protocol *protocol, NSString *blockClassName,
   id instance = [[(id) lambdaHolder->id alloc] init];
   objc_setAssociatedObject(instance, (void*) 0, block, OBJC_ASSOCIATION_COPY_NONATOMIC);
   return instance;
-}
-
-// Converts main() arguments into an IOSObjectArray of NSStrings.  The first
-// argument, the program name, is skipped so the returned array matches what
-// is passed to a Java main method.
-FOUNDATION_EXPORT
-    IOSObjectArray *JreEmulationMainArguments(int argc, const char *argv[]) {
-  IOSClass *stringType = NSString_class_();
-  if (argc <= 1) {
-    return [IOSObjectArray arrayWithLength:0 type:stringType];
-  }
-  IOSObjectArray *args = [IOSObjectArray arrayWithLength:argc - 1 type:stringType];
-  for (int i = 1; i < argc; i++) {
-    NSString *arg =
-        [NSString stringWithCString:argv[i]
-                           encoding:[NSString defaultCStringEncoding]];
-    IOSObjectArray_Set(args, i - 1, arg);
-  }
-  return args;
 }
 
 // Counts the number of object types in a string concatenation.
