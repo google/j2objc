@@ -687,11 +687,16 @@ $(TESTS_DIR)/%: $(LOGGING_TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 
-run-tests: link resources $(TEST_BIN) run-initialization-test
+run-tests: link resources $(TEST_BIN) run-initialization-test run-core-size-test
 	@$(TEST_BIN) org.junit.runner.JUnitCore $(ALL_TESTS_CLASS)
 
 run-initialization-test: $(TESTS_DIR)/jreinitialization
 	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
+
+run-core-size-test: $(TESTS_DIR)/core_size
+	@echo Core binary size:
+	@ls -l $<
+	@echo Number of classes: `nm $< | grep -c "S _OBJC_CLASS_"`
 
 run-concurrency-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore ConcurrencyTests
@@ -771,3 +776,6 @@ $(ALL_TESTS_SOURCE:%.java=%.o): $(ALL_TESTS_SOURCE:%.java=%.m) $(TEST_OBJS:%.o=%
 
 $(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m
 	@../dist/j2objcc -o $@ -ObjC -Os $?
+
+$(TESTS_DIR)/core_size:
+	@../dist/j2objcc -o $@ -ObjC
