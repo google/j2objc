@@ -328,8 +328,8 @@ public class System {
     return result != null ? result : defaultValue;
   }
 
-  public static void setProperty(String key, String value) {
-    getProperties().setProperty(key, value);
+  public static String setProperty(String key, String value) {
+    return (String) getProperties().setProperty(key, value);
   }
 
   public static void setProperties(Properties properties) {
