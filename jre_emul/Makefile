@@ -817,6 +817,8 @@ JAVA_SOURCES_NON_CORE = \
 	java/security/cert/CertPathParameters.java \
 	java/security/cert/CertificateNotYetValidException.java \
 	java/security/cert/CertificateParsingException.java \
+	java/security/cert/CRLReason.java \
+	java/security/cert/Extension.java \
 	java/security/cert/X509Extension.java \
 	java/security/interfaces/ECKey.java \
 	java/security/interfaces/ECPrivateKey.java \
@@ -1129,8 +1131,14 @@ JAVA_SOURCES_NON_CORE = \
 	libcore/util/CountingOutputStream.java \
 	org/apache/harmony/security/PrivateKeyImpl.java \
 	org/apache/harmony/security/PublicKeyImpl.java \
+	org/apache/harmony/security/asn1/ASN1BitString.java \
+	org/apache/harmony/security/asn1/ASN1Boolean.java \
 	org/apache/harmony/security/asn1/ASN1Constants.java \
+	org/apache/harmony/security/asn1/ASN1Enumerated.java \
+	org/apache/harmony/security/asn1/ASN1GeneralizedTime.java \
+	org/apache/harmony/security/asn1/ASN1Implicit.java \
 	org/apache/harmony/security/asn1/ASN1Integer.java \
+	org/apache/harmony/security/asn1/ASN1OctetString.java \
 	org/apache/harmony/security/asn1/ASN1Oid.java \
 	org/apache/harmony/security/asn1/ASN1Primitive.java \
 	org/apache/harmony/security/asn1/ASN1Sequence.java \
@@ -1141,13 +1149,63 @@ JAVA_SOURCES_NON_CORE = \
 	org/apache/harmony/security/asn1/ASN1Time.java \
 	org/apache/harmony/security/asn1/ASN1UTCTime.java \
 	org/apache/harmony/security/asn1/ObjectIdentifier.java \
+	org/apache/harmony/security/pkcs7/AuthenticatedAttributes.java \
+	org/apache/harmony/security/pkcs7/ContentInfo.java \
+	org/apache/harmony/security/pkcs7/SignedData.java \
+	org/apache/harmony/security/pkcs7/SignerInfo.java \
+	org/apache/harmony/security/utils/AlgNameMapper.java \
+	org/apache/harmony/security/utils/AlgNameMapperSource.java \
+	org/apache/harmony/security/utils/Array.java \
+	org/apache/harmony/security/utils/JarUtils.java \
 	org/apache/harmony/security/utils/ObjectIdentifier.java \
+	org/apache/harmony/security/utils/WrappedX509Certificate.java \
 	org/apache/harmony/security/x501/AttributeTypeAndValue.java \
 	org/apache/harmony/security/x501/AttributeTypeAndValueComparator.java \
 	org/apache/harmony/security/x501/AttributeValue.java \
 	org/apache/harmony/security/x501/DirectoryString.java \
 	org/apache/harmony/security/x501/Name.java \
+	org/apache/harmony/security/x509/AccessDescription.java \
+	org/apache/harmony/security/x509/AlgorithmIdentifier.java \
+	org/apache/harmony/security/x509/AlternativeName.java \
+	org/apache/harmony/security/x509/AuthorityKeyIdentifier.java \
+	org/apache/harmony/security/x509/BasicConstraints.java \
+	org/apache/harmony/security/x509/Certificate.java \
+	org/apache/harmony/security/x509/CertificateIssuer.java \
+	org/apache/harmony/security/x509/CertificateList.java \
+	org/apache/harmony/security/x509/CertificatePolicies.java \
+	org/apache/harmony/security/x509/CRLDistributionPoints.java \
+	org/apache/harmony/security/x509/CRLNumber.java \
+	org/apache/harmony/security/x509/DistributionPoint.java \
+	org/apache/harmony/security/x509/DistributionPointName.java \
 	org/apache/harmony/security/x509/DNParser.java \
+	org/apache/harmony/security/x509/EDIPartyName.java \
+	org/apache/harmony/security/x509/ExtendedKeyUsage.java \
+	org/apache/harmony/security/x509/Extension.java \
+	org/apache/harmony/security/x509/Extensions.java \
+	org/apache/harmony/security/x509/ExtensionValue.java \
+	org/apache/harmony/security/x509/GeneralName.java \
+	org/apache/harmony/security/x509/GeneralNames.java \
+	org/apache/harmony/security/x509/GeneralSubtree.java \
+	org/apache/harmony/security/x509/GeneralSubtrees.java \
+	org/apache/harmony/security/x509/InfoAccessSyntax.java \
+	org/apache/harmony/security/x509/InhibitAnyPolicy.java \
+	org/apache/harmony/security/x509/InvalidityDate.java \
+	org/apache/harmony/security/x509/IssuingDistributionPoint.java \
+	org/apache/harmony/security/x509/KeyUsage.java \
+	org/apache/harmony/security/x509/NameConstraints.java \
+	org/apache/harmony/security/x509/ORAddress.java \
+	org/apache/harmony/security/x509/OtherName.java \
+	org/apache/harmony/security/x509/PolicyConstraints.java \
+	org/apache/harmony/security/x509/PolicyInformation.java \
+	org/apache/harmony/security/x509/ReasonCode.java \
+	org/apache/harmony/security/x509/ReasonFlags.java \
+	org/apache/harmony/security/x509/SubjectKeyIdentifier.java \
+	org/apache/harmony/security/x509/SubjectPublicKeyInfo.java \
+	org/apache/harmony/security/x509/TBSCertificate.java \
+	org/apache/harmony/security/x509/TBSCertList.java \
+	org/apache/harmony/security/x509/Time.java \
+	org/apache/harmony/security/x509/Validity.java \
+	org/apache/harmony/security/x509/X509PublicKey.java \
 	org/apache/harmony/xml/dom/AttrImpl.java \
 	org/apache/harmony/xml/dom/CDATASectionImpl.java \
 	org/apache/harmony/xml/dom/CharacterDataImpl.java \
