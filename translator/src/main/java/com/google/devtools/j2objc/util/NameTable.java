@@ -39,6 +39,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -795,7 +796,7 @@ public class NameTable {
       objCType = getObjCTypeInner(
           ((PointerTypeBinding) type).getPointeeType(), pointeeQualifiers, expandBounds);
       objCType = objCType.endsWith("*") ? objCType + "*" : objCType + " *";
-    } else if (type.isTypeVariable() || type.isCapture()) {
+    } else if (type.isTypeVariable() || type.isCapture() || type.isWildcardType()) {
       if (expandBounds) {
         List<ITypeBinding> bounds = Lists.newArrayList();
         collectBounds(type, bounds);
@@ -820,11 +821,13 @@ public class NameTable {
   private boolean collectBounds(ITypeBinding type, Collection<ITypeBinding> bounds) {
     ITypeBinding[] boundsArr = type.getTypeBounds();
     if (boundsArr.length == 0) {
-      return false;
-    }
-    for (ITypeBinding bound : boundsArr) {
-      if (!collectBounds(bound, bounds)) {
-        bounds.add(bound);
+      if (type.isWildcardType()) {
+        bounds.addAll(Arrays.asList(type.getInterfaces()));
+      }
+      bounds.add(type.getErasure());
+    } else {
+      for (ITypeBinding bound : boundsArr) {
+        collectBounds(bound, bounds);
       }
     }
     return true;

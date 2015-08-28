@@ -148,4 +148,23 @@ public class CastResolverTest extends GenerationTest {
     assertTranslation(translation,
         "return ((Test_Node *) (JreStrongAssign(&Test_next_, [self getNext])))->key_;");
   }
+
+  public void testCastOfInferredWildcardType() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { <T> T genericMethod(T a, T b) { return null; }"
+        + " interface I { void foo(); } static class C {}"
+        + " static class Bar extends C implements I { public void foo() {} }"
+        + " static class Baz extends C implements I { public void foo() {} }"
+        + " I test() { genericMethod(new Bar(), new Baz()).foo();"
+        + " return genericMethod(new Bar(), new Baz()); } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (id<Test_I>)test {",
+        // Type cast must contain both "Test_C" and "Test_I".
+        "  [((Test_C<Test_I> *) nil_chk([self genericMethodWithId:[new_Test_Bar_init() autorelease]"
+          + " withId:[new_Test_Baz_init() autorelease]])) foo];",
+        // No need for a cast because genericMethodWithId:withId: is declared to return "id".
+        "  return [self genericMethodWithId:[new_Test_Bar_init() autorelease]"
+          + " withId:[new_Test_Baz_init() autorelease]];",
+        "}");
+  }
 }
