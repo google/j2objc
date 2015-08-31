@@ -37,10 +37,6 @@ SUPPORT_SOURCES = \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
     libcore/util/SerializationTester.java \
-    org/apache/harmony/beans/tests/support/mock/MockFakeEvent.java \
-    org/apache/harmony/beans/tests/support/mock/MockJavaBean.java \
-    org/apache/harmony/beans/tests/support/mock/MockPropertyChangeEvent.java \
-    org/apache/harmony/beans/tests/support/mock/MockPropertyChangeListener.java \
     org/apache/harmony/logging/tests/java/util/logging/LevelTestResource.java \
     org/apache/harmony/logging/tests/java/util/logging/util/EnvironmentHelper.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum.java \
@@ -310,9 +306,6 @@ TEST_SOURCES := \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
     libcore/net/url/UrlUtilsTest.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
-    org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.java \
-    org/apache/harmony/beans/tests/java/beans/PropertyChangeListenerProxyTest.java \
-    org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java \
     org/apache/harmony/logging/tests/java/util/logging/ConsoleHandlerTest.java \
     org/apache/harmony/logging/tests/java/util/logging/ErrorManagerTest.java \
     org/apache/harmony/logging/tests/java/util/logging/FilterTest.java \
@@ -622,19 +615,15 @@ LOGGING_TEST_RESOURCES_SRCS = \
     bundles/java/util/logging/res_zh_CN.properties \
     config/java/util/logging/logging.config
 ZIP_TEST_RESOURCES_SRCS = tests/resources/java/util/zip/EmptyArchive.zip
-BEANS_TEST_RESOURCES_SRCS = \
-    serialization/org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.golden.ser
 
 TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/luni/src/test/resources
 ANDROID_TEST_RESOURCES_ROOT = android/libcore/luni/src/test/resources
 LOGGING_TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/logging/src/test/resources
-BEANS_TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/beans/src/test/resources
 TEST_RESOURCES = \
     $(TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
     $(ANDROID_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
     $(LOGGING_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
-    $(ZIP_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
-    $(BEANS_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%)
+    $(ZIP_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%)
 
 # Broken tests, plus associated bug id.  Once bug is fixed, move line(s) up.
 # $(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o     b/8842295
@@ -695,10 +684,6 @@ $(TESTS_DIR)/%: $(ANDROID_TEST_RESOURCES_ROOT)/%
 	@cp $< $@
 
 $(TESTS_DIR)/%: $(LOGGING_TEST_RESOURCES_ROOT)/%
-	@mkdir -p `dirname $@`
-	@cp $< $@
-
-$(TESTS_DIR)/%: $(BEANS_TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 
