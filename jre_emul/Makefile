@@ -731,6 +731,9 @@ JAVA_SOURCES_NON_CORE = \
 	com/google/android/collect/Sets.java \
 	java/awt/font/NumericShaper.java \
 	java/awt/font/TextAttribute.java \
+	java/beans/FeatureDescriptor.java \
+	java/beans/IntrospectionException.java \
+	java/beans/PropertyDescriptor.java \
 	java/io/CharArrayReader.java \
 	java/io/CharArrayWriter.java \
 	java/io/CharConversionException.java \
@@ -1129,6 +1132,7 @@ JAVA_SOURCES_NON_CORE = \
 	libcore/io/HeapBufferIterator.java \
 	libcore/net/http/HttpDate.java \
 	libcore/util/CountingOutputStream.java \
+	org/apache/harmony/beans/BeansUtils.java \
 	org/apache/harmony/security/PrivateKeyImpl.java \
 	org/apache/harmony/security/PublicKeyImpl.java \
 	org/apache/harmony/security/asn1/ASN1BitString.java \
