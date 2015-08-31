@@ -1448,30 +1448,43 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "switch (__index)");
   }
 
-  // Verify Java 7 try-with-resources translation.
+  // Verify minimal try-with-resources translation.
   public void testTryWithResourceNoCatchOrFinally() throws IOException {
-    // Only runs on Java 7, due to AutoCloseable dependency.
-    String javaVersion = System.getProperty("java.version");
-    if (javaVersion.startsWith("1.7")) {
-      String translation = translateSourceFile(
-          "import java.io.*; public class Test { String test(String path) throws IOException { "
-          + "  try (BufferedReader br = new BufferedReader(new FileReader(path))) {"
-          + "    return br.readLine(); } }}",
-          "Test", "Test.m");
-      assertTranslation(translation,
-          "JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
-          + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];");
-      assertTranslation(translation,
-          "@try {\n      return [br readLine];\n    }");
-      assertTranslation(translation, "@finally {");
-      assertTranslation(translation, "@try {\n        [br close];\n      }");
-      assertTranslation(translation, "@catch (JavaLangThrowable *e) {");
-      assertTranslation(translation, "if (__mainException) {");
-      assertTranslation(translation, "[__mainException addSuppressedWithJavaLangThrowable:e];");
-      assertTranslation(translation, "} else {\n          __mainException = e;\n        }");
-      assertTranslation(translation,
-          "if (__mainException) {\n        @throw __mainException;\n      }");
-    }
+    String translation = translateSourceFile(
+        "import java.io.*; public class Test { String test(String path) throws IOException { "
+        + "  try (BufferedReader br = new BufferedReader(new FileReader(path))) {"
+        + "    return br.readLine(); } }}",
+        "Test", "Test.m");
+    assertTranslation(translation,
+        "JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
+        + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];");
+    assertTranslation(translation,
+        "@try {\n      return [br readLine];\n    }");
+    assertTranslation(translation, "@finally {");
+    assertTranslation(translation, "@try {\n        [br close];\n      }");
+    assertTranslation(translation, "@catch (JavaLangThrowable *e) {");
+    assertTranslation(translation, "if (__mainException) {");
+    assertTranslation(translation, "[__mainException addSuppressedWithJavaLangThrowable:e];");
+    assertTranslation(translation, "} else {\n          __mainException = e;\n        }");
+    assertTranslation(translation,
+        "if (__mainException) {\n        @throw __mainException;\n      }");
+  }
+
+  // Verify that multiple resources are closed in reverse order from opening.
+  public void testTryMultiResourcesNoCatchOrFinally() throws IOException {
+    String translation = translateSourceFile(
+        "import java.io.*; public class Test { "
+        + "static class Resource implements AutoCloseable { "
+        + "  public void close() throws Exception {}} "
+        + "void test() throws Exception { "
+        + "  try (Resource r1 = new Resource();"
+        + "       Resource r2 = new Resource();"
+        + "       Resource r3 = new Resource()) {"
+        + "  }}}",
+        "Test", "Test.m");
+    assertTranslatedSegments(translation,
+        "Test_Resource *r1", "Test_Resource *r2", "Test_Resource *r3");
+    assertTranslatedSegments(translation, "[r3 close]", "[r2 close]", "[r1 close]");
   }
 
   public void testGenericResultIsCastForChainedMethodCall() throws IOException {

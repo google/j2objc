@@ -1274,7 +1274,8 @@ public class StatementGenerator extends TreeVisitor {
       if (node.getFinally() != null) {
         printStatements(node.getFinally().getStatements());
       }
-      for (VariableDeclarationExpression var : resources) {
+      // Close resources in the opposite order than they were opened.
+      for (VariableDeclarationExpression var : Lists.reverse(resources)) {
         for (VariableDeclarationFragment frag : var.getFragments()) {
           buffer.append("@try {\n[");
           buffer.append(frag.getName().getFullyQualifiedName());
