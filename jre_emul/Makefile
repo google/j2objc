@@ -796,6 +796,7 @@ JAVA_SOURCES_NON_CORE = \
 	java/security/AlgorithmParameterGeneratorSpi.java \
 	java/security/AlgorithmParameters.java \
 	java/security/AlgorithmParametersSpi.java \
+	java/security/CodeSigner.java \
 	java/security/DomainCombiner.java \
 	java/security/GuardedObject.java \
 	java/security/KeyFactory.java \
@@ -815,9 +816,14 @@ JAVA_SOURCES_NON_CORE = \
 	java/security/SecureRandom.java \
 	java/security/SecurityPermission.java \
 	java/security/Signature.java \
+	java/security/Timestamp.java \
 	java/security/UnrecoverableEntryException.java \
 	java/security/UnrecoverableKeyException.java \
 	java/security/cert/CertPathParameters.java \
+	java/security/cert/CertPathValidator.java \
+	java/security/cert/CertPathValidatorException.java \
+	java/security/cert/CertPathValidatorResult.java \
+	java/security/cert/CertPathValidatorSpi.java \
 	java/security/cert/CertificateNotYetValidException.java \
 	java/security/cert/CertificateParsingException.java \
 	java/security/cert/CRLReason.java \
@@ -982,6 +988,15 @@ JAVA_SOURCES_NON_CORE = \
 	java/util/concurrent/locks/ReadWriteLock.java \
 	java/util/concurrent/locks/ReentrantLock.java \
 	java/util/concurrent/locks/ReentrantReadWriteLock.java \
+	java/util/jar/Attributes.java \
+	java/util/jar/JarEntry.java \
+	java/util/jar/JarException.java \
+	java/util/jar/JarFile.java \
+	java/util/jar/JarInputStream.java \
+	java/util/jar/JarOutputStream.java \
+	java/util/jar/JarVerifier.java \
+	java/util/jar/Manifest.java \
+	java/util/jar/ManifestReader.java \
 	java/util/logging/ConsoleHandler.java \
 	java/util/logging/MemoryHandler.java \
 	java/util/logging/SimpleFormatter.java \
@@ -1128,6 +1143,7 @@ JAVA_SOURCES_NON_CORE = \
 	libcore/icu/NativeIDN.java \
 	libcore/icu/TimeZones.java \
 	libcore/internal/StringPool.java \
+	libcore/io/Base64.java \
 	libcore/io/BufferIterator.java \
 	libcore/io/HeapBufferIterator.java \
 	libcore/net/http/HttpDate.java \
