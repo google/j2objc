@@ -17,6 +17,8 @@
 
 package java.util.jar;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.io.IOException;
 import java.security.CodeSigner;
 import java.security.cert.CertPath;
@@ -39,6 +41,7 @@ import java.util.zip.ZipEntry;
 public class JarEntry extends ZipEntry {
     private Attributes attributes;
 
+    @Weak
     final JarFile parentJar;
 
     CodeSigner signers[];
