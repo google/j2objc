@@ -80,6 +80,7 @@ public class DeadCodeMap {
   private final ImmutableSet<String> deadClasses;
   private final ImmutableTable<String, String, ImmutableSet<String>> deadMethods;
   private final ImmutableMultimap<String, String> deadFields;
+  private final Set<String> hasConstructorRemovedClasses = new HashSet<>();
 
   private DeadCodeMap(
       ImmutableSet<String> deadClasses,
@@ -105,5 +106,13 @@ public class DeadCodeMap {
 
   public boolean isEmpty() {
     return deadClasses.isEmpty() && deadMethods.isEmpty() && deadFields.isEmpty();
+  }
+
+  public void addConstructorRemovedClass(String clazz) {
+    hasConstructorRemovedClasses.add(clazz);
+  }
+
+  public boolean classHasConstructorRemoved(String clazz) {
+    return hasConstructorRemovedClasses.contains(clazz);
   }
 }

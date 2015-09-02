@@ -38,6 +38,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -57,6 +58,11 @@ import java.util.List;
  * @author Tom Ball
  */
 public class InitializationNormalizer extends TreeVisitor {
+  private final DeadCodeMap deadCodeMap;
+
+  public InitializationNormalizer(DeadCodeMap deadCodeMap) {
+    this.deadCodeMap = deadCodeMap;
+  }
 
   @Override
   public void endVisit(TypeDeclaration node) {
@@ -249,8 +255,24 @@ public class InitializationNormalizer extends TreeVisitor {
     Block body = new Block();
     method.setBody(body);
     TreeUtil.copyList(initStatements, body.getStatements());
-    body.getStatements().add(0, new SuperConstructorInvocation(
-        TranslationUtil.findDefaultConstructorBinding(type.getSuperclass(), typeEnv)));
+
+    boolean callSuper = true;
+    if (deadCodeMap != null) {
+      if (deadCodeMap.isDeadClass(type.getBinaryName()) && !type.isEnum()) {
+        callSuper = false;
+      } else if (deadCodeMap.classHasConstructorRemoved(type.getBinaryName())) {
+        // If we get here, this means all declared constructors are dead, which implies that no
+        // instances will ever be created for the class. It's therefore meaningless to call super --
+        // if super does not have a zero-argument constructor, we don't have the information to call
+        // it anyway.
+        callSuper = false;
+      }
+    }
+
+    if (callSuper) {
+      body.getStatements().add(0, new SuperConstructorInvocation(
+          TranslationUtil.findDefaultConstructorBinding(type.getSuperclass(), typeEnv)));
+    }
     members.add(method);
   }
 }

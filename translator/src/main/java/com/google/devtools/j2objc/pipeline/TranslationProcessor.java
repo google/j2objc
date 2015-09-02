@@ -158,7 +158,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.tick("InnerClassExtractor");
 
     // Normalize init statements
-    new InitializationNormalizer().run(unit);
+    new InitializationNormalizer(deadCodeMap).run(unit);
     ticker.tick("InitializationNormalizer");
 
     // Fix references to outer scope and captured variables.
