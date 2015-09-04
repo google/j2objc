@@ -227,7 +227,7 @@ public class StackTraceElement implements Serializable {
         NSString *className = [[[NSString alloc] initWithBytesNoCopy:start
                                                               length:idx - start
                                                             encoding:encoding
-                                                        freeWhenDone:NO] autorelease];
+                                                        freeWhenDone:false] autorelease];
         cls = [IOSClass classForIosName:className];
       }
       if (cls) {

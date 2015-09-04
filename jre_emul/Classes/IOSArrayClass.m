@@ -39,20 +39,20 @@
   return componentType_;
 }
 
-- (BOOL)isArray {
-  return YES;
+- (jboolean)isArray {
+  return true;
 }
 
 - (IOSClass *)getSuperclass {
   return NSObject_class_();
 }
 
-- (BOOL)isInstance:(id)object {
+- (jboolean)isInstance:(id)object {
   IOSClass *objClass = [object getClass];
   return [objClass isArray] && [componentType_ isAssignableFrom:[objClass getComponentType]];
 }
 
-- (BOOL)isAssignableFrom:(IOSClass *)cls {
+- (jboolean)isAssignableFrom:(IOSClass *)cls {
   return [cls isArray] && [componentType_ isAssignableFrom:[cls getComponentType]];
 }
 

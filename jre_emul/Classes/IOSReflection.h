@@ -39,7 +39,7 @@ typedef union {
   long long asLong;
   float asFloat;
   double asDouble;
-  BOOL asBOOL;
+  jboolean asBOOL;
 } J2ObjcRawValue;
 
 // C data structures that hold "raw" metadata for use by the methods that
@@ -49,7 +49,7 @@ typedef union {
 
 // Use same data types that the translator generates.
 typedef union J2ObjcConstantValue {
-  BOOL boolean;
+  jboolean boolean;
   char byte;
   unichar char_;
   double double_;

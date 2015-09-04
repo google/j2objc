@@ -40,7 +40,7 @@ typedef struct JreArrayRef {
  */
 @interface IOSObjectArray : IOSArray <NSFastEnumeration> {
  @package
-  BOOL isRetained_;
+  jboolean isRetained_;
  @public
   IOSClass *elementType_;
   // Ensure alignment for java.util.concurrent.atomic.AtomicReferenceArray.

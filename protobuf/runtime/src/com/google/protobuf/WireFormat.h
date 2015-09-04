@@ -143,7 +143,7 @@ CGP_ALWAYS_INLINE inline BOOL CGPReadFixed64(CGPCodedInputStream *input, int64_t
   return input->ReadLittleEndian64((uint64_t *)value);
 }
 
-CGP_ALWAYS_INLINE inline BOOL CGPReadBool(CGPCodedInputStream *input, BOOL *value) {
+CGP_ALWAYS_INLINE inline BOOL CGPReadBool(CGPCodedInputStream *input, bool *value) {
   uint32_t temp;
   if (!input->ReadVarint32(&temp)) return false;
   *value = temp != 0;

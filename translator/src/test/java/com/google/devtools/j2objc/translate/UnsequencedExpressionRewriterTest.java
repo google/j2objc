@@ -112,7 +112,7 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { void test(int i) { while (i + i++ < 10) {} } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "while (YES) {",
+        "while (true) {",
         "  jint unseq$1 = i;",
         "  if (!(unseq$1 + i++ < 10)) break;");
   }

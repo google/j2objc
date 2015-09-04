@@ -1240,8 +1240,8 @@ extern "C" {
 /*
  * Manifest constants.
  */
-#define JNI_FALSE   NO
-#define JNI_TRUE    YES
+#define JNI_FALSE   false
+#define JNI_TRUE    true
 
 #define JNI_VERSION_1_1 0x00010001
 #define JNI_VERSION_1_2 0x00010002

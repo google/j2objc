@@ -54,9 +54,9 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("NSString *trueString = NSString_valueOfBool_(YES);", result);
+    assertEquals("NSString *trueString = NSString_valueOfBool_(true);", result);
     result = generateStatement(stmts.get(1));
-    assertEquals("NSString *falseString = NSString_valueOfBool_(NO);", result);
+    assertEquals("NSString *falseString = NSString_valueOfBool_(false);", result);
   }
 
   /**

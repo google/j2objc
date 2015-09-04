@@ -1926,8 +1926,6 @@
 		06AA056C17E111190017C34A /* ResourceBundle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ResourceBundle.h; path = build_result/Classes/java/util/ResourceBundle.h; sourceTree = "<group>"; };
 		06AA056D17E111190017C34A /* ResourceBundle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ResourceBundle.m; path = build_result/Classes/java/util/ResourceBundle.m; sourceTree = "<group>"; };
 		06AFD3DA183D3F4D001C90C6 /* IOSReflection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSReflection.m; sourceTree = "<group>"; };
-		06AFD3DB183E785D001C90C6 /* ParameterizedTypeImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ParameterizedTypeImpl.h; path = java/lang/reflect/ParameterizedTypeImpl.h; sourceTree = "<group>"; };
-		06AFD3DC183E785D001C90C6 /* ParameterizedTypeImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ParameterizedTypeImpl.m; path = java/lang/reflect/ParameterizedTypeImpl.m; sourceTree = "<group>"; };
 		06AFD3DD183E785D001C90C6 /* TypeVariableImpl.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TypeVariableImpl.h; path = java/lang/reflect/TypeVariableImpl.h; sourceTree = "<group>"; };
 		06AFD3DE183E785D001C90C6 /* TypeVariableImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TypeVariableImpl.m; path = java/lang/reflect/TypeVariableImpl.m; sourceTree = "<group>"; };
 		06B1E04F17F6403100F8940B /* Iterable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Iterable.h; path = java/lang/Iterable.h; sourceTree = "<group>"; };
@@ -4171,8 +4169,6 @@
 				066193E7155849F80004DAFE /* NSString+JavaString.m */,
 				066B71F617B94DC100A4CBBD /* objc-sync.h */,
 				066B71F717B94DC100A4CBBD /* objc-sync.m */,
-				06AFD3DB183E785D001C90C6 /* ParameterizedTypeImpl.h */,
-				06AFD3DC183E785D001C90C6 /* ParameterizedTypeImpl.m */,
 				06F6ECFE18AAABD500875541 /* Portability.h */,
 				0667E21F1B866EE9007E0CC2 /* Resource.h */,
 				0667E2201B866EE9007E0CC2 /* Resource.m */,

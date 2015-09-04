@@ -51,8 +51,8 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslatedLines(translation,
         "void Test_init(Test *self) {",
-        "  Test_initWithBoolean_(self, YES);",
-        "  self->b2_ = YES;",
+        "  Test_initWithBoolean_(self, true);",
+        "  self->b2_ = true;",
         "}");
   }
 

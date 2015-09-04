@@ -75,11 +75,11 @@
           [self propertyName]];
 }
 
-static BOOL IsStatic(JavaLangReflectField *field) {
+static jboolean IsStatic(JavaLangReflectField *field) {
   return ([field->metadata_ modifiers] & JavaLangReflectModifier_STATIC) > 0;
 }
 
-static BOOL IsFinal(JavaLangReflectField *field) {
+static jboolean IsFinal(JavaLangReflectField *field) {
   return ([field->metadata_ modifiers] & JavaLangReflectModifier_FINAL) > 0;
 }
 
@@ -197,7 +197,7 @@ static void SetWithRawValue(
 - (void)setWithId:(id)object withId:(id)value {
   // TODO(kstanger): correctly handle @Weak fields.
   IOSClass *fieldType = [self getType];
-  BOOL needsRetain = ![fieldType isPrimitive];
+  jboolean needsRetain = ![fieldType isPrimitive];
   if (needsRetain) {
     AUTORELEASE([self getWithId:object]);
   }
@@ -325,7 +325,7 @@ static void SetWithRawValue(
   if (metadata_) {
     return ([metadata_ modifiers] & JavaLangReflectModifier_SYNTHETIC) > 0;
   }
-  return NO;
+  return false;
 }
 
 - (jboolean)isEnumConstant {

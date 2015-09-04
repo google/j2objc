@@ -346,7 +346,7 @@ static jint countArgs(char *s) {
   return result;
 }
 
-- (BOOL)isConstructor {
+- (jboolean)isConstructor {
   const char *name = data_->javaName ? data_->javaName : data_->selector;
   return strcmp(name, "init") == 0 || strstr(name, "initWith") == name;
 }

@@ -91,7 +91,7 @@ static NSMutableSet *referent_subclasses;
 // the runtime is notified of a low memory condition.
 static NSMutableSet *soft_references;
 
-static BOOL in_low_memory_cleanup;
+static jboolean in_low_memory_cleanup;
 
 + (void)initReferent:(JavaLangRefReference *)reference {
   id referent = JreLoadVolatileId(&reference->referent_);
@@ -118,11 +118,11 @@ static BOOL in_low_memory_cleanup;
 
 + (void)handleMemoryWarning:(NSNotification *)notification {
   WhileLocked(^{
-    in_low_memory_cleanup = YES;
+    in_low_memory_cleanup = true;
     for (JavaLangRefSoftReference *reference in soft_references) {
       [JreLoadVolatileId(&reference->referent_) release];
     }
-    in_low_memory_cleanup = NO;
+    in_low_memory_cleanup = false;
   });
   [soft_references release];
   soft_references = [[NSMutableSet alloc] init];
@@ -170,16 +170,16 @@ static Class GetReferentSubclass(id obj) {
 }
 
 
-// Returns YES if an object is constant. The retain and release methods
+// Returns true if an object is constant. The retain and release methods
 // don't modify retain counts when they are INT_MAX (or UINT_MAX on some
 // architectures), so the retainCount test in ReferentSubclassRelease
 // won't work. The only constants in translated code are string constants
 // and classes; since constants as reference referents do nothing in Java
 // (since they are never GC'd), with this test they will do nothing in
 // iOS as well.
-static BOOL IsConstantObject(id obj) {
+static jboolean IsConstantObject(id obj) {
   if ([obj isKindOfClass:[IOSClass class]]) {
-    return YES;
+    return true;
   }
   NSUInteger retainCount = [obj retainCount];
   return retainCount == UINT_MAX || retainCount == INT_MAX;
@@ -255,8 +255,8 @@ static void RemoveReferenceAssociation(id referent, JavaLangRefReference *refere
 
 // A referent is being dealloc'd, so remove all references to it from
 // the weak refs map.
-static BOOL RemoveAllReferenceAssociations(id referent) {
-  BOOL enqueued = NO;
+static jboolean RemoveAllReferenceAssociations(id referent) {
+  jboolean enqueued = false;
   CFMutableSetRef set = (CFMutableSetRef)CFDictionaryGetValue(weak_refs_map, referent);
   if (set) {
     NSSet *setCopy = (ARCBRIDGE NSSet *) set;
@@ -275,7 +275,7 @@ static BOOL RemoveAllReferenceAssociations(id referent) {
 // permissible with ARC, but in this case it's actually invoking a
 // delegate object's dealloc method (which won't invoke super-dealloc).
 static void ReferentSubclassDealloc(id self, SEL _cmd) {
-  BOOL enqueued = RemoveAllReferenceAssociations(self);
+  jboolean enqueued = RemoveAllReferenceAssociations(self);
   if (!enqueued) {
     Class superclass = GetRealSuperclass(self);
     IMP superDealloc = class_getMethodImplementation(superclass, @selector(dealloc));
@@ -298,7 +298,7 @@ static void MaybeQueueReferences(id referent) {
           if (in_low_memory_cleanup) {
             // Queue reference.
             [reference enqueueInternal];
-            softRef->queued_ = YES;
+            softRef->queued_ = true;
           } else if (!softRef->queued_) {
             // Add to soft_references list.
             [referent retain];

@@ -80,13 +80,13 @@
 - (IOSObjectArray *)getParameterAnnotations;
 
 // Returns true if this method has variable arguments.
-- (BOOL)isVarArgs;
+- (jboolean)isVarArgs;
 
 // Returns true if this is a bridge method.
-- (BOOL)isBridge;
+- (jboolean)isBridge;
 
 // Returns true if this method was added by j2objc.
-- (BOOL)isSynthetic;
+- (jboolean)isSynthetic;
 
 // Internal methods.
 - (NSString *)internalName;
