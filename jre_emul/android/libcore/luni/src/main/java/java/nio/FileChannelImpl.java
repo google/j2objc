@@ -17,6 +17,8 @@
 
 package java.nio;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.io.Closeable;
 import java.io.FileDescriptor;
 import java.io.IOException;
@@ -50,6 +52,7 @@ final class FileChannelImpl extends FileChannel {
         }
     };
 
+    @Weak
     private final Object stream;
     private final FileDescriptor fd;
     private final int mode;
