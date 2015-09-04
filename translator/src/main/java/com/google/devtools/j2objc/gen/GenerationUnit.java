@@ -188,4 +188,15 @@ public class GenerationUnit {
   public String getOutputPath() {
     return outputPath;
   }
+
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder();
+    if (sourceName != null) {
+      sb.append(sourceName);
+      sb.append(' ');
+    }
+    sb.append(generatedTypes);
+    return sb.toString();
+  }
 }

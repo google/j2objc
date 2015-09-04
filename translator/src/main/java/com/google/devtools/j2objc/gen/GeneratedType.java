@@ -246,4 +246,9 @@ public class GeneratedType {
   public String getImplementationCode() {
     return implementationCode;
   }
+
+  @Override
+  public String toString() {
+    return typeName != null ? typeName : "<no-type>";
+  }
 }

@@ -156,7 +156,8 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
     for (GeneratedType generatedType : generatedTypes) {
       String name = generatedType.getTypeName();
       if (name != null) {
-        assert typeMap.put(name, generatedType) == null : "Duplicate type name: " + name;
+        Object dupe = typeMap.put(name, generatedType);
+        assert dupe == null : "Duplicate type name: " + name;
       }
     }
 
