@@ -348,6 +348,7 @@ static BOOL ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   [cause release];
   [detailMessage release];
   [stackTrace release];
+  [suppressedExceptions release];
   [super dealloc];
 }
 
