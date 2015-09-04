@@ -17,6 +17,8 @@
 
 package java.nio.channels;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.io.IOException;
 
 /**
@@ -71,6 +73,7 @@ import java.io.IOException;
 public abstract class FileLock implements AutoCloseable {
 
     // The underlying file channel.
+    @Weak
     private final FileChannel channel;
 
     // The lock starting position.
