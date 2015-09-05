@@ -396,7 +396,7 @@ void JreStringBuilder_reverse(JreStringBuilder *sb) {
   jint end = sb->count_ - 1;
   jchar frontHigh = buf[0];
   jchar endLow = buf[end];
-  jboolean allowFrontSur = true, allowEndSur = true;
+  jboolean allowFrontSur = YES, allowEndSur = YES;
   for (jint i = 0, mid = sb->count_ / 2; i < mid; i++, --end) {
     jchar frontLow = buf[i + 1];
     jchar endHigh = buf[end - 1];
@@ -407,7 +407,7 @@ void JreStringBuilder_reverse(JreStringBuilder *sb) {
     }
     jboolean surAtEnd = allowEndSur && endHigh >= (jint)0xd800 && endHigh <= (jint)0xdbff
         && endLow >= (jint)0xdc00 && endLow <= (jint)0xdfff;
-    allowFrontSur = allowEndSur = true;
+    allowFrontSur = allowEndSur = YES;
     if (surAtFront == surAtEnd) {
       if (surAtFront) {
         buf[end] = frontLow;
@@ -429,12 +429,12 @@ void JreStringBuilder_reverse(JreStringBuilder *sb) {
         buf[end] = frontLow;
         buf[i] = endLow;
         endLow = endHigh;
-        allowFrontSur = false;
+        allowFrontSur = NO;
       } else {
         buf[end] = frontHigh;
         buf[i] = endHigh;
         frontHigh = frontLow;
-        allowEndSur = false;
+        allowEndSur = NO;
       }
     }
   }
@@ -539,12 +539,12 @@ NSString *JreStringBuilder_toStringAndDealloc(JreStringBuilder *sb) {
       return -1;
     }
     jchar firstChar = [subString characterAtIndex:0];
-    while (true) {
+    while (YES) {
       jint i = start;
-      jboolean found = false;
+      jboolean found = NO;
       for (; i < delegate_.count_; i++) {
         if (delegate_.buffer_[i] == firstChar) {
-          found = true;
+          found = YES;
           break;
         }
       }
@@ -577,12 +577,12 @@ NSString *JreStringBuilder_toStringAndDealloc(JreStringBuilder *sb) {
         start = delegate_.count_ - subCount;
       }
       jchar firstChar = [subString characterAtIndex:0];
-      while (true) {
+      while (YES) {
         jint i = start;
-        jboolean found = false;
+        jboolean found = NO;
         for (; i >= 0; --i) {
           if (delegate_.buffer_[i] == firstChar) {
-            found = true;
+            found = YES;
             break;
           }
         }

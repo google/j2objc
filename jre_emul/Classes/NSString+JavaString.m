@@ -66,11 +66,11 @@ NSString *NSString_valueOf_(id obj) {
   return obj ? [obj description] : @"null";
 }
 
-+ (NSString *)valueOfBool:(jboolean)value {
++ (NSString *)valueOfBool:(BOOL)value {
   return NSString_valueOfBool_(value);
 }
 
-NSString *NSString_valueOfBool_(jboolean value) {
+NSString *NSString_valueOfBool_(BOOL value) {
   return value ? @"true" : @"false";
 }
 
@@ -351,7 +351,7 @@ destinationBegin:(int)destinationBegin {
   return range.location == NSNotFound ? -1 : (int) range.location;
 }
 
-- (jboolean)isEmpty {
+- (BOOL)isEmpty {
   return [self length] == 0;
 }
 
@@ -629,7 +629,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
     @throw makeException([JavaLangNullPointerException class]);
   }
   int max_length = (int) [self maximumLengthOfBytesUsingEncoding:encoding];
-  jboolean includeBOM = (encoding == NSUTF16StringEncoding);
+  BOOL includeBOM = (encoding == NSUTF16StringEncoding);
   if (includeBOM) {
     max_length += 2;
     encoding = NSUTF16BigEndianStringEncoding;  // Java uses big-endian.
@@ -730,7 +730,7 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   return NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(locale, format, args);
 }
 
-- (jboolean)hasPrefix:(NSString *)aString offset:(int)offset {
+- (BOOL)hasPrefix:(NSString *)aString offset:(int)offset {
   if (!aString) {
     @throw makeException([JavaLangNullPointerException class]);
   }
@@ -761,7 +761,7 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   return [p splitWithJavaLangCharSequence:self withInt:n];
 }
 
-- (jboolean)equalsIgnoreCase:(NSString *)aString {
+- (BOOL)equalsIgnoreCase:(NSString *)aString {
   NSComparisonResult result =
       [self compare:aString options:NSCaseInsensitiveSearch];
   return result == NSOrderedSame;
@@ -807,27 +807,27 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   return result;
 }
 
-- (jboolean)regionMatches:(int)thisOffset
-                  aString:(NSString *)aString
-              otherOffset:(int)otherOffset
-                    count:(int)count {
-  return [self regionMatches:false
+- (BOOL)regionMatches:(int)thisOffset
+              aString:(NSString *)aString
+          otherOffset:(int)otherOffset
+                count:(int)count {
+  return [self regionMatches:NO
                   thisOffset:thisOffset
                      aString:aString
                  otherOffset:otherOffset
                        count:count];
 }
 
-- (jboolean)regionMatches:(jboolean)caseInsensitive
-               thisOffset:(int)thisOffset
-                  aString:(NSString *)aString
-              otherOffset:(int)otherOffset
-                    count:(int)count {
+- (BOOL)regionMatches:(BOOL)caseInsensitive
+           thisOffset:(int)thisOffset
+              aString:(NSString *)aString
+          otherOffset:(int)otherOffset
+                count:(int)count {
   if (thisOffset < 0 || count > (int) [self length] - thisOffset) {
-    return false;
+    return NO;
   }
   if (otherOffset < 0 || count > (int) [aString length] - otherOffset) {
-    return false;
+    return NO;
   }
   if (!aString) {
     @throw makeException([JavaLangNullPointerException class]);
@@ -858,12 +858,12 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
   return [self stringByAppendingString:string];
 }
 
-- (jboolean)contains:(id<JavaLangCharSequence>)sequence {
+- (BOOL)contains:(id<JavaLangCharSequence>)sequence {
   if (!sequence) {
     @throw makeException([JavaLangNullPointerException class]);
   }
   if ([sequence length] == 0) {
-    return true;
+    return YES;
   }
   NSRange range = [self rangeOfString:[sequence description]];
   return range.location != NSNotFound;
@@ -887,15 +887,15 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
       self, index, offset);
 }
 
-- (jboolean)matches:(NSString *)regex {
+- (BOOL)matches:(NSString *)regex {
   return JavaUtilRegexPattern_matchesWithNSString_withJavaLangCharSequence_(regex, self);
 }
 
-- (jboolean)contentEqualsCharSequence:(id<JavaLangCharSequence>)seq {
+- (BOOL)contentEqualsCharSequence:(id<JavaLangCharSequence>)seq {
   return [self isEqualToString:[(id) seq description]];
 }
 
-- (jboolean)contentEqualsStringBuffer:(JavaLangStringBuffer *)sb {
+- (BOOL)contentEqualsStringBuffer:(JavaLangStringBuffer *)sb {
   return [self isEqualToString:[sb description]];
 }
 

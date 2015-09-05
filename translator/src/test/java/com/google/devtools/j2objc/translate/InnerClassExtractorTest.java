@@ -204,7 +204,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "class Inner { Inner(boolean b) {} int size() { return Test.this.size(); } } }",
         "Test", "Test.m");
     assertTranslation(translation, "JreStrongAssignAndConsume(&self->inner_, "
-        + "new_Test_Inner_initWithTest_withBoolean_(self, true));");
+        + "new_Test_Inner_initWithTest_withBoolean_(self, YES));");
     assertTranslation(translation, "JreStrongAssign(&self->this$0_, outer$);");
   }
 

@@ -326,7 +326,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
 
       NSMutableURLRequest *request =
           [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self->url_ toExternalForm]]];
-      request.HTTPShouldHandleCookies = false;
+      request.HTTPShouldHandleCookies = NO;
       request.HTTPMethod = self->method_;
       request.cachePolicy = self->useCaches_ ?
           NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData;

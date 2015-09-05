@@ -74,8 +74,8 @@ void FillInStackTraceInternal(JavaLangThrowable *self) {
 
 - (instancetype)initWithNSString:(NSString *)message
  withJavaLangThrowable:(JavaLangThrowable *)causeArg
-           withBoolean:(jboolean)enableSuppression
-           withBoolean:(jboolean)writeableStackTrace {
+           withBoolean:(BOOL)enableSuppression
+           withBoolean:(BOOL)writeableStackTrace {
   JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
       self, message, causeArg, enableSuppression, writeableStackTrace);
   return self;
@@ -108,21 +108,21 @@ JavaLangThrowable *new_JavaLangThrowable_initWithNSString_(NSString *message) {
 void JavaLangThrowable_initWithNSString_withJavaLangThrowable_(
     JavaLangThrowable *self, NSString *message, JavaLangThrowable *causeArg) {
   JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
-      self, message, causeArg, true, true);
+      self, message, causeArg, YES, YES);
 }
 
 JavaLangThrowable *new_JavaLangThrowable_initWithNSString_withJavaLangThrowable_(
     NSString *message, JavaLangThrowable *causeArg) {
   JavaLangThrowable *self = [JavaLangThrowable alloc];
   JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
-      self, message, causeArg, true, true);
+      self, message, causeArg, YES, YES);
   return self;
 }
 
 void JavaLangThrowable_initWithJavaLangThrowable_(
     JavaLangThrowable *self, JavaLangThrowable *causeArg) {
   JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
-      self, causeArg ? [causeArg description] : nil, causeArg, true, true);
+      self, causeArg ? [causeArg description] : nil, causeArg, YES, YES);
 }
 
 JavaLangThrowable *new_JavaLangThrowable_initWithJavaLangThrowable_(JavaLangThrowable *causeArg) {
@@ -132,8 +132,8 @@ JavaLangThrowable *new_JavaLangThrowable_initWithJavaLangThrowable_(JavaLangThro
 }
 
 void JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
-    JavaLangThrowable *self, NSString *message, JavaLangThrowable *causeArg,
-    jboolean enableSuppression, jboolean writeableStackTrace) {
+    JavaLangThrowable *self, NSString *message, JavaLangThrowable *causeArg, BOOL enableSuppression,
+    BOOL writeableStackTrace) {
   [self initWithName:[[self class] description] reason:message userInfo:nil];
   self->cause = RETAIN_(causeArg);
   self->detailMessage = RETAIN_(message);
@@ -152,8 +152,8 @@ void JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBo
 
 JavaLangThrowable *
     new_JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
-    NSString *message, JavaLangThrowable *causeArg, jboolean enableSuppression,
-    jboolean writeableStackTrace) {
+    NSString *message, JavaLangThrowable *causeArg, BOOL enableSuppression,
+    BOOL writeableStackTrace) {
   JavaLangThrowable *self = [JavaLangThrowable alloc];
   JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
       self, message, causeArg, enableSuppression, writeableStackTrace);
@@ -161,19 +161,19 @@ JavaLangThrowable *
 }
 
 // Filter out native functions (no class), NSInvocation methods, and internal constructor.
-static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
+static BOOL ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   NSString *className = [element getClassName];
   if (!className) {
-    return true;
+    return YES;
   }
   if ([className isEqualToString:@"NSInvocation"]) {
-    return true;
+    return YES;
   }
   if ([className isEqualToString:@"java.lang.Throwable"]
       && [[element getMethodName] isEqualToString:@"<init>"]) {
-    return true;
+    return YES;
   }
-  return false;
+  return NO;
 }
 
 - (IOSObjectArray *)filterStackTrace {

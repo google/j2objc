@@ -211,9 +211,9 @@ public final class Unsafe {
           __ATOMIC_SEQ_CST)) {
         [newValue retain];
         [expectedValue autorelease];
-        return true;
+        return YES;
       }
-      return false;
+      return NO;
     ]-*/;
 
     /**

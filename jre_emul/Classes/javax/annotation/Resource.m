@@ -65,7 +65,7 @@
 }
 
 + (jboolean)shareableDefault {
-  return true;
+  return YES;
 }
 
 + (IOSClass *)typeDefault {

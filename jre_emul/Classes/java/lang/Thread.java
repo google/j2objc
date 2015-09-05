@@ -441,7 +441,7 @@ public class Thread implements Runnable {
 #endif
       @throw e;
     }
-    running_ = true;
+    running_ = YES;
     [(NSThread *) nativeThread start];
   ]-*/;
 
@@ -662,7 +662,7 @@ public class Thread implements Runnable {
   public static native boolean interrupted() /*-[
     JavaLangThread *currentThread = JavaLangThread_currentThread();
     BOOL result = currentThread->interrupted_;
-    currentThread->interrupted_ = false;
+    currentThread->interrupted_ = NO;
     return result;
   ]-*/;
 
@@ -779,7 +779,7 @@ public class Thread implements Runnable {
     BOOL alive = [nativeThread isExecuting] && ![nativeThread isCancelled];
     if (!alive && running_) {
       // Thread finished, clean up.
-      running_ = false;
+      running_ = NO;
       if (self->threadGroup_) {
         [threadGroup_ removeWithJavaLangThread:self];
         AUTORELEASE(self->threadGroup_);

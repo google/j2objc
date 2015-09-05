@@ -172,8 +172,8 @@ static JavaUtilProperties *prefixMapping;
 }
 
 // Returns true if an object is an instance of this class.
-- (jboolean)isInstance:(id)object {
-  return false;
+- (BOOL)isInstance:(id)object {
+  return NO;
 }
 
 - (NSString *)getName {
@@ -207,7 +207,7 @@ static JavaUtilProperties *prefixMapping;
 // Returns all methods defined in a class. Methods that aren't defined by the
 // original Java class are ignored.
 - (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(jboolean)publicOnly {
+            publicOnly:(BOOL)publicOnly {
   // Overridden by subclasses.
 }
 
@@ -215,7 +215,7 @@ static JavaUtilProperties *prefixMapping;
 // methods are not included.
 - (IOSObjectArray *)getDeclaredMethods {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
-  [self collectMethods:methodMap publicOnly:false];
+  [self collectMethods:methodMap publicOnly:NO];
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
       type:JavaLangReflectMethod_class_()];
 }
@@ -227,7 +227,7 @@ static JavaUtilProperties *prefixMapping;
 }
 
 static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
-  [cls collectMethods:methodMap publicOnly:true];
+  [cls collectMethods:methodMap publicOnly:YES];
 
   // getMethods() returns unimplemented interface methods if the class is abstract.
   if (([cls getModifiers] & JavaLangReflectModifier_ABSTRACT) > 0) {
@@ -263,7 +263,7 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
   IOSClass *cls = self;
   do {
     JavaLangReflectMethod *method = [cls findMethodWithTranslatedName:translatedName
-                                                      checkSupertypes:true];
+                                                      checkSupertypes:YES];
     if (method != nil) {
       if (([method getModifiers] & JavaLangReflectModifier_PUBLIC) == 0) {
         break;
@@ -271,7 +271,7 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
       return method;
     }
     for (IOSClass *p in [cls getInterfacesInternal]) {
-      method = [p findMethodWithTranslatedName:translatedName checkSupertypes:true];
+      method = [p findMethodWithTranslatedName:translatedName checkSupertypes:YES];
       if (method != nil) {
         return method;
       }
@@ -286,7 +286,7 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
                               parameterTypes:(IOSObjectArray *)types {
   JavaLangReflectMethod *result =
       [self findMethodWithTranslatedName:IOSClass_GetTranslatedMethodName(self, name, types)
-                         checkSupertypes:false];
+                         checkSupertypes:NO];
   if (!result) {
     @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] initWithNSString:name]);
   }
@@ -294,7 +294,7 @@ static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
 }
 
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
-                                        checkSupertypes:(jboolean)includePublic {
+                                        checkSupertypes:(BOOL)includePublic {
   return nil; // Overriden by subclasses.
 }
 
@@ -368,7 +368,7 @@ NSString *IOSClass_GetTranslatedMethodName(IOSClass *cls, NSString *name,
   @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] init]);
 }
 
-- (jboolean)isAssignableFrom:(IOSClass *)cls {
+- (BOOL)isAssignableFrom:(IOSClass *)cls {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:
       @"abstract method not overridden"]);
 }
@@ -619,12 +619,12 @@ IOSClass *IOSClass_forName_(NSString *className) {
 }
 
 IOSClass *IOSClass_forName_initialize_classLoader_(
-    NSString *className, jboolean load, JavaLangClassLoader *loader) {
+    NSString *className, BOOL load, JavaLangClassLoader *loader) {
   return IOSClass_forName_(className);
 }
 
 + (IOSClass *)forName:(NSString *)className
-           initialize:(jboolean)load
+           initialize:(BOOL)load
           classLoader:(JavaLangClassLoader *)loader {
   return IOSClass_forName_initialize_classLoader_(className, load, loader);
 }
@@ -649,41 +649,41 @@ IOSClass *IOSClass_forName_initialize_classLoader_(
   return ClassForJavaName(qName);
 }
 
-- (jboolean)isArray {
-  return false;
+- (BOOL)isArray {
+  return NO;
 }
 
-- (jboolean)isEnum {
-  return false;
+- (BOOL)isEnum {
+  return NO;
 }
 
-- (jboolean)isInterface {
-  return false;
+- (BOOL)isInterface {
+  return NO;
 }
 
-- (jboolean)isPrimitive {
-  return false;  // Overridden by IOSPrimitiveClass.
+- (BOOL)isPrimitive {
+  return NO;  // Overridden by IOSPrimitiveClass.
 }
 
-static jboolean hasModifier(IOSClass *cls, int flag) {
+static BOOL hasModifier(IOSClass *cls, int flag) {
   JavaClassMetadata *metadata = [cls getMetadata];
-  return metadata ? (metadata.modifiers & flag) > 0 : false;
+  return metadata ? (metadata.modifiers & flag) > 0 : NO;
 }
 
-- (jboolean)isAnnotation {
+- (BOOL)isAnnotation {
   return hasModifier(self, JavaLangReflectModifier_ANNOTATION);
 }
 
-- (jboolean)isMemberClass {
+- (BOOL)isMemberClass {
   JavaClassMetadata *metadata = [self getMetadata];
   return metadata && metadata.enclosingName && ![self isAnonymousClass];
 }
 
-- (jboolean)isLocalClass {
+- (BOOL)isLocalClass {
   return [self getEnclosingMethod] && ![self isAnonymousClass];
 }
 
-- (jboolean)isSynthetic {
+- (BOOL)isSynthetic {
   return hasModifier(self, JavaLangReflectModifier_SYNTHETIC);
 }
 
@@ -760,7 +760,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
   return nil;
 }
 
-- (jboolean)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass {
+- (BOOL)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass {
   return [self getAnnotationWithIOSClass:annotationClass] != nil;
 }
 
@@ -849,8 +849,7 @@ static const char* GetFieldName(NSString *name, IOSClass *clazz) {
 }
 
 // Adds all the fields for a specified class to a specified dictionary.
-static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
-    jboolean publicOnly) {
+static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields, BOOL publicOnly) {
   JavaClassMetadata *metadata = [iosClass getMetadata];
   if (metadata) {
     IOSObjectArray *infos = [metadata allFields];
@@ -902,7 +901,7 @@ Ivar FindIvar(IOSClass *cls, NSString *name) {
   return NULL;
 }
 
-JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {
+JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, BOOL publicOnly) {
   Class cls = iosClass.objcClass;
   if (cls) {
     JavaClassMetadata *metadata = [iosClass getMetadata];
@@ -925,7 +924,7 @@ JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, jboo
   return nil;
 }
 
-JavaLangReflectField *findField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {
+JavaLangReflectField *findField(IOSClass *iosClass, NSString *name, BOOL publicOnly) {
   while (iosClass) {
     JavaLangReflectField *field = findDeclaredField(iosClass, name, publicOnly);
     if (field) {
@@ -944,7 +943,7 @@ JavaLangReflectField *findField(IOSClass *iosClass, NSString *name, jboolean pub
 
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
   nil_chk(name);
-  JavaLangReflectField *field = findDeclaredField(self, name, false);
+  JavaLangReflectField *field = findDeclaredField(self, name, NO);
   if (field) {
     return field;
   }
@@ -953,7 +952,7 @@ JavaLangReflectField *findField(IOSClass *iosClass, NSString *name, jboolean pub
 
 - (JavaLangReflectField *)getField:(NSString *)name {
   nil_chk(name);
-  JavaLangReflectField *field = findField(self, name, true);
+  JavaLangReflectField *field = findField(self, name, YES);
   if (field) {
     return field;
   }
@@ -972,12 +971,12 @@ IOSObjectArray *copyFieldsToObjectArray(NSArray *fields) {
 
 - (IOSObjectArray *)getDeclaredFields {
   NSMutableDictionary *fieldDictionary = [NSMutableDictionary dictionary];
-  GetFieldsFromClass(self, fieldDictionary, false);
+  GetFieldsFromClass(self, fieldDictionary, NO);
   return copyFieldsToObjectArray([fieldDictionary allValues]);
 }
 
 static void getAllFields(IOSClass *cls, NSMutableDictionary *fieldMap) {
-  GetFieldsFromClass(cls, fieldMap, true);
+  GetFieldsFromClass(cls, fieldMap, YES);
   for (IOSClass *p in [cls getInterfacesInternal]) {
     getAllFields(p, fieldMap);
   }
@@ -992,7 +991,7 @@ static void getAllFields(IOSClass *cls, NSMutableDictionary *fieldMap) {
   return copyFieldsToObjectArray([fieldDictionary allValues]);
 }
 
-static jboolean IsConstructorSelector(NSString *selector) {
+static BOOL IsConstructorSelector(NSString *selector) {
   return [selector isEqualToString:@"init"] || [selector hasPrefix:@"initWith"];
 }
 
@@ -1008,7 +1007,7 @@ static jboolean IsConstructorSelector(NSString *selector) {
       // the same object file as the enclosed class.
       @throw AUTORELEASE([[JavaLangAssertionError alloc] init]);
     }
-    return [type findMethodWithTranslatedName:metadata.selector checkSupertypes:false];
+    return [type findMethodWithTranslatedName:metadata.selector checkSupertypes:NO];
   }
   return nil;
 }
@@ -1033,7 +1032,7 @@ static jboolean IsConstructorSelector(NSString *selector) {
 
 // Adds all the inner classes for a specified class to a specified dictionary.
 static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
-    jboolean publicOnly, jboolean includeInterfaces) {
+    BOOL publicOnly, BOOL includeInterfaces) {
   JavaClassMetadata *metadata = [iosClass getMetadata];
   if (metadata) {
     IOSObjectArray *innerClasses = [metadata getInnerClasses];
@@ -1058,10 +1057,10 @@ static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
 - (IOSObjectArray *)getClasses {
   NSMutableArray *innerClasses = [[NSMutableArray alloc] init];
   IOSClass *cls = self;
-  GetInnerClasses(cls, innerClasses, true, true);
+  GetInnerClasses(cls, innerClasses, YES, YES);
   while ((cls = [cls getSuperclass])) {
     // Class.getClasses() shouldn't include interfaces from superclasses.
-    GetInnerClasses(cls, innerClasses, true, false);
+    GetInnerClasses(cls, innerClasses, YES, NO);
   }
   IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:innerClasses
                                                        type:IOSClass_class_()];
@@ -1071,18 +1070,18 @@ static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
 
 - (IOSObjectArray *)getDeclaredClasses {
   NSMutableArray *declaredClasses = [[NSMutableArray alloc] init];
-  GetInnerClasses(self, declaredClasses, false, true);
+  GetInnerClasses(self, declaredClasses, NO, YES);
   IOSObjectArray *result = [IOSObjectArray arrayWithNSArray:declaredClasses
                                                        type:IOSClass_class_()];
   [declaredClasses release];
   return result;
 }
 
-- (jboolean)isAnonymousClass {
-  return false;
+- (BOOL)isAnonymousClass {
+  return NO;
 }
 
-- (jboolean)desiredAssertionStatus {
+- (BOOL)desiredAssertionStatus {
   return false;
 }
 
@@ -1135,7 +1134,7 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   return (id)rawValue->asId;
 }
 
-- (jboolean)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
+- (BOOL)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
   rawValue->asId = value;
   return true;
 }
@@ -1148,7 +1147,7 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   *(id *)addr = (id)rawValue->asId;
 }
 
-- (jboolean)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)type {
+- (BOOL)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)type {
   // No conversion necessary if both types are ids.
   return ![type isPrimitive];
 }
@@ -1163,18 +1162,18 @@ NSString *resolveResourceName(IOSClass *cls, NSString *resourceName) {
   return IOSClass_class_();
 }
 
-static jboolean IsStringType(Class cls) {
+static BOOL IsStringType(Class cls) {
   // We can't trigger class initialization because that might recursively enter
   // FetchClass and result in deadlock within the FastPointerLookup. Therefore,
   // we can't use [cls isSubclassOfClass:[NSString class]].
   Class stringCls = [NSString class];
   while (cls) {
     if (cls == stringCls) {
-      return true;
+      return YES;
     }
     cls = class_getSuperclass(cls);
   }
-  return false;
+  return NO;
 }
 
 static void *ClassLookup(void *clsPtr) {

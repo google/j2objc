@@ -35,7 +35,7 @@
 
 void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self) {
   NSObject_init(self);
-  self->accessible_ = false;
+  self->accessible_ = NO;
 }
 
 JavaLangReflectAccessibleObject *new_JavaLangReflectAccessibleObject_init() {
@@ -44,16 +44,16 @@ JavaLangReflectAccessibleObject *new_JavaLangReflectAccessibleObject_init() {
   return self;
 }
 
-- (jboolean)isAccessible {
+- (BOOL)isAccessible {
   return accessible_;
 }
 
-- (void)setAccessibleWithBoolean:(jboolean)b {
+- (void)setAccessibleWithBoolean:(BOOL)b {
   accessible_ = b;
 }
 
 + (void)setAccessibleWithJavaLangReflectAccessibleObjectArray:(IOSObjectArray *)objects
-                                                  withBoolean:(jboolean)b {
+                                                  withBoolean:(BOOL)b {
   JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
     objects, b);
 }
@@ -82,7 +82,7 @@ JavaLangReflectAccessibleObject *new_JavaLangReflectAccessibleObject_init() {
   return [self getDeclaredAnnotations];
 }
 
-- (jboolean)isAnnotationPresentWithIOSClass:(IOSClass *)annotationType {
+- (BOOL)isAnnotationPresentWithIOSClass:(IOSClass *)annotationType {
   return [self getAnnotationWithIOSClass:annotationType] != nil;
 }
 
@@ -104,8 +104,8 @@ JavaLangReflectAccessibleObject *new_JavaLangReflectAccessibleObject_init() {
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "isAccessible", NULL, "Z", 0x1, NULL },
-    { "setAccessibleWithjbooleanean:", "setAccessible", "V", 0x1, NULL },
-    { "setAccessibleWithJavaLangReflectAccessibleObjectArray:withjbooleanean:", "setAccessible", "V", 0x9, NULL },
+    { "setAccessibleWithBoolean:", "setAccessible", "V", 0x1, NULL },
+    { "setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:", "setAccessible", "V", 0x9, NULL },
     { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL },
     { "isAnnotationPresentWithIOSClass:", "isAnnotationPresent", "Z", 0x1, NULL },
     { "getAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL },
@@ -121,13 +121,13 @@ JavaLangReflectAccessibleObject *new_JavaLangReflectAccessibleObject_init() {
 @end
 
 void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
-    IOSObjectArray *objects, jboolean b) {
+    IOSObjectArray *objects, BOOL b) {
   for (JavaLangReflectAccessibleObject *o in objects) {
     [o setAccessibleWithBoolean:b];
   }
 }
 
-jboolean validTypeEncoding(const char *type) {
+BOOL validTypeEncoding(const char *type) {
   return strlen(type) == 1 && strchr("@#cSsilLqQZfdBv", *type);
 }
 
@@ -202,7 +202,7 @@ NSString *describeTypeEncoding(NSString *type) {
       case 'd':
         return @"double";
       case 'B':
-        return @"jbooleanean";
+        return @"boolean";
       case 'v':
         return @"void";
     }

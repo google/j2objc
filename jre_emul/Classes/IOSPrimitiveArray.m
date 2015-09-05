@@ -138,7 +138,7 @@
 PRIMITIVE_ARRAY_IMPLEMENTATION(boolean, Boolean, jboolean)
 
 - (NSString *)descriptionOfElementAtIndex:(jint)index {
-  return [NSString stringWithFormat:@"%@", (buffer_[index] ? @"true" : @"false")];
+  return [NSString stringWithFormat:@"%@", (buffer_[index] ? @"YES" : @"NO")];
 }
 
 @end

@@ -314,7 +314,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     // Verify default value accessor.
     assertTranslatedLines(translation,
         "+ (jboolean)fooableDefault {",
-        "return false;");
+        "return NO;");
 
     assertTranslatedLines(translation,
         "- (IOSClass *)annotationType {",

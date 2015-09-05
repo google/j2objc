@@ -240,7 +240,7 @@ static jclass GetObjectClass(JNIEnv *env, jobject obj) {
 static void *GetPrimitiveArrayCritical(JNIEnv *env, jarray array, jboolean *isCopy) {
   nil_chk(array);
   if (isCopy) {
-    *isCopy = false;
+    *isCopy = NO;
   }
   // All primitive array types have buffer_ at same offset.
   return (void *) ((IOSByteArray *) array)->buffer_;
@@ -260,7 +260,7 @@ static void GetShortArrayRegion(JNIEnv *env, jshortArray array, jsize offset, js
 static const jchar *GetStringChars(JNIEnv *env, jstring s, jboolean *isCopy) {
   nil_chk(s);
   if (isCopy) {
-    *isCopy = true;
+    *isCopy = YES;
   }
   return [IOSCharArray arrayWithNSString:(NSString *) s]->buffer_;
 }
@@ -268,7 +268,7 @@ static const jchar *GetStringChars(JNIEnv *env, jstring s, jboolean *isCopy) {
 static const jchar *GetStringCritical(JNIEnv *env, jstring s, jboolean *isCopy) {
   nil_chk(s);
   if (isCopy) {
-    *isCopy = true;
+    *isCopy = YES;
   }
   return [IOSCharArray arrayWithNSString:(NSString *) s]->buffer_;
 }
@@ -287,7 +287,7 @@ static void GetStringRegion(JNIEnv *env, jstring s, jsize offset, jsize length, 
 static const char *GetStringUTFChars(JNIEnv *env, jstring s, jboolean *isCopy) {
   nil_chk(s);
   if (isCopy) {
-    *isCopy = false;
+    *isCopy = NO;
   }
   return ((NSString *) s).UTF8String;
 }
@@ -558,12 +558,12 @@ static jmethodID GetStaticMethodID(JNIEnv *env, jclass clazz, const char *name, 
   const size_t _max_stack_args = 16;           \
   jvalue _stack_args[_max_stack_args];         \
   jvalue *JARGS;                               \
-  jboolean _free_jargs = false;                \
+  BOOL _free_jargs = NO;                       \
   if (NUM_ARGS <= _max_stack_args) {           \
     JARGS = _stack_args;                       \
   } else {                                     \
     JARGS = malloc(NUM_ARGS * sizeof(jvalue)); \
-    _free_jargs = true;                        \
+    _free_jargs = YES;                         \
   }
 
 #define DEALLOC_JARGS(JARGS) \

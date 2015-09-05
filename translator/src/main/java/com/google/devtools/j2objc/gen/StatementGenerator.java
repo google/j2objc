@@ -291,7 +291,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(BooleanLiteral node) {
-    buffer.append(node.booleanValue() ? "true" : "false");
+    buffer.append(node.booleanValue() ? "YES" : "NO");
     return false;
   }
 

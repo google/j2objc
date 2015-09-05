@@ -195,7 +195,7 @@ public class AutoboxerTest extends GenerationTest {
         "public class Test { "
         + "void test() { Boolean b = true ? false : null; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "JavaLangBoolean_valueOfWithBoolean_(false)");
+    assertTranslation(translation, "JavaLangBoolean_valueOfWithBoolean_(NO)");
   }
 
   public void testReturnWithConditional() throws IOException {
@@ -203,7 +203,7 @@ public class AutoboxerTest extends GenerationTest {
         "public class Test { "
         + "boolean test() { Boolean b = null; return b != null ? b : false; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "b != nil ? [b booleanValue] : false");
+    assertTranslation(translation, "b != nil ? [b booleanValue] : NO");
   }
 
   public void testConditionalOnBoxedValue() throws IOException {
@@ -298,7 +298,7 @@ public class AutoboxerTest extends GenerationTest {
         + "JavaLangInteger_valueOfWithInt_(0), @\"INT\", 0)");
     assertTranslation(translation,
         "new_TestEnum_initWithId_withNSString_withInt_("
-        + "JavaLangBoolean_valueOfWithBoolean_(false), @\"BOOLEAN\", 1)");
+        + "JavaLangBoolean_valueOfWithBoolean_(NO), @\"BOOLEAN\", 1)");
   }
 
   public void testBoxedBoolInIf() throws IOException {

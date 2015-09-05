@@ -112,11 +112,11 @@
 
 - (jboolean)isEqual:(id)object {
   if (!object) {
-    return false;
+    return NO;
   }
 
   if (![object conformsToProtocol:@protocol(JavaUtilMap)]) {
-    return false;
+    return NO;
   }
 
   if ([object isKindOfClass:[NSDictionaryMap class]]) {

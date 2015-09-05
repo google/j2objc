@@ -42,16 +42,16 @@
 
 static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
   if (!cls) {
-    return false;
+    return NO;
   }
   if (cls == protocol) {
-    return true;
+    return YES;
   }
   IOSObjectArray *interfaces = [cls getInterfacesInternal];
   for (int i = 0; i < interfaces->size_; i++) {
     IOSClass *interface = interfaces->buffer_[i];
     if (interface == protocol || ConformsToProtocol(interface, protocol)) {
-      return true;
+      return YES;
     }
   }
   return ConformsToProtocol([cls getSuperclass], protocol);
@@ -94,21 +94,21 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
       JavaLangReflectModifier_ABSTRACT | JavaLangReflectModifier_STATIC;
 }
 
-- (jboolean)isAssignableFrom:(IOSClass *)cls {
+- (BOOL)isAssignableFrom:(IOSClass *)cls {
   return ConformsToProtocol(cls, self);
 }
 
-- (jboolean)isInterface {
-  return true;
+- (BOOL)isInterface {
+  return YES;
 }
 
 // All protocol methods are public, so publicOnly flag is ignored.
 - (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(jboolean)publicOnly {
+            publicOnly:(BOOL)publicOnly {
   JavaClassMetadata *metadata = [self getMetadata];
   unsigned int count;
   struct objc_method_description *descriptions =
-      protocol_copyMethodDescriptionList(protocol_, true, true, &count);
+      protocol_copyMethodDescriptionList(protocol_, YES, YES, &count);
   for (unsigned int i = 0; i < count; i++) {
     struct objc_method_description *methodDesc = &descriptions[i];
     SEL sel = methodDesc->name;
@@ -126,7 +126,7 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
           [JavaLangReflectMethod methodWithMethodSignature:signature
                                                   selector:sel
                                                      class:self
-                                                  isStatic:false
+                                                  isStatic:NO
                                                   metadata:methodMetadata];
       [methodMap setObject:method forKey:key];
     }
@@ -135,11 +135,11 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
-                                        checkSupertypes:(jboolean)checkSupertypes {
+                                        checkSupertypes:(BOOL)checkSupertypes {
   unsigned int count;
   JavaLangReflectMethod *result = nil;
   struct objc_method_description *descriptions =
-      protocol_copyMethodDescriptionList(protocol_, true, true, &count);
+      protocol_copyMethodDescriptionList(protocol_, YES, YES, &count);
   for (unsigned int i = 0; i < count; i++) {
     struct objc_method_description *methodDesc = &descriptions[i];
     SEL sel = methodDesc->name;
@@ -150,7 +150,7 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
         result = [JavaLangReflectMethod methodWithMethodSignature:signature
                                                          selector:sel
                                                             class:self
-                                                         isStatic:false
+                                                         isStatic:NO
                                                          metadata:methodMetadata];
       }
       break;
@@ -171,7 +171,7 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
           result = [JavaLangReflectMethod methodWithMethodSignature:signature
                                                            selector:method_getName(method)
                                                               class:self
-                                                           isStatic:true
+                                                           isStatic:YES
                                                            metadata:methodData];
         }
       }

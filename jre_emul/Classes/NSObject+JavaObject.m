@@ -126,8 +126,8 @@ static void doWait(id obj, long long timeout) {
     result = objc_sync_wait(obj, timeout);
     javaThread->blocker_ = nil;
   }
-  jboolean wasInterrupted = javaThread->interrupted_;
-  javaThread->interrupted_ = false;
+  BOOL wasInterrupted = javaThread->interrupted_;
+  javaThread->interrupted_ = NO;
   if (wasInterrupted) {
     @throw AUTORELEASE([[JavaLangInterruptedException alloc] init]);
   }

@@ -153,13 +153,13 @@ public abstract class IosRSASignature extends SignatureSpi {
     return result;
   }
 
-  - (jboolean)nativeEngineVerify:(SecKeyRef)publicKey
-                       signature:(IOSByteArray *)signature
-                       hashBytes:(uint8_t *)hashBytes
-                            size:(size_t)hashBytesSize {
+  - (BOOL)nativeEngineVerify:(SecKeyRef)publicKey
+                   signature:(IOSByteArray *)signature
+                   hashBytes:(uint8_t *)hashBytes
+                        size:(size_t)hashBytesSize {
     size_t signatureSize = SecKeyGetBlockSize(publicKey);
     if (signatureSize != (size_t)signature->size_) {
-      return false;
+      return NO;
     }
     OSStatus status = SecKeyRawVerify(publicKey,
                                       kSecPaddingNone,
@@ -193,7 +193,7 @@ public abstract class IosRSASignature extends SignatureSpi {
       size_t hashBytesSize = CC_MD5_DIGEST_LENGTH;
       uint8_t* hashBytes = malloc(hashBytesSize);
       if (!CC_MD5([plainData bytes], (CC_LONG)[plainData length], hashBytes)) {
-        return false;
+        return NO;
       }
       BOOL result = [self nativeEngineVerify:(SecKeyRef)nativeKey
                                    signature:sigBytes
@@ -226,7 +226,7 @@ public abstract class IosRSASignature extends SignatureSpi {
       size_t hashBytesSize = CC_SHA1_DIGEST_LENGTH;
       uint8_t* hashBytes = malloc(hashBytesSize);
       if (!CC_SHA1([plainData bytes], (CC_LONG)[plainData length], hashBytes)) {
-        return false;
+        return NO;
       }
       BOOL result = [self nativeEngineVerify:(SecKeyRef)nativeKey
                                    signature:sigBytes
@@ -259,7 +259,7 @@ public abstract class IosRSASignature extends SignatureSpi {
       size_t hashBytesSize = CC_SHA256_DIGEST_LENGTH;
       uint8_t* hashBytes = malloc(hashBytesSize);
       if (!CC_SHA256([plainData bytes], (CC_LONG)[plainData length], hashBytes)) {
-        return false;
+        return NO;
       }
       BOOL result = [self nativeEngineVerify:(SecKeyRef)nativeKey
                                    signature:sigBytes
@@ -292,7 +292,7 @@ public abstract class IosRSASignature extends SignatureSpi {
       size_t hashBytesSize = CC_SHA384_DIGEST_LENGTH;
       uint8_t* hashBytes = malloc(hashBytesSize);
       if (!CC_SHA384([plainData bytes], (CC_LONG)[plainData length], hashBytes)) {
-        return false;
+        return NO;
       }
       BOOL result = [self nativeEngineVerify:(SecKeyRef)nativeKey
                                    signature:sigBytes
@@ -325,12 +325,12 @@ public abstract class IosRSASignature extends SignatureSpi {
       size_t hashBytesSize = CC_SHA512_DIGEST_LENGTH;
       uint8_t* hashBytes = malloc(hashBytesSize);
       if (!CC_SHA512([plainData bytes], (CC_LONG)[plainData length], hashBytes)) {
-        return false;
+        return NO;
       }
-      jboolean result = [self nativeEngineVerify:(SecKeyRef)nativeKey
-                                       signature:sigBytes
-                                       hashBytes:hashBytes
-                                            size:hashBytesSize];
+      BOOL result = [self nativeEngineVerify:(SecKeyRef)nativeKey
+                                   signature:sigBytes
+                                   hashBytes:hashBytes
+                                        size:hashBytesSize];
       free(hashBytes);
       return result;
     ]-*/;

@@ -190,7 +190,7 @@ public class System {
 
       NSString *versionString;
 #if !TARGET_OS_IPHONE && !TARGET_OS_IPHONE_SIMULATOR
-      BOOL onSimulator = false;
+      BOOL onSimulator = NO;
 #endif
       // During compile time, see if [NSProcessInfo processInfo].operatingSystemVersion is available
       // in the SDK.
@@ -232,7 +232,7 @@ public class System {
         id currentDevice = [uiDeviceClass performSelector:currentDeviceSel];
         versionString = (NSString *)[currentDevice performSelector:systemVersionSel];
         if (versionString) {
-          onSimulator = true;
+          onSimulator = YES;
         } else {
           // Ok, this is OS X. We use operatingSystemVersionString which gives us a localized
           // version not suitable for parsing. Given the use case of this property, it's not worth

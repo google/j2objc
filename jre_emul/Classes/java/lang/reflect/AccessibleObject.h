@@ -27,16 +27,16 @@
 
 // Base class for fields, methods, and constructors.
 @interface JavaLangReflectAccessibleObject : NSObject < JavaLangReflectAnnotatedElement > {
-  jboolean accessible_;
+  BOOL accessible_;
 }
 
-- (jboolean)isAccessible;
-- (void)setAccessibleWithBoolean:(jboolean)b;
+- (BOOL)isAccessible;
+- (void)setAccessibleWithBoolean:(BOOL)b;
 + (void)setAccessibleWithJavaLangReflectAccessibleObjectArray:(IOSObjectArray *)objects
-                                                  withBoolean:(jboolean)b;
+                                                  withBoolean:(BOOL)b;
 
 - (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass;
-- (jboolean)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass;
+- (BOOL)isAnnotationPresentWithIOSClass:(IOSClass *)annotationClass;
 - (IOSObjectArray *)getAnnotations;
 - (IOSObjectArray *)getDeclaredAnnotations;
 - (NSString *)toGenericString;
@@ -49,10 +49,10 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
 JavaLangReflectAccessibleObject *new_JavaLangReflectAccessibleObject_init();
 
 void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
-    IOSObjectArray *objects, jboolean b);
+    IOSObjectArray *objects, BOOL b);
 
 // Returns true if type can be mapped to a valid Java type.
-jboolean validTypeEncoding(const char *type);
+BOOL validTypeEncoding(const char *type);
 
 // Decodes an Objective-C type encoding, returning the associated iOS class.
 // For example, the type encoding 's' is decoded as JavaLangShort.

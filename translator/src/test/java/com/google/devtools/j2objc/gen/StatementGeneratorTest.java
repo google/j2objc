@@ -1299,7 +1299,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "void test(int i, int j) { check(true, \"%d-%d\", i, j); }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "[self checkWithBoolean:true withNSString:@\"%d-%d\" "
+        "[self checkWithBoolean:YES withNSString:@\"%d-%d\" "
         + "withNSObjectArray:[IOSObjectArray arrayWithObjects:(id[]){ "
         + "JavaLangInteger_valueOfWithInt_(i), JavaLangInteger_valueOfWithInt_(j) } count:2 "
         + "type:NSObject_class_()]];");

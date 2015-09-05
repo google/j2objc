@@ -205,19 +205,19 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
 - (IOSObjectArray *)getGenericParameterTypes {
   return LibcoreReflectTypes_getTypeArray_clone_(
-      getMethodOrConstructorGenericInfo(self)->genericParameterTypes_, false);
+      getMethodOrConstructorGenericInfo(self)->genericParameterTypes_, NO);
 }
 
 - (IOSObjectArray *)getGenericExceptionTypes {
   return LibcoreReflectTypes_getTypeArray_clone_(
-      getMethodOrConstructorGenericInfo(self)->genericExceptionTypes_, false);
+      getMethodOrConstructorGenericInfo(self)->genericExceptionTypes_, NO);
 }
 
-- (jboolean)isSynthetic {
+- (BOOL)isSynthetic {
   if (metadata_) {
     return ([metadata_ modifiers] & JavaLangReflectModifier_SYNTHETIC) > 0;
   }
-  return false;
+  return NO;
 }
 
 - (IOSObjectArray *)getExceptionTypes {
@@ -305,7 +305,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   [sb appendWithChar:')'];
   if (info) {
     IOSObjectArray *genericExceptionTypeArray =
-        LibcoreReflectTypes_getTypeArray_clone_(info->genericExceptionTypes_, false);
+        LibcoreReflectTypes_getTypeArray_clone_(info->genericExceptionTypes_, NO);
     if (genericExceptionTypeArray->size_ > 0) {
       [sb appendWithNSString:@" throws "];
       LibcoreReflectTypes_appendArrayGenericType_types_(sb, genericExceptionTypeArray);
@@ -314,16 +314,16 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   return [sb description];
 }
 
-- (jboolean)isVarArgs {
+- (BOOL)isVarArgs {
   if (metadata_) {
     return ([metadata_ modifiers] & JavaLangReflectModifier_VARARGS) > 0;
   }
-  return false;
+  return NO;
 }
 
-- (jboolean)isBridge {
+- (BOOL)isBridge {
   // Translator doesn't generate bridge methods.
-  return false;
+  return NO;
 }
 
 - (NSMethodSignature *)signature {
@@ -365,7 +365,7 @@ GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
     return nil;
   }
   NSString *signatureAttribute = [metadata genericSignature];
-  jboolean isMethod = [self isKindOfClass:[JavaLangReflectMethod class]];
+  BOOL isMethod = [self isKindOfClass:[JavaLangReflectMethod class]];
   IOSObjectArray *exceptionTypes = [self getExceptionTypes];
   LibcoreReflectGenericSignatureParser *parser =
       [[[LibcoreReflectGenericSignatureParser alloc]
