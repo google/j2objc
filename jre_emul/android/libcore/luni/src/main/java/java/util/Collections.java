@@ -367,7 +367,8 @@ public class Collections {
 
         SynchronizedCollection(Collection<E> collection) {
             c = collection;
-            mutex = this;
+            // j2objc: Use a new object rather than this to avoid reference cycle.
+            mutex = new Object();
         }
 
         SynchronizedCollection(Collection<E> collection, Object mutex) {
@@ -659,7 +660,8 @@ public class Collections {
 
         SynchronizedMap(Map<K, V> map) {
             m = map;
-            mutex = this;
+            // j2objc: Use a new object rather than this to avoid reference cycle.
+            mutex = new Object();
         }
 
         SynchronizedMap(Map<K, V> map, Object mutex) {
