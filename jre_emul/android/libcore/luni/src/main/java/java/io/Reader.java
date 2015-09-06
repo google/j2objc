@@ -43,11 +43,12 @@ public abstract class Reader implements Readable, Closeable {
     protected Object lock;
 
     /**
-     * Constructs a new {@code Reader} with {@code this} as the object used to
-     * synchronize critical sections.
+     * Constructs a new {@code Reader} with a lock object to synchronize
+     * critical sections.
      */
     protected Reader() {
-        lock = this;
+        // j2objc: Use a new object rather than this to avoid reference cycle.
+        lock = new Object();
     }
 
     /**
