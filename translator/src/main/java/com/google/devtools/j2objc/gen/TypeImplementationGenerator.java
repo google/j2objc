@@ -236,8 +236,13 @@ public class TypeImplementationGenerator extends TypeGenerator {
   }
 
   private boolean isDesignatedInitializer(IMethodBinding method) {
-    return method.isConstructor() && extendsNumber(method.getDeclaringClass())
-        && NSNUMBER_DESIGNATED_INITIALIZERS.contains(nameTable.getMethodSelector(method));
+    if (!method.isConstructor()) {
+      return false;
+    }
+    String selector = nameTable.getMethodSelector(method);
+    return selector.equals("init")
+        || (extendsNumber(method.getDeclaringClass())
+            && NSNUMBER_DESIGNATED_INITIALIZERS.contains(selector));
   }
 
   @Override
@@ -248,14 +253,13 @@ public class TypeImplementationGenerator extends TypeGenerator {
     newline();
     boolean isDesignatedInitializer = isDesignatedInitializer(m.getMethodBinding());
     if (isDesignatedInitializer) {
-      println("#pragma clang diagnostic push");
-      println("#pragma clang diagnostic ignored \"-Wobjc-designated-initializers\"");
+      println("J2OBJC_IGNORE_DESIGNATED_BEGIN");
     }
     syncLineNumbers(m.getName());  // avoid doc-comment
     String methodBody = generateStatement(m.getBody());
     print(getMethodSignature(m) + " " + reindent(methodBody) + "\n");
     if (isDesignatedInitializer) {
-      println("#pragma clang diagnostic pop");
+      println("J2OBJC_IGNORE_DESIGNATED_END");
     }
   }
 

@@ -78,13 +78,12 @@ public class TypeImplementationGeneratorTest extends GenerationTest {
         + " public float floatValue() { return 0; } public int intValue() { return 0; } "
         + " public long longValue() { return 0; }}", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "#pragma clang diagnostic push",
-        "#pragma clang diagnostic ignored \"-Wobjc-designated-initializers\"",
+        "J2OBJC_IGNORE_DESIGNATED_BEGIN",
         "- (instancetype)initWithInt:(jint)i {",
         "  Test_initWithInt_(self, i);",
         "  return self;",
         "}",
-        "#pragma clang diagnostic pop");
+        "J2OBJC_IGNORE_DESIGNATED_END");
   }
 
   // Verify that accessor methods for static vars and constants are generated on request.

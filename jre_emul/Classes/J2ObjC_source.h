@@ -61,6 +61,12 @@ FOUNDATION_EXPORT id GetNonCapturingLambda(Protocol *protocol,
 FOUNDATION_EXPORT id GetCapturingLambda(Protocol *protocol,
     NSString *blockClassName, SEL methodSelector, id wrapperBlock, id block);
 
+#define J2OBJC_IGNORE_DESIGNATED_BEGIN \
+  _Pragma("clang diagnostic push") \
+  _Pragma("clang diagnostic ignored \"-Wobjc-designated-initializers\"")
+#define J2OBJC_IGNORE_DESIGNATED_END \
+  _Pragma("clang diagnostic pop")
+
 /*!
  * Returns correct result when casting a double to an integral type. In C, a
  * float >= Integer.MAX_VALUE (allowing for rounding) returns 0x80000000,
