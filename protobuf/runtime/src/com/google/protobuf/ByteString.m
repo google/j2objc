@@ -36,6 +36,7 @@
 
 #import "IOSPrimitiveArray.h"
 #import "J2ObjC_source.h"
+#import "java/lang/ArrayIndexOutOfBoundsException.h"
 
 J2OBJC_INITIALIZED_DEFN(ComGoogleProtobufByteString)
 
@@ -75,6 +76,14 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
     copyFromWithByteArray:(IOSByteArray *)bytes
     OBJC_METHOD_FAMILY_NONE {
   return ComGoogleProtobufByteString_copyFromWithByteArray_(bytes);
+}
+
+- (jbyte)byteAtWithInt:(jint)index {
+  if (index < 0 || index >= size_) {
+    @throw [[[JavaLangArrayIndexOutOfBoundsException alloc] initWithInt:size_ withInt:index]
+        autorelease];
+  }
+  return buffer_[index];
 }
 
 - (IOSByteArray *)toByteArray {

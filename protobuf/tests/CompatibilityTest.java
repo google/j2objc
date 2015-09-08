@@ -1232,4 +1232,11 @@ public class CompatibilityTest extends ProtobufTest {
     builder.mergeFrom(input.toByteString());
     assertEquals(123, ((TypicalData) builder.build()).getMyInt());
   }
+
+  public void testByteAt() throws Exception {
+    ByteString bstr = ByteString.copyFrom("bar".getBytes());
+    assertEquals(98, bstr.byteAt(0));
+    assertEquals(97, bstr.byteAt(1));
+    assertEquals(114, bstr.byteAt(2));
+  }
 }

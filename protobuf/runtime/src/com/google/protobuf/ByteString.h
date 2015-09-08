@@ -45,6 +45,8 @@
 
 + (ComGoogleProtobufByteString *)
     copyFromWithByteArray:(IOSByteArray *)bytes OBJC_METHOD_FAMILY_NONE;
+
+- (jbyte)byteAtWithInt:(jint)index;
 - (IOSByteArray *)toByteArray;
 - (NSString *)toStringWithNSString:(NSString *)charsetName;
 - (NSString *)toStringUtf8;
