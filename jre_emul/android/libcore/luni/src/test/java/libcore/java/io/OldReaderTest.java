@@ -27,7 +27,7 @@ public class OldReaderTest extends TestCase {
 
     public void test_Reader() {
         MockReader r = new MockReader();
-        assertTrue("Test 1: Lock has not been set correctly.", r.lockSet(r));
+        assertTrue("Test 1: Lock has not been set correctly.", r.lockSet());
     }
 
     public void test_Reader_CharBufferChar() throws IOException {
@@ -117,8 +117,8 @@ public class OldReaderTest extends TestCase {
             throw new UnsupportedOperationException();
         }
 
-        public boolean lockSet(Object o) {
-            return (lock == o);
+        public boolean lockSet() {
+            return (lock != null);
         }
     }
 }
