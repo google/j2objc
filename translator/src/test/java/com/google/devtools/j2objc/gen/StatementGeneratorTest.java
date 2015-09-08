@@ -1455,19 +1455,129 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  try (BufferedReader br = new BufferedReader(new FileReader(path))) {"
         + "    return br.readLine(); } }}",
         "Test", "Test.m");
-    assertTranslation(translation,
+    assertTranslatedLines(translation,
         "JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
-        + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];");
-    assertTranslation(translation,
-        "@try {\n      return [br readLine];\n    }");
-    assertTranslation(translation, "@finally {");
-    assertTranslation(translation, "@try {\n        [br close];\n      }");
-    assertTranslation(translation, "@catch (JavaLangThrowable *e) {");
-    assertTranslation(translation, "if (__mainException) {");
-    assertTranslation(translation, "[__mainException addSuppressedWithJavaLangThrowable:e];");
-    assertTranslation(translation, "} else {\n          __mainException = e;\n        }");
-    assertTranslation(translation,
-        "if (__mainException) {\n        @throw __mainException;\n      }");
+        + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
+        "JavaLangThrowable *__primaryException1 = nil;",
+        "@try {",
+        "  return [br readLine];",
+        "}",
+        "@catch (JavaLangThrowable *e) {",
+        "  __primaryException1 = e;",
+        "  @throw e;",
+        "}",
+        "@finally {",
+        "  if (br != nil) {",
+        "    if (__primaryException1 != nil) {",
+        "      @try {",
+        "        [br close];",
+        "      } @catch (JavaLangThrowable *e) {",
+        "        [__primaryException1 addSuppressedWithJavaLangThrowable:e];",
+        "      }",
+        "    } else {",
+        "      [br close];",
+        "    }",
+        "  }",
+        "}");
+  }
+
+  // Verify try-with-resources translation with multiple resources.
+  public void testTryWithMultipleResourceNoCatchOrFinally() throws IOException {
+    String translation = translateSourceFile(
+        "import java.io.*; public class Test { String test(String path) throws IOException { "
+        + "  try (BufferedReader br = new BufferedReader(new FileReader(path));"
+        + "       BufferedReader br2 = new BufferedReader(new FileReader(path))) {"
+        + "    return br.readLine(); } }}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
+            + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
+        "JavaLangThrowable *__primaryException2 = nil;",
+        "@try {",
+        " JavaIoBufferedReader *br2 = [new_JavaIoBufferedReader_initWithJavaIoReader_("
+            + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
+        " JavaLangThrowable *__primaryException1 = nil;",
+        " @try {",
+        "  return [br readLine];",
+        " }",
+        " @catch (JavaLangThrowable *e) {",
+        "  __primaryException1 = e;",
+        "  @throw e;",
+        " }",
+        " @finally {",
+        "  if (br2 != nil) {",
+        "    if (__primaryException1 != nil) {",
+        "      @try {",
+        "        [br2 close];",
+        "      } @catch (JavaLangThrowable *e) {",
+        "        [__primaryException1 addSuppressedWithJavaLangThrowable:e];",
+        "      }",
+        "    } else {",
+        "      [br2 close];",
+        "    }",
+        "  }",
+        " }",
+        "}",
+        "@catch (JavaLangThrowable *e) {",
+        " __primaryException2 = e;",
+        " @throw e;",
+        "}",
+        "@finally {",
+        " if (br != nil) {",
+        "  if (__primaryException2 != nil) {",
+        "   @try {",
+        "    [br close];",
+        "   } @catch (JavaLangThrowable *e) {",
+        "    [__primaryException2 addSuppressedWithJavaLangThrowable:e];",
+        "   }",
+        "  } else {",
+        "   [br close];",
+        "  }",
+        " }",
+        "}");
+  }
+
+  // Verify try-with-resources translation is inside of try block with catch clause outside.
+  public void testTryWithResourceAndCatch() throws IOException {
+    String translation = translateSourceFile(
+        "import java.io.*; public class Test { String test(String path) throws IOException { "
+        + "  try (BufferedReader br = new BufferedReader(new FileReader(path))) {"
+        + "    return br.readLine(); "
+        + "  } catch (IOException e) {"
+        + "    System.out.println(e);"
+        + "    throw e;"
+        + "  } }}",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "@try {",
+        " JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
+        + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
+        " JavaLangThrowable *__primaryException1 = nil;",
+        " @try {",
+        "  return [br readLine];",
+        " }",
+        " @catch (JavaLangThrowable *e) {",
+        "  __primaryException1 = e;",
+        "  @throw e;",
+        " }",
+        " @finally {",
+        "  if (br != nil) {",
+        "   if (__primaryException1 != nil) {",
+        "    @try {",
+        "     [br close];",
+        "    } @catch (JavaLangThrowable *e) {",
+        "     [__primaryException1 addSuppressedWithJavaLangThrowable:e];",
+        "    }",
+        "   } else {",
+        "    [br close];",
+        "   }",
+        "  }",
+        " }",
+        "}",
+        "@catch (JavaIoIOException *e) {",
+        " [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out_))) printlnWithId:e];",
+        " @throw e;",
+        "}");
   }
 
   // Verify that multiple resources are closed in reverse order from opening.

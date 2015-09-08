@@ -326,7 +326,7 @@ public class StatementGenerator extends TreeVisitor {
     return false;
   }
 
-  private void printMultiCatch(CatchClause node, boolean hasResources) {
+  private void printMultiCatch(CatchClause node) {
     SingleVariableDeclaration exception = node.getException();
     for (Type exceptionType : ((UnionType) exception.getType()).getTypes()) {
       buffer.append("@catch (");
@@ -334,7 +334,6 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append(" *");
       exception.getName().accept(this);
       buffer.append(") {\n");
-      printMainExceptionStore(hasResources, node);
       printStatements(node.getBody().getStatements());
       buffer.append("}\n");
     }
@@ -1247,17 +1246,23 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(TryStatement node) {
     List<VariableDeclarationExpression> resources = node.getResources();
     boolean hasResources = !resources.isEmpty();
-    if (hasResources) {
-      buffer.append("{\n");
-      buffer.append("JavaLangThrowable *__mainException = nil;\n");
+    boolean extendedTryWithResources = hasResources
+        && (!node.getCatchClauses().isEmpty() || node.getFinally() != null);
+
+    if (hasResources && !extendedTryWithResources) {
+      printBasicTryWithResources(node.getBody(), resources);
+      return false;
     }
-    for (VariableDeclarationExpression var : resources) {
-      var.accept(this);
-      buffer.append(";\n");
-    }
+
     buffer.append("@try ");
-    node.getBody().accept(this);
+    if (extendedTryWithResources) {
+      // Put resources inside the body of this statement (JSL 14.20.3.2).
+      printBasicTryWithResources(node.getBody(), resources);
+    } else {
+      node.getBody().accept(this);
+    }
     buffer.append(' ');
+
     for (CatchClause cc : node.getCatchClauses()) {
       if (cc.getException().getType() instanceof UnionType) {
         printMultiCatch(cc, hasResources);
@@ -1265,45 +1270,65 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append("@catch (");
       cc.getException().accept(this);
       buffer.append(") {\n");
-      printMainExceptionStore(hasResources, cc);
       printStatements(cc.getBody().getStatements());
       buffer.append("}\n");
     }
-    if (node.getFinally() != null || resources.size() > 0) {
+
+    if (node.getFinally() != null) {
       buffer.append(" @finally {\n");
-      if (node.getFinally() != null) {
-        printStatements(node.getFinally().getStatements());
-      }
-      // Close resources in the opposite order than they were opened.
-      for (VariableDeclarationExpression var : Lists.reverse(resources)) {
-        for (VariableDeclarationFragment frag : var.getFragments()) {
-          buffer.append("@try {\n[");
-          buffer.append(frag.getName().getFullyQualifiedName());
-          buffer.append(" close];\n}\n");
-          buffer.append("@catch (JavaLangThrowable *e) {\n");
-          buffer.append("if (__mainException) {\n");
-          buffer.append("[__mainException addSuppressedWithJavaLangThrowable:e];\n} else {\n");
-          buffer.append("__mainException = e;\n}\n");
-          buffer.append("}\n");
-        }
-      }
-      if (hasResources) {
-        buffer.append("if (__mainException) {\n@throw __mainException;\n}\n");
-      }
-      buffer.append("}\n");
-    }
-    if (hasResources) {
+      printStatements(node.getFinally().getStatements());
       buffer.append("}\n");
     }
     return false;
   }
 
-  private void printMainExceptionStore(boolean hasResources, CatchClause cc) {
-    if (hasResources) {
-      buffer.append("__mainException = ");
-      buffer.append(cc.getException().getName().getFullyQualifiedName());
-      buffer.append(";\n");
+  /**
+   * Print basic try-with-resources, as defined by JLS 14.20.3.1.
+   */
+  private void printBasicTryWithResources(Block body,
+      List<VariableDeclarationExpression> resources) {
+    VariableDeclarationExpression resource = resources.get(0);
+    // Resource declaration can only have one fragment.
+    String resourceName = resource.getFragments().get(0).getName().getFullyQualifiedName();
+    String primaryExceptionName = String.format("__primaryException%d", resources.size());
+
+    buffer.append("{\n");
+    resource.accept(this);
+    buffer.append(";\n");
+    buffer.append(String.format("JavaLangThrowable *%s = nil;\n", primaryExceptionName));
+
+    buffer.append("@try ");
+    List<VariableDeclarationExpression> tail = resources.subList(1, resources.size());
+    if (tail.isEmpty()) {
+      body.accept(this);
+    } else {
+      printBasicTryWithResources(body, tail);
     }
+
+    buffer.append(String.format(
+        "@catch (JavaLangThrowable *e) {\n"
+        + "%s = e;\n"
+        + "@throw e;\n"
+        + "}\n", primaryExceptionName));
+
+    buffer.append(String.format(
+        // Including !=nil in the tests isn't necessary, but makes it easier
+        // to compare to the JLS spec.
+        "@finally {\n"
+        + " if (%s != nil) {\n"
+        + "  if (%s != nil) {\n"
+        + "   @try {\n"
+        + "    [%s close];\n"
+        + "   } @catch (JavaLangThrowable *e) {\n"
+        + "    [%s addSuppressedWithJavaLangThrowable:e];\n"
+        + "   }\n"
+        + "  } else {\n"
+        + "   [%s close];\n"
+        + "  }\n"
+        + " }\n"
+        + "}\n",
+        resourceName, primaryExceptionName, resourceName, primaryExceptionName, resourceName));
+    buffer.append("}\n");
   }
 
   @Override
