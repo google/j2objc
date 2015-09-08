@@ -41,11 +41,12 @@ public abstract class Writer implements Appendable, Closeable, Flushable {
     protected Object lock;
 
     /**
-     * Constructs a new {@code Writer} with {@code this} as the object used to
-     * synchronize critical sections.
+     * Constructs a new {@code Writer} with a lock object to synchronize
+     * critical sections.
      */
     protected Writer() {
-        lock = this;
+        // j2objc: Use a new object rather than this to avoid reference cycle.
+        lock = new Object();
     }
 
     /**
