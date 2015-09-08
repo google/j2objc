@@ -30,7 +30,7 @@
 extern id IOSArray_NewArrayWithDimensions(
     Class self, NSUInteger dimensionCount, const jint *dimensionLengths, IOSClass *type);
 
-static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, BOOL retained) {
+static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, jboolean retained) {
   if (length < 0) {
     @throw AUTORELEASE([[JavaLangNegativeArraySizeException alloc] init]);
   }
@@ -51,7 +51,7 @@ static IOSObjectArray *IOSObjectArray_CreateArray(jint length, IOSClass *type, B
 }
 
 static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
-    jint length, IOSClass *type, BOOL retained, const id *objects) {
+    jint length, IOSClass *type, jboolean retained, const id *objects) {
   IOSObjectArray *array = IOSObjectArray_CreateArray(length, type, retained);
   if (retained) {
     for (jint i = 0; i < length; i++) {
@@ -68,23 +68,23 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 @synthesize elementType = elementType_;
 
 + (instancetype)newArrayWithLength:(NSUInteger)length type:(IOSClass *)type {
-  return IOSObjectArray_CreateArray((jint)length, type, YES);
+  return IOSObjectArray_CreateArray((jint)length, type, true);
 }
 
 + (instancetype)arrayWithLength:(NSUInteger)length type:(IOSClass *)type {
-  return IOSObjectArray_CreateArray((jint)length, type, NO);
+  return IOSObjectArray_CreateArray((jint)length, type, false);
 }
 
 + (instancetype)newArrayWithObjects:(const id *)objects
                               count:(NSUInteger)count
                                type:(IOSClass *)type {
-  return IOSObjectArray_CreateArrayWithObjects((jint)count, type, YES, objects);
+  return IOSObjectArray_CreateArrayWithObjects((jint)count, type, true, objects);
 }
 
 + (instancetype)arrayWithObjects:(const id *)objects
                            count:(NSUInteger)count
                             type:(IOSClass *)type {
-  return IOSObjectArray_CreateArrayWithObjects((jint)count, type, NO, objects);
+  return IOSObjectArray_CreateArrayWithObjects((jint)count, type, false, objects);
 }
 
 + (instancetype)arrayWithArray:(IOSObjectArray *)array {
@@ -95,7 +95,7 @@ static IOSObjectArray *IOSObjectArray_CreateArrayWithObjects(
 
 + (instancetype)arrayWithNSArray:(NSArray *)array type:(IOSClass *)type {
   NSUInteger count = [array count];
-  IOSObjectArray *result = IOSObjectArray_CreateArray((jint)count, type, NO);
+  IOSObjectArray *result = IOSObjectArray_CreateArray((jint)count, type, false);
   [array getObjects:result->buffer_ range:NSMakeRange(0, count)];
   return result;
 }
@@ -234,12 +234,12 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
   IOSObjectArray *dest = (IOSObjectArray *) destination;
 
 #ifdef J2OBJC_DISABLE_ARRAY_TYPE_CHECKS
-  BOOL skipElementCheck = YES;
+  jboolean skipElementCheck = true;
 #else
   // If dest element type can be assigned to this array, then all of its
   // elements are assignable and therefore don't need to be individually
   // checked.
-  BOOL skipElementCheck = [dest->elementType_ isAssignableFrom:elementType_];
+  jboolean skipElementCheck = [dest->elementType_ isAssignableFrom:elementType_];
 #endif
 
   if (self == dest) {
@@ -276,7 +276,7 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 }
 
 - (id)copyWithZone:(NSZone *)zone {
-  IOSObjectArray *result = IOSObjectArray_CreateArray(size_, elementType_, YES);
+  IOSObjectArray *result = IOSObjectArray_CreateArray(size_, elementType_, true);
   for (jint i = 0; i < size_; i++) {
     result->buffer_[i] = [buffer_[i] retain];
   }
@@ -292,7 +292,7 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
     for (jint i = 0; i < size_; i++) {
       [buffer_[i] retain];
     }
-    isRetained_ = YES;
+    isRetained_ = true;
   }
   return [super retain];
 }

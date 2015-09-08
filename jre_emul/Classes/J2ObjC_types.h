@@ -32,14 +32,10 @@ typedef int64_t         jlong;          /* signed 64 bits */
 typedef float           jfloat;         /* 32-bit IEEE 754 */
 typedef double          jdouble;        /* 64-bit IEEE 754 */
 
-#ifdef __OBJC__
-typedef BOOL            jboolean;
-#else
-#ifdef __cplusplus__
+#if defined(__OBJC__) || defined(__cplusplus__)
 typedef bool            jboolean;
 #else
 typedef uint8_t         jboolean;
-#endif
 #endif
 
 // Typedefs for Java types declared as volatile.

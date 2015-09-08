@@ -516,7 +516,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "withInt:(jint)__ordinal {");
     assertTranslation(translation,
         "ColorEnum_initWithInt_withBoolean_withNSString_withInt_("
-        + "self, rgb, YES, __name, __ordinal);");
+        + "self, rgb, true, __name, __ordinal);");
     assertTranslatedLines(translation,
         "void ColorEnum_initWithInt_withBoolean_withNSString_withInt_("
           + "ColorEnum *self, jint rgb, jboolean primary, NSString *__name, jint __ordinal) {",

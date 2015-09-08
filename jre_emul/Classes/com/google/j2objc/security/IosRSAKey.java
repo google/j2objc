@@ -92,7 +92,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
       [publicKeyQuery setObject:(id)kSecClassKey forKey:(id)kSecClass];
       [publicKeyQuery setObject:publicTag forKey:(id)kSecAttrApplicationTag];
       [publicKeyQuery setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
-      [publicKeyQuery setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnData];
+      [publicKeyQuery setObject:[NSNumber numberWithBool:true] forKey:(id)kSecReturnData];
       OSStatus result =
           SecItemCopyMatching((CFDictionaryRef)publicKeyQuery, (CFTypeRef *)&publicKey);
       [publicKeyQuery release];
@@ -156,7 +156,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
       [privateKeyQuery setObject:(id)kSecClassKey forKey:(id)kSecClass];
       [privateKeyQuery setObject:privateTag forKey:(id)kSecAttrApplicationTag];
       [privateKeyQuery setObject:(id)kSecAttrKeyTypeRSA forKey:(id)kSecAttrKeyType];
-      [privateKeyQuery setObject:[NSNumber numberWithBool:YES] forKey:(id)kSecReturnData];
+      [privateKeyQuery setObject:[NSNumber numberWithBool:true] forKey:(id)kSecReturnData];
       OSStatus result =
           SecItemCopyMatching((CFDictionaryRef)privateKeyQuery, (CFTypeRef *)&privateKey);
       [privateKeyQuery release];

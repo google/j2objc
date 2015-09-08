@@ -99,7 +99,7 @@ public class ArrayCreationTest extends GenerationTest {
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
     assertEquals("IOSBooleanArray *foo = "
-        + "[IOSBooleanArray arrayWithBooleans:(jboolean[]){ YES, NO } count:2];", result);
+        + "[IOSBooleanArray arrayWithBooleans:(jboolean[]){ true, false } count:2];", result);
   }
 
   public void testByteArrayCreationNoDimension() {
@@ -166,7 +166,7 @@ public class ArrayCreationTest extends GenerationTest {
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
     assertEquals("IOSBooleanArray *foo = "
-        + "[IOSBooleanArray arrayWithBooleans:(jboolean[]){ YES, NO } count:2];", result);
+        + "[IOSBooleanArray arrayWithBooleans:(jboolean[]){ true, false } count:2];", result);
   }
 
   public void testByteArrayCreation() {

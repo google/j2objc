@@ -63,7 +63,7 @@
   return nil;
 }
 
-- (BOOL)isInstance:(id)object {
+- (jboolean)isInstance:(id)object {
   return [object isKindOfClass:class_];
 }
 
@@ -81,11 +81,11 @@
   return NSStringFromClass(class_);
 }
 
-- (BOOL)isAssignableFrom:(IOSClass *)cls {
+- (jboolean)isAssignableFrom:(IOSClass *)cls {
   return class_ == [NSObject class] ? ![cls isPrimitive] : [cls.objcClass isSubclassOfClass:class_];
 }
 
-- (BOOL)isEnum {
+- (jboolean)isEnum {
   JavaClassMetadata *metadata = [self getMetadata];
   if (metadata) {
     return (metadata.modifiers & JavaLangReflectModifier_ENUM) > 0 &&
@@ -95,37 +95,38 @@
   }
 }
 
-- (BOOL)isAnonymousClass {
+- (jboolean)isAnonymousClass {
   JavaClassMetadata *metadata = [self getMetadata];
   if (metadata) {
     return (metadata.modifiers & 0x8000) > 0;
   }
-  return NO;
+  return false;
 }
 
-static BOOL IsConstructor(NSString *name) {
+static jboolean IsConstructor(NSString *name) {
   return [name isEqualToString:@"init"] || [name hasPrefix:@"initWith"];
 }
 
 // Returns true if the parameter and return types are all Objective-C
 // classes or primitive types.
-static BOOL IsValidMethod(ExecutableMember *method) {
+static jboolean IsValidMethod(ExecutableMember *method) {
   if (!validTypeEncoding([method.signature methodReturnType])) {
-    return NO;
+    return false;
   }
   NSUInteger nArgs = [method.signature numberOfArguments];
   // Check each argument type, skipping the self and selector arguments.
   for (NSUInteger i = 2; i < nArgs; i++) {
     if (!validTypeEncoding([method.signature getArgumentTypeAtIndex:i])) {
-      return NO;
+      return false;
     }
   }
-  return YES;
+  return true;
 }
 
 static void CreateMethodWrappers(
     Method *methods, unsigned count, IOSClass* clazz, NSMutableDictionary *map,
-    BOOL publicOnly, BOOL classMethods, id (^methodCreator)(NSMethodSignature *, SEL, BOOL)) {
+    jboolean publicOnly, jboolean classMethods,
+    id (^methodCreator)(NSMethodSignature *, SEL, jboolean)) {
   for (NSUInteger i = 0; i < count; i++) {
     Method method = methods[i];
     SEL sel = method_getName(method);
@@ -151,29 +152,29 @@ static void CreateMethodWrappers(
 }
 
 static void CollectMethodsOrConstructors(
-    IOSConcreteClass *iosClass, NSMutableDictionary *methods, BOOL publicOnly,
-    id (^methodCreator)(NSMethodSignature *, SEL, BOOL)) {
+    IOSConcreteClass *iosClass, NSMutableDictionary *methods, jboolean publicOnly,
+    id (^methodCreator)(NSMethodSignature *, SEL, jboolean)) {
   unsigned int nInstanceMethods, nClassMethods;
   // Copy first the instance, then the class methods into a combined
   // array of IOSMethod instances.  Method ordering is not defined or
   // important.
   Method *instanceMethods = class_copyMethodList(iosClass->class_, &nInstanceMethods);
   CreateMethodWrappers(
-      instanceMethods, nInstanceMethods, iosClass, methods, publicOnly, NO, methodCreator);
+      instanceMethods, nInstanceMethods, iosClass, methods, publicOnly, false, methodCreator);
 
   Method *classMethods = class_copyMethodList(object_getClass(iosClass->class_), &nClassMethods);
   CreateMethodWrappers(
-      classMethods, nClassMethods, iosClass, methods, publicOnly, YES, methodCreator);
+      classMethods, nClassMethods, iosClass, methods, publicOnly, true, methodCreator);
 
   free(instanceMethods);
   free(classMethods);
 }
 
 - (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(BOOL)publicOnly {
+            publicOnly:(jboolean)publicOnly {
   JavaClassMetadata *metadata = [self getMetadata];
   CollectMethodsOrConstructors(
-      self, methodMap, publicOnly, ^ id (NSMethodSignature *signature, SEL sel, BOOL isStatic) {
+      self, methodMap, publicOnly, ^ id (NSMethodSignature *signature, SEL sel, jboolean isStatic) {
     NSString *selStr = NSStringFromSelector(sel);
     if (!IsConstructor(selStr)) {
       JavaMethodMetadata *methodMetadata = [metadata findMethodMetadata:selStr];
@@ -190,11 +191,12 @@ static void CollectMethodsOrConstructors(
   });
 }
 
-IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
+IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, jboolean publicOnly) {
   JavaClassMetadata *metadata = [clazz getMetadata];
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
   CollectMethodsOrConstructors(
-      clazz, methodMap, publicOnly, ^ id (NSMethodSignature *signature, SEL sel, BOOL isStatic) {
+      clazz, methodMap, publicOnly,
+      ^ id (NSMethodSignature *signature, SEL sel, jboolean isStatic) {
     if (IsConstructor(NSStringFromSelector(sel))) {
       NSString *selStr = NSStringFromSelector(sel);
       JavaMethodMetadata *methodMetadata = [metadata findMethodMetadata:selStr];
@@ -213,21 +215,21 @@ IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, BOOL publicOnly) {
 }
 
 - (IOSObjectArray *)getDeclaredConstructors {
-  return getConstructorsImpl(self, NO);
+  return getConstructorsImpl(self, false);
 }
 
 - (IOSObjectArray *)getConstructors {
-  return getConstructorsImpl(self, YES);
+  return getConstructorsImpl(self, true);
 }
 
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
-                                        checkSupertypes:(BOOL)checkSupertypes {
+                                        checkSupertypes:(jboolean)checkSupertypes {
   const char *name = [objcName UTF8String];
-  BOOL isStatic = NO;
+  jboolean isStatic = false;
   Method method = JreFindInstanceMethod(class_, name);
   if (!method) {
     method = JreFindClassMethod(class_, name);
-    isStatic = YES;
+    isStatic = true;
   }
   if (!method) {
     return nil;

@@ -69,12 +69,12 @@
   return name_;
 }
 
-- (BOOL)isAssignableFrom:(IOSClass *)cls {
+- (jboolean)isAssignableFrom:(IOSClass *)cls {
   return [self isEqual:cls];
 }
 
-- (BOOL)isInstance:(id)object {
-  return NO;  // Objects can't be primitives.
+- (jboolean)isInstance:(id)object {
+  return false;  // Objects can't be primitives.
 }
 
 - (int)getModifiers {
@@ -114,8 +114,8 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
   return nil;
 }
 
-- (BOOL)isPrimitive {
-  return YES;
+- (jboolean)isPrimitive {
+  return true;
 }
 
 // isEqual and hash are uniquely identified by their name.
@@ -191,7 +191,7 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
   return nil;
 }
 
-- (BOOL)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
+- (jboolean)__unboxValue:(id)value toRawValue:(J2ObjcRawValue *)rawValue {
   IOSClass *fromType = nil;
   if ([value isKindOfClass:[JavaLangByte class]]) {
     rawValue->asChar = [(JavaLangByte *) value charValue];
@@ -222,7 +222,7 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
   if (fromType) {
     return [fromType __convertRawValue:rawValue toType:self];
   }
-  return NO;
+  return false;
 }
 
 - (void)__readRawValue:(J2ObjcRawValue *)rawValue fromAddress:(const void *)addr {
@@ -234,7 +234,7 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
     case 'I': rawValue->asInt = *(int *)addr; return;
     case 'J': rawValue->asLong = *(long long *)addr; return;
     case 'S': rawValue->asShort = *(short *)addr; return;
-    case 'Z': rawValue->asBOOL = *(BOOL *)addr; return;
+    case 'Z': rawValue->asBOOL = *(jboolean *)addr; return;
   }
 }
 
@@ -247,77 +247,77 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
     case 'I': *(int *)addr = rawValue->asInt; return;
     case 'J': *(long long *)addr = rawValue->asLong; return;
     case 'S': *(short *)addr = rawValue->asShort; return;
-    case 'Z': *(BOOL *)addr = rawValue->asBOOL; return;
+    case 'Z': *(jboolean *)addr = rawValue->asBOOL; return;
   }
 }
 
-- (BOOL)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)toType {
+- (jboolean)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)toType {
   if (![toType isPrimitive]) {
-    return NO;
+    return false;
   }
   unichar toTypeChar = [((IOSPrimitiveClass *)toType)->type_ characterAtIndex:0];
   switch ([type_ characterAtIndex:0]) {
     case 'B':
       switch (toTypeChar) {
-        case 'B': return YES;
-        case 'D': rawValue->asDouble = rawValue->asChar; return YES;
-        case 'F': rawValue->asFloat = rawValue->asChar; return YES;
-        case 'I': rawValue->asInt = rawValue->asChar; return YES;
-        case 'J': rawValue->asLong = rawValue->asChar; return YES;
-        case 'S': rawValue->asShort = rawValue->asChar; return YES;
+        case 'B': return true;
+        case 'D': rawValue->asDouble = rawValue->asChar; return true;
+        case 'F': rawValue->asFloat = rawValue->asChar; return true;
+        case 'I': rawValue->asInt = rawValue->asChar; return true;
+        case 'J': rawValue->asLong = rawValue->asChar; return true;
+        case 'S': rawValue->asShort = rawValue->asChar; return true;
       }
-      return NO;
+      return false;
     case 'C':
       switch (toTypeChar) {
-        case 'C': return YES;
-        case 'D': rawValue->asDouble = rawValue->asUnichar; return YES;
-        case 'F': rawValue->asFloat = rawValue->asUnichar; return YES;
-        case 'I': rawValue->asInt = rawValue->asUnichar; return YES;
-        case 'J': rawValue->asLong = rawValue->asUnichar; return YES;
+        case 'C': return true;
+        case 'D': rawValue->asDouble = rawValue->asUnichar; return true;
+        case 'F': rawValue->asFloat = rawValue->asUnichar; return true;
+        case 'I': rawValue->asInt = rawValue->asUnichar; return true;
+        case 'J': rawValue->asLong = rawValue->asUnichar; return true;
       }
-      return NO;
+      return false;
     case 'D':
       switch (toTypeChar) {
-        case 'D': return YES;
+        case 'D': return true;
       }
-      return NO;
+      return false;
     case 'F':
       switch (toTypeChar) {
-        case 'D': rawValue->asDouble = rawValue->asFloat; return YES;
-        case 'F': return YES;
+        case 'D': rawValue->asDouble = rawValue->asFloat; return true;
+        case 'F': return true;
       }
-      return NO;
+      return false;
     case 'I':
       switch (toTypeChar) {
-        case 'D': rawValue->asDouble = rawValue->asInt; return YES;
-        case 'F': rawValue->asFloat = rawValue->asInt; return YES;
-        case 'I': return YES;
-        case 'J': rawValue->asLong = rawValue->asInt; return YES;
+        case 'D': rawValue->asDouble = rawValue->asInt; return true;
+        case 'F': rawValue->asFloat = rawValue->asInt; return true;
+        case 'I': return true;
+        case 'J': rawValue->asLong = rawValue->asInt; return true;
       }
-      return NO;
+      return false;
     case 'J':
       switch (toTypeChar) {
-        case 'D': rawValue->asDouble = rawValue->asLong; return YES;
-        case 'F': rawValue->asFloat = rawValue->asLong; return YES;
-        case 'J': return YES;
+        case 'D': rawValue->asDouble = rawValue->asLong; return true;
+        case 'F': rawValue->asFloat = rawValue->asLong; return true;
+        case 'J': return true;
       }
-      return NO;
+      return false;
     case 'S':
       switch (toTypeChar) {
-        case 'D': rawValue->asDouble = rawValue->asShort; return YES;
-        case 'F': rawValue->asFloat = rawValue->asShort; return YES;
-        case 'I': rawValue->asInt = rawValue->asShort; return YES;
-        case 'J': rawValue->asLong = rawValue->asShort; return YES;
-        case 'S': return YES;
+        case 'D': rawValue->asDouble = rawValue->asShort; return true;
+        case 'F': rawValue->asFloat = rawValue->asShort; return true;
+        case 'I': rawValue->asInt = rawValue->asShort; return true;
+        case 'J': rawValue->asLong = rawValue->asShort; return true;
+        case 'S': return true;
       }
-      return NO;
+      return false;
     case 'Z':
       switch (toTypeChar) {
-        case 'Z': return YES;
+        case 'Z': return true;
       }
-      return NO;
+      return false;
   }
-  return NO;
+  return false;
 }
 
 #if ! __has_feature(objc_arc)

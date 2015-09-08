@@ -112,7 +112,7 @@
   // Relative date names.
   [dateFormatter setTimeStyle:NSDateFormatterNoStyle];
   [dateFormatter setDateStyle:NSDateFormatterMediumStyle];
-  [dateFormatter setDoesRelativeDateFormatting:YES];
+  [dateFormatter setDoesRelativeDateFormatting:true];
   NSDate *today = [NSDate date];
   LibcoreIcuLocaleData_set_today_(result, [dateFormatter stringFromDate:today]);
   NSTimeInterval daysSeconds = 24 * 60 * 60;
@@ -120,7 +120,7 @@
   LibcoreIcuLocaleData_set_yesterday_(result, [dateFormatter stringFromDate:yesterday]);
   NSDate *tomorrow = [NSDate dateWithTimeInterval:daysSeconds sinceDate:today];
   LibcoreIcuLocaleData_set_tomorrow_(result, [dateFormatter stringFromDate:tomorrow]);
-  [dateFormatter setDoesRelativeDateFormatting:NO];
+  [dateFormatter setDoesRelativeDateFormatting:false];
 
   // Time formats.
   [dateFormatter setDateStyle:NSDateFormatterNoStyle];
@@ -167,11 +167,11 @@
 
   // Number formats.
   [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
-  [numberFormatter setAllowsFloats:NO];
+  [numberFormatter setAllowsFloats:false];
   NSString *pattern = [NSString stringWithFormat:@"%@;%@",
                        [numberFormatter positiveFormat], [numberFormatter negativeFormat]];
   LibcoreIcuLocaleData_set_integerPattern_(result, pattern);
-  [numberFormatter setAllowsFloats:YES];
+  [numberFormatter setAllowsFloats:true];
   pattern = [NSString stringWithFormat:@"%@;%@",
              [numberFormatter positiveFormat], [numberFormatter negativeFormat]];
   LibcoreIcuLocaleData_set_numberPattern_(result, pattern);

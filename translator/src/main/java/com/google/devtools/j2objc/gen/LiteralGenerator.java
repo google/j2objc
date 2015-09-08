@@ -148,7 +148,7 @@ public class LiteralGenerator {
 
   public static String generate(Object value) {
     if (value instanceof Boolean) {
-      return ((Boolean) value).booleanValue() ? "YES" : "NO";
+      return ((Boolean) value).booleanValue() ? "true" : "false";
     } else if (value instanceof Character) {
       return UnicodeUtils.escapeCharLiteral(((Character) value).charValue());
     } else if (value instanceof Number) {

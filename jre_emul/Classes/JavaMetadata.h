@@ -48,7 +48,7 @@
 - (int)modifiers;
 - (id<JavaLangReflectType>)returnType;
 - (IOSObjectArray *)exceptionTypes;
-- (BOOL)isConstructor;
+- (jboolean)isConstructor;
 - (NSString *)genericSignature;
 
 @end

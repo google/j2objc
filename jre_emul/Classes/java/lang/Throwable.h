@@ -68,8 +68,8 @@
 - (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)cause;
 - (instancetype)initWithNSString:(NSString *)message
            withJavaLangThrowable:(JavaLangThrowable *)cause
-                     withBoolean:(BOOL)enableSuppression
-                     withBoolean:(BOOL)writeableStackTrace;
+                     withBoolean:(jboolean)enableSuppression
+                     withBoolean:(jboolean)writeableStackTrace;
 - (JavaLangThrowable *)fillInStackTrace;
 - (JavaLangThrowable *)getCause;
 - (NSString *)getLocalizedMessage;
@@ -110,12 +110,12 @@ void JavaLangThrowable_initWithJavaLangThrowable_(
 JavaLangThrowable *new_JavaLangThrowable_initWithJavaLangThrowable_(JavaLangThrowable *causeArg);
 
 void JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
-    JavaLangThrowable *self, NSString *message, JavaLangThrowable *causeArg, BOOL enableSuppression,
-    BOOL writeableStackTrace);
+    JavaLangThrowable *self, NSString *message, JavaLangThrowable *causeArg,
+    jboolean enableSuppression, jboolean writeableStackTrace);
 JavaLangThrowable *
     new_JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
-    NSString *message, JavaLangThrowable *causeArg, BOOL enableSuppression,
-    BOOL writeableStackTrace);
+    NSString *message, JavaLangThrowable *causeArg, jboolean enableSuppression,
+    jboolean writeableStackTrace);
 
 CF_EXTERN_C_END
 

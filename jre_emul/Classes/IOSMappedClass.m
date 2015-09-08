@@ -62,8 +62,8 @@
 
 static void CollectMethodsOrConstructors(IOSMappedClass *self,
                                          NSMutableDictionary *methodMap,
-                                         BOOL publicOnly,
-                                         BOOL constructors) {
+                                         jboolean publicOnly,
+                                         jboolean constructors) {
   JavaClassMetadata *metadata = [self getMetadata];
   IOSObjectArray *methodInfos = [metadata allMethods];
   for (unsigned i = 0; i < metadata.methodCount; i++) {
@@ -74,7 +74,7 @@ static void CollectMethodsOrConstructors(IOSMappedClass *self,
         continue;
       }
       SEL sel = [info selector];
-      BOOL isStatic = (mods & JavaLangReflectModifier_STATIC) != 0;
+      jboolean isStatic = (mods & JavaLangReflectModifier_STATIC) != 0;
       NSMethodSignature *signature = nil;
       if (isStatic) {
         signature = [self->class_ methodSignatureForSelector:sel];
@@ -94,30 +94,30 @@ static void CollectMethodsOrConstructors(IOSMappedClass *self,
 }
 
 - (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(BOOL)publicOnly {
-  CollectMethodsOrConstructors(self, methodMap, publicOnly, NO);
+            publicOnly:(jboolean)publicOnly {
+  CollectMethodsOrConstructors(self, methodMap, publicOnly, false);
 }
 
 - (IOSObjectArray *)getDeclaredConstructors {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
-  CollectMethodsOrConstructors(self, methodMap, NO, YES);
+  CollectMethodsOrConstructors(self, methodMap, false, true);
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
                                      type:JavaLangReflectMethod_class_()];
 }
 
 - (IOSObjectArray *)getConstructors {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
-  CollectMethodsOrConstructors(self, methodMap, YES, YES);
+  CollectMethodsOrConstructors(self, methodMap, true, true);
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
                                      type:JavaLangReflectMethod_class_()];
 }
 
-- (BOOL)isEnum {
-  return NO;
+- (jboolean)isEnum {
+  return false;
 }
 
-- (BOOL)isAnonymousClass {
-  return NO;
+- (jboolean)isAnonymousClass {
+  return false;
 }
 
 @end

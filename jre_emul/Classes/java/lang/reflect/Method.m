@@ -38,7 +38,7 @@
 - (instancetype)initWithMethodSignature:(NSMethodSignature *)methodSignature
                                selector:(SEL)selector
                                   class:(IOSClass *)aClass
-                               isStatic:(BOOL)isStatic
+                               isStatic:(jboolean)isStatic
                                metadata:(JavaMethodMetadata *)metadata {
   if (self = [super initWithMethodSignature:methodSignature
                                    selector:selector
@@ -52,7 +52,7 @@
 + (instancetype)methodWithMethodSignature:(NSMethodSignature *)methodSignature
                                  selector:(SEL)selector
                                     class:(IOSClass *)aClass
-                                 isStatic:(BOOL)isStatic
+                                 isStatic:(jboolean)isStatic
                                  metadata:(JavaMethodMetadata *)metadata {
   return [[[JavaLangReflectMethod alloc] initWithMethodSignature:methodSignature
                                                         selector:selector
