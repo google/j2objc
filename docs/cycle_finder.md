@@ -23,8 +23,14 @@ The following options are supported:
 <dt>-w, --whitelist file</dt>
 <dd>Specifies a <a href="Cycle-Finder-Tool#wiki-whitelisting">whitelist file</a> specifying object references to ignore.</dd>
 
+<dt>--blacklist file</dt>
+<dd>When specified, only cycles containing the types and namespaces listed are printed.</dd>
+
 <dt>-Xbootclasspath:path</dt>
 <dd>Boot path used by translation (not the tool itself).</dd>
+
+<dt>-version</dt>
+<dd>Version information</dd>
 
 <dt>-h, --help</dt>
 <dd>Print this message.</dd>

@@ -15,28 +15,28 @@ The following options are supported. For options that take a path, multiple dire
 ## Common options
 <dl>
 <dt>-sourcepath &lt;path&gt;</dt>
-<dd>Specify where to find input source files</dd>
+<dd>Specify where to find input source files.</dd>
 
 <dt>-classpath &lt;path&gt;</dt>
-<dd>Specify where to find user class files</dd>
+<dd>Specify where to find user class files.</dd>
 
 <dt>-d &lt;directory&gt;</dt>
-<dd>Specify where to place generated Objective-C files</dd>
+<dd>Specify where to place generated Objective-C files.</dd>
 
 <dt>-encoding &lt;encoding&gt;</dt>
-<dd>Specify character encoding of source files (UTF-8 default)</dd>
+<dd>Specify character encoding of source files (UTF-8 default).</dd>
 
 <dt>-g</dt>
-<dd>Generate debugging support</dd>
+<dd>Generate debugging support.</dd>
 
 <dt>-q, --quiet</dt>
-<dd>Do not print status messages</dd>
+<dd>Do not print status messages.</dd>
 
 <dt>-v, --verbose</dt>
-<dd>Output messages about what the translator is doing</dd>
+<dd>Output messages about what the translator is doing.</dd>
 
 <dt>-Werror</dt>
-<dd>Make all warnings into errors</dd>
+<dd>Make all warnings into errors.</dd>
 
 <dt>-h, --help</dt>
 <dd>Print this message.</dd>
@@ -64,13 +64,14 @@ requires more memory.</dd>
 <dd>Generate deprecated attributes for deprecated methods, classes and interfaces.</dd>
 
 <dt>-J&lt;flag&gt;</dt>
-<dd>Pass a Java <flag>, such as<code>-Xmx1G</code>, to the system runtime.
+<dd>Pass a Java &lt;flag&gt;, such as<code>-Xmx1G</code>, to the system runtime.</dd>
 
 <dt>--mapping &lt;file&gt;</dt>
-<dd>Add a method mapping file</dd>
+<dd>Add a method mapping file.</dd>
 
 <dt>--no-class-methods</dt>
-<dd>Don't emit class methods for static Java methods (static methods are always converted to functions)</dd>
+<dd>Don't emit class methods for static Java methods (static methods are 
+always converted to functions).</dd>
 
 <dt>--no-final-methods-functions</dt>
 <dd>Disable generating functions for final methods.</dd>
@@ -82,10 +83,19 @@ requires more memory.</dd>
 <dd>Don't create directories for Java packages when generating files.</dd>
 
 <dt>--prefix &lt;package=prefix&gt;</dt>
-<dd>Substitute a specified prefix for a package name</dd>
+<dd>Substitute a specified prefix for a package name.</dd>
 
 <dt>--prefixes &lt;file&gt;</dt>
-<dd>Specify a properties file with prefix definitions</dd>
+<dd>Specify a properties file with prefix definitions.</dd>
+
+<dt>--preserve-full-paths</dt>
+<dd>Generates output files with the same relative paths as the input files.</dd>
+
+<dt>-processor &lt;class1&gt;[,&lt;class2&gt;...]</dt>
+<dd>Names of the annotation processors to run; bypasses default discovery process.</dd>
+
+<dt>-processorpath &lt;path&gt;</dt>
+<dd>Specify where to find annotation processors.</dd>
 
 <dt>--strip-gwt-incompatible</dt>
 <dd>Removes methods that are marked with a<code>GwtIncompatible</code>annotation, unless its value is known to be compatible.</dd>
@@ -97,18 +107,21 @@ requires more memory.</dd>
 <dd>Generates headers with guards around each declared type. Useful for breaking import cycles.</dd>
 
 <dt>-t, --timing-info</dt>
-<dd>Print time spent in translation steps</dd>
+<dd>Print time spent in translation steps.</dd>
 
 <dt>-use-arc</dt>
-<dd>Generate Objective-C code to support Automatic Reference Counting (ARC)</dd>
+<dd>Generate Objective-C code to support Automatic Reference Counting (ARC).</dd>
 
 <dt>-use-reference-counting</dt>
 <dd>Generate Objective-C code to support iOS manual
-reference counting (default)</dd>
+reference counting (default).</dd>
+
+<dt>-version</dt>
+<dd>Version information.</dd>
 
 <dt>-x language</dt>
 <dd>Specify what language to output.  Possible values
-are objective-c (default) and objective-c++</dd>
+are objective-c (default) and objective-c++.</dd>
 
 <dt>-Xbootclasspath:&lt;path&gt;</dt>
 <dd>Boot path used by translation (not the tool itself).</dd>
