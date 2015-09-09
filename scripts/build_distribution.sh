@@ -11,7 +11,7 @@ if [ $(basename $(pwd)) != "j2objc" ]; then
 fi
 
 if [ $# -ne 2 ]; then
-  echo "usage: run_distribution.sh <version-number> <protobuf-install-dir>"
+  echo "usage: build_distribution.sh <version-number> <protobuf-install-dir>"
   exit 1
 fi
 DISTRIBUTION_NAME=j2objc-$1
