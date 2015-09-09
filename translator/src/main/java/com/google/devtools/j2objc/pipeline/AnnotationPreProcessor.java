@@ -83,6 +83,16 @@ public class AnnotationPreProcessor {
     compileArgs.add(tmpDirPath);
     compileArgs.add("-d");
     compileArgs.add(tmpDirPath);
+    List<String> processorPath = Options.getProcessorPathEntries();
+    if (!processorPath.isEmpty()) {
+      compileArgs.add("-processorpath");
+      compileArgs.add(pathJoiner.join(processorPath));
+    }
+    String processorClasses = Options.getProcessors();
+    if (processorClasses != null) {
+      compileArgs.add("-processor");
+      compileArgs.add(processorClasses);
+    }
     if (Options.isVerbose()) {
       compileArgs.add("-XprintProcessorInfo");
       compileArgs.add("-XprintRounds");

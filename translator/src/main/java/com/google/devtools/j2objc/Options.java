@@ -62,6 +62,7 @@ public class Options {
 
   private List<String> sourcePathEntries = Lists.newArrayList(".");
   private List<String> classPathEntries = Lists.newArrayList(".");
+  private List<String> processorPathEntries = Lists.newArrayList();
   private File outputDirectory = new File(".");
   private OutputStyleOption outputStyle = OutputStyleOption.PACKAGE;
   private OutputLanguageOption language = OutputLanguageOption.OBJECTIVE_C;
@@ -84,6 +85,7 @@ public class Options {
   private boolean staticAccessorMethods = false;
   private int batchTranslateMaximum = 0;
   private List<String> headerMappingFiles = null;
+  private String processors = null;
 
   private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
@@ -240,6 +242,11 @@ public class Options {
           usage("-sourcepath requires an argument");
         }
         sourcePathEntries.addAll(getPathArgument(args[nArg]));
+      } else if (arg.equals("-processorpath")) {
+        if (++nArg == args.length) {
+          usage("-processorpath requires an argument");
+        }
+        processorPathEntries.addAll(getPathArgument(args[nArg]));
       } else if (arg.equals("-d")) {
         if (++nArg == args.length) {
           usage("-d requires an argument");
@@ -352,6 +359,11 @@ public class Options {
             Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
       } else if (arg.equals("--static-accessor-methods")) {
         staticAccessorMethods = true;
+      } else if (arg.equals("-processor")) {
+        if (++nArg == args.length) {
+          usage("-processor requires an argument");
+        }
+        processors = args[nArg];
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       }
@@ -548,6 +560,10 @@ public class Options {
 
   public static List<String> getClassPathEntries() {
     return instance.classPathEntries;
+  }
+
+  public static List<String> getProcessorPathEntries() {
+    return instance.processorPathEntries;
   }
 
   public static File getOutputDirectory() {
@@ -775,5 +791,14 @@ public class Options {
   @VisibleForTesting
   public static void setStaticAccessorMethods(boolean b) {
     instance.staticAccessorMethods = b;
+  }
+
+  public static String getProcessors() {
+    return instance.processors;
+  }
+
+  @VisibleForTesting
+  public static void setProcessors(String processors) {
+    instance.processors = processors;
   }
 }

@@ -203,6 +203,35 @@ public class J2ObjCTest extends GenerationTest {
     assertTranslation(translatedAnnotationImpl, "return @\"ObjectiveCName\"");
   }
 
+  // Test a simple annotation processor on the processor path.
+  public void testAnnotationProcessingWithProcessorPath() throws Exception {
+    if (runningInEclipse()) {
+      // Eclipse doesn't copy resources ending in .java into its build.
+      return;
+    }
+    String processorPath = getResourceAsFile("annotations/Processor.jar");
+    Options.getProcessorPathEntries().add(processorPath);
+
+    String examplePath = getResourceAsFile("annotations/Example.java");
+    J2ObjC.run(Collections.singletonList(examplePath));
+    assertErrorCount(0);
+  }
+
+  // Test a specified annotation processor.
+  public void testSpecifiedAnnotationProcessing() throws Exception {
+    if (runningInEclipse()) {
+      // Eclipse doesn't copy resources ending in .java into its build.
+      return;
+    }
+    String processorPath = getResourceAsFile("annotations/Processor.jar");
+    Options.getClassPathEntries().add(processorPath);
+    Options.setProcessors("com.google.devtools.j2objc.annotations.J2ObjCTestProcessor");
+
+    String examplePath = getResourceAsFile("annotations/Example.java");
+    J2ObjC.run(Collections.singletonList(examplePath));
+    assertErrorCount(0);
+  }
+
   private boolean runningInEclipse() {
     Throwable t = new Throwable();
     StackTraceElement[] trace = t.getStackTrace();
