@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.PackagePrefixes;
+import com.google.devtools.j2objc.util.Version;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -364,6 +365,8 @@ public class Options {
           usage("-processor requires an argument");
         }
         processors = args[nArg];
+      } else if (arg.equals("-version")) {
+        version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       }
@@ -518,6 +521,11 @@ public class Options {
     System.err.println(helpMessage);
     // javac exits with 2, but any non-zero value works.
     System.exit(errorExit ? 2 : 0);
+  }
+
+  public static void version() {
+    System.err.println("j2objc " + Version.jarVersion(Options.class));
+    System.exit(0);
   }
 
   private static List<String> getPathArgument(String argument) {

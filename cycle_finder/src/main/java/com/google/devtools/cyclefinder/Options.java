@@ -18,6 +18,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.google.common.io.Resources;
+import com.google.devtools.j2objc.util.Version;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -126,6 +127,11 @@ class Options {
     System.exit(errorExit ? 2 : 0);
   }
 
+  public static void version() {
+    System.err.println("cycle_finder " + Version.jarVersion(Options.class));
+    System.exit(0);
+  }
+
   public static Options parse(String[] args) throws IOException {
     Options options = new Options();
 
@@ -164,6 +170,8 @@ class Options {
           usage("-encoding requires an argument");
         }
         options.fileEncoding = args[nArg];
+      } else if (arg.equals("-version")) {
+        version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
       } else if (arg.startsWith("-")) {

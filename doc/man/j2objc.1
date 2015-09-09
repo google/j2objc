@@ -94,6 +94,15 @@ Substitute a specified prefix for a package name.
 .BI \-\-prefixes " file "
 Specify a properties file with prefix definitions.
 .TP
+.BI \-\-preserve\-full\-paths
+Generates output files with the same relative paths as the input files.
+.TP
+.BI \-processor " class"[, "class..."]
+Names of the annotation processors to run; bypasses default discovery process.
+.TP
+.BI \-processorpath " path "
+Specify where to find annotation processors.
+.TP
 \fB\-\-segmented\-headers\fR
 Generates headers with guards around each declared type. Useful for breaking import cycles.
 .TP
@@ -119,6 +128,9 @@ libjre_emul.a rebuild).
 .TP
 .BI \-use\-reference\-counting
 Generate Objective\-C code to support iOS manual reference counting (default).
+.TP
+\fB-version\fR
+Version information.
 .TP
 .BI \-x " language "
 Specify what language to output.  Possible values are objective\-c (default)

@@ -100,6 +100,7 @@ $(MANIFEST): | $(BUILD_DIR)
 	@echo creating $@
 	@echo "Manifest-Version: 1.0" > $@
 	@echo "Main-Class:" $(MAIN_CLASS) >> $@
+	@echo "Version:" $(J2OBJC_VERSION) >> $@
 
 $(CLASS_DIR)/%: $(RESOURCE_DIR)/%
 	@mkdir -p $(@D)

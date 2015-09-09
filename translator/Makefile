@@ -247,6 +247,7 @@ JAVA_SOURCES = \
 	util/TimeTracker.java \
 	util/TranslationUtil.java \
 	util/UnicodeUtils.java \
+	util/Version.java
 
 RESOURCES = J2ObjC.properties JRE.mappings
 RESOURCE_DIR = $(SOURCE_DIR)/resources
@@ -293,6 +294,7 @@ $(J2OBJC_JAR): $(MANIFEST) $(RESOURCE_FILES) $(JAVA_SOURCES_FULL) \
 $(MANIFEST): | $(BUILD_DIR)
 	@echo "Manifest-Version: 1.0" > $@
 	@echo "Main-Class:" $(MAIN_CLASS) >> $@
+	@echo "Version:" $(J2OBJC_VERSION) >> $@
 
 $(CLASS_DIR)/%: $(RESOURCE_DIR)/%
 	@mkdir -p $(@D)

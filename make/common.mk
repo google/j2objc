@@ -10,6 +10,12 @@ DIST_LIB_DIR = $(DIST_DIR)/lib
 DIST_JAR_DIR = $(DIST_LIB_DIR)
 DIST_LICENSE_DIR = $(DIST_DIR)/license
 
+# Release version string used by j2objc and cycle_finder's -version flag.
+ifndef J2OBJC_VERSION
+CURR_DATE = $(shell date "+%Y/%m/%d")
+J2OBJC_VERSION = $(USER)-$(CURR_DATE)
+endif
+
 ifdef CONFIGURATION_BUILD_DIR
 XCODE_INCLUDE_DIR = $(CONFIGURATION_BUILD_DIR)/Headers
 endif
