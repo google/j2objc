@@ -40,8 +40,6 @@ import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TimeTracker;
 
-import junit.framework.TestCase;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -60,6 +58,8 @@ import java.util.jar.JarOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import junit.framework.TestCase;
+
 /**
  * Tests code generation. A string containing the source code for a list of Java
  * statements is parsed and translated, then iOS code is generated for one or
@@ -67,7 +67,7 @@ import java.util.regex.Pattern;
  *
  * @author Tom Ball
  */
-public abstract class GenerationTest extends TestCase {
+public class GenerationTest extends TestCase {
 
   protected File tempDir;
   protected JdtParser parser;
@@ -490,4 +490,7 @@ public abstract class GenerationTest extends TestCase {
       jar.close();
     }
   }
+
+  // Empty test so Bazel won't report a "no tests" error.
+  public void testNothing() {}
 }
