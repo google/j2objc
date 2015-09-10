@@ -26,13 +26,9 @@ SUPPORT_SOURCES = \
     JSR166TestCase.java \
     android/test/MoreAsserts.java \
     android/text/SpannableTest.java \
-    bar/Third.java \
     com/google/j2objc/java8/Lambdas.java \
     com/google/j2objc/package-info.java \
     com/google/j2objc/TestAnnotation.java \
-    foo/Fourth.java \
-    foo/bar/First.java \
-    foo/mumble/Second.java \
     java/lang/test/Example.java \
     java/lang/test/package-info.java \
     libcore/java/net/customstreamhandler/http/Handler.java \
@@ -138,7 +134,6 @@ TEST_SOURCES := \
     LockSupportTest.java \
     MaxFloatingPointTest.java \
     NoPackageTest.java \
-    PackagePrefixesTest.java \
     PriorityBlockingQueueTest.java \
     PriorityQueueTest.java \
     ReentrantLockTest.java \
@@ -591,8 +586,6 @@ TEST_OBJS = \
     $(SUITE_SOURCES:%.java=$(TESTS_DIR)/%.o)
 
 TEST_RESOURCES_SRCS = \
-    prefixes.properties
-HARMONY_TEST_RESOURCES_SRCS = \
     org/apache/harmony/luni/tests/test_resource.txt \
     org/apache/harmony/luni/tests/java/lang/test_resource.txt \
     org/apache/harmony/luni/tests/java/io/testfile-utf8.txt \
@@ -632,16 +625,13 @@ ZIP_TEST_RESOURCES_SRCS = tests/resources/java/util/zip/EmptyArchive.zip
 BEANS_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.golden.ser
 
-HARMONY_TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/luni/src/test/resources
+TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/luni/src/test/resources
 ANDROID_TEST_RESOURCES_ROOT = android/libcore/luni/src/test/resources
 LOGGING_TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/logging/src/test/resources
 BEANS_TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/beans/src/test/resources
-TEST_RESOURCES_ROOT = Tests/resources
-
 TEST_RESOURCES = \
     $(TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
     $(ANDROID_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
-    $(HARMONY_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
     $(LOGGING_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
     $(ZIP_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
     $(BEANS_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%)
@@ -666,8 +656,7 @@ TRANSLATE_JAVA_FULL = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
 TRANSLATE_JAVA8 = $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES)
 TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
-    --extract-unsequenced -encoding UTF-8 \
-    --prefixes Tests/resources/prefixes.properties
+    --extract-unsequenced -encoding UTF-8
 # Translates TRANSLATE_JAVA_FULL .java files into .m files.
 include ../make/translate.mk
 
@@ -710,10 +699,6 @@ $(TESTS_DIR)/%: $(LOGGING_TEST_RESOURCES_ROOT)/%
 	@cp $< $@
 
 $(TESTS_DIR)/%: $(BEANS_TEST_RESOURCES_ROOT)/%
-	@mkdir -p `dirname $@`
-	@cp $< $@
-
-$(TESTS_DIR)/%: $(HARMONY_TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 

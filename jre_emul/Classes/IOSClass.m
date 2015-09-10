@@ -52,7 +52,6 @@
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "java/lang/reflect/TypeVariable.h"
-#import "java/util/Enumeration.h"
 #import "java/util/Properties.h"
 #import "libcore/reflect/GenericSignatureParser.h"
 #import "libcore/reflect/Types.h"
@@ -455,35 +454,14 @@ static IOSClass *FindMappedClass(NSString *name) {
     // Check whether package has a mapped prefix property.
     static dispatch_once_t once;
     dispatch_once(&once, ^{
+      prefixMapping = [[JavaUtilProperties alloc] init];
       JavaIoInputStream *prefixesResource =
           [IOSClass_objectClass getResourceAsStream:PREFIX_MAPPING_RESOURCE];
       if (prefixesResource) {
-        prefixMapping = [[JavaUtilProperties alloc] init];
         [prefixMapping load__WithJavaIoInputStream:prefixesResource];
       }
     });
     prefix = [prefixMapping getPropertyWithNSString:package];
-  }
-  if (!prefix && prefixMapping) {
-    // Check each prefix mapping to see if it's a matching wildcard.
-    id<JavaUtilEnumeration> names = [prefixMapping propertyNames];
-    while ([names hasMoreElements]) {
-      NSString *key = (NSString *) [names nextElement];
-      // Same translation as j2objc's PackagePrefixes.wildcardToRegex().
-      NSString *regex;
-      if ([key hasSuffix:@".*"]) {
-        NSString *root = [[key substring:0 endIndex:((jint) [key length]) - 2]
-                          replace:@"." withSequence:@"\\."];
-        regex = [NSString stringWithFormat:@"^(%@|%@\\..*)$", root, root];
-      } else {
-        regex = [NSString stringWithFormat:@"^%@$",
-                 [[key replace:@"." withSequence:@"\\."]replace:@"\\*" withSequence:@".*"]];
-      }
-      if ([package matches:regex]) {
-        prefix = [prefixMapping getPropertyWithNSString:key];
-        break;
-      }
-    }
   }
   if (!prefix) {
     return nil;   // No prefix for package.

@@ -61,53 +61,47 @@ public class SoftReferenceTest extends TestCase {
 
   @Test
   public void testSoftReference() {
-    final boolean[] dealloced = { false };
     for (@AutoreleasePool int i = 0; i < 1; i++) {
       for (@AutoreleasePool int j = 0; j < 1; j++) {
         // Create a referent inside this autorelease pool.
-        Object referent = new Object() {
-          public void finalize() {
-            dealloced[0] = true;
-          }
-        };
+        Object referent = new Object();
         softRef = new SoftReference<Object>(referent);
         assertSame("softRef get doesn't return referent", referent, softRef.get());
 
         // Clear referent ref, verify it's still available in the reference.
         referent = null;
         assertNotNull("softRef was cleared", softRef.get());
-        assertFalse("referent dealloc'ed too soon", dealloced[0]);
       }
 
       // Verify soft reference wasn't cleared.
       assertNotNull("softRef was cleared", softRef.get());
-      assertFalse("referent dealloc'ed too soon", dealloced[0]);
     }
 
     // Send low memory notification and verify reference was released.
     fakeLowMemoryNotification();
     assertNull("softRef was not cleared", softRef.get());
-    assertTrue("referent wasn't dealloc'ed", dealloced[0]);
   }
 
   @Test
   public void testQueuedSoftReference() {
-    final boolean[] dealloced = { false };
+    final int fakeHash = 123456789;
     ReferenceQueue<? super Object> queue = new ReferenceQueue<Object>();
     for (@AutoreleasePool int i = 0; i < 1; i++) {
       for (@AutoreleasePool int j = 0; j < 1; j++) {
-        Object referent = new Object() {
-          public void finalize() {
-            dealloced[0] = true;
-          }
-        };
-        softRef = new SoftReference<Object>(referent, queue);
-        assertSame("softRef.get doesn't return referent", referent, softRef.get());
+        for (@AutoreleasePool int k = 0; k < 1; k++) {
+          Object referent = new Object() {
+            @Override
+            public int hashCode() {
+              return fakeHash;
+            }
+          };
+          softRef = new SoftReference<Object>(referent, queue);
+          assertSame("softRef.get doesn't return referent", referent, softRef.get());
 
-        // Remove reference to o, verify it's still available in the reference.
-        referent = null;
-        assertNotNull("softRef was cleared", softRef.get());
-        assertFalse("referent dealloc'ed too soon", dealloced[0]);
+          // Remove reference to o, verify it's still available in the reference.
+          referent = null;
+          assertNotNull("softRef was cleared", softRef.get());
+        }
       }
 
       // Verify soft reference wasn't queued.
@@ -116,36 +110,16 @@ public class SoftReferenceTest extends TestCase {
 
       // Verify soft reference wasn't cleared.
       assertNotNull("softRef was cleared", softRef.get());
-      assertFalse("referent dealloc'ed too soon", dealloced[0]);
-    }
 
-    // Send low memory notification and verify reference was queued.
-    fakeLowMemoryNotification();
-    Reference<?> queuedRef2 = queue.poll();
-    assertNotNull("softRef wasn't queued", queuedRef2);
+      // Send low memory notification and verify reference was queued.
+      fakeLowMemoryNotification();
+      queuedRef = queue.poll();
+      assertNotNull("softRef wasn't queued", queuedRef);
+      assertEquals("queuedRef.get doesn't return referent", fakeHash, queuedRef.get().hashCode());
+    }
 
     // Verify soft reference was cleared.
     assertNull("softRef wasn't cleared", softRef.get());
-    assertTrue("referent wasn't dealloc'ed", dealloced[0]);
-  }
-
-  @Test
-  public void testSoftReferenceCleanedUpWhenNotReachable() {
-    final boolean[] dealloced = { false };
-    for (@AutoreleasePool int i = 0; i < 1; i++) {
-      for (@AutoreleasePool int j = 0; j < 1; j++) {
-        Object referent = new Object() {
-          public void finalize() {
-            dealloced[0] = true;
-          }
-        };
-        softRef = new SoftReference<Object>(referent);
-        assertFalse("referent dealloc'ed too soon", dealloced[0]);
-      }
-      softRef = null;
-      assertFalse("referent dealloc'ed too soon", dealloced[0]);
-    }
-    assertTrue("referent wasn't dealloc'ed", dealloced[0]);
   }
 
   private static native void fakeLowMemoryNotification() /*-[

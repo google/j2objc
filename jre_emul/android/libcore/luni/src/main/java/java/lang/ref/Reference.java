@@ -154,9 +154,10 @@ public abstract class Reference<T> {
      * Makes the referent {@code null}. This does not force the reference
      * object to be enqueued.
      */
-    public native void clear() /*-[
-      [IOSReference clearReferent:self];
-    ]-*/;
+    public void clear() {
+        removeAssociation();
+        referent = null;
+    }
 
     /**
      * Adds an object to its reference queue.
@@ -192,9 +193,9 @@ public abstract class Reference<T> {
      * @return the referent to which reference refers, or {@code null} if the
      *         object has been cleared.
      */
-    public native T get() /*-[
-      return [IOSReference getReferent:self];
-    ]-*/;
+    public T get() {
+        return referent;
+    }
 
     /**
      * Checks whether the reference object has been enqueued.
@@ -208,10 +209,22 @@ public abstract class Reference<T> {
 
     @Override
     protected void finalize() {
-      clear();
+      removeAssociation();
     }
 
     private native void initReferent() /*-[
       [IOSReference initReferent:self];
+    ]-*/;
+
+    native void strengthenReferent() /*-[
+      [IOSReference strengthenReferent:self];
+    ]-*/;
+
+    native void weakenReferent() /*-[
+      [IOSReference weakenReferent:self];
+    ]-*/;
+
+    private native void removeAssociation() /*-[
+      [IOSReference removeAssociation:self];
     ]-*/;
 }
