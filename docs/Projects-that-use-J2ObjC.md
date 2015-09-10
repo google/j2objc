@@ -45,6 +45,12 @@ layout: docs
  <tr><td>
  <img src="http://a1.mzstatic.com/us/r1000/060/Purple/v4/c2/b4/0d/c2b40dbf-2c34-8994-d86b-9556b1c5595a/mzl.aaxqdidd.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/ligretto/id627380827?mt=8">Ligretto</a></b>
  </td><td>
+ <img src="http://a2.mzstatic.com/eu/r30/Purple7/v4/b9/3d/e3/b93de35d-304e-0b4c-8b89-e4c36405f10c/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/gb/app/musee-des-arts-et-metiers/id1005605794?mt=8">Mus&eacute;e des arts et m&eacute;tiers</a></b> 
+ </td></tr>
+
+ <tr><td>
+ <img src="http://a3.mzstatic.com/eu/r30/Purple1/v4/f3/87/7a/f3877a6a-42e8-7d7f-9fc9-e1519f873675/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/gb/app/the-morgan-library-museum/id997116053?mt=8">The Morgan Library &amp; Museum</a></b> 
+ </td><td>
  <img src="http://a422.phobos.apple.com/us/r30/Purple6/v4/c0/06/8b/c0068b8e-d46d-5f3a-cc64-6e7fdb5997cb/mzl.frkibrzy.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/pdfreporter/id731936309?mt=8&ign-mpt=uo%3D4">PDFReporter</a></b>&nbsp;&nbsp;<a href="http://sourceforge.net/projects/pdfreporter/">project site</a>
  </td></tr>
 
