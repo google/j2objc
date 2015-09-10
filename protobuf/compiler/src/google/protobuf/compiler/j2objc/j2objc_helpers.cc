@@ -52,6 +52,10 @@ namespace {
 
 const char* kDefaultPackage = "";
 
+// The field number of the "j2objc_package_prefix" file option defined in
+// j2objc-descriptor.proto.
+const int kPackagePrefixFieldNumber = 102687446;
+
 static map<string, string> prefixes;
 
 static bool generateFileDirMapping = false;
@@ -145,6 +149,19 @@ string CapitalizeJavaPackage(const string input) {
 }
 
 string GetPackagePrefix(const FileDescriptor *file) {
+  // Check for the "j2objc_package_prefix" option using unknown fields so we
+  // don't have to pre-build j2objc-descriptor.pb.[h|cc].
+  const Reflection *reflection = file->options().GetReflection();
+  const UnknownFieldSet& unknown_fields = reflection->GetUnknownFields(file->options());
+  if (!unknown_fields.empty()) {
+    for (int i = 0; i < unknown_fields.field_count(); i++) {
+      const UnknownField& field = unknown_fields.field(i);
+      if (field.number() == kPackagePrefixFieldNumber) {
+        return field.length_delimited();
+      }
+    }
+  }
+
   string java_package = FileJavaPackage(file);
   map<string, string>::iterator it = prefixes.find(java_package);
   if (it != prefixes.end()) {

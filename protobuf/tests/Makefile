@@ -27,11 +27,14 @@ PROTOS = \
   funny_names.proto \
   message_fields.proto \
   package_prefix.proto \
+  prefix_option.proto \
   primitives.proto \
   single_file.proto \
   size_test.proto \
   string_fields.proto \
   typical.proto
+
+PROTO_INCLUDE_DIR = /usr/local/include
 
 
 TESTS_TO_RUN = $(JAVA_TESTS:%.java=%)
@@ -56,8 +59,8 @@ INCLUDE_DIRS = . $(GEN_OBJC_DIR)
 LIB_DEPS = $(DIST_DIR)/lib/libjunit.a $(DIST_DIR)/lib/libprotobuf_runtime.a
 
 J2OBJC_PROTOS_NAME = testprotos
-J2OBJC_PROTOS_INPUTS = $(PROTOS:%=protos/%)
-J2OBJC_PROTOS_PATHS = protos
+J2OBJC_PROTOS_INPUTS = $(PROTOS:%=protos/%) ../compiler/src/google/protobuf/j2objc-descriptor.proto
+J2OBJC_PROTOS_PATHS = $(PROTO_INCLUDE_DIR) ../compiler/src protos
 J2OBJC_PROTOS_PREFIX_FILES = j2objc_prefixes
 J2OBJC_PROTOS_GENERATE_CLASS_MAPPINGS = YES
 include $(J2OBJC_ROOT)/make/j2objc_protos.mk

@@ -31,6 +31,8 @@ import abc_def.gHiJkL.Foo2bar;
 import abc_def.gHiJkL.Foo_bar;
 import abc_def.gHiJkL.fooBar;
 
+import foo.bar.baz.PrefixDummy2;
+
 import protos.EmptyFile;
 import protos.MsgWithDefaults;
 import protos.MsgWithDefaultsOrBuilder;
@@ -95,6 +97,10 @@ public class CompatibilityTest extends ProtobufTest {
     } finally {
       in.close();
     }
+  }
+
+  public void testObjcClassPrefix() throws Exception {
+    PrefixDummy2 dummy2 = PrefixDummy2.newBuilder().build();
   }
 
   public void testSetAndGetInt() throws Exception {
