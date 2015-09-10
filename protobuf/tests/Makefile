@@ -57,6 +57,7 @@ LIB_DEPS = $(DIST_DIR)/lib/libjunit.a $(DIST_DIR)/lib/libprotobuf_runtime.a
 
 J2OBJC_PROTOS_NAME = testprotos
 J2OBJC_PROTOS_INPUTS = $(PROTOS:%=protos/%)
+J2OBJC_PROTOS_PATHS = protos
 J2OBJC_PROTOS_PREFIX_FILES = j2objc_prefixes
 J2OBJC_PROTOS_GENERATE_CLASS_MAPPINGS = YES
 include $(J2OBJC_ROOT)/make/j2objc_protos.mk
