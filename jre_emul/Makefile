@@ -682,8 +682,8 @@ JAVA_SOURCES_CORE = \
 	org/xml/sax/helpers/XMLReaderFactory.java \
 	sun/misc/Unsafe.java
 
-# Java sources to be translated normally and included in the android library.
-JAVA_SOURCES_ANDROID = \
+# Java sources to be translated normally and included in the full library.
+JAVA_SOURCES_NON_CORE = \
 	android/os/AsyncTask.java \
 	android/os/SystemClock.java \
 	android/test/suitebuilder/annotation/LargeTest.java \
@@ -728,10 +728,7 @@ JAVA_SOURCES_ANDROID = \
 	com/android/internal/util/ArrayUtils.java \
 	com/google/android/collect/Lists.java \
 	com/google/android/collect/Maps.java \
-	com/google/android/collect/Sets.java
-
-# Java sources to be translated normally and included in the full library.
-JAVA_SOURCES_NON_CORE = \
+	com/google/android/collect/Sets.java \
 	java/awt/font/NumericShaper.java \
 	java/awt/font/TextAttribute.java \
 	java/beans/FeatureDescriptor.java \
@@ -1320,8 +1317,7 @@ JAVA_SOURCES_NON_CORE = \
 	org/xmlpull/v1/XmlSerializer.java \
 	org/xmlpull/v1/sax2/Driver.java
 
-JRE_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_NON_CORE)
-JAVA_SOURCES = $(JRE_SOURCES) $(JAVA_SOURCES_ANDROID)
+JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_NON_CORE)
 
 MAIN_OBJ = J2ObjCMain.o
 
@@ -1329,8 +1325,7 @@ JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 STUB_JAVA_SOURCES := $(shell find $(STUBS_DIR) -name *.java)
-JRE_JAVA_SOURCES = $(JRE_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(JAR_ONLY_SOURCES)
-ALL_JAVA_SOURCES = $(JRE_JAVA_SOURCES) $(JAVA_SOURCES_ANDROID)
+ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(JAR_ONLY_SOURCES)
 JAVA_TO_TRANSLATE = $(JAVA_SOURCES)
 SOURCE_HEADERS := $(shell find $(EMULATION_CLASS_DIR) -name *.h)
 INCLUDES = $(JAVA_TO_TRANSLATE:.java=.h) $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)
@@ -1369,19 +1364,17 @@ FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DI
 FAT_LIB_PRECOMPILED_HEADER = JreEmulation.h
 endif
 
-LIB_NAMES = jre_emul jre_emul_core android_util
+LIB_NAMES = jre_emul jre_emul_core
 LIBS = $(LIB_NAMES:%=$(ARCH_BUILD_DIR)/lib%.a)
 DIST_LIBS = $(LIB_NAMES:%=$(ARCH_LIB_DIR)/lib%.a)
 
 CORE_OBJS_RELATIVE = $(JAVA_SOURCES_CORE:.java=.o) $(IOS_OBJS) $(IOS_JAVA_OBJS) $(APPLE_SRCS:.m=.o)
 JRE_OBJS_RELATIVE = $(CORE_OBJS_RELATIVE) $(JAVA_SOURCES_NON_CORE:.java=.o)
-ANDROID_OBJS_RELATIVE = $(JAVA_SOURCES_ANDROID:.java=.o)
 
 include ../make/fat_lib_macros.mk
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
 $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
 $(call emit_library_rules,jre_emul_core,$(CORE_OBJS_RELATIVE))
-$(call emit_library_rules,android_util,$(ANDROID_OBJS_RELATIVE))
 
 JRE_EMUL_LICENSES = \
   $(DIST_LICENSE_DIR)/android_license.txt \
@@ -1445,12 +1438,11 @@ test: libs_dist $(DIST_DIR)/j2objcc
 
 clean:
 	@rm -rf $(BUILD_DIR) $(GEN_OBJC_DIR)
-	@rm -f $(DIST_DIR)/j2objcc $(EMULATION_JAR_DIST) $(EMULATION_SRC_JAR_DIST) $(ANDROID_JAR_DIST)
-	@rm -f $(DIST_LIBS) $(MAIN_LIB_DIST)
+	@rm -f $(DIST_DIR)/j2objcc $(EMULATION_JAR_DIST) $(DIST_LIBS) $(MAIN_LIB_DIST)
 	@rm -f $(DIST_INCLUDES)
 	@rm -f $(JRE_EMUL_LICENSES)
 
-dist: emul_jar_dist android_jar_dist libs_dist $(DIST_DIR)/j2objcc licenses emul_src_jar_dist
+dist: emul_jar_dist libs_dist $(DIST_DIR)/j2objcc licenses emul_src_jar_dist
 
 libs_dist: libs dist_includes $(DIST_LIBS) $(MAIN_LIB_DIST)
 
@@ -1475,13 +1467,7 @@ $(EMULATION_JAR_DIST): $(EMULATION_JAR) | $(DIST_JAR_DIR)
 $(EMULATION_SRC_JAR_DIST): $(EMULATION_SRC_JAR) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
 
-android_jar_dist: $(ANDROID_JAR_DIST)
-	@:
-
-$(ANDROID_JAR_DIST): $(ANDROID_JAR) | $(DIST_JAR_DIR)
-	@install -m 0644 $< $@
-
-$(EMULATION_JAR): $(JRE_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
+$(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
 	@stage_dir=`mktemp -d -t j2objc-jre_emul`; \
     ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) -bootclasspath $(STUBS_DIR) \
@@ -1490,18 +1476,9 @@ $(EMULATION_JAR): $(JRE_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	jar cf $(EMULATION_JAR) -C $$stage_dir .; \
 	rm -rf $$stage_dir
 
-$(EMULATION_SRC_JAR): $(JRE_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
+$(EMULATION_SRC_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building jre_emul-src.jar"
 	@../scripts/gen_java_source_jar.py -sourcepath $(JRE_SRC):$(STUBS_DIR) -o $(EMULATION_SRC_JAR) $^
-
-$(ANDROID_JAR): $(JAVA_SOURCES_ANDROID) | $(EMULATION_JAR)
-	@echo "building android_util.jar"
-	@stage_dir=`mktemp -d -t j2objc-android`; \
-    ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) \
-	    -classpath $(ANNOTATIONS_JAR) -bootclasspath $(EMULATION_JAR)  \
-	    -d $$stage_dir -encoding UTF-8 -source 1.7 -target 1.7 -nowarn $^; \
-	jar cf $(ANDROID_JAR) -C $$stage_dir .; \
-	rm -rf $$stage_dir
 
 $(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
 	@echo "building $$(basename $@)"

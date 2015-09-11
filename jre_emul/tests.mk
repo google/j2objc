@@ -640,14 +640,13 @@ TEST_RESOURCES = \
 # $(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o     b/8842295
 
 JUNIT_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_JAR)
-ANDROID_DIST_JAR = $(DIST_JAR_DIR)/android_util.jar
 
 ifeq ($(OBJCPP_BUILD), YES)
 TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
-    -L$(TESTS_DIR) -l android_util -l test-support -lc++ -ObjC++
+    -L$(TESTS_DIR) -l test-support -lc++ -ObjC++
 else
 TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
-    -L$(TESTS_DIR) -l android_util -l test-support -ObjC
+    -L$(TESTS_DIR) -l test-support -ObjC
 endif
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
@@ -656,8 +655,8 @@ GEN_OBJC_DIR = $(TESTS_DIR)
 TRANSLATE_JAVA_FULL = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
 TRANSLATE_JAVA8 = $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES)
-TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR):$(ANDROID_DIST_JAR) -Werror \
-    -sourcepath $(TEST_SRC) --extract-unsequenced -encoding UTF-8
+TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
+    --extract-unsequenced -encoding UTF-8
 # Translates TRANSLATE_JAVA_FULL .java files into .m files.
 include ../make/translate.mk
 
