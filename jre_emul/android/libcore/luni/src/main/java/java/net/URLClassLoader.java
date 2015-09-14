@@ -31,13 +31,12 @@ import java.util.Enumeration;
  * URLs contained in the URL search list.
  *
  * This version has been simplified, since iOS is prohibited from dynamically
- * loading classes from bundles other than the main app bundle. No code was 
+ * loading classes from bundles other than the main app bundle. No code was
  * shared, just its public API.
  */
 public class URLClassLoader extends SecureClassLoader {
 
     ArrayList<URL> urls;
-    private URLStreamHandlerFactory factory;
 
     /**
      * Constructs a new {@code URLClassLoader} instance. The newly created
@@ -107,14 +106,6 @@ public class URLClassLoader extends SecureClassLoader {
     }
 
     /**
-     * Determines if the URL is pointing to a directory.
-     */
-    private static boolean isDirectory(URL url) {
-        String file = url.getFile();
-        return (file.length() > 0 && file.charAt(file.length() - 1) == '/');
-    }
-
-    /**
      * Returns a new {@code URLClassLoader} instance for the given URLs and the
      * system {@code ClassLoader} as its parent.
      *
@@ -160,7 +151,15 @@ public class URLClassLoader extends SecureClassLoader {
      */
     public URLClassLoader(URL[] searchUrls, ClassLoader parent, URLStreamHandlerFactory factory) {
         super(parent);
-        this.factory = factory;
         urls = new ArrayList<URL>(Arrays.asList(searchUrls));
+    }
+
+    /**
+     * Closes this classLoader, so it can't be used to load new classes or resources.
+     *
+     * @since 1.7
+     */
+    public void close() throws IOException {
+      urls.clear();
     }
 }
