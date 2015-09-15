@@ -17,6 +17,8 @@
 
 package java.util;
 
+import android.util.LruCache;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
@@ -82,6 +84,11 @@ public abstract class TimeZone implements Serializable, Cloneable {
 
     private static final TimeZone GMT = new SimpleTimeZone(0, "GMT");
     private static final TimeZone UTC = new SimpleTimeZone(0, "UTC");
+
+    private static final int CACHE_SIZE = 25;
+
+    private static final LruCache<String, TimeZone> cache =
+        new LruCache<String, TimeZone>(CACHE_SIZE);
 
     private static TimeZone defaultTimeZone;
 
@@ -399,12 +406,22 @@ public abstract class TimeZone implements Serializable, Cloneable {
             }
         }
 
+        // In the cache?
+        TimeZone zone = cache.get(id);
+        if (zone != null) {
+          return (TimeZone) zone.clone();
+        }
+
         // Native time zone?
-        TimeZone zone = getNativeTimeZone(id);
+        zone = getNativeTimeZone(id);
 
         // Custom time zone?
         if (zone == null && id.length() > 3 && id.startsWith("GMT")) {
             zone = getCustomTimeZone(id);
+        }
+
+        if (zone != null) {
+          cache.put(id, (TimeZone) zone.clone());
         }
 
         // We never return null; on failure we return the equivalent of "GMT".
