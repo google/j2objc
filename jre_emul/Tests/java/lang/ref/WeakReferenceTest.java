@@ -53,49 +53,54 @@ public class WeakReferenceTest extends TestCase {
 
   @Test
   public void testWeakReference() {
+    final boolean[] dealloced = { false };
     for (@AutoreleasePool int i = 0; i < 1; i++) {
       // Create a referent inside this autorelease pool.
-      Object referent = new Object();
+      Object referent = new Object() {
+        public void finalize() {
+          dealloced[0] = true;
+        }
+      };
       weakRef = new WeakReference<Object>(referent);
       assertSame("weakRef get doesn't return referent", referent, weakRef.get());
 
       // Clear referent ref, verify it's still available in the reference.
       referent = null;
       assertNotNull("weakRef cleared too soon", weakRef.get());
+      assertFalse("referent dealloc'ed too soon", dealloced[0]);
     }
 
     // Verify weak reference was cleared.
     assertNull("weakRef wasn't cleared", weakRef.get());
+    assertTrue("referent wasn't dealloc'ed", dealloced[0]);
   }
 
   @Test
   public void testQueuedWeakReference() {
-    final int fakeHash = 123456789;
+    final boolean[] dealloced = { false };
     ReferenceQueue<? super Object> queue = new ReferenceQueue<Object>();
     for (@AutoreleasePool int i = 0; i < 1; i++) {
-      for (@AutoreleasePool int j = 0; j < 1; j++) {
-        Object referent = new Object() {
-          @Override
-          public int hashCode() {
-            return fakeHash;
-          }
-        };
-        weakRef = new WeakReference<Object>(referent, queue);
-        assertSame("weakRef.get doesn't return referent", referent, weakRef.get());
+      Object referent = new Object() {
+        public void finalize() {
+          dealloced[0] = true;
+        }
+      };
+      weakRef = new WeakReference<Object>(referent, queue);
+      assertSame("weakRef.get doesn't return referent", referent, weakRef.get());
 
-        // Remove reference to o, verify it's still available in the reference.
-        referent = null;
-        assertNotNull("weakRef cleared too soon", weakRef.get());
-      }
-
-      // Verify weak reference was queued.
-      Reference<?> queuedRef = queue.poll();
-      assertNotNull("weakRef wasn't queued", queuedRef);
-      assertEquals("queuedRef.get doesn't return referent", fakeHash, weakRef.get().hashCode());
+      // Remove reference to o, verify it's still available in the reference.
+      referent = null;
+      assertNotNull("weakRef cleared too soon", weakRef.get());
+      assertFalse("referent dealloc'ed too soon", dealloced[0]);
     }
 
+    // Verify weak reference was queued.
+    Reference<?> queuedRef = queue.poll();
+    assertNotNull("weakRef wasn't queued", queuedRef);
+
     // Verify weak reference was cleared.
-     assertNull("weakRef wasn't cleared", weakRef.get());
+    assertNull("weakRef wasn't cleared", weakRef.get());
+    assertTrue("referent wasn't dealloc'ed", dealloced[0]);
   }
 
   @Test

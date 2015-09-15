@@ -32,9 +32,8 @@
 
 // Methods should only be called by java.lang.ref.Reference.
 + (void)initReferent:(JavaLangRefReference *)reference;
-+ (void)strengthenReferent:(JavaLangRefReference *)reference;
-+ (void)weakenReferent:(JavaLangRefReference *)reference;
-+ (void)removeAssociation:(JavaLangRefReference *)reference;
++ (id)getReferent:(JavaLangRefReference *)reference;
++ (void)clearReferent:(JavaLangRefReference *)reference;
 
 // Test-only method to fake a low-memory condition.
 + (void)handleMemoryWarning:(NSNotification *)notification;
