@@ -60,7 +60,6 @@ public class ReferenceQueue<T> {
 
         ret.queueNext = null;
 
-        ret.weakenReferent();
         return ret;
     }
 
@@ -140,7 +139,6 @@ public class ReferenceQueue<T> {
             reference.queueNext = head;
         }
         head = reference;
-        reference.strengthenReferent();
         notify();
     }
 
