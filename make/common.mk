@@ -9,6 +9,7 @@ DIST_INCLUDE_DIR = $(DIST_DIR)/include
 DIST_LIB_DIR = $(DIST_DIR)/lib
 DIST_JAR_DIR = $(DIST_LIB_DIR)
 DIST_LICENSE_DIR = $(DIST_DIR)/license
+DIST_LIB_MACOSX_DIR = $(DIST_LIB_DIR)/macosx
 
 # Release version string used by j2objc and cycle_finder's -version flag.
 ifndef J2OBJC_VERSION
@@ -27,11 +28,13 @@ ifdef CONFIGURATION_BUILD_DIR
 ARCH_BUILD_DIR = $(TARGET_TEMP_DIR)
 ARCH_BIN_DIR = $(CONFIGURATION_BUILD_DIR)
 ARCH_LIB_DIR = $(CONFIGURATION_BUILD_DIR)
+ARCH_LIB_MACOSX_DIR = $(CONFIGURATION_BUILD_DIR)/macosx
 ARCH_INCLUDE_DIR = $(CONFIGURATION_BUILD_DIR)/Headers
 else
 ARCH_BUILD_DIR = $(BUILD_DIR)
 ARCH_BIN_DIR = $(DIST_DIR)
 ARCH_LIB_DIR = $(DIST_LIB_DIR)
+ARCH_LIB_MACOSX_DIR = $(DIST_LIB_MACOSX_DIR)
 ARCH_INCLUDE_DIR = $(DIST_INCLUDE_DIR)
 endif
 
@@ -43,7 +46,8 @@ GEN_JAVA_DIR = $(BUILD_DIR)/java
 endif
 
 ifndef J2OBJC_ARCHS
-J2OBJC_ARCHS = macosx iphone iphone64 iphonev7s simulator
+J2OBJC_ARCHS = iphone iphone64 simulator simulator64
+BUILD_MACOSX = YES
 endif
 
 # xcrun finds a specified tool in the current SDK /usr/bin directory.
