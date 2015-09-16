@@ -22,7 +22,6 @@ FAT_LIB_SIMULATOR_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh
 
 FAT_LIB_MACOSX_FLAGS = $(FAT_LIB_OSX_FLAGS) -DJ2OBJC_BUILD_ARCH=x86_64 \
   -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
-
 FAT_LIB_IPHONE_FLAGS = -arch armv7 -DJ2OBJC_BUILD_ARCH=armv7 -miphoneos-version-min=5.0 \
   -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_IPHONE64_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -miphoneos-version-min=5.0 \
@@ -30,8 +29,6 @@ FAT_LIB_IPHONE64_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -miphoneos-versio
 FAT_LIB_IPHONEV7S_FLAGS = -arch armv7s -DJ2OBJC_BUILD_ARCH=armv7s -miphoneos-version-min=5.0 \
   -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_SIMULATOR_FLAGS = -arch i386 -DJ2OBJC_BUILD_ARCH=i386 -miphoneos-version-min=5.0 \
-  -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
-FAT_LIB_SIMULATOR64_FLAGS = -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 -miphoneos-version-min=5.0 \
   -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
 FAT_LIB_XCODE_FLAGS = -arch $(1) -DJ2OBJC_BUILD_ARCH=$(1) -miphoneos-version-min=5.0 \
   -isysroot $(SDKROOT)
@@ -46,8 +43,7 @@ arch_flags = $(strip \
   $(patsubst iphone,$(FAT_LIB_IPHONE_FLAGS),\
   $(patsubst iphone64,$(FAT_LIB_IPHONE64_FLAGS),\
   $(patsubst iphonev7s,$(FAT_LIB_IPHONEV7S_FLAGS),\
-  $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),\
-  $(patsubst simulator64,$(FAT_LIB_SIMULATOR64_FLAGS),$(1))))))))
+  $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),$(1)))))))
 
 fat_lib_dependencies:
 	@:
@@ -169,13 +165,6 @@ emit_arch_specific_compile_rules = $(foreach arch,$(J2OBJC_ARCHS),\
   $(call emit_compile_rules_for_arch,$(1),$(BUILD_DIR)/objs-$(arch),$(2),$(3),\
     $(call arch_flags,$(arch))))
 
-emit_osx_library_rules = \
-  $(eval $(call arch_lib_rule,$(BUILD_DIR)/objs-macosx,$(1),$(2)))
-
-emit_osx_arch_specific_compile_rules = \
-  $(call emit_compile_rules_for_arch,$(1),$(BUILD_DIR)/objs-macosx,$(2),$(3),\
-    $(call arch_flags,macosx))
-
 endif
 
 # Generate the compile and analyze rules for ObjC files.
@@ -184,5 +173,4 @@ endif
 #   2. Compile command.
 #   3. Precompiled header file, or empty.
 emit_compile_rules = $(call emit_arch_specific_compile_rules,$(1),$(2),$(3)) \
-  $(foreach src_dir,$(1),$(eval $(call analyze_rule,$(src_dir),$(2)))) \
-  $(call emit_osx_arch_specific_compile_rules,$(1),$(2),$(3))
+  $(foreach src_dir,$(1),$(eval $(call analyze_rule,$(src_dir),$(2))))

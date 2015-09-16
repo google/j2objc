@@ -36,6 +36,7 @@ else
 	# Xcode 4 default for new projects.
   readonly INCLUDE_PATH=${DIR}/Headers
 fi
+readonly LIB_PATH=${DIR}/lib
 
 declare FRAMEWORKS="-framework Foundation -framework Security"
 if [ "x${IPHONEOS_DEPLOYMENT_TARGET}" = "x" ]; then
@@ -45,8 +46,7 @@ fi
 declare CC_FLAGS="-Werror -Wno-parentheses -fno-strict-overflow"
 declare OBJC="-std=c11"
 declare LIBS="-ljre_emul -l icucore -l z -l j2objc_main -l c++"
-declare LINK_FLAGS="${LIBS} ${FRAMEWORKS}"
-declare SYSROOT_PATH="none"
+declare LINK_FLAGS="${LIBS} ${FRAMEWORKS} -L ${LIB_PATH}"
 
 for arg; do
   case $arg in
@@ -54,18 +54,7 @@ for arg; do
     -[cSE]) LINK_FLAGS="" ;;
     # Check whether we need to build for C++ instead of C.
     objective-c\+\+) CC_FLAGS="${CC_FLAGS} -std=gnu++98" OBJC= ;;
-    # Save sysroot path for later inspection.
-    -isysroot) SYSROOT_PATH="${i#*=}" ;;
   esac
 done
-
-if [[ "x${LINK_FLAGS}" != "x" ]]; then
-  if [[ "$SYSROOT_PATH" == "none" || "$SYSROOT_PATH" == *"MacOSX"* ]]; then
-    readonly LIB_PATH=${DIR}/lib/macosx
-  else
-    readonly LIB_PATH=${DIR}/lib
-  fi
-  LINK_FLAGS="${LINK_FLAGS} -L ${LIB_PATH}"
-fi
 
 xcrun clang "$@" -I ${INCLUDE_PATH} ${CC_FLAGS} ${OBJC} ${LINK_FLAGS}

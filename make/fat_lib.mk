@@ -23,7 +23,6 @@
 #
 # This file defines the following to be used by the including file:
 #   FAT_LIB_LIBRARY
-#   MACOSX_LIB_LIBRARY
 #
 # The including file may specify dependencies to compilation by adding
 # prerequisites to the "fat_lib_dependencies" target.
@@ -34,8 +33,6 @@ include $(J2OBJC_ROOT)/make/fat_lib_macros.mk
 
 FAT_LIB_LIBRARY = $(ARCH_BUILD_DIR)/lib$(FAT_LIB_NAME).a
 
-MACOSX_LIB_LIBRARY = $(ARCH_BUILD_DIR)/objs-macosx/lib$(FAT_LIB_NAME).a
-
 FAT_LIB_PLISTS = \
   $(foreach src,$(FAT_LIB_SOURCES_RELATIVE),$(FAT_LIB_PLIST_DIR)/$(basename $(src)).plist)
 FAT_LIB_OBJS = $(foreach file,$(FAT_LIB_SOURCES_RELATIVE),$(basename $(file)).o)
@@ -45,10 +42,6 @@ ifneq ($(MAKECMDGOALS),clean)
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
 
 $(call emit_library_rules,$(FAT_LIB_NAME),$(FAT_LIB_OBJS))
-
-ifdef BUILD_MACOSX
-$(call emit_osx_library_rules,$(FAT_LIB_NAME),$(FAT_LIB_OBJS))
-endif
 
 analyze: $(FAT_LIB_PLISTS)
 	@:
