@@ -39,6 +39,7 @@ SRCS = \
 SRC_DIR = $(CURDIR)/src
 
 DIST_LIBRARY = $(ARCH_LIB_DIR)/libprotobuf_runtime.a
+DIST_MACOSX_LIBRARY = $(ARCH_LIB_MACOSX_DIR)/libprotobuf_runtime.a
 DIST_JAR = $(DIST_JAR_DIR)/protobuf_runtime.jar
 
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
@@ -95,6 +96,10 @@ $(PROTOC): protobuf_compiler_dist
 dist: $(DIST_JAR) $(DIST_LIBRARY) $(ARCH_BUILD_DIR)/.dist_headers $(PROTOBUF_LICENSE_DIST)
 	@:
 
+ifdef BUILD_MACOSX
+dist: $(DIST_MACOSX_LIBRARY)
+endif
+
 java: $(DIST_JAR)
 	@:
 
@@ -117,7 +122,7 @@ $(PROTOBUF_LICENSE_DIST): $(PROTOBUF_LICENSE)
 
 clean:
 	@rm -rf $(BUILD_DIR) $(DIST_JAR) $(DIST_LIBRARY) $(DIST_HEADERS)
-	@rm -rf $(PROTOBUF_LICENSE_DIST)
+	@rm -rf $(PROTOBUF_LICENSE_DIST) $(DIST_MACOSX_LIBRARY)
 
 $(DESCRIPTOR_PROTO_M): $(DESCRIPTOR_PROTO) $(PROTOC)
 	@mkdir -p $(@D)
@@ -131,6 +136,10 @@ $(DESCRIPTOR_PROTO_JAVA): $(DESCRIPTOR_PROTO) $(PROTOC)
 	$(PROTOC) --proto_path=$(PROTO_PATH) --java_out=$(GEN_JAVA_DIR) $<
 
 $(DIST_LIBRARY): $(FAT_LIB_LIBRARY)
+	@mkdir -p $(@D)
+	install -m 0644 $< $@
+
+$(DIST_MACOSX_LIBRARY): $(MACOSX_LIB_LIBRARY)
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 

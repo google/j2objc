@@ -327,6 +327,10 @@ $(MOCKITO_LIB_DIST): $(FAT_LIB_LIBRARY)
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
+$(MOCKITO_LIB_MACOSX_DIST): $(MACOSX_LIB_LIBRARY)
+	@mkdir -p $(@D)
+	install -m 0644 $< $@
+
 $(ARCH_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
@@ -358,6 +362,11 @@ $(BUILD_DIR):
 
 clean:
 	@rm -rf $(BUILD_DIR) $(MOCKITO_LIB_DIST) $(MOCKITO_LICENSE_DIST)
-	@rm -rf $(ARCH_INCLUDE_DIR)/org/mockito
+	@rm -rf $(ARCH_INCLUDE_DIR)/org/mockito $(MOCKITO_LIB_MACOSX_DIST)
 
 dist: $(MOCKITO_LIB_DIST) $(ARCH_HEADERS) $(MOCKITO_LICENSE_DIST)
+
+ifdef BUILD_MACOSX
+lib: $(MACOSX_LIB_LIBRARY)
+dist: $(MOCKITO_LIB_MACOSX_DIST)
+endif

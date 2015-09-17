@@ -77,6 +77,10 @@ $(JSR305_LIB_DIST): $(FAT_LIB_LIBRARY)
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
+$(JSR305_LIB_MACOSX_DIST): $(MACOSX_LIB_LIBRARY)
+	@mkdir -p $(@D)
+	install -m 0644 $< $@
+
 $(ARCH_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
@@ -107,7 +111,12 @@ $(BUILD_DIR):
 	@mkdir -p $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(JSR305_LIB_DIST) $(JSR305_LICENSE_DIST)
-	@rm -rf $(ARCH_INCLUDE_DIR)/javax/annotation
+	@rm -rf $(BUILD_DIR) $(JSR305_LIB_DIST) $(JSR305_LIB_MACOSX_DIST)
+	@rm -rf $(JSR305_LICENSE_DIST) $(ARCH_INCLUDE_DIR)/javax/annotation
 
 dist: $(JSR305_LIB_DIST) $(ARCH_HEADERS) $(JSR305_LICENSE_DIST)
+
+ifdef BUILD_MACOSX
+lib: $(MACOSX_LIB_LIBRARY)
+dist: $(JSR305_LIB_MACOSX_DIST)
+endif

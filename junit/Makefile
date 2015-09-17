@@ -283,6 +283,10 @@ $(JUNIT_LIB_DIST): $(FAT_LIB_LIBRARY)
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
+$(JUNIT_LIB_MACOSX_DIST): $(MACOSX_LIB_LIBRARY)
+	@mkdir -p $(@D)
+	install -m 0644 $< $@
+
 $(ARCH_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
@@ -295,10 +299,17 @@ $(BUILD_DIR):
 	@mkdir -p $@
 
 clean:
-	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST) $(JUNIT_LICENSE_DIST)
+	@rm -rf $(BUILD_DIR) $(JUNIT_LIB_DIST) $(JUNIT_LIB_MACOSX_DIST) $(JUNIT_LICENSE_DIST)
 	@rm -rf $(ARCH_INCLUDE_DIR)/junit $(ARCH_INCLUDE_DIR)/org/junit
 
-dist: lib $(JUNIT_LIB_DIST) $(ARCH_HEADERS) $(JUNIT_LICENSE_DIST)
+dist: dist_libs
+
+dist_libs: lib $(JUNIT_LIB_DIST) $(ARCH_HEADERS) $(JUNIT_LICENSE_DIST)
+
+ifdef BUILD_MACOSX
+lib: $(MACOSX_LIB_LIBRARY)
+dist_libs: $(JUNIT_LIB_MACOSX_DIST)
+endif
 
 find_cycles: $(JAVA_SOURCES_MANIFEST) | cycle_finder_dist jre_emul_java_manifest
 	$(DIST_DIR)/cycle_finder -sourcepath $(JAVA_SRC_DIR) \

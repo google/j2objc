@@ -71,6 +71,10 @@ $(INJECT_LIB_DIST): $(FAT_LIB_LIBRARY)
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
 
+$(INJECT_LIB_MACOSX_DIST): $(MACOSX_LIB_LIBRARY)
+	@mkdir -p $(@D)
+	install -m 0644 $< $@
+
 $(ARCH_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
 	@mkdir -p $(@D)
 	install -m 0644 $< $@
@@ -102,6 +106,13 @@ $(BUILD_DIR):
 
 clean:
 	@rm -rf $(BUILD_DIR) $(INJECT_LIB_DIST) $(JSR330_LICENSE_DIST)
-	@rm -rf $(ARCH_INCLUDE_DIR)/javax/inject
+	@rm -rf $(ARCH_INCLUDE_DIR)/javax/inject $(INJECT_LIB_MACOSX_DIST)
 
-dist: $(INJECT_LIB_DIST) $(ARCH_HEADERS) $(JSR330_LICENSE_DIST)
+dist: dist_libs
+
+dist_libs: $(INJECT_LIB_DIST) $(ARCH_HEADERS) $(JSR330_LICENSE_DIST)
+
+ifdef BUILD_MACOSX
+lib: $(MACOSX_LIB_LIBRARY)
+dist_libs: $(INJECT_LIB_MACOSX_DIST)
+endif

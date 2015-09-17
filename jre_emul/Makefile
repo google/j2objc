@@ -1366,7 +1366,11 @@ endif
 
 LIB_NAMES = jre_emul jre_emul_core
 LIBS = $(LIB_NAMES:%=$(ARCH_BUILD_DIR)/lib%.a)
-DIST_LIBS = $(LIB_NAMES:%=$(ARCH_LIB_DIR)/lib%.a)
+
+DIST_LIBS := $(LIB_NAMES:%=$(ARCH_LIB_DIR)/lib%.a)
+ifdef BUILD_MACOSX
+DIST_LIBS += $(LIB_NAMES:%=$(ARCH_LIB_MACOSX_DIR)/lib%.a)
+endif
 
 CORE_OBJS_RELATIVE = $(JAVA_SOURCES_CORE:.java=.o) $(IOS_OBJS) $(IOS_JAVA_OBJS) $(APPLE_SRCS:.m=.o)
 JRE_OBJS_RELATIVE = $(CORE_OBJS_RELATIVE) $(JAVA_SOURCES_NON_CORE:.java=.o)
@@ -1375,6 +1379,10 @@ include ../make/fat_lib_macros.mk
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
 $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
 $(call emit_library_rules,jre_emul_core,$(CORE_OBJS_RELATIVE))
+ifdef BUILD_MACOSX
+$(call emit_osx_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
+$(call emit_osx_library_rules,jre_emul_core,$(CORE_OBJS_RELATIVE))
+endif
 
 JRE_EMUL_LICENSES = \
   $(DIST_LICENSE_DIR)/android_license.txt \
@@ -1384,7 +1392,7 @@ JRE_EMUL_LICENSES = \
 
 fat_lib_dependencies: translate
 
-libs: $(LIBS) $(MAIN_LIB)
+libs: $(LIBS)
 	@:
 
 xcode_build: $(DIST_LIBS) $(ARCH_BIN_DIR)/j2objcc $(ARCH_BUILD_DIR)/.includes
@@ -1424,7 +1432,7 @@ $(ARCH_BUILD_DIR)/.includes: $(TRANSLATE_HEADERS) $(SOURCE_HEADERS) | \
 	@install -C $< $@
 
 DIRS_TO_MAKE = $(BUILD_DIR) $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR) \
-    $(DIST_INCLUDE_DIR) $(DIST_JAR_DIR) $(DIST_LIB_DIR)
+    $(DIST_INCLUDE_DIR) $(DIST_JAR_DIR) $(DIST_LIB_DIR) $(DIST_LIB_MACOSX_DIR)
 $(sort $(DIRS_TO_MAKE)):
 	@mkdir -p $@
 
@@ -1444,13 +1452,22 @@ clean:
 
 dist: emul_jar_dist libs_dist $(DIST_DIR)/j2objcc licenses emul_src_jar_dist
 
-libs_dist: libs dist_includes $(DIST_LIBS) $(MAIN_LIB_DIST)
+libs_dist: libs dist_includes $(DIST_LIBS)
+
+ifdef BUILD_MACOSX
+libs: $(MAIN_LIB)
+libs_dist: $(MAIN_LIB_DIST)
+endif
 
 $(ARCH_LIB_DIR)/lib%.a: $(ARCH_BUILD_DIR)/lib%.a
 	@mkdir -p $(@D)
 	@install -m 0644 $< $@
 
-$(MAIN_LIB_DIST): $(MAIN_LIB) | $(DIST_LIB_DIR)
+$(ARCH_LIB_DIR)/macosx/lib%.a: $(ARCH_BUILD_DIR)/objs-macosx/lib%.a
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
+
+$(MAIN_LIB_DIST): $(MAIN_LIB) | $(DIST_LIB_MACOSX_DIR)
 	@install -m 0644 $< $@
 
 java: emul_jar_dist java_sources_manifest
