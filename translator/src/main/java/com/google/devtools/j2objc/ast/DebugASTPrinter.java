@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.gen.JavadocGenerator;
 import com.google.devtools.j2objc.gen.SourceBuilder;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -37,9 +38,16 @@ public class DebugASTPrinter extends TreeVisitor {
   private boolean inIfStatement = false;
 
   public static String toString(TreeNode node) {
-    DebugASTPrinter printer = new DebugASTPrinter();
-    node.accept(printer);
-    return printer.sb.toString();
+// Uncomment to debug print failures.
+//    try {
+      DebugASTPrinter printer = new DebugASTPrinter();
+      node.accept(printer);
+      return printer.sb.toString();
+//    } catch (Throwable t) {
+//      System.err.println("toString(" + node.getClass().getSimpleName() + ") failure");
+//      t.printStackTrace();
+//      throw t;
+//    }
   }
 
   @Override
@@ -582,6 +590,12 @@ public class DebugASTPrinter extends TreeVisitor {
   }
 
   @Override
+  public boolean visit(Javadoc node) {
+    sb.println(JavadocGenerator.toString(node));
+    return false;
+  }
+
+  @Override
   public boolean visit(LabeledStatement node) {
     sb.printIndent();
     node.getLabel().accept(this);
@@ -977,6 +991,12 @@ public class DebugASTPrinter extends TreeVisitor {
     node.getExpression().accept(this);
     sb.print(") ");
     node.getBody().accept(this);
+    return false;
+  }
+
+  @Override
+  public boolean visit(TagElement node) {
+    sb.print(JavadocGenerator.toString(node));
     return false;
   }
 

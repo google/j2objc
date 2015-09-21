@@ -347,12 +347,26 @@ public class NameTable {
     if (allowReservedName) {
       return name;
     }
+    name = maybeRenameVar(var, name);
+    return name.equals(SELF_NAME) ? "self" : name;
+  }
+
+  private static String maybeRenameVar(IVariableBinding var, String name) {
     if (isReservedName(name)) {
       name += '_';
     } else if (var.isParameter() && badParameterNames.contains(name)) {
       name += "Arg";
     }
-    return name.equals(SELF_NAME) ? "self" : name;
+    return name;
+  }
+
+  /**
+   * Gets the variable or parameter name that should be used in a doc-comment.
+   * This may be wrong if a variable is renamed by a translation phase, but will
+   * handle all the reserved and bad parameter renamings correctly.
+   */
+  public static String getDocCommentVariableName(IVariableBinding var) {
+    return maybeRenameVar(var, var.getName());
   }
 
   /**

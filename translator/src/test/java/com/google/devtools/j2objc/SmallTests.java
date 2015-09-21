@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.ast.TreeConvertTest;
 import com.google.devtools.j2objc.ast.TreeUtilTest;
 import com.google.devtools.j2objc.gen.ArrayAccessTest;
 import com.google.devtools.j2objc.gen.ArrayCreationTest;
+import com.google.devtools.j2objc.gen.JavadocGeneratorTest;
 import com.google.devtools.j2objc.gen.LineDirectivesTest;
 import com.google.devtools.j2objc.gen.LiteralGeneratorTest;
 import com.google.devtools.j2objc.gen.ObjectiveCHeaderGeneratorTest;
@@ -112,6 +113,7 @@ public class SmallTests {
     J2ObjCIncompatibleStripperTest.class,
     J2ObjCTest.class,
     JavaCloneWriterTest.class,
+    JavadocGeneratorTest.class,
     JavaToIOSMethodTranslatorTest.class,
     LineDirectivesTest.class,
     LiteralGeneratorTest.class,
