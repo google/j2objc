@@ -151,3 +151,9 @@ define long_list_to_file
 @files='$(wordlist 9500,9999,$(2))' && for i in $$files; do echo $$i >> $(1); done
 @if [ ! -e $(1) ]; then touch $(1); fi
 endef
+
+# Specify bitcode flag if clang version 7 or greater. This is necessary to support
+# iOS 9 apps that have the 'Enable bitcode' option set, which is the default for
+# new apps in Xcode 7.
+SUPPORTS_BITCODE := $(shell $(CLANG) --version | \
+    awk '/^Apple/ { split($$4, arr, "."); print (arr[1] >= 7) ? "YES" : "NO"; }')
