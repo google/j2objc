@@ -14,12 +14,6 @@
 
 package com.google.devtools.j2objc.ast;
 
-import org.eclipse.jdt.core.dom.ASTNode;
-import org.eclipse.jdt.core.dom.AbstractTypeDeclaration;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
-import org.eclipse.jdt.core.dom.MethodDeclaration;
-import org.eclipse.jdt.core.dom.PackageDeclaration;
-
 import java.util.List;
 
 /**
@@ -27,25 +21,18 @@ import java.util.List;
  */
 public class Javadoc extends Comment {
 
-  public enum OwnerType {
-    FIELD, METHOD, PACKAGE, TYPE, OTHER
-  }
-
   private ChildList<TagElement> tags = ChildList.create(TagElement.class, this);
-  private final OwnerType ownerType;
 
   public Javadoc(org.eclipse.jdt.core.dom.Javadoc jdtNode) {
     super(jdtNode);
     for (Object tag : jdtNode.tags()) {
       tags.add((TagElement) TreeConverter.convert(tag));
     }
-    ownerType = ownerType(jdtNode);
   }
 
   public Javadoc(Javadoc other) {
     super(other);
     tags.copyFrom(other.getTags());
-    this.ownerType = other.ownerType;
   }
 
   @Override
@@ -73,26 +60,5 @@ public class Javadoc extends Comment {
   @Override
   public Javadoc copy() {
     return new Javadoc(this);
-  }
-
-  public OwnerType getOwnerType() {
-    return ownerType;
-  }
-
-  private OwnerType ownerType(org.eclipse.jdt.core.dom.Javadoc jdtNode) {
-    ASTNode parentNode = jdtNode.getParent();
-    if (parentNode instanceof PackageDeclaration) {
-      return OwnerType.PACKAGE;
-    } else if (parentNode instanceof AbstractTypeDeclaration) {
-      return OwnerType.TYPE;
-    } else if (parentNode instanceof MethodDeclaration) {
-      return OwnerType.METHOD;
-    } else if (parentNode instanceof FieldDeclaration) {
-      return OwnerType.FIELD;
-    }
-
-    // Other includes AnnotationTypeMemberDeclaration, and any future
-    // Javadoc types that aren't supported.
-    return OwnerType.OTHER;
   }
 }

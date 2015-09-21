@@ -63,20 +63,22 @@ public class JavadocGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@brief See <code>Test.bar</code>.");
   }
 
-  // TODO(tball): enable when we can use Guava's HtmlEscapers, or write custom escaping.
-//  public void testLiteralTag() throws IOException {
-//    String translation = translateSourceFile(
-//        "/** Class javadoc for {@literal <Test>}. */ class Test {}", "Test", "Test.h");
-//    assertTranslation(translation, "@brief Class javadoc for &lt;Test&gt;.");
-//  }
+  public void testLiteralTag() throws IOException {
+    String translation = translateSourceFile(
+        "/** Class javadoc for {@literal <Test>}. */ class Test {}", "Test", "Test.h");
+    assertTranslation(translation, "@brief Class javadoc for &lt;Test&gt;.");
+  }
 
   // Javadoc supports @param tags on classes, to document type parameters. Since there's
   // no equivalent in Objective C, these tags need to be removed.
-  public void testClassParamTagRemoval() throws IOException {
+  public void testTypeParamTagRemoval() throws IOException {
     String translation = translateSourceFile(
         "/** Class javadoc for Test.\n"
         + " * @param <T> the test name\n"
-        + " */ class Test <T> {}", "Test", "Test.h");
+        + " */ class Test <T> {\n"
+        + "  /** Method javadoc.\n"
+        + "   * @param <T> the type to be returned.\n"
+        + "   */ T test() { return null; }}", "Test", "Test.h");
     assertTranslation(translation, "@brief Class javadoc for Test.");
     assertNotInTranslation(translation, "@param");
     assertNotInTranslation(translation, "<T>");
@@ -136,5 +138,24 @@ public class JavadocGeneratorTest extends GenerationTest {
         + "void test(int out, String description) {}}", "Test", "Test.h");
     assertTranslation(translation, "@param outArg Unused.");
     assertTranslation(translation, "@param description_ Unused.");
+  }
+
+  // Verify that tags without following text are skipped, such as "@param\n".
+  public void testSkipEmptyTags() throws IOException {
+    String translation = translateSourceFile(
+        "/** Class javadoc for Test.\n"
+        + " * @see\n"
+        + " */ class Test { \n"
+        + "/** Method javadoc.\n"
+        + "  * @param \n"
+        + "  * @return\n"
+        + "  * @throws\n"
+        + "  */\n"
+        + "boolean test(int foo) { return false; } }", "Test", "Test.h");
+    assertTranslation(translation, "@brief Class javadoc for Test.");
+    assertNotInTranslation(translation, "@since");
+    assertNotInTranslation(translation, "@param");
+    assertNotInTranslation(translation, "@return");
+    assertNotInTranslation(translation, "@throws");
   }
 }

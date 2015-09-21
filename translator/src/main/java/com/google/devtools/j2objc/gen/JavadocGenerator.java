@@ -26,8 +26,10 @@ import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
 import java.text.BreakIterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Generates Javadoc comments.
@@ -38,6 +40,17 @@ public class JavadocGenerator extends AbstractSourceGenerator {
 
   // True when a <pre> tag is in a Javadoc tag, but not the closing </pre>.
   boolean spanningPreTag = false;
+
+  // All escapes are defined at "http://dev.w3.org/html5/html-author/charref".
+  private static final Map<Character, String> htmlEntities = new HashMap<>();
+  static {
+    htmlEntities.put('"',  "&quot;");
+    htmlEntities.put('\'', "&apos;");
+    htmlEntities.put('<',  "&lt;");
+    htmlEntities.put('>',  "&gt;");
+    htmlEntities.put('&',  "&amp;");
+    htmlEntities.put('@',  "&commat;");
+ }
 
   private JavadocGenerator(SourceBuilder builder) {
     super(builder);
@@ -110,14 +123,10 @@ public class JavadocGenerator extends AbstractSourceGenerator {
   private String printTag(TagElement tag) {
     String tagName = tag.getTagName();
     if (tagName != null) {
-      // Remove param tags from class comments.
+      // Remove @param tags for parameterized types, such as "@param <T> the type".
       // TODO(tball): update when (if) Xcode supports Objective C type parameter documenting.
-      if (tagName.equals(TagElement.TAG_PARAM)) {
-        TreeNode parent = tag.getParent();
-        if (parent instanceof Javadoc
-            && ((Javadoc) parent).getOwnerType() == Javadoc.OwnerType.TYPE) {
-          return "";
-        }
+      if (tagName.equals(TagElement.TAG_PARAM) && hasTypeParam(tag.getFragments())) {
+        return "";
       }
 
       // Xcode 7 compatible tags.
@@ -128,7 +137,9 @@ public class JavadocGenerator extends AbstractSourceGenerator {
           || tagName.equals(TagElement.TAG_SINCE)
           || tagName.equals(TagElement.TAG_THROWS)
           || tagName.equals(TagElement.TAG_VERSION)) {
-        return String.format("%s %s", tagName, printTagFragments(tag.getFragments()).trim());
+        // Skip
+        String comment = printTagFragments(tag.getFragments()).trim();
+        return comment.isEmpty() ? "" : String.format("%s %s", tagName, comment);
       }
 
       if (tagName.equals(TagElement.TAG_DEPRECATED)) {
@@ -166,11 +177,19 @@ public class JavadocGenerator extends AbstractSourceGenerator {
         if (spanningPreTag) {
           return text;
         }
-//      return HtmlEscapers.htmlEscaper().escape(text);
-        return text;
+        return escapeHtmlText(text);
       }
     }
     return printTagFragments(tag.getFragments());
+  }
+
+  private boolean hasTypeParam(List<TreeNode> fragments) {
+    // The format for a @param tag with a type parameter is:
+    // [ "<", Name, ">", comment ].
+    return fragments.size() >= 3
+        && "<".equals(fragments.get(0).toString())
+        && (fragments.get(1) instanceof SimpleName)
+        && ">".equals(fragments.get(2).toString());
   }
 
   private String printTagFragments(List<TreeNode> fragments) {
@@ -247,5 +266,18 @@ public class JavadocGenerator extends AbstractSourceGenerator {
 
   private String escapeDocText(String text) {
     return escapeCodeText(text.replace("@", "@@").replace("/*", "/\\*"));
+  }
+
+  private String escapeHtmlText(String text) {
+    StringBuilder sb = new StringBuilder();
+    for (int i = 0; i < text.length(); i++) {
+      Character c = text.charAt(i);
+      if (htmlEntities.containsKey(c)) {
+        sb.append(htmlEntities.get(c));
+      } else {
+        sb.append(c);
+      }
+    }
+    return sb.toString();
   }
 }
