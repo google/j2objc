@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.gen;
 
-import com.google.common.html.HtmlEscapers;
 import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -167,7 +166,8 @@ public class JavadocGenerator extends AbstractSourceGenerator {
         if (spanningPreTag) {
           return text;
         }
-        return HtmlEscapers.htmlEscaper().escape(text);
+//      return HtmlEscapers.htmlEscaper().escape(text);
+        return text;
       }
     }
     return printTagFragments(tag.getFragments());
