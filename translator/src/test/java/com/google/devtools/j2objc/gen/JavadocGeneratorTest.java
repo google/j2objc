@@ -158,4 +158,45 @@ public class JavadocGeneratorTest extends GenerationTest {
     assertNotInTranslation(translation, "@return");
     assertNotInTranslation(translation, "@throws");
   }
+
+  public void testBadPreTag() throws IOException {
+    String translation = translateSourceFile(
+        "/** Example:\n"
+        + " * </pre>\n"       // Closing tag before opening one below.
+        + " * class Foo {\n"
+        + " *   Foo bar;\n"
+        + " * }<pre>\n"
+        + " */\n"
+        + "class Test {}", "Test", "Test.h");
+    assertTranslation(translation, "@code");
+  }
+
+  // Verify that the formatting inside <pre>...</pre> and @{code ...} isn't reformatted.
+  public void testPreserveLiteralFormatting() throws IOException {
+    String translation = translateSourceFile(
+        "/** Example:\n"
+        + " * <pre>\n"
+        + " * class Foo {\n"
+        + " *   &#64;Property(\"copy, nonatomic\")\n"
+        + " *       protected String bar;\n"
+        + " * }</pre>\n"
+        + " *\n"           // Make sure "short" lines are handled correctly.
+        + " */\n"
+        + "class Test {}", "Test", "Test.h");
+    assertTranslation(translation, "  &#64;Property(\"copy, nonatomic\")\n");
+    assertTranslation(translation, "      protected String bar;\n");
+
+    // Same test, but without leading '*' in comment lines.
+    translation = translateSourceFile(
+        "/** Example:\n"
+        + "<pre>\n"
+        + "class Foo {\n"
+        + "  &#64;Property(\"copy, nonatomic\")\n"
+        + "      protected String bar;\n"
+        + "}</pre>\n"
+        + " */\n"
+        + "class Test {}", "Test", "Test.h");
+    assertTranslation(translation, "  &#64;Property(\"copy, nonatomic\")\n");
+    assertTranslation(translation, "      protected String bar;\n");
+  }
 }

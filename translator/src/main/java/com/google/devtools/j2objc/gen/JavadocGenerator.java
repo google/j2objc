@@ -14,6 +14,7 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.SimpleName;
@@ -204,6 +205,9 @@ public class JavadocGenerator extends AbstractSourceGenerator {
         lineNo = fragment.getLineNumber();
       }
       if (fragment instanceof TextElement) {
+        if (spanningPreTag) {
+          sb.append(getSourceIndent(fragment));
+        }
         String text = escapeDocText(((TextElement) fragment).getText());
         sb.append(text);
       } else if (fragment instanceof TagElement) {
@@ -231,6 +235,10 @@ public class JavadocGenerator extends AbstractSourceGenerator {
     int preStart = lowerText.indexOf("<pre>");
     int preEnd = lowerText.indexOf("</pre>");
     if (preStart == -1 && preEnd == -1) {
+      return text;
+    }
+    if (preStart >= 0 && preEnd >= 0 && preEnd < preStart) {
+      // Bad code formatting, don't try to escape.
       return text;
     }
 
@@ -279,5 +287,43 @@ public class JavadocGenerator extends AbstractSourceGenerator {
       }
     }
     return sb.toString();
+  }
+
+  /**
+   * Fetch the leading whitespace from the comment line. Since the JDT
+   * strips leading and trailing whitespace from lines, the original
+   * source is fetched and is walked backwards from the fragment's start
+   * until the previous new line, then moved forward if there is a leading
+   * "* ".
+   */
+  private String getSourceIndent(TreeNode fragment) {
+    int index = fragment.getStartPosition();
+    if (index < 1) {
+      return "";
+    }
+    TreeNode node = fragment.getParent();
+    while (node != null && node.getKind() != TreeNode.Kind.COMPILATION_UNIT) {
+      node = node.getParent();
+    }
+    if (node instanceof CompilationUnit) {
+      String source = ((CompilationUnit) node).getSource();
+      int i = index - 1;
+      char c;
+      while (i >= 0 && (c = source.charAt(i)) != '\n') {
+        if (c != '*' && !Character.isWhitespace(c)) {
+          // Pre tag embedded in other text, so no indent.
+          return "";
+        }
+        --i;
+      }
+      String lineStart = source.substring(i + 1, index);
+      i = lineStart.indexOf('*');
+      if (i == -1) {
+        return lineStart;
+      }
+      // Indent could end with '*' instead of "* ", if there's no text after it.
+      return (++i + 1) < lineStart.length() ? lineStart.substring(i + 1) : lineStart.substring(i);
+    }
+    return "";
   }
 }
