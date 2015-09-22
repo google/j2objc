@@ -26,6 +26,7 @@ public class TagElement extends TreeNode {
   public static final String TAG_DEPRECATED = "@deprecated";
   public static final String TAG_EXCEPTION = "@exception";
   public static final String TAG_LINK = "@link";
+  public static final String TAG_LINKPLAIN = "@linkplain";
   public static final String TAG_LITERAL = "@literal";
   public static final String TAG_PARAM = "@param";
   public static final String TAG_RETURN = "@return";

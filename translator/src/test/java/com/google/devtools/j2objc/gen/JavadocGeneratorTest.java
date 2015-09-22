@@ -57,10 +57,14 @@ public class JavadocGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "/** Class javadoc for {@link Test}. */ class Test {"
         + " /** See {@link #bar}. */ void foo() {}"
-        + " /** See {@link Test#bar}. */ void foo2() {}}", "Test", "Test.h");
+        + " /** See {@linkplain #bar}. */ void foo2() {}"
+        + " /** See {@link Test#bar()}. */ void foo3() {}"
+        + " /** See {@link foo.bar.Mumble Mumble}.*/ void foo4() {}}", "Test", "Test.h");
     assertTranslation(translation, "@brief Class javadoc for <code>Test</code>.");
     assertTranslation(translation, "@brief See <code>bar</code>.");
-    assertTranslation(translation, "@brief See <code>Test.bar</code>.");
+    assertTranslation(translation, "@brief See bar.");
+    assertTranslation(translation, "@brief See <code>Test.bar()</code>.");
+    assertTranslation(translation, "@brief See <code>Mumble</code>.");
   }
 
   public void testLiteralTag() throws IOException {
@@ -198,5 +202,23 @@ public class JavadocGeneratorTest extends GenerationTest {
         + "class Test {}", "Test", "Test.h");
     assertTranslation(translation, "  &#64;Property(\"copy, nonatomic\")\n");
     assertTranslation(translation, "      protected String bar;\n");
+  }
+
+  // Verify style tags are skipped, since Quick Help displays them.
+  public void testStyleTagsSkipped() throws IOException {
+    String translation = translateSourceFile(
+        "/** <h3>Regular expression syntax</h3>\n"
+        + " * <span class=\"datatable\">\n"
+        + " * <style type=\"text/css\">\n"
+        + " * .datatable td { padding-right: 20px; }\n"
+        + " * </style>\n"
+        + " */\n"
+        + "class Test {}", "Test", "Test.h");
+    assertNotInTranslation(translation, "<style");
+    assertTranslatedLines(translation,
+        "/*!",
+        "@brief <h3>Regular expression syntax</h3>",
+        "<span class=\"datatable\">",
+        "*/");
   }
 }

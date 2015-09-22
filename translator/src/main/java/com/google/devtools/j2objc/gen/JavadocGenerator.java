@@ -39,8 +39,11 @@ import java.util.Map;
  */
 public class JavadocGenerator extends AbstractSourceGenerator {
 
-  // True when a <pre> tag is in a Javadoc tag, but not the closing </pre>.
+  // True when a <pre> tag is in a Javadoc comment, but not the closing </pre>.
   boolean spanningPreTag = false;
+
+  // True with a <style> tag is in a Javadoc comment, but not the closing </style>.
+  boolean spanningStyleTag = false;
 
   // All escapes are defined at "http://dev.w3.org/html5/html-author/charref".
   private static final Map<Character, String> htmlEntities = new HashMap<>();
@@ -161,16 +164,11 @@ public class JavadocGenerator extends AbstractSourceGenerator {
       }
 
       if (tagName.equals(TagElement.TAG_LINK)) {
-        String text = printTagFragments(tag.getFragments());
+        return formatLinkTag(tag, "<code>%s</code>");
+      }
 
-        // Delete leading '#' characters (method links), and change embedded ones
-        // (such as "class#method") to '.'.
-        if (text.indexOf('#') == 0) {
-          text = text.substring(1);
-        }
-        text = text.replace('#', '.');
-
-        return String.format("<code>%s</code>", text);
+      if (tagName.equals(TagElement.TAG_LINKPLAIN)) {
+        return formatLinkTag(tag, "%s");
       }
 
       if (tagName.equals(TagElement.TAG_LITERAL)) {
@@ -182,6 +180,22 @@ public class JavadocGenerator extends AbstractSourceGenerator {
       }
     }
     return printTagFragments(tag.getFragments());
+  }
+
+  public String formatLinkTag(TagElement tag, String template) {
+    String text = printTagFragments(tag.getFragments());
+    int iLabel = text.indexOf(' ');
+    if (iLabel > 0) {
+      return String.format(template, text.substring(iLabel).trim());
+    }
+    // Delete leading '#' characters (method links), and change embedded ones
+    // (such as "class#method") to '.'.
+    if (text.indexOf('#') == 0) {
+      text = text.substring(1);
+    }
+    text = text.replace('#', '.');
+
+    return String.format(template, text);
   }
 
   private boolean hasTypeParam(List<TreeNode> fragments) {
@@ -273,7 +287,7 @@ public class JavadocGenerator extends AbstractSourceGenerator {
   }
 
   private String escapeDocText(String text) {
-    return escapeCodeText(text.replace("@", "@@").replace("/*", "/\\*"));
+    return skipStyleTag(escapeCodeText(text.replace("@", "@@").replace("/*", "/\\*")));
   }
 
   private String escapeHtmlText(String text) {
@@ -287,6 +301,26 @@ public class JavadocGenerator extends AbstractSourceGenerator {
       }
     }
     return sb.toString();
+  }
+
+  /**
+   * Remove <style> tags and their content, as Quick Help displays them.
+   */
+  private String skipStyleTag(String text) {
+    int start = text.indexOf("<style");  // Leave open as it has attributes.
+    int end = text.indexOf("</style>");
+    if (start == -1 && end == -1) {
+      return spanningStyleTag ? "" : text;
+    }
+    if (start > -1 && end == -1) {
+      spanningStyleTag = true;
+      return text.substring(0, start);
+    }
+    if (start == -1 && end > -1) {
+      spanningStyleTag = false;
+      return text.substring(end + 8); // "</style>".length
+    }
+    return text.substring(0, start) + text.substring(end + 8);
   }
 
   /**
