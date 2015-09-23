@@ -36,9 +36,10 @@ FAT_LIB_SIMULATOR64_FLAGS = -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 -miphoneos-v
 FAT_LIB_XCODE_FLAGS = -arch $(1) -DJ2OBJC_BUILD_ARCH=$(1) -miphoneos-version-min=5.0 \
   -isysroot $(SDKROOT)
 
-# Only iPhone armv7 builds need a bitcode marker.
+# Only iPhone armv7 and arm64 builds need a bitcode marker.
 ifeq ("$(SUPPORTS_BITCODE)", "YES")
 FAT_LIB_IPHONE_FLAGS += -fembed-bitcode-marker
+FAT_LIB_IPHONE64_FLAGS += -fembed-bitcode-marker
 endif
 
 # Command-line pattern for calling libtool and filtering the "same member name"
