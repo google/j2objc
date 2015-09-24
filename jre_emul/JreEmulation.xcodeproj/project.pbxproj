@@ -14,17 +14,6 @@
 		0600C0171B715D13005FDEF9 /* SuperMethodReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C00F1B715CB4005FDEF9 /* SuperMethodReferenceTest.m */; };
 		0600C0181B715D13005FDEF9 /* TypeMethodReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C0111B715CB4005FDEF9 /* TypeMethodReferenceTest.m */; };
 		0616608B1A40DD1400972BBD /* SerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0616608A1A40DD1400972BBD /* SerializationTest.m */; };
-		061A108D1B71892C002093E3 /* MD5.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10831B718717002093E3 /* MD5.check */; };
-		061A108E1B71892C002093E3 /* MD5.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10841B718717002093E3 /* MD5.data */; };
-		061A108F1B71892C002093E3 /* SHA-1.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10851B718717002093E3 /* SHA-1.check */; };
-		061A10901B71892C002093E3 /* SHA-1.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10861B718717002093E3 /* SHA-1.data */; };
-		061A10911B71892C002093E3 /* SHA-256.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10871B718717002093E3 /* SHA-256.check */; };
-		061A10921B71892C002093E3 /* SHA-256.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10881B718717002093E3 /* SHA-256.data */; };
-		061A10931B71892C002093E3 /* SHA-384.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A10891B718717002093E3 /* SHA-384.check */; };
-		061A10941B71892C002093E3 /* SHA-384.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A108A1B718717002093E3 /* SHA-384.data */; };
-		061A10951B71892C002093E3 /* SHA-512.check in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A108B1B718717002093E3 /* SHA-512.check */; };
-		061A10961B71892C002093E3 /* SHA-512.data in Copy Files */ = {isa = PBXBuildFile; fileRef = 061A108C1B718717002093E3 /* SHA-512.data */; };
-		061A109B1B71918C002093E3 /* test_resource.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 061A109A1B71916D002093E3 /* test_resource.txt */; };
 		061AA0CF19FEF01800457D2B /* package-info.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CD19FEF01800457D2B /* package-info.m */; };
 		061AA0D019FEF01800457D2B /* PackageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CE19FEF01800457D2B /* PackageTest.m */; };
 		061AA0D519FEF2E700457D2B /* TestAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D219FEF2E700457D2B /* TestAnnotation.m */; };
@@ -110,17 +99,6 @@
 		06574A991A8EB150000A3616 /* Support_Resources.m in Sources */ = {isa = PBXBuildFile; fileRef = 06574A7D1A8EB150000A3616 /* Support_Resources.m */; };
 		06574A9A1A8EB150000A3616 /* Support_Configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = 06574A7E1A8EB150000A3616 /* Support_Configuration.m */; };
 		06574A9C1A8EB29C000A3616 /* DocumentBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06574A9B1A8EB29C000A3616 /* DocumentBuilderTest.m */; };
-		06574ABF1A8EB61D000A3616 /* EnumTest.golden.0.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ABA1A8EB61C000A3616 /* EnumTest.golden.0.ser */; };
-		06574AC01A8EB61D000A3616 /* EnumTest.golden.1.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ABB1A8EB61C000A3616 /* EnumTest.golden.1.ser */; };
-		06574AC11A8EB61D000A3616 /* EnumTest.golden.2.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ABC1A8EB61C000A3616 /* EnumTest.golden.2.ser */; };
-		06574AC21A8EB61D000A3616 /* EnumTest.golden.3.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ABD1A8EB61D000A3616 /* EnumTest.golden.3.ser */; };
-		06574AC31A8EB61D000A3616 /* EnumTest.harmony.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ABE1A8EB61D000A3616 /* EnumTest.harmony.ser */; };
-		06574AC71A8EB830000A3616 /* PatternSyntaxExceptionTest.golden.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574AC61A8EB812000A3616 /* PatternSyntaxExceptionTest.golden.ser */; };
-		06574AC91A8EB899000A3616 /* testfile-utf8.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E837197F253D005DDE69 /* testfile-utf8.txt */; };
-		06574ACD1A8EB8F9000A3616 /* recipt.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ACA1A8EB8E2000A3616 /* recipt.xml */; };
-		06574ACE1A8EB8F9000A3616 /* simple.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ACB1A8EB8E2000A3616 /* simple.xml */; };
-		06574ACF1A8EB8F9000A3616 /* systemid.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574ACC1A8EB8E2000A3616 /* systemid.xml */; };
-		06574AD11A8EB93D000A3616 /* wrong.xml in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06574AD01A8EB91E000A3616 /* wrong.xml */; };
 		0660B4A71A018C3800B643F5 /* JRELogPaneViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0660B4A51A018C3800B643F5 /* JRELogPaneViewController.xib */; };
 		0660B4AA1A02EA1C00B643F5 /* JRETestRunListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0660B4A91A02EA1C00B643F5 /* JRETestRunListener.m */; };
 		06619389155848D70004DAFE /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619388155848D70004DAFE /* Foundation.framework */; };
@@ -142,14 +120,12 @@
 		0696810C1BA8DC97007AFADF /* MockJavaBean.m in Sources */ = {isa = PBXBuildFile; fileRef = 069681081BA8DC97007AFADF /* MockJavaBean.m */; };
 		0696810D1BA8DC97007AFADF /* MockPropertyChangeEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 069681091BA8DC97007AFADF /* MockPropertyChangeEvent.m */; };
 		0696810E1BA8DC97007AFADF /* MockPropertyChangeListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0696810A1BA8DC97007AFADF /* MockPropertyChangeListener.m */; };
-		069681111BA8E147007AFADF /* PropertyChangeEventTest.golden.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 069681101BA8E147007AFADF /* PropertyChangeEventTest.golden.ser */; };
-		069681151BA8E334007AFADF /* EmptyArchive.zip in CopyFiles */ = {isa = PBXBuildFile; fileRef = 069681141BA8E334007AFADF /* EmptyArchive.zip */; };
 		0696811A1BA8E3D3007AFADF /* Third.m in Sources */ = {isa = PBXBuildFile; fileRef = 069681161BA8E3D3007AFADF /* Third.m */; };
 		0696811B1BA8E3D3007AFADF /* First.m in Sources */ = {isa = PBXBuildFile; fileRef = 069681171BA8E3D3007AFADF /* First.m */; };
 		0696811C1BA8E3D3007AFADF /* Fourth.m in Sources */ = {isa = PBXBuildFile; fileRef = 069681181BA8E3D3007AFADF /* Fourth.m */; };
 		0696811D1BA8E3D3007AFADF /* Second.m in Sources */ = {isa = PBXBuildFile; fileRef = 069681191BA8E3D3007AFADF /* Second.m */; };
-		0696811F1BA9C69F007AFADF /* prefixes.properties in Resources */ = {isa = PBXBuildFile; fileRef = 0696811E1BA9C69F007AFADF /* prefixes.properties */; };
 		069AA6B71B053B730068A39B /* ChannelsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 069AA6B61B053B730068A39B /* ChannelsTest.m */; };
+		06B390741BB32549004A4099 /* prefixes.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06B390731BB32549004A4099 /* prefixes.properties */; settings = {ASSET_TAGS = (); }; };
 		06C54ACB1A40C0D8004B3ACD /* MathTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54AC81A40C0D8004B3ACD /* MathTest.m */; };
 		06C54ACC1A40C0D8004B3ACD /* StrictMathTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54ACA1A40C0D8004B3ACD /* StrictMathTest.m */; };
 		06C54ACF1A40C67A004B3ACD /* Base64Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54ACE1A40C67A004B3ACD /* Base64Test.m */; };
@@ -562,17 +538,6 @@
 		06E4E833197F1E4E005DDE69 /* JRELogPaneView.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87E31975CE5E00633227 /* JRELogPaneView.m */; };
 		06E4E834197F1E4E005DDE69 /* JRELogOutputStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87EC1975F8AD00633227 /* JRELogOutputStream.m */; };
 		06E4E835197F1E4E005DDE69 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 06ED87C219759EFF00633227 /* main.m */; };
-		06E4E843197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E842197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */; };
-		06E4E849197F267B005DDE69 /* test_resource.txt in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E848197F267B005DDE69 /* test_resource.txt */; };
-		06E4E863197F2705005DDE69 /* testFields.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E860197F2705005DDE69 /* testFields.ser */; };
-		06E4E864197F2705005DDE69 /* testFieldsDefaulted.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E861197F2705005DDE69 /* testFieldsDefaulted.ser */; };
-		06E4E865197F2705005DDE69 /* testFieldsDeprecated.ser in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E862197F2705005DDE69 /* testFieldsDeprecated.ser */; };
-		06E4E86C197F273F005DDE69 /* res_en_US.properties in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E867197F273E005DDE69 /* res_en_US.properties */; };
-		06E4E86D197F273F005DDE69 /* res_zh_CN.properties in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E868197F273E005DDE69 /* res_zh_CN.properties */; };
-		06E4E86E197F273F005DDE69 /* res.properties in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E869197F273E005DDE69 /* res.properties */; };
-		06E4E86F197F273F005DDE69 /* res2.properties in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E86A197F273E005DDE69 /* res2.properties */; };
-		06E4E870197F273F005DDE69 /* res3.properties in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E86B197F273F005DDE69 /* res3.properties */; };
-		06E4E873197F276E005DDE69 /* logging.config in CopyFiles */ = {isa = PBXBuildFile; fileRef = 06E4E872197F276D005DDE69 /* logging.config */; };
 		06E685D91A2FC550006F8791 /* MockEnum.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E685D41A2FC550006F8791 /* MockEnum.m */; };
 		06E685DA1A2FC550006F8791 /* MockEnum2.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E685D61A2FC550006F8791 /* MockEnum2.m */; };
 		06E685DB1A2FC550006F8791 /* StringBuilderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E685D81A2FC550006F8791 /* StringBuilderTest.m */; };
@@ -623,162 +588,6 @@
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXCopyFilesBuildPhase section */
-		0600BFF91B7152C1005FDEF9 /* Copy Files */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = tests/targets/security;
-			dstSubfolderSpec = 7;
-			files = (
-				061A108D1B71892C002093E3 /* MD5.check in Copy Files */,
-				061A108E1B71892C002093E3 /* MD5.data in Copy Files */,
-				061A108F1B71892C002093E3 /* SHA-1.check in Copy Files */,
-				061A10901B71892C002093E3 /* SHA-1.data in Copy Files */,
-				061A10911B71892C002093E3 /* SHA-256.check in Copy Files */,
-				061A10921B71892C002093E3 /* SHA-256.data in Copy Files */,
-				061A10931B71892C002093E3 /* SHA-384.check in Copy Files */,
-				061A10941B71892C002093E3 /* SHA-384.data in Copy Files */,
-				061A10951B71892C002093E3 /* SHA-512.check in Copy Files */,
-				061A10961B71892C002093E3 /* SHA-512.data in Copy Files */,
-			);
-			name = "Copy Files";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		061A10971B718E12002093E3 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = org/apache/harmony/luni/tests/java/lang;
-			dstSubfolderSpec = 7;
-			files = (
-				061A109B1B71918C002093E3 /* test_resource.txt in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		06574AB91A8EB5AF000A3616 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = serialization/org/apache/harmony/luni/tests/java/lang;
-			dstSubfolderSpec = 7;
-			files = (
-				06574ABF1A8EB61D000A3616 /* EnumTest.golden.0.ser in CopyFiles */,
-				06574AC01A8EB61D000A3616 /* EnumTest.golden.1.ser in CopyFiles */,
-				06574AC11A8EB61D000A3616 /* EnumTest.golden.2.ser in CopyFiles */,
-				06574AC21A8EB61D000A3616 /* EnumTest.golden.3.ser in CopyFiles */,
-				06574AC31A8EB61D000A3616 /* EnumTest.harmony.ser in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		06574AC51A8EB7B7000A3616 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = serialization/org/apache/harmony/regex/tests/java/util/regex;
-			dstSubfolderSpec = 7;
-			files = (
-				06574AC71A8EB830000A3616 /* PatternSyntaxExceptionTest.golden.ser in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		0696810F1BA8E0B3007AFADF /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = serialization/org/apache/harmony/beans/tests/java/beans;
-			dstSubfolderSpec = 7;
-			files = (
-				069681111BA8E147007AFADF /* PropertyChangeEventTest.golden.ser in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		069681131BA8E2F4007AFADF /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = tests/resources/java/util/zip;
-			dstSubfolderSpec = 7;
-			files = (
-				069681151BA8E334007AFADF /* EmptyArchive.zip in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		06E4E841197F25CD005DDE69 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "META-INF/services";
-			dstSubfolderSpec = 7;
-			files = (
-				06E4E843197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		06E4E844197F2611005DDE69 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = org/apache/harmony/luni/tests/java/io;
-			dstSubfolderSpec = 7;
-			files = (
-				06574AC91A8EB899000A3616 /* testfile-utf8.txt in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		06E4E847197F265C005DDE69 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = org/apache/harmony/luni/tests;
-			dstSubfolderSpec = 7;
-			files = (
-				06E4E849197F267B005DDE69 /* test_resource.txt in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		06E4E84A197F269F005DDE69 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 7;
-			files = (
-				06574AD11A8EB93D000A3616 /* wrong.xml in CopyFiles */,
-				06574ACD1A8EB8F9000A3616 /* recipt.xml in CopyFiles */,
-				06574ACE1A8EB8F9000A3616 /* simple.xml in CopyFiles */,
-				06574ACF1A8EB8F9000A3616 /* systemid.xml in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		06E4E85F197F26DC005DDE69 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = tests/api/java/io;
-			dstSubfolderSpec = 7;
-			files = (
-				06E4E863197F2705005DDE69 /* testFields.ser in CopyFiles */,
-				06E4E864197F2705005DDE69 /* testFieldsDefaulted.ser in CopyFiles */,
-				06E4E865197F2705005DDE69 /* testFieldsDeprecated.ser in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		06E4E866197F270E005DDE69 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = bundles/java/util/logging;
-			dstSubfolderSpec = 7;
-			files = (
-				06E4E86C197F273F005DDE69 /* res_en_US.properties in CopyFiles */,
-				06E4E86D197F273F005DDE69 /* res_zh_CN.properties in CopyFiles */,
-				06E4E86E197F273F005DDE69 /* res.properties in CopyFiles */,
-				06E4E86F197F273F005DDE69 /* res2.properties in CopyFiles */,
-				06E4E870197F273F005DDE69 /* res3.properties in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		06E4E871197F2746005DDE69 /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = config/java/util/logging;
-			dstSubfolderSpec = 7;
-			files = (
-				06E4E873197F276E005DDE69 /* logging.config in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
-
 /* Begin PBXFileReference section */
 		0600C0041B715CB4005FDEF9 /* CreationReferenceTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CreationReferenceTest.h; path = com/google/j2objc/java8/CreationReferenceTest.h; sourceTree = "<group>"; };
 		0600C0051B715CB4005FDEF9 /* CreationReferenceTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CreationReferenceTest.m; path = com/google/j2objc/java8/CreationReferenceTest.m; sourceTree = "<group>"; };
@@ -795,17 +604,6 @@
 		0604932C1772407B0047D336 /* IOSClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = IOSClassTest.m; path = Classes/IOSClassTest.m; sourceTree = SOURCE_ROOT; tabWidth = 2; wrapsLines = 0; };
 		061660891A40DD1400972BBD /* SerializationTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SerializationTest.h; path = libcore/java/io/SerializationTest.h; sourceTree = "<group>"; };
 		0616608A1A40DD1400972BBD /* SerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SerializationTest.m; path = libcore/java/io/SerializationTest.m; sourceTree = "<group>"; };
-		061A10831B718717002093E3 /* MD5.check */ = {isa = PBXFileReference; lastKnownFileType = text; name = MD5.check; path = build_result/tests/tests/targets/security/MD5.check; sourceTree = SOURCE_ROOT; };
-		061A10841B718717002093E3 /* MD5.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = MD5.data; path = build_result/tests/tests/targets/security/MD5.data; sourceTree = SOURCE_ROOT; };
-		061A10851B718717002093E3 /* SHA-1.check */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SHA-1.check"; path = "build_result/tests/tests/targets/security/SHA-1.check"; sourceTree = SOURCE_ROOT; };
-		061A10861B718717002093E3 /* SHA-1.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-1.data"; path = "build_result/tests/tests/targets/security/SHA-1.data"; sourceTree = SOURCE_ROOT; };
-		061A10871B718717002093E3 /* SHA-256.check */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-256.check"; path = "build_result/tests/tests/targets/security/SHA-256.check"; sourceTree = SOURCE_ROOT; };
-		061A10881B718717002093E3 /* SHA-256.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-256.data"; path = "build_result/tests/tests/targets/security/SHA-256.data"; sourceTree = SOURCE_ROOT; };
-		061A10891B718717002093E3 /* SHA-384.check */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SHA-384.check"; path = "build_result/tests/tests/targets/security/SHA-384.check"; sourceTree = SOURCE_ROOT; };
-		061A108A1B718717002093E3 /* SHA-384.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-384.data"; path = "build_result/tests/tests/targets/security/SHA-384.data"; sourceTree = SOURCE_ROOT; };
-		061A108B1B718717002093E3 /* SHA-512.check */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-512.check"; path = "build_result/tests/tests/targets/security/SHA-512.check"; sourceTree = SOURCE_ROOT; };
-		061A108C1B718717002093E3 /* SHA-512.data */ = {isa = PBXFileReference; lastKnownFileType = text; name = "SHA-512.data"; path = "build_result/tests/tests/targets/security/SHA-512.data"; sourceTree = SOURCE_ROOT; };
-		061A109A1B71916D002093E3 /* test_resource.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = test_resource.txt; path = build_result/tests/org/apache/harmony/luni/tests/java/lang/test_resource.txt; sourceTree = SOURCE_ROOT; };
 		061AA0CC19FEF01800457D2B /* package-info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "package-info.h"; path = "com/google/j2objc/package-info.h"; sourceTree = "<group>"; };
 		061AA0CD19FEF01800457D2B /* package-info.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "package-info.m"; path = "com/google/j2objc/package-info.m"; sourceTree = "<group>"; };
 		061AA0CE19FEF01800457D2B /* PackageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PackageTest.m; path = com/google/j2objc/PackageTest.m; sourceTree = "<group>"; };
@@ -1475,16 +1273,6 @@
 		06574A7D1A8EB150000A3616 /* Support_Resources.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_Resources.m; path = tests/support/resource/Support_Resources.m; sourceTree = "<group>"; };
 		06574A7E1A8EB150000A3616 /* Support_Configuration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Support_Configuration.m; path = tests/support/Support_Configuration.m; sourceTree = "<group>"; };
 		06574A9B1A8EB29C000A3616 /* DocumentBuilderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DocumentBuilderTest.m; path = libcore/javax/xml/parsers/DocumentBuilderTest.m; sourceTree = "<group>"; };
-		06574ABA1A8EB61C000A3616 /* EnumTest.golden.0.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = EnumTest.golden.0.ser; path = ../build_result/tests/serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.0.ser; sourceTree = "<group>"; };
-		06574ABB1A8EB61C000A3616 /* EnumTest.golden.1.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = EnumTest.golden.1.ser; path = ../build_result/tests/serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.1.ser; sourceTree = "<group>"; };
-		06574ABC1A8EB61C000A3616 /* EnumTest.golden.2.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = EnumTest.golden.2.ser; path = ../build_result/tests/serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.2.ser; sourceTree = "<group>"; };
-		06574ABD1A8EB61D000A3616 /* EnumTest.golden.3.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = EnumTest.golden.3.ser; path = ../build_result/tests/serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.golden.3.ser; sourceTree = "<group>"; };
-		06574ABE1A8EB61D000A3616 /* EnumTest.harmony.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = EnumTest.harmony.ser; path = ../build_result/tests/serialization/org/apache/harmony/luni/tests/java/lang/EnumTest.harmony.ser; sourceTree = "<group>"; };
-		06574AC61A8EB812000A3616 /* PatternSyntaxExceptionTest.golden.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = PatternSyntaxExceptionTest.golden.ser; path = build_result/tests/serialization/org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.golden.ser; sourceTree = SOURCE_ROOT; };
-		06574ACA1A8EB8E2000A3616 /* recipt.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = recipt.xml; path = build_result/tests/recipt.xml; sourceTree = SOURCE_ROOT; };
-		06574ACB1A8EB8E2000A3616 /* simple.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = simple.xml; path = build_result/tests/simple.xml; sourceTree = SOURCE_ROOT; };
-		06574ACC1A8EB8E2000A3616 /* systemid.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = systemid.xml; path = build_result/tests/systemid.xml; sourceTree = SOURCE_ROOT; };
-		06574AD01A8EB91E000A3616 /* wrong.xml */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = wrong.xml; path = build_result/tests/wrong.xml; sourceTree = SOURCE_ROOT; };
 		0660B4A51A018C3800B643F5 /* JRELogPaneViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = JRELogPaneViewController.xib; sourceTree = "<group>"; };
 		0660B4A81A02EA1C00B643F5 /* JRETestRunListener.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRETestRunListener.h; sourceTree = "<group>"; };
 		0660B4A91A02EA1C00B643F5 /* JRETestRunListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRETestRunListener.m; sourceTree = "<group>"; };
@@ -1901,13 +1689,10 @@
 		069681081BA8DC97007AFADF /* MockJavaBean.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockJavaBean.m; path = org/apache/harmony/beans/tests/support/mock/MockJavaBean.m; sourceTree = "<group>"; };
 		069681091BA8DC97007AFADF /* MockPropertyChangeEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockPropertyChangeEvent.m; path = org/apache/harmony/beans/tests/support/mock/MockPropertyChangeEvent.m; sourceTree = "<group>"; };
 		0696810A1BA8DC97007AFADF /* MockPropertyChangeListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockPropertyChangeListener.m; path = org/apache/harmony/beans/tests/support/mock/MockPropertyChangeListener.m; sourceTree = "<group>"; };
-		069681101BA8E147007AFADF /* PropertyChangeEventTest.golden.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = PropertyChangeEventTest.golden.ser; path = ../build_result/tests/serialization/org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.golden.ser; sourceTree = "<group>"; };
-		069681141BA8E334007AFADF /* EmptyArchive.zip */ = {isa = PBXFileReference; lastKnownFileType = archive.zip; name = EmptyArchive.zip; path = ../build_result/tests/tests/resources/java/util/zip/EmptyArchive.zip; sourceTree = "<group>"; };
 		069681161BA8E3D3007AFADF /* Third.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Third.m; path = bar/Third.m; sourceTree = "<group>"; };
 		069681171BA8E3D3007AFADF /* First.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = First.m; path = foo/bar/First.m; sourceTree = "<group>"; };
 		069681181BA8E3D3007AFADF /* Fourth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Fourth.m; path = foo/Fourth.m; sourceTree = "<group>"; };
 		069681191BA8E3D3007AFADF /* Second.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Second.m; path = foo/mumble/Second.m; sourceTree = "<group>"; };
-		0696811E1BA9C69F007AFADF /* prefixes.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = prefixes.properties; path = build_result/tests/prefixes.properties; sourceTree = SOURCE_ROOT; };
 		0697F60315D190580027A7E4 /* Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Array.h; path = build_result/Classes/java/lang/reflect/Array.h; sourceTree = "<group>"; };
 		0697F60415D190580027A7E4 /* Array.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Array.m; path = build_result/Classes/java/lang/reflect/Array.m; sourceTree = "<group>"; };
 		0697F60515D190580027A7E4 /* GenericDeclaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GenericDeclaration.h; path = build_result/Classes/java/lang/reflect/GenericDeclaration.h; sourceTree = "<group>"; };
@@ -1988,6 +1773,7 @@
 		06AFD3DE183E785D001C90C6 /* TypeVariableImpl.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TypeVariableImpl.m; path = java/lang/reflect/TypeVariableImpl.m; sourceTree = "<group>"; };
 		06B1E04F17F6403100F8940B /* Iterable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Iterable.h; path = java/lang/Iterable.h; sourceTree = "<group>"; };
 		06B1E05017F6403100F8940B /* Iterable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Iterable.m; path = java/lang/Iterable.m; sourceTree = "<group>"; };
+		06B390731BB32549004A4099 /* prefixes.properties */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = prefixes.properties; path = Tests/resources/prefixes.properties; sourceTree = SOURCE_ROOT; };
 		06B6D20117C7D3DE00624B3C /* IOSLocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSLocaleData.h; sourceTree = "<group>"; };
 		06B6D20217C7D3DE00624B3C /* IOSLocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOSLocaleData.m; sourceTree = "<group>"; };
 		06B6D20517C7D67400624B3C /* LocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleData.h; path = build_result/Classes/libcore/icu/LocaleData.h; sourceTree = "<group>"; };
@@ -3375,19 +3161,6 @@
 		06E4E6AD197F1D47005DDE69 /* ThreadPoolExecutorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThreadPoolExecutorTest.m; sourceTree = "<group>"; };
 		06E4E6AE197F1D47005DDE69 /* TimeUnitTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TimeUnitTest.h; sourceTree = "<group>"; };
 		06E4E6AF197F1D47005DDE69 /* TimeUnitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TimeUnitTest.m; sourceTree = "<group>"; };
-		06E4E837197F253D005DDE69 /* testfile-utf8.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = "testfile-utf8.txt"; path = "../build_result/tests/org/apache/harmony/luni/tests/java/io/testfile-utf8.txt"; sourceTree = "<group>"; };
-		06E4E83D197F25B2005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */ = {isa = PBXFileReference; lastKnownFileType = text; name = libcore.java.util.ServiceLoaderTestInterface; path = "../build_result/tests/META-INF/services/libcore.java.util.ServiceLoaderTestInterface"; sourceTree = "<group>"; };
-		06E4E842197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */ = {isa = PBXFileReference; lastKnownFileType = text; name = libcore.java.util.ServiceLoaderTestInterface; path = "../build_result/tests/META-INF/services/libcore.java.util.ServiceLoaderTestInterface"; sourceTree = "<group>"; };
-		06E4E848197F267B005DDE69 /* test_resource.txt */ = {isa = PBXFileReference; lastKnownFileType = text; name = test_resource.txt; path = ../build_result/tests/org/apache/harmony/luni/tests/test_resource.txt; sourceTree = "<group>"; };
-		06E4E860197F2705005DDE69 /* testFields.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = testFields.ser; path = ../build_result/tests/tests/api/java/io/testFields.ser; sourceTree = "<group>"; };
-		06E4E861197F2705005DDE69 /* testFieldsDefaulted.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = testFieldsDefaulted.ser; path = ../build_result/tests/tests/api/java/io/testFieldsDefaulted.ser; sourceTree = "<group>"; };
-		06E4E862197F2705005DDE69 /* testFieldsDeprecated.ser */ = {isa = PBXFileReference; lastKnownFileType = file; name = testFieldsDeprecated.ser; path = ../build_result/tests/tests/api/java/io/testFieldsDeprecated.ser; sourceTree = "<group>"; };
-		06E4E867197F273E005DDE69 /* res_en_US.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = res_en_US.properties; path = ../build_result/tests/bundles/java/util/logging/res_en_US.properties; sourceTree = "<group>"; };
-		06E4E868197F273E005DDE69 /* res_zh_CN.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = res_zh_CN.properties; path = ../build_result/tests/bundles/java/util/logging/res_zh_CN.properties; sourceTree = "<group>"; };
-		06E4E869197F273E005DDE69 /* res.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = res.properties; path = ../build_result/tests/bundles/java/util/logging/res.properties; sourceTree = "<group>"; };
-		06E4E86A197F273E005DDE69 /* res2.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = res2.properties; path = ../build_result/tests/bundles/java/util/logging/res2.properties; sourceTree = "<group>"; };
-		06E4E86B197F273F005DDE69 /* res3.properties */ = {isa = PBXFileReference; lastKnownFileType = text; name = res3.properties; path = ../build_result/tests/bundles/java/util/logging/res3.properties; sourceTree = "<group>"; };
-		06E4E872197F276D005DDE69 /* logging.config */ = {isa = PBXFileReference; lastKnownFileType = text; name = logging.config; path = ../build_result/tests/config/java/util/logging/logging.config; sourceTree = "<group>"; };
 		06E685D31A2FC550006F8791 /* MockEnum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MockEnum.h; path = org/apache/harmony/luni/tests/java/lang/MockEnum.h; sourceTree = "<group>"; };
 		06E685D41A2FC550006F8791 /* MockEnum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockEnum.m; path = org/apache/harmony/luni/tests/java/lang/MockEnum.m; sourceTree = "<group>"; };
 		06E685D51A2FC550006F8791 /* MockEnum2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MockEnum2.h; path = org/apache/harmony/luni/tests/java/lang/MockEnum2.h; sourceTree = "<group>"; };
@@ -3596,7 +3369,7 @@
 		06ED3E0F17D1673A0014750E /* XmlSerializer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = XmlSerializer.h; path = build_result/Classes/org/xmlpull/v1/XmlSerializer.h; sourceTree = "<group>"; };
 		06ED3E1017D1674B0014750E /* Driver.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Driver.h; path = build_result/Classes/org/xmlpull/v1/sax2/Driver.h; sourceTree = "<group>"; };
 		06ED3E1117D1674B0014750E /* Driver.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Driver.m; path = build_result/Classes/org/xmlpull/v1/sax2/Driver.m; sourceTree = "<group>"; };
-		06ED87B819759EFF00633227 /* JRE JUnit Tests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "JRE JUnit Tests.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		06ED87B819759EFF00633227 /* JREJUnitTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = JREJUnitTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		06ED87BE19759EFF00633227 /* junit_tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "junit_tests-Info.plist"; sourceTree = "<group>"; };
 		06ED87C019759EFF00633227 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		06ED87C219759EFF00633227 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -4121,7 +3894,7 @@
 			isa = PBXGroup;
 			children = (
 				06619385155848D70004DAFE /* libjre_emul.a */,
-				06ED87B819759EFF00633227 /* JRE JUnit Tests.app */,
+				06ED87B819759EFF00633227 /* JREJUnitTests.app */,
 				06459FB11A4220AF00F5ED23 /* jre_emul Tests.xctest */,
 			);
 			name = Products;
@@ -7981,43 +7754,7 @@
 		06E4E874197F277A005DDE69 /* Test Resources */ = {
 			isa = PBXGroup;
 			children = (
-				0696811E1BA9C69F007AFADF /* prefixes.properties */,
-				069681141BA8E334007AFADF /* EmptyArchive.zip */,
-				06574ABA1A8EB61C000A3616 /* EnumTest.golden.0.ser */,
-				06574ABB1A8EB61C000A3616 /* EnumTest.golden.1.ser */,
-				06574ABC1A8EB61C000A3616 /* EnumTest.golden.2.ser */,
-				06574ABD1A8EB61D000A3616 /* EnumTest.golden.3.ser */,
-				06574ABE1A8EB61D000A3616 /* EnumTest.harmony.ser */,
-				06E4E842197F25FF005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */,
-				06E4E83D197F25B2005DDE69 /* libcore.java.util.ServiceLoaderTestInterface */,
-				06E4E872197F276D005DDE69 /* logging.config */,
-				061A10831B718717002093E3 /* MD5.check */,
-				061A10841B718717002093E3 /* MD5.data */,
-				06574AC61A8EB812000A3616 /* PatternSyntaxExceptionTest.golden.ser */,
-				069681101BA8E147007AFADF /* PropertyChangeEventTest.golden.ser */,
-				06574ACA1A8EB8E2000A3616 /* recipt.xml */,
-				06E4E867197F273E005DDE69 /* res_en_US.properties */,
-				06E4E868197F273E005DDE69 /* res_zh_CN.properties */,
-				06E4E869197F273E005DDE69 /* res.properties */,
-				06E4E86A197F273E005DDE69 /* res2.properties */,
-				06E4E86B197F273F005DDE69 /* res3.properties */,
-				061A10851B718717002093E3 /* SHA-1.check */,
-				061A10861B718717002093E3 /* SHA-1.data */,
-				061A10871B718717002093E3 /* SHA-256.check */,
-				061A10881B718717002093E3 /* SHA-256.data */,
-				061A10891B718717002093E3 /* SHA-384.check */,
-				061A108A1B718717002093E3 /* SHA-384.data */,
-				061A108B1B718717002093E3 /* SHA-512.check */,
-				061A108C1B718717002093E3 /* SHA-512.data */,
-				06574ACB1A8EB8E2000A3616 /* simple.xml */,
-				06574ACC1A8EB8E2000A3616 /* systemid.xml */,
-				061A109A1B71916D002093E3 /* test_resource.txt */,
-				06E4E848197F267B005DDE69 /* test_resource.txt */,
-				06E4E860197F2705005DDE69 /* testFields.ser */,
-				06E4E861197F2705005DDE69 /* testFieldsDefaulted.ser */,
-				06E4E862197F2705005DDE69 /* testFieldsDeprecated.ser */,
-				06E4E837197F253D005DDE69 /* testfile-utf8.txt */,
-				06574AD01A8EB91E000A3616 /* wrong.xml */,
+				06B390731BB32549004A4099 /* prefixes.properties */,
 			);
 			name = "Test Resources";
 			sourceTree = "<group>";
@@ -8088,7 +7825,7 @@
 				0612E1C5198037CA0023C71D /* PBXTargetDependency */,
 			);
 			name = "jre_emul translate tests";
-			passBuildSettingsInEnvironment = 0;
+			passBuildSettingsInEnvironment = 1;
 			productName = "j2objc build";
 		};
 /* End PBXLegacyTarget section */
@@ -8127,36 +7864,23 @@
 			productReference = 06619385155848D70004DAFE /* libjre_emul.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		06ED87B719759EFF00633227 /* JRE JUnit Tests */ = {
+		06ED87B719759EFF00633227 /* JREJUnitTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 06ED87DC19759F0000633227 /* Build configuration list for PBXNativeTarget "JRE JUnit Tests" */;
+			buildConfigurationList = 06ED87DC19759F0000633227 /* Build configuration list for PBXNativeTarget "JREJUnitTests" */;
 			buildPhases = (
 				06ED87B419759EFF00633227 /* Sources */,
 				06ED87B519759EFF00633227 /* Frameworks */,
 				06574AC41A8EB6CF000A3616 /* Make Resources */,
 				06ED87B619759EFF00633227 /* Resources */,
-				06E4E847197F265C005DDE69 /* CopyFiles */,
-				06E4E844197F2611005DDE69 /* CopyFiles */,
-				06574AB91A8EB5AF000A3616 /* CopyFiles */,
-				06574AC51A8EB7B7000A3616 /* CopyFiles */,
-				06E4E841197F25CD005DDE69 /* CopyFiles */,
-				06E4E84A197F269F005DDE69 /* CopyFiles */,
-				06E4E85F197F26DC005DDE69 /* CopyFiles */,
-				06E4E866197F270E005DDE69 /* CopyFiles */,
-				06E4E871197F2746005DDE69 /* CopyFiles */,
-				0600BFF91B7152C1005FDEF9 /* Copy Files */,
-				061A10971B718E12002093E3 /* CopyFiles */,
-				0696810F1BA8E0B3007AFADF /* CopyFiles */,
-				069681131BA8E2F4007AFADF /* CopyFiles */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				06E4E35F197F11D1005DDE69 /* PBXTargetDependency */,
 			);
-			name = "JRE JUnit Tests";
+			name = JREJUnitTests;
 			productName = junit_tests;
-			productReference = 06ED87B819759EFF00633227 /* JRE JUnit Tests.app */;
+			productReference = 06ED87B819759EFF00633227 /* JREJUnitTests.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -8165,7 +7889,7 @@
 		0661937C155848D70004DAFE /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0700;
 				TargetAttributes = {
 					06459FB01A4220AF00F5ED23 = {
 						CreatedOnToolsVersion = 6.1;
@@ -8189,7 +7913,7 @@
 				06619384155848D70004DAFE /* jre_emul */,
 				067219231559BF3600645E1B /* j2objc build */,
 				06E4E35A197F1172005DDE69 /* jre_emul translate tests */,
-				06ED87B719759EFF00633227 /* JRE JUnit Tests */,
+				06ED87B719759EFF00633227 /* JREJUnitTests */,
 				06459FB01A4220AF00F5ED23 /* jre_emul Tests */,
 			);
 		};
@@ -8200,7 +7924,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0696811F1BA9C69F007AFADF /* prefixes.properties in Resources */,
+				06B390741BB32549004A4099 /* prefixes.properties in Resources */,
 				06ED87C119759EFF00633227 /* InfoPlist.strings in Resources */,
 				0660B4A71A018C3800B643F5 /* JRELogPaneViewController.xib in Resources */,
 				06ED87C919759EFF00633227 /* Images.xcassets in Resources */,
@@ -8810,10 +8534,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					"$(ARCHS_STANDARD)",
-					x86_64,
-				);
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -8853,6 +8573,7 @@
 				LIBRARY_SEARCH_PATHS = build_result;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "Google.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "x86_64 i386 $(ARCHS_STANDARD_INCLUDING_64_BIT)";
 			};
@@ -8862,10 +8583,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					"$(ARCHS_STANDARD)",
-					x86_64,
-				);
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -8902,6 +8619,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = build_result;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "Google.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				VALID_ARCHS = "x86_64 i386 $(ARCHS_STANDARD_INCLUDING_64_BIT)";
 			};
@@ -8911,9 +8629,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -8942,7 +8660,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD)";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = YES;
 				GCC_C_LANGUAGE_STANDARD = c11;
@@ -9011,13 +8728,6 @@
 		067219251559BF3600645E1B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					macosx,
-					iphone,
-					iphone64,
-					iphonev7s,
-					simulator,
-				);
 				DEBUGGING_SYMBOLS = YES;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -9036,13 +8746,6 @@
 		067219261559BF3600645E1B /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					macosx,
-					iphone,
-					iphone64,
-					iphonev7s,
-					simulator,
-				);
 				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				COPY_PHASE_STRIP = "";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -9060,13 +8763,6 @@
 		06E4E35C197F1172005DDE69 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					macosx,
-					iphone,
-					iphone64,
-					iphonev7s,
-					simulator,
-				);
 				DEBUGGING_SYMBOLS = YES;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
@@ -9085,13 +8781,6 @@
 		06E4E35D197F1172005DDE69 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					macosx,
-					iphone,
-					iphone64,
-					iphonev7s,
-					simulator,
-				);
 				CLANG_USE_OPTIMIZATION_PROFILE = YES;
 				COPY_PHASE_STRIP = "";
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -9157,6 +8846,7 @@
 					"-lguava",
 					"-ljsr305",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "Google.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation Classes build_result/Classes ../dist/include build_result/tests";
@@ -9213,6 +8903,7 @@
 					"-lguava",
 					"-ljsr305",
 				);
+				PRODUCT_BUNDLE_IDENTIFIER = "Google.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation Classes build_result/Classes ../dist/include build_result/tests";
@@ -9269,7 +8960,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		06ED87DC19759F0000633227 /* Build configuration list for PBXNativeTarget "JRE JUnit Tests" */ = {
+		06ED87DC19759F0000633227 /* Build configuration list for PBXNativeTarget "JREJUnitTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				06ED87DD19759F0000633227 /* Debug */,

@@ -641,12 +641,12 @@ BEANS_TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/beans/src/test/resou
 TEST_RESOURCES_ROOT = Tests/resources
 
 TEST_RESOURCES = \
-    $(TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
-    $(ANDROID_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
-    $(HARMONY_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
-    $(LOGGING_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
-    $(ZIP_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%) \
-    $(BEANS_TEST_RESOURCES_SRCS:%=$(TESTS_DIR)/%)
+    $(TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%) \
+    $(ANDROID_TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%) \
+    $(HARMONY_TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%) \
+    $(LOGGING_TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%) \
+    $(ZIP_TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%) \
+    $(BEANS_TEST_RESOURCES_SRCS:%=$(RESOURCES_DEST_DIR)/%)
 
 # Broken tests, plus associated bug id.  Once bug is fixed, move line(s) up.
 # $(TESTS_DIR)/org/apache/harmony/luni/tests/java/lang/StringBuilderTest.o     b/8842295
@@ -699,23 +699,23 @@ link: build $(TEST_BIN)
 resources: $(TEST_RESOURCES)
 	@:
 
-$(TESTS_DIR)/%: $(TEST_RESOURCES_ROOT)/%
+$(RESOURCES_DEST_DIR)/%: $(TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 
-$(TESTS_DIR)/%: $(ANDROID_TEST_RESOURCES_ROOT)/%
+$(RESOURCES_DEST_DIR)/%: $(ANDROID_TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 
-$(TESTS_DIR)/%: $(LOGGING_TEST_RESOURCES_ROOT)/%
+$(RESOURCES_DEST_DIR)/%: $(LOGGING_TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 
-$(TESTS_DIR)/%: $(BEANS_TEST_RESOURCES_ROOT)/%
+$(RESOURCES_DEST_DIR)/%: $(BEANS_TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 
-$(TESTS_DIR)/%: $(HARMONY_TEST_RESOURCES_ROOT)/%
+$(RESOURCES_DEST_DIR)/%: $(HARMONY_TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 
