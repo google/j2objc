@@ -628,7 +628,9 @@ LOGGING_TEST_RESOURCES_SRCS = \
     bundles/java/util/logging/res_en_US.properties \
     bundles/java/util/logging/res_zh_CN.properties \
     config/java/util/logging/logging.config
-ZIP_TEST_RESOURCES_SRCS = tests/resources/java/util/zip/EmptyArchive.zip
+ZIP_TEST_RESOURCES_SRCS = \
+    tests/resources/java/util/zip/EmptyArchive.zip \
+    tests/resources/java/util/zip/ZipFileBreak.zip
 BEANS_TEST_RESOURCES_SRCS = \
     serialization/org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.golden.ser
 

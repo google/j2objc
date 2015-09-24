@@ -522,4 +522,48 @@ public abstract class AbstractZipFileTest extends TestCase {
             assertTrue(entryNamesFromFile.contains(entryName));
         }
     }
+
+  /* Disabled until b/24360201 is fixed.
+    public void testZipFileErrorReadingData() throws IOException {
+        File resources = Support_Resources.createTempFolder();
+        File tempZipFile = Support_Resources.copyFile(
+                resources, "java/util/zip", "ZipFileBreak.zip");
+        String tempZipFilePath = tempZipFile.getAbsolutePath();
+
+        try (ZipFile zipFile = new ZipFile(tempZipFilePath)) {
+          ZipEntry entry = zipFile.getEntry("subdir/file.txt");
+          assertNotNull(entry);
+          byte[] content = toByteArray(zipFile.getInputStream(entry));
+          assertNotNull(content);
+
+          entry = zipFile.getEntry("subdir/file.pb");
+          assertNotNull(entry);
+          content = toByteArray(zipFile.getInputStream(entry));
+          assertNotNull(content);
+        }
+    }
+  */
+
+    // From Guava's com.google.common.io.ByteStreams.
+    public static byte[] toByteArray(InputStream in) throws IOException {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        copy(in, out);
+        return out.toByteArray();
+    }
+
+    // From Guava's com.google.common.io.ByteStreams.
+    public static long copy(InputStream from, OutputStream to)
+        throws IOException {
+        byte[] buf = new byte[0x1000]; // 4K
+        long total = 0;
+        while (true) {
+            int r = from.read(buf);
+            if (r == -1) {
+                break;
+            }
+            to.write(buf, 0, r);
+            total += r;
+        }
+        return total;
+    }
 }

@@ -20,6 +20,7 @@ package java.util.zip;
 /*-[
 #import "zlib.h"
 #import "java/io/FileInputStream.h"
+#import "java/io/IOException.h"
 #import "java/lang/IllegalArgumentException.h"
 #import "java/lang/OutOfMemoryError.h"
 
@@ -434,7 +435,10 @@ public class Inflater {
           [[JavaIoFileInputStream alloc] initWithJavaIoFileDescriptor:fd];
       [fileIn skipWithLong:offset];
       IOSByteArray *in = [IOSByteArray arrayWithLength:byteCount];
-      [fileIn readWithByteArray:in withInt:0 withInt:byteCount];
+      jint bytesRead = [fileIn readWithByteArray:in withInt:0 withInt:byteCount];
+      if (bytesRead < 0) {
+        @throw AUTORELEASE([[JavaIoIOException alloc] init]);
+      }
       [self setInputImplWithByteArray:in withInt:0 withInt:byteCount withLong:handle];
       [fileIn close];
       RELEASE_(fileIn);
