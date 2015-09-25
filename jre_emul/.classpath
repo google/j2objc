@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="android/frameworks/base/core/java"/>
+	<classpathentry kind="src" path="android/frameworks/base/core/tests/coretests/src"/>
+	<classpathentry kind="src" path="android/frameworks/base/tests-runner/src"/>
+	<classpathentry kind="src" path="android/libcore/dalvik/src/main/java"/>
+	<classpathentry kind="src" path="android/libcore/harmony-tests/src/test/java"/>
+	<classpathentry kind="src" path="android/libcore/json/src/main/java"/>
+	<classpathentry kind="src" path="android/libcore/json/src/test/java"/>
+	<classpathentry kind="src" path="android/libcore/luni/src/main/java"/>
+	<classpathentry kind="src" path="android/libcore/luni/src/test/java"/>
+	<classpathentry kind="src" path="android/libcore/support/src/test/java"/>
+	<classpathentry kind="src" path="android/libcore/xml/src/main/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/archive/src/test/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/beans/src/main/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/beans/src/test/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/beans/src/test/support/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/concurrent/src/test/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/logging/src/test/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/luni-kernel/src/main/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/luni/src/test/api/common"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/math/src/main/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/math/src/test/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/modules/text/src/test/java"/>
+	<classpathentry kind="src" path="apache_harmony/classlib/support/src/test/java"/>
+	<classpathentry kind="src" path="Classes"/>
+	<classpathentry kind="src" path="misc-tests"/>
+	<classpathentry kind="src" path="stub_classes"/>
+	<classpathentry kind="src" path="Tests"/>
+	<classpathentry kind="lib" path="build_result/jre_emul.jar" sourcepath="build_result/jre_emul-src.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="../dist/lib/j2objc_junit.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations"/>
+	<classpathentry kind="output" path="build_result/eclipse"/>
+</classpath>
