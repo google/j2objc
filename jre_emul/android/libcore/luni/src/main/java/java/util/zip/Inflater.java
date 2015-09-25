@@ -433,7 +433,7 @@ public class Inflater {
         long handle) /*-[
       JavaIoFileInputStream *fileIn =
           [[JavaIoFileInputStream alloc] initWithJavaIoFileDescriptor:fd];
-      [fileIn skipWithLong:offset];
+      lseek([fd getInt$], offset, SEEK_SET);
       IOSByteArray *in = [IOSByteArray arrayWithLength:byteCount];
       jint bytesRead = [fileIn readWithByteArray:in withInt:0 withInt:byteCount];
       if (bytesRead < 0) {

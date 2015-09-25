@@ -523,7 +523,6 @@ public abstract class AbstractZipFileTest extends TestCase {
         }
     }
 
-  /* Disabled until b/24360201 is fixed.
     public void testZipFileErrorReadingData() throws IOException {
         File resources = Support_Resources.createTempFolder();
         File tempZipFile = Support_Resources.copyFile(
@@ -542,7 +541,6 @@ public abstract class AbstractZipFileTest extends TestCase {
           assertNotNull(content);
         }
     }
-  */
 
     // From Guava's com.google.common.io.ByteStreams.
     public static byte[] toByteArray(InputStream in) throws IOException {
