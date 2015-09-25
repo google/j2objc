@@ -193,6 +193,8 @@ public class InflaterInputStream extends FilterInputStream {
         } else {
             if ((len = in.read(buf)) > 0) {
                 inf.setInput(buf, 0, len);
+            } else if (len == -1) {
+                throw new EOFException("Unexpected end of stream.");
             }
         }
     }

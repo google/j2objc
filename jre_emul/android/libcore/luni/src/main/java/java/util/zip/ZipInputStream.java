@@ -112,7 +112,11 @@ public class ZipInputStream extends InflaterInputStream implements ZipConstants 
     @Override
     public void close() throws IOException {
         if (!closed) {
-            closeEntry(); // Close the current entry
+            try {
+                closeEntry(); // Close the current entry
+            } catch (IOException ignored) {
+            }
+
             super.close();
         }
     }

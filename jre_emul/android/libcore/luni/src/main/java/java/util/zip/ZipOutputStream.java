@@ -260,7 +260,11 @@ public class ZipOutputStream extends DeflaterOutputStream implements ZipConstant
         writeIntAsUint16(cDir, 0); // Disk Start
         writeIntAsUint16(cDir, 0); // Internal File Attributes
         writeLongAsUint32(cDir, 0); // External File Attributes
-        writeLongAsUint32(cDir, offset);
+        if (currentEntryNeedsZip64) {
+            writeLongAsUint32(cDir, Zip64.MAX_ZIP_ENTRY_AND_ARCHIVE_SIZE);
+        } else {
+            writeLongAsUint32(cDir, currentEntry.localHeaderRelOffset);
+        }
         cDir.write(nameBytes);
         nameBytes = null;
         if (currentEntry.extra != null) {

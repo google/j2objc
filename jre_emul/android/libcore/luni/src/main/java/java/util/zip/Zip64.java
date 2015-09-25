@@ -19,6 +19,7 @@ package java.util.zip;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.BufferOverflowException;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -46,11 +47,6 @@ public class Zip64 {
      */
     private static final short ZIP64_EXTENDED_INFO_HEADER_ID = 0x0001;
 
-    /**
-     * The minimum size of the zip64 extended info header. This excludes the 2 byte header ID
-     * and the 2 byte size.
-     */
-    private static final int ZIP64_EXTENDED_INFO_MIN_SIZE = 28;
 
     /*
      * Size (in bytes) of the zip64 end of central directory locator. This will be located
@@ -191,35 +187,32 @@ public class Zip64 {
             if (extendedInfoSize != -1) {
                 extendedInfoStart = buf.position();
                 try {
-                    if (extendedInfoSize < ZIP64_EXTENDED_INFO_MIN_SIZE) {
-                        throw new ZipException("Invalid zip64 extended info size: " + extendedInfoSize);
-                    }
-
                     // The size & compressed size only make sense in the central directory *or* if
                     // we know them beforehand. If we don't know them beforehand, they're stored in
                     // the data descriptor and should be read from there.
+                    //
+                    // Note that the spec says that the local file header "MUST" contain the
+                    // original and compressed size fields. We don't care too much about that.
+                    // The spec claims that the order of fields is fixed anyway.
                     if (fromCentralDirectory || (ze.getMethod() == ZipEntry.STORED)) {
-                        final long zip64Size = buf.getLong();
                         if (ze.size == MAX_ZIP_ENTRY_AND_ARCHIVE_SIZE) {
-                            ze.size = zip64Size;
+                            ze.size = buf.getLong();
                         }
 
-                        final long zip64CompressedSize = buf.getLong();
                         if (ze.compressedSize == MAX_ZIP_ENTRY_AND_ARCHIVE_SIZE) {
-                            ze.compressedSize = zip64CompressedSize;
+                            ze.compressedSize = buf.getLong();
                         }
                     }
 
                     // The local header offset is significant only in the central directory. It makes no
                     // sense within the local header itself.
                     if (fromCentralDirectory) {
-                        final long zip64LocalHeaderRelOffset = buf.getLong();
                         if (ze.localHeaderRelOffset == MAX_ZIP_ENTRY_AND_ARCHIVE_SIZE) {
-                            ze.localHeaderRelOffset = zip64LocalHeaderRelOffset;
+                            ze.localHeaderRelOffset = buf.getLong();
                         }
                     }
                 } catch (BufferUnderflowException bue) {
-                    ZipException zipException = new ZipException("Error parsing extendend info ");
+                    ZipException zipException = new ZipException("Error parsing extended info");
                     zipException.initCause(bue);
                     throw zipException;
                 }
@@ -273,8 +266,20 @@ public class Zip64 {
      */
     public static void insertZip64ExtendedInfoToExtras(ZipEntry ze) throws ZipException {
         final byte[] output;
-        // We add 4 to ZIP64_EXTENDED_INFO_MIN_SIZE to account for the 2 byte header and length.
-        final int extendedInfoSize = ZIP64_EXTENDED_INFO_MIN_SIZE + 4;
+        // We always write the size, uncompressed size and local rel header offset in all our
+        // Zip64 extended info headers (in both the local file header as well as the central
+        // directory). We always omit the disk number because we don't support spanned
+        // archives anyway.
+        //
+        //  2 bytes : Zip64 Extended Info Header ID
+        //  2 bytes : Zip64 Extended Info Field Size.
+        //  8 bytes : Uncompressed size
+        //  8 bytes : Compressed size
+        //  8 bytes : Local header rel offset.
+        // ----------
+        // 28 bytes : total
+        final int extendedInfoSize = 28;
+
         if (ze.extra == null) {
             output = new byte[extendedInfoSize];
         } else {
@@ -291,13 +296,15 @@ public class Zip64 {
             // This means that people that for ZipOutputStream users, the value ZipEntry.getExtra
             // after an entry is written will be different from before. This shouldn't be an issue
             // in practice.
-            output = new byte[ze.extra.length + ZIP64_EXTENDED_INFO_MIN_SIZE + 4];
-            System.arraycopy(ze.extra, 0, output,  ZIP64_EXTENDED_INFO_MIN_SIZE + 4, ze.extra.length);
+            output = new byte[ze.extra.length + extendedInfoSize];
+            System.arraycopy(ze.extra, 0, output,  extendedInfoSize, ze.extra.length);
         }
 
         ByteBuffer bb = ByteBuffer.wrap(output).order(ByteOrder.LITTLE_ENDIAN);
         bb.putShort(ZIP64_EXTENDED_INFO_HEADER_ID);
-        bb.putShort((short) ZIP64_EXTENDED_INFO_MIN_SIZE);
+        // We subtract four because extendedInfoSize includes the ID and field
+        // size itself.
+        bb.putShort((short) (extendedInfoSize - 4));
 
         if (ze.getMethod() == ZipEntry.STORED) {
             bb.putLong(ze.size);
@@ -311,7 +318,6 @@ public class Zip64 {
         // The offset is only relevant in the central directory entry, but we write it out here
         // anyway, since we know what it is.
         bb.putLong(ze.localHeaderRelOffset);
-        bb.putInt(0);  //  disk number
 
         ze.extra = output;
     }
@@ -354,23 +360,29 @@ public class Zip64 {
      * we could calculate the correct sizes only after writing out the entry. In this case,
      * the local file header would not contain real sizes, and they would be present in the
      * data descriptor and the central directory only.
+     *
+     * We choose the simplest strategy of always writing out the size, compressedSize and
+     * local header offset in all our Zip64 Extended info records.
      */
     public static void refreshZip64ExtendedInfo(ZipEntry ze) {
-        if (ze.extra == null || ze.extra.length < ZIP64_EXTENDED_INFO_MIN_SIZE) {
+        if (ze.extra == null) {
             throw new IllegalStateException("Zip64 entry has no available extras: " + ze);
         }
 
-
         ByteBuffer buf = ByteBuffer.wrap(ze.extra).order(ByteOrder.LITTLE_ENDIAN);
-        if (getZip64ExtendedInfoSize(buf) == -1) {
+        final int extendedInfoSize = getZip64ExtendedInfoSize(buf);
+        if (extendedInfoSize == -1) {
             throw new IllegalStateException(
                     "Zip64 entry extras has no zip64 extended info record: " + ze);
         }
 
-        buf.putLong(ze.size);
-        buf.putLong(ze.compressedSize);
-        buf.putLong(ze.localHeaderRelOffset);
-        buf.putInt(0); // disk number.
+        try {
+            buf.putLong(ze.size);
+            buf.putLong(ze.compressedSize);
+            buf.putLong(ze.localHeaderRelOffset);
+        } catch (BufferOverflowException boe) {
+            throw new IllegalStateException("Invalid extended info extra", boe);
+        }
     }
 
     public static void writeZip64EocdRecordAndLocator(ByteArrayOutputStream baos,
