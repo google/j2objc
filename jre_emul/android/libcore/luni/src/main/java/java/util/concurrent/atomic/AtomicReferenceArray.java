@@ -112,8 +112,8 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * @param newValue the new value
      */
     public final native void set(int i, E newValue) /*-[
-      id oldValue = __c11_atomic_exchange(GetPtrChecked(self, i), newValue, __ATOMIC_SEQ_CST);
       [newValue retain];
+      id oldValue = __c11_atomic_exchange(GetPtrChecked(self, i), newValue, __ATOMIC_SEQ_CST);
       [oldValue autorelease];
     ]-*/;
 
@@ -125,8 +125,8 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * @since 1.6
      */
     public final native void lazySet(int i, E newValue) /*-[
-      id oldValue = __c11_atomic_exchange(GetPtrChecked(self, i), newValue, __ATOMIC_RELEASE);
       [newValue retain];
+      id oldValue = __c11_atomic_exchange(GetPtrChecked(self, i), newValue, __ATOMIC_RELEASE);
       [oldValue autorelease];
     ]-*/;
 
@@ -139,8 +139,8 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * @return the previous value
      */
     public final native E getAndSet(int i, E newValue) /*-[
-      id oldValue = __c11_atomic_exchange(GetPtrChecked(self, i), newValue, __ATOMIC_SEQ_CST);
       [newValue retain];
+      id oldValue = __c11_atomic_exchange(GetPtrChecked(self, i), newValue, __ATOMIC_SEQ_CST);
       [oldValue autorelease];
       return oldValue;
     ]-*/;
@@ -156,12 +156,13 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * the actual value was not equal to the expected value.
      */
     public final native boolean compareAndSet(int i, E expect, E update) /*-[
+      [update retain];
       if (__c11_atomic_compare_exchange_strong(
           GetPtrChecked(self, i), (void **)&expect, update, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
-        [update retain];
         [expect autorelease];
         return YES;
       }
+      [update release];
       return NO;
     ]-*/;
 
@@ -179,12 +180,13 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
      * @return true if successful
      */
     public final native boolean weakCompareAndSet(int i, E expect, E update) /*-[
+      [update retain];
       if (__c11_atomic_compare_exchange_weak(
           GetPtrChecked(self, i), (void **)&expect, update, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) {
-        [update retain];
         [expect autorelease];
         return YES;
       }
+      [update release];
       return NO;
     ]-*/;
 

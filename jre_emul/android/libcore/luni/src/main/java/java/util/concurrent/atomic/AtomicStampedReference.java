@@ -165,22 +165,24 @@ public class AtomicStampedReference<V> {
     }
 
     private native boolean casPair(Pair<V> cmp, Pair<V> val) /*-[
+      [val retain];
       if (__c11_atomic_compare_exchange_strong(
           &self->pair_, (void **)&cmp, val, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
-        [val retain];
         [cmp autorelease];
         return YES;
       }
+      [val release];
       return NO;
     ]-*/;
 
     private native boolean weakCasPair(Pair<V> cmp, Pair<V> val) /*-[
+      [val retain];
       if (__c11_atomic_compare_exchange_weak(
           &self->pair_, (void **)&cmp, val, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) {
-        [val retain];
         [cmp autorelease];
         return YES;
       }
+      [val release];
       return NO;
     ]-*/;
 }

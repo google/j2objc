@@ -91,8 +91,8 @@ public final class Unsafe {
     #define PUT_OBJECT_IMPL(MEM_ORDER) \
       uintptr_t ptr = PTR(obj, offset); \
       CHECK_ADDR(id, ptr) \
-      id oldValue = __c11_atomic_exchange((volatile_id *)ptr, newValue, __ATOMIC_##MEM_ORDER); \
       [newValue retain]; \
+      id oldValue = __c11_atomic_exchange((volatile_id *)ptr, newValue, __ATOMIC_##MEM_ORDER); \
       [oldValue autorelease]; \
     ]-*/
 
@@ -206,13 +206,14 @@ public final class Unsafe {
             Object expectedValue, Object newValue) /*-[
       uintptr_t ptr = PTR(obj, offset);
       CHECK_ADDR(id, ptr)
+      [newValue retain];
       if (__c11_atomic_compare_exchange_strong(
           (volatile_id *)ptr, (void **)&expectedValue, newValue, __ATOMIC_SEQ_CST,
           __ATOMIC_SEQ_CST)) {
-        [newValue retain];
         [expectedValue autorelease];
         return true;
       }
+      [newValue release];
       return false;
     ]-*/;
 

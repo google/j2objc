@@ -59,8 +59,8 @@ public class AtomicReference<V> implements java.io.Serializable {
      * @since 1.6
      */
     public final native void lazySet(V newValue) /*-[
-      id oldValue = __c11_atomic_exchange(&self->value_, newValue, __ATOMIC_RELEASE);
       [newValue retain];
+      id oldValue = __c11_atomic_exchange(&self->value_, newValue, __ATOMIC_RELEASE);
       [oldValue autorelease];
     ]-*/;
 
@@ -73,12 +73,13 @@ public class AtomicReference<V> implements java.io.Serializable {
      * the actual value was not equal to the expected value.
      */
     public final native boolean compareAndSet(V expect, V update) /*-[
+      [update retain];
       if (__c11_atomic_compare_exchange_strong(
           &self->value_, (void **)&expect, update, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
-        [update retain];
         [expect autorelease];
         return YES;
       }
+      [update release];
       return NO;
     ]-*/;
 
@@ -95,12 +96,13 @@ public class AtomicReference<V> implements java.io.Serializable {
      * @return true if successful
      */
     public final native boolean weakCompareAndSet(V expect, V update) /*-[
+      [update retain];
       if (__c11_atomic_compare_exchange_weak(
           &self->value_, (void **)&expect, update, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) {
-        [update retain];
         [expect autorelease];
         return YES;
       }
+      [update release];
       return NO;
     ]-*/;
 
@@ -111,8 +113,8 @@ public class AtomicReference<V> implements java.io.Serializable {
      * @return the previous value
      */
     public final native V getAndSet(V newValue) /*-[
-      id oldValue = __c11_atomic_exchange(&self->value_, newValue, __ATOMIC_SEQ_CST);
       [newValue retain];
+      id oldValue = __c11_atomic_exchange(&self->value_, newValue, __ATOMIC_SEQ_CST);
       [oldValue autorelease];
       return oldValue;
     ]-*/;
