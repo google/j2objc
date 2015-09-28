@@ -197,9 +197,9 @@
   IOSClass *type = JavaUtilDate_class_();
 
   // Verify single dimension array is correct type.
-  id array = [IOSObjectArray arrayWithDimensions:1
-                                         lengths:(int[]){2}
-                                            type:type];
+  IOSObjectArray *array = [IOSObjectArray arrayWithDimensions:1
+                                                      lengths:(int[]){2}
+                                                         type:type];
   XCTAssertEqualObjects([array elementType], type,
                        @"wrong element type: %@", [array elementType]);
 
@@ -212,13 +212,13 @@
   XCTAssertTrue([array length] == 2,
                @"invalid array length, was %d", (jint)[array length]);
   for (jint i = 0; i < 2; i++) {
-    id subarray = [array objectAtIndex:i];
+    IOSObjectArray *subarray = [array objectAtIndex:i];
     XCTAssertTrue([subarray isMemberOfClass:[IOSObjectArray class]],
                  @"wrong subarray type: %@", [subarray class]);
     XCTAssertTrue([subarray length] == 4,
                  @"invalid subarray length, was %d", (jint)[subarray length]);
     for (jint i = 0; i < 4; i++) {
-      id subsubarray = [subarray objectAtIndex:i];
+      IOSArray *subsubarray = [subarray objectAtIndex:i];
       XCTAssertTrue([subsubarray isMemberOfClass:[IOSObjectArray class]],
                    @"wrong subarray type: %@", [subarray class]);
       XCTAssertTrue([subsubarray length] == 6,

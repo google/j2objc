@@ -18,20 +18,18 @@
 		061AA0D019FEF01800457D2B /* PackageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CE19FEF01800457D2B /* PackageTest.m */; };
 		061AA0D519FEF2E700457D2B /* TestAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D219FEF2E700457D2B /* TestAnnotation.m */; };
 		061AA0D619FEF2E700457D2B /* ThrowableTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0D319FEF2E700457D2B /* ThrowableTest.m */; };
-		06243C5D1B6BF6BA00657D74 /* NSDataInputStreamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06243C5C1B6BF6BA00657D74 /* NSDataInputStreamTest.m */; };
+		0620F4EB1BB60A6100626242 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; settings = {ASSET_TAGS = (); }; };
+		0620F4F11BB60AC700626242 /* IOSArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CD15587FC600645E1B /* IOSArrayTest.m */; };
+		0620F4F21BB60AC700626242 /* IOSClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0604932C1772407B0047D336 /* IOSClassTest.m */; };
+		0620F4F31BB60AC700626242 /* IOSObjectArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CE15587FC600645E1B /* IOSObjectArrayTest.m */; };
+		0620F4F41BB60AC700626242 /* IOSPrimitiveClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CF15587FC600645E1B /* IOSPrimitiveClassTest.m */; };
+		0620F4F51BB60AC700626242 /* JavaLangReflectMethodTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217D015587FC600645E1B /* JavaLangReflectMethodTest.m */; };
+		0620F4F61BB60AC700626242 /* NSDataInputStreamTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0620F4DF1BB608C200626242 /* NSDataInputStreamTest.m */; };
+		0620F4F71BB60AC700626242 /* NSObject_JavaObjectTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217D115587FC600645E1B /* NSObject_JavaObjectTest.m */; };
+		0620F4F81BB60AC700626242 /* NSString_JavaStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217D215587FC600645E1B /* NSString_JavaStringTest.m */; };
+		0620F4FA1BB60C3900626242 /* libicucore.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 0620F4F91BB60C3900626242 /* libicucore.tbd */; };
 		062463D41A000CE3006D52C9 /* JRETestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */; };
 		062463DA1A005995006D52C9 /* JRELogPaneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 062463D91A005995006D52C9 /* JRELogPaneViewController.m */; };
-		06459FB71A4220AF00F5ED23 /* libjre_emul.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 06619385155848D70004DAFE /* libjre_emul.a */; };
-		06459FBD1A4220F700F5ED23 /* IOSArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CD15587FC600645E1B /* IOSArrayTest.m */; };
-		06459FBE1A4220F700F5ED23 /* IOSClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0604932C1772407B0047D336 /* IOSClassTest.m */; };
-		06459FBF1A4220F700F5ED23 /* IOSObjectArrayTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CE15587FC600645E1B /* IOSObjectArrayTest.m */; };
-		06459FC01A4220F700F5ED23 /* IOSPrimitiveClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217CF15587FC600645E1B /* IOSPrimitiveClassTest.m */; };
-		06459FC11A4220F700F5ED23 /* JavaLangReflectMethodTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217D015587FC600645E1B /* JavaLangReflectMethodTest.m */; };
-		06459FC21A4220F700F5ED23 /* NSObject_JavaObjectTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217D115587FC600645E1B /* NSObject_JavaObjectTest.m */; };
-		06459FC31A4220F700F5ED23 /* NSString_JavaStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 067217D215587FC600645E1B /* NSString_JavaStringTest.m */; };
-		06459FC41A42230200F5ED23 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C54AD31A40C7A4004B3ACD /* libicucore.dylib */; };
-		06459FC51A42230900F5ED23 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5719180E64001D3CC8 /* Security.framework */; };
-		06459FC61A42231200F5ED23 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5919180E6D001D3CC8 /* libz.dylib */; };
 		06459FC71A4223F000F5ED23 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C54AD31A40C7A4004B3ACD /* libicucore.dylib */; };
 		06574A1A1A8EAF0B000A3616 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5719180E64001D3CC8 /* Security.framework */; };
 		06574A1C1A8EAF84000A3616 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06574A1B1A8EAF84000A3616 /* QuartzCore.framework */; };
@@ -565,7 +563,7 @@
 			remoteGlobalIDString = 06619384155848D70004DAFE;
 			remoteInfo = jre_emul;
 		};
-		06459FB81A4220AF00F5ED23 /* PBXContainerItemProxy */ = {
+		0620F4EC1BB60A6100626242 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 0661937C155848D70004DAFE /* Project object */;
 			proxyType = 1;
@@ -609,16 +607,17 @@
 		061AA0CE19FEF01800457D2B /* PackageTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PackageTest.m; path = com/google/j2objc/PackageTest.m; sourceTree = "<group>"; };
 		061AA0D219FEF2E700457D2B /* TestAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestAnnotation.m; path = com/google/j2objc/TestAnnotation.m; sourceTree = "<group>"; };
 		061AA0D319FEF2E700457D2B /* ThrowableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ThrowableTest.m; path = com/google/j2objc/ThrowableTest.m; sourceTree = "<group>"; };
+		0620F4DF1BB608C200626242 /* NSDataInputStreamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSDataInputStreamTest.m; path = Classes/NSDataInputStreamTest.m; sourceTree = SOURCE_ROOT; };
+		0620F4E61BB60A6100626242 /* jre_emul_xctests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = jre_emul_xctests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		0620F4EA1BB60A6100626242 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0620F4F91BB60C3900626242 /* libicucore.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libicucore.tbd; path = usr/lib/libicucore.tbd; sourceTree = SDKROOT; };
 		062272AA1816DB0B009BB2A2 /* jni.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = jni.h; sourceTree = "<group>"; };
-		06243C5C1B6BF6BA00657D74 /* NSDataInputStreamTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSDataInputStreamTest.m; sourceTree = "<group>"; };
 		062463D21A000CE3006D52C9 /* JRETestsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRETestsTableViewController.h; sourceTree = "<group>"; };
 		062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRETestsTableViewController.m; sourceTree = "<group>"; };
 		062463D81A005995006D52C9 /* JRELogPaneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRELogPaneViewController.h; sourceTree = "<group>"; };
 		062463D91A005995006D52C9 /* JRELogPaneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRELogPaneViewController.m; sourceTree = "<group>"; };
 		06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaToIOSInputStreamAdapter.h; sourceTree = "<group>"; };
 		06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaToIOSInputStreamAdapter.m; sourceTree = "<group>"; };
-		06459FB11A4220AF00F5ED23 /* jre_emul Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "jre_emul Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		06459FB41A4220AF00F5ED23 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		064914311AC47ED000E98733 /* FastPointerLookup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FastPointerLookup.h; sourceTree = "<group>"; };
 		064914321AC47ED000E98733 /* FastPointerLookup.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = FastPointerLookup.m; sourceTree = "<group>"; };
 		064914331AC47ED000E98733 /* J2ObjC_source.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_source.h; sourceTree = "<group>"; };
@@ -3814,14 +3813,12 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		06459FAE1A4220AF00F5ED23 /* Frameworks */ = {
+		0620F4E31BB60A6100626242 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06459FB71A4220AF00F5ED23 /* libjre_emul.a in Frameworks */,
-				06459FC51A42230900F5ED23 /* Security.framework in Frameworks */,
-				06459FC41A42230200F5ED23 /* libicucore.dylib in Frameworks */,
-				06459FC61A42231200F5ED23 /* libz.dylib in Frameworks */,
+				0620F4FA1BB60C3900626242 /* libicucore.tbd in Frameworks */,
+				0620F4EB1BB60A6100626242 /* libjre_emul.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3854,7 +3851,7 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		06459FB21A4220AF00F5ED23 /* jre_emul Tests */ = {
+		0620F4E71BB60A6100626242 /* jre_emul_xctests */ = {
 			isa = PBXGroup;
 			children = (
 				067217CD15587FC600645E1B /* IOSArrayTest.m */,
@@ -3862,20 +3859,12 @@
 				067217CE15587FC600645E1B /* IOSObjectArrayTest.m */,
 				067217CF15587FC600645E1B /* IOSPrimitiveClassTest.m */,
 				067217D015587FC600645E1B /* JavaLangReflectMethodTest.m */,
-				06243C5C1B6BF6BA00657D74 /* NSDataInputStreamTest.m */,
+				0620F4DF1BB608C200626242 /* NSDataInputStreamTest.m */,
 				067217D115587FC600645E1B /* NSObject_JavaObjectTest.m */,
 				067217D215587FC600645E1B /* NSString_JavaStringTest.m */,
-				06459FB31A4220AF00F5ED23 /* Supporting Files */,
+				0620F4EA1BB60A6100626242 /* Info.plist */,
 			);
-			path = "jre_emul Tests";
-			sourceTree = "<group>";
-		};
-		06459FB31A4220AF00F5ED23 /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				06459FB41A4220AF00F5ED23 /* Info.plist */,
-			);
-			name = "Supporting Files";
+			path = jre_emul_xctests;
 			sourceTree = "<group>";
 		};
 		0661937A155848D70004DAFE = {
@@ -3883,8 +3872,8 @@
 			children = (
 				0661938A155848D70004DAFE /* Classes */,
 				067219221559B9D200645E1B /* Transpiled Classes */,
+				0620F4E71BB60A6100626242 /* jre_emul_xctests */,
 				06619387155848D70004DAFE /* Frameworks */,
-				06459FB21A4220AF00F5ED23 /* jre_emul Tests */,
 				06ED87BC19759EFF00633227 /* junit_tests */,
 				06619386155848D70004DAFE /* Products */,
 			);
@@ -3895,7 +3884,7 @@
 			children = (
 				06619385155848D70004DAFE /* libjre_emul.a */,
 				06ED87B819759EFF00633227 /* JREJUnitTests.app */,
-				06459FB11A4220AF00F5ED23 /* jre_emul Tests.xctest */,
+				0620F4E61BB60A6100626242 /* jre_emul_xctests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -3903,6 +3892,7 @@
 		06619387155848D70004DAFE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0620F4F91BB60C3900626242 /* libicucore.tbd */,
 				06574A1B1A8EAF84000A3616 /* QuartzCore.framework */,
 				06C54AD31A40C7A4004B3ACD /* libicucore.dylib */,
 				06C73F5919180E6D001D3CC8 /* libz.dylib */,
@@ -7831,21 +7821,22 @@
 /* End PBXLegacyTarget section */
 
 /* Begin PBXNativeTarget section */
-		06459FB01A4220AF00F5ED23 /* jre_emul Tests */ = {
+		0620F4E51BB60A6100626242 /* jre_emul_xctests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 06459FBA1A4220AF00F5ED23 /* Build configuration list for PBXNativeTarget "jre_emul Tests" */;
+			buildConfigurationList = 0620F4EE1BB60A6100626242 /* Build configuration list for PBXNativeTarget "jre_emul_xctests" */;
 			buildPhases = (
-				06459FAD1A4220AF00F5ED23 /* Sources */,
-				06459FAE1A4220AF00F5ED23 /* Frameworks */,
+				0620F4E21BB60A6100626242 /* Sources */,
+				0620F4E31BB60A6100626242 /* Frameworks */,
+				0620F4E41BB60A6100626242 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				06459FB91A4220AF00F5ED23 /* PBXTargetDependency */,
+				0620F4ED1BB60A6100626242 /* PBXTargetDependency */,
 			);
-			name = "jre_emul Tests";
-			productName = "jre_emul Tests";
-			productReference = 06459FB11A4220AF00F5ED23 /* jre_emul Tests.xctest */;
+			name = jre_emul_xctests;
+			productName = jre_emul_xctests;
+			productReference = 0620F4E61BB60A6100626242 /* jre_emul_xctests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		06619384155848D70004DAFE /* jre_emul */ = {
@@ -7891,9 +7882,8 @@
 			attributes = {
 				LastUpgradeCheck = 0700;
 				TargetAttributes = {
-					06459FB01A4220AF00F5ED23 = {
-						CreatedOnToolsVersion = 6.1;
-						DevelopmentTeam = EQHXZ8M8AV;
+					0620F4E51BB60A6100626242 = {
+						CreatedOnToolsVersion = 7.0;
 					};
 				};
 			};
@@ -7914,12 +7904,19 @@
 				067219231559BF3600645E1B /* j2objc build */,
 				06E4E35A197F1172005DDE69 /* jre_emul translate tests */,
 				06ED87B719759EFF00633227 /* JREJUnitTests */,
-				06459FB01A4220AF00F5ED23 /* jre_emul Tests */,
+				0620F4E51BB60A6100626242 /* jre_emul_xctests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		0620F4E41BB60A6100626242 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		06ED87B619759EFF00633227 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -7951,18 +7948,18 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		06459FAD1A4220AF00F5ED23 /* Sources */ = {
+		0620F4E21BB60A6100626242 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06459FBD1A4220F700F5ED23 /* IOSArrayTest.m in Sources */,
-				06243C5D1B6BF6BA00657D74 /* NSDataInputStreamTest.m in Sources */,
-				06459FBE1A4220F700F5ED23 /* IOSClassTest.m in Sources */,
-				06459FBF1A4220F700F5ED23 /* IOSObjectArrayTest.m in Sources */,
-				06459FC01A4220F700F5ED23 /* IOSPrimitiveClassTest.m in Sources */,
-				06459FC11A4220F700F5ED23 /* JavaLangReflectMethodTest.m in Sources */,
-				06459FC21A4220F700F5ED23 /* NSObject_JavaObjectTest.m in Sources */,
-				06459FC31A4220F700F5ED23 /* NSString_JavaStringTest.m in Sources */,
+				0620F4F11BB60AC700626242 /* IOSArrayTest.m in Sources */,
+				0620F4F21BB60AC700626242 /* IOSClassTest.m in Sources */,
+				0620F4F31BB60AC700626242 /* IOSObjectArrayTest.m in Sources */,
+				0620F4F41BB60AC700626242 /* IOSPrimitiveClassTest.m in Sources */,
+				0620F4F51BB60AC700626242 /* JavaLangReflectMethodTest.m in Sources */,
+				0620F4F61BB60AC700626242 /* NSDataInputStreamTest.m in Sources */,
+				0620F4F71BB60AC700626242 /* NSObject_JavaObjectTest.m in Sources */,
+				0620F4F81BB60AC700626242 /* NSString_JavaStringTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -8501,10 +8498,10 @@
 			target = 06619384155848D70004DAFE /* jre_emul */;
 			targetProxy = 0612E1C4198037CA0023C71D /* PBXContainerItemProxy */;
 		};
-		06459FB91A4220AF00F5ED23 /* PBXTargetDependency */ = {
+		0620F4ED1BB60A6100626242 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 06619384155848D70004DAFE /* jre_emul */;
-			targetProxy = 06459FB81A4220AF00F5ED23 /* PBXContainerItemProxy */;
+			targetProxy = 0620F4EC1BB60A6100626242 /* PBXContainerItemProxy */;
 		};
 		0672198C1559BFC500645E1B /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -8530,7 +8527,7 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		06459FBB1A4220AF00F5ED23 /* Debug */ = {
+		0620F4EF1BB60A6100626242 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -8547,39 +8544,27 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				HEADER_SEARCH_PATHS = (
-					build_result/Classes,
-					Classes,
-				);
-				INFOPLIST_FILE = "jre_emul Tests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				INFOPLIST_FILE = jre_emul_xctests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = build_result;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = "Google.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.jre-emul-xctests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "x86_64 i386 $(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation build_result/Classes Classes";
 			};
 			name = Debug;
 		};
-		06459FBC1A4220AF00F5ED23 /* Release */ = {
+		0620F4F01BB60A6100626242 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -8596,32 +8581,24 @@
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(inherited)",
-				);
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
-				HEADER_SEARCH_PATHS = (
-					build_result/Classes,
-					Classes,
-				);
-				INFOPLIST_FILE = "jre_emul Tests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.1;
+				INFOPLIST_FILE = jre_emul_xctests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = build_result;
 				MTL_ENABLE_DEBUG_INFO = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = "Google.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.google.jre-emul-xctests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "x86_64 i386 $(ARCHS_STANDARD_INCLUDING_64_BIT)";
+				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation build_result/Classes Classes";
 			};
 			name = Release;
 		};
@@ -8915,14 +8892,13 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		06459FBA1A4220AF00F5ED23 /* Build configuration list for PBXNativeTarget "jre_emul Tests" */ = {
+		0620F4EE1BB60A6100626242 /* Build configuration list for PBXNativeTarget "jre_emul_xctests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				06459FBB1A4220AF00F5ED23 /* Debug */,
-				06459FBC1A4220AF00F5ED23 /* Release */,
+				0620F4EF1BB60A6100626242 /* Debug */,
+				0620F4F01BB60A6100626242 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
 		};
 		0661937F155848D70004DAFE /* Build configuration list for PBXProject "JreEmulation" */ = {
 			isa = XCConfigurationList;
