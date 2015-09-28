@@ -15,6 +15,8 @@ layout: docs
  </td></tr>
  <tr><td>
  <img src="http://a2.mzstatic.com/us/r30/Purple3/v4/e4/ef/17/e4ef1745-23bb-3090-2260-50287aefa0f0/mzl.vxjekxvy.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-sheets/id842849113?mt=8">Google&nbsp;Sheets</a></b>
+ </td><td>
+ <img src="http://a4.mzstatic.com/us/r30/Purple6/v4/89/80/3b/89803bd9-6933-80bd-4031-9a6a04196518/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-slides/id879478102?mt=8">Google&nbsp;Slides</a></b>
  </td></tr>
 </table>
 
