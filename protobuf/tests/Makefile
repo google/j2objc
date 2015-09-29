@@ -56,7 +56,7 @@ C_FLAGS = -Werror -Wno-objc-redundant-literal-use -Wno-format -Wno-parentheses \
 
 INCLUDE_DIRS = . $(GEN_OBJC_DIR)
 
-LIB_DEPS = $(DIST_DIR)/lib/libjunit.a $(DIST_DIR)/lib/libprotobuf_runtime.a
+LIB_DEPS = $(DIST_LIB_MACOSX_DIR)/libjunit.a $(DIST_LIB_MACOSX_DIR)/libprotobuf_runtime.a
 
 J2OBJC_PROTOS_NAME = testprotos
 J2OBJC_PROTOS_INPUTS = $(PROTOS:%=protos/%) ../compiler/src/google/protobuf/j2objc-descriptor.proto

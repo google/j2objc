@@ -791,7 +791,7 @@ $(TESTS_DIR)/%.o: $(ANDROID_NATIVE_TEST_DIR)/%.cpp | $(TESTS_DIR)
 	  -Werror -Wno-parentheses $(GCOV_FLAGS)
 
 $(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) $(ALL_TESTS_SOURCE:%.java=%.o) \
-        ../dist/lib/libjre_emul.a ../dist/lib/libjunit.a
+        ../dist/lib/macosx/libjre_emul.a ../dist/lib/macosx/libjunit.a
 	@echo Building test executable...
 	@$(TEST_JOCC) -o $@ $(TEST_OBJS) $(ALL_TESTS_SOURCE:%.java=%.o)
 
