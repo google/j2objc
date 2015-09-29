@@ -34,8 +34,6 @@ include $(J2OBJC_ROOT)/make/fat_lib_macros.mk
 
 FAT_LIB_LIBRARY = $(ARCH_BUILD_DIR)/lib$(FAT_LIB_NAME).a
 
-MACOSX_LIB_LIBRARY = $(ARCH_BUILD_DIR)/objs-macosx/lib$(FAT_LIB_NAME).a
-
 FAT_LIB_PLISTS = \
   $(foreach src,$(FAT_LIB_SOURCES_RELATIVE),$(FAT_LIB_PLIST_DIR)/$(basename $(src)).plist)
 FAT_LIB_OBJS = $(foreach file,$(FAT_LIB_SOURCES_RELATIVE),$(basename $(file)).o)
@@ -44,11 +42,13 @@ ifneq ($(MAKECMDGOALS),clean)
 
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
 
-$(call emit_library_rules,$(FAT_LIB_NAME),$(FAT_LIB_OBJS))
+FAT_LIBS := $(call emit_library_rules,$(FAT_LIB_NAME),$(FAT_LIB_OBJS))
 
-ifdef BUILD_MACOSX
-$(call emit_osx_library_rules,$(FAT_LIB_NAME),$(FAT_LIB_OBJS))
-endif
+FAT_LIBS_DIST = $(FAT_LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
+
+$(ARCH_LIB_DIR)/%.a: $(ARCH_BUILD_DIR)/%.a
+	@mkdir -p $(@D)
+	@install -m 0644 $< $@
 
 analyze: $(FAT_LIB_PLISTS)
 	@:

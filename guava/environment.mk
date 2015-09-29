@@ -30,8 +30,3 @@ force:
 
 $(sort $(BUILD_DIR) $(ARCH_BUILD_DIR) $(ARCH_LIB_DIR) $(DIST_JAR_DIR)):
 	@mkdir -p $@
-
-ifdef BUILD_MACOSX
-$(ARCH_LIB_MACOSX_DIR):
-	@mkdir -p $@
-endif

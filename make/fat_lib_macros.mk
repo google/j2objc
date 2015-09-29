@@ -144,6 +144,15 @@ $(ARCH_BUILD_DIR)/lib$(1).a: $(2)
 	$$(LIPO) -create $$^ -output $$@
 endef
 
+# Generate the rule for the macosx library
+# Args:
+#   1. Library name.
+define mac_lib_rule
+$(ARCH_BUILD_MACOSX_DIR)/lib$(1).a: $(BUILD_DIR)/objs-macosx/lib$(1).a
+	@mkdir -p $$(@D)
+	install -m 0644 $$< $$@
+endef
+
 ifdef TARGET_TEMP_DIR
 # Targets specific to an xcode build
 
@@ -158,7 +167,8 @@ endif
 
 emit_library_rules = $(foreach arch,$(XCODE_ARCHS),\
   $(eval $(call arch_lib_rule,$(TARGET_TEMP_DIR)/$(arch),$(1),$(2)))) \
-  $(eval $(call fat_lib_rule,$(1),$(XCODE_ARCHS:%=$(TARGET_TEMP_DIR)/%/lib$(1).a)))
+  $(eval $(call fat_lib_rule,$(1),$(XCODE_ARCHS:%=$(TARGET_TEMP_DIR)/%/lib$(1).a))) \
+  $(ARCH_BUILD_DIR)/lib$(1).a
 
 emit_arch_specific_compile_rules = $(foreach arch,$(XCODE_ARCHS),\
   $(call emit_compile_rules_for_arch,$(1),$(TARGET_TEMP_DIR)/$(arch),$(2),$(3),\
@@ -167,20 +177,19 @@ emit_arch_specific_compile_rules = $(foreach arch,$(XCODE_ARCHS),\
 else
 # Targets specific to a command-line build
 
+FAT_LIB_IOS_ARCHS = $(filter-out macosx,$(J2OBJC_ARCHS))
+FAT_LIB_MAC_ARCH = $(filter macosx,$(J2OBJC_ARCHS))
+
 emit_library_rules = $(foreach arch,$(J2OBJC_ARCHS),\
   $(eval $(call arch_lib_rule,$(BUILD_DIR)/objs-$(arch),$(1),$(2)))) \
-  $(eval $(call fat_lib_rule,$(1),$(J2OBJC_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a)))
+  $(if $(FAT_LIB_IOS_ARCHS),\
+    $(eval $(call fat_lib_rule,$(1),$(FAT_LIB_IOS_ARCHS:%=$(BUILD_DIR)/objs-%/lib$(1).a))) \
+    $(ARCH_BUILD_DIR)/lib$(1).a,) \
+  $(if $(FAT_LIB_MAC_ARCH),$(eval $(call mac_lib_rule,$(1))) $(ARCH_BUILD_MACOSX_DIR)/lib$(1).a,)
 
 emit_arch_specific_compile_rules = $(foreach arch,$(J2OBJC_ARCHS),\
   $(call emit_compile_rules_for_arch,$(1),$(BUILD_DIR)/objs-$(arch),$(2),$(3),\
     $(call arch_flags,$(arch))))
-
-emit_osx_library_rules = \
-  $(eval $(call arch_lib_rule,$(BUILD_DIR)/objs-macosx,$(1),$(2)))
-
-emit_osx_arch_specific_compile_rules = \
-  $(call emit_compile_rules_for_arch,$(1),$(BUILD_DIR)/objs-macosx,$(2),$(3),\
-    $(call arch_flags,macosx))
 
 endif
 
@@ -190,5 +199,4 @@ endif
 #   2. Compile command.
 #   3. Precompiled header file, or empty.
 emit_compile_rules = $(call emit_arch_specific_compile_rules,$(1),$(2),$(3)) \
-  $(foreach src_dir,$(1),$(eval $(call analyze_rule,$(src_dir),$(2)))) \
-  $(call emit_osx_arch_specific_compile_rules,$(1),$(2),$(3))
+  $(foreach src_dir,$(1),$(eval $(call analyze_rule,$(src_dir),$(2))))
