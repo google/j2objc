@@ -5,6 +5,34 @@ layout: docs
 
 # Translation Reference
 
+## Types
+* For primitive types, J2ObjC has defined JNI-style typedefs.
+* For typical class types, the package is camel-cased and prepended to the class name
+  * TODO(kstanger): Add a pointer to package prefix documentation 
+* For the base Object type and all type variables, "id" is used.
+* A few core Java types are mapped to foundation types. (eg. String to NSString)
+* For fields declared 'volatile', J2ObjC has more typedefs that use C11 _Atomic(...) types.
+* For inner types the inner class name is appended to the outer name with an underscore.
+  * TODO(kstanger): Should we use '$' instead of '_' to be consistent with Java?
+
+|Java type|Objective-C type|Objective-C volatile type|
+|---|---|---|
+|boolean|jboolean|volatile_jboolean|
+|char|jchar|volatile_jchar|
+|byte|jbyte|volatile_jbyte|
+|short|jshort|volatile_jshort|
+|int|jint|volatile_jint|
+|long|jlong|volatile_jlong|
+|float|jfloat|volatile_jfloat|
+|double|jdouble|volatile_jdouble|
+|java.lang.Object|id|volatile_id|
+|type variables|id|volatile_id|
+|java.lang.String|NSString*|volatile_id|
+|java.lang.Number|NSNumber*|volatile_id|
+|java.lang.Cloneable|NSCopying*|volatile_id|
+|foo.bar.Mumble|FooBarMumble*|volatile_id|
+|foo.bar.Mumber$Inner|FooBarMumble_Inner*|volatile_id|
+
 ## Fields
 
 ### Instance Fields (non-static)
