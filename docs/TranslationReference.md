@@ -8,16 +8,19 @@ layout: docs
 ## Fields
 
 ### Instance Fields (non-static)
-Java instance variables become Objective-C instance variables. The name is the same with a trailing underscore.
+Java instance variables become Objective-C instance variables. The name is the same with a trailing underscore. Primitive fields declared "final" are a special case and are not translated to instance variables.
 * Fields can be accessed directly using "->" syntax.
 * Primitive fields can be set directly.
 * Non-primitive fields must be set using the provided setter function:
   * ClassName_set_fieldName_(instance, value)
+* Final primitives are accessed as a constant with the following name:
+  * ClassName_fieldName
 
 ##### Example Java
 ```java
 package com.google;
 class Foo {
+  public final int MY_FINAL_INT;
   public int myInt;
   public String myString;
 }
@@ -25,8 +28,10 @@ class Foo {
 ##### Example Objective-C
 ```objective-c
 Foo *foo = [[Foo alloc] init];
+// Access a final primitive field.
+jint i = Foo_MY_FINAL_INT;
 // Access a primitive field.
-jint i = foo->myInt_;
+i = foo->myInt_;
 // Set a primitive field.
 foo->myInt_ = 5;
 // Access a non-primitive field.
