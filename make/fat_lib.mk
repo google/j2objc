@@ -23,7 +23,6 @@
 #
 # This file defines the following to be used by the including file:
 #   FAT_LIB_LIBRARY
-#   MACOSX_LIB_LIBRARY
 #
 # The including file may specify dependencies to compilation by adding
 # prerequisites to the "fat_lib_dependencies" target.
