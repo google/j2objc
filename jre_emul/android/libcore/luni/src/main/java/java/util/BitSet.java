@@ -23,6 +23,7 @@ import java.io.Serializable;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.LongBuffer;
+import libcore.io.SizeOf;
 
 /**
  * The {@code BitSet} class implements a
@@ -52,12 +53,6 @@ public class BitSet implements Serializable, Cloneable {
      * things, this guarantees that isEmpty is cheap, because we never have to examine the array.
      */
     private transient int longCount;
-
-    private static final int SIZEOF_LONG = sizeOfLong();
-
-    private static native int sizeOfLong() /*-[
-      return sizeof(long long);
-    ]-*/;
 
     /**
      * Updates 'longCount' by inspecting 'bits'. Assumes that the new longCount is <= the current
@@ -713,7 +708,7 @@ public class BitSet implements Serializable, Cloneable {
         byteBuffer = byteBuffer.slice().order(ByteOrder.LITTLE_ENDIAN);
         long[] longs = arrayForBits(byteBuffer.remaining() * 8);
         int i = 0;
-        while (byteBuffer.remaining() >= SIZEOF_LONG) {
+        while (byteBuffer.remaining() >= SizeOf.LONG) {
             longs[i++] = byteBuffer.getLong();
         }
         for (int j = 0; byteBuffer.hasRemaining(); ++j) {
