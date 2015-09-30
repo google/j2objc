@@ -14,6 +14,7 @@
 package com.google.devtools.j2objc.file;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Reader;
 
 /**
@@ -24,6 +25,8 @@ import java.io.Reader;
  */
 public interface InputFile {
   boolean exists() throws IOException;
+
+  InputStream getInputStream() throws IOException;
 
   /**
    * Opens a new reader for this SourceFile.

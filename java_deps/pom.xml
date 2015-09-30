@@ -222,6 +222,9 @@
       <groupId>com.google.jsilver</groupId>
       <artifactId>jsilver</artifactId>
       <version>1.0.0</version>
+    <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>5.0.4</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>

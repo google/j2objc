@@ -18,6 +18,7 @@ import com.google.devtools.j2objc.Options;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
@@ -44,8 +45,13 @@ public class RegularInputFile implements InputFile {
   }
 
   @Override
+  public InputStream getInputStream() throws IOException {
+    return new FileInputStream(new File(path));
+  }
+
+  @Override
   public Reader openReader() throws IOException {
-    return new InputStreamReader(new FileInputStream(new File(path)),  Options.getCharset());
+    return new InputStreamReader(getInputStream(),  Options.getCharset());
   }
 
   public String getPath() {

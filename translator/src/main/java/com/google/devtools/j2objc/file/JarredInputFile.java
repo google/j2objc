@@ -17,6 +17,7 @@ import com.google.devtools.j2objc.Options;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.jar.JarFile;
@@ -52,16 +53,38 @@ public class JarredInputFile implements InputFile {
   }
 
   @Override
-  public Reader openReader() throws IOException {
+  public InputStream getInputStream() throws IOException {
     final JarFile jarFile = new JarFile(jarPath);
     ZipEntry entry = jarFile.getEntry(internalPath);
-    return new InputStreamReader(jarFile.getInputStream(entry), Options.getCharset()) {
+    final InputStream entryStream = jarFile.getInputStream(entry);
+    return new InputStream() {
+
+      @Override
+      public int read() throws IOException {
+        return entryStream.read();
+      }
+
+      @Override
+      public int read(byte[] buffer) throws IOException {
+        return entryStream.read(buffer);
+      }
+
+      @Override
+      public int read(byte[] buffer, int byteOffset, int byteCount) throws IOException {
+        return entryStream.read(buffer, byteOffset, byteCount);
+      }
+
       @Override
       public void close() throws IOException {
+        entryStream.close();
         jarFile.close();
-        super.close();
       }
     };
+  }
+
+  @Override
+  public Reader openReader() throws IOException {
+    return new InputStreamReader(getInputStream(), Options.getCharset());
   }
 
   @Override
