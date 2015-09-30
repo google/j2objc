@@ -112,6 +112,36 @@ __attribute__ ((unused)) static inline id check_class_cast(id __unsafe_unretaine
   return p;
 }
 
+// The J2OBJC_STRICT_ATOMIC_ASSIGN macro enables atomic assignment of object
+// type fields. Atomic assignment of objects is guaranteed by Java, but not by
+// J2ObjC unless this macro is defined. Using this macro has a performance cost
+// of up to 50% for normal assignments. System.arraycopy calls will also perform
+// worse, when used to shift array elements within the same array, arraycopy can
+// be 20x slower. Note that variables declared as 'volatile' will provide
+// atomicity in J2ObjC by default.
+#if !__has_feature(objc_arc)
+#ifdef J2OBJC_STRICT_ATOMIC_ASSIGN
+// This line will fail to compile if 'id' cannot safely be cast to 'volatile_id'.
+// Inspired by:
+// http://stackoverflow.com/questions/807244/c-compiler-asserts-how-to-implement
+typedef char assert_atomic_ptrs[2 * !!(
+  (sizeof(id) == sizeof(volatile_id)) && (__alignof__(id) >= __alignof__(volatile_id))) - 1];
+#endif
+
+// Internal function that assigns and autoreleases a variable.
+__attribute__((always_inline)) inline id JreAutoreleasedAssign(
+    id *pIvar, NS_RELEASES_ARGUMENT id value) {
+#ifdef J2OBJC_STRICT_ATOMIC_ASSIGN
+  id oldValue = __c11_atomic_exchange((volatile_id *)pIvar, value, __ATOMIC_RELAXED);
+  [oldValue autorelease];
+  return value;
+#else
+  [*pIvar autorelease];
+  return *pIvar = value;
+#endif
+}
+#endif
+
 __attribute__((always_inline)) inline id JreLoadVolatileId(volatile_id *pVar) {
   return (__bridge id)__c11_atomic_load(pVar, __ATOMIC_SEQ_CST);
 }

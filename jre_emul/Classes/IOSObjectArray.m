@@ -163,31 +163,30 @@ id IOSObjectArray_Set(
   IOSArray_checkIndex(array->size_, (jint)index);
   IOSObjectArray_checkValue(array, value);
   if (array->isRetained_) {
-    [array->buffer_[index] autorelease];
-    [value retain];
+    return JreAutoreleasedAssign(&array->buffer_[index], [value retain]);
+  } else {
+    return array->buffer_[index] = value;
   }
-  return array->buffer_[index] = value;
 }
 
 id IOSObjectArray_SetAndConsume(IOSObjectArray *array, NSUInteger index, id value) {
   IOSObjectArray_checkIndexRetainedValue(array->size_, (jint)index, value);
   IOSObjectArray_checkRetainedValue(array, value);
   if (array->isRetained_) {
-    [array->buffer_[index] autorelease];
+    return JreAutoreleasedAssign(&array->buffer_[index], value);
   } else {
-    [value autorelease];
+    return array->buffer_[index] = [value autorelease];
   }
-  return array->buffer_[index] = value;
 }
 
 id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
   // Index is checked when accessing the JreArrayRef.
   IOSObjectArray_checkValue(ref.arr, value);
   if (ref.arr->isRetained_) {
-    [*ref.pValue autorelease];
-    [value retain];
+    return JreAutoreleasedAssign(ref.pValue, [value retain]);
+  } else {
+    return *ref.pValue = value;
   }
-  return *ref.pValue = value;
 }
 
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value {
@@ -202,27 +201,62 @@ id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
   }
 }
 
-void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUInteger length) {
-  NSUInteger releaseStart = dest;
-  NSUInteger releaseEnd = dest + length;
-  NSUInteger retainStart = src;
-  NSUInteger retainEnd = src + length;
+static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length) {
+#ifdef J2OBJC_STRICT_ATOMIC_ASSIGN
+  // In strict atomic mode, every assignment must be done with an atomic
+  // exchange to avoid race conditions with the reference counting.
+  // This algorithm avoids extraneous retains and autorelease calls.
+  jint shift = dest - src;
+  if (shift == 0) {
+    return;
+  } else if (shift > 0) {
+    jint endIter = src + MIN(shift, length);
+    jint srcEnd = src + length;
+    for (jint startIdx = src; startIdx < endIter; startIdx++) {
+      jint idx = startIdx;
+      id elem = [buffer[idx] retain];
+      do {
+        idx += shift;
+        elem = __c11_atomic_exchange((volatile_id *)&buffer[idx], elem, __ATOMIC_RELAXED);
+      } while (idx < srcEnd);
+      [elem autorelease];
+    }
+  } else {
+    shift = -shift;
+    jint startIdx = src + length;
+    jint endIter = startIdx - MIN(shift, length);
+    while (startIdx > endIter) {
+      jint idx = --startIdx;
+      id elem = [buffer[idx] retain];
+      do {
+        idx -= shift;
+        elem = __c11_atomic_exchange((volatile_id *)&buffer[idx], elem, __ATOMIC_RELAXED);
+      } while (idx >= src);
+      [elem autorelease];
+    }
+  }
+#else
+  jint releaseStart = dest;
+  jint releaseEnd = dest + length;
+  jint retainStart = src;
+  jint retainEnd = src + length;
   if (retainEnd > releaseStart && retainEnd <= releaseEnd) {
-    NSUInteger tmp = releaseStart;
+    jint tmp = releaseStart;
     releaseStart = retainEnd;
     retainEnd = tmp;
   } else if (releaseEnd > retainStart && releaseEnd <= retainEnd) {
-    NSUInteger tmp = retainStart;
+    jint tmp = retainStart;
     retainStart = releaseEnd;
     releaseEnd = tmp;
   }
-  for (NSUInteger i = releaseStart; i < releaseEnd; i++) {
+  for (jint i = releaseStart; i < releaseEnd; i++) {
     [buffer[i] autorelease];
   }
   memmove(buffer + dest, buffer + src, length * sizeof(id));
-  for (NSUInteger i = retainStart; i < retainEnd; i++) {
+  for (jint i = retainStart; i < retainEnd; i++) {
     [buffer[i] retain];
   }
+#endif
 }
 
 - (void)arraycopy:(jint)offset
@@ -244,7 +278,7 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
 
   if (self == dest) {
     if (dest->isRetained_) {
-      CopyWithMemmove(buffer_, offset, dstOffset, length);
+      DoRetainedMove(buffer_, offset, dstOffset, length);
     } else {
       memmove(buffer_ + dstOffset, buffer_ + offset, length * sizeof(id));
     }
@@ -252,15 +286,12 @@ void CopyWithMemmove(id __strong *buffer, NSUInteger src, NSUInteger dest, NSUIn
     if (dest->isRetained_) {
       if (skipElementCheck) {
         for (jint i = 0; i < length; i++) {
-          [dest->buffer_[i + dstOffset] autorelease];
-          dest->buffer_[i + dstOffset] = [buffer_[i + offset] retain];
+          JreAutoreleasedAssign(&dest->buffer_[i + dstOffset], [buffer_[i + offset] retain]);
         }
       } else {
         for (jint i = 0; i < length; i++) {
           id newElement = IOSObjectArray_checkValue(dest, buffer_[i + offset]);
-          [dest->buffer_[i + dstOffset] autorelease];
-          [newElement retain];
-          dest->buffer_[i + dstOffset] = newElement;
+          JreAutoreleasedAssign(&dest->buffer_[i + dstOffset], [newElement retain]);
         }
       }
     } else {

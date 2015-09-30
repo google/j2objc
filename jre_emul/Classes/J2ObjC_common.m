@@ -53,17 +53,12 @@ void JrePrintNilChkCountAtExit() {
   atexit(JrePrintNilChkCount);
 }
 
-static inline id JreStrongAssignInner(id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  [*pIvar autorelease];
-  return *pIvar = value;
-}
-
 id JreStrongAssign(__strong id *pIvar, id value) {
-  return JreStrongAssignInner(pIvar, [value retain]);
+  return JreAutoreleasedAssign(pIvar, [value retain]);
 }
 
 id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  return JreStrongAssignInner(pIvar, value);
+  return JreAutoreleasedAssign(pIvar, value);
 }
 
 static inline id JreVolatileStrongAssignInner(
