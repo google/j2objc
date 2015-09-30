@@ -35,6 +35,11 @@ public final class Currency implements Serializable {
 
     private Currency(String currencyCode) {
         this.currencyCode = currencyCode;
+        String symbol = ICU.getCurrencySymbol(Locale.US, currencyCode);
+        if (symbol == null) {
+            throw new IllegalArgumentException("Unsupported ISO 4217 currency code: " +
+                    currencyCode);
+        }
     }
 
     /**
@@ -60,6 +65,9 @@ public final class Currency implements Serializable {
      */
     public static Currency getInstance(Locale locale) {
         synchronized (localesToCurrencies) {
+            if (locale == null) {
+                throw new NullPointerException("locale == null");
+            }
             Currency currency = localesToCurrencies.get(locale);
             if (currency != null) {
                 return currency;
@@ -71,7 +79,7 @@ public final class Currency implements Serializable {
                 country = country + "_" + variant;
             }
 
-            String currencyCode = ICU.getCurrencyCode(locale.toString());
+            String currencyCode = ICU.getCurrencyCode(country);
             if (currencyCode == null) {
                 throw new IllegalArgumentException("Unsupported ISO 3166 country: " + locale);
             } else if (currencyCode.equals("XXX")) {
@@ -104,6 +112,24 @@ public final class Currency implements Serializable {
     }
 
     /**
+     * Equivalent to {@code getDisplayName(Locale.getDefault())}.
+     * See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".
+     * @since 1.7
+     */
+    public String getDisplayName() {
+        return getDisplayName(Locale.getDefault());
+    }
+
+    /**
+     * Returns the localized name of this currency in the given {@code locale}.
+     * Returns the ISO 4217 currency code if no localized name is available.
+     * @since 1.7
+     */
+    public String getDisplayName(Locale locale) {
+        return ICU.getCurrencyDisplayName(locale, currencyCode);
+    }
+
+    /**
      * Equivalent to {@code getSymbol(Locale.getDefault())}.
      * See "<a href="../util/Locale.html#default_locale">Be wary of the default locale</a>".
      */
@@ -123,10 +149,9 @@ public final class Currency implements Serializable {
      * <p>If there is no locale-specific currency symbol, the ISO 4217 currency code is returned.
      */
     public String getSymbol(Locale locale) {
-        if (locale.getCountry().length() == 0) {
-            return currencyCode;
+        if (locale == null) {
+            throw new NullPointerException("locale == null");
         }
-
         // Check the locale first, in case the locale has the same currency.
         LocaleData localeData = LocaleData.get(locale);
         if (localeData.internationalCurrencySymbol.equals(currencyCode)) {
@@ -134,7 +159,7 @@ public final class Currency implements Serializable {
         }
 
         // Try ICU, and fall back to the currency code if ICU has nothing.
-        String symbol = ICU.getCurrencySymbol(locale.toString());
+        String symbol = ICU.getCurrencySymbol(locale, currencyCode);
         return symbol != null ? symbol : currencyCode;
     }
 
@@ -146,11 +171,12 @@ public final class Currency implements Serializable {
      * IMF Special Drawing Rights, -1 is returned.
      */
     public int getDefaultFractionDigits() {
-      // In some places the code XXX is used as the fall back currency.
-      if (currencyCode.equals("XXX")) {
-          return -1;
-      }
-      return ICU.getCurrencyFractionDigits(currencyCode);
+        // In some places the code XXX is used as the fall back currency.
+        // The RI returns -1, but ICU defaults to 2 for unknown currencies.
+        if (currencyCode.equals("XXX")) {
+            return -1;
+        }
+        return ICU.getCurrencyFractionDigits(currencyCode);
     }
 
     /**
@@ -159,5 +185,9 @@ public final class Currency implements Serializable {
     @Override
     public String toString() {
         return currencyCode;
+    }
+
+    private Object readResolve() {
+        return getInstance(currencyCode);
     }
 }

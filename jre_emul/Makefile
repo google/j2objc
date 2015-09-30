@@ -530,6 +530,7 @@ JAVA_SOURCES_CORE = \
 	java/util/IllegalFormatFlagsException.java \
 	java/util/IllegalFormatPrecisionException.java \
 	java/util/IllegalFormatWidthException.java \
+	java/util/IllformedLocaleException.java \
 	java/util/InvalidPropertiesFormatException.java \
 	java/util/Iterator.java \
 	java/util/LinkedHashMap.java \

@@ -227,7 +227,11 @@ public final class ICU {
       return [IOSObjectArray arrayWithNSArray:localesWithNumberFormats type:NSString_class_()];
     ]-*/;
 
-    public static native String getDisplayCountryNative(String countryCode, String localeId) /*-[
+    public static String getDisplayCountry(Locale targetLocale, Locale locale) {
+      return getDisplayCountryNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
+    }
+
+    private static native String getDisplayCountryNative(String countryCode, String localeId) /*-[
       NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:localeId];
       NSString *country = [locale objectForKey:NSLocaleCountryCode];
 #if !__has_feature(objc_arc)
@@ -236,34 +240,60 @@ public final class ICU {
       return (country) ? country : countryCode;
     ]-*/;
 
-    public static native String getDisplayLanguageNative(String languageCode, String localeId) /*-[
+    public static String getDisplayLanguage(Locale targetLocale, Locale locale) {
+      return getDisplayLanguageNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
+    }
+
+    private static native String getDisplayLanguageNative(String languageCode, String localeId) /*-[
       NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:localeId];
       NSString *language = [locale objectForKey:NSLocaleLanguageCode];
-  #if !__has_feature(objc_arc)
+#if !__has_feature(objc_arc)
       [locale release];
-  #endif
+#endif
       return (language) ? language : languageCode;
     ]-*/;
 
-    public static native String getDisplayVariantNative(String variantCode, String localeId) /*-[
+    public static String getDisplayVariant(Locale targetLocale, Locale locale) {
+      return getDisplayVariantNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
+    }
+
+    private static native String getDisplayVariantNative(String variantCode, String localeId) /*-[
       NSLocale *locale = [[NSLocale alloc] initWithLocaleIdentifier:localeId];
       NSString *variant = [locale objectForKey:NSLocaleVariantCode];
-  #if !__has_feature(objc_arc)
+#if !__has_feature(objc_arc)
       [locale release];
-  #endif
+#endif
       return (variant) ? variant : variantCode;
     ]-*/;
 
-    public static native String getISO3CountryNative(String localeId) /*-[
+    public static String getDisplayScript(Locale targetLocale, Locale locale) {
+      return getDisplayScriptNative(targetLocale.toLanguageTag(), locale.toLanguageTag());
+    }
+
+    private static native String getDisplayScriptNative(String targetLanguageTag,
+        String languageTag) /*-[
+      @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc]
+                          initWithNSString:@"Display script not available on iOS"]);
+    return nil;
+    ]-*/;
+
+    public static native String getISO3Country(String localeId) /*-[
       @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc]
                          initWithNSString:@"ISO3 codes not available on iOS"]);
       return nil;
     ]-*/;
 
-    public static native String getISO3LanguageNative(String localeId) /*-[
+    public static native String getISO3Language(String localeId) /*-[
       @throw AUTORELEASE([[JavaLangUnsupportedOperationException alloc]
                          initWithNSString:@"ISO3 codes not available on iOS"]);
       return nil;
+    ]-*/;
+
+    public static native String getCurrencyDisplayName(Locale locale, String currencyCode) /*-[
+      NSString *localeId = [locale toLanguageTag];
+      NSLocale *nativeLocale =
+          AUTORELEASE([[NSLocale alloc] initWithLocaleIdentifier:localeId]);
+      return [nativeLocale displayNameForKey:NSLocaleCurrencyCode value:currencyCode];
     ]-*/;
 
     public static native String getCurrencyCode(String localeId) /*-[
@@ -284,9 +314,24 @@ public final class ICU {
       return [formatter currencySymbol];
     ]-*/;
 
+    public static native String getCurrencySymbol(Locale locale, String currencyCode) /*-[
+      NSString *localeId = [locale toLanguageTag];
+      NSLocale *nativeLocale =
+          AUTORELEASE([[NSLocale alloc] initWithLocaleIdentifier:localeId]);
+      return [nativeLocale displayNameForKey:NSLocaleCurrencySymbol value:currencyCode];
+    ]-*/;
+
     public static native int getCurrencyFractionDigits(String currencyCode) /*-[
       NSNumberFormatter *formatter = AUTORELEASE([[NSNumberFormatter alloc] init]);
       [formatter setCurrencyCode:currencyCode];
       return (int) [formatter maximumFractionDigits];
+    ]-*/;
+
+    /**
+     * Takes a BCP-47 language tag (Locale.toLanguageTag()). e.g. en-US, not en_US
+     */
+    public static native void setDefaultLocale(String languageTag) /*-[
+      [[NSUserDefaults standardUserDefaults] setObject:languageTag forKey:@"LanguageCode"];
+      [[NSUserDefaults standardUserDefaults] synchronize];
     ]-*/;
 }
