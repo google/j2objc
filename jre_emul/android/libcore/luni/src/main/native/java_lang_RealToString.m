@@ -460,7 +460,7 @@ void bigIntDigitGenerator(
         // set to hold any valid double.
         NSString *msg =
             [NSString stringWithFormat:@"maximum digits length exceeded: %d", *digitCount];
-        @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:msg]);
+        @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:msg]);
       }
     }
   while (1);

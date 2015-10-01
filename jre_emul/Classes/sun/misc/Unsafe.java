@@ -67,7 +67,7 @@ public final class Unsafe {
 
     /*-[
     static void unalignedPointer(void *ptr) {
-      @throw [[[JavaLangAssertionError alloc] initWithNSString:[NSString stringWithFormat:
+      @throw [[[JavaLangAssertionError alloc] initWithId:[NSString stringWithFormat:
           @"Cannot perform atomic access on unaligned address %p", ptr]] autorelease];
     }
 
@@ -126,8 +126,7 @@ public final class Unsafe {
       Class arrayCls = [component_class objcArrayClass];
       Ivar ivar = class_getInstanceVariable(arrayCls, "buffer_");
       if (!ivar) {
-        @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:
-            @"buffer_ ivar not found."]);
+        @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"buffer_ ivar not found."]);
       }
       return (jint)ivar_getOffset(ivar);
     ]-*/;

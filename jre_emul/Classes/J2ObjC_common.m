@@ -36,7 +36,7 @@ void JreThrowClassCastException() {
 }
 
 void JreThrowAssertionError(id __unsafe_unretained msg) {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:[msg description]]);
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:[msg description]]);
 }
 
 #ifdef J2OBJC_COUNT_NIL_CHK
@@ -138,13 +138,13 @@ id GetNonCapturingLambda(Protocol *protocol, NSString *blockClassName,
       // Fail quickly if we can't create the runtime class.
       if (!class_addProtocol(blockClass, protocol)) {
         @throw AUTORELEASE([[JavaLangAssertionError alloc]
-            initWithNSString:@"Unable to add protocol to non-capturing lambda class."]);
+            initWithId:@"Unable to add protocol to non-capturing lambda class."]);
       }
       IMP block_implementation = imp_implementationWithBlock(block);
       if (!class_addMethod(blockClass, methodSelector, block_implementation,
           blockTypeSignature(block))) {
         @throw AUTORELEASE([[JavaLangAssertionError alloc]
-            initWithNSString:@"Unable to add method to non-capturing lambda class."]);
+            initWithId:@"Unable to add method to non-capturing lambda class."]);
       }
       objc_registerClassPair(blockClass);
       lambdaHolder->id = (void*)[[blockClass alloc] init];
@@ -164,13 +164,13 @@ id GetCapturingLambda(Protocol *protocol, NSString *blockClassName,
       // Fail quickly if we can't create the runtime class.
       if (!class_addProtocol(lambdaClass, protocol)) {
         @throw AUTORELEASE([[JavaLangAssertionError alloc]
-            initWithNSString:@"Unable to add protocol to capturing lambda class."]);
+            initWithId:@"Unable to add protocol to capturing lambda class."]);
       }
       IMP block_implementation = imp_implementationWithBlock(blockWrapper);
       if (!class_addMethod([lambdaClass class], methodSelector, block_implementation,
           blockTypeSignature(blockWrapper))) {
         @throw AUTORELEASE([[JavaLangAssertionError alloc]
-          initWithNSString:@"Unable to add method to capturing lambda class."]);
+          initWithId:@"Unable to add method to capturing lambda class."]);
       }
       objc_registerClassPair(lambdaClass);
       lambdaHolder->id = (void*)[lambdaClass class];

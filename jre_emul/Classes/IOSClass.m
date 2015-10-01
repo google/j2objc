@@ -178,8 +178,7 @@ static JavaUtilProperties *prefixMapping;
 }
 
 - (NSString *)getName {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:
-      @"abstract method not overridden"]);
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
 }
 
 - (NSString *)getSimpleName {
@@ -191,8 +190,7 @@ static JavaUtilProperties *prefixMapping;
 }
 
 - (NSString *)objcName {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:
-      @"abstract method not overridden"]);
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
 }
 
 - (int)getModifiers {
@@ -370,8 +368,7 @@ NSString *IOSClass_GetTranslatedMethodName(IOSClass *cls, NSString *name,
 }
 
 - (jboolean)isAssignableFrom:(IOSClass *)cls {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:
-      @"abstract method not overridden"]);
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
 }
 
 - (IOSClass *)asSubclass:(IOSClass *)cls {

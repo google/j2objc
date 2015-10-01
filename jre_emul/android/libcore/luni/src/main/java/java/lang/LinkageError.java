@@ -53,4 +53,11 @@ public class LinkageError extends Error {
     public LinkageError(String detailMessage, Throwable cause) {
         super(detailMessage, cause);
     }
+
+    /**
+     * Constructs a new {@code LinkageError} with the given cause.
+     */
+    protected LinkageError(Throwable cause) {
+        super(cause);
+    }
 }

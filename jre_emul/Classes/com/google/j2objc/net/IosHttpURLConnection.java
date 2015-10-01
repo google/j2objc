@@ -386,7 +386,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
 
       if (urlResponse && ![urlResponse isKindOfClass:[NSHTTPURLResponse class]]) {
           @throw AUTORELEASE(([[JavaLangAssertionError alloc]
-                               initWithNSString:[NSString stringWithFormat:@"Unknown class %@",
+                               initWithId:[NSString stringWithFormat:@"Unknown class %@",
                                    NSStringFromClass([urlResponse class])]]));
       }
       NSHTTPURLResponse *response = (NSHTTPURLResponse*) urlResponse;

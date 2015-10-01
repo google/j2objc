@@ -172,7 +172,7 @@ IOSClass *decodeTypeEncoding(const char *type) {
   }
   NSString *errorMsg =
   [NSString stringWithFormat:@"unknown Java type encoding: '%s'", type];
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:errorMsg]);
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:errorMsg]);
 }
 
 // Return a description of an Obj-C type encoding.

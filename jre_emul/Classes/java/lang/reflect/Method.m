@@ -105,7 +105,7 @@
   if (strlen(argType) != 1) {
     NSString *errorMsg =
         [NSString stringWithFormat:@"unexpected return type: %s", argType];
-    id exception = [[JavaLangAssertionError alloc] initWithNSString:errorMsg];
+    id exception = [[JavaLangAssertionError alloc] initWithId:errorMsg];
 #if ! __has_feature(objc_arc)
     [exception autorelease];
 #endif

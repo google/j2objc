@@ -90,8 +90,7 @@ id IOSArray_NewArrayWithDimensions(
 }
 
 + (id)iosClass {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:
-      @"abstract method not overridden"]);
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
 }
 
 - (jint)length {
@@ -136,11 +135,10 @@ void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index) {
 
 - (IOSClass *)elementType {
 #if __has_feature(objc_arc)
-  @throw [[JavaLangAssertionError alloc]
-           initWithNSString:@"abstract method not overridden"];
+  @throw [[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"];
 #else
   @throw [[[JavaLangAssertionError alloc]
-           initWithNSString:@"abstract method not overridden"] autorelease];
+           initWithId:@"abstract method not overridden"] autorelease];
 #endif
   return nil;
 }
@@ -164,7 +162,7 @@ void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index) {
         dstOffset:(jint)dstOffset
            length:(jint)length {
   @throw [[[JavaLangAssertionError alloc]
-      initWithNSString:@"abstract method not overridden"] autorelease];
+      initWithId:@"abstract method not overridden"] autorelease];
 }
 
 - (void *)buffer {

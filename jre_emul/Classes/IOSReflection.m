@@ -49,7 +49,7 @@ id<JavaLangReflectType> JreTypeForString(const char *typeStr) {
     }
   }
   NSString *msg = [NSString stringWithFormat:@"invalid type from metadata %s", typeStr];
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:msg]);
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:msg]);
 }
 
 IOSClass *TypeToClass(id<JavaLangReflectType> type) {

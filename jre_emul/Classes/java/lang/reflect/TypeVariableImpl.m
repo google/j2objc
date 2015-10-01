@@ -35,11 +35,11 @@
 }
 
 - (IOSObjectArray *)getBounds {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:@"not implemented"]);
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"not implemented"]);
 }
 
 - (id)getGenericDeclaration {
-  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithNSString:@"not implemented"]);
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"not implemented"]);
 }
 
 - (NSString *)getName {
