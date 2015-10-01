@@ -274,7 +274,7 @@ public class FutureTask<V> implements RunnableFuture<V> {
         boolean ran = false;
         int s = state;
         try {
-            Callable<V> c = callable;
+            @RetainedLocalRef Callable<V> c = callable;
             if (c != null && s == NEW) {
                 try {
                     c.call(); // don't set result
