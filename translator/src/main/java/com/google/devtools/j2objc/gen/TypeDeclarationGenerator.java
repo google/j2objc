@@ -41,6 +41,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -101,6 +103,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
     printAnnotationProperties();
     printInnerDeclarations();
+    printDisallowedConstructors();
     println("\n@end");
 
     printCompanionClassDeclaration();
@@ -689,5 +692,82 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     TreeUtil.sortMethods(methods);
     printDeclarations(methods);
     printDeclarations(declarations);
+  }
+
+  /**
+   * Declare any inherited constructors that aren't allowed to be accessed in Java
+   * with a NS_UNAVAILABLE macro, so that clang will flag such access from native
+   * code as an error.
+   */
+  private void printDisallowedConstructors() {
+    if (!Options.disallowInheritedConstructors()) {
+      return;
+    }
+    if (typeBinding.isAnnotation() || typeBinding.isAnonymous() || typeBinding.isArray()
+        || typeBinding.isEnum() || typeBinding.isInterface() || typeBinding.isSynthetic()
+        || BindingUtil.isAbstract(typeBinding)) {
+      return;
+    }
+    Set<IMethodBinding> constructors = BindingUtil.getDeclaredConstructors(typeBinding);
+    List<IMethodBinding> inheritedConstructors = new ArrayList<>();
+    ITypeBinding superType = typeBinding.getSuperclass();
+    while (superType != null) {
+      // Add super constructors that have unique parameters.
+      for (IMethodBinding superC : BindingUtil.getDeclaredConstructors(superType)) {
+        if (!hasConstructor(constructors, superC)
+            && !hasConstructor(inheritedConstructors, superC)) {
+          inheritedConstructors.add(superC);
+        }
+      }
+      superType = superType.getSuperclass();
+    }
+    if (!inheritedConstructors.isEmpty()) {
+      newline();
+      println("// Disallowed inherited constructors, do not use.");
+      for (IMethodBinding constructor : inheritedConstructors) {
+        print(getConstructorSignature(constructor));
+        println(" NS_UNAVAILABLE;");
+      }
+    }
+  }
+
+  // Returns true if a constructor has an overriding constructor in a specified set.
+  private static boolean hasConstructor(Collection<IMethodBinding> constructors,
+      IMethodBinding constructor) {
+    for (IMethodBinding c : constructors) {
+      if (constructor.isSubsignature(c)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Create an Objective-C constructor signature from a method binding.
+   * This is similar to TypeGenerator.getMethodSignature(MethodDeclaration),
+   * but works with constructors not declared by the type being generated.
+   */
+  protected String getConstructorSignature(IMethodBinding m) {
+    StringBuilder sb = new StringBuilder();
+    sb.append("- (instancetype)");
+    ITypeBinding[] params = m.getParameterTypes();
+    String selector = nameTable.getMethodSelector(m);
+    String[] selParts = selector.split(":");
+    if (params.length == 0) {
+      assert selParts.length == 1 && !selector.endsWith(":");
+      sb.append(selParts[0]);
+    } else {
+      assert params.length == selParts.length;
+      int baseLength = sb.length() + selParts[0].length();
+      for (int i = 0; i < params.length; i++) {
+        if (i != 0) {
+          sb.append('\n');
+          sb.append(pad(baseLength - selParts[i].length()));
+        }
+        String typeName = nameTable.getSpecificObjCType(params[i]);
+        sb.append(String.format("%s:(%s)arg%d", selParts[i], typeName, i));
+      }
+    }
+    return sb.toString();
   }
 }

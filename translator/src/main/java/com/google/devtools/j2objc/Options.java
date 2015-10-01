@@ -87,6 +87,7 @@ public class Options {
   private int batchTranslateMaximum = 0;
   private List<String> headerMappingFiles = null;
   private String processors = null;
+  private boolean disallowInheritedConstructors = false;
 
   private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
@@ -365,6 +366,8 @@ public class Options {
           usage("-processor requires an argument");
         }
         processors = args[nArg];
+      } else if (arg.equals("--disallow-inherited-constructors")) {
+        disallowInheritedConstructors = true;
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -808,5 +811,14 @@ public class Options {
   @VisibleForTesting
   public static void setProcessors(String processors) {
     instance.processors = processors;
+  }
+
+  public static boolean disallowInheritedConstructors() {
+    return instance.disallowInheritedConstructors;
+  }
+
+  @VisibleForTesting
+  public static void setDisallowInheritedConstructors(boolean b) {
+    instance.disallowInheritedConstructors = b;
   }
 }

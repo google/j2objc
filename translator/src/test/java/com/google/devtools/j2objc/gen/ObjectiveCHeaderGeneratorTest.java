@@ -801,4 +801,33 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     // Forward declaration for Foo_Bar is not needed because we've included Foo.h.
     assertNotInTranslation(translation, "@class Foo_Bar");
   }
+
+  // Verify that the default constructor is disallowed if the class has a non-default
+  // constructor.
+  public void testDefaultConstructorDisallowed() throws IOException {
+    Options.setDisallowInheritedConstructors(true);
+    String translation = translateSourceFile("class Test { Test(int i) {} }", "Test", "Test.h");
+    assertTranslation(translation, "- (instancetype)initWithInt:(jint)i;");
+    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
+  }
+
+  // Verify that inherited constructors are disallowed. Exception has four constructors,
+  // so a subclass that only implements one should have the other three disallowed.
+  public void testConstructorsDisallowed() throws IOException {
+    Options.setDisallowInheritedConstructors(true);
+    String translation = translateSourceFile(
+        "class Test extends Exception { Test(String s) { super(s); } }", "Test", "Test.h");
+    assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)s;");
+    assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
+    assertTranslation(translation,
+        "- (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)arg0 NS_UNAVAILABLE;");
+    assertTranslatedLines(translation,
+        "- (instancetype)initWithNSString:(NSString *)arg0",
+        "withJavaLangThrowable:(JavaLangThrowable *)arg1 NS_UNAVAILABLE;");
+    assertTranslatedLines(translation,
+        "- (instancetype)initWithNSString:(NSString *)arg0",
+        "withJavaLangThrowable:(JavaLangThrowable *)arg1",
+        "withBoolean:(jboolean)arg2",
+        "withBoolean:(jboolean)arg3 NS_UNAVAILABLE;");
+  }
 }

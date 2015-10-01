@@ -469,4 +469,16 @@ public final class BindingUtil {
     return attributes;
   }
 
+  /**
+   * Returns all declared constructors for a specified type.
+   */
+  public static Set<IMethodBinding> getDeclaredConstructors(ITypeBinding type) {
+    Set<IMethodBinding> constructors = Sets.newHashSet();
+    for (IMethodBinding m : type.getDeclaredMethods()) {
+      if (m.isConstructor()) {
+        constructors.add(m);
+      }
+    }
+    return constructors;
+  }
 }
