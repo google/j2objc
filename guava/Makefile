@@ -48,9 +48,6 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC)
 include ../make/fat_lib.mk
 
-STATIC_FRAMEWORK_NAME = Guava
-include ../make/static_framework.mk
-
 fat_lib_dependencies: jre_emul_dist jsr305_dist
 
 JAR = $(BUILD_DIR)/j2objc_guava.jar
@@ -59,7 +56,7 @@ DIST_JAR = $(DIST_JAR_DIR)/j2objc_guava.jar
 GUAVA_LICENSE = LICENSE
 GUAVA_LICENSE_DIST = $(DIST_LICENSE_DIR)/guava_license.txt
 
-dist: $(FAT_LIBS_DIST) $(DIST_JAR) $(GUAVA_LICENSE_DIST) framework
+dist: $(FAT_LIBS_DIST) $(DIST_JAR) $(GUAVA_LICENSE_DIST)
 	@(cd $(GEN_OBJC_DIR) && tar cf - $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
 	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
 
@@ -69,7 +66,6 @@ test: $(FAT_LIBS)
 clean:
 	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST) $(ARCH_INCLUDE_DIR)/com/google/common $(DIST_JAR)
 	@rm -rf $(GUAVA_LICENSE_DIST)
-	@rm -rf $(STATIC_FRAMEWORK_DIR)
 
 java: $(DIST_JAR)
 
