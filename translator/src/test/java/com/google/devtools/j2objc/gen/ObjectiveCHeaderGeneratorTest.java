@@ -389,8 +389,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testInitMessageTranslation() throws IOException {
     String translation = translateSourceFile(
-        "public class Example { void init() {} }", "Example", "Example.h");
+        "public class Example { void init() {} void _init() {}}", "Example", "Example.h");
     assertTranslation(translation, "- (void)init__ OBJC_METHOD_FAMILY_NONE;");
+    assertTranslation(translation, "- (void)_init OBJC_METHOD_FAMILY_NONE;");
   }
 
   public void testInitializeMessageTranslation() throws IOException {

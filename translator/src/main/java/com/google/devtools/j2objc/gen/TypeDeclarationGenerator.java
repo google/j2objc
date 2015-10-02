@@ -46,6 +46,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Base class for generating type declarations, either public or private.
@@ -55,6 +56,9 @@ import java.util.Set;
 public class TypeDeclarationGenerator extends TypeGenerator {
 
   private static final String DEPRECATED_ATTRIBUTE = "__attribute__((deprecated))";
+
+  private static final Pattern FAMILY_METHOD_REGEX =
+      Pattern.compile("^[_]*(new|copy|alloc|init|mutableCopy).*");
 
   protected TypeDeclarationGenerator(SourceBuilder builder, AbstractTypeDeclaration node) {
     super(builder, node);
@@ -609,8 +613,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private boolean needsObjcMethodFamilyNoneAttribute(String name) {
-    return name.startsWith("new") || name.startsWith("copy") || name.startsWith("alloc")
-        || name.startsWith("init") || name.startsWith("mutableCopy");
+     return FAMILY_METHOD_REGEX.matcher(name).matches();
   }
 
   private boolean needsDeprecatedAttribute(List<Annotation> annotations) {
