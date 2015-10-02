@@ -239,6 +239,9 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(GEN_OBJC_DIR) -I$(ARCH_INCLUDE_DIR)
 include ../make/fat_lib.mk
 
+STATIC_FRAMEWORK_NAME = JUnit
+include ../make/static_framework.mk
+
 JUNIT_LICENSE = LICENSE
 JUNIT_LICENSE_DIST = $(DIST_LICENSE_DIR)/junit_license.txt
 
@@ -293,8 +296,9 @@ $(BUILD_DIR):
 clean:
 	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST) $(JUNIT_LICENSE_DIST)
 	@rm -rf $(ARCH_INCLUDE_DIR)/junit $(ARCH_INCLUDE_DIR)/org/junit
+	@rm -rf $(STATIC_FRAMEWORK_DIR)
 
-dist: lib $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(JUNIT_LICENSE_DIST)
+dist: lib $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(JUNIT_LICENSE_DIST) framework
 
 find_cycles: $(JAVA_SOURCES_MANIFEST) | cycle_finder_dist jre_emul_java_manifest
 	$(DIST_DIR)/cycle_finder -sourcepath $(JAVA_SRC_DIR) \
