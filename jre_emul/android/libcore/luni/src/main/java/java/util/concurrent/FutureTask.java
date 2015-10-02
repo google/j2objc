@@ -6,6 +6,8 @@
 
 package java.util.concurrent;
 
+import com.google.j2objc.annotations.RetainedLocalRef;
+
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -229,7 +231,7 @@ public class FutureTask<V> implements RunnableFuture<V> {
             !U.compareAndSwapObject(this, RUNNER, null, Thread.currentThread()))
             return;
         try {
-            Callable<V> c = callable;
+            @RetainedLocalRef Callable<V> c = callable;
             if (c != null && state == NEW) {
                 V result;
                 boolean ran;
@@ -272,7 +274,7 @@ public class FutureTask<V> implements RunnableFuture<V> {
         boolean ran = false;
         int s = state;
         try {
-            Callable<V> c = callable;
+            @RetainedLocalRef Callable<V> c = callable;
             if (c != null && s == NEW) {
                 try {
                     c.call(); // don't set result
