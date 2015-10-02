@@ -111,6 +111,9 @@ public final class PackagePrefixes {
      * prefix is created from the package name.
      */
     public String getPrefix(IPackageBinding packageBinding) {
+      if (packageBinding == null) {
+        return "";
+      }
       String packageName = packageBinding.getName();
       if (hasPrefix(packageName)) {
         return getPrefix(packageName);
@@ -124,7 +127,7 @@ public final class PackagePrefixes {
         }
       }
 
-      String prefix = getPrefixFromPackageInfoSource(packageBinding);
+      String prefix = getPrefixFromPackageInfoSource(packageName);
       if (prefix == null) {
         prefix = getPrefixFromPackageInfoClass(packageName);
       }
@@ -138,15 +141,9 @@ public final class PackagePrefixes {
     /**
      * Check if there is a package-info.java source file with a prefix annotation.
      */
-    private String getPrefixFromPackageInfoSource(IPackageBinding packageBinding) {
+    private String getPrefixFromPackageInfoSource(String packageName) {
       try {
-        String qualifiedName = "package-info";
-        String packageName = packageBinding.getName();
-        // Path will be null if this is the empty package.
-        if (packageName != null) {
-          qualifiedName = packageName + '.' + qualifiedName;
-        }
-        InputFile file = FileUtil.findOnSourcePath(qualifiedName);
+        InputFile file = FileUtil.findOnSourcePath(packageName + ".package-info");
         if (file != null) {
           String pkgInfo = FileUtil.readFile(file);
           int i = pkgInfo.indexOf("@ObjectiveCName");
@@ -176,11 +173,7 @@ public final class PackagePrefixes {
     private String getPrefixFromPackageInfoClass(String packageName) {
       final String[] result = new String[1];
       try {
-        String qualifiedName = "package-info";
-        if (packageName != null) {
-          qualifiedName = packageName + '.' + qualifiedName;
-        }
-        InputFile file = FileUtil.findOnClassPath(qualifiedName);
+        InputFile file = FileUtil.findOnClassPath(packageName + ".package-info");
         if (file != null) {
           ClassReader classReader = new ClassReader(file.getInputStream());
           classReader.accept(new ClassVisitor(Opcodes.ASM5) {

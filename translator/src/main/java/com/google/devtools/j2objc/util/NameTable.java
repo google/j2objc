@@ -24,7 +24,6 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.PointerTypeBinding;
@@ -924,9 +923,7 @@ public class NameTable {
     }
 
     // Use camel-cased package+class name.
-    IPackageBinding pkg = binding.getPackage();
-    String pkgName = pkg != null ? getPrefix(pkg) : "";
-    return pkgName + binding.getName();
+    return getPrefix(binding.getPackage()) + binding.getName();
   }
 
   private static String getTypeSubName(ITypeBinding binding) {
@@ -949,12 +946,8 @@ public class NameTable {
   }
 
   public static String getMainTypeFullName(CompilationUnit unit) {
-    PackageDeclaration pkg = unit.getPackage();
-    if (pkg.isDefaultPackage()) {
-      return unit.getMainTypeName();
-    } else {
-      return unit.getNameTable().getPrefix(pkg.getPackageBinding()) + unit.getMainTypeName();
-    }
+    return unit.getNameTable().getPrefix(unit.getPackage().getPackageBinding())
+        + unit.getMainTypeName();
   }
 
   public String getPrefix(IPackageBinding packageBinding) {
