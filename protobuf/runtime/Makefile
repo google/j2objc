@@ -82,6 +82,12 @@ FAT_LIB_SOURCES_RELATIVE = $(SRCS) com/google/protobuf/DescriptorProtos.m
 FAT_LIB_SOURCE_DIRS = src $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC) $(C_FLAGS) $(INCLUDE_DIRS:%=-I%)
 include $(J2OBJC_ROOT)/make/fat_lib.mk
+
+STATIC_FRAMEWORK_NAME = ProtobufRuntime
+STATIC_FRAMEWORK_HEADERS = $(DIST_HEADERS)
+STATIC_HEADERS_DIR = $(ARCH_INCLUDE_DIR)
+include $(J2OBJC_ROOT)/make/static_framework.mk
+
 fat_lib_dependencies: jre_emul_dist $(DESCRIPTOR_PROTO_H)
 
 PROTOBUF_LICENSE = ../LICENSE
@@ -117,6 +123,7 @@ $(PROTOBUF_LICENSE_DIST): $(PROTOBUF_LICENSE)
 clean:
 	@rm -rf $(BUILD_DIR) $(DIST_JAR) $(FAT_LIBS_DIST) $(DIST_HEADERS)
 	@rm -rf $(PROTOBUF_LICENSE_DIST)
+	@rm -rf $(STATIC_FRAMEWORK_DIR)
 
 $(DESCRIPTOR_PROTO_M): $(DESCRIPTOR_PROTO) $(PROTOC)
 	@mkdir -p $(@D)

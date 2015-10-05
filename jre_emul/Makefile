@@ -1373,6 +1373,12 @@ LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_emul_core,$(CORE_OBJS_RELATIVE))
 DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 
+STATIC_FRAMEWORK_NAME = JRE
+STATIC_FRAMEWORK_HEADERS = $(INCLUDES)
+STATIC_LIBRARY_NAME = $(TRANSLATE_NAME)
+STATIC_HEADERS_DIR = $(ARCH_INCLUDE_DIR)
+include ../make/static_framework.mk
+
 JRE_EMUL_LICENSES = \
   $(DIST_LICENSE_DIR)/android_license.txt \
   $(DIST_LICENSE_DIR)/apache_harmony_license.txt \
@@ -1438,6 +1444,7 @@ clean:
 	@rm -f $(DIST_DIR)/j2objcc $(EMULATION_JAR_DIST) $(DIST_LIBS) $(MAIN_LIB_DIST)
 	@rm -f $(DIST_INCLUDES)
 	@rm -f $(JRE_EMUL_LICENSES)
+	@rm -rf $(STATIC_FRAMEWORK_DIR)
 
 dist: emul_jar_dist libs_dist $(DIST_DIR)/j2objcc licenses emul_src_jar_dist
 

@@ -44,6 +44,9 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC) -fobjc-abi-version=2 -fobjc-legacy-dispatch
 include ../make/fat_lib.mk
 
+STATIC_FRAMEWORK_NAME = JSR305
+include ../make/static_framework.mk
+
 JSR305_LICENSE = LICENSE
 JSR305_LICENSE_DIST = $(DIST_LICENSE_DIR)/jsr305_license.txt
 
@@ -105,5 +108,6 @@ $(BUILD_DIR):
 clean:
 	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST)
 	@rm -rf $(JSR305_LICENSE_DIST) $(ARCH_INCLUDE_DIR)/javax/annotation
+	@rm -rf $(STATIC_FRAMEWORK_DIR)
 
 dist: $(FAT_LIBS_DIST) $(ARCH_HEADERS) $(JSR305_LICENSE_DIST)

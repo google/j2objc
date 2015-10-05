@@ -45,7 +45,16 @@ dist: print_environment translator_dist jre_emul_dist junit_dist jsr305_dist \
 protobuf_dist: protobuf_compiler_dist protobuf_runtime_dist
 
 
-all_dist: dist protobuf_dist
+frameworks: dist
+	@cd jre_emul && $(MAKE) framework
+	@cd junit && $(MAKE) framework
+	@cd jsr305 && $(MAKE) framework
+	@cd inject/javax_inject && $(MAKE) framework
+	@cd guava && $(MAKE) framework
+	@cd testing/mockito && $(MAKE) framework
+	@cd protobuf/runtime && $(MAKE) framework
+
+all_dist: dist protobuf_dist frameworks
 
 clean:
 	@rm -rf $(BUILD_DIR) $(DIST_DIR)
