@@ -624,8 +624,6 @@
 		064914341AC47ED000E98733 /* NSCopying+JavaCloneable.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSCopying+JavaCloneable.h"; sourceTree = "<group>"; };
 		064914351AC47ED000E98733 /* NSCopying+JavaCloneable.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSCopying+JavaCloneable.m"; sourceTree = "<group>"; };
 		064914361AC47ED000E98733 /* J2ObjC_header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_header.h; sourceTree = "<group>"; };
-		0649A5D61AE076CC00DE2494 /* ObjectiveCName.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ObjectiveCName.h; path = build_result/Classes/com/google/j2objc/annotations/ObjectiveCName.h; sourceTree = "<group>"; };
-		0649A5D71AE076CC00DE2494 /* ObjectiveCName.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ObjectiveCName.m; path = build_result/Classes/com/google/j2objc/annotations/ObjectiveCName.m; sourceTree = "<group>"; };
 		0649A5D81AE076CC00DE2494 /* IosCertificateFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosCertificateFactory.h; path = build_result/Classes/com/google/j2objc/security/cert/IosCertificateFactory.h; sourceTree = "<group>"; };
 		0649A5D91AE076CC00DE2494 /* IosCertificateFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosCertificateFactory.m; path = build_result/Classes/com/google/j2objc/security/cert/IosCertificateFactory.m; sourceTree = "<group>"; };
 		0649A5DA1AE076CC00DE2494 /* IosX509Certificate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosX509Certificate.h; path = build_result/Classes/com/google/j2objc/security/cert/IosX509Certificate.h; sourceTree = "<group>"; };
@@ -5325,8 +5323,6 @@
 				06F2900B18972C9300676F1D /* ObjectInputStream.m */,
 				06F2900C18972C9300676F1D /* ObjectInputValidation.h */,
 				06F2900D18972C9300676F1D /* ObjectInputValidation.m */,
-				0649A5D61AE076CC00DE2494 /* ObjectiveCName.h */,
-				0649A5D71AE076CC00DE2494 /* ObjectiveCName.m */,
 				06F2900E18972C9300676F1D /* ObjectOutput.h */,
 				06F2900F18972C9300676F1D /* ObjectOutput.m */,
 				06F2901018972C9300676F1D /* ObjectOutputStream.h */,

@@ -70,10 +70,10 @@ public class J2ObjCTest extends GenerationTest {
     assertTranslation(exampleM, "- (instancetype)init {");
     assertTranslation(exampleM, "+ (const J2ObjcClassInfo *)__metadata {");
     assertTranslation(exampleM, "J2OBJC_CLASS_TYPE_LITERAL_SOURCE(CBTExample)");
-    assertTranslation(packageInfoM, "#include \"IOSClass.h\"");
-    assertTranslation(
-        packageInfoM, "#include \"com/google/j2objc/annotations/ObjectiveCName.h\"");
-    assertTranslation(packageInfoM, "+ (IOSObjectArray *)__annotations {");
+    assertTranslatedLines(packageInfoM,
+        "+ (NSString *)__prefix {",
+        "  return @\"CBT\";",
+        "}");
 
     assertErrorCount(0);
   }

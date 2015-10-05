@@ -79,7 +79,6 @@ JAR_ONLY_SOURCES = \
 
 # Java sources to be translated normally and included in the core library.
 JAVA_SOURCES_CORE = \
-	com/google/j2objc/annotations/ObjectiveCName.java \
 	com/google/j2objc/net/IosHttpHandler.java \
 	com/google/j2objc/net/IosHttpURLConnection.java \
 	com/google/j2objc/net/IosHttpsHandler.java \
