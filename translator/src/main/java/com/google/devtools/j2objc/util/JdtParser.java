@@ -160,6 +160,7 @@ public class JdtParser {
     parser.createASTs(pathsArray, getEncodings(pathsArray.length), pathsArray, astRequestor, null);
   }
 
+  @SuppressWarnings("deprecation")
   private ASTParser newASTParser(boolean resolveBindings) {
     ASTParser parser;
     if (Options.isJava8Translator()) {

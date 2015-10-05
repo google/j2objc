@@ -156,8 +156,9 @@ public class NilCheckResolver extends TreeVisitor {
       case NULL_LITERAL:
       case PREFIX_EXPRESSION:
         return true;
+      default:
+        return false;
     }
-    return false;
   }
 
   private void addNilCheck(Expression node) {

@@ -121,8 +121,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         case METHOD_DECLARATION:
         case NATIVE_DECLARATION:
           return true;
+        default:
+          return false;
       }
-      return false;
     }
   };
 

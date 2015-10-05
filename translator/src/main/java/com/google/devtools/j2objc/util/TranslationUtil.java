@@ -124,9 +124,10 @@ public final class TranslationUtil {
             && ((IOSMethodBinding) method).getSelector().equals(NameTable.AUTORELEASE_METHOD)) {
           return TreeUtil.remove(expr);
         }
-        break;
+        // else fall-through
+      default:
+        return null;
     }
-    return null;
   }
 
   public static IMethodBinding findDefaultConstructorBinding(ITypeBinding type, Types typeEnv) {

@@ -21,7 +21,6 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
-import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.PrefixExpression;
@@ -99,10 +98,6 @@ public class DestructorGenerator extends TreeVisitor {
         return true;
       }
     });
-  }
-
-  private boolean isStatic(FieldDeclaration f) {
-    return (f.getModifiers() & Modifier.STATIC) != 0;
   }
 
   private SuperMethodInvocation findSuperFinalizeInvocation(MethodDeclaration node) {
