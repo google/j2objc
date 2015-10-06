@@ -152,7 +152,8 @@ public class JavadocGenerator extends AbstractSourceGenerator {
       }
 
       if (tagName.equals(TagElement.TAG_SEE)) {
-        return "";
+        String comment = printTagFragments(tag.getFragments()).trim();
+        return comment.isEmpty() ? "" : "- seealso: " + comment;
       }
 
       if (tagName.equals(TagElement.TAG_CODE)) {
@@ -183,7 +184,7 @@ public class JavadocGenerator extends AbstractSourceGenerator {
   }
 
   public String formatLinkTag(TagElement tag, String template) {
-    String text = printTagFragments(tag.getFragments());
+    String text = printTagFragments(tag.getFragments()).trim();
     int iLabel = text.indexOf(' ');
     if (iLabel > 0) {
       return String.format(template, text.substring(iLabel).trim());

@@ -149,6 +149,7 @@ public class JavadocGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "/** Class javadoc for Test.\n"
         + " * @see\n"
+        + " * @since\n"
         + " */ class Test { \n"
         + "/** Method javadoc.\n"
         + "  * @param \n"
@@ -157,6 +158,7 @@ public class JavadocGeneratorTest extends GenerationTest {
         + "  */\n"
         + "boolean test(int foo) { return false; } }", "Test", "Test.h");
     assertTranslation(translation, "@brief Class javadoc for Test.");
+    assertNotInTranslation(translation, "@see");
     assertNotInTranslation(translation, "@since");
     assertNotInTranslation(translation, "@param");
     assertNotInTranslation(translation, "@return");
@@ -220,5 +222,16 @@ public class JavadocGeneratorTest extends GenerationTest {
         "@brief <h3>Regular expression syntax</h3>",
         "<span class=\"datatable\">",
         "*/");
+  }
+
+  public void testSeeTag() throws IOException {
+    String translation = translateSourceFile(
+        "/** Class javadoc for Test.\n"
+        + " * @see {@link http://developers.facebook.com/docs/reference/javascript/FB.init/}\n"
+        + " */ class Test {}", "Test", "Test.h");
+    assertTranslation(translation, "@brief Class javadoc for Test.");
+    assertTranslation(translation,
+        "- seealso: "
+        + "<code>http://developers.facebook.com/docs/reference/javascript/FB.init/</code>");
   }
 }
