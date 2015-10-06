@@ -202,40 +202,6 @@ id IOSObjectArray_SetRef(JreArrayRef ref, id value) {
 }
 
 static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length) {
-#ifdef J2OBJC_STRICT_ATOMIC_ASSIGN
-  // In strict atomic mode, every assignment must be done with an atomic
-  // exchange to avoid race conditions with the reference counting.
-  // This algorithm avoids extraneous retains and autorelease calls.
-  jint shift = dest - src;
-  if (shift == 0) {
-    return;
-  } else if (shift > 0) {
-    jint endIter = src + MIN(shift, length);
-    jint srcEnd = src + length;
-    for (jint startIdx = src; startIdx < endIter; startIdx++) {
-      jint idx = startIdx;
-      id elem = [buffer[idx] retain];
-      do {
-        idx += shift;
-        elem = __c11_atomic_exchange((volatile_id *)&buffer[idx], elem, __ATOMIC_RELAXED);
-      } while (idx < srcEnd);
-      [elem autorelease];
-    }
-  } else {
-    shift = -shift;
-    jint startIdx = src + length;
-    jint endIter = startIdx - MIN(shift, length);
-    while (startIdx > endIter) {
-      jint idx = --startIdx;
-      id elem = [buffer[idx] retain];
-      do {
-        idx -= shift;
-        elem = __c11_atomic_exchange((volatile_id *)&buffer[idx], elem, __ATOMIC_RELAXED);
-      } while (idx >= src);
-      [elem autorelease];
-    }
-  }
-#else
   jint releaseStart = dest;
   jint releaseEnd = dest + length;
   jint retainStart = src;
@@ -256,7 +222,6 @@ static void DoRetainedMove(id __strong *buffer, jint src, jint dest, jint length
   for (jint i = retainStart; i < retainEnd; i++) {
     [buffer[i] retain];
   }
-#endif
 }
 
 - (void)arraycopy:(jint)offset
