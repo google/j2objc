@@ -12,6 +12,7 @@ This document describes how memory is managed under J2ObjC translated code, and 
 One of J2ObjC's goals is to produce translated code that will integrate seamlessly into Objective-C's reference counting environment. This makes translated Java code easy to use from natively written Objective-C because there is no awkward transfer of ownership for objects being passed between Java and Objective-C environments.
 
 Since Java uses garbage collection for memory management, Java code contains no explicit memory management of its objects. J2ObjC must therefore insert reference counting calls appropriately to ensure that objects are deallocated at the right time. We have settled on the following set of rules that we've found to be both performant and practical:
+
 * All objects will live for at least the duration of the current autorelease pool.
   * This general rule allows us to skip many retains and releases that would otherwise be necessary.
 * Local variables are not retained.
@@ -22,7 +23,8 @@ Since Java uses garbage collection for memory management, Java code contains no 
 
 ### Reference Cycles
 
-It is possible for memory leaks to occur in translated code. This is an unavoidable side-effect of mapping from a garbage collected environment to a reference counted environment. Leaks occur when reference cycles are created in the Java source. A reference cycle exists when an object refers to itself either directly or indirectly through it's fields. There is no automated way to prevent reference cycles from occuring; however, we do provide a [Cycle Finder](Cycle-Finder-Tool.html) tool that automates detection of cycles. Here are some common ways to fix a reference cycle:
+**It is possible for memory leaks to occur in translated code.**{: .j2objc-unsupported} This is an unavoidable side-effect of mapping from a garbage collected environment to a reference counted environment. Leaks occur when reference cycles are created in the Java source. A reference cycle exists when an object refers to itself either directly or indirectly through it's fields. There is no automated way to prevent reference cycles from occuring; however, we do provide a [Cycle Finder](Cycle-Finder-Tool.html) tool that automates detection of cycles. Here are some common ways to fix a reference cycle:
+
 * Add a [@Weak](Weak.html) or [@WeakOuter](WeakOuter.html) annotation to weaken one of the references.
 * Add a `cleanup()` method to one of the objects that sets some fields to null. Call `cleanup()` before discarding the object.
 * Redesign the code to avoid creating a reference cycle altogether.
@@ -38,14 +40,16 @@ J2ObjC maps the `synchronized` keyword directly to Objective-C `@synchronized`.
 ### Atomicity
 
 Java guarantees atomicity for loads and stores of all types except `long` and `double`. See [JLS-17.7](https://docs.oracle.com/javase/specs/jls/se8/html/jls-17.html#jls-17.7). With the exception of `volatile` types (described below) J2ObjC provides no special treatment to ensure atomic loads and stores. This implies the following:
+
 * Since all iOS platforms are 32 or 64-bit, loads and stores of primitive types except `long` and `double` are atomic on 32-bit devices, and all are atomic on 64-bit systems.
-* Loads and stores of object types are not atomic in J2ObjC.
+* **Loads and stores of object types are not atomic in J2ObjC.**{: .j2objc-unsupported}
   * Atomically updating reference counts is too costly.
   * An object field can be made atomic by declaring it `volatile`. (see below)
   
 ### Volatile fields
 
 For `volatile` fields, Java provides both atomicity and sequencially consistent ordering ([JLS-8.3.1.4](https://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.3.1.4)), which can be used for synchronization. J2ObjC provides the same guarantees as Java for all `volatile` fields. J2ObjC uses the following mechanisms for `volatile` fields:
+
 * Primitive types are mapped to c11 atomic types.
   * eg. `volatile int` -> `_Atomic(jint)`
 * Object fields are protected with spin locks.

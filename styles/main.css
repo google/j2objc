@@ -263,3 +263,7 @@ code, pre{
 #side-nav ul {
   list-style-type: none;
 }
+.j2objc-unsupported {
+  color: #600;
+  font-weight: normal;
+}

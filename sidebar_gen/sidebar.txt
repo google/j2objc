@@ -15,6 +15,7 @@ Developing with J2ObjC
   {{site_root}}docs/Writing-Native-Methods.html Writing Native Methods
   {{site_root}}docs/Translating-JUnit-Tests.html Translating JUnit Tests
   {{site_root}}docs/Memory-Management.html Memory Management
+  {{site_root}}docs/Memory-Model.html Memory Model
   {{site_root}}docs/Cycle-Finder-Tool.html Cycle Finder Tool
   {{site_root}}docs/Dead-Code-Elimination.html Dead Code Elimination
   {{site_root}}docs/Package-Prefixes.html Package Prefixes
