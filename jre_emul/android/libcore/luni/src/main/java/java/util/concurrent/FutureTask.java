@@ -6,8 +6,6 @@
 
 package java.util.concurrent;
 
-import com.google.j2objc.annotations.RetainedLocalRef;
-
 import java.util.concurrent.locks.LockSupport;
 
 /**
@@ -72,8 +70,11 @@ public class FutureTask<V> implements RunnableFuture<V> {
     private static final int INTERRUPTING = 5;
     private static final int INTERRUPTED  = 6;
 
-    /** The underlying callable; nulled out after running */
-    private Callable<V> callable;
+    /**
+     * The underlying callable; nulled out after running.
+     * volatile is required for atomicity in J2ObjC.
+     * */
+    private volatile Callable<V> callable;
     /** The result to return or exception to throw from get() */
     private Object outcome; // non-volatile, protected by state reads/writes
     /** The thread running the callable; CASed during run() */
@@ -231,7 +232,7 @@ public class FutureTask<V> implements RunnableFuture<V> {
             !U.compareAndSwapObject(this, RUNNER, null, Thread.currentThread()))
             return;
         try {
-            @RetainedLocalRef Callable<V> c = callable;
+            Callable<V> c = callable;
             if (c != null && state == NEW) {
                 V result;
                 boolean ran;
@@ -274,7 +275,7 @@ public class FutureTask<V> implements RunnableFuture<V> {
         boolean ran = false;
         int s = state;
         try {
-            @RetainedLocalRef Callable<V> c = callable;
+            Callable<V> c = callable;
             if (c != null && s == NEW) {
                 try {
                     c.call(); // don't set result
