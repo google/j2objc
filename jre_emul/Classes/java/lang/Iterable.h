@@ -22,7 +22,7 @@
 
 @protocol JavaUtilIterator;
 
-#import "JreEmulation.h"
+#import "J2ObjC_header.h"
 
 /**
  * Instances of classes that implement this interface can be used with
