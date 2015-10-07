@@ -77,10 +77,14 @@ void JrePrintNilChkCountAtExit();
 id JreStrongAssign(__strong id *pIvar, id value);
 id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
 
+id JreLoadVolatileId(volatile_id *pVar);
+id JreAssignVolatileId(volatile_id *pVar, id value);
 id JreVolatileStrongAssign(volatile_id *pIvar, id value);
 id JreVolatileStrongAssignAndConsume(volatile_id *pIvar, NS_RELEASES_ARGUMENT id value);
-
-id JreRetainVolatile(volatile_id *pVar);
+jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue);
+id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue);
+void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
+void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 void JreReleaseVolatile(volatile_id *pVar);
 
 NSString *JreStrcat(const char *types, ...);
@@ -119,14 +123,6 @@ __attribute__((always_inline)) inline id JreAutoreleasedAssign(
   return *pIvar = value;
 }
 #endif
-
-__attribute__((always_inline)) inline id JreLoadVolatileId(volatile_id *pVar) {
-  return (__bridge id)__c11_atomic_load(pVar, __ATOMIC_SEQ_CST);
-}
-__attribute__((always_inline)) inline id JreAssignVolatileId(volatile_id *pVar, id value) {
-  __c11_atomic_store(pVar, (__bridge void *)value, __ATOMIC_SEQ_CST);
-  return value;
-}
 
 #define J2OBJC_VOLATILE_ACCESS_DEFN(NAME, TYPE) \
   __attribute__((always_inline)) inline TYPE JreLoadVolatile##NAME(volatile_##TYPE *pVar) { \
@@ -291,7 +287,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #define J2OBJC_STATIC_VOLATILE_OBJ_FIELD_GETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_get_##FIELD() { \
     CLASS##_initialize(); \
-    return (__bridge TYPE)__c11_atomic_load(&CLASS##_##FIELD, __ATOMIC_SEQ_CST); \
+    return JreLoadVolatileId(&CLASS##_##FIELD); \
   }
 
 /*!

@@ -42,15 +42,13 @@ CF_EXTERN_C_END
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##Volatile##CNAME( \
       volatile_id *value) { \
-    TYPE *original = (__bridge TYPE *)__c11_atomic_load(value, __ATOMIC_SEQ_CST); \
+    TYPE *original = JreLoadVolatileId(value); \
     nil_chk(original); \
-    TYPE *result = TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1); \
-    __c11_atomic_store(value, (__bridge void *)result, __ATOMIC_SEQ_CST); \
-    return result; \
+    return JreAssignVolatileId(value, TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##VolatileStrong##CNAME( \
       volatile_id *value) { \
-    TYPE *original = (__bridge TYPE *)__c11_atomic_load(value, __ATOMIC_SEQ_CST); \
+    TYPE *original = JreLoadVolatileId(value); \
     nil_chk(original); \
     return JreVolatileStrongAssign(value, \
         TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
@@ -75,15 +73,14 @@ CF_EXTERN_C_END
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##Volatile##CNAME( \
       volatile_id *value) { \
-    TYPE *original = (__bridge TYPE *)__c11_atomic_load(value, __ATOMIC_SEQ_CST); \
+    TYPE *original = JreLoadVolatileId(value); \
     nil_chk(original); \
-    __c11_atomic_store(value, (__bridge void *)TYPE##_valueOfWith##CNAME##_( \
-        [original VALUE_METHOD] OP 1), __ATOMIC_SEQ_CST); \
+    JreAssignVolatileId(value, TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
     return original; \
   } \
   __attribute__((always_inline)) inline TYPE *JreBoxedPost##OPNAME##VolatileStrong##CNAME( \
       volatile_id *value) { \
-    TYPE *original = (__bridge TYPE *)__c11_atomic_load(value, __ATOMIC_SEQ_CST); \
+    TYPE *original = JreLoadVolatileId(value); \
     nil_chk(original); \
     JreVolatileStrongAssign(value, TYPE##_valueOfWith##CNAME##_([original VALUE_METHOD] OP 1)); \
     return original; \
@@ -152,16 +149,14 @@ CF_EXTERN_C_END
   } \
   __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##AssignVolatile##CNAME( \
       volatile_id *lhs, RTYPE rhs) { \
-    BOXED_TYPE *lhsValue = (__bridge BOXED_TYPE *)__c11_atomic_load(lhs, __ATOMIC_SEQ_CST); \
+    BOXED_TYPE *lhsValue = JreLoadVolatileId(lhs); \
     nil_chk(lhsValue); \
-    BOXED_TYPE *result = BOXED_TYPE##_valueOfWith##CNAME##_( \
-        (TYPE)(OP((OP_LTYPE)[lhsValue VALUE_METHOD], rhs))); \
-    __c11_atomic_store(lhs, (__bridge void *)result, __ATOMIC_SEQ_CST); \
-    return result; \
+    return JreAssignVolatileId(lhs, \
+        BOXED_TYPE##_valueOfWith##CNAME##_((TYPE)(OP((OP_LTYPE)[lhsValue VALUE_METHOD], rhs)))); \
   } \
   __attribute__((always_inline)) inline BOXED_TYPE *JreBoxed##OPNAME##AssignVolatileStrong##CNAME( \
       volatile_id *lhs, RTYPE rhs) { \
-    BOXED_TYPE *lhsValue = (__bridge BOXED_TYPE *)__c11_atomic_load(lhs, __ATOMIC_SEQ_CST); \
+    BOXED_TYPE *lhsValue = JreLoadVolatileId(lhs); \
     nil_chk(lhsValue); \
     return JreVolatileStrongAssign(lhs, \
         BOXED_TYPE##_valueOfWith##CNAME##_((TYPE)(OP((OP_LTYPE)[lhsValue VALUE_METHOD], rhs)))); \

@@ -97,13 +97,8 @@ public class AtomicStampedReference<V> {
                                      V   newReference,
                                      int expectedStamp,
                                      int newStamp) {
-        Pair<V> current = pair;
-        return
-            expectedReference == current.reference &&
-            expectedStamp == current.stamp &&
-            ((newReference == current.reference &&
-              newStamp == current.stamp) ||
-             weakCasPair(current, Pair.of(newReference, newStamp)));
+        return compareAndSet(expectedReference, newReference,
+                             expectedStamp, newStamp);
     }
 
     /**
@@ -165,24 +160,6 @@ public class AtomicStampedReference<V> {
     }
 
     private native boolean casPair(Pair<V> cmp, Pair<V> val) /*-[
-      [val retain];
-      if (__c11_atomic_compare_exchange_strong(
-          &self->pair_, (void **)&cmp, val, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
-        [cmp autorelease];
-        return YES;
-      }
-      [val release];
-      return NO;
-    ]-*/;
-
-    private native boolean weakCasPair(Pair<V> cmp, Pair<V> val) /*-[
-      [val retain];
-      if (__c11_atomic_compare_exchange_weak(
-          &self->pair_, (void **)&cmp, val, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) {
-        [cmp autorelease];
-        return YES;
-      }
-      [val release];
-      return NO;
+      return JreCompareAndSwapVolatileStrongId(&self->pair_, cmp, val);
     ]-*/;
 }

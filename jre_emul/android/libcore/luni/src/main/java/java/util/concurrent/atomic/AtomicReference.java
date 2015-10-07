@@ -58,11 +58,9 @@ public class AtomicReference<V> implements java.io.Serializable {
      * @param newValue the new value
      * @since 1.6
      */
-    public final native void lazySet(V newValue) /*-[
-      [newValue retain];
-      id oldValue = __c11_atomic_exchange(&self->value_, newValue, __ATOMIC_RELEASE);
-      [oldValue autorelease];
-    ]-*/;
+    public final void lazySet(V newValue) {
+        value = newValue;
+    }
 
     /**
      * Atomically sets the value to the given updated value
@@ -73,14 +71,7 @@ public class AtomicReference<V> implements java.io.Serializable {
      * the actual value was not equal to the expected value.
      */
     public final native boolean compareAndSet(V expect, V update) /*-[
-      [update retain];
-      if (__c11_atomic_compare_exchange_strong(
-          &self->value_, (void **)&expect, update, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
-        [expect autorelease];
-        return YES;
-      }
-      [update release];
-      return NO;
+      return JreCompareAndSwapVolatileStrongId(&self->value_, expect, update);
     ]-*/;
 
     /**
@@ -96,14 +87,7 @@ public class AtomicReference<V> implements java.io.Serializable {
      * @return true if successful
      */
     public final native boolean weakCompareAndSet(V expect, V update) /*-[
-      [update retain];
-      if (__c11_atomic_compare_exchange_weak(
-          &self->value_, (void **)&expect, update, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) {
-        [expect autorelease];
-        return YES;
-      }
-      [update release];
-      return NO;
+      return JreCompareAndSwapVolatileStrongId(&self->value_, expect, update);
     ]-*/;
 
     /**
@@ -113,10 +97,7 @@ public class AtomicReference<V> implements java.io.Serializable {
      * @return the previous value
      */
     public final native V getAndSet(V newValue) /*-[
-      [newValue retain];
-      id oldValue = __c11_atomic_exchange(&self->value_, newValue, __ATOMIC_SEQ_CST);
-      [oldValue autorelease];
-      return oldValue;
+      return JreExchangeVolatileStrongId(&self->value_, newValue);
     ]-*/;
 
     /**

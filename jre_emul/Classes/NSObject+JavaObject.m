@@ -71,7 +71,7 @@
   }
 
   // Releases any @Weak fields that shouldn't have been retained.
-  [clone __javaClone];
+  [clone __javaClone:self];
   return clone;
 }
 
@@ -160,7 +160,7 @@ static void doWait(id obj, long long timeout) {
   doWait(self, timeout + (nanos == 0 ? 0 : 1));
 }
 
-- (void)__javaClone {
+- (void)__javaClone:(id)original {
 }
 
 + (J2ObjcClassInfo *)__metadata {

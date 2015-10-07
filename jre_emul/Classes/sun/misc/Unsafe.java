@@ -88,12 +88,15 @@ public final class Unsafe {
       CHECK_ADDR(TYPE, ptr) \
       __c11_atomic_store((volatile_##TYPE *)ptr, newValue, __ATOMIC_##MEM_ORDER);
 
-    #define PUT_OBJECT_IMPL(MEM_ORDER) \
+    #define GET_OBJECT_IMPL() \
       uintptr_t ptr = PTR(obj, offset); \
       CHECK_ADDR(id, ptr) \
-      [newValue retain]; \
-      id oldValue = __c11_atomic_exchange((volatile_id *)ptr, newValue, __ATOMIC_##MEM_ORDER); \
-      [oldValue autorelease]; \
+      return JreLoadVolatileId((volatile_id *)ptr);
+
+    #define PUT_OBJECT_IMPL() \
+      uintptr_t ptr = PTR(obj, offset); \
+      CHECK_ADDR(id, ptr) \
+      JreVolatileStrongAssign((volatile_id *)ptr, newValue);
     ]-*/
 
     /**
@@ -205,15 +208,7 @@ public final class Unsafe {
             Object expectedValue, Object newValue) /*-[
       uintptr_t ptr = PTR(obj, offset);
       CHECK_ADDR(id, ptr)
-      [newValue retain];
-      if (__c11_atomic_compare_exchange_strong(
-          (volatile_id *)ptr, (void **)&expectedValue, newValue, __ATOMIC_SEQ_CST,
-          __ATOMIC_SEQ_CST)) {
-        [expectedValue autorelease];
-        return true;
-      }
-      [newValue release];
-      return false;
+      return JreCompareAndSwapVolatileStrongId((volatile_id *)ptr, expectedValue, newValue);
     ]-*/;
 
     /**
@@ -274,7 +269,7 @@ public final class Unsafe {
      * @return the retrieved value
      */
     public native Object getObjectVolatile(Object obj, long offset) /*-[
-      GET_IMPL(id, SEQ_CST)
+      GET_OBJECT_IMPL()
     ]-*/;
 
     /**
@@ -287,7 +282,7 @@ public final class Unsafe {
      */
     public native void putObjectVolatile(Object obj, long offset,
             Object newValue) /*-[
-      PUT_OBJECT_IMPL(SEQ_CST)
+      PUT_OBJECT_IMPL()
     ]-*/;
 
     /**
@@ -356,7 +351,7 @@ public final class Unsafe {
      * @return the retrieved value
      */
     public native Object getObject(Object obj, long offset) /*-[
-      GET_IMPL(id, RELAXED)
+      GET_OBJECT_IMPL()
     ]-*/;
 
     /**
@@ -367,14 +362,14 @@ public final class Unsafe {
      * @param newValue the value to store
      */
     public native void putObject(Object obj, long offset, Object newValue) /*-[
-      PUT_OBJECT_IMPL(RELAXED)
+      PUT_OBJECT_IMPL()
     ]-*/;
 
     /**
      * Lazy set an object field.
      */
     public native void putOrderedObject(Object obj, long offset, Object newValue) /*-[
-      PUT_OBJECT_IMPL(RELEASE)
+      PUT_OBJECT_IMPL()
     ]-*/;
 
     /**

@@ -97,13 +97,8 @@ public class AtomicMarkableReference<V> {
                                      V       newReference,
                                      boolean expectedMark,
                                      boolean newMark) {
-        Pair<V> current = pair;
-        return
-            expectedReference == current.reference &&
-            expectedMark == current.mark &&
-            ((newReference == current.reference &&
-              newMark == current.mark) ||
-             weakCasPair(current, Pair.of(newReference, newMark)));
+        return compareAndSet(expectedReference, newReference,
+                             expectedMark, newMark);
     }
 
     /**
@@ -165,24 +160,6 @@ public class AtomicMarkableReference<V> {
     }
 
     private native boolean casPair(Pair<V> cmp, Pair<V> val) /*-[
-      [val retain];
-      if (__c11_atomic_compare_exchange_strong(
-          &self->pair_, (void **)&cmp, val, __ATOMIC_SEQ_CST, __ATOMIC_SEQ_CST)) {
-        [cmp autorelease];
-        return YES;
-      }
-      [val release];
-      return NO;
-    ]-*/;
-
-    private native boolean weakCasPair(Pair<V> cmp, Pair<V> val) /*-[
-      [val retain];
-      if (__c11_atomic_compare_exchange_weak(
-          &self->pair_, (void **)&cmp, val, __ATOMIC_RELAXED, __ATOMIC_RELAXED)) {
-        [cmp autorelease];
-        return YES;
-      }
-      [val release];
-      return NO;
+      return JreCompareAndSwapVolatileStrongId(&self->pair_, cmp, val);
     ]-*/;
 }

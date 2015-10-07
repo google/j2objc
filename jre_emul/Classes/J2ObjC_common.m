@@ -61,9 +61,46 @@ id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value) 
   return JreAutoreleasedAssign(pIvar, value);
 }
 
+// Declare a pool of spin locks for volatile variable access. The use of spin
+// locks for atomic access is consistent with how Apple implements atomic
+// property accessors, and the hashing used here is inspired by Apple's
+// implementation:
+// http://www.opensource.apple.com/source/objc4/objc4-532.2/runtime/Accessors.subproj/objc-accessors.mm
+// Note that normally a spin lock only requires acquire/release semantics, but
+// we use sequencially consistent ordering when acquiring and releasing the spin
+// locks to provide sequencial consistency of all volatile accesses.
+#define VOLATILE_POWER 7
+#define VOLATILE_MASK ((1 << VOLATILE_POWER) - 1)
+#define VOLATILE_HASH(x) (((long)x >> 5) & VOLATILE_MASK)
+#define VOLATILE_GETLOCK(ptr) &volatile_locks[VOLATILE_HASH(ptr)]
+#define VOLATILE_LOCK(l) while (__c11_atomic_exchange(l, 1, __ATOMIC_SEQ_CST)) {}
+#define VOLATILE_UNLOCK(l) __c11_atomic_store(l, 0, __ATOMIC_SEQ_CST)
+typedef _Atomic(uint8_t) volatile_lock_t;
+static volatile_lock_t volatile_locks[1 << VOLATILE_POWER] = { 0 };
+
+id JreLoadVolatileId(volatile_id *pVar) {
+  volatile_lock_t *lock = VOLATILE_GETLOCK(pVar);
+  VOLATILE_LOCK(lock);
+  id value = [*(id *)pVar retain];
+  VOLATILE_UNLOCK(lock);
+  return [value autorelease];
+}
+
+id JreAssignVolatileId(volatile_id *pVar, id value) {
+  volatile_lock_t *lock = VOLATILE_GETLOCK(pVar);
+  VOLATILE_LOCK(lock);
+  *(id *)pVar = value;
+  VOLATILE_UNLOCK(lock);
+  return value;
+}
+
 static inline id JreVolatileStrongAssignInner(
     volatile_id *pIvar, NS_RELEASES_ARGUMENT id value) {
-  id oldValue = __c11_atomic_exchange(pIvar, value, __ATOMIC_SEQ_CST);
+  volatile_lock_t *lock = VOLATILE_GETLOCK(pIvar);
+  VOLATILE_LOCK(lock);
+  id oldValue = *(id *)pIvar;
+  *(id *)pIvar = value;
+  VOLATILE_UNLOCK(lock);
   [oldValue autorelease];
   return value;
 }
@@ -76,14 +113,54 @@ id JreVolatileStrongAssignAndConsume(volatile_id *pIvar, NS_RELEASES_ARGUMENT id
   return JreVolatileStrongAssignInner(pIvar, value);
 }
 
-void JreReleaseVolatile(volatile_id *pVar) {
-  id value = __c11_atomic_load(pVar, __ATOMIC_RELAXED);
-  [value release];
+jboolean JreCompareAndSwapVolatileStrongId(volatile_id *pVar, id expected, id newValue) {
+  volatile_lock_t *lock = VOLATILE_GETLOCK(pVar);
+  VOLATILE_LOCK(lock);
+  jboolean result = *(id *)pVar == expected;
+  if (result) {
+    *(id *)pVar = [newValue retain];
+  }
+  VOLATILE_UNLOCK(lock);
+  if (result) {
+    [expected autorelease];
+  }
+  return result;
 }
 
-id JreRetainVolatile(volatile_id *pVar) {
-  id value = __c11_atomic_load(pVar, __ATOMIC_RELAXED);
-  return [value retain];
+id JreExchangeVolatileStrongId(volatile_id *pVar, id newValue) {
+  [newValue retain];
+  volatile_lock_t *lock = VOLATILE_GETLOCK(pVar);
+  VOLATILE_LOCK(lock);
+  id oldValue = *(id *)pVar;
+  *(id *)pVar = newValue;
+  VOLATILE_UNLOCK(lock);
+  [oldValue autorelease];
+  return oldValue;
+}
+
+void JreReleaseVolatile(volatile_id *pVar) {
+  // This is only called from a dealloc method, so we can assume there are no
+  // concurrent threads with access to this address. Therefore, synchronization
+  // is unnecessary.
+  [*(id *)pVar release];
+}
+
+void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther) {
+  volatile_lock_t *lock = VOLATILE_GETLOCK(pOther);
+  VOLATILE_LOCK(lock);
+  *(id *)pVar = *(id *)pOther;
+  VOLATILE_UNLOCK(lock);
+}
+
+void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther) {
+  // We lock on pOther because it may be visible to other threads. Since we are
+  // still within Object.clone() we know that pVar isn't visible to other
+  // threads yet, so we don't need to use it's lock. However, we do the
+  // assignment within pOther's lock to provide sequencial consistency.
+  volatile_lock_t *lock = VOLATILE_GETLOCK(pOther);
+  VOLATILE_LOCK(lock);
+  *(id *)pVar = [*(id *)pOther retain];
+  VOLATILE_UNLOCK(lock);
 }
 
 // Block flag position for copy dispose, (1 << 25).
@@ -346,16 +423,15 @@ id JreStrAppendStrong(__strong id *lhs, const char *types, ...) {
 id JreStrAppendVolatile(volatile_id *lhs, const char *types, ...) {
   va_list va;
   va_start(va, types);
-  NSString *result = JreStrAppendInner(__c11_atomic_load(lhs, __ATOMIC_SEQ_CST), types, va);
+  NSString *result = JreStrAppendInner(JreLoadVolatileId(lhs), types, va);
   va_end(va);
-  __c11_atomic_store(lhs, result, __ATOMIC_SEQ_CST);
-  return result;
+  return JreAssignVolatileId(lhs, result);
 }
 
 id JreStrAppendVolatileStrong(volatile_id *lhs, const char *types, ...) {
   va_list va;
   va_start(va, types);
-  NSString *result = JreStrAppendInner(__c11_atomic_load(lhs, __ATOMIC_SEQ_CST), types, va);
+  NSString *result = JreStrAppendInner(JreLoadVolatileId(lhs), types, va);
   va_end(va);
   return JreVolatileStrongAssign(lhs, result);
 }
