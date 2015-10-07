@@ -105,12 +105,13 @@ static jboolean in_low_memory_cleanup;
 
 + (id)getReferent:(JavaLangRefReference *)reference {
   // The referent must be loaded under mutex to avoid a race with another
-  // thread that might be releasing the referent.
+  // thread that might be releasing the referent. We can't rely only on the
+  // volatile synchronization because it is a @Weak volatile, but WhileLocked
+  // will synchronize with the release implementation in the referent subclass.
   __block id referent;
   WhileLocked(^{
+    // The volatile load ensures that the result is retained in this thread.
     referent = JreLoadVolatileId(&reference->referent_);
-    // Ensure the referent remains live for the caller.
-    [[referent retain] autorelease];
   });
   return referent;
 }
