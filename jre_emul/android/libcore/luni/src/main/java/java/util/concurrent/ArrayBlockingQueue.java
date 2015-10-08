@@ -6,6 +6,7 @@
 
 package java.util.concurrent;
 
+import com.google.j2objc.annotations.RetainedLocalRef;
 import com.google.j2objc.annotations.WeakOuter;
 
 import java.lang.ref.WeakReference;
@@ -383,7 +384,10 @@ public class ArrayBlockingQueue<E> extends AbstractQueue<E>
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
-            return itemAt(takeIndex); // null when queue is empty
+            // The @RetainedLocalRef ensures that the returned item is retained
+            // and autoreleased on the current thread.
+            @RetainedLocalRef E result = itemAt(takeIndex); // null when queue is empty
+            return result;
         } finally {
             lock.unlock();
         }
