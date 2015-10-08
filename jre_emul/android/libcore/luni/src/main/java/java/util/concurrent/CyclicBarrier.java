@@ -171,6 +171,9 @@ public class CyclicBarrier {
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
+            // The call to trip.await() further down will release the lock while this thread blocks.
+            // The @RetainedLocalRef annotation ensures that "g" is still a valid reference after
+            // returning from the trip.await() call.
             @RetainedLocalRef
             final Generation g = generation;
 
