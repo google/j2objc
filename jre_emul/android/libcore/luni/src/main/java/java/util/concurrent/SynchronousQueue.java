@@ -195,6 +195,9 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
         /** Node is fulfilling another unfulfilled DATA or REQUEST */
         static final int FULFILLING = 2;
 
+        private static SNode CANCELLED = new SNode(null);
+        private static SNode FINISHED = new SNode(null);
+
         /** Returns true if m has fulfilling bit set. */
         static boolean isFulfilling(int m) { return (m & FULFILLING) != 0; }
 
@@ -243,11 +246,11 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
              * Tries to cancel a wait by matching node to itself.
              */
             void tryCancel() {
-                UNSAFE.compareAndSwapObject(this, matchOffset, null, this);
+                UNSAFE.compareAndSwapObject(this, matchOffset, null, CANCELLED);
             }
 
             boolean isCancelled() {
-                return match == this;
+                return match == CANCELLED;
             }
 
             // Unsafe mechanics
@@ -330,12 +333,13 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                             return null;
                     } else if (casHead(h, s = snode(s, e, h, mode))) {
                         SNode m = awaitFulfill(s, timed, nanos);
-                        if (m == s) {               // wait was cancelled
+                        if (m == CANCELLED) {               // wait was cancelled
                             clean(s);
                             return null;
                         }
                         if ((h = head) != null && h.next == s)
                             casHead(h, s.next);     // help s's fulfiller
+                        s.match = FINISHED;
                         return (E) ((mode == REQUEST) ? m.item : s.item);
                     }
                 } else if (!isFulfilling(h.mode)) { // try to fulfill
@@ -503,6 +507,9 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
          * from non-null to null (for put) or vice versa (for take).
          */
 
+        private static final QNode UNLINKED = new QNode(null, false);
+        private static final Object CANCELLED = new Object();
+
         /** Node class for TransferQueue. */
         static final class QNode {
             volatile QNode next;          // next node in queue
@@ -529,11 +536,11 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
              * Tries to cancel by CAS'ing ref to this as item.
              */
             void tryCancel(Object cmp) {
-                UNSAFE.compareAndSwapObject(this, itemOffset, cmp, this);
+                UNSAFE.compareAndSwapObject(this, itemOffset, cmp, CANCELLED);
             }
 
             boolean isCancelled() {
-                return item == this;
+                return item == CANCELLED;
             }
 
             /**
@@ -542,7 +549,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
              * an advanceHead operation.
              */
             boolean isOffList() {
-                return next == this;
+                return next == UNLINKED;
             }
 
             // Unsafe mechanics
@@ -588,7 +595,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
         void advanceHead(QNode h, QNode nh) {
             if (h == head &&
                 UNSAFE.compareAndSwapObject(this, headOffset, h, nh))
-                h.next = h; // forget old next
+                h.next = UNLINKED; // forget old next
         }
 
         /**
@@ -663,7 +670,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
 
                     advanceTail(t, s);              // swing tail and wait
                     Object x = awaitFulfill(s, e, timed, nanos);
-                    if (x == s) {                   // wait was cancelled
+                    if (x == CANCELLED) {           // wait was cancelled
                         clean(t, s);
                         return null;
                     }
@@ -671,7 +678,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                     if (!s.isOffList()) {           // not already unlinked
                         advanceHead(t, s);          // unlink if head
                         if (x != null)              // and forget fields
-                            s.item = s;
+                            s.item = CANCELLED;
                         s.waiter = null;
                     }
                     return (x != null) ? (E)x : e;
@@ -683,7 +690,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
 
                     Object x = m.item;
                     if (isData == (x != null) ||    // m already fulfilled
-                        x == m ||                   // m cancelled
+                        x == CANCELLED ||           // m cancelled
                         !m.casItem(x, e)) {         // lost CAS
                         advanceHead(h, m);          // dequeue and retry
                         continue;
@@ -767,7 +774,7 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                 }
                 if (s != t) {        // If not tail, try to unsplice
                     QNode sn = s.next;
-                    if (sn == s || pred.casNext(s, sn))
+                    if (sn == UNLINKED || pred.casNext(s, sn))
                         return;
                 }
                 QNode dp = cleanMe;
@@ -775,11 +782,11 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
                     QNode d = dp.next;
                     QNode dn;
                     if (d == null ||               // d is gone or
-                        d == dp ||                 // d is off list or
+                        d == UNLINKED ||           // d is off list or
                         !d.isCancelled() ||        // d not cancelled or
                         (d != t &&                 // d not tail and
                          (dn = d.next) != null &&  //   has successor
-                         dn != d &&                //   that is on list
+                         dn != UNLINKED &&         //   that is on list
                          dp.casNext(d, dn)))       // d unspliced
                         casCleanMe(dp, null);
                     if (dp == pred)
