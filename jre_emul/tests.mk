@@ -653,12 +653,12 @@ TEST_RESOURCES = \
 
 JUNIT_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
+TEST_JOCC := ../dist/j2objcc -g -I$(TESTS_DIR) -I$(CLASS_DIR) -I$(EMULATION_CLASS_DIR) \
+    -l junit -Werror -L$(TESTS_DIR) -l test-support
 ifeq ($(OBJCPP_BUILD), YES)
-TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
-    -L$(TESTS_DIR) -l test-support -lc++ -ObjC++
+TEST_JOCC += -lc++ -ObjC++
 else
-TEST_JOCC = ../dist/j2objcc -g -I$(TESTS_DIR) -l junit -Werror \
-    -L$(TESTS_DIR) -l test-support -ObjC
+TEST_JOCC += -ObjC
 endif
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
@@ -764,7 +764,7 @@ run-each-test: link resources $(TEST_BIN)
 	done
 
 # Build and run the JreEmulation project's test bundle, then close simulator app.
-run-xctests:
+run-xctests: test
 	@xcodebuild -project JreEmulation.xcodeproj -scheme jre_emul -destination \
 	    'platform=iOS Simulator,name=iPhone 6' test
 	@killall 'iOS Simulator'
@@ -782,7 +782,7 @@ $(TESTS_DIR):
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m
 	@mkdir -p `dirname $@`
 	@echo j2objcc -c $?
-	@../dist/j2objcc -g -I$(TESTS_DIR) -c $? -o $@ \
+	@../dist/j2objcc -g -I$(TESTS_DIR) -I$(CLASS_DIR) -I$(EMULATION_CLASS_DIR) -c $? -o $@ \
 	  -Wno-objc-redundant-literal-use -Wno-format \
 	  -Werror -Wno-parentheses $(GCOV_FLAGS)
 
@@ -803,7 +803,7 @@ $(ALL_TESTS_SOURCE:%.java=%.m): $(ALL_TESTS_SOURCE)
 
 $(ALL_TESTS_SOURCE:%.java=%.o): $(ALL_TESTS_SOURCE:%.java=%.m) $(TEST_OBJS:%.o=%.h)
 	@echo j2objcc -c $(ALL_TESTS_SOURCE:%.java=%.m)
-	@../dist/j2objcc -g -I$(TESTS_DIR) \
+	@../dist/j2objcc -g -I$(TESTS_DIR) -I$(CLASS_DIR) -I$(EMULATION_CLASS_DIR) \
 	    -c $(ALL_TESTS_SOURCE:%.java=%.m) -o $(ALL_TESTS_SOURCE:%.java=%.o)
 
 $(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m

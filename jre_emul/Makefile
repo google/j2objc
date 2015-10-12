@@ -90,8 +90,8 @@ OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 STUB_JAVA_SOURCES := $(shell find $(STUBS_DIR) -name *.java)
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(JAR_ONLY_SOURCES)
 JAVA_TO_TRANSLATE = $(JAVA_SOURCES)
-SOURCE_HEADERS := $(shell find $(EMULATION_CLASS_DIR) -name *.h)
-INCLUDES = $(JAVA_TO_TRANSLATE:.java=.h) $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)
+EMULATION_HEADERS := $(shell find $(EMULATION_CLASS_DIR) -name *.h)
+INCLUDES = $(JAVA_TO_TRANSLATE:.java=.h) $(EMULATION_HEADERS:$(EMULATION_CLASS_DIR)/%=%)
 DIST_INCLUDES = $(INCLUDES:%=$(DIST_INCLUDE_DIR)/%)
 ARCH_INCLUDES = $(INCLUDES:%=$(ARCH_INCLUDE_DIR)/%)
 
@@ -136,15 +136,20 @@ LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_emul_core,$(CORE_OBJS_RELATIVE))
 DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 
-STATIC_FRAMEWORK_NAME = JRE
-STATIC_FRAMEWORK_HEADERS = \
+# This list overlaps with EMULATION_HEADERS, but only includes those headers
+# supported for use by native code.
+PUBLIC_EMULATION_HEADERS = \
     J2ObjC_header.h \
     J2ObjC_source.h \
     J2ObjC_types.h \
     JavaObject.h \
+    JreEmulation.h \
     $(IOS_PUBLIC_OBJS:.o=.h) \
-    $(IOS_JAVA_OBJS:.o=.h) \
-    $(JAVA_PUBLIC_SOURCES:.java=.h)
+    $(IOS_JAVA_OBJS:.o=.h)
+PUBLIC_TRANSLATED_HEADERS = $(JAVA_PUBLIC_SOURCES:.java=.h)
+
+STATIC_FRAMEWORK_NAME = JRE
+STATIC_FRAMEWORK_HEADERS = $(PUBLIC_EMULATION_HEADERS) $(PUBLIC_TRANSLATED_HEADERS)
 STATIC_LIBRARY_NAME = $(TRANSLATE_NAME)
 STATIC_HEADERS_DIR = $(ARCH_INCLUDE_DIR)
 include ../make/static_framework.mk
@@ -173,19 +178,20 @@ $(MAIN_LIB): $(MAIN_LIB_OBJS)
 
 dist_includes: $(BUILD_DIR)/.jre_dist_includes
 
-$(BUILD_DIR)/.jre_dist_includes: $(TRANSLATE_HEADERS) $(SOURCE_HEADERS) | \
-    $(DIST_INCLUDE_DIR)
+$(BUILD_DIR)/.jre_dist_includes: $(PUBLIC_TRANSLATED_HEADERS:%=$(GEN_OBJC_DIR)/%) \
+    $(PUBLIC_EMULATION_HEADERS:%=$(EMULATION_CLASS_DIR)/%) | $(DIST_INCLUDE_DIR)
 	@echo copying jre_emul header files
-	@(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
+	@(cd $(EMULATION_CLASS_DIR) && tar cf - \
+	    $(PUBLIC_EMULATION_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
 	@(cd $(GEN_OBJC_DIR) && tar cf - \
-	    $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
+	    $(PUBLIC_TRANSLATED_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
 	@touch $@
 
-$(ARCH_BUILD_DIR)/.includes: $(TRANSLATE_HEADERS) $(SOURCE_HEADERS) | \
+$(ARCH_BUILD_DIR)/.includes: $(TRANSLATE_HEADERS) $(EMULATION_HEADERS) | \
     $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR)
-	@(cd $(EMULATION_CLASS_DIR) && tar cf - $(SOURCE_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
+	@(cd $(EMULATION_CLASS_DIR) && tar cf - $(EMULATION_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
 	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
 	@(cd $(GEN_OBJC_DIR) && tar cf - \
 	    $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \

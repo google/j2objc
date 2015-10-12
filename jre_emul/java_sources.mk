@@ -485,6 +485,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   org/xml/sax/helpers/ParserAdapter.java \
   org/xml/sax/helpers/ParserFactory.java \
   org/xml/sax/helpers/XMLReaderFactory.java \
+  sun/misc/Unsafe.java
 
 JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/net/IosHttpHandler.java \
@@ -618,8 +619,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   org/apache/harmony/security/asn1/DerOutputStream.java \
   org/apache/harmony/security/fortress/Engine.java \
   org/apache/harmony/security/fortress/SecurityAccess.java \
-  org/apache/harmony/security/fortress/Services.java \
-  sun/misc/Unsafe.java
+  org/apache/harmony/security/fortress/Services.java
 
 JAVA_SOURCES_CORE = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PRIVATE_SOURCES_CORE)
 
