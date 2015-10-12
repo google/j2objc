@@ -16,14 +16,32 @@ if [ $# -ne 2 ]; then
 fi
 DISTRIBUTION_NAME=j2objc-$1
 
+# Set j2objc flags used for public builds.
+TRANSLATE_GLOBAL_FLAGS="--doc-comments;--generate-deprecated;--static-accessor-methods"
+
 ENV_CMD="env -i PATH=$PATH HOME=$HOME J2OBJC_VERSION=${1%/} PROTOBUF_ROOT_DIR=${2%/}"
+ENV_CMD="${ENV_CMD} TRANSLATE_GLOBAL_FLAGS=${TRANSLATE_GLOBAL_FLAGS}"
 
 echo "make clean"
-make clean
+$ENV_CMD make clean
+ERR=$?
+if [ ${ERR} -ne 0 ]; then
+  exit ${ERR}
+fi
+
 echo "make all_dist"
 $ENV_CMD make -j8 all_dist
+ERR=$?
+if [ ${ERR} -ne 0 ]; then
+  exit ${ERR}
+fi
+
 echo "make test_all"
 $ENV_CMD make -j8 test_all
+ERR=$?
+if [ ${ERR} -ne 0 ]; then
+  exit ${ERR}
+fi
 
 mv dist ${DISTRIBUTION_NAME}
 zip -r ${DISTRIBUTION_NAME}.zip ${DISTRIBUTION_NAME}
