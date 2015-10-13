@@ -35,6 +35,8 @@ SUPPORT_SOURCES = \
     foo/mumble/Second.java \
     java/lang/test/Example.java \
     java/lang/test/package-info.java \
+    jsr166/BlockingQueueTest.java \
+    jsr166/JSR166TestCase.java \
     libcore/java/net/customstreamhandler/http/Handler.java \
     libcore/java/nio/charset/Charset_TestGenerator.java \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
@@ -170,6 +172,7 @@ TEST_SOURCES := \
     java/util/TreeMapTest.java \
     java/util/WeakHashMapTest.java \
     java/util/regex/MatcherTest.java \
+    jsr166/LinkedTransferQueueTest.java \
     libcore/icu/ICUTest.java \
     libcore/icu/LocaleDataTest.java \
     libcore/io/MemoryTest.java \
