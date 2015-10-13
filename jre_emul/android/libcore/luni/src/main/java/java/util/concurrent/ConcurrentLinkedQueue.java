@@ -189,6 +189,8 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
         }
     }
 
+    private final Node<E> SENTINEL = new Node<E>(null);
+
     /**
      * A node from which the first live (non-deleted) node (if any)
      * can be reached in O(1) time.
@@ -271,7 +273,7 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
      */
     final void updateHead(Node<E> h, Node<E> p) {
         if (h != p && casHead(h, p))
-            h.lazySetNext(h);
+            h.lazySetNext(SENTINEL);
     }
 
     /**
@@ -281,7 +283,7 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
      */
     final Node<E> succ(Node<E> p) {
         Node<E> next = p.next;
-        return (p == next) ? head : next;
+        return (SENTINEL == next) ? head : next;
     }
 
     /**
@@ -309,7 +311,7 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
                 }
                 // Lost CAS race to another thread; re-read next
             }
-            else if (p == q)
+            else if (SENTINEL == q)
                 // We have fallen off list.  If tail is unchanged, it
                 // will also be off-list, in which case we need to
                 // jump to head, from which all live nodes are always
@@ -338,7 +340,7 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
                     updateHead(h, p);
                     return null;
                 }
-                else if (p == q)
+                else if (SENTINEL == q)
                     continue restartFromHead;
                 else
                     p = q;
@@ -355,7 +357,7 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
                     updateHead(h, p);
                     return item;
                 }
-                else if (p == q)
+                else if (SENTINEL == q)
                     continue restartFromHead;
                 else
                     p = q;
@@ -380,7 +382,7 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
                     updateHead(h, p);
                     return hasItem ? p : null;
                 }
-                else if (p == q)
+                else if (SENTINEL == q)
                     continue restartFromHead;
                 else
                     p = q;
@@ -521,7 +523,7 @@ public class ConcurrentLinkedQueue<E> extends AbstractQueue<E>
                 }
                 // Lost CAS race to another thread; re-read next
             }
-            else if (p == q)
+            else if (SENTINEL == q)
                 // We have fallen off list.  If tail is unchanged, it
                 // will also be off-list, in which case we need to
                 // jump to head, from which all live nodes are always
