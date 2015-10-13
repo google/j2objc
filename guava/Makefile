@@ -48,7 +48,11 @@ FAT_LIB_SOURCE_DIRS = $(GEN_OBJC_DIR)
 FAT_LIB_COMPILE = $(J2OBJCC)
 include ../make/fat_lib.mk
 
+PUBLIC_JAVA_SOURCES = \
+    $(shell cd $(SRC_DIR) && find com -name *.java | xargs egrep -l "^(public|protected) ")
+
 STATIC_FRAMEWORK_NAME = Guava
+STATIC_FRAMEWORK_PUBLIC_HEADERS = $(PUBLIC_JAVA_SOURCES:%.java=$(GEN_OBJC_DIR)/%.h)
 include ../make/static_framework.mk
 
 fat_lib_dependencies: jre_emul_dist jsr305_dist

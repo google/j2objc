@@ -16,9 +16,10 @@
 #   STATIC_FRAMEWORK_NAME
 #
 # The including makefile may define these variables:
-#   STATIC_FRAMEWORK_HEADERS  (defaults to TRANSLATE_HEADERS)
-#   STATIC_LIBRARY_NAME       (defaults to FAT_LIB_NAME)
-#   STATIC_HEADERS_DIR        (defaults to GEN_OBJC_DIR)
+#   STATIC_FRAMEWORK_HEADERS         (defaults to TRANSLATE_HEADERS)
+#   STATIC_FRAMEWORK_PUBLIC_HEADERS  (defaults to STATIC_FRAMEWORK_HEADERS)
+#   STATIC_LIBRARY_NAME              (defaults to FAT_LIB_NAME)
+#   STATIC_HEADERS_DIR               (defaults to GEN_OBJC_DIR)
 #
 # This file defines the following to be used by the including file:
 #   STATIC_FRAMEWORK_DIR
@@ -49,11 +50,15 @@ STATIC_HEADERS_DIR = $(GEN_OBJC_DIR)
 endif
 endif
 
+ifndef STATIC_FRAMEWORK_PUBLIC_HEADERS
+STATIC_FRAMEWORK_PUBLIC_HEADERS = $(STATIC_FRAMEWORK_HEADERS)
+endif
+
 STATIC_FRAMEWORK_DIR = $(DIST_FRAMEWORK_DIR)/$(STATIC_FRAMEWORK_NAME).framework
 STATIC_LIBRARY = $(BUILD_DIR)/lib$(STATIC_LIBRARY_NAME).a
 FRAMEWORK_HEADER = $(BUILD_DIR)/$(STATIC_FRAMEWORK_NAME).h
 
-framework: $(STATIC_FRAMEWORK_DIR)
+framework: dist $(STATIC_FRAMEWORK_DIR)
 	@:
 
 $(STATIC_FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER)
@@ -72,5 +77,5 @@ $(STATIC_FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER)
 
 $(FRAMEWORK_HEADER):
 	@echo "//\n// $(STATIC_FRAMEWORK_NAME).h\n//\n" > $@
-	@for f in $(STATIC_FRAMEWORK_HEADERS:$(STATIC_HEADERS_DIR)/%=%); do\
-	    echo '#import "'$${f}'"'; done >> $@
+	@for f in $(STATIC_FRAMEWORK_PUBLIC_HEADERS:$(STATIC_HEADERS_DIR)/%=%); do\
+	    echo '#include <'$${f}'>'; done >> $@
