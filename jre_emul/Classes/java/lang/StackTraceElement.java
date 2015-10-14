@@ -188,14 +188,25 @@ public class StackTraceElement implements Serializable {
   #define MAX_SWIFT_NESTING 8
     NSMutableArray *names = [[NSMutableArray alloc] initWithCapacity:MAX_SWIFT_NESTING];
     char *lenEnd;
+    BOOL ignoreName = NO;
     while (*start && [names count] < MAX_SWIFT_NESTING) {
+      if (*start == 'P') {
+        // Apparently private functions have a random(?) hexidecimal component preceding the real name.
+        // It's marked by a 'P' prior to the length of that hexidecimal component.
+        start++;
+        ignoreName = YES;
+      }
+      else ignoreName = NO;
+
       long len = strtol(start, &lenEnd, 10);
       if (start == lenEnd) {
         break;
       }
-      NSString *name = [[NSString alloc] initWithBytes:lenEnd length:len encoding:NSASCIIStringEncoding];
-      [names addObject:name];
-      RELEASE_(name);
+      if (!ignoreName) {
+        NSString *name = [[NSString alloc] initWithBytes:lenEnd length:len encoding:NSASCIIStringEncoding];
+        [names addObject:name];
+        RELEASE_(name);
+      }
       start = lenEnd + len;
     }
     if (start != lenEnd || [names count] < 2) {
