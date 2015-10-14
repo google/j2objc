@@ -478,8 +478,22 @@ public final class Posix implements Os {
     if (!inetAddressToSockaddr(address, port, &ss, &sa_len)) {
       return;
     }
+    bool disconnect = false;
+    if (ss.ss_family == AF_UNSPEC) {
+      // Closing a datagram socket by connecting to AF_UNSPEC doesn't work,
+      // docs say to use an invalid inet address instead.
+      disconnect = true;
+      ss.ss_family = AF_INET6;
+      sa_len = sizeof(const struct sockaddr_in6);
+    }
     const struct sockaddr* sa = (const struct sockaddr *) &ss;
-    (void) NET_FAILURE_RETRY(int, connect, fd, sa, sa_len);
+    int rc = TEMP_FAILURE_RETRY(connect([fd getInt$], sa, sa_len));
+    if (rc == -1 && disconnect && errno == EADDRNOTAVAIL) {
+      // It's a valid disconnect from invalid inet address above, so reset errno.
+      errno = 0;
+    } else {
+      LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"connect", rc);
+    }
   ]-*/;
 
   public native FileDescriptor dup(FileDescriptor oldFd) throws ErrnoException /*-[
@@ -1049,7 +1063,29 @@ public final class Posix implements Os {
     memset(&ss, 0, sizeof(ss));
     struct sockaddr* from = (srcAddress) ? (struct sockaddr *) &ss : NULL;
     socklen_t* fromLength = (srcAddress) ? &sl : 0;
-    int recvCount = (int) NET_FAILURE_RETRY(ssize_t, recvfrom, fd, bytes + byteOffset, byteCount,
+    if (byteCount == 0) {
+      // iOS doesn't read empty datagram packages, so read one byte and discard it.
+      // That works because if the client is reading an empty packet, any bytes in
+      // that packet are discarded anyway.
+      int _fd = [fd getInt$];
+      if (_fd != -1) {
+        int type = 0;
+        socklen_t size = sizeof(type);
+        int rc = LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(
+            @"getsockopt", TEMP_FAILURE_RETRY(getsockopt(_fd, SOL_SOCKET, SO_TYPE, &type, &size)));
+        if (rc == -1) {
+          return rc;
+        }
+        if (type == SOCK_DGRAM) {
+          char b;
+          jint recvCount =
+              (jint)NET_FAILURE_RETRY(ssize_t, recvfrom, fd, &b, 1, flags, from, fromLength);
+          fillInetSocketAddress(recvCount, srcAddress, &ss);
+          return recvCount >= 0 ? 0 : recvCount;
+        }
+      }
+    }
+    jint recvCount = (jint)NET_FAILURE_RETRY(ssize_t, recvfrom, fd, bytes + byteOffset, byteCount,
         flags, from, fromLength);
     fillInetSocketAddress(recvCount, srcAddress, &ss);
     return recvCount;
@@ -1210,7 +1246,21 @@ public final class Posix implements Os {
 
   public native void setsockoptInt(FileDescriptor fd, int level, int option, int value)
       throws ErrnoException /*-[
-    int rc = TEMP_FAILURE_RETRY(setsockopt([fd getInt$], level, option, &value, sizeof(value)));
+    if (level == IPPROTO_IP && option == IP_TOS) {
+      return; // Already set on iOS, and setting it fails.
+    }
+    int _fd = [fd getInt$];
+    if (level == SOL_SOCKET && option == SO_REUSEADDR) {
+      int type = 0;
+      socklen_t size = sizeof(type);
+      LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"getsockopt",
+          TEMP_FAILURE_RETRY(getsockopt(_fd, SOL_SOCKET, SO_TYPE, &type, &size)));
+      if (type == SOCK_DGRAM) {
+        LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"setsockopt",
+            TEMP_FAILURE_RETRY(setsockopt(_fd, SOL_SOCKET, SO_REUSEPORT, &value, sizeof(value))));
+      }
+    }
+    int rc = TEMP_FAILURE_RETRY(setsockopt(_fd, level, option, &value, sizeof(value)));
     LibcoreIoPosix_throwIfMinusOneWithNSString_withInt_(@"setsockopt", rc);
   ]-*/;
 

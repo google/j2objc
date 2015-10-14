@@ -280,6 +280,7 @@ TEST_SOURCES := \
     libcore/java/nio/OldDirectShortBufferTest.java \
     libcore/java/nio/channels/FileChannelTest.java \
     libcore/java/nio/channels/OldFileChannelTest.java \
+    libcore/java/nio/channels/DatagramChannelTest.java \
     libcore/java/nio/charset/CharsetDecoderTest.java \
     libcore/java/nio/charset/CharsetEncoderTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
@@ -767,10 +768,11 @@ run-each-test: link resources $(TEST_BIN)
 	done
 
 # Build and run the JreEmulation project's test bundle, then close simulator app.
+# Note: the simulator app's name was changed to "Simulator" in Xcode 7.
 run-xctests: test
 	@xcodebuild -project JreEmulation.xcodeproj -scheme jre_emul -destination \
 	    'platform=iOS Simulator,name=iPhone 6' test
-	@killall 'iOS Simulator'
+	@killall 'iOS Simulator' || killall 'Simulator'
 
 $(SUPPORT_LIB): $(SUPPORT_OBJS)
 	@echo libtool -o $(SUPPORT_LIB)
