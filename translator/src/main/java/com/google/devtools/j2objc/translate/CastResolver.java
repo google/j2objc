@@ -17,6 +17,8 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CastExpression;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -26,6 +28,7 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -291,6 +294,22 @@ public class CastResolver extends TreeVisitor {
     return false;
   }
 
+  private void maybeCastArguments(List<Expression> args) {
+    for (Expression arg : args) {
+      maybeAddCast(arg, false);
+    }
+  }
+
+  @Override
+  public void endVisit(ClassInstanceCreation node) {
+    maybeCastArguments(node.getArguments());
+  }
+
+  @Override
+  public void endVisit(ConstructorInvocation node) {
+    maybeCastArguments(node.getArguments());
+  }
+
   @Override
   public void endVisit(FieldAccess node) {
     maybeAddCast(node.getExpression(), true);
@@ -302,6 +321,7 @@ public class CastResolver extends TreeVisitor {
     if (receiver != null && !BindingUtil.isStatic(node.getMethodBinding())) {
       maybeAddCast(receiver, true);
     }
+    maybeCastArguments(node.getArguments());
     if (returnValueNeedsIntCast(node)) {
       addCast(node);
     }
@@ -316,7 +336,13 @@ public class CastResolver extends TreeVisitor {
   }
 
   @Override
+  public void endVisit(SuperConstructorInvocation node) {
+    maybeCastArguments(node.getArguments());
+  }
+
+  @Override
   public void endVisit(SuperMethodInvocation node) {
+    maybeCastArguments(node.getArguments());
     if (returnValueNeedsIntCast(node)) {
       addCast(node);
     }

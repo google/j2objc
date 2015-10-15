@@ -167,4 +167,17 @@ public class CastResolverTest extends GenerationTest {
           + " withId:[new_Test_Baz_init() autorelease]];",
         "}");
   }
+
+  public void testAccessOfFieldFromSubclassWithMoreSpecificTypeVariable() throws IOException {
+    String translation = translateSourceFile(
+        "class Test<T extends I2> {"
+        + "void test1(T i) {}"
+        + "void test2(B<T> b) { test1(b.foo); } }"
+        + "interface I1 {}"
+        + "interface I2 extends I1 {}"
+        + "class A<T extends I1> { T foo; }"
+        + "class B<T extends I2> extends A<T> {}", "Test", "Test.m");
+    // Test that access of "foo" from subclass B is cast to id<I2>.
+    assertTranslation(translation, "[self test1WithI2:((id<I2>) ((B *) nil_chk(b))->foo_)];");
+  }
 }
