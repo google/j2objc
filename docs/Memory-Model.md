@@ -45,7 +45,7 @@ Java guarantees atomicity for loads and stores of all types except `long` and `d
 * **Loads and stores of object types are not atomic in J2ObjC.**{: .j2objc-unsupported}
   * Atomically updating reference counts is too costly.
   * An object field can be made atomic by declaring it `volatile`. (see below)
-  
+
 ### Volatile fields
 
 For `volatile` fields, Java provides both atomicity and sequencially consistent ordering ([JLS-8.3.1.4](https://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.3.1.4)), which can be used for synchronization. J2ObjC provides the same guarantees as Java for all `volatile` fields. J2ObjC uses the following mechanisms for `volatile` fields:
@@ -59,7 +59,12 @@ For `volatile` fields, Java provides both atomicity and sequencially consistent 
 ### Atomic Types
 
 Java provides a number of atomic types in the [java.util.concurrent.atomic](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/package-summary.html) package. These are all fully supported in J2ObjC with custom implementations.
-  
+
 ### Final fields
 
-[Issue 629](https://github.com/google/j2objc/issues/629): Java provides memory ordering semantics for final fields that are not yet supported by J2ObjC. ([JSL-17.5](https://docs.oracle.com/javase/specs/jls/se8/html/jls-17.html#jls-17.5))
+Java guarantees that a thread sees initialized values for an object's final fields without requiring
+any synchronization when sharing the object.
+([JSL-17.5](https://docs.oracle.com/javase/specs/jls/se8/html/jls-17.html#jls-17.5))
+However, since J2ObjC does not support atomic access of non-volatile object types (see above), there
+is no safe way to share an object without synchronization. Therefore, no additional constraints are
+placed on the J2ObjC user by omitting the necessary memory fences for final fields.
