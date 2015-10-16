@@ -22,12 +22,12 @@ package java.lang;
  *
  * @see java.lang.Object
  */
-public abstract class Number {
+public abstract class Number implements java.io.Serializable {
 
   public Number() {}
 
   public byte byteValue() {
-	  return 0;
+	  return (byte)intValue();
   }
 
   public abstract double doubleValue();
@@ -39,6 +39,8 @@ public abstract class Number {
   public abstract long longValue();
 
   public short shortValue() {
-    return 0;
+    return (short)intValue();
   }
+  
+  private static final long serialVersionUID = -8742448824652078965L
 }
