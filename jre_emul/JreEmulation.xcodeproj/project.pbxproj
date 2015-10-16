@@ -128,7 +128,6 @@
 		06C54ACC1A40C0D8004B3ACD /* StrictMathTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54ACA1A40C0D8004B3ACD /* StrictMathTest.m */; };
 		06C54ACF1A40C67A004B3ACD /* Base64Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54ACE1A40C67A004B3ACD /* Base64Test.m */; };
 		06C54AD21A40C78E004B3ACD /* SerializationTester.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54AD11A40C78E004B3ACD /* SerializationTester.m */; };
-		06C54AD41A40C7A4004B3ACD /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C54AD31A40C7A4004B3ACD /* libicucore.dylib */; };
 		06C54AD81A40C897004B3ACD /* ReflectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54AD71A40C897004B3ACD /* ReflectionTest.m */; };
 		06C54ADB1A40C9F0004B3ACD /* AnnotationTypeMismatchExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54ADA1A40C9F0004B3ACD /* AnnotationTypeMismatchExceptionTest.m */; };
 		06C54AE11A40CA75004B3ACD /* AttributedCharacterIteratorAttributeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54AE01A40CA75004B3ACD /* AttributedCharacterIteratorAttributeTest.m */; };
@@ -157,6 +156,7 @@
 		06CBF5891AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5651AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.m */; };
 		06CBF58B1AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5681AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m */; };
 		06CBF58D1AFBEE2400CA582D /* WildcardTypeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF56B1AFBEE2400CA582D /* WildcardTypeTest.m */; };
+		06DCF2621BD008BA00615BD2 /* DatagramChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DCF2611BD008BA00615BD2 /* DatagramChannelTest.m */; settings = {ASSET_TAGS = (); }; };
 		06E4E6B2197F1D47005DDE69 /* AbstractExecutorServiceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */; };
 		06E4E6B3197F1D47005DDE69 /* AbstractQueuedSynchronizerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E368197F1D46005DDE69 /* AbstractQueuedSynchronizerTest.m */; };
 		06E4E6B4197F1D47005DDE69 /* AbstractQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E36A197F1D46005DDE69 /* AbstractQueueTest.m */; };
@@ -2337,6 +2337,9 @@
 		06D7BDF217DE685C00329964 /* WeakReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeakReference.m; path = build_result/Classes/java/lang/ref/WeakReference.m; sourceTree = "<group>"; };
 		06D7BDFD17DE687200329964 /* WeakHashMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeakHashMap.h; path = build_result/Classes/java/util/WeakHashMap.h; sourceTree = "<group>"; };
 		06D7BDFE17DE687200329964 /* WeakHashMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeakHashMap.m; path = build_result/Classes/java/util/WeakHashMap.m; sourceTree = "<group>"; };
+		06DCF2601BD006D700615BD2 /* J2ObjC_icu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_icu.h; sourceTree = "<group>"; };
+		06DCF2611BD008BA00615BD2 /* DatagramChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatagramChannelTest.m; path = libcore/java/nio/channels/DatagramChannelTest.m; sourceTree = "<group>"; };
+		06DCF2631BD04A7800615BD2 /* J2ObjC_icu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = J2ObjC_icu.m; sourceTree = "<group>"; };
 		06DD329716A13FA000AD7ACE /* Buffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Buffer.h; path = build_result/Classes/java/nio/Buffer.h; sourceTree = "<group>"; };
 		06DD329816A13FA000AD7ACE /* Buffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Buffer.m; path = build_result/Classes/java/nio/Buffer.m; sourceTree = "<group>"; };
 		06DD329B16A13FA000AD7ACE /* BufferOverflowException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BufferOverflowException.h; path = build_result/Classes/java/nio/BufferOverflowException.h; sourceTree = "<group>"; };
@@ -3844,7 +3847,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				06C54AD41A40C7A4004B3ACD /* libicucore.dylib in Frameworks */,
 				06ED87F119772B3600633227 /* libz.dylib in Frameworks */,
 				06ED87EE1977298400633227 /* libjre_emul.a in Frameworks */,
 				06ED87BA19759EFF00633227 /* CoreGraphics.framework in Frameworks */,
@@ -3961,6 +3963,8 @@
 				06BED66A18EDE33F004EA17D /* J2ObjC_common.h */,
 				06A4CD131B8B9FEA0082FEB2 /* J2ObjC_common.m */,
 				064914361AC47ED000E98733 /* J2ObjC_header.h */,
+				06DCF2601BD006D700615BD2 /* J2ObjC_icu.h */,
+				06DCF2631BD04A7800615BD2 /* J2ObjC_icu.m */,
 				064914331AC47ED000E98733 /* J2ObjC_source.h */,
 				0667E21E1B866E9C007E0CC2 /* J2ObjC_types.h */,
 				06986A181767D781006EE92F /* J2ObjCMain.m */,
@@ -6225,6 +6229,7 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				06DCF2611BD008BA00615BD2 /* DatagramChannelTest.m */,
 				510AF0751BCD9CD900C2AD84 /* jsr166 */,
 				06E4E365197F1D46005DDE69 /* AbstractExecutorServiceTest.h */,
 				06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */,
@@ -8160,6 +8165,7 @@
 				06E4E80F197F1D48005DDE69 /* Support_CollectionTest.m in Sources */,
 				06E4E831197F1D48005DDE69 /* TimeUnitTest.m in Sources */,
 				06CBF5351AFBED6500CA582D /* EnumTest.m in Sources */,
+				06DCF2621BD008BA00615BD2 /* DatagramChannelTest.m in Sources */,
 				06934A1B1A40D02B00D2CD07 /* HashMapTest.m in Sources */,
 				06E4E7BA197F1D48005DDE69 /* EnumSetTest.m in Sources */,
 				06E4E809197F1D48005DDE69 /* TimerTest.m in Sources */,

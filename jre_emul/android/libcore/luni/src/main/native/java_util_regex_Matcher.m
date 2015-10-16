@@ -15,12 +15,12 @@
  */
 
 #include "IOSPrimitiveArray.h"
+#include "J2ObjC_icu.h"
 #include "java/lang/ArithmeticException.h"
 #include "java/lang/ArrayIndexOutOfBoundsException.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/RuntimeException.h"
 #include "java/lang/UnsupportedOperationException.h"
-#include "unicode/uregex.h"
 #include "jni.h"
 
 // ICU documentation: http://icu-project.org/apiref/icu4c/classRegexMatcher.html

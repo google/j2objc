@@ -52,6 +52,7 @@ IOS_PRIVATE_OBJS = \
 	IOSPrimitiveClass.o \
 	IOSProtocolClass.o \
 	IOSReference.o \
+	J2ObjC_icu.o \
 	JavaMetadata.o \
 	JavaToIOSInputStreamAdapter.o \
 	java_lang_IntegralToString.o \

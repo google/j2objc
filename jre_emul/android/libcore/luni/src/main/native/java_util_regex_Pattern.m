@@ -16,7 +16,7 @@
 
 #include "java/util/regex/PatternSyntaxException.h"
 #include "jni.h"
-#include "unicode/uregex.h"
+#include "J2ObjC_icu.h"
 
 // ICU documentation: http://icu-project.org/apiref/icu4c/classRegexPattern.html
 

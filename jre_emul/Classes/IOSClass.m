@@ -30,6 +30,7 @@
 #import "IOSPrimitiveClass.h"
 #import "IOSProtocolClass.h"
 #import "IOSReflection.h"
+#import "J2ObjC_icu.h"
 #import "JavaMetadata.h"
 #import "NSCopying+JavaCloneable.h"
 #import "NSNumber+JavaNumber.h"
@@ -58,7 +59,6 @@
 #import "libcore/reflect/Types.h"
 #import "objc/message.h"
 #import "objc/runtime.h"
-#import "unicode/uregex.h"
 
 J2OBJC_INITIALIZED_DEFN(IOSClass)
 

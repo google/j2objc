@@ -24,7 +24,7 @@ import java.util.Map;
 
 /*-[
 #include "java/util/Arrays.h"
-#include "unicode/uchar.h"
+#include "J2ObjC_icu.h"
 ]-*/
 
 /**
