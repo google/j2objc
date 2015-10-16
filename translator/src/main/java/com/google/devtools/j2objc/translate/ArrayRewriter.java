@@ -31,6 +31,7 @@ import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeLiteral;
+import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
@@ -244,8 +245,9 @@ public class ArrayRewriter extends TreeVisitor {
       funcName += "Ref";
       returnType = declaredReturnType = typeEnv.getPointerType(componentType);
     }
-    FunctionInvocation invocation = new FunctionInvocation(
-        funcName, returnType, declaredReturnType, iosArrayBinding);
+    FunctionBinding binding = new FunctionBinding(funcName, declaredReturnType, iosArrayBinding);
+    binding.addParameters(iosArrayBinding, typeEnv.resolveJavaType("int"));
+    FunctionInvocation invocation = new FunctionInvocation(binding, returnType);
     invocation.getArguments().add(arrayAccessNode.getArray().copy());
     invocation.getArguments().add(arrayAccessNode.getIndex().copy());
     if (assignable) {
@@ -267,9 +269,11 @@ public class ArrayRewriter extends TreeVisitor {
       funcName = "IOSObjectArray_SetAndConsume";
       value = retainedValue;
     }
-    FunctionInvocation invocation = new FunctionInvocation(
-        funcName, componentType, typeEnv.resolveIOSType("id"),
-        typeEnv.resolveIOSType("IOSObjectArray"));
+    ITypeBinding objArrayType = typeEnv.resolveIOSType("IOSObjectArray");
+    ITypeBinding idType = typeEnv.resolveIOSType("id");
+    FunctionBinding binding = new FunctionBinding(funcName, idType, objArrayType);
+    binding.addParameters(objArrayType, typeEnv.resolveJavaType("int"), idType);
+    FunctionInvocation invocation = new FunctionInvocation(binding, componentType);
     List<Expression> args = invocation.getArguments();
     args.add(TreeUtil.remove(arrayAccessNode.getArray()));
     args.add(TreeUtil.remove(arrayAccessNode.getIndex()));
@@ -332,11 +336,13 @@ public class ArrayRewriter extends TreeVisitor {
     ITypeBinding iosClassType = typeEnv.getIOSClass();
     String funcName = elementType.isPrimitive()
         ? String.format("IOSClass_%sArray", elementType.getName()) : "IOSClass_arrayType";
-    FunctionInvocation invocation = new FunctionInvocation(
-        funcName, iosClassType, iosClassType, iosClassType);
+    FunctionBinding binding = new FunctionBinding(funcName, iosClassType, iosClassType);
+    FunctionInvocation invocation = new FunctionInvocation(binding, iosClassType);
     if (!elementType.isPrimitive()) {
+      binding.addParameter(iosClassType);
       invocation.getArguments().add(new TypeLiteral(elementType, typeEnv));
     }
+    binding.addParameter(typeEnv.resolveJavaType("int"));
     invocation.getArguments().add(NumberLiteral.newIntLiteral(type.getDimensions(), typeEnv));
     return invocation;
   }

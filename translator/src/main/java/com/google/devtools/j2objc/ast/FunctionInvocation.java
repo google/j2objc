@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.FunctionBinding;
+
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.List;
  */
 public class FunctionInvocation extends Expression {
 
+  private FunctionBinding functionBinding = null;
   private String name = null;
   // The context-specific known type of this expression.
   private ITypeBinding typeBinding = null;
@@ -33,6 +36,7 @@ public class FunctionInvocation extends Expression {
 
   public FunctionInvocation(FunctionInvocation other) {
     super(other);
+    functionBinding = other.getFunctionBinding();
     name = other.getName();
     typeBinding = other.getTypeBinding();
     declaredReturnType = other.getDeclaredReturnType();
@@ -40,18 +44,21 @@ public class FunctionInvocation extends Expression {
     arguments.copyFrom(other.getArguments());
   }
 
-  public FunctionInvocation(
-      String name, ITypeBinding typeBinding, ITypeBinding declaredReturnType,
-      ITypeBinding declaringType) {
-    this.name = name;
+  public FunctionInvocation(FunctionBinding functionBinding, ITypeBinding typeBinding) {
+    this.functionBinding = functionBinding;
+    this.name = functionBinding.getName();
     this.typeBinding = typeBinding;
-    this.declaredReturnType = declaredReturnType;
-    this.declaringType = declaringType;
+    this.declaredReturnType = functionBinding.getReturnType();
+    this.declaringType = functionBinding.getDeclaringClass();
   }
 
   @Override
   public Kind getKind() {
     return Kind.FUNCTION_INVOCATION;
+  }
+
+  public FunctionBinding getFunctionBinding() {
+    return functionBinding;
   }
 
   public String getName() {

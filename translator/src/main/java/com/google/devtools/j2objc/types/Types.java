@@ -61,6 +61,9 @@ public class Types {
 
   private IOSTypeBinding IOSObjectArray;
 
+  // Special IOS types.
+  private final IOSTypeBinding idType;
+
   private final Map<String, ITypeBinding> javaBindingMap = Maps.newHashMap();
   private final Map<String, ITypeBinding> iosBindingMap = Maps.newHashMap();
 
@@ -93,8 +96,8 @@ public class Types {
     NSNumber = mapIOSType(IOSTypeBinding.newClass("NSNumber", javaNumberType, NSObject));
     NSString = mapIOSType(IOSTypeBinding.newClass("NSString", javaStringType, NSObject));
     IOSClass = mapIOSType(IOSTypeBinding.newUnmappedClass("IOSClass"));
-    IOSTypeBinding idType = mapIOSType(IOSTypeBinding.newUnmappedClass("id"));
     mapIOSType(IOSTypeBinding.newUnmappedClass("NSZone"));
+    idType = mapIOSType(IOSTypeBinding.newUnmappedClass("id"));
 
     initializeArrayTypes();
     initializeTypeMap();
@@ -274,6 +277,10 @@ public class Types {
 
   public ITypeBinding getIOSClass() {
     return IOSClass;
+  }
+
+  public ITypeBinding getIdType() {
+    return idType;
   }
 
   public PointerTypeBinding getPointerType(ITypeBinding type) {

@@ -34,6 +34,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -98,10 +99,11 @@ public class CastResolver extends TreeVisitor {
     }
   }
 
-  private static Expression rewriteFloatToIntegralCast(
+  private Expression rewriteFloatToIntegralCast(
       ITypeBinding castType, Expression expr, String funcName, ITypeBinding funcReturnType) {
-    FunctionInvocation invocation = new FunctionInvocation(
-        funcName, funcReturnType, funcReturnType, null);
+    FunctionBinding binding = new FunctionBinding(funcName, funcReturnType, null);
+    binding.addParameter(typeEnv.resolveJavaType("double"));
+    FunctionInvocation invocation = new FunctionInvocation(binding, funcReturnType);
     invocation.getArguments().add(TreeUtil.remove(expr));
     Expression newExpr = invocation;
     if (!castType.isEqualTo(funcReturnType)) {
@@ -122,14 +124,19 @@ public class CastResolver extends TreeVisitor {
     ITypeBinding idType = typeEnv.resolveIOSType("id");
     FunctionInvocation invocation = null;
     if (type.isInterface() && !type.isAnnotation()) {
-      invocation = new FunctionInvocation("check_protocol_cast", idType, idType, null);
+      FunctionBinding binding = new FunctionBinding("check_protocol_cast", idType, null);
+      binding.addParameters(idType, typeEnv.getIOSClass());
+      invocation = new FunctionInvocation(binding, idType);
       invocation.getArguments().add(TreeUtil.remove(expr));
       invocation.getArguments().add(new TypeLiteral(type, typeEnv));
     } else if (type.isClass() || type.isArray() || type.isAnnotation() || type.isEnum()) {
-      invocation = new FunctionInvocation("check_class_cast", idType, idType, null);
+      FunctionBinding binding = new FunctionBinding("check_class_cast", idType, null);
+      binding.addParameters(idType, idType);
+      invocation = new FunctionInvocation(binding, idType);
       invocation.getArguments().add(TreeUtil.remove(expr));
-      IOSMethodBinding binding = IOSMethodBinding.newMethod("class", Modifier.STATIC, idType, type);
-      MethodInvocation classInvocation = new MethodInvocation(binding, new SimpleName(type));
+      IOSMethodBinding classBinding = IOSMethodBinding.newMethod(
+          "class", Modifier.STATIC, idType, type);
+      MethodInvocation classInvocation = new MethodInvocation(classBinding, new SimpleName(type));
       invocation.getArguments().add(classInvocation);
     }
     return invocation;

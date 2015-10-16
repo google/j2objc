@@ -32,6 +32,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
@@ -130,9 +131,12 @@ public class DestructorGenerator extends TreeVisitor {
 
   private Statement createRelease(IVariableBinding var) {
     ITypeBinding voidType = typeEnv.resolveJavaType("void");
+    ITypeBinding idType = typeEnv.resolveIOSType("id");
     boolean isVolatile = BindingUtil.isVolatile(var);
-    FunctionInvocation releaseInvocation = new FunctionInvocation(
-        isVolatile ? "JreReleaseVolatile" : "RELEASE_", voidType, voidType, null);
+    FunctionBinding binding = new FunctionBinding(
+        isVolatile ? "JreReleaseVolatile" : "RELEASE_", voidType, null);
+    binding.addParameter(isVolatile ? typeEnv.getPointerType(idType) : idType);
+    FunctionInvocation releaseInvocation = new FunctionInvocation(binding, voidType);
     Expression arg = new SimpleName(var);
     if (isVolatile) {
       arg = new PrefixExpression(

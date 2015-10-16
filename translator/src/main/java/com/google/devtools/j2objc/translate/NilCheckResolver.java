@@ -49,6 +49,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -172,8 +173,9 @@ public class NilCheckResolver extends TreeVisitor {
       safeVarsFalse.add(var);
     }
     ITypeBinding idType = typeEnv.resolveIOSType("id");
-    FunctionInvocation nilChkInvocation = new FunctionInvocation(
-        "nil_chk", node.getTypeBinding(), idType, idType);
+    FunctionBinding binding = new FunctionBinding("nil_chk", idType, null);
+    binding.addParameter(idType);
+    FunctionInvocation nilChkInvocation = new FunctionInvocation(binding, node.getTypeBinding());
     node.replaceWith(nilChkInvocation);
     nilChkInvocation.getArguments().add(node);
   }
