@@ -42,7 +42,7 @@ if [ "x${IPHONEOS_DEPLOYMENT_TARGET}" = "x" ]; then
   FRAMEWORKS="${FRAMEWORKS} -framework ExceptionHandling"
 fi
 
-declare CC_FLAGS="-Werror -Wno-parentheses -fno-strict-overflow"
+declare CC_FLAGS="-Werror -Wno-parentheses -fno-strict-overflow -Wno-compare-distinct-pointer-types"
 declare OBJC="-std=c11"
 declare LIBS="-ljre_emul -l icucore -l z -l j2objc_main -l c++"
 declare LINK_FLAGS="${LIBS} ${FRAMEWORKS}"
@@ -53,7 +53,7 @@ for arg; do
     # Check whether linking is disabled by a -c, -S, or -E option.
     -[cSE]) LINK_FLAGS="" ;;
     # Check whether we need to build for C++ instead of C.
-    objective-c\+\+) CC_FLAGS="${CC_FLAGS} -std=gnu++98" OBJC= ;;
+    objective-c\+\+) CC_FLAGS="${CC_FLAGS} -std=c++98" OBJC= ;;
     # Save sysroot path for later inspection.
     -isysroot) SYSROOT_PATH="${i#*=}" ;;
   esac
