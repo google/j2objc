@@ -72,6 +72,7 @@ public class FunctionBinding {
     isVarargs = value;
   }
 
+  @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append(returnType.getName() + " " + name + "(");
@@ -83,5 +84,19 @@ public class FunctionBinding {
     }
     sb.append(")");
     return sb.toString();
+  }
+
+  @Override
+  public boolean equals(Object other) {
+    if (!(other instanceof FunctionBinding)) {
+      return false;
+    }
+    // C functions can't be overloaded, so it is sufficient to compare the names.
+    return ((FunctionBinding) other).getName().equals(name);
+  }
+
+  @Override
+  public int hashCode() {
+    return name.hashCode();
   }
 }
