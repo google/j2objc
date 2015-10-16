@@ -168,15 +168,15 @@ public class StackTraceElement implements Serializable {
 
   /*-[
   // This is based on undocumented details of the Swift compiler as reverse-engineered by several
-  // sources online, and it doesn't attempt to be comprehensive, but tries to demangle the most common
-  // type of object instance methods.
+  // sources online, and it doesn't attempt to be comprehensive, but tries to demangle the most
+  // common type of object instance methods.
   static void DemangleSwiftMethod(
       JavaLangStackTraceElement *self, char *start) {
     // "_T" is a global Swift marker. "F" means this symbol refers to a function/method.
     if (0 != bcmp(start, "_TF", 3)) return;
 
     // Next comes a series of "C" to represent the declaring type in terms of nested classes.
-    // Other non-decimal characters can appear here, but I'm not sure what they mean so we'll bail out.
+    // Other non-decimal characters can appear here, but I'm not sure what they mean so we'll bail.
     start += 3;
     while (*start == 'C') {
       start++;
@@ -191,8 +191,8 @@ public class StackTraceElement implements Serializable {
     BOOL ignoreName = NO;
     while (*start && [names count] < MAX_SWIFT_NESTING) {
       if (*start == 'P') {
-        // Apparently private functions have a random(?) hexidecimal component preceding the real name.
-        // It's marked by a 'P' prior to the length of that hexidecimal component.
+        // Apparently private functions have a random(?) hexidecimal component preceding the real
+        // name. It's marked by a 'P' prior to the length of that hexidecimal component.
         start++;
         ignoreName = YES;
       }
@@ -203,7 +203,8 @@ public class StackTraceElement implements Serializable {
         break;
       }
       if (!ignoreName) {
-        NSString *name = [[NSString alloc] initWithBytes:lenEnd length:len encoding:NSASCIIStringEncoding];
+        NSString *name = 
+            [[NSString alloc] initWithBytes:lenEnd length:len encoding:NSASCIIStringEncoding];
         [names addObject:name];
         RELEASE_(name);
       }
@@ -289,7 +290,8 @@ public class StackTraceElement implements Serializable {
         start = idx + 1;
       }
       else {
-        // Try to demangle Swift symbol. If it succeeds, methodName_ and declaringClass_ will be populated.
+        // Try to demangle Swift symbol. If it succeeds, methodName_ and declaringClass_ will be
+        // populated.
         DemangleSwiftMethod(self, start);
       }
       if (!self->methodName_) {
