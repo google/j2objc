@@ -166,6 +166,61 @@ public class StackTraceElement implements Serializable {
   }
   ]-*/
 
+  /*-[
+  // This is based on undocumented details of the Swift compiler as reverse-engineered by several
+  // sources online, and it doesn't attempt to be comprehensive, but tries to demangle the most
+  // common type of object instance methods.
+  static void DemangleSwiftMethod(
+      JavaLangStackTraceElement *self, char *start) {
+    // "_T" is a global Swift marker. "F" means this symbol refers to a function/method.
+    if (0 != bcmp(start, "_TF", 3)) return;
+
+    // Next comes a series of "C" to represent the declaring type in terms of nested classes.
+    // Other non-decimal characters can appear here, but I'm not sure what they mean so we'll bail.
+    start += 3;
+    while (*start == 'C') {
+      start++;
+    }
+    if (*start < '0' || *start > '9') return;
+
+    // Next up is a series of length-prefixed names, starting with the module name, followed
+    // by nested class names, and finally ending with the function name.
+  #define MAX_SWIFT_NESTING 8
+    NSMutableArray *names = [[NSMutableArray alloc] initWithCapacity:MAX_SWIFT_NESTING];
+    char *lenEnd;
+    BOOL ignoreName = NO;
+    while (*start && [names count] < MAX_SWIFT_NESTING) {
+      if (*start == 'P') {
+        // Apparently private functions have a random(?) hexidecimal component preceding the real
+        // name. It's marked by a 'P' prior to the length of that hexidecimal component.
+        start++;
+        ignoreName = YES;
+      }
+      else ignoreName = NO;
+
+      long len = strtol(start, &lenEnd, 10);
+      if (start == lenEnd) {
+        break;
+      }
+      if (!ignoreName) {
+        NSString *name = 
+            [[NSString alloc] initWithBytes:lenEnd length:len encoding:NSASCIIStringEncoding];
+        [names addObject:name];
+        RELEASE_(name);
+      }
+      start = lenEnd + len;
+    }
+    if (start != lenEnd || [names count] < 2) {
+      RELEASE_(names);
+      return;
+    }
+    self->methodName_ = RETAIN_([names lastObject]);
+    [names removeLastObject];
+    self->declaringClass_ = RETAIN_([names componentsJoinedByString:@"."]);
+    RELEASE_(names);
+  }
+  ]-*/
+
   /**
    * Implements lazy loading of symbol information from application.
    */
@@ -234,7 +289,14 @@ public class StackTraceElement implements Serializable {
         self->declaringClass_ = RETAIN_([cls getName]);
         start = idx + 1;
       }
-      self->methodName_ = ExtractMethodName(start, '_', encoding);
+      else {
+        // Try to demangle Swift symbol. If it succeeds, methodName_ and declaringClass_ will be
+        // populated.
+        DemangleSwiftMethod(self, start);
+      }
+      if (!self->methodName_) {
+        self->methodName_ = ExtractMethodName(start, '_', encoding);
+      }
     }
     free(stackSymbol);
   ]-*/;
