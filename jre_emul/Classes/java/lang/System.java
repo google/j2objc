@@ -36,6 +36,7 @@ extern char **environ;
 ]-*/
 
 import java.io.BufferedInputStream;
+import java.io.Console;
 import java.io.FileDescriptor;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -404,6 +405,16 @@ public class System {
    * No-op on iOS, since it doesn't use garbage collection.
    */
   public static void runFinalizersOnExit(boolean b) {}
+
+  /**
+   * Returns the {@link java.io.Console} associated with this VM, or null.
+   * Not all VMs will have an associated console. A console is typically only
+   * available for programs run from the command line.
+   * @since 1.6
+   */
+  public static Console console() {
+      return Console.getConsole();
+  }
 
   // Android internal logging methods, rewritten to use Logger.
 

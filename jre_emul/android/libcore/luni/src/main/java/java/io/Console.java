@@ -16,13 +16,11 @@
 package java.io;
 
 import java.util.Formatter;
-import libcore.io.ErrnoException;
 import libcore.io.Libcore;
-import static libcore.io.OsConstants.*;
 
 /**
- * Provides access to the console, if available.
- *
+ * Provides access to the console, if available. The system-wide instance can
+ * be accessed via {@link java.lang.System#console}.
  * @since 1.6
  */
 public final class Console implements Flushable {
@@ -48,12 +46,12 @@ public final class Console implements Flushable {
         }
         try {
             return new Console(System.in, System.out);
-        } catch (IOException ex) {
+        } catch (UnsupportedEncodingException ex) {
             throw new AssertionError(ex);
         }
     }
 
-    private Console(InputStream in, OutputStream out) throws IOException {
+    private Console(InputStream in, OutputStream out) throws UnsupportedEncodingException {
         this.reader = new ConsoleReader(in);
         this.writer = new ConsoleWriter(out);
     }
@@ -74,10 +72,11 @@ public final class Console implements Flushable {
      * @return the console instance.
      */
     public Console format(String format, Object... args) {
-        Formatter f = new Formatter(writer);
+      try (Formatter f = new Formatter(writer)) {
         f.format(format, args);
         f.flush();
         return this;
+      }
     }
 
     /**
@@ -129,48 +128,17 @@ public final class Console implements Flushable {
     }
 
     /**
-     * Reads a password from the console. The password will not be echoed to the display.
-     *
-     * @return a character array containing the password, or null at EOF.
+     * This method is unimplemented on Android.
      */
     public char[] readPassword() {
-        synchronized (CONSOLE_LOCK) {
-            int previousState = setEcho(false, 0);
-            try {
-                String password = readLine();
-                writer.println(); // We won't have echoed the user's newline.
-                return (password == null) ? null : password.toCharArray();
-            } finally {
-                setEcho(true, previousState);
-            }
-        }
+        throw new UnsupportedOperationException();
     }
-
-    private static int setEcho(boolean on, int previousState) {
-        try {
-            return setEchoImpl(on, previousState);
-        } catch (IOException ex) {
-            throw new IOError(ex);
-        }
-    }
-    private static native int setEchoImpl(boolean on, int previousState) throws IOException;
 
     /**
-     * Reads a password from the console. The password will not be echoed to the display.
-     * A formatted prompt is also displayed.
-     *
-     * @param format the format string (see {@link java.util.Formatter#format})
-     * @param args
-     *            the list of arguments passed to the formatter. If there are
-     *            more arguments than required by {@code format},
-     *            additional arguments are ignored.
-     * @return a character array containing the password, or null at EOF.
+     * This method is unimplemented on Android.
      */
     public char[] readPassword(String format, Object... args) {
-        synchronized (CONSOLE_LOCK) {
-            format(format, args);
-            return readPassword();
-        }
+        throw new UnsupportedOperationException();
     }
 
     /**
@@ -181,7 +149,7 @@ public final class Console implements Flushable {
     }
 
     private static class ConsoleReader extends BufferedReader {
-        public ConsoleReader(InputStream in) throws IOException {
+        public ConsoleReader(InputStream in) throws UnsupportedEncodingException {
             super(new InputStreamReader(in, System.getProperty("file.encoding")), 256);
             lock = CONSOLE_LOCK;
         }

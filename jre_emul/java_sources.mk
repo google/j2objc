@@ -28,6 +28,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/io/ByteArrayInputStream.java \
   java/io/ByteArrayOutputStream.java \
   java/io/Closeable.java \
+  java/io/Console.java \
   java/io/DataInput.java \
   java/io/DataInputStream.java \
   java/io/DataOutput.java \
