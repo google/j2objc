@@ -26,30 +26,20 @@ import java.util.List;
 public class FunctionInvocation extends Expression {
 
   private FunctionBinding functionBinding = null;
-  private String name = null;
   // The context-specific known type of this expression.
   private ITypeBinding typeBinding = null;
-  // The return type of the declared function.
-  private ITypeBinding declaredReturnType = null;
-  private ITypeBinding declaringType = null;
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public FunctionInvocation(FunctionInvocation other) {
     super(other);
     functionBinding = other.getFunctionBinding();
-    name = other.getName();
     typeBinding = other.getTypeBinding();
-    declaredReturnType = other.getDeclaredReturnType();
-    declaringType = other.getDeclaringType();
     arguments.copyFrom(other.getArguments());
   }
 
   public FunctionInvocation(FunctionBinding functionBinding, ITypeBinding typeBinding) {
     this.functionBinding = functionBinding;
-    this.name = functionBinding.getName();
     this.typeBinding = typeBinding;
-    this.declaredReturnType = functionBinding.getReturnType();
-    this.declaringType = functionBinding.getDeclaringClass();
   }
 
   @Override
@@ -62,20 +52,12 @@ public class FunctionInvocation extends Expression {
   }
 
   public String getName() {
-    return name;
+    return functionBinding.getName();
   }
 
   @Override
   public ITypeBinding getTypeBinding() {
     return typeBinding;
-  }
-
-  public ITypeBinding getDeclaredReturnType() {
-    return declaredReturnType;
-  }
-
-  public ITypeBinding getDeclaringType() {
-    return declaringType;
   }
 
   public List<Expression> getArguments() {

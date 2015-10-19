@@ -190,7 +190,8 @@ public class CastResolver extends TreeVisitor {
         return typeEnv.resolveIOSType("id");
       case FUNCTION_INVOCATION:
         {
-          ITypeBinding returnType = ((FunctionInvocation) expr).getDeclaredReturnType();
+          ITypeBinding returnType =
+              ((FunctionInvocation) expr).getFunctionBinding().getReturnType();
           if (returnType.isTypeVariable()) {
             return typeEnv.resolveIOSType("id");
           }

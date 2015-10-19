@@ -182,7 +182,7 @@ public class ImplementationImportCollector extends TreeVisitor {
   public void endVisit(FunctionInvocation node) {
     // The return type is needed because the expression might need a cast.
     addImports(node.getTypeBinding());
-    addImports(node.getDeclaringType());
+    addImports(node.getFunctionBinding().getDeclaringClass());
   }
 
   @Override
@@ -268,7 +268,7 @@ public class ImplementationImportCollector extends TreeVisitor {
     for (Expression arg : node.getArguments()) {
       addImports(arg.getTypeBinding());
     }
-    addImports(node.getDeclaredReturnType());
+    addImports(node.getFunctionBinding().getReturnType());
     return true;
   }
 
