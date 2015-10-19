@@ -27,7 +27,7 @@ public abstract class Number implements java.io.Serializable {
   public Number() {}
 
   public byte byteValue() {
-	  return (byte)intValue();
+	  return 0;
   }
 
   public abstract double doubleValue();
@@ -39,7 +39,7 @@ public abstract class Number implements java.io.Serializable {
   public abstract long longValue();
 
   public short shortValue() {
-    return (short)intValue();
+    return 0;
   }
   
   private static final long serialVersionUID = -8742448824652078965L
