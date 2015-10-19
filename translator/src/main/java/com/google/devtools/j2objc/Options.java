@@ -88,6 +88,7 @@ public class Options {
   private List<String> headerMappingFiles = null;
   private String processors = null;
   private boolean disallowInheritedConstructors = false;
+  private boolean swiftFriendly = false;
 
   private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
@@ -361,6 +362,8 @@ public class Options {
             Integer.parseInt(arg.substring(BATCH_PROCESSING_MAX_FLAG.length()));
       } else if (arg.equals("--static-accessor-methods")) {
         staticAccessorMethods = true;
+      } else if (arg.equals("--swift-friendly")) {
+        swiftFriendly = true;
       } else if (arg.equals("-processor")) {
         if (++nArg == args.length) {
           usage("-processor requires an argument");
@@ -418,6 +421,10 @@ public class Options {
 
     if (memoryManagementOption == null) {
       memoryManagementOption = MemoryManagementOption.REFERENCE_COUNTING;
+    }
+
+    if (swiftFriendly) {
+      staticAccessorMethods = true;
     }
 
     // Pull source version from system properties if it is not passed with -source flag.
@@ -820,5 +827,15 @@ public class Options {
   @VisibleForTesting
   public static void setDisallowInheritedConstructors(boolean b) {
     instance.disallowInheritedConstructors = b;
+  }
+
+  public static boolean swiftFriendly() {
+    return instance.swiftFriendly;
+  }
+
+  @VisibleForTesting
+  public static void setSwiftFriendly(boolean b) {
+    instance.swiftFriendly = b;
+    instance.staticAccessorMethods = b;
   }
 }

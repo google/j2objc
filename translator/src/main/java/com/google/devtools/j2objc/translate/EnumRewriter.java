@@ -128,16 +128,27 @@ public class EnumRewriter extends TreeVisitor {
   private void addExtraNativeDecls(EnumDeclaration node) {
     String typeName = nameTable.getFullName(node.getTypeBinding());
     int numConstants = node.getEnumConstants().size();
+    boolean swiftFriendly = Options.swiftFriendly();
 
-    String header = String.format(
+    StringBuilder header = new StringBuilder();
+    header.append(String.format(
         "+ (IOSObjectArray *)values;\n"
         + "FOUNDATION_EXPORT IOSObjectArray *%s_values();\n\n"
         + "+ (%s *)valueOfWithNSString:(NSString *)name;\n"
         + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);\n\n"
-        + "- (id)copyWithZone:(NSZone *)zone;\n", typeName, typeName, typeName, typeName);
+        + "- (id)copyWithZone:(NSZone *)zone;\n", typeName, typeName, typeName, typeName));
 
-    StringBuilder sb = new StringBuilder();
-    sb.append(String.format(
+    // Strip enum type suffix.
+    String bareTypeName =
+        typeName.endsWith("Enum") ? typeName.substring(0, typeName.length() - 4) : typeName;
+
+    if (swiftFriendly) {
+      header.append(String.format(
+            "- (%s)toNSEnum;\n", bareTypeName));
+    }
+
+    StringBuilder implementation = new StringBuilder();
+    implementation.append(String.format(
         "IOSObjectArray *%s_values() {\n"
         + "  %s_initialize();\n"
         + "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:%s_class_()];\n"
@@ -146,12 +157,12 @@ public class EnumRewriter extends TreeVisitor {
         + "  return %s_values();\n"
         + "}\n\n", typeName, typeName, typeName, numConstants, typeName, typeName));
 
-    sb.append(String.format(
+    implementation.append(String.format(
         "+ (%s *)valueOfWithNSString:(NSString *)name {\n"
         + "  return %s_valueOfWithNSString_(name);\n"
         + "}\n\n", typeName, typeName));
 
-    sb.append(String.format(
+    implementation.append(String.format(
         "%s *%s_valueOfWithNSString_(NSString *name) {\n"
             + "  %s_initialize();\n"
             + "  for (int i = 0; i < %s; i++) {\n"
@@ -161,19 +172,29 @@ public class EnumRewriter extends TreeVisitor {
             + "    }\n"
             + "  }\n", typeName, typeName, typeName, numConstants, typeName, typeName));
     if (Options.useReferenceCounting()) {
-      sb.append(
+      implementation.append(
           "  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name]"
           + " autorelease];\n");
     } else {
-      sb.append("  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];\n");
+      implementation.append(
+          "  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];\n");
     }
-    sb.append("  return nil;\n}\n\n");
+    implementation.append("  return nil;\n}\n\n");
+
+    if (swiftFriendly) {
+      implementation.append(String.format(
+          "- (%s)toNSEnum {\n"
+              + "  return (%s)[self ordinal];\n"
+              + "}\n\n", bareTypeName, bareTypeName));
+    }
 
     // Enum constants needs to implement NSCopying.  Being singletons, they
     // can just return self, as long the retain count is incremented.
     String selfString = Options.useReferenceCounting() ? "[self retain]" : "self";
-    sb.append(String.format("- (id)copyWithZone:(NSZone *)zone {\n  return %s;\n}\n", selfString));
+    implementation.append(
+        String.format("- (id)copyWithZone:(NSZone *)zone {\n  return %s;\n}\n", selfString));
 
-    node.getBodyDeclarations().add(new NativeDeclaration(header, sb.toString()));
+    node.getBodyDeclarations().add(new NativeDeclaration(header.toString(),
+        implementation.toString()));
   }
 }
