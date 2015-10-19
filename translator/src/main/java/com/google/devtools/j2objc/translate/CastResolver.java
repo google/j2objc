@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
+import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -149,30 +150,31 @@ public class CastResolver extends TreeVisitor {
     castExpr.setExpression(expr);
   }
 
-  private void maybeAddCast(Expression expr, boolean shouldCastFromId) {
-    if (needsCast(expr, shouldCastFromId)) {
+  private void maybeAddCast(Expression expr, ITypeBinding expectedType, boolean shouldCastFromId) {
+    if (needsCast(expr, expectedType, shouldCastFromId)) {
       addCast(expr);
     }
   }
 
-  private boolean needsCast(Expression expr, boolean shouldCastFromId) {
+  private boolean needsCast(Expression expr, ITypeBinding expectedType, boolean shouldCastFromId) {
     ITypeBinding declaredType = getDeclaredType(expr);
     if (declaredType == null) {
       return false;
     }
     ITypeBinding exprType = typeEnv.mapType(expr.getTypeBinding().getTypeDeclaration());
     declaredType = typeEnv.mapType(declaredType.getTypeDeclaration());
-    if (declaredType.isAssignmentCompatible(exprType)) {
-      return false;
-    }
-    if (declaredType == typeEnv.resolveIOSType("id") && !shouldCastFromId) {
-      return false;
-    }
-    if (exprType.isPrimitive()) {
-      return false;
-    }
-    String typeName = nameTable.getSpecificObjCType(exprType);
-    if (typeName.equals(NameTable.ID_TYPE)) {
+    if (
+        // In general we do not need to cast primitive types.
+        exprType.isPrimitive()
+        // In most cases we don't need to cast from an id type. However, if the
+        // expression is being dereferenced then the compiler needs the type
+        // info.
+        || (declaredType == typeEnv.getIdType() && !shouldCastFromId)
+        // If the declared type can be assigned into the actual type, or the
+        // expected type, then the compiler already has sufficient type info.
+        || typeEnv.isIdType(exprType) || typeEnv.isIdType(expectedType)
+        || declaredType.isAssignmentCompatible(exprType)
+        || declaredType.isAssignmentCompatible(expectedType)) {
       return false;
     }
     return true;
@@ -301,34 +303,51 @@ public class CastResolver extends TreeVisitor {
     return false;
   }
 
-  private void maybeCastArguments(List<Expression> args) {
-    for (Expression arg : args) {
-      maybeAddCast(arg, false);
+  private void maybeCastArguments(List<Expression> args, List<ITypeBinding> argTypes) {
+    // Possible varargs, don't cast vararg arguments.
+    assert args.size() >= argTypes.size();
+    for (int i = 0; i < argTypes.size(); i++) {
+      maybeAddCast(args.get(i), argTypes.get(i), false);
     }
+  }
+
+  private void maybeCastArguments(List<Expression> args, IMethodBinding method) {
+    maybeCastArguments(args, Arrays.asList(method.getParameterTypes()));
   }
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    maybeCastArguments(node.getArguments());
+    maybeCastArguments(node.getArguments(), node.getMethodBinding());
   }
 
   @Override
   public void endVisit(ConstructorInvocation node) {
-    maybeCastArguments(node.getArguments());
+    maybeCastArguments(node.getArguments(), node.getMethodBinding());
+  }
+
+  @Override
+  public void endVisit(EnumConstantDeclaration node) {
+    maybeCastArguments(node.getArguments(), node.getMethodBinding());
   }
 
   @Override
   public void endVisit(FieldAccess node) {
-    maybeAddCast(node.getExpression(), true);
+    maybeAddCast(node.getExpression(), null, true);
+  }
+
+  @Override
+  public void endVisit(FunctionInvocation node) {
+    maybeCastArguments(node.getArguments(), node.getFunctionBinding().getParameterTypes());
   }
 
   @Override
   public void endVisit(MethodInvocation node) {
+    IMethodBinding binding = node.getMethodBinding();
     Expression receiver = node.getExpression();
-    if (receiver != null && !BindingUtil.isStatic(node.getMethodBinding())) {
-      maybeAddCast(receiver, true);
+    if (receiver != null && !BindingUtil.isStatic(binding)) {
+      maybeAddCast(receiver, null, true);
     }
-    maybeCastArguments(node.getArguments());
+    maybeCastArguments(node.getArguments(), binding);
     if (returnValueNeedsIntCast(node)) {
       addCast(node);
     }
@@ -338,18 +357,18 @@ public class CastResolver extends TreeVisitor {
   public void endVisit(ReturnStatement node) {
     Expression expr = node.getExpression();
     if (expr != null) {
-      maybeAddCast(expr, false);
+      maybeAddCast(expr, TreeUtil.getOwningReturnType(node), false);
     }
   }
 
   @Override
   public void endVisit(SuperConstructorInvocation node) {
-    maybeCastArguments(node.getArguments());
+    maybeCastArguments(node.getArguments(), node.getMethodBinding());
   }
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
-    maybeCastArguments(node.getArguments());
+    maybeCastArguments(node.getArguments(), node.getMethodBinding());
     if (returnValueNeedsIntCast(node)) {
       addCast(node);
     }
@@ -359,7 +378,7 @@ public class CastResolver extends TreeVisitor {
   public void endVisit(VariableDeclarationFragment node) {
     Expression initializer = node.getInitializer();
     if (initializer != null) {
-      maybeAddCast(initializer, false);
+      maybeAddCast(initializer, node.getVariableBinding().getType(), false);
     }
   }
 

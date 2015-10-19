@@ -237,6 +237,10 @@ public class Types {
     return javaStringType.isEqualTo(type) || NSString.isEqualTo(type);
   }
 
+  public boolean isIdType(ITypeBinding type) {
+    return type == idType || type == NSObject || type == javaObjectType;
+  }
+
   public IOSTypeBinding resolveArrayType(ITypeBinding binding) {
     IOSTypeBinding arrayBinding = arrayBindingMap.get(binding);
     return arrayBinding != null ? arrayBinding : IOSObjectArray;

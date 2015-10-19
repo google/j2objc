@@ -456,13 +456,8 @@ public class NameTable {
     return name;
   }
 
-  private boolean isIdType(ITypeBinding type) {
-    return type == typeEnv.resolveIOSType("id") || type == typeEnv.resolveIOSType("NSObject")
-        || typeEnv.isJavaObjectType(type);
-  }
-
   private String getParameterTypeKeyword(ITypeBinding type) {
-    if (isIdType(type) || type.isTypeVariable()) {
+    if (typeEnv.isIdType(type) || type.isTypeVariable()) {
       ITypeBinding[] bounds = type.getTypeBounds();
       if (bounds.length > 0) {
         return getParameterTypeKeyword(bounds[0]);
@@ -851,7 +846,7 @@ public class NameTable {
     List<String> interfaces = Lists.newArrayList();
     for (ITypeBinding type : types) {
       type = type.getErasure();
-      if (isIdType(type) || typeEnv.isJavaVoidType(type)) {
+      if (typeEnv.isIdType(type) || typeEnv.isJavaVoidType(type)) {
         continue;
       }
       if (type.isInterface()) {
