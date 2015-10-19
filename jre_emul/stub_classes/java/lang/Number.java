@@ -41,6 +41,4 @@ public abstract class Number implements java.io.Serializable {
   public short shortValue() {
     return 0;
   }
-  
-  private static final long serialVersionUID = -8742448824652078965L
 }
