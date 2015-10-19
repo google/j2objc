@@ -203,18 +203,17 @@ public class PatternTest extends TestCase {
             }
         }
 
-        // b/12450749
-//        /* Negative assertion test. */
-//        for (String aPattern : wrongTestPatterns) {
-//            try {
-//                Pattern p = Pattern.compile(aPattern);
-//                fail("PatternSyntaxException is expected");
-//            } catch (PatternSyntaxException pse) {
-//                /* OKAY */
-//            } catch (Exception e) {
-//                fail("Unexpected exception: " + e);
-//            }
-//        }
+        /* Negative assertion test. */
+        for (String aPattern : wrongTestPatterns) {
+            try {
+                Pattern p = Pattern.compile(aPattern);
+                fail("PatternSyntaxException is expected");
+            } catch (PatternSyntaxException pse) {
+                /* OKAY */
+            } catch (Exception e) {
+                fail("Unexpected exception: " + e);
+            }
+        }
     }
 
     public void testFlags() {
@@ -283,12 +282,11 @@ public class PatternTest extends TestCase {
         mat = pat.matcher(testString);
         assertFalse(mat.matches());
 
-        // b/12450749
-//        baseString = "|(?i)|a";
-//        testString = "A";
-//        pat = Pattern.compile(baseString);
-//        mat = pat.matcher(testString);
-//        assertTrue(mat.matches());
+        baseString = "|(?i)|a";
+        testString = "A";
+        pat = Pattern.compile(baseString);
+        mat = pat.matcher(testString);
+        assertTrue(mat.matches());
 
         baseString = "(?i)((?s)a.)";
         testString = "A\n";
@@ -541,20 +539,19 @@ public class PatternTest extends TestCase {
         }
     }
 
-    // b/12450749
-//    public void testMatchesException() {
-//        /* Negative assertion test. */
-//        for (String aPattern : wrongTestPatterns) {
-//            try {
-//                Pattern.matches(aPattern, "Foo");
-//                fail("PatternSyntaxException is expected");
-//            } catch (PatternSyntaxException pse) {
-//                /* OKAY */
-//            } catch (Exception e) {
-//                fail("Unexpected exception: " + e);
-//            }
-//        }
-//    }
+    public void testMatchesException() {
+        /* Negative assertion test. */
+        for (String aPattern : wrongTestPatterns) {
+            try {
+                Pattern.matches(aPattern, "Foo");
+                fail("PatternSyntaxException is expected");
+            } catch (PatternSyntaxException pse) {
+                /* OKAY */
+            } catch (Exception e) {
+                fail("Unexpected exception: " + e);
+            }
+        }
+    }
 
     public void testTimeZoneIssue() {
         Pattern p = Pattern.compile("GMT(\\+|\\-)(\\d+)(:(\\d+))?");
@@ -803,26 +800,24 @@ public class PatternTest extends TestCase {
         assertEquals(15, mat.end());
     }
 
-    // b/12450749
-//    public void testSOLQuant() {
-//        Pattern pat = Pattern.compile("$*", Pattern.MULTILINE);
-//        Matcher mat = pat.matcher("\n\n");
-//        int counter = 0;
-//        while (mat.find()) {
-//            counter++;
-//        }
-//
-//        assertEquals(3, counter);
-//    }
+    public void testSOLQuant() {
+        Pattern pat = Pattern.compile("$*", Pattern.MULTILINE);
+        Matcher mat = pat.matcher("\n\n");
+        int counter = 0;
+        while (mat.find()) {
+            counter++;
+        }
 
-    // b/12450749
-//    public void testIllegalEscape() {
-//        try {
-//            Pattern.compile("\\y");
-//            fail("PatternSyntaxException expected");
-//        } catch (PatternSyntaxException pse) {
-//        }
-//    }
+        assertEquals(3, counter);
+    }
+
+    public void testIllegalEscape() {
+        try {
+            Pattern.compile("\\y");
+            fail("PatternSyntaxException expected");
+        } catch (PatternSyntaxException pse) {
+        }
+    }
 
     public void testEmptyFamily() {
         Pattern.compile("\\p{Lower}");
@@ -839,22 +834,21 @@ public class PatternTest extends TestCase {
         assertTrue(pat.matcher("bBbBaaaa").matches());
         assertFalse(pat.matcher("bBbBAaAa").matches());
 
-        // b/12450749
-//        pat = Pattern
-//        // 1 2 3 4 5 6 7 8 9 10 11
-//                .compile("(?:-|(-?\\d+\\d\\d\\d))?(?:-|-(\\d\\d))?(?:-|-(\\d\\d))?(T)?(?:(\\d\\d):(\\d\\d):(\\d\\d)(\\.\\d+)?)?(?:(?:((?:\\+|\\-)\\d\\d):(\\d\\d))|(Z))?");
-//        Matcher mat = pat.matcher("-1234-21-31T41:51:61.789+71:81");
-//        assertTrue(mat.matches());
-//        assertEquals("-1234", mat.group(1));
-//        assertEquals("21", mat.group(2));
-//        assertEquals("31", mat.group(3));
-//        assertEquals("T", mat.group(4));
-//        assertEquals("41", mat.group(5));
-//        assertEquals("51", mat.group(6));
-//        assertEquals("61", mat.group(7));
-//        assertEquals(".789", mat.group(8));
-//        assertEquals("+71", mat.group(9));
-//        assertEquals("81", mat.group(10));
+        pat = Pattern
+        // 1 2 3 4 5 6 7 8 9 10 11
+                .compile("(?:-|(-?\\d+\\d\\d\\d))?(?:-|-(\\d\\d))?(?:-|-(\\d\\d))?(T)?(?:(\\d\\d):(\\d\\d):(\\d\\d)(\\.\\d+)?)?(?:(?:((?:\\+|\\-)\\d\\d):(\\d\\d))|(Z))?");
+        Matcher mat = pat.matcher("-1234-21-31T41:51:61.789+71:81");
+        assertTrue(mat.matches());
+        assertEquals("-1234", mat.group(1));
+        assertEquals("21", mat.group(2));
+        assertEquals("31", mat.group(3));
+        assertEquals("T", mat.group(4));
+        assertEquals("41", mat.group(5));
+        assertEquals("51", mat.group(6));
+        assertEquals("61", mat.group(7));
+        assertEquals(".789", mat.group(8));
+        assertEquals("+71", mat.group(9));
+        assertEquals("81", mat.group(10));
 
         // positive lookahead
         pat = Pattern.compile(".*\\.(?=log$).*$");
@@ -984,11 +978,10 @@ public class PatternTest extends TestCase {
         mat = pat.matcher("");
         assertTrue(mat.matches());
 
-        // b/12450749
-//        baseString = "(?i-is)|a";
-//        pat = Pattern.compile(baseString);
-//        mat = pat.matcher("a");
-//        assertTrue(mat.matches());
+        baseString = "(?i-is)|a";
+        pat = Pattern.compile(baseString);
+        mat = pat.matcher("a");
+        assertTrue(mat.matches());
     }
 
     public void testMatchWithGroups() {

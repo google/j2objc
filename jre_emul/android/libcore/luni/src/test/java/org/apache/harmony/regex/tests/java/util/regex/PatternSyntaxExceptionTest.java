@@ -86,29 +86,27 @@ public class PatternSyntaxExceptionTest extends TestCase {
     assertFalse(s.contains("^"));
   }
 
-  // b/12450749
-//  public void testCase() {
-//    String regex = "(";
-//    try {
-//      Pattern.compile(regex);
-//      fail("PatternSyntaxException expected");
-//    } catch (PatternSyntaxException e) {
-//      assertEquals(1, e.getIndex());
-//      assertEquals(regex, e.getPattern());
-//    }
-//  }
+  public void testCase() {
+    String regex = "(";
+    try {
+      Pattern.compile(regex);
+      fail("PatternSyntaxException expected");
+    } catch (PatternSyntaxException e) {
+      assertEquals(1, e.getIndex());
+      assertEquals(regex, e.getPattern());
+    }
+  }
 
-  // b/12450749
-//  public void testCase2() {
-//    String regex = "[4-";
-//    try {
-//      Pattern.compile(regex);
-//      fail("PatternSyntaxException expected");
-//    } catch (PatternSyntaxException e) {
-//      assertEquals(3, e.getIndex());
-//      assertEquals(regex, e.getPattern());
-//    }
-//  }
+  public void testCase2() {
+    String regex = "[4-";
+    try {
+      Pattern.compile(regex);
+      fail("PatternSyntaxException expected");
+    } catch (PatternSyntaxException e) {
+      assertEquals(3, e.getIndex());
+      assertEquals(regex, e.getPattern());
+    }
+  }
 
   // Regression test for HARMONY-3787
   public void test_objectStreamField() {
