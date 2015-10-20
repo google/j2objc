@@ -178,7 +178,7 @@ public class SignatureGenerator {
       return true;
     }
     for (ITypeBinding param : method.getParameterTypes()) {
-      if (param.isTypeVariable()) {
+      if (param.isTypeVariable() || param.getTypeArguments().length > 0) {
         return true;
       }
     }

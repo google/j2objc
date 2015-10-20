@@ -168,4 +168,24 @@ public class SignatureGeneratorTest extends GenerationTest {
     assertEquals("Java_foo_bar_D_00024_06d4b_08bd5_mumble",
         SignatureGenerator.createJniFunctionSignature(methods[1]));
   }
+
+  public void testGenericTypeMetadata() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.*; class Test <T> { Set<T> set; "
+        + " void test(Map<Long, List<T>> map) {} }",
+        "Test", "Test.m");
+
+    // Assert class metadata has generic signature.
+    assertTranslation(translation,
+        "J2ObjcClassInfo _Test = { 2, \"Test\", NULL, NULL, 0x0, 2, methods, "
+        + "1, fields, 0, NULL, 0, NULL, NULL, \"<T:Ljava/lang/Object;>Ljava/lang/Object;\" };");
+
+    // Assert method metadata has generic signature.
+    assertTranslation(translation, "{ \"testWithJavaUtilMap:\", \"test\", \"V\", 0x0, NULL, "
+        + "\"(Ljava/util/Map<Ljava/lang/Long;Ljava/util/List<TT;>;>;)V\" },");
+
+    // Assert field metadata has generic signature.
+    assertTranslation(translation,
+        "\"set_\", NULL, 0x0, \"Ljava.util.Set;\", NULL, \"Ljava/util/Set<TT;>;\",");
+  }
 }
