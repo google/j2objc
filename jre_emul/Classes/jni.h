@@ -30,7 +30,40 @@
 /* "cardinal indices and sizes" */
 typedef jint            jsize;
 
-#ifdef __cplusplus
+#if defined(__OBJC__)
+
+@class IOSArray;
+@class IOSObjectArray;
+@class IOSBooleanArray;
+@class IOSByteArray;
+@class IOSCharArray;
+@class IOSShortArray;
+@class IOSIntArray;
+@class IOSLongArray;
+@class IOSFloatArray;
+@class IOSDoubleArray;
+@class IOSClass;
+
+/*
+ * Reference types, in Objective-C.
+ */
+typedef id               jobject;
+typedef IOSClass*        jclass;
+typedef NSString*        jstring;
+typedef IOSArray*        jarray;
+typedef IOSObjectArray*  jobjectArray;
+typedef IOSBooleanArray* jbooleanArray;
+typedef IOSByteArray*    jbyteArray;
+typedef IOSCharArray*    jcharArray;
+typedef IOSShortArray*   jshortArray;
+typedef IOSIntArray*     jintArray;
+typedef IOSLongArray*    jlongArray;
+typedef IOSFloatArray*   jfloatArray;
+typedef IOSDoubleArray*  jdoubleArray;
+typedef jobject          jthrowable;
+typedef jobject          jweak;
+
+#elif defined(__cplusplus)
 /*
  * Reference types, in C++
  */
@@ -98,7 +131,11 @@ typedef union jvalue {
     jlong    j;
     jfloat   f;
     jdouble  d;
+#if __has_feature(objc_arc)
+    __unsafe_unretained jobject  l;
+#else
     jobject  l;
+#endif
 } jvalue;
 
 struct _jfieldID;
