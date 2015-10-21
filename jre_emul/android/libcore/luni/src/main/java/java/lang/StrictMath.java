@@ -962,6 +962,10 @@ public final class StrictMath {
      *         arguments.
      */
     public static native double hypot(double x, double y) /*-[
+      // ARM processors return hypot(x, NaN) as x, so test separately.
+      if (isnan(x) || isnan(y)) {
+        return (isinf(x) || isinf(y)) ? JavaLangDouble_POSITIVE_INFINITY : JavaLangDouble_NaN;
+      }
       return hypot(x, y);
     ]-*/;
 
