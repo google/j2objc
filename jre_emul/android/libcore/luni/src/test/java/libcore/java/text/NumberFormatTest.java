@@ -74,17 +74,9 @@ public class NumberFormatTest extends junit.framework.TestCase {
             return;
         }
         NumberFormat numberFormat = NumberFormat.getNumberInstance(new Locale("ar"));
-        if (onYosemite()) {
-            assertEquals("#,##0.###;#,##0.###", ((DecimalFormat) numberFormat).toPattern());
-        } else {
-            assertEquals("#0.###;#0.###", ((DecimalFormat) numberFormat).toPattern());
-        }
+        assertEquals("#,##0.###;#,##0.###", ((DecimalFormat) numberFormat).toPattern());
         NumberFormat integerFormat = NumberFormat.getIntegerInstance(new Locale("ar"));
-        if (onYosemite()) {
-            assertEquals("#,##0;#,##0", ((DecimalFormat) integerFormat).toPattern());
-        } else {
-            assertEquals("#0;#0", ((DecimalFormat) integerFormat).toPattern());
-        }
+        assertEquals("#,##0;#,##0", ((DecimalFormat) integerFormat).toPattern());
     }
 
     // Formatting percentages is confusing but deliberate.
@@ -118,25 +110,5 @@ public class NumberFormatTest extends junit.framework.TestCase {
       assertEquals(NumberFormat.getIntegerInstance(locale).format(23.45678), "23");
       assertEquals(NumberFormat.getNumberInstance(locale).format(23.45678), "23,457");
       assertEquals(NumberFormat.getPercentInstance(locale).format(23.45678), "2 346 %");
-    }
-
-    private static boolean onYosemite() {
-      int[] version = parseVersion(System.getProperty("os.version"));
-      return System.getProperty("os.name").equals("Mac OS X")
-          && version.length >= 2 && version[0] >= 10 && version[1] >= 10;
-    }
-
-    private static int[] parseVersion(String version) {
-      Pattern versionPattern = Pattern.compile("[0-9.]+");
-      Matcher m = versionPattern.matcher(version);
-      if (m.find()) {
-        String[] parts = m.group(0).split("\\.");
-        int[] result = new int[parts.length];
-        for (int i = 0; i < parts.length; i++) {
-          result[i] = Integer.valueOf(parts[i]);
-        }
-        return result;
-      }
-      return new int[0];
     }
 }

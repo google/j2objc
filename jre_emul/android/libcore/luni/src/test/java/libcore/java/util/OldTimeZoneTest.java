@@ -118,7 +118,9 @@ public class OldTimeZoneTest extends TestCase {
         }
         if (Support_Locale.isLocaleAvailable(Locale.FRANCE)) {
             assertEquals("UTC−8", tz.getDisplayName(false, 0, Locale.FRANCE));
-            assertEquals("heure avanc\u00e9e du Pacifique", tz.getDisplayName(true,  1, Locale.FRANCE));
+            String expected = System.getProperty("os.name").equals("Mac OS X")
+                ? "heure avancée du Pacifique" : "heure d’été du Pacifique";
+            assertEquals(expected, tz.getDisplayName(true,  1, Locale.FRANCE));
             assertTrue(tz.getDisplayName(Locale.FRANCE).startsWith("heure normale du Pacifique"));
         }
     }
