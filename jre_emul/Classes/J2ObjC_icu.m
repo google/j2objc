@@ -132,6 +132,7 @@ U_STABLE void J2ObjC_icu_init() {
     j2_uregex_findNext = GetFunction(handle, "uregex_findNext");
     j2_uregex_groupCount = GetFunction(handle, "uregex_groupCount");
     j2_uregex_hitEnd = GetFunction(handle, "uregex_hitEnd");
+    j2_uregex_lookingAt = GetFunction(handle, "uregex_lookingAt");
     j2_uregex_matches = GetFunction(handle, "uregex_matches");
     j2_uregex_open = GetFunction(handle, "uregex_open");
     j2_uregex_requireEnd = GetFunction(handle, "uregex_requireEnd");
