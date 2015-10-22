@@ -127,6 +127,18 @@ public class Autoboxer extends TreeVisitor {
     }
   }
 
+  /**
+   * Convert a wrapper class instance to a specified primitive equivalent.
+   */
+  private Expression unbox(Expression expr, ITypeBinding primitiveType) {
+    ITypeBinding wrapperType = findWrapperSuperclass(expr.getTypeBinding());
+    IMethodBinding valueMethod = BindingUtil.findDeclaredMethod(
+        wrapperType, primitiveType.getName() + VALUE_METHOD);
+    assert valueMethod != null
+        : "could not find " + primitiveType + " value method for " + wrapperType;
+    return new MethodInvocation(valueMethod, expr.copy());
+  }
+
   @Override
   public void endVisit(Assignment node) {
     Expression lhs = node.getLeftHandSide();
@@ -230,13 +242,21 @@ public class Autoboxer extends TreeVisitor {
     ITypeBinding type = node.getTypeBinding();
     Expression expr = node.getExpression();
     ITypeBinding exprType = expr.getTypeBinding();
+    Expression newExpr;
     if (type.isPrimitive() && !exprType.isPrimitive()) {
-      // Casting an object to a primitive. Convert the cast type to the wrapper
-      // so that we do a proper cast check, as Java would.
-      type = typeEnv.getWrapperType(type);
-      node.setType(Type.newType(type));
+      if (exprType.isAssignmentCompatible(typeEnv.resolveJavaType("java.lang.Number"))) {
+        // Casting a Number object to a primitive, convert to value method.
+        newExpr = unbox(expr, type);
+      } else {
+        // Casting an object to a primitive. Convert the cast type to the wrapper
+        // so that we do a proper cast check, as Java would.
+        type = typeEnv.getWrapperType(type);
+        node.setType(Type.newType(type));
+        newExpr = boxOrUnboxExpression(expr, type);
+      }
+    } else {
+      newExpr = boxOrUnboxExpression(expr, type);
     }
-    Expression newExpr = boxOrUnboxExpression(expr, type);
     if (newExpr != expr) {
       TreeNode parent = node.getParent();
       if (parent instanceof ParenthesizedExpression) {

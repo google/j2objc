@@ -488,4 +488,14 @@ public class AutoboxerTest extends GenerationTest {
         "JreBoxedPlusAssignArrayFloat(IOSObjectArray_GetRef(nil_chk(af_), 2), 9);",
         "JreBoxedMinusAssignArrayDouble(IOSObjectArray_GetRef(nil_chk(ad_), 3), 8);");
   }
+
+  // https://github.com/google/j2objc/issues/648
+  public void testLongCastOfInteger() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { "
+        + "void test() { "
+        + "  Integer tmp_int = new Integer(100); "
+        + "  long tmp_long = (long)tmp_int; }}", "Test", "Test.m");
+    assertTranslation(translation, "jlong tmp_long = [tmp_int longLongValue];");
+  }
 }
