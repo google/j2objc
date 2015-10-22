@@ -1300,6 +1300,11 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   }
 }
 
++ (void)load {
+  // Initialize ICU function pointers.
+  J2ObjC_icu_init();
+}
+
 + (long long int)serialVersionUID {
   return 3206093459760846163L;
 }
