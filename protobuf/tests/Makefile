@@ -117,4 +117,4 @@ $(OBJS_DIR)/my_malloc.o: my_malloc.m | jre_emul_dist
 	$(TEST_J2OBJCC) -c -o $@ $<
 
 $(BIN): $(OBJS) $(LIB_DEPS)
-	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -l junit -l protobuf_runtime -o $@ $(OBJS)
+	$(TEST_J2OBJCC) -ObjC -Werror -l c++ -ljre_emul -ljunit -lprotobuf_runtime -o $@ $(OBJS)

@@ -44,28 +44,40 @@ fi
 
 declare CC_FLAGS="-Werror -Wno-parentheses -fno-strict-overflow -Wno-compare-distinct-pointer-types"
 declare OBJC="-std=c11"
-declare LIBS="-ljre_emul -l icucore -l z -l j2objc_main -l c++"
-declare LINK_FLAGS="${LIBS} ${FRAMEWORKS}"
+declare OTHER_LIBS="-l z -l j2objc_main -l c++"
 declare SYSROOT_PATH="none"
+declare EMUL_LIB="-ljre_emul"
+declare LINK_FLAGS=""
+declare DO_LINK="yes"
+declare CORE_LIB_WARNING="warning: linking the core runtime to reduce binary \
+size. Use -ljre_emul to link the full Java runtime."
 
 for arg; do
   case $arg in
     # Check whether linking is disabled by a -c, -S, or -E option.
-    -[cSE]) LINK_FLAGS="" ;;
+    -[cSE]) DO_LINK="no" ;;
     # Check whether we need to build for C++ instead of C.
     objective-c\+\+) CC_FLAGS="${CC_FLAGS} -std=c++98" OBJC= ;;
     # Save sysroot path for later inspection.
     -isysroot) SYSROOT_PATH="${i#*=}" ;;
+    -ObjC) EMUL_LIB="-ljre_emul_core" ;;
   esac
 done
 
-if [[ "x${LINK_FLAGS}" != "x" ]]; then
+if [[ $@ =~ .*-l(\ )*jre_emul.* ]]; then
+  EMUL_LIB=""
+fi
+
+if [[ "$DO_LINK" == "yes" ]]; then
   if [[ "$SYSROOT_PATH" == "none" || "$SYSROOT_PATH" == *"MacOSX"* ]]; then
     readonly LIB_PATH=${DIR}/lib/macosx
   else
     readonly LIB_PATH=${DIR}/lib
   fi
-  LINK_FLAGS="${LINK_FLAGS} -L ${LIB_PATH}"
+  if [[ "$EMUL_LIB" == "-ljre_emul_core" ]]; then
+    >&2 echo "$CORE_LIB_WARNING";
+  fi
+  LINK_FLAGS="${EMUL_LIB} ${OTHER_LIBS} ${FRAMEWORKS} -L ${LIB_PATH}"
 fi
 
 xcrun clang "$@" -I ${INCLUDE_PATH} ${CC_FLAGS} ${OBJC} ${LINK_FLAGS}

@@ -46,6 +46,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/io/FilterInputStream.java \
   java/io/FilterOutputStream.java \
   java/io/Flushable.java \
+  java/io/IOError.java \
   java/io/IOException.java \
   java/io/InputStream.java \
   java/io/InputStreamReader.java \
@@ -489,6 +490,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   sun/misc/Unsafe.java
 
 JAVA_PRIVATE_SOURCES_CORE = \
+  android/util/LruCache.java \
   com/google/j2objc/net/IosHttpHandler.java \
   com/google/j2objc/net/IosHttpURLConnection.java \
   com/google/j2objc/net/IosHttpsHandler.java \
@@ -636,7 +638,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/io/FileWriter.java \
   java/io/FilterReader.java \
   java/io/FilterWriter.java \
-  java/io/IOError.java \
   java/io/LineNumberInputStream.java \
   java/io/LineNumberReader.java \
   java/io/PipedInputStream.java \
@@ -1123,7 +1124,6 @@ JAVA_PRIVATE_SOURCES_NON_CORE = \
   android/util/Base64OutputStream.java \
   android/util/ContainerHelpers.java \
   android/util/Log.java \
-  android/util/LruCache.java \
   android/util/MapCollections.java \
   android/util/Pair.java \
   android/util/Printer.java \

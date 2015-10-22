@@ -658,7 +658,7 @@ TEST_RESOURCES = \
 JUNIT_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
 TEST_JOCC := ../dist/j2objcc -g -I$(TESTS_DIR) -I$(CLASS_DIR) -I$(EMULATION_CLASS_DIR) \
-    -l junit -Werror -L$(TESTS_DIR) -l test-support
+    -ljre_emul -l junit -Werror -L$(TESTS_DIR) -l test-support
 ifeq ($(OBJCPP_BUILD), YES)
 TEST_JOCC += -lc++ -ObjC++
 else
@@ -815,4 +815,5 @@ $(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m
 	@../dist/j2objcc -o $@ -ObjC -Os $?
 
 $(TESTS_DIR)/core_size:
+	@mkdir -p $(@D)
 	@../dist/j2objcc -o $@ -ObjC
