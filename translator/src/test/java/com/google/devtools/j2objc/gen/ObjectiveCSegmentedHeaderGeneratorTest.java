@@ -30,7 +30,7 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
   @Override
   protected void setUp() throws IOException {
     super.setUp();
-    Options.enableSegmentedHeaders();
+    // Segmented headers are on by default.
   }
 
   public void testTypicalPreprocessorStatements() throws IOException {
