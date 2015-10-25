@@ -76,7 +76,7 @@ public class Options {
   private Map<String, String> classMappings = Maps.newLinkedHashMap();
   private Map<String, String> methodMappings = Maps.newLinkedHashMap();
   private boolean stripGwtIncompatible = false;
-  private boolean segmentedHeaders = false;
+  private boolean segmentedHeaders = true;
   private String fileEncoding = System.getProperty("file.encoding", "UTF-8");
   private boolean jsniWarnings = true;
   private boolean buildClosure = false;
@@ -347,8 +347,8 @@ public class Options {
         stripGwtIncompatible = true;
       } else if (arg.equals("--strip-reflection")) {
         stripReflection = true;
-      } else if (arg.equals("--segmented-headers")) {
-        segmentedHeaders = true;
+      } else if (arg.equals("--no-segmented-headers")) {
+        segmentedHeaders = false;
       } else if (arg.equals("--build-closure")) {
         buildClosure = true;
       } else if (arg.equals("--extract-unsequenced")) {
@@ -380,7 +380,8 @@ public class Options {
       else if (arg.equals("--final-methods-as-functions")
           || arg.equals("--no-final-methods-functions")
           || arg.equals("--hide-private-members")
-          || arg.equals("--no-hide-private-members")) {
+          || arg.equals("--no-hide-private-members")
+          || arg.equals("--segmented-headers")) {
         // ignore
       }  else if (arg.equals("-source")) {
         if (++nArg == args.length) {
