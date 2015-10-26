@@ -27,11 +27,7 @@ import java.io.IOException;
  */
 public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
 
-  @Override
-  protected void setUp() throws IOException {
-    super.setUp();
-    // Segmented headers are on by default.
-  }
+  // Segmented headers are on by default.
 
   public void testTypicalPreprocessorStatements() throws IOException {
     String translation = translateSourceFile(
