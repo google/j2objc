@@ -136,8 +136,8 @@ JRE_OBJS_RELATIVE = $(JAVA_SOURCES:.java=.o) $(NATIVE_OBJS_RELATIVE)
 include ../make/fat_lib_macros.mk
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
 LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
-LIBS += $(call emit_library_rules,jre_emul_core,$(CORE_OBJS_RELATIVE))
-LIBS += $(call emit_library_rules,jre_emul_xml,$(XML_OBJS_RELATIVE))
+LIBS += $(call emit_library_rules,jre_core,$(CORE_OBJS_RELATIVE))
+LIBS += $(call emit_library_rules,jre_xml,$(XML_OBJS_RELATIVE))
 DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 
 # This list overlaps with EMULATION_HEADERS, but only includes those headers

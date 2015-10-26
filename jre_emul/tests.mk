@@ -824,4 +824,4 @@ $(TESTS_DIR)/core_size:
 $(TESTS_DIR)/core_plus_xml:
 	@echo CORE_PLUS_XML
 	@mkdir -p $(@D)
-	../dist/j2objcc -ljre_emul_xml -o $@ -ObjC
+	../dist/j2objcc -ljre_xml -o $@ -ObjC

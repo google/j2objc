@@ -60,7 +60,7 @@ for arg; do
     objective-c\+\+) CC_FLAGS="${CC_FLAGS} -std=c++98" OBJC= ;;
     # Save sysroot path for later inspection.
     -isysroot) SYSROOT_PATH="${i#*=}" ;;
-    -ObjC) EMUL_LIB="-ljre_emul_core" ;;
+    -ObjC) EMUL_LIB="-ljre_core" ;;
   esac
 done
 
@@ -74,7 +74,7 @@ if [[ "$DO_LINK" == "yes" ]]; then
   else
     readonly LIB_PATH=${DIR}/lib
   fi
-  if [[ "$EMUL_LIB" == "-ljre_emul_core" ]]; then
+  if [[ "$EMUL_LIB" == "-ljre_core" ]]; then
     >&2 echo "$CORE_LIB_WARNING";
   fi
   LINK_FLAGS="${EMUL_LIB} ${OTHER_LIBS} ${FRAMEWORKS} -L ${LIB_PATH}"
