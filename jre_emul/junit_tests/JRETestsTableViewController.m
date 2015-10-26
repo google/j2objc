@@ -49,6 +49,7 @@
     // Test display name,        Test class name
     @"All JRE Tests",            @"AllJreTests",
     @"Concurrency Tests",        @"ConcurrencyTests",
+    @"java.beans Tests",         @"org.apache.harmony.beans.tests.java.beans.AllTests",
     @"java.io Tests",            @"libcore.java.io.SmallTests",
     @"java.net Tests",           @"libcore.java.net.SmallTests",
     @"java.util.logging Tests",  @"org.apache.harmony.logging.tests.java.util.logging.AllTests",

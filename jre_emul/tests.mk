@@ -43,10 +43,47 @@ SUPPORT_SOURCES = \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
     libcore/util/SerializationTester.java \
+    org/apache/harmony/beans/tests/support/MisprintBean.java \
+    org/apache/harmony/beans/tests/support/MisprintEvent.java \
+    org/apache/harmony/beans/tests/support/MisprintListenerr.java \
+    org/apache/harmony/beans/tests/support/OtherBean.java \
+    org/apache/harmony/beans/tests/support/SampleBean.java \
+    org/apache/harmony/beans/tests/support/SampleEvent.java \
+    org/apache/harmony/beans/tests/support/SampleListener.java \
+    org/apache/harmony/beans/tests/support/mock/FakeFox.java \
+    org/apache/harmony/beans/tests/support/mock/FakeFox01.java \
+    org/apache/harmony/beans/tests/support/mock/FakeFox011.java \
+    org/apache/harmony/beans/tests/support/mock/FakeFox01BeanInfo.java \
+    org/apache/harmony/beans/tests/support/mock/FakeFox02.java \
+    org/apache/harmony/beans/tests/support/mock/FakeFox02BeanInfo.java \
+    org/apache/harmony/beans/tests/support/mock/FakeFox031.java \
+    org/apache/harmony/beans/tests/support/mock/FakeFox04.java \
+    org/apache/harmony/beans/tests/support/mock/FakeFox041.java \
+    org/apache/harmony/beans/tests/support/mock/FakeFox0411.java \
+    org/apache/harmony/beans/tests/support/mock/MockButton.java \
     org/apache/harmony/beans/tests/support/mock/MockFakeEvent.java \
+    org/apache/harmony/beans/tests/support/mock/MockFakeListener.java \
+    org/apache/harmony/beans/tests/support/mock/MockFoo.java \
+    org/apache/harmony/beans/tests/support/mock/MockFooButton.java \
+    org/apache/harmony/beans/tests/support/mock/MockFooChild.java \
+    org/apache/harmony/beans/tests/support/mock/MockFooLabel.java \
+    org/apache/harmony/beans/tests/support/mock/MockFooStop.java \
+    org/apache/harmony/beans/tests/support/mock/MockFooSub.java \
+    org/apache/harmony/beans/tests/support/mock/MockFooSubSub.java \
+    org/apache/harmony/beans/tests/support/mock/MockInterface.java \
     org/apache/harmony/beans/tests/support/mock/MockJavaBean.java \
+    org/apache/harmony/beans/tests/support/mock/MockNullSubClass.java \
+    org/apache/harmony/beans/tests/support/mock/MockNullSuperClass.java \
     org/apache/harmony/beans/tests/support/mock/MockPropertyChangeEvent.java \
     org/apache/harmony/beans/tests/support/mock/MockPropertyChangeListener.java \
+    org/apache/harmony/beans/tests/support/mock/MockPropertyChangeListener2.java \
+    org/apache/harmony/beans/tests/support/mock/MockPropertyChangeValidListener.java \
+    org/apache/harmony/beans/tests/support/mock/MockSubClass.java \
+    org/apache/harmony/beans/tests/support/mock/MockSuperClass.java \
+    org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject1/info/MockHomonymySubjectBeanInfo.java \
+    org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject1/MockHomonymySubject.java \
+    org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/info/MockHomonymySubjectBeanInfo.java \
+    org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/MockHomonymySubject.java \
     org/apache/harmony/logging/tests/java/util/logging/LevelTestResource.java \
     org/apache/harmony/logging/tests/java/util/logging/util/EnvironmentHelper.java \
     org/apache/harmony/luni/tests/java/lang/MockEnum.java \
@@ -319,9 +356,19 @@ TEST_SOURCES := \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
     libcore/net/url/UrlUtilsTest.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
+    org/apache/harmony/beans/tests/java/beans/BeanDescriptorTest.java \
+    org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
+    org/apache/harmony/beans/tests/java/beans/FeatureDescriptorTest.java \
+    org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java \
+    org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java \
+    org/apache/harmony/beans/tests/java/beans/IntrospectionExceptionTest.java \
+    org/apache/harmony/beans/tests/java/beans/MethodDescriptorTest.java \
+    org/apache/harmony/beans/tests/java/beans/ParameterDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyChangeListenerProxyTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyDescriptorTest.java \
+    org/apache/harmony/beans/tests/java/beans/PropertyVetoExceptionTest.java \
+    org/apache/harmony/beans/tests/java/beans/SimpleBeanInfoTest.java \
     org/apache/harmony/logging/tests/java/util/logging/ConsoleHandlerTest.java \
     org/apache/harmony/logging/tests/java/util/logging/ErrorManagerTest.java \
     org/apache/harmony/logging/tests/java/util/logging/FilterTest.java \
@@ -535,6 +582,7 @@ SUITE_SOURCES = \
     libcore/java/io/SmallTests.java \
     libcore/java/util/zip/LargeTests.java \
     libcore/java/util/zip/SmallTests.java \
+    org/apache/harmony/beans/tests/java/beans/AllTests.java \
     org/apache/harmony/logging/tests/java/util/logging/AllTests.java \
     org/json/SmallTests.java \
 
@@ -569,8 +617,7 @@ TESTS_TO_SKIP = \
     ExchangerTest.java
 
 FAILING_TESTS = \
-    libcore/java/text/DateFormatSymbolsTest.java \
-    libcore/java/util/beans/PropertyChangeSupportTest.java
+    libcore/java/text/DateFormatSymbolsTest.java
 
 # Most of these tests are failing for a common index-out-of-range error.
 FAILING_MATH_TESTS = \
@@ -636,7 +683,9 @@ ZIP_TEST_RESOURCES_SRCS = \
     tests/resources/java/util/zip/EmptyArchive.zip \
     tests/resources/java/util/zip/ZipFileBreak.zip
 BEANS_TEST_RESOURCES_SRCS = \
-    serialization/org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.golden.ser
+    serialization/org/apache/harmony/beans/tests/java/beans/IntrospectionExceptionTest.golden.ser \
+    serialization/org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.golden.ser \
+    serialization/org/apache/harmony/beans/tests/java/beans/PropertyVetoExceptionTest.golden.ser
 
 HARMONY_TEST_RESOURCES_ROOT = apache_harmony/classlib/modules/luni/src/test/resources
 ANDROID_TEST_RESOURCES_ROOT = android/libcore/luni/src/test/resources
@@ -735,6 +784,9 @@ run-core-size-test: $(TESTS_DIR)/core_size $(TESTS_DIR)/core_plus_xml
 	  ls -l $$bin; \
 	  echo Number of classes: `nm $$bin | grep -c "S _OBJC_CLASS_"`; \
 	done
+
+run-beans-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore org.apache.harmony.beans.tests.java.beans.AllTests
 
 run-concurrency-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore ConcurrencyTests

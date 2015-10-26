@@ -775,9 +775,18 @@ JAVA_PRIVATE_SOURCES_XML = \
 
 # Java sources to be translated normally and included in the full library.
 JAVA_PUBLIC_SOURCES_NON_CORE = \
+  java/beans/BeanDescriptor.java \
+  java/beans/BeanInfo.java \
+  java/beans/EventSetDescriptor.java \
   java/beans/FeatureDescriptor.java \
+  java/beans/IndexedPropertyDescriptor.java \
   java/beans/IntrospectionException.java \
+  java/beans/Introspector.java \
+  java/beans/MethodDescriptor.java \
+  java/beans/ParameterDescriptor.java \
   java/beans/PropertyDescriptor.java \
+  java/beans/PropertyVetoException.java \
+  java/beans/SimpleBeanInfo.java \
   java/io/CharArrayReader.java \
   java/io/CharArrayWriter.java \
   java/io/CharConversionException.java \
@@ -1172,6 +1181,7 @@ JAVA_PRIVATE_SOURCES_NON_CORE = \
   com/google/android/collect/Sets.java \
   java/awt/font/NumericShaper.java \
   java/awt/font/TextAttribute.java \
+  java/beans/StandardBeanInfo.java \
   libcore/icu/NativeIDN.java \
   libcore/icu/TimeZones.java \
   libcore/io/Base64.java \
