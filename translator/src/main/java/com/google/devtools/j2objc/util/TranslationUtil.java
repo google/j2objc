@@ -20,8 +20,12 @@ import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.ArrayAccess;
 import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
@@ -178,6 +182,55 @@ public final class TranslationUtil {
       return node == ((Assignment) parent).getLeftHandSide();
     }
     return false;
+  }
+
+  /**
+   * Reterns whether the expression might have any side effects. If true, it
+   * would be unsafe to prune the given node from the tree.
+   */
+  public static boolean hasSideEffect(Expression expr) {
+    switch (expr.getKind()) {
+      case BOOLEAN_LITERAL:
+      case CHARACTER_LITERAL:
+      case NULL_LITERAL:
+      case NUMBER_LITERAL:
+      case QUALIFIED_NAME:
+      case SIMPLE_NAME:
+      case STRING_LITERAL:
+      case SUPER_FIELD_ACCESS:
+      case THIS_EXPRESSION:
+        return false;
+      case CAST_EXPRESSION:
+        return hasSideEffect(((CastExpression) expr).getExpression());
+      case CONDITIONAL_EXPRESSION:
+        {
+          ConditionalExpression condExpr = (ConditionalExpression) expr;
+          return hasSideEffect(condExpr.getExpression())
+              || hasSideEffect(condExpr.getThenExpression())
+              || hasSideEffect(condExpr.getElseExpression());
+        }
+      case FIELD_ACCESS:
+        return hasSideEffect(((FieldAccess) expr).getExpression());
+      case INFIX_EXPRESSION:
+        for (Expression operand : ((InfixExpression) expr).getOperands()) {
+          if (hasSideEffect(operand)) {
+            return true;
+          }
+        }
+        return false;
+      case PARENTHESIZED_EXPRESSION:
+        return hasSideEffect(((ParenthesizedExpression) expr).getExpression());
+      case PREFIX_EXPRESSION:
+        {
+          PrefixExpression preExpr = (PrefixExpression) expr;
+          PrefixExpression.Operator op = preExpr.getOperator();
+          return op == PrefixExpression.Operator.INCREMENT
+              || op == PrefixExpression.Operator.DECREMENT
+              || hasSideEffect(preExpr.getOperand());
+        }
+      default:
+        return true;
+    }
   }
 
   /**

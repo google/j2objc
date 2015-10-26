@@ -77,22 +77,6 @@ public class StaticVarRewriter extends TreeVisitor {
     node.replaceWith(newNode);
   }
 
-  /**
-   * Reterns whether the expression of a FieldAccess node has any side effects.
-   * If false, the expression can be removed from the tree.
-   * @param expr The expression of a FieldAccess node for a static variable.
-   */
-  private boolean fieldAccessExpressionHasSideEffect(Expression expr) {
-    switch (expr.getKind()) {
-      case QUALIFIED_NAME:
-      case SIMPLE_NAME:
-      case THIS_EXPRESSION:
-        return false;
-      default:
-        return true;
-    }
-  }
-
   @Override
   public boolean visit(FieldAccess node) {
     IVariableBinding var = node.getVariableBinding();
@@ -103,7 +87,7 @@ public class StaticVarRewriter extends TreeVisitor {
 
     Expression expr = TreeUtil.remove(node.getExpression());
     Expression varNode = TreeUtil.remove(node.getName());
-    if (!fieldAccessExpressionHasSideEffect(expr)) {
+    if (!TranslationUtil.hasSideEffect(expr)) {
       node.replaceWith(varNode);
       varNode.accept(this);
       return false;

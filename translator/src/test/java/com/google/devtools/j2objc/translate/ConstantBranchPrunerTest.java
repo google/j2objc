@@ -148,8 +148,11 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         "{", "result = 8;", "}");
   }
 
-  // Verify method invocation paired with constant is pruned.
+  // Verify method invocation paired with constant is not pruned because methods
+  // may have side effects.
   public void testMethodAnd() throws IOException {
+    // TODO(kstanger): Find a way to prune the unreachable branches while
+    // preserving the portions of the expression that have side effects.
     String translation = translateSourceFile(
         "class Test { "
         + "static final boolean DEBUG = true; "
@@ -160,9 +163,8 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         + "  if (enabled() || DEBUG) { result = 3; } else { result = 4; }"
         + "  return result; }}",
         "Test", "Test.m");
-    assertTranslatedLines(translation,
-        "{", "result = 2;", "}",
-        "{", "result = 3;", "}");
+    assertTranslation(translation, "if ([self enabled] && Test_NDEBUG)");
+    assertTranslation(translation, "if ([self enabled] || Test_DEBUG)");
   }
 
   public void testExpressionPruning() throws IOException {

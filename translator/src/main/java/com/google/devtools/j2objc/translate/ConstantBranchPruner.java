@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.WhileStatement;
+import com.google.devtools.j2objc.util.TranslationUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -60,23 +61,26 @@ public class ConstantBranchPruner extends TreeVisitor {
       return;
     }
     List<Expression> operands = node.getOperands();
+    boolean foundSideEffect = false;
     for (Iterator<Expression> it = operands.iterator(); it.hasNext(); ) {
-      Boolean constantVal = getValue(it.next());
+      Expression expr = it.next();
+      foundSideEffect |= TranslationUtil.hasSideEffect(expr);
+      Boolean constantVal = getValue(expr);
       if (constantVal == null) {
         continue;
       }
-      if (constantVal && operator == CONDITIONAL_OR) {
-        // Whole expression is true.
-        node.replaceWith(new BooleanLiteral(true, typeEnv));
-        return;
+      if (constantVal == (operator == CONDITIONAL_OR)) {
+        // Whole expression evaluates to 'constantVal'.
+        if (!foundSideEffect) {
+          // We can safely prune the whole infix if the precededing expressions
+          // have no side effects.
+          node.replaceWith(new BooleanLiteral(constantVal, typeEnv));
+          return;
+        }
+      } else {
+        // Else remove unnecessary constant value.
+        it.remove();
       }
-      if (!constantVal && operator == CONDITIONAL_AND) {
-        // Whole expression is false.
-        node.replaceWith(new BooleanLiteral(false, typeEnv));
-        return;
-      }
-      // Else remove unnecessary constant value.
-      it.remove();
     }
 
     if (operands.size() == 0) {
