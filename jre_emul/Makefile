@@ -128,13 +128,16 @@ FAT_LIB_COMPILE = $(CLANG) $(OBJCFLAGS) -I$(EMULATION_CLASS_DIR) -I$(GEN_OBJC_DI
 FAT_LIB_PRECOMPILED_HEADER = JreEmulation.h
 endif
 
-CORE_OBJS_RELATIVE = $(JAVA_SOURCES_CORE:.java=.o) $(IOS_OBJS) $(IOS_JAVA_OBJS) $(APPLE_SRCS:.m=.o)
-JRE_OBJS_RELATIVE = $(CORE_OBJS_RELATIVE) $(JAVA_SOURCES_NON_CORE:.java=.o)
+NATIVE_OBJS_RELATIVE = $(IOS_OBJS) $(IOS_JAVA_OBJS) $(APPLE_SRCS:.m=.o)
+CORE_OBJS_RELATIVE = $(JAVA_SOURCES_CORE:.java=.o) $(NATIVE_OBJS_RELATIVE)
+XML_OBJS_RELATIVE = $(JAVA_SOURCES_XML:.java=.o)
+JRE_OBJS_RELATIVE = $(JAVA_SOURCES:.java=.o) $(NATIVE_OBJS_RELATIVE)
 
 include ../make/fat_lib_macros.mk
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
 LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_emul_core,$(CORE_OBJS_RELATIVE))
+LIBS += $(call emit_library_rules,jre_emul_xml,$(XML_OBJS_RELATIVE))
 DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
 
 # This list overlaps with EMULATION_HEADERS, but only includes those headers

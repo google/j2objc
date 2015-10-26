@@ -122,6 +122,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/Long.java \
   java/lang/Math.java \
   java/lang/NegativeArraySizeException.java \
+  java/lang/NoClassDefFoundError.java \
   java/lang/NoSuchFieldError.java \
   java/lang/NoSuchFieldException.java \
   java/lang/NoSuchMethodException.java \
@@ -465,28 +466,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/regex/Pattern.java \
   java/util/regex/PatternSyntaxException.java \
   java/util/regex/Splitter.java \
-  org/xml/sax/AttributeList.java \
-  org/xml/sax/Attributes.java \
-  org/xml/sax/ContentHandler.java \
-  org/xml/sax/DTDHandler.java \
-  org/xml/sax/DocumentHandler.java \
-  org/xml/sax/EntityResolver.java \
-  org/xml/sax/ErrorHandler.java \
-  org/xml/sax/InputSource.java \
-  org/xml/sax/Locator.java \
-  org/xml/sax/Parser.java \
-  org/xml/sax/SAXException.java \
-  org/xml/sax/SAXNotRecognizedException.java \
-  org/xml/sax/SAXNotSupportedException.java \
-  org/xml/sax/SAXParseException.java \
-  org/xml/sax/XMLReader.java \
-  org/xml/sax/helpers/AttributesImpl.java \
-  org/xml/sax/helpers/DefaultHandler.java \
-  org/xml/sax/helpers/NamespaceSupport.java \
-  org/xml/sax/helpers/NewInstance.java \
-  org/xml/sax/helpers/ParserAdapter.java \
-  org/xml/sax/helpers/ParserFactory.java \
-  org/xml/sax/helpers/XMLReaderFactory.java \
   sun/misc/Unsafe.java
 
 JAVA_PRIVATE_SOURCES_CORE = \
@@ -624,7 +603,175 @@ JAVA_PRIVATE_SOURCES_CORE = \
   org/apache/harmony/security/fortress/SecurityAccess.java \
   org/apache/harmony/security/fortress/Services.java
 
-JAVA_SOURCES_CORE = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PRIVATE_SOURCES_CORE)
+JAVA_PUBLIC_SOURCES_XML = \
+  java/util/PropertiesXmlLoader.java \
+  javax/xml/XMLConstants.java \
+  javax/xml/datatype/DatatypeConfigurationException.java \
+  javax/xml/datatype/DatatypeConstants.java \
+  javax/xml/datatype/DatatypeFactory.java \
+  javax/xml/datatype/Duration.java \
+  javax/xml/datatype/FactoryFinder.java \
+  javax/xml/datatype/XMLGregorianCalendar.java \
+  javax/xml/namespace/NamespaceContext.java \
+  javax/xml/namespace/QName.java \
+  javax/xml/parsers/DocumentBuilder.java \
+  javax/xml/parsers/DocumentBuilderFactory.java \
+  javax/xml/parsers/FactoryConfigurationError.java \
+  javax/xml/parsers/FilePathToURI.java \
+  javax/xml/parsers/ParserConfigurationException.java \
+  javax/xml/parsers/SAXParser.java \
+  javax/xml/parsers/SAXParserFactory.java \
+  javax/xml/transform/ErrorListener.java \
+  javax/xml/transform/OutputKeys.java \
+  javax/xml/transform/Result.java \
+  javax/xml/transform/Source.java \
+  javax/xml/transform/SourceLocator.java \
+  javax/xml/transform/Templates.java \
+  javax/xml/transform/Transformer.java \
+  javax/xml/transform/TransformerConfigurationException.java \
+  javax/xml/transform/TransformerException.java \
+  javax/xml/transform/TransformerFactory.java \
+  javax/xml/transform/TransformerFactoryConfigurationError.java \
+  javax/xml/transform/URIResolver.java \
+  javax/xml/transform/dom/DOMLocator.java \
+  javax/xml/transform/dom/DOMResult.java \
+  javax/xml/transform/dom/DOMSource.java \
+  javax/xml/transform/sax/SAXResult.java \
+  javax/xml/transform/sax/SAXSource.java \
+  javax/xml/transform/sax/SAXTransformerFactory.java \
+  javax/xml/transform/sax/TemplatesHandler.java \
+  javax/xml/transform/sax/TransformerHandler.java \
+  javax/xml/transform/stream/FilePathToURI.java \
+  javax/xml/transform/stream/StreamResult.java \
+  javax/xml/transform/stream/StreamSource.java \
+  javax/xml/validation/Schema.java \
+  javax/xml/validation/SchemaFactory.java \
+  javax/xml/validation/SchemaFactoryFinder.java \
+  javax/xml/validation/SchemaFactoryLoader.java \
+  javax/xml/validation/TypeInfoProvider.java \
+  javax/xml/validation/Validator.java \
+  javax/xml/validation/ValidatorHandler.java \
+  javax/xml/xpath/XPath.java \
+  javax/xml/xpath/XPathConstants.java \
+  javax/xml/xpath/XPathException.java \
+  javax/xml/xpath/XPathExpression.java \
+  javax/xml/xpath/XPathExpressionException.java \
+  javax/xml/xpath/XPathFactory.java \
+  javax/xml/xpath/XPathFactoryConfigurationException.java \
+  javax/xml/xpath/XPathFactoryFinder.java \
+  javax/xml/xpath/XPathFunction.java \
+  javax/xml/xpath/XPathFunctionException.java \
+  javax/xml/xpath/XPathFunctionResolver.java \
+  javax/xml/xpath/XPathVariableResolver.java \
+  org/w3c/dom/Attr.java \
+  org/w3c/dom/CDATASection.java \
+  org/w3c/dom/CharacterData.java \
+  org/w3c/dom/Comment.java \
+  org/w3c/dom/DOMConfiguration.java \
+  org/w3c/dom/DOMError.java \
+  org/w3c/dom/DOMErrorHandler.java \
+  org/w3c/dom/DOMException.java \
+  org/w3c/dom/DOMImplementation.java \
+  org/w3c/dom/DOMImplementationList.java \
+  org/w3c/dom/DOMImplementationSource.java \
+  org/w3c/dom/DOMLocator.java \
+  org/w3c/dom/DOMStringList.java \
+  org/w3c/dom/Document.java \
+  org/w3c/dom/DocumentFragment.java \
+  org/w3c/dom/DocumentType.java \
+  org/w3c/dom/Element.java \
+  org/w3c/dom/Entity.java \
+  org/w3c/dom/EntityReference.java \
+  org/w3c/dom/NameList.java \
+  org/w3c/dom/NamedNodeMap.java \
+  org/w3c/dom/Node.java \
+  org/w3c/dom/NodeList.java \
+  org/w3c/dom/Notation.java \
+  org/w3c/dom/ProcessingInstruction.java \
+  org/w3c/dom/Text.java \
+  org/w3c/dom/TypeInfo.java \
+  org/w3c/dom/UserDataHandler.java \
+  org/w3c/dom/ls/DOMImplementationLS.java \
+  org/w3c/dom/ls/LSException.java \
+  org/w3c/dom/ls/LSInput.java \
+  org/w3c/dom/ls/LSOutput.java \
+  org/w3c/dom/ls/LSParser.java \
+  org/w3c/dom/ls/LSParserFilter.java \
+  org/w3c/dom/ls/LSResourceResolver.java \
+  org/w3c/dom/ls/LSSerializer.java \
+  org/w3c/dom/ls/LSSerializerFilter.java \
+  org/w3c/dom/traversal/NodeFilter.java \
+  org/w3c/dom/traversal/NodeIterator.java \
+  org/xml/sax/AttributeList.java \
+  org/xml/sax/Attributes.java \
+  org/xml/sax/ContentHandler.java \
+  org/xml/sax/DTDHandler.java \
+  org/xml/sax/DocumentHandler.java \
+  org/xml/sax/EntityResolver.java \
+  org/xml/sax/ErrorHandler.java \
+  org/xml/sax/HandlerBase.java \
+  org/xml/sax/InputSource.java \
+  org/xml/sax/Locator.java \
+  org/xml/sax/Parser.java \
+  org/xml/sax/SAXException.java \
+  org/xml/sax/SAXNotRecognizedException.java \
+  org/xml/sax/SAXNotSupportedException.java \
+  org/xml/sax/SAXParseException.java \
+  org/xml/sax/XMLFilter.java \
+  org/xml/sax/XMLReader.java \
+  org/xml/sax/ext/Attributes2.java \
+  org/xml/sax/ext/Attributes2Impl.java \
+  org/xml/sax/ext/DeclHandler.java \
+  org/xml/sax/ext/DefaultHandler2.java \
+  org/xml/sax/ext/EntityResolver2.java \
+  org/xml/sax/ext/LexicalHandler.java \
+  org/xml/sax/ext/Locator2.java \
+  org/xml/sax/ext/Locator2Impl.java \
+  org/xml/sax/helpers/AttributeListImpl.java \
+  org/xml/sax/helpers/AttributesImpl.java \
+  org/xml/sax/helpers/DefaultHandler.java \
+  org/xml/sax/helpers/LocatorImpl.java \
+  org/xml/sax/helpers/NamespaceSupport.java \
+  org/xml/sax/helpers/NewInstance.java \
+  org/xml/sax/helpers/ParserAdapter.java \
+  org/xml/sax/helpers/ParserFactory.java \
+  org/xml/sax/helpers/XMLFilterImpl.java \
+  org/xml/sax/helpers/XMLReaderAdapter.java \
+  org/xml/sax/helpers/XMLReaderFactory.java
+
+JAVA_PRIVATE_SOURCES_XML = \
+  libcore/internal/StringPool.java \
+  org/apache/harmony/xml/dom/AttrImpl.java \
+  org/apache/harmony/xml/dom/CDATASectionImpl.java \
+  org/apache/harmony/xml/dom/CharacterDataImpl.java \
+  org/apache/harmony/xml/dom/CommentImpl.java \
+  org/apache/harmony/xml/dom/DOMConfigurationImpl.java \
+  org/apache/harmony/xml/dom/DOMErrorImpl.java \
+  org/apache/harmony/xml/dom/DOMImplementationImpl.java \
+  org/apache/harmony/xml/dom/DocumentFragmentImpl.java \
+  org/apache/harmony/xml/dom/DocumentImpl.java \
+  org/apache/harmony/xml/dom/DocumentTypeImpl.java \
+  org/apache/harmony/xml/dom/ElementImpl.java \
+  org/apache/harmony/xml/dom/EntityImpl.java \
+  org/apache/harmony/xml/dom/EntityReferenceImpl.java \
+  org/apache/harmony/xml/dom/InnerNodeImpl.java \
+  org/apache/harmony/xml/dom/LeafNodeImpl.java \
+  org/apache/harmony/xml/dom/NodeImpl.java \
+  org/apache/harmony/xml/dom/NodeListImpl.java \
+  org/apache/harmony/xml/dom/NotationImpl.java \
+  org/apache/harmony/xml/dom/ProcessingInstructionImpl.java \
+  org/apache/harmony/xml/dom/TextImpl.java \
+  org/apache/harmony/xml/parsers/DocumentBuilderFactoryImpl.java \
+  org/apache/harmony/xml/parsers/DocumentBuilderImpl.java \
+  org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
+  org/apache/harmony/xml/parsers/SAXParserImpl.java \
+  org/kxml2/io/KXmlParser.java \
+  org/kxml2/io/KXmlSerializer.java \
+  org/xmlpull/v1/XmlPullParser.java \
+  org/xmlpull/v1/XmlPullParserException.java \
+  org/xmlpull/v1/XmlPullParserFactory.java \
+  org/xmlpull/v1/XmlSerializer.java \
+  org/xmlpull/v1/sax2/Driver.java
 
 # Java sources to be translated normally and included in the full library.
 JAVA_PUBLIC_SOURCES_NON_CORE = \
@@ -651,7 +798,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/io/StringBufferInputStream.java \
   java/lang/IllegalAccessError.java \
   java/lang/InheritableThreadLocal.java \
-  java/lang/NoClassDefFoundError.java \
   java/lang/NoSuchMethodError.java \
   java/lang/RuntimePermission.java \
   java/lang/StackOverflowError.java \
@@ -977,118 +1123,7 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   javax/security/cert/CertificateException.java \
   javax/security/cert/CertificateExpiredException.java \
   javax/security/cert/CertificateNotYetValidException.java \
-  javax/security/cert/X509Certificate.java \
-  javax/xml/XMLConstants.java \
-  javax/xml/datatype/DatatypeConfigurationException.java \
-  javax/xml/datatype/DatatypeConstants.java \
-  javax/xml/datatype/DatatypeFactory.java \
-  javax/xml/datatype/Duration.java \
-  javax/xml/datatype/FactoryFinder.java \
-  javax/xml/datatype/XMLGregorianCalendar.java \
-  javax/xml/namespace/NamespaceContext.java \
-  javax/xml/namespace/QName.java \
-  javax/xml/parsers/DocumentBuilder.java \
-  javax/xml/parsers/DocumentBuilderFactory.java \
-  javax/xml/parsers/FactoryConfigurationError.java \
-  javax/xml/parsers/FilePathToURI.java \
-  javax/xml/parsers/ParserConfigurationException.java \
-  javax/xml/parsers/SAXParser.java \
-  javax/xml/parsers/SAXParserFactory.java \
-  javax/xml/transform/ErrorListener.java \
-  javax/xml/transform/OutputKeys.java \
-  javax/xml/transform/Result.java \
-  javax/xml/transform/Source.java \
-  javax/xml/transform/SourceLocator.java \
-  javax/xml/transform/Templates.java \
-  javax/xml/transform/Transformer.java \
-  javax/xml/transform/TransformerConfigurationException.java \
-  javax/xml/transform/TransformerException.java \
-  javax/xml/transform/TransformerFactory.java \
-  javax/xml/transform/TransformerFactoryConfigurationError.java \
-  javax/xml/transform/URIResolver.java \
-  javax/xml/transform/dom/DOMLocator.java \
-  javax/xml/transform/dom/DOMResult.java \
-  javax/xml/transform/dom/DOMSource.java \
-  javax/xml/transform/sax/SAXResult.java \
-  javax/xml/transform/sax/SAXSource.java \
-  javax/xml/transform/sax/SAXTransformerFactory.java \
-  javax/xml/transform/sax/TemplatesHandler.java \
-  javax/xml/transform/sax/TransformerHandler.java \
-  javax/xml/transform/stream/FilePathToURI.java \
-  javax/xml/transform/stream/StreamResult.java \
-  javax/xml/transform/stream/StreamSource.java \
-  javax/xml/validation/Schema.java \
-  javax/xml/validation/SchemaFactory.java \
-  javax/xml/validation/SchemaFactoryFinder.java \
-  javax/xml/validation/SchemaFactoryLoader.java \
-  javax/xml/validation/TypeInfoProvider.java \
-  javax/xml/validation/Validator.java \
-  javax/xml/validation/ValidatorHandler.java \
-  javax/xml/xpath/XPath.java \
-  javax/xml/xpath/XPathConstants.java \
-  javax/xml/xpath/XPathException.java \
-  javax/xml/xpath/XPathExpression.java \
-  javax/xml/xpath/XPathExpressionException.java \
-  javax/xml/xpath/XPathFactory.java \
-  javax/xml/xpath/XPathFactoryConfigurationException.java \
-  javax/xml/xpath/XPathFactoryFinder.java \
-  javax/xml/xpath/XPathFunction.java \
-  javax/xml/xpath/XPathFunctionException.java \
-  javax/xml/xpath/XPathFunctionResolver.java \
-  javax/xml/xpath/XPathVariableResolver.java \
-  org/w3c/dom/Attr.java \
-  org/w3c/dom/CDATASection.java \
-  org/w3c/dom/CharacterData.java \
-  org/w3c/dom/Comment.java \
-  org/w3c/dom/DOMConfiguration.java \
-  org/w3c/dom/DOMError.java \
-  org/w3c/dom/DOMErrorHandler.java \
-  org/w3c/dom/DOMException.java \
-  org/w3c/dom/DOMImplementation.java \
-  org/w3c/dom/DOMImplementationList.java \
-  org/w3c/dom/DOMImplementationSource.java \
-  org/w3c/dom/DOMLocator.java \
-  org/w3c/dom/DOMStringList.java \
-  org/w3c/dom/Document.java \
-  org/w3c/dom/DocumentFragment.java \
-  org/w3c/dom/DocumentType.java \
-  org/w3c/dom/Element.java \
-  org/w3c/dom/Entity.java \
-  org/w3c/dom/EntityReference.java \
-  org/w3c/dom/NameList.java \
-  org/w3c/dom/NamedNodeMap.java \
-  org/w3c/dom/Node.java \
-  org/w3c/dom/NodeList.java \
-  org/w3c/dom/Notation.java \
-  org/w3c/dom/ProcessingInstruction.java \
-  org/w3c/dom/Text.java \
-  org/w3c/dom/TypeInfo.java \
-  org/w3c/dom/UserDataHandler.java \
-  org/w3c/dom/ls/DOMImplementationLS.java \
-  org/w3c/dom/ls/LSException.java \
-  org/w3c/dom/ls/LSInput.java \
-  org/w3c/dom/ls/LSOutput.java \
-  org/w3c/dom/ls/LSParser.java \
-  org/w3c/dom/ls/LSParserFilter.java \
-  org/w3c/dom/ls/LSResourceResolver.java \
-  org/w3c/dom/ls/LSSerializer.java \
-  org/w3c/dom/ls/LSSerializerFilter.java \
-  org/w3c/dom/traversal/NodeFilter.java \
-  org/w3c/dom/traversal/NodeIterator.java \
-  org/xml/sax/HandlerBase.java \
-  org/xml/sax/XMLFilter.java \
-  org/xml/sax/ext/Attributes2.java \
-  org/xml/sax/ext/Attributes2Impl.java \
-  org/xml/sax/ext/DeclHandler.java \
-  org/xml/sax/ext/DefaultHandler2.java \
-  org/xml/sax/ext/EntityResolver2.java \
-  org/xml/sax/ext/LexicalHandler.java \
-  org/xml/sax/ext/Locator2.java \
-  org/xml/sax/ext/Locator2Impl.java \
-  org/xml/sax/helpers/AttributeListImpl.java \
-  org/xml/sax/helpers/LocatorImpl.java \
-  org/xml/sax/helpers/XMLFilterImpl.java \
-  org/xml/sax/helpers/XMLReaderAdapter.java \
+  javax/security/cert/X509Certificate.java
 
 JAVA_PRIVATE_SOURCES_NON_CORE = \
   android/os/AsyncTask.java \
@@ -1139,7 +1174,6 @@ JAVA_PRIVATE_SOURCES_NON_CORE = \
   java/awt/font/TextAttribute.java \
   libcore/icu/NativeIDN.java \
   libcore/icu/TimeZones.java \
-  libcore/internal/StringPool.java \
   libcore/io/Base64.java \
   libcore/io/BufferIterator.java \
   libcore/io/HeapBufferIterator.java \
@@ -1223,45 +1257,17 @@ JAVA_PRIVATE_SOURCES_NON_CORE = \
   org/apache/harmony/security/x509/Time.java \
   org/apache/harmony/security/x509/Validity.java \
   org/apache/harmony/security/x509/X509PublicKey.java \
-  org/apache/harmony/xml/dom/AttrImpl.java \
-  org/apache/harmony/xml/dom/CDATASectionImpl.java \
-  org/apache/harmony/xml/dom/CharacterDataImpl.java \
-  org/apache/harmony/xml/dom/CommentImpl.java \
-  org/apache/harmony/xml/dom/DOMConfigurationImpl.java \
-  org/apache/harmony/xml/dom/DOMErrorImpl.java \
-  org/apache/harmony/xml/dom/DOMImplementationImpl.java \
-  org/apache/harmony/xml/dom/DocumentFragmentImpl.java \
-  org/apache/harmony/xml/dom/DocumentImpl.java \
-  org/apache/harmony/xml/dom/DocumentTypeImpl.java \
-  org/apache/harmony/xml/dom/ElementImpl.java \
-  org/apache/harmony/xml/dom/EntityImpl.java \
-  org/apache/harmony/xml/dom/EntityReferenceImpl.java \
-  org/apache/harmony/xml/dom/InnerNodeImpl.java \
-  org/apache/harmony/xml/dom/LeafNodeImpl.java \
-  org/apache/harmony/xml/dom/NodeImpl.java \
-  org/apache/harmony/xml/dom/NodeListImpl.java \
-  org/apache/harmony/xml/dom/NotationImpl.java \
-  org/apache/harmony/xml/dom/ProcessingInstructionImpl.java \
-  org/apache/harmony/xml/dom/TextImpl.java \
-  org/apache/harmony/xml/parsers/DocumentBuilderFactoryImpl.java \
-  org/apache/harmony/xml/parsers/DocumentBuilderImpl.java \
-  org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
-  org/apache/harmony/xml/parsers/SAXParserImpl.java \
   org/json/JSON.java \
   org/json/JSONArray.java \
   org/json/JSONException.java \
   org/json/JSONObject.java \
   org/json/JSONStringer.java \
-  org/json/JSONTokener.java \
-  org/kxml2/io/KXmlParser.java \
-  org/kxml2/io/KXmlSerializer.java \
-  org/xmlpull/v1/XmlPullParser.java \
-  org/xmlpull/v1/XmlPullParserException.java \
-  org/xmlpull/v1/XmlPullParserFactory.java \
-  org/xmlpull/v1/XmlSerializer.java \
-  org/xmlpull/v1/sax2/Driver.java
+  org/json/JSONTokener.java
 
+JAVA_SOURCES_CORE = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PRIVATE_SOURCES_CORE)
 JAVA_SOURCES_NON_CORE = $(JAVA_PUBLIC_SOURCES_NON_CORE) $(JAVA_PRIVATE_SOURCES_NON_CORE)
+JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PRIVATE_SOURCES_XML)
 
-JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_NON_CORE)
-JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PUBLIC_SOURCES_NON_CORE)
+JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_XML) $(JAVA_SOURCES_NON_CORE)
+JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PUBLIC_SOURCES_XML) \
+  $(JAVA_PUBLIC_SOURCES_NON_CORE)

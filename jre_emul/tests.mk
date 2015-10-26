@@ -729,10 +729,12 @@ run-tests: link resources $(TEST_BIN) run-initialization-test run-core-size-test
 run-initialization-test: $(TESTS_DIR)/jreinitialization
 	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
 
-run-core-size-test: $(TESTS_DIR)/core_size
-	@echo Core binary size:
-	@ls -l $<
-	@echo Number of classes: `nm $< | grep -c "S _OBJC_CLASS_"`
+run-core-size-test: $(TESTS_DIR)/core_size $(TESTS_DIR)/core_plus_xml
+	@for bin in $^; do \
+	  echo Binary size for $$(basename $$bin):; \
+	  ls -l $$bin; \
+	  echo Number of classes: `nm $$bin | grep -c "S _OBJC_CLASS_"`; \
+	done
 
 run-concurrency-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore ConcurrencyTests
@@ -815,5 +817,11 @@ $(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m
 	@../dist/j2objcc -o $@ -ljre_emul -ObjC -Os $?
 
 $(TESTS_DIR)/core_size:
+	@echo CORE_SIZE
 	@mkdir -p $(@D)
-	@../dist/j2objcc -o $@ -ObjC
+	../dist/j2objcc -o $@ -ObjC
+
+$(TESTS_DIR)/core_plus_xml:
+	@echo CORE_PLUS_XML
+	@mkdir -p $(@D)
+	../dist/j2objcc -ljre_emul_xml -o $@ -ObjC

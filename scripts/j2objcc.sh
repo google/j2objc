@@ -64,7 +64,7 @@ for arg; do
   esac
 done
 
-if [[ $@ =~ .*-l(\ )*jre_emul.* ]]; then
+if [[ $@ =~ .*-l(\ )*jre_emul\ .* ]]; then
   EMUL_LIB=""
 fi
 
