@@ -24,6 +24,7 @@ import junit.framework.TestCase;
 import tests.support.Support_Locale;
 
 /*-[
+#include "java/lang/System.h"
 #include <sys/utsname.h>
 ]-*/
 
@@ -118,7 +119,7 @@ public class OldTimeZoneTest extends TestCase {
         }
         if (Support_Locale.isLocaleAvailable(Locale.FRANCE)) {
             assertEquals("UTC−8", tz.getDisplayName(false, 0, Locale.FRANCE));
-            String expected = System.getProperty("os.name").equals("Mac OS X")
+            String expected = preElCapitan()
                 ? "heure avancée du Pacifique" : "heure d’été du Pacifique";
             assertEquals(expected, tz.getDisplayName(true,  1, Locale.FRANCE));
             assertTrue(tz.getDisplayName(Locale.FRANCE).startsWith("heure normale du Pacifique"));
@@ -153,4 +154,16 @@ public class OldTimeZoneTest extends TestCase {
         tz.setID("New ID for GMT-6");
         assertEquals("New ID for GMT-6", tz.getID());
     }
+
+    // Running on an OS X version less than 10.11?
+    private static native boolean preElCapitan() /*-[
+      if (![JavaLangSystem_getPropertyWithNSString_(@"os.name") isEqual:@"Mac OS X"]) {
+        return NO;
+      }
+      struct utsname uts;
+      if (uname(&uts) == 0) {
+        return atoi(uts.release) < 15;
+      }
+      return NO;
+    ]-*/;
 }
