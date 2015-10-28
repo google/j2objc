@@ -292,58 +292,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/charset/StandardCharsets.java \
   java/nio/charset/UnmappableCharacterException.java \
   java/nio/charset/UnsupportedCharsetException.java \
-  java/security/AllPermission.java \
-  java/security/AllPermissionCollection.java \
-  java/security/BasicPermission.java \
-  java/security/CodeSource.java \
-  java/security/DigestException.java \
-  java/security/GeneralSecurityException.java \
-  java/security/Guard.java \
-  java/security/InvalidAlgorithmParameterException.java \
-  java/security/InvalidKeyException.java \
-  java/security/InvalidParameterException.java \
-  java/security/Key.java \
-  java/security/KeyException.java \
-  java/security/KeyFactorySpi.java \
-  java/security/KeyPair.java \
-  java/security/KeyPairGeneratorSpi.java \
-  java/security/MessageDigest.java \
-  java/security/MessageDigestSpi.java \
-  java/security/NoSuchAlgorithmException.java \
-  java/security/NoSuchProviderException.java \
-  java/security/Permission.java \
-  java/security/PermissionCollection.java \
-  java/security/Principal.java \
-  java/security/PrivateKey.java \
-  java/security/ProtectionDomain.java \
-  java/security/Provider.java \
-  java/security/PublicKey.java \
-  java/security/SecureRandomSpi.java \
-  java/security/Security.java \
-  java/security/SignatureException.java \
-  java/security/SignatureSpi.java \
-  java/security/cert/CRL.java \
-  java/security/cert/CRLException.java \
-  java/security/cert/CertPath.java \
-  java/security/cert/Certificate.java \
-  java/security/cert/CertificateEncodingException.java \
-  java/security/cert/CertificateException.java \
-  java/security/cert/CertificateExpiredException.java \
-  java/security/cert/CertificateFactory.java \
-  java/security/cert/CertificateFactorySpi.java \
-  java/security/cert/X509Certificate.java \
-  java/security/interfaces/RSAPrivateCrtKey.java \
-  java/security/interfaces/RSAPrivateKey.java \
-  java/security/interfaces/RSAPublicKey.java \
-  java/security/spec/EncodedKeySpec.java \
-  java/security/spec/InvalidKeySpecException.java \
-  java/security/spec/KeySpec.java \
-  java/security/spec/PKCS8EncodedKeySpec.java \
-  java/security/spec/RSAKeyGenParameterSpec.java \
-  java/security/spec/RSAPrivateCrtKeySpec.java \
-  java/security/spec/RSAPrivateKeySpec.java \
-  java/security/spec/RSAPublicKeySpec.java \
-  java/security/spec/X509EncodedKeySpec.java \
   java/text/Annotation.java \
   java/text/AttributedCharacterIterator.java \
   java/text/AttributedString.java \
@@ -466,22 +414,17 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/regex/Pattern.java \
   java/util/regex/PatternSyntaxException.java \
   java/util/regex/Splitter.java \
-  sun/misc/Unsafe.java
+  sun/misc/Unsafe.java \
+  java/security/AllPermission.java \
+  java/security/AllPermissionCollection.java \
+  java/security/BasicPermission.java \
+  java/security/Permission.java \
+  java/security/PermissionCollection.java
 
 JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/net/IosHttpHandler.java \
   com/google/j2objc/net/IosHttpURLConnection.java \
   com/google/j2objc/net/IosHttpsHandler.java \
-  com/google/j2objc/security/IosMD5MessageDigest.java \
-  com/google/j2objc/security/IosRSAKey.java \
-  com/google/j2objc/security/IosRSAKeyFactory.java \
-  com/google/j2objc/security/IosRSAKeyPairGenerator.java \
-  com/google/j2objc/security/IosRSASignature.java \
-  com/google/j2objc/security/IosSHAMessageDigest.java \
-  com/google/j2objc/security/IosSecureRandomImpl.java \
-  com/google/j2objc/security/IosSecurityProvider.java \
-  com/google/j2objc/security/cert/IosCertificateFactory.java \
-  com/google/j2objc/security/cert/IosX509Certificate.java \
   com/google/j2objc/util/ScopedLocalRef.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
@@ -584,23 +527,240 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/MutableInt.java \
   libcore/util/MutableLong.java \
   libcore/util/Objects.java \
-  libcore/util/SneakyThrow.java \
+  libcore/util/SneakyThrow.java
+
+JAVA_PUBLIC_SOURCES_SECURITY = \
+  java/io/SerialVersionUIDDigest.java \
+  java/security/AccessControlContext.java \
+  java/security/AccessControlException.java \
+  java/security/AccessController.java \
+  java/security/AlgorithmParameterGenerator.java \
+  java/security/AlgorithmParameterGeneratorSpi.java \
+  java/security/AlgorithmParameters.java \
+  java/security/AlgorithmParametersSpi.java \
+  java/security/CodeSigner.java \
+  java/security/CodeSource.java \
+  java/security/DigestException.java \
+  java/security/DomainCombiner.java \
+  java/security/GeneralSecurityException.java \
+  java/security/Guard.java \
+  java/security/GuardedObject.java \
+  java/security/InvalidAlgorithmParameterException.java \
+  java/security/InvalidKeyException.java \
+  java/security/InvalidParameterException.java \
+  java/security/Key.java \
+  java/security/KeyException.java \
+  java/security/KeyFactory.java \
+  java/security/KeyFactorySpi.java \
+  java/security/KeyManagementException.java \
+  java/security/KeyPair.java \
+  java/security/KeyPairGenerator.java \
+  java/security/KeyPairGeneratorSpi.java \
+  java/security/KeyStore.java \
+  java/security/KeyStoreException.java \
+  java/security/KeyStoreSpi.java \
+  java/security/MessageDigest.java \
+  java/security/MessageDigestSpi.java \
+  java/security/NoSuchAlgorithmException.java \
+  java/security/NoSuchProviderException.java \
+  java/security/Permissions.java \
+  java/security/PermissionsHash.java \
+  java/security/Policy.java \
+  java/security/Principal.java \
+  java/security/PrivateKey.java \
+  java/security/PrivilegedAction.java \
+  java/security/PrivilegedActionException.java \
+  java/security/PrivilegedExceptionAction.java \
+  java/security/ProtectionDomain.java \
+  java/security/Provider.java \
+  java/security/ProviderException.java \
+  java/security/PublicKey.java \
+  java/security/SecureClassLoader.java \
+  java/security/SecureRandom.java \
+  java/security/SecureRandomSpi.java \
+  java/security/Security.java \
+  java/security/SecurityPermission.java \
+  java/security/Signature.java \
+  java/security/SignatureException.java \
+  java/security/SignatureSpi.java \
+  java/security/Timestamp.java \
+  java/security/UnrecoverableEntryException.java \
+  java/security/UnrecoverableKeyException.java \
+  java/security/cert/CRL.java \
+  java/security/cert/CRLException.java \
+  java/security/cert/CertPath.java \
+  java/security/cert/CertPathParameters.java \
+  java/security/cert/CertPathValidator.java \
+  java/security/cert/CertPathValidatorException.java \
+  java/security/cert/CertPathValidatorResult.java \
+  java/security/cert/CertPathValidatorSpi.java \
+  java/security/cert/Certificate.java \
+  java/security/cert/CertificateEncodingException.java \
+  java/security/cert/CertificateException.java \
+  java/security/cert/CertificateExpiredException.java \
+  java/security/cert/CertificateFactory.java \
+  java/security/cert/CertificateFactorySpi.java \
+  java/security/cert/CertificateNotYetValidException.java \
+  java/security/cert/CertificateParsingException.java \
+  java/security/cert/CRLReason.java \
+  java/security/cert/Extension.java \
+  java/security/cert/X509Certificate.java \
+  java/security/cert/X509Extension.java \
+  java/security/interfaces/ECKey.java \
+  java/security/interfaces/ECPrivateKey.java \
+  java/security/interfaces/ECPublicKey.java \
+  java/security/interfaces/RSAKey.java \
+  java/security/interfaces/RSAMultiPrimePrivateCrtKey.java \
+  java/security/interfaces/RSAPrivateCrtKey.java \
+  java/security/interfaces/RSAPrivateKey.java \
+  java/security/interfaces/RSAPublicKey.java \
+  java/security/spec/AlgorithmParameterSpec.java \
+  java/security/spec/ECField.java \
+  java/security/spec/ECFieldF2m.java \
+  java/security/spec/ECFieldFp.java \
+  java/security/spec/ECGenParameterSpec.java \
+  java/security/spec/ECParameterSpec.java \
+  java/security/spec/ECPoint.java \
+  java/security/spec/ECPrivateKeySpec.java \
+  java/security/spec/ECPublicKeySpec.java \
+  java/security/spec/EllipticCurve.java \
+  java/security/spec/EncodedKeySpec.java \
+  java/security/spec/InvalidKeySpecException.java \
+  java/security/spec/InvalidParameterSpecException.java \
+  java/security/spec/KeySpec.java \
+  java/security/spec/MGF1ParameterSpec.java \
+  java/security/spec/PKCS8EncodedKeySpec.java \
+  java/security/spec/PSSParameterSpec.java \
+  java/security/spec/RSAKeyGenParameterSpec.java \
+  java/security/spec/RSAMultiPrimePrivateCrtKeySpec.java \
+  java/security/spec/RSAOtherPrimeInfo.java \
+  java/security/spec/RSAPrivateCrtKeySpec.java \
+  java/security/spec/RSAPrivateKeySpec.java \
+  java/security/spec/RSAPublicKeySpec.java \
+  java/security/spec/X509EncodedKeySpec.java \
+  javax/crypto/Mac.java \
+  javax/crypto/MacSpi.java \
+  javax/crypto/SecretKey.java \
+  javax/crypto/ShortBufferException.java \
+  javax/crypto/spec/SecretKeySpec.java \
+  javax/security/auth/DestroyFailedException.java \
+  javax/security/auth/Destroyable.java \
+  javax/security/auth/callback/Callback.java \
+  javax/security/auth/callback/CallbackHandler.java \
+  javax/security/auth/callback/PasswordCallback.java \
+  javax/security/auth/callback/UnsupportedCallbackException.java \
+  javax/security/auth/x500/X500Principal.java \
+  javax/security/cert/Certificate.java \
+  javax/security/cert/CertificateEncodingException.java \
+  javax/security/cert/CertificateException.java \
+  javax/security/cert/CertificateExpiredException.java \
+  javax/security/cert/CertificateNotYetValidException.java \
+  javax/security/cert/X509Certificate.java
+
+JAVA_PRIVATE_SOURCES_SECURITY = \
+  com/google/j2objc/security/IosMD5MessageDigest.java \
+  com/google/j2objc/security/IosRSAKey.java \
+  com/google/j2objc/security/IosRSAKeyFactory.java \
+  com/google/j2objc/security/IosRSAKeyPairGenerator.java \
+  com/google/j2objc/security/IosRSASignature.java \
+  com/google/j2objc/security/IosSHAMessageDigest.java \
+  com/google/j2objc/security/IosSecureRandomImpl.java \
+  com/google/j2objc/security/IosSecurityProvider.java \
+  com/google/j2objc/security/cert/IosCertificateFactory.java \
+  com/google/j2objc/security/cert/IosX509Certificate.java \
+  org/apache/harmony/security/PrivateKeyImpl.java \
+  org/apache/harmony/security/PublicKeyImpl.java \
   org/apache/harmony/security/asn1/ASN1Any.java \
+  org/apache/harmony/security/asn1/ASN1BitString.java \
+  org/apache/harmony/security/asn1/ASN1Boolean.java \
   org/apache/harmony/security/asn1/ASN1Choice.java \
+  org/apache/harmony/security/asn1/ASN1Constants.java \
   org/apache/harmony/security/asn1/ASN1Constructed.java \
+  org/apache/harmony/security/asn1/ASN1Enumerated.java \
   org/apache/harmony/security/asn1/ASN1Exception.java \
   org/apache/harmony/security/asn1/ASN1Explicit.java \
+  org/apache/harmony/security/asn1/ASN1GeneralizedTime.java \
+  org/apache/harmony/security/asn1/ASN1Implicit.java \
+  org/apache/harmony/security/asn1/ASN1Integer.java \
+  org/apache/harmony/security/asn1/ASN1OctetString.java \
+  org/apache/harmony/security/asn1/ASN1Oid.java \
+  org/apache/harmony/security/asn1/ASN1Primitive.java \
+  org/apache/harmony/security/asn1/ASN1Sequence.java \
+  org/apache/harmony/security/asn1/ASN1SequenceOf.java \
+  org/apache/harmony/security/asn1/ASN1Set.java \
+  org/apache/harmony/security/asn1/ASN1SetOf.java \
+  org/apache/harmony/security/asn1/ASN1StringType.java \
+  org/apache/harmony/security/asn1/ASN1Time.java \
   org/apache/harmony/security/asn1/ASN1Type.java \
   org/apache/harmony/security/asn1/ASN1TypeCollection.java \
+  org/apache/harmony/security/asn1/ASN1UTCTime.java \
   org/apache/harmony/security/asn1/ASN1ValueCollection.java \
   org/apache/harmony/security/asn1/BerInputStream.java \
   org/apache/harmony/security/asn1/BerOutputStream.java \
   org/apache/harmony/security/asn1/BitString.java \
   org/apache/harmony/security/asn1/DerInputStream.java \
   org/apache/harmony/security/asn1/DerOutputStream.java \
+  org/apache/harmony/security/asn1/ObjectIdentifier.java \
   org/apache/harmony/security/fortress/Engine.java \
   org/apache/harmony/security/fortress/SecurityAccess.java \
-  org/apache/harmony/security/fortress/Services.java
+  org/apache/harmony/security/fortress/Services.java \
+  org/apache/harmony/security/pkcs7/AuthenticatedAttributes.java \
+  org/apache/harmony/security/pkcs7/ContentInfo.java \
+  org/apache/harmony/security/pkcs7/SignedData.java \
+  org/apache/harmony/security/pkcs7/SignerInfo.java \
+  org/apache/harmony/security/utils/AlgNameMapper.java \
+  org/apache/harmony/security/utils/AlgNameMapperSource.java \
+  org/apache/harmony/security/utils/Array.java \
+  org/apache/harmony/security/utils/JarUtils.java \
+  org/apache/harmony/security/utils/ObjectIdentifier.java \
+  org/apache/harmony/security/utils/WrappedX509Certificate.java \
+  org/apache/harmony/security/x501/AttributeTypeAndValue.java \
+  org/apache/harmony/security/x501/AttributeTypeAndValueComparator.java \
+  org/apache/harmony/security/x501/AttributeValue.java \
+  org/apache/harmony/security/x501/DirectoryString.java \
+  org/apache/harmony/security/x501/Name.java \
+  org/apache/harmony/security/x509/AccessDescription.java \
+  org/apache/harmony/security/x509/AlgorithmIdentifier.java \
+  org/apache/harmony/security/x509/AlternativeName.java \
+  org/apache/harmony/security/x509/AuthorityKeyIdentifier.java \
+  org/apache/harmony/security/x509/BasicConstraints.java \
+  org/apache/harmony/security/x509/Certificate.java \
+  org/apache/harmony/security/x509/CertificateIssuer.java \
+  org/apache/harmony/security/x509/CertificateList.java \
+  org/apache/harmony/security/x509/CertificatePolicies.java \
+  org/apache/harmony/security/x509/CRLDistributionPoints.java \
+  org/apache/harmony/security/x509/CRLNumber.java \
+  org/apache/harmony/security/x509/DistributionPoint.java \
+  org/apache/harmony/security/x509/DistributionPointName.java \
+  org/apache/harmony/security/x509/DNParser.java \
+  org/apache/harmony/security/x509/EDIPartyName.java \
+  org/apache/harmony/security/x509/ExtendedKeyUsage.java \
+  org/apache/harmony/security/x509/Extension.java \
+  org/apache/harmony/security/x509/Extensions.java \
+  org/apache/harmony/security/x509/ExtensionValue.java \
+  org/apache/harmony/security/x509/GeneralName.java \
+  org/apache/harmony/security/x509/GeneralNames.java \
+  org/apache/harmony/security/x509/GeneralSubtree.java \
+  org/apache/harmony/security/x509/GeneralSubtrees.java \
+  org/apache/harmony/security/x509/InfoAccessSyntax.java \
+  org/apache/harmony/security/x509/InhibitAnyPolicy.java \
+  org/apache/harmony/security/x509/InvalidityDate.java \
+  org/apache/harmony/security/x509/IssuingDistributionPoint.java \
+  org/apache/harmony/security/x509/KeyUsage.java \
+  org/apache/harmony/security/x509/NameConstraints.java \
+  org/apache/harmony/security/x509/ORAddress.java \
+  org/apache/harmony/security/x509/OtherName.java \
+  org/apache/harmony/security/x509/PolicyConstraints.java \
+  org/apache/harmony/security/x509/PolicyInformation.java \
+  org/apache/harmony/security/x509/ReasonCode.java \
+  org/apache/harmony/security/x509/ReasonFlags.java \
+  org/apache/harmony/security/x509/SubjectKeyIdentifier.java \
+  org/apache/harmony/security/x509/SubjectPublicKeyInfo.java \
+  org/apache/harmony/security/x509/TBSCertificate.java \
+  org/apache/harmony/security/x509/TBSCertList.java \
+  org/apache/harmony/security/x509/Time.java \
+  org/apache/harmony/security/x509/Validity.java \
+  org/apache/harmony/security/x509/X509PublicKey.java
 
 JAVA_PUBLIC_SOURCES_XML = \
   java/util/PropertiesXmlLoader.java \
@@ -839,66 +999,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/nio/NIOAccess.java \
   java/nio/channels/Channels.java \
   java/nio/channels/FileLockInterruptionException.java \
-  java/security/AccessControlContext.java \
-  java/security/AccessControlException.java \
-  java/security/AccessController.java \
-  java/security/AlgorithmParameterGenerator.java \
-  java/security/AlgorithmParameterGeneratorSpi.java \
-  java/security/AlgorithmParameters.java \
-  java/security/AlgorithmParametersSpi.java \
-  java/security/CodeSigner.java \
-  java/security/DomainCombiner.java \
-  java/security/GuardedObject.java \
-  java/security/KeyFactory.java \
-  java/security/KeyManagementException.java \
-  java/security/KeyPairGenerator.java \
-  java/security/KeyStore.java \
-  java/security/KeyStoreException.java \
-  java/security/KeyStoreSpi.java \
-  java/security/Permissions.java \
-  java/security/PermissionsHash.java \
-  java/security/Policy.java \
-  java/security/PrivilegedAction.java \
-  java/security/PrivilegedActionException.java \
-  java/security/PrivilegedExceptionAction.java \
-  java/security/ProviderException.java \
-  java/security/SecureClassLoader.java \
-  java/security/SecureRandom.java \
-  java/security/SecurityPermission.java \
-  java/security/Signature.java \
-  java/security/Timestamp.java \
-  java/security/UnrecoverableEntryException.java \
-  java/security/UnrecoverableKeyException.java \
-  java/security/cert/CertPathParameters.java \
-  java/security/cert/CertPathValidator.java \
-  java/security/cert/CertPathValidatorException.java \
-  java/security/cert/CertPathValidatorResult.java \
-  java/security/cert/CertPathValidatorSpi.java \
-  java/security/cert/CertificateNotYetValidException.java \
-  java/security/cert/CertificateParsingException.java \
-  java/security/cert/CRLReason.java \
-  java/security/cert/Extension.java \
-  java/security/cert/X509Extension.java \
-  java/security/interfaces/ECKey.java \
-  java/security/interfaces/ECPrivateKey.java \
-  java/security/interfaces/ECPublicKey.java \
-  java/security/interfaces/RSAKey.java \
-  java/security/interfaces/RSAMultiPrimePrivateCrtKey.java \
-  java/security/spec/AlgorithmParameterSpec.java \
-  java/security/spec/ECField.java \
-  java/security/spec/ECFieldF2m.java \
-  java/security/spec/ECFieldFp.java \
-  java/security/spec/ECGenParameterSpec.java \
-  java/security/spec/ECParameterSpec.java \
-  java/security/spec/ECPoint.java \
-  java/security/spec/ECPrivateKeySpec.java \
-  java/security/spec/ECPublicKeySpec.java \
-  java/security/spec/EllipticCurve.java \
-  java/security/spec/InvalidParameterSpecException.java \
-  java/security/spec/MGF1ParameterSpec.java \
-  java/security/spec/PSSParameterSpec.java \
-  java/security/spec/RSAMultiPrimePrivateCrtKeySpec.java \
-  java/security/spec/RSAOtherPrimeInfo.java \
   java/sql/Array.java \
   java/sql/BatchUpdateException.java \
   java/sql/Blob.java \
@@ -1078,11 +1178,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   javax/annotation/PostConstruct.java \
   javax/annotation/PreDestroy.java \
   javax/annotation/Resources.java \
-  javax/crypto/Mac.java \
-  javax/crypto/MacSpi.java \
-  javax/crypto/SecretKey.java \
-  javax/crypto/ShortBufferException.java \
-  javax/crypto/spec/SecretKeySpec.java \
   javax/lang/model/element/Modifier.java \
   javax/net/DefaultServerSocketFactory.java \
   javax/net/DefaultSocketFactory.java \
@@ -1118,20 +1213,7 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   javax/net/ssl/TrustManager.java \
   javax/net/ssl/TrustManagerFactory.java \
   javax/net/ssl/TrustManagerFactorySpi.java \
-  javax/net/ssl/X509TrustManager.java \
-  javax/security/auth/DestroyFailedException.java \
-  javax/security/auth/Destroyable.java \
-  javax/security/auth/callback/Callback.java \
-  javax/security/auth/callback/CallbackHandler.java \
-  javax/security/auth/callback/PasswordCallback.java \
-  javax/security/auth/callback/UnsupportedCallbackException.java \
-  javax/security/auth/x500/X500Principal.java \
-  javax/security/cert/Certificate.java \
-  javax/security/cert/CertificateEncodingException.java \
-  javax/security/cert/CertificateException.java \
-  javax/security/cert/CertificateExpiredException.java \
-  javax/security/cert/CertificateNotYetValidException.java \
-  javax/security/cert/X509Certificate.java
+  javax/net/ssl/X509TrustManager.java
 
 JAVA_PRIVATE_SOURCES_NON_CORE = \
   java/awt/font/NumericShaper.java \
@@ -1145,83 +1227,6 @@ JAVA_PRIVATE_SOURCES_NON_CORE = \
   libcore/net/http/HttpDate.java \
   libcore/util/CountingOutputStream.java \
   org/apache/harmony/beans/BeansUtils.java \
-  org/apache/harmony/security/PrivateKeyImpl.java \
-  org/apache/harmony/security/PublicKeyImpl.java \
-  org/apache/harmony/security/asn1/ASN1BitString.java \
-  org/apache/harmony/security/asn1/ASN1Boolean.java \
-  org/apache/harmony/security/asn1/ASN1Constants.java \
-  org/apache/harmony/security/asn1/ASN1Enumerated.java \
-  org/apache/harmony/security/asn1/ASN1GeneralizedTime.java \
-  org/apache/harmony/security/asn1/ASN1Implicit.java \
-  org/apache/harmony/security/asn1/ASN1Integer.java \
-  org/apache/harmony/security/asn1/ASN1OctetString.java \
-  org/apache/harmony/security/asn1/ASN1Oid.java \
-  org/apache/harmony/security/asn1/ASN1Primitive.java \
-  org/apache/harmony/security/asn1/ASN1Sequence.java \
-  org/apache/harmony/security/asn1/ASN1SequenceOf.java \
-  org/apache/harmony/security/asn1/ASN1Set.java \
-  org/apache/harmony/security/asn1/ASN1SetOf.java \
-  org/apache/harmony/security/asn1/ASN1StringType.java \
-  org/apache/harmony/security/asn1/ASN1Time.java \
-  org/apache/harmony/security/asn1/ASN1UTCTime.java \
-  org/apache/harmony/security/asn1/ObjectIdentifier.java \
-  org/apache/harmony/security/pkcs7/AuthenticatedAttributes.java \
-  org/apache/harmony/security/pkcs7/ContentInfo.java \
-  org/apache/harmony/security/pkcs7/SignedData.java \
-  org/apache/harmony/security/pkcs7/SignerInfo.java \
-  org/apache/harmony/security/utils/AlgNameMapper.java \
-  org/apache/harmony/security/utils/AlgNameMapperSource.java \
-  org/apache/harmony/security/utils/Array.java \
-  org/apache/harmony/security/utils/JarUtils.java \
-  org/apache/harmony/security/utils/ObjectIdentifier.java \
-  org/apache/harmony/security/utils/WrappedX509Certificate.java \
-  org/apache/harmony/security/x501/AttributeTypeAndValue.java \
-  org/apache/harmony/security/x501/AttributeTypeAndValueComparator.java \
-  org/apache/harmony/security/x501/AttributeValue.java \
-  org/apache/harmony/security/x501/DirectoryString.java \
-  org/apache/harmony/security/x501/Name.java \
-  org/apache/harmony/security/x509/AccessDescription.java \
-  org/apache/harmony/security/x509/AlgorithmIdentifier.java \
-  org/apache/harmony/security/x509/AlternativeName.java \
-  org/apache/harmony/security/x509/AuthorityKeyIdentifier.java \
-  org/apache/harmony/security/x509/BasicConstraints.java \
-  org/apache/harmony/security/x509/Certificate.java \
-  org/apache/harmony/security/x509/CertificateIssuer.java \
-  org/apache/harmony/security/x509/CertificateList.java \
-  org/apache/harmony/security/x509/CertificatePolicies.java \
-  org/apache/harmony/security/x509/CRLDistributionPoints.java \
-  org/apache/harmony/security/x509/CRLNumber.java \
-  org/apache/harmony/security/x509/DistributionPoint.java \
-  org/apache/harmony/security/x509/DistributionPointName.java \
-  org/apache/harmony/security/x509/DNParser.java \
-  org/apache/harmony/security/x509/EDIPartyName.java \
-  org/apache/harmony/security/x509/ExtendedKeyUsage.java \
-  org/apache/harmony/security/x509/Extension.java \
-  org/apache/harmony/security/x509/Extensions.java \
-  org/apache/harmony/security/x509/ExtensionValue.java \
-  org/apache/harmony/security/x509/GeneralName.java \
-  org/apache/harmony/security/x509/GeneralNames.java \
-  org/apache/harmony/security/x509/GeneralSubtree.java \
-  org/apache/harmony/security/x509/GeneralSubtrees.java \
-  org/apache/harmony/security/x509/InfoAccessSyntax.java \
-  org/apache/harmony/security/x509/InhibitAnyPolicy.java \
-  org/apache/harmony/security/x509/InvalidityDate.java \
-  org/apache/harmony/security/x509/IssuingDistributionPoint.java \
-  org/apache/harmony/security/x509/KeyUsage.java \
-  org/apache/harmony/security/x509/NameConstraints.java \
-  org/apache/harmony/security/x509/ORAddress.java \
-  org/apache/harmony/security/x509/OtherName.java \
-  org/apache/harmony/security/x509/PolicyConstraints.java \
-  org/apache/harmony/security/x509/PolicyInformation.java \
-  org/apache/harmony/security/x509/ReasonCode.java \
-  org/apache/harmony/security/x509/ReasonFlags.java \
-  org/apache/harmony/security/x509/SubjectKeyIdentifier.java \
-  org/apache/harmony/security/x509/SubjectPublicKeyInfo.java \
-  org/apache/harmony/security/x509/TBSCertificate.java \
-  org/apache/harmony/security/x509/TBSCertList.java \
-  org/apache/harmony/security/x509/Time.java \
-  org/apache/harmony/security/x509/Validity.java \
-  org/apache/harmony/security/x509/X509PublicKey.java \
   org/json/JSON.java \
   org/json/JSONArray.java \
   org/json/JSONException.java \
@@ -1280,10 +1285,11 @@ ANDROID_PRIVATE_SOURCES = \
 
 JAVA_SOURCES_CORE = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PRIVATE_SOURCES_CORE)
 JAVA_SOURCES_NON_CORE = $(JAVA_PUBLIC_SOURCES_NON_CORE) $(JAVA_PRIVATE_SOURCES_NON_CORE)
+JAVA_SOURCES_SECURITY = $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PRIVATE_SOURCES_SECURITY)
 JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PRIVATE_SOURCES_XML)
 JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 
-JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_XML) $(JAVA_SOURCES_NON_CORE) \
-  $(JAVA_SOURCES_ANDROID)
-JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PUBLIC_SOURCES_XML) \
-  $(JAVA_PUBLIC_SOURCES_NON_CORE) $(ANDROID_PUBLIC_SOURCES)
+JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_SECURITY) $(JAVA_SOURCES_XML) \
+  $(JAVA_SOURCES_NON_CORE) $(JAVA_SOURCES_ANDROID)
+JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PUBLIC_SOURCES_SECURITY) \
+  $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PUBLIC_SOURCES_NON_CORE) $(ANDROID_PUBLIC_SOURCES)

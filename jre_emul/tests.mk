@@ -778,7 +778,8 @@ run-tests: link resources $(TEST_BIN) run-initialization-test run-core-size-test
 run-initialization-test: $(TESTS_DIR)/jreinitialization
 	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
 
-run-core-size-test: $(TESTS_DIR)/core_size $(TESTS_DIR)/core_plus_xml
+run-core-size-test: $(TESTS_DIR)/core_size $(TESTS_DIR)/core_plus_xml \
+  $(TESTS_DIR)/core_plus_security
 	@for bin in $^; do \
 	  echo Binary size for $$(basename $$bin):; \
 	  ls -l $$bin; \
@@ -869,11 +870,13 @@ $(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m
 	@../dist/j2objcc -o $@ -ljre_emul -ObjC -Os $?
 
 $(TESTS_DIR)/core_size:
-	@echo CORE_SIZE
 	@mkdir -p $(@D)
 	../dist/j2objcc -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_xml:
-	@echo CORE_PLUS_XML
 	@mkdir -p $(@D)
 	../dist/j2objcc -ljre_xml -o $@ -ObjC
+
+$(TESTS_DIR)/core_plus_security:
+	@mkdir -p $(@D)
+	../dist/j2objcc -ljre_security -o $@ -ObjC

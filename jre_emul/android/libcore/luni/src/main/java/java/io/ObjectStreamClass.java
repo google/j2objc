@@ -24,8 +24,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.nio.ByteOrder;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -413,12 +411,7 @@ public class ObjectStreamClass implements Serializable {
             }
         }
 
-        MessageDigest digest;
-        try {
-            digest = MessageDigest.getInstance("SHA");
-        } catch (NoSuchAlgorithmException e) {
-            throw new Error(e);
-        }
+        Digest digest = getDigest();
         ByteArrayOutputStream sha = new ByteArrayOutputStream();
         try {
             DataOutputStream output = new DataOutputStream(sha);
@@ -581,6 +574,24 @@ public class ObjectStreamClass implements Serializable {
         // now compute the UID based on the SHA
         byte[] hash = digest.digest(sha.toByteArray());
         return Memory.peekLong(hash, 0, ByteOrder.LITTLE_ENDIAN);
+    }
+
+    static interface Digest {
+      byte[] digest(byte[] input);
+    }
+
+    private static Digest getDigest() {
+      try {
+        Class<?> digestClass = Class.forName("java.io.SerialVersionUIDDigest");
+        return (Digest) digestClass.newInstance();
+      } catch (Exception e) {
+        throw new AssertionError(
+            "SerialVersionUID hashing is unavailable. Fix this by:\n"
+            + "1) If linking with -ObjC, add -ljre_security to the link flags.\n"
+            + "2) If linking without -ObjC, call JavaIoSerialVersionUIDDigest_class_() to create a"
+            + " compile-time dependency.\n"
+            + "3) Add serialVersionUID fields to all Serializable classes.");
+      }
     }
 
     /**

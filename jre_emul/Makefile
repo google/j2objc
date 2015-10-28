@@ -131,6 +131,7 @@ endif
 NATIVE_OBJS_RELATIVE = $(IOS_OBJS) $(IOS_JAVA_OBJS) $(APPLE_SRCS:.m=.o)
 CORE_OBJS_RELATIVE = $(JAVA_SOURCES_CORE:.java=.o) $(NATIVE_OBJS_RELATIVE)
 XML_OBJS_RELATIVE = $(JAVA_SOURCES_XML:.java=.o)
+SECURITY_OBJS_RELATIVE = $(JAVA_SOURCES_SECURITY:.java=.o)
 JRE_OBJS_RELATIVE = $(JAVA_SOURCES:.java=.o) $(NATIVE_OBJS_RELATIVE)
 ANDROID_OBJS_RELATIVE = $(JAVA_SOURCES_ANDROID:.java=.o)
 
@@ -138,6 +139,7 @@ include ../make/fat_lib_macros.mk
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
 LIBS := $(call emit_library_rules,jre_emul,$(JRE_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_core,$(CORE_OBJS_RELATIVE))
+LIBS += $(call emit_library_rules,jre_security,$(SECURITY_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,jre_xml,$(XML_OBJS_RELATIVE))
 LIBS += $(call emit_library_rules,android_util,$(ANDROID_OBJS_RELATIVE))
 DIST_LIBS = $(LIBS:$(ARCH_BUILD_DIR)/%=$(ARCH_LIB_DIR)/%)
