@@ -17,8 +17,6 @@
 
 package java.util;
 
-import android.util.LruCache;
-
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
@@ -67,6 +65,8 @@ import java.util.regex.Pattern;
  * @see SimpleDateFormat
  */
 public abstract class TimeZone implements Serializable, Cloneable {
+    private static final long serialVersionUID = 3581463369166924961L;
+
     private static final Pattern CUSTOM_ZONE_ID_PATTERN =
         Pattern.compile("^GMT[-+](\\d{1,2})([:.]?(\\d\\d))?$");
 
@@ -87,8 +87,8 @@ public abstract class TimeZone implements Serializable, Cloneable {
 
     private static final int CACHE_SIZE = 25;
 
-    private static final LruCache<String, TimeZone> cache =
-        new LruCache<String, TimeZone>(CACHE_SIZE);
+    private static final Map<String, TimeZone> cache =
+        Collections.synchronizedMap(new LruCache<String, TimeZone>(CACHE_SIZE));
 
     private static TimeZone defaultTimeZone;
 
@@ -613,4 +613,22 @@ public abstract class TimeZone implements Serializable, Cloneable {
     public native boolean useDaylightTime() /*-[
       return [(NSTimeZone *) self->nativeTimeZone_ nextDaylightSavingTimeTransition] != nil;
     ]-*/;
+
+    /**
+     * Local LRU cache class, used to remove dependency on android.util.LruCache.
+     */
+    @SuppressWarnings("serial")
+    private static class LruCache<K, V> extends LinkedHashMap<K, V> {
+        private final int maxSize;
+
+        LruCache(final int maxSize) {
+            super(0, 0.75f, true);
+            this.maxSize = maxSize;
+        }
+
+        @Override
+        protected boolean removeEldestEntry(final Map.Entry<K, V> eldest) {
+            return super.size() > maxSize;
+        }
+    }
 }

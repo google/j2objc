@@ -469,7 +469,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   sun/misc/Unsafe.java
 
 JAVA_PRIVATE_SOURCES_CORE = \
-  android/util/LruCache.java \
   com/google/j2objc/net/IosHttpHandler.java \
   com/google/j2objc/net/IosHttpURLConnection.java \
   com/google/j2objc/net/IosHttpsHandler.java \
@@ -1135,50 +1134,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   javax/security/cert/X509Certificate.java
 
 JAVA_PRIVATE_SOURCES_NON_CORE = \
-  android/os/AsyncTask.java \
-  android/os/SystemClock.java \
-  android/test/suitebuilder/annotation/LargeTest.java \
-  android/test/suitebuilder/annotation/MediumTest.java \
-  android/test/suitebuilder/annotation/SmallTest.java \
-  android/test/suitebuilder/annotation/Smoke.java \
-  android/test/suitebuilder/annotation/Suppress.java \
-  android/text/Editable.java \
-  android/text/GetChars.java \
-  android/text/InputFilter.java \
-  android/text/InputType.java \
-  android/text/NoCopySpan.java \
-  android/text/Selection.java \
-  android/text/SpanSet.java \
-  android/text/SpanWatcher.java \
-  android/text/Spannable.java \
-  android/text/SpannableString.java \
-  android/text/SpannableStringBuilder.java \
-  android/text/SpannableStringInternal.java \
-  android/text/Spanned.java \
-  android/text/SpannedString.java \
-  android/text/TextUtils.java \
-  android/text/TextWatcher.java \
-  android/text/util/Rfc822Token.java \
-  android/text/util/Rfc822Tokenizer.java \
-  android/util/ArrayMap.java \
-  android/util/ArraySet.java \
-  android/util/Base64.java \
-  android/util/Base64DataException.java \
-  android/util/Base64InputStream.java \
-  android/util/Base64OutputStream.java \
-  android/util/ContainerHelpers.java \
-  android/util/Log.java \
-  android/util/MapCollections.java \
-  android/util/Pair.java \
-  android/util/Printer.java \
-  android/util/SparseArray.java \
-  android/util/SparseBooleanArray.java \
-  android/util/SparseIntArray.java \
-  android/util/SparseLongArray.java \
-  com/android/internal/util/ArrayUtils.java \
-  com/google/android/collect/Lists.java \
-  com/google/android/collect/Maps.java \
-  com/google/android/collect/Sets.java \
   java/awt/font/NumericShaper.java \
   java/awt/font/TextAttribute.java \
   java/beans/StandardBeanInfo.java \
@@ -1274,10 +1229,61 @@ JAVA_PRIVATE_SOURCES_NON_CORE = \
   org/json/JSONStringer.java \
   org/json/JSONTokener.java
 
+ANDROID_PUBLIC_SOURCES = \
+  android/os/AsyncTask.java \
+  android/os/SystemClock.java \
+  android/test/suitebuilder/annotation/LargeTest.java \
+  android/test/suitebuilder/annotation/MediumTest.java \
+  android/test/suitebuilder/annotation/SmallTest.java \
+  android/test/suitebuilder/annotation/Smoke.java \
+  android/test/suitebuilder/annotation/Suppress.java \
+  android/text/Editable.java \
+  android/text/GetChars.java \
+  android/text/InputFilter.java \
+  android/text/InputType.java \
+  android/text/NoCopySpan.java \
+  android/text/Selection.java \
+  android/text/SpanSet.java \
+  android/text/SpanWatcher.java \
+  android/text/Spannable.java \
+  android/text/SpannableString.java \
+  android/text/SpannableStringBuilder.java \
+  android/text/Spanned.java \
+  android/text/SpannedString.java \
+  android/text/TextUtils.java \
+  android/text/TextWatcher.java \
+  android/text/util/Rfc822Token.java \
+  android/text/util/Rfc822Tokenizer.java \
+  android/util/ArrayMap.java \
+  android/util/ArraySet.java \
+  android/util/Base64.java \
+  android/util/Base64DataException.java \
+  android/util/Base64InputStream.java \
+  android/util/Base64OutputStream.java \
+  android/util/Log.java \
+  android/util/LruCache.java \
+  android/util/MapCollections.java \
+  android/util/Pair.java \
+  android/util/Printer.java \
+  android/util/SparseArray.java \
+  android/util/SparseBooleanArray.java \
+  android/util/SparseIntArray.java \
+  android/util/SparseLongArray.java \
+
+ANDROID_PRIVATE_SOURCES = \
+  android/text/SpannableStringInternal.java \
+  android/util/ContainerHelpers.java \
+  com/android/internal/util/ArrayUtils.java \
+  com/google/android/collect/Lists.java \
+  com/google/android/collect/Maps.java \
+  com/google/android/collect/Sets.java \
+
 JAVA_SOURCES_CORE = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PRIVATE_SOURCES_CORE)
 JAVA_SOURCES_NON_CORE = $(JAVA_PUBLIC_SOURCES_NON_CORE) $(JAVA_PRIVATE_SOURCES_NON_CORE)
 JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PRIVATE_SOURCES_XML)
+JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 
-JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_XML) $(JAVA_SOURCES_NON_CORE)
+JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_XML) $(JAVA_SOURCES_NON_CORE) \
+  $(JAVA_SOURCES_ANDROID)
 JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PUBLIC_SOURCES_XML) \
-  $(JAVA_PUBLIC_SOURCES_NON_CORE)
+  $(JAVA_PUBLIC_SOURCES_NON_CORE) $(ANDROID_PUBLIC_SOURCES)
