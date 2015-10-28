@@ -17,9 +17,6 @@
 
 package java.net;
 
-import com.google.j2objc.net.IosHttpHandler;
-import com.google.j2objc.net.IosHttpsHandler;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -27,7 +24,6 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Hashtable;
 
-import libcore.net.url.FileHandler;
 import libcore.net.url.UrlUtils;
 
 /**
@@ -75,6 +71,7 @@ public final class URL implements Serializable {
     private static final long serialVersionUID = -7627629688361524110L;
 
     private static URLStreamHandlerFactory streamHandlerFactory;
+    private static URLStreamHandlerFactory iosStreamHandlerFactory;
 
     /** Cache of protocols to their handlers */
     private static final Hashtable<String, URLStreamHandler> streamHandlers
@@ -100,6 +97,15 @@ public final class URL implements Serializable {
      */
     private transient int hashCode;
 
+    static {
+        try {
+            Class<?> loaderClass =
+                Class.forName("com.google.j2objc.net.IosURLStreamHandlerFactory");
+            iosStreamHandlerFactory = (URLStreamHandlerFactory) loaderClass.newInstance();
+        } catch (Exception e) {
+        }
+    }
+
     /**
      * Sets the stream handler factory for this VM.
      *
@@ -110,8 +116,12 @@ public final class URL implements Serializable {
         if (streamHandlerFactory != null) {
             throw new Error("Factory already set");
         }
-        streamHandlers.clear();
-        streamHandlerFactory = factory;
+        resetURLStreamHandlerFactory(factory);
+    }
+
+    private static void resetURLStreamHandlerFactory(URLStreamHandlerFactory factory) {
+      streamHandlers.clear();
+      streamHandlerFactory = factory;
     }
 
     /**
@@ -419,25 +429,12 @@ public final class URL implements Serializable {
         }
 
         // Fall back to a built-in stream handler if the user didn't supply one
-        if (protocol.equals("file")) {
-            streamHandler = new FileHandler();
-        } else if (protocol.equals("http")) {
-            try {
-                streamHandler = new IosHttpHandler();
-            } catch (Exception e) {
-                throw new AssertionError(e);
-            }
-        } else if (protocol.equals("https")) {
-            try {
-              streamHandler = new IosHttpsHandler();
-            } catch (Exception e) {
-                throw new AssertionError(e);
-            }
-        // TODO(tball): enable as other stream handlers are implemented.
-//      } else if (protocol.equals("ftp")) {
-//          streamHandler = new FtpHandler();
-//      } else if (protocol.equals("jar")) {
-//          streamHandler = new JarHandler();
+        if (iosStreamHandlerFactory != null) {
+          streamHandler = iosStreamHandlerFactory.createURLStreamHandler(protocol);
+          if (streamHandler != null) {
+              streamHandlers.put(protocol, streamHandler);
+              return;
+          }
         }
         if (streamHandler != null) {
             streamHandlers.put(protocol, streamHandler);
@@ -456,7 +453,7 @@ public final class URL implements Serializable {
     /**
      * Equivalent to {@code openConnection().getContent(types)}.
      */
-    @SuppressWarnings("unchecked") // Param not generic in spec
+    @SuppressWarnings("rawtypes") // Param not generic in spec
     public final Object getContent(Class[] types) throws IOException {
         return openConnection().getContent(types);
     }

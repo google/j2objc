@@ -27,7 +27,6 @@ import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,7 +46,7 @@ import java.util.Map;
 ]-*/
 
 /**
- * HttpURLConnection implementation for iOS, using NSURLConnection.
+ * HttpURLConnection implementation for iOS, using NSURLSession.
  *
  * @author Tom Ball
  */
@@ -106,7 +105,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
       getResponse();
       return getHeaderFieldsDoNotForceResponse();
     } catch (IOException e) {
-      return Collections.EMPTY_MAP;
+      return Collections.emptyMap();
     }
   }
 

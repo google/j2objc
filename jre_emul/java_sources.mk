@@ -422,9 +422,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/security/PermissionCollection.java
 
 JAVA_PRIVATE_SOURCES_CORE = \
-  com/google/j2objc/net/IosHttpHandler.java \
-  com/google/j2objc/net/IosHttpURLConnection.java \
-  com/google/j2objc/net/IosHttpsHandler.java \
   com/google/j2objc/util/ScopedLocalRef.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
@@ -511,8 +508,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/io/StructUtsname.java \
   libcore/net/MimeUtils.java \
   libcore/net/UriCodec.java \
-  libcore/net/url/FileHandler.java \
-  libcore/net/url/FileURLConnection.java \
   libcore/net/url/UrlUtils.java \
   libcore/reflect/GenericArrayTypeImpl.java \
   libcore/reflect/GenericSignatureParser.java \
@@ -1216,6 +1211,11 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   javax/net/ssl/X509TrustManager.java
 
 JAVA_PRIVATE_SOURCES_NON_CORE = \
+  com/google/j2objc/net/IosHttpHandler.java \
+  com/google/j2objc/net/IosHttpURLConnection.java \
+  com/google/j2objc/net/IosHttpsHandler.java \
+  com/google/j2objc/net/IosHttpsURLConnection.java \
+  com/google/j2objc/net/IosURLStreamHandlerFactory.java \
   java/awt/font/NumericShaper.java \
   java/awt/font/TextAttribute.java \
   java/beans/StandardBeanInfo.java \
@@ -1224,6 +1224,8 @@ JAVA_PRIVATE_SOURCES_NON_CORE = \
   libcore/io/Base64.java \
   libcore/io/BufferIterator.java \
   libcore/io/HeapBufferIterator.java \
+  libcore/net/url/FileHandler.java \
+  libcore/net/url/FileURLConnection.java \
   libcore/net/http/HttpDate.java \
   libcore/util/CountingOutputStream.java \
   org/apache/harmony/beans/BeansUtils.java \

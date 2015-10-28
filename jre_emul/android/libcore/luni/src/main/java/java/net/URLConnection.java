@@ -216,7 +216,7 @@ public abstract class URLConnection {
      *             if an error occurs obtaining the content.
      */
     // Param is not generic in spec
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
     public Object getContent(Class[] types) throws IOException {
         if (!connected) {
             connect();

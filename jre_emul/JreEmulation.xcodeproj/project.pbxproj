@@ -13,53 +13,52 @@
 		0600C0161B715D13005FDEF9 /* SmallTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C00D1B715CB4005FDEF9 /* SmallTests.m */; };
 		0600C0171B715D13005FDEF9 /* SuperMethodReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C00F1B715CB4005FDEF9 /* SuperMethodReferenceTest.m */; };
 		0600C0181B715D13005FDEF9 /* TypeMethodReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C0111B715CB4005FDEF9 /* TypeMethodReferenceTest.m */; };
-		0615D3DF1BD83E7300132067 /* AllTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B11BD83E7300132067 /* AllTests.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3E01BD83E7300132067 /* BeanDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B21BD83E7300132067 /* BeanDescriptorTest.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3E11BD83E7300132067 /* EventSetDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B31BD83E7300132067 /* EventSetDescriptorTest.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3E21BD83E7300132067 /* FeatureDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B41BD83E7300132067 /* FeatureDescriptorTest.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3E31BD83E7300132067 /* IndexedPropertyDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B51BD83E7300132067 /* IndexedPropertyDescriptorTest.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3E41BD83E7300132067 /* IntrospectionExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B61BD83E7300132067 /* IntrospectionExceptionTest.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3E51BD83E7300132067 /* IntrospectorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B71BD83E7300132067 /* IntrospectorTest.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3E61BD83E7300132067 /* MethodDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B81BD83E7300132067 /* MethodDescriptorTest.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3E71BD83E7300132067 /* ParameterDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B91BD83E7300132067 /* ParameterDescriptorTest.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3E81BD83E7300132067 /* PropertyVetoExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BA1BD83E7300132067 /* PropertyVetoExceptionTest.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3E91BD83E7300132067 /* SimpleBeanInfoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BB1BD83E7300132067 /* SimpleBeanInfoTest.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3EA1BD83E7300132067 /* MisprintBean.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BC1BD83E7300132067 /* MisprintBean.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3EB1BD83E7300132067 /* MisprintEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BD1BD83E7300132067 /* MisprintEvent.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3EC1BD83E7300132067 /* MisprintListenerr.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BE1BD83E7300132067 /* MisprintListenerr.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3ED1BD83E7300132067 /* FakeFox.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BF1BD83E7300132067 /* FakeFox.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3EE1BD83E7300132067 /* FakeFox01.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C01BD83E7300132067 /* FakeFox01.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3EF1BD83E7300132067 /* FakeFox01BeanInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C11BD83E7300132067 /* FakeFox01BeanInfo.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3F01BD83E7300132067 /* FakeFox02.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C21BD83E7300132067 /* FakeFox02.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3F11BD83E7300132067 /* FakeFox02BeanInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C31BD83E7300132067 /* FakeFox02BeanInfo.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3F21BD83E7300132067 /* FakeFox04.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C41BD83E7300132067 /* FakeFox04.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3F31BD83E7300132067 /* FakeFox011.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C51BD83E7300132067 /* FakeFox011.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3F41BD83E7300132067 /* FakeFox031.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C61BD83E7300132067 /* FakeFox031.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3F51BD83E7300132067 /* FakeFox041.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C71BD83E7300132067 /* FakeFox041.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3F61BD83E7300132067 /* FakeFox0411.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C81BD83E7300132067 /* FakeFox0411.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3F71BD83E7300132067 /* MockHomonymySubject.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C91BD83E7300132067 /* MockHomonymySubject.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3F81BD83E7300132067 /* MockHomonymySubject.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CA1BD83E7300132067 /* MockHomonymySubject.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3F91BD83E7300132067 /* MockButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CB1BD83E7300132067 /* MockButton.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3FA1BD83E7300132067 /* MockFakeListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CC1BD83E7300132067 /* MockFakeListener.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3FB1BD83E7300132067 /* MockFoo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CD1BD83E7300132067 /* MockFoo.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3FC1BD83E7300132067 /* MockFooButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CE1BD83E7300132067 /* MockFooButton.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3FD1BD83E7300132067 /* MockFooChild.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CF1BD83E7300132067 /* MockFooChild.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3FE1BD83E7300132067 /* MockFooLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D01BD83E7300132067 /* MockFooLabel.m */; settings = {ASSET_TAGS = (); }; };
-		0615D3FF1BD83E7300132067 /* MockFooStop.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D11BD83E7300132067 /* MockFooStop.m */; settings = {ASSET_TAGS = (); }; };
-		0615D4001BD83E7300132067 /* MockFooSub.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D21BD83E7300132067 /* MockFooSub.m */; settings = {ASSET_TAGS = (); }; };
-		0615D4011BD83E7300132067 /* MockFooSubSub.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D31BD83E7300132067 /* MockFooSubSub.m */; settings = {ASSET_TAGS = (); }; };
-		0615D4021BD83E7300132067 /* MockInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D41BD83E7300132067 /* MockInterface.m */; settings = {ASSET_TAGS = (); }; };
-		0615D4031BD83E7300132067 /* MockNullSubClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D51BD83E7300132067 /* MockNullSubClass.m */; settings = {ASSET_TAGS = (); }; };
-		0615D4041BD83E7300132067 /* MockNullSuperClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D61BD83E7300132067 /* MockNullSuperClass.m */; settings = {ASSET_TAGS = (); }; };
-		0615D4051BD83E7300132067 /* MockPropertyChangeListener2.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D71BD83E7300132067 /* MockPropertyChangeListener2.m */; settings = {ASSET_TAGS = (); }; };
-		0615D4061BD83E7300132067 /* MockPropertyChangeValidListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D81BD83E7300132067 /* MockPropertyChangeValidListener.m */; settings = {ASSET_TAGS = (); }; };
-		0615D4071BD83E7300132067 /* MockSubClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D91BD83E7300132067 /* MockSubClass.m */; settings = {ASSET_TAGS = (); }; };
-		0615D4081BD83E7300132067 /* MockSuperClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3DA1BD83E7300132067 /* MockSuperClass.m */; settings = {ASSET_TAGS = (); }; };
-		0615D4091BD83E7300132067 /* OtherBean.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3DB1BD83E7300132067 /* OtherBean.m */; settings = {ASSET_TAGS = (); }; };
-		0615D40A1BD83E7300132067 /* SampleBean.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3DC1BD83E7300132067 /* SampleBean.m */; settings = {ASSET_TAGS = (); }; };
-		0615D40B1BD83E7300132067 /* SampleEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3DD1BD83E7300132067 /* SampleEvent.m */; settings = {ASSET_TAGS = (); }; };
-		0615D40C1BD83E7300132067 /* SampleListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3DE1BD83E7300132067 /* SampleListener.m */; settings = {ASSET_TAGS = (); }; };
-		0615D40E1BD83FF700132067 /* PropertyChangeSupportTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D40D1BD83FF700132067 /* PropertyChangeSupportTest.m */; settings = {ASSET_TAGS = (); }; };
+		0615D3DF1BD83E7300132067 /* AllTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B11BD83E7300132067 /* AllTests.m */; };
+		0615D3E01BD83E7300132067 /* BeanDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B21BD83E7300132067 /* BeanDescriptorTest.m */; };
+		0615D3E11BD83E7300132067 /* EventSetDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B31BD83E7300132067 /* EventSetDescriptorTest.m */; };
+		0615D3E21BD83E7300132067 /* FeatureDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B41BD83E7300132067 /* FeatureDescriptorTest.m */; };
+		0615D3E31BD83E7300132067 /* IndexedPropertyDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B51BD83E7300132067 /* IndexedPropertyDescriptorTest.m */; };
+		0615D3E41BD83E7300132067 /* IntrospectionExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B61BD83E7300132067 /* IntrospectionExceptionTest.m */; };
+		0615D3E51BD83E7300132067 /* IntrospectorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B71BD83E7300132067 /* IntrospectorTest.m */; };
+		0615D3E61BD83E7300132067 /* MethodDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B81BD83E7300132067 /* MethodDescriptorTest.m */; };
+		0615D3E71BD83E7300132067 /* ParameterDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B91BD83E7300132067 /* ParameterDescriptorTest.m */; };
+		0615D3E81BD83E7300132067 /* PropertyVetoExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BA1BD83E7300132067 /* PropertyVetoExceptionTest.m */; };
+		0615D3E91BD83E7300132067 /* SimpleBeanInfoTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BB1BD83E7300132067 /* SimpleBeanInfoTest.m */; };
+		0615D3EA1BD83E7300132067 /* MisprintBean.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BC1BD83E7300132067 /* MisprintBean.m */; };
+		0615D3EB1BD83E7300132067 /* MisprintEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BD1BD83E7300132067 /* MisprintEvent.m */; };
+		0615D3EC1BD83E7300132067 /* MisprintListenerr.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BE1BD83E7300132067 /* MisprintListenerr.m */; };
+		0615D3ED1BD83E7300132067 /* FakeFox.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3BF1BD83E7300132067 /* FakeFox.m */; };
+		0615D3EE1BD83E7300132067 /* FakeFox01.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C01BD83E7300132067 /* FakeFox01.m */; };
+		0615D3EF1BD83E7300132067 /* FakeFox01BeanInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C11BD83E7300132067 /* FakeFox01BeanInfo.m */; };
+		0615D3F01BD83E7300132067 /* FakeFox02.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C21BD83E7300132067 /* FakeFox02.m */; };
+		0615D3F11BD83E7300132067 /* FakeFox02BeanInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C31BD83E7300132067 /* FakeFox02BeanInfo.m */; };
+		0615D3F21BD83E7300132067 /* FakeFox04.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C41BD83E7300132067 /* FakeFox04.m */; };
+		0615D3F31BD83E7300132067 /* FakeFox011.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C51BD83E7300132067 /* FakeFox011.m */; };
+		0615D3F41BD83E7300132067 /* FakeFox031.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C61BD83E7300132067 /* FakeFox031.m */; };
+		0615D3F51BD83E7300132067 /* FakeFox041.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C71BD83E7300132067 /* FakeFox041.m */; };
+		0615D3F61BD83E7300132067 /* FakeFox0411.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C81BD83E7300132067 /* FakeFox0411.m */; };
+		0615D3F71BD83E7300132067 /* MockHomonymySubject.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3C91BD83E7300132067 /* MockHomonymySubject.m */; };
+		0615D3F81BD83E7300132067 /* MockHomonymySubject.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CA1BD83E7300132067 /* MockHomonymySubject.m */; };
+		0615D3F91BD83E7300132067 /* MockButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CB1BD83E7300132067 /* MockButton.m */; };
+		0615D3FA1BD83E7300132067 /* MockFakeListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CC1BD83E7300132067 /* MockFakeListener.m */; };
+		0615D3FB1BD83E7300132067 /* MockFoo.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CD1BD83E7300132067 /* MockFoo.m */; };
+		0615D3FC1BD83E7300132067 /* MockFooButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CE1BD83E7300132067 /* MockFooButton.m */; };
+		0615D3FD1BD83E7300132067 /* MockFooChild.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3CF1BD83E7300132067 /* MockFooChild.m */; };
+		0615D3FE1BD83E7300132067 /* MockFooLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D01BD83E7300132067 /* MockFooLabel.m */; };
+		0615D3FF1BD83E7300132067 /* MockFooStop.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D11BD83E7300132067 /* MockFooStop.m */; };
+		0615D4001BD83E7300132067 /* MockFooSub.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D21BD83E7300132067 /* MockFooSub.m */; };
+		0615D4011BD83E7300132067 /* MockFooSubSub.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D31BD83E7300132067 /* MockFooSubSub.m */; };
+		0615D4021BD83E7300132067 /* MockInterface.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D41BD83E7300132067 /* MockInterface.m */; };
+		0615D4031BD83E7300132067 /* MockNullSubClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D51BD83E7300132067 /* MockNullSubClass.m */; };
+		0615D4041BD83E7300132067 /* MockNullSuperClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D61BD83E7300132067 /* MockNullSuperClass.m */; };
+		0615D4051BD83E7300132067 /* MockPropertyChangeListener2.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D71BD83E7300132067 /* MockPropertyChangeListener2.m */; };
+		0615D4061BD83E7300132067 /* MockPropertyChangeValidListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D81BD83E7300132067 /* MockPropertyChangeValidListener.m */; };
+		0615D4071BD83E7300132067 /* MockSubClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3D91BD83E7300132067 /* MockSubClass.m */; };
+		0615D4081BD83E7300132067 /* MockSuperClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3DA1BD83E7300132067 /* MockSuperClass.m */; };
+		0615D4091BD83E7300132067 /* OtherBean.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3DB1BD83E7300132067 /* OtherBean.m */; };
+		0615D40A1BD83E7300132067 /* SampleBean.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3DC1BD83E7300132067 /* SampleBean.m */; };
+		0615D40B1BD83E7300132067 /* SampleEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3DD1BD83E7300132067 /* SampleEvent.m */; };
+		0615D40C1BD83E7300132067 /* SampleListener.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3DE1BD83E7300132067 /* SampleListener.m */; };
 		0616608B1A40DD1400972BBD /* SerializationTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0616608A1A40DD1400972BBD /* SerializationTest.m */; };
 		061AA0CF19FEF01800457D2B /* package-info.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CD19FEF01800457D2B /* package-info.m */; };
 		061AA0D019FEF01800457D2B /* PackageTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 061AA0CE19FEF01800457D2B /* PackageTest.m */; };
@@ -203,7 +202,7 @@
 		06CBF5891AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5651AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.m */; };
 		06CBF58B1AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5681AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m */; };
 		06CBF58D1AFBEE2400CA582D /* WildcardTypeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF56B1AFBEE2400CA582D /* WildcardTypeTest.m */; };
-		06DCF2621BD008BA00615BD2 /* DatagramChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DCF2611BD008BA00615BD2 /* DatagramChannelTest.m */; settings = {ASSET_TAGS = (); }; };
+		06DCF2621BD008BA00615BD2 /* DatagramChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DCF2611BD008BA00615BD2 /* DatagramChannelTest.m */; };
 		06E4E6B2197F1D47005DDE69 /* AbstractExecutorServiceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */; };
 		06E4E6B3197F1D47005DDE69 /* AbstractQueuedSynchronizerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E368197F1D46005DDE69 /* AbstractQueuedSynchronizerTest.m */; };
 		06E4E6B4197F1D47005DDE69 /* AbstractQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E36A197F1D46005DDE69 /* AbstractQueueTest.m */; };
@@ -3266,6 +3265,10 @@
 		06E685D81A2FC550006F8791 /* StringBuilderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = StringBuilderTest.m; path = org/apache/harmony/luni/tests/java/lang/StringBuilderTest.m; sourceTree = "<group>"; };
 		06E9874C199BDC23008016E2 /* IosSecureRandomImplTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = IosSecureRandomImplTest.h; path = com/google/j2objc/security/IosSecureRandomImplTest.h; sourceTree = "<group>"; };
 		06E9874D199BDC23008016E2 /* IosSecureRandomImplTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = IosSecureRandomImplTest.m; path = com/google/j2objc/security/IosSecureRandomImplTest.m; sourceTree = "<group>"; };
+		06E9E7ED1BE133C900F7BEB2 /* IosHttpsURLConnection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosHttpsURLConnection.m; path = build_result/Classes/com/google/j2objc/net/IosHttpsURLConnection.m; sourceTree = "<group>"; };
+		06E9E7EE1BE14CC100F7BEB2 /* IosHttpsURLConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosHttpsURLConnection.h; path = build_result/Classes/com/google/j2objc/net/IosHttpsURLConnection.h; sourceTree = "<group>"; };
+		06E9E7EF1BE14CC100F7BEB2 /* IosURLStreamHandlerFactory.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IosURLStreamHandlerFactory.h; path = build_result/Classes/com/google/j2objc/net/IosURLStreamHandlerFactory.h; sourceTree = "<group>"; };
+		06E9E7F01BE14CC100F7BEB2 /* IosURLStreamHandlerFactory.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = IosURLStreamHandlerFactory.m; path = build_result/Classes/com/google/j2objc/net/IosURLStreamHandlerFactory.m; sourceTree = "<group>"; };
 		06ED3D4617D163F80014750E /* IOSConcreteClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSConcreteClass.h; sourceTree = "<group>"; };
 		06ED3D4717D163F80014750E /* IOSConcreteClass.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSConcreteClass.m; sourceTree = "<group>"; };
 		06ED3D4817D163F80014750E /* IOSProtocolClass.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSProtocolClass.h; sourceTree = "<group>"; };
@@ -5106,6 +5109,8 @@
 				06C73D9419180C0C001D3CC8 /* IosHttpHandler.m */,
 				06C73D9519180C0C001D3CC8 /* IosHttpsHandler.h */,
 				06C73D9619180C0C001D3CC8 /* IosHttpsHandler.m */,
+				06E9E7EE1BE14CC100F7BEB2 /* IosHttpsURLConnection.h */,
+				06E9E7ED1BE133C900F7BEB2 /* IosHttpsURLConnection.m */,
 				06C73D9719180C0C001D3CC8 /* IosHttpURLConnection.h */,
 				06C73D9819180C0C001D3CC8 /* IosHttpURLConnection.m */,
 				0699FF8618D7851500278029 /* IOSLogHandler.h */,
@@ -5124,6 +5129,8 @@
 				06F28FE618972C2300676F1D /* IosSecurityProvider.m */,
 				06F28FE718972C2300676F1D /* IosSHAMessageDigest.h */,
 				06F28FE818972C2300676F1D /* IosSHAMessageDigest.m */,
+				06E9E7EF1BE14CC100F7BEB2 /* IosURLStreamHandlerFactory.h */,
+				06E9E7F01BE14CC100F7BEB2 /* IosURLStreamHandlerFactory.m */,
 				0649A5DA1AE076CC00DE2494 /* IosX509Certificate.h */,
 				0649A5DB1AE076CC00DE2494 /* IosX509Certificate.m */,
 				06ED3DEC17D1669D0014750E /* IoUtils.h */,
@@ -8195,7 +8202,6 @@
 				06E4E711197F1D47005DDE69 /* OldInputStreamTest.m in Sources */,
 				06E4E7A3197F1D48005DDE69 /* ModifierTest.m in Sources */,
 				06574A901A8EB150000A3616 /* PKCS8EncodedKeySpecTest.m in Sources */,
-				0615D40E1BD83FF700132067 /* PropertyChangeSupportTest.m in Sources */,
 				06574A3D1A8EB04A000A3616 /* AlgorithmParametersSpiTest.m in Sources */,
 				06E4E808197F1D48005DDE69 /* TimerTaskTest.m in Sources */,
 				06E4E75F197F1D47005DDE69 /* OldAndroidDeflateTest.m in Sources */,

@@ -17,25 +17,29 @@
 
 package com.google.j2objc.net;
 
-import java.io.IOException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLStreamHandler;
+import java.net.URLStreamHandlerFactory;
+
+import libcore.net.url.FileHandler;
 
 /**
- * HTTPS handler that uses IosHttpsURLConnection.
- *
- * @author Tom Ball
+ * Dynamically load iOS stream handling classes. This class is public so that
+ * apps can add an explicit dependency to force load this class.
  */
-public final class IosHttpsHandler extends URLStreamHandler {
+public class IosURLStreamHandlerFactory implements URLStreamHandlerFactory {
 
   @Override
-  protected URLConnection openConnection(URL url) throws IOException {
-    return new IosHttpsURLConnection(url);
+  public URLStreamHandler createURLStreamHandler(String protocol) {
+    if (protocol.equals("http")) {
+      return new IosHttpHandler();
+    }
+    if (protocol.equals("https")) {
+      return new IosHttpsHandler();
+    }
+    if (protocol.equals("file")) {
+      return new FileHandler();
+    }
+    return null;
   }
 
-  @Override
-  protected int getDefaultPort() {
-    return 443;
-  }
 }
