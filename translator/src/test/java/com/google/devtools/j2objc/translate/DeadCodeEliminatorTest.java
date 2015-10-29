@@ -69,7 +69,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  }\n"
         + "}\n";
     DeadCodeMap map = DeadCodeMap.builder()
-        .addDeadMethod("A$B", "A$B", "(I)V")
+        .addDeadMethod("A$B", "A$B", "(LA;I)V")
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.m");
