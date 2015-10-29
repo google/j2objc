@@ -155,7 +155,7 @@ public class DeadCodeEliminator extends TreeVisitor {
         }
         IMethodBinding binding = method.getMethodBinding();
         String name = getProGuardName(binding);
-        String signature = BindingUtil.getSignature(binding);
+        String signature = BindingUtil.getProGuardSignature(binding);
         if (deadCodeMap.isDeadMethod(clazz, name, signature)) {
           if (method.isConstructor()) {
             deadCodeMap.addConstructorRemovedClass(clazz);

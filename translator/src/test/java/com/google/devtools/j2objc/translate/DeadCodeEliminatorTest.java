@@ -69,7 +69,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  }\n"
         + "}\n";
     DeadCodeMap map = DeadCodeMap.builder()
-        .addDeadMethod("A$B", "A$B", "(I)V")
+        .addDeadMethod("A$B", "A$B", "(LA;I)V")
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.m");
@@ -221,5 +221,33 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(translation, "- (void)f");
     assertTranslation(translation, "Foo_Baz_init");
     assertNotInTranslation(translation, "- (void)g");
+  }
+
+  public void testDeadClass_DeadInnerClassConstructor() throws IOException {
+    DeadCodeMap map = DeadCodeMap.builder()
+        .addDeadField("Foo$A", "z")
+        .addDeadField("Foo$A", "this$0")
+        .addDeadMethod("Foo$A", "Foo$A", "(LFoo;I)V")
+        .addDeadMethod("Foo$A", "f", "()I")
+        .build();
+    setDeadCodeMap(map);
+    String source = "public class Foo {\n"
+        + "  int y;\n"
+        + "  public Foo(int x) { y = x; }\n"
+        + "\n"
+        + "  class A {\n"
+        + "    int z;\n"
+        + "    A(int x) { z = x; }\n"
+        + "    int f() { return z + y; }\n"
+        + "  }\n"
+        + "}\n";
+    String translation = translateSourceFile(source, "Foo", "Foo.h");
+    assertTranslation(translation, "@interface Foo_A");
+    assertNotInTranslation(translation, "z_;");
+    translation = getTranslatedFile("Foo.m");
+    assertNotInTranslation(translation, "Foo *this$0_;");
+    assertNotInTranslation(translation, "JreStrongAssign(&self->this$0_, outer$");
+    assertNotInTranslation(translation, "self->z_ = x;");
+    assertNotInTranslation(translation, "- (jint)f");
   }
 }

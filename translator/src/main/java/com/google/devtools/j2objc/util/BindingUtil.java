@@ -311,14 +311,47 @@ public final class BindingUtil {
 
   public static String getSignature(IMethodBinding binding) {
     StringBuilder sb = new StringBuilder("(");
-    for (ITypeBinding parameter : binding.getParameterTypes()) {
-      appendParameterSignature(parameter.getErasure(), sb);
-    }
+    appendParametersSignature(binding, sb);
     sb.append(')');
+    appendReturnTypeSignature(binding, sb);
+    return sb.toString();
+  }
+
+  /**
+   * Get a method's signature for dead code elimination purposes.
+   *
+   * Since DeadCodeEliminator runs before InnerClassExtractor, inner class constructors do not yet
+   * have the parameter for capturing outer class, and therefore we need this special case.
+   */
+  public static String getProGuardSignature(IMethodBinding binding) {
+    StringBuilder sb = new StringBuilder("(");
+
+    // If the method is an inner class constructor, prepend the outer class type.
+    if (binding.isConstructor()) {
+      ITypeBinding declClass = binding.getDeclaringClass();
+      ITypeBinding outerClass = declClass.getDeclaringClass();
+      if (outerClass != null && !declClass.isInterface() && !declClass.isAnnotation()
+          && !Modifier.isStatic(declClass.getModifiers())) {
+        appendParameterSignature(outerClass.getErasure(), sb);
+      }
+    }
+
+    appendParametersSignature(binding, sb);
+    sb.append(')');
+    appendReturnTypeSignature(binding, sb);
+    return sb.toString();
+  }
+
+  private static void appendReturnTypeSignature(IMethodBinding binding, StringBuilder sb) {
     if (binding.getReturnType() != null) {
       appendParameterSignature(binding.getReturnType().getErasure(), sb);
     }
-    return sb.toString();
+  }
+
+  private static void appendParametersSignature(IMethodBinding binding, StringBuilder sb) {
+    for (ITypeBinding parameter : binding.getParameterTypes()) {
+      appendParameterSignature(parameter.getErasure(), sb);
+    }
   }
 
   private static void appendParameterSignature(ITypeBinding parameter, StringBuilder sb) {
