@@ -1255,6 +1255,7 @@ ANDROID_PUBLIC_SOURCES = \
   android/text/Spannable.java \
   android/text/SpannableString.java \
   android/text/SpannableStringBuilder.java \
+  android/text/SpannableStringInternal.java \
   android/text/Spanned.java \
   android/text/SpannedString.java \
   android/text/TextUtils.java \
@@ -1278,7 +1279,6 @@ ANDROID_PUBLIC_SOURCES = \
   android/util/SparseLongArray.java \
 
 ANDROID_PRIVATE_SOURCES = \
-  android/text/SpannableStringInternal.java \
   android/util/ContainerHelpers.java \
   com/android/internal/util/ArrayUtils.java \
   com/google/android/collect/Lists.java \
