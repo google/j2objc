@@ -21,10 +21,12 @@ import static java.lang.Boolean.FALSE;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -42,12 +44,17 @@ public class ConstantBranchPruner extends TreeVisitor {
 
   @Override
   public void endVisit(IfStatement node) {
-    Boolean value = getValue(node.getExpression());
+    Expression expr = node.getExpression();
+    Boolean value = getKnownValue(expr);
     if (value != null) {
+      Expression sideEffects = extractSideEffects(expr);
+      if (sideEffects != null) {
+        TreeUtil.insertBefore(node, new ExpressionStatement(sideEffects));
+      }
       if (value) {
-        node.replaceWith(node.getThenStatement().copy());
+        node.replaceWith(TreeUtil.remove(node.getThenStatement()));
       } else if (node.getElseStatement() != null) {
-        node.replaceWith(node.getElseStatement().copy());
+        node.replaceWith(TreeUtil.remove(node.getElseStatement()));
       } else {
         node.remove();
       }
@@ -61,25 +68,26 @@ public class ConstantBranchPruner extends TreeVisitor {
       return;
     }
     List<Expression> operands = node.getOperands();
-    boolean foundSideEffect = false;
-    for (Iterator<Expression> it = operands.iterator(); it.hasNext(); ) {
-      Expression expr = it.next();
-      foundSideEffect |= TranslationUtil.hasSideEffect(expr);
-      Boolean constantVal = getValue(expr);
-      if (constantVal == null) {
+    int lastSideEffect = -1;
+    for (int i = 0; i < operands.size(); i++) {
+      Expression expr = operands.get(i);
+      if (TranslationUtil.hasSideEffect(expr)) {
+        lastSideEffect = i;
+      }
+      Boolean knownVal = getKnownValue(expr);
+      if (knownVal == null) {
         continue;
       }
-      if (constantVal == (operator == CONDITIONAL_OR)) {
-        // Whole expression evaluates to 'constantVal'.
-        if (!foundSideEffect) {
-          // We can safely prune the whole infix if the precededing expressions
-          // have no side effects.
-          node.replaceWith(new BooleanLiteral(constantVal, typeEnv));
-          return;
+      if (knownVal == (operator == CONDITIONAL_OR)) {
+        // Whole expression evaluates to 'knownVal'.
+        operands.subList(lastSideEffect + 1, operands.size()).clear();
+        if (lastSideEffect < i) {
+          operands.add(new BooleanLiteral(knownVal, typeEnv));
         }
-      } else {
+        break;
+      } else if (lastSideEffect < i) {
         // Else remove unnecessary constant value.
-        it.remove();
+        operands.remove(i--);
       }
     }
 
@@ -102,7 +110,7 @@ public class ConstantBranchPruner extends TreeVisitor {
    */
   @Override
   public void endVisit(PrefixExpression node) {
-    Boolean value = getValue(node.getOperand());
+    Boolean value = getReplaceableValue(node.getOperand());
     if (node.getOperator() == PrefixExpression.Operator.NOT && value != null) {
       node.replaceWith(new BooleanLiteral(!value, typeEnv));
     }
@@ -113,30 +121,97 @@ public class ConstantBranchPruner extends TreeVisitor {
    */
   @Override
   public void endVisit(ParenthesizedExpression node) {
-    if (getValue(node.getExpression()) != null) {
+    if (getReplaceableValue(node.getExpression()) != null) {
       node.replaceWith(node.getExpression().copy());
     }
   }
 
   @Override
   public void endVisit(WhileStatement node) {
-    if (getValue(node.getExpression()) == FALSE) {
-      node.remove();
+    Expression expr = node.getExpression();
+    if (getKnownValue(expr) == FALSE) {
+      Expression sideEffects = extractSideEffects(expr);
+      if (sideEffects != null) {
+        node.replaceWith(new ExpressionStatement(sideEffects));
+      } else {
+        node.remove();
+      }
     }
   }
 
   /**
-   * Returns TRUE or FALSE if expression is a boolean constant, else
-   * null (unknown statically).
+   * Returns TRUE or FALSE if expression is a boolean constant and has no side
+   * effects, else null (unknown statically).
    */
-  private Boolean getValue(Expression expr) {
+  private Boolean getReplaceableValue(Expression expr) {
+    return TranslationUtil.hasSideEffect(expr) ? null : getKnownValue(expr);
+  }
+
+  /**
+   * Returns TRUE of FALSE if 'expr' is a boolean expression and its value is
+   * known statically. The caller should be careful when replacing this
+   * expression as it may have side effects.
+   */
+  private Boolean getKnownValue(Expression expr) {
     Object value = expr.getConstantValue();
     if (value instanceof Boolean) {
       return (Boolean) value;
     }
-    if (expr instanceof BooleanLiteral) {
-      return ((BooleanLiteral) expr).booleanValue();
+    switch (expr.getKind()) {
+      case BOOLEAN_LITERAL:
+        return ((BooleanLiteral) expr).booleanValue();
+      case INFIX_EXPRESSION:
+        {
+          InfixExpression infixExpr = (InfixExpression) expr;
+          InfixExpression.Operator op = infixExpr.getOperator();
+          if (op == CONDITIONAL_AND || op == CONDITIONAL_OR) {
+            // We assume that this node has already been visited and pruned so
+            // if it has a known value, it will be equal to the last operand.
+            List<Expression> operands = infixExpr.getOperands();
+            Boolean lastOperand = getKnownValue(operands.get(operands.size() - 1));
+            if (lastOperand != null && lastOperand.booleanValue() == (op == CONDITIONAL_OR)) {
+              return lastOperand;
+            }
+          }
+          return null;
+        }
+      case PARENTHESIZED_EXPRESSION:
+        return getKnownValue(((ParenthesizedExpression) expr).getExpression());
+      default:
+        return null;
     }
-    return null;
+  }
+
+  /**
+   * Returns an expression containing the side effects of the given expression.
+   * The evaluated result of the expression may differ from the original.
+   */
+  private Expression extractSideEffects(Expression expr) {
+    switch (expr.getKind()) {
+      case INFIX_EXPRESSION:
+        {
+          List<Expression> operands = ((InfixExpression) expr).getOperands();
+          Expression lastOperand = operands.remove(operands.size() - 1);
+          lastOperand = extractSideEffects(lastOperand);
+          if (lastOperand != null) {
+            operands.add(lastOperand);
+          }
+          if (operands.size() == 1) {
+            return operands.remove(0);
+          }
+          return TreeUtil.remove(expr);
+        }
+      case PARENTHESIZED_EXPRESSION:
+        {
+          Expression sideEffects = extractSideEffects(
+              ((ParenthesizedExpression) expr).getExpression());
+          if (sideEffects != null) {
+            return ParenthesizedExpression.parenthesize(sideEffects);
+          }
+          return null;
+        }
+      default:
+        return null;
+    }
   }
 }

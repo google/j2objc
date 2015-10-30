@@ -189,6 +189,10 @@ public final class TranslationUtil {
    * would be unsafe to prune the given node from the tree.
    */
   public static boolean hasSideEffect(Expression expr) {
+    IVariableBinding var = TreeUtil.getVariableBinding(expr);
+    if (var != null && BindingUtil.isVolatile(var)) {
+      return true;
+    }
     switch (expr.getKind()) {
       case BOOLEAN_LITERAL:
       case CHARACTER_LITERAL:

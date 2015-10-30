@@ -151,20 +151,38 @@ public class ConstantBranchPrunerTest extends GenerationTest {
   // Verify method invocation paired with constant is not pruned because methods
   // may have side effects.
   public void testMethodAnd() throws IOException {
-    // TODO(kstanger): Find a way to prune the unreachable branches while
-    // preserving the portions of the expression that have side effects.
     String translation = translateSourceFile(
         "class Test { "
         + "static final boolean DEBUG = true; "
         + "static final boolean NDEBUG = false;"
+        + "boolean b;"
         + "boolean enabled() { return true; }"
         + "int test() { int result; "
-        + "  if (enabled() && NDEBUG) { result = 1; } else { result = 2; }"
+        // The "b" operand should be pruned since it has no side effect.
+        + "  if (enabled() && b && NDEBUG) { result = 1; } else { result = 2; }"
         + "  if (enabled() || DEBUG) { result = 3; } else { result = 4; }"
         + "  return result; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "if ([self enabled] && Test_NDEBUG)");
-    assertTranslation(translation, "if ([self enabled] || Test_DEBUG)");
+    assertTranslatedLines(translation,
+        "[self enabled];",
+        "{",
+        "  result = 2;",
+        "}",
+        "[self enabled];",
+        "{",
+        "  result = 3;",
+        "}");
+  }
+
+  public void testWhileStatementPrunedWithSideEffects() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { boolean getB() { return true; } int test(boolean b) { "
+        + "while (b && (getB() && false)) { return 1; } return 0; } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (jint)testWithBoolean:(jboolean)b {",
+        "  b && ([self getB]);",
+        "  return 0;",
+        "}");
   }
 
   public void testExpressionPruning() throws IOException {
@@ -180,5 +198,14 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         + "  return true; }}", "A", "A.m");
     assertTranslatedLines(translation,
         "- (jboolean)test {", "if (A_nonConstant_) return false;", "return true;", "}");
+  }
+
+  // Verify that volatile loads aren't pruned because they provide a memory
+  // barrier.
+  public void testVolatileLoad() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { volatile int i; boolean test() { return i == 1 && false; } }",
+        "Test", "Test.m");
+    assertTranslation(translation, "return JreLoadVolatileInt(&i_) == 1 && false;");
   }
 }
