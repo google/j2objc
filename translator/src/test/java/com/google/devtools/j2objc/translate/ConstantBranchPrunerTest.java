@@ -164,11 +164,11 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         + "  return result; }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "[self enabled];",
+        "(void) ([self enabled]);",
         "{",
         "  result = 2;",
         "}",
-        "[self enabled];",
+        "(void) ([self enabled]);",
         "{",
         "  result = 3;",
         "}");
@@ -180,7 +180,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         + "while (b && (getB() && false)) { return 1; } return 0; } }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (jint)testWithBoolean:(jboolean)b {",
-        "  b && ([self getB]);",
+        "  (void) (b && ([self getB]));",
         "  return 0;",
         "}");
   }

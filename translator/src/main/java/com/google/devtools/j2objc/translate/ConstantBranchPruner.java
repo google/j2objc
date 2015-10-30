@@ -19,6 +19,7 @@ import static com.google.devtools.j2objc.ast.InfixExpression.Operator.CONDITIONA
 import static java.lang.Boolean.FALSE;
 
 import com.google.devtools.j2objc.ast.BooleanLiteral;
+import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.DoStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
@@ -26,6 +27,7 @@ import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.WhileStatement;
@@ -47,9 +49,9 @@ public class ConstantBranchPruner extends TreeVisitor {
     Expression expr = node.getExpression();
     Boolean value = getKnownValue(expr);
     if (value != null) {
-      Expression sideEffects = extractSideEffects(expr);
+      Statement sideEffects = getSideEffects(expr);
       if (sideEffects != null) {
-        TreeUtil.insertBefore(node, new ExpressionStatement(sideEffects));
+        TreeUtil.insertBefore(node, sideEffects);
       }
       if (value) {
         node.replaceWith(TreeUtil.remove(node.getThenStatement()));
@@ -130,9 +132,9 @@ public class ConstantBranchPruner extends TreeVisitor {
   public void endVisit(WhileStatement node) {
     Expression expr = node.getExpression();
     if (getKnownValue(expr) == FALSE) {
-      Expression sideEffects = extractSideEffects(expr);
+      Statement sideEffects = getSideEffects(expr);
       if (sideEffects != null) {
-        node.replaceWith(new ExpressionStatement(sideEffects));
+        node.replaceWith(sideEffects);
       } else {
         node.remove();
       }
@@ -180,6 +182,19 @@ public class ConstantBranchPruner extends TreeVisitor {
       default:
         return null;
     }
+  }
+
+  /**
+   * Extracts side effects from the given expression and returns the statement
+   * to insert.
+   */
+  private Statement getSideEffects(Expression expr) {
+    Expression sideEffectsExpr = extractSideEffects(expr);
+    if (sideEffectsExpr == null) {
+      return null;
+    }
+    return new ExpressionStatement(new CastExpression(
+        typeEnv.resolveJavaType("void"), ParenthesizedExpression.parenthesize(sideEffectsExpr)));
   }
 
   /**
