@@ -53,6 +53,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testUnicodeHeaderGuardTranslation() throws IOException {
+    Options.setSegmentedHeaders(false);
     // Non-letters should be replaced
     String translation = translateSourceFile(
         "public class ¢ents {}", "¢ents", "¢ents.h");
@@ -221,6 +222,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testCombinedGeneration() throws IOException {
+    Options.setSegmentedHeaders(false);
     addSourceFile("package unit; public class Test {"
             + "    public void Dummy() {}"
             + "}",
@@ -795,6 +797,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
   }
 
   public void testNoForwardDeclarationWhenIncluded() throws IOException {
+    Options.setSegmentedHeaders(false);
     addSourceFile("class Foo { static class Bar { } }", "Foo.java");
     String translation = translateSourceFile(
         "class Test extends Foo { Foo.Bar bar; }", "Test", "Test.h");

@@ -757,7 +757,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "package foo.bar.mumble;\n"
         + "import foo.annotations.Test;",
         "package-info", "foo/bar/mumble/package-info.h");
-    assertTranslation(translation, "_FooBarMumblePackage_info_H_");
     assertTranslatedLines(translation, "/*!", "@brief A package doc-comment.", "*/");
     translation = getTranslatedFile("foo/bar/mumble/package-info.m");
     assertTranslation(translation, "@implementation FooBarMumblepackage_info");
@@ -778,7 +777,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "package foo.bar.mumble;\n"
         + "import foo.annotations.Test;",
         "package-info", "foo/bar/mumble/package-info.h");
-    assertTranslation(translation, "_FooBarMumblePackage_info_H_");
     assertNotInTranslation(translation, "/**");
     translation = getTranslatedFile("foo/bar/mumble/package-info.m");
     assertTranslation(translation, "@implementation FooBarMumblepackage_info");
@@ -793,7 +791,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "/** A package doc-comment. */\n"
         + "package foo.bar.mumble;",
         "package-info", "foo/bar/mumble/package-info.h");
-    assertTranslation(translation, "_FooBarMumblePackage_info_H_");
     assertTranslatedLines(translation, "/*!", "@brief A package doc-comment.", "*/");
     translation = getTranslatedFile("foo/bar/mumble/package-info.m");
     assertNotInTranslation(translation, "@implementation FooBarMumblepackage_info");

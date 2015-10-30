@@ -100,7 +100,14 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   protected void printTypeDeclaration(GeneratedType type) {
     String typeName = type.getTypeName();
     String code = type.getPublicDeclarationCode();
-    if (typeName == null || code.length() == 0) {
+    if (code.length() == 0) {
+      return;
+    }
+    if (typeName == null) {
+      // Must be generated code for a package-info.java file. The header code
+      // will only contain doc-comments, so we skip the header guards.
+      assert type.getHeaderIncludes().isEmpty() && type.getHeaderForwardDeclarations().isEmpty();
+      print(code);
       return;
     }
 

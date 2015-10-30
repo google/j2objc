@@ -741,6 +741,11 @@ public class Options {
     return instance.segmentedHeaders;
   }
 
+  @VisibleForTesting
+  public static void setSegmentedHeaders(boolean b) {
+    instance.segmentedHeaders = b;
+  }
+
   public static boolean jsniWarnings() {
     return instance.jsniWarnings;
   }
