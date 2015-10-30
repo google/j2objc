@@ -170,5 +170,5 @@ endif
 # iOS 9 apps that have the 'Enable bitcode' option set, which is the default for
 # new apps in Xcode 7.
 ifeq ("$(SUPPORTS_BITCODE)", "YES")
-OBJCFLAGS += -fembed-bitcode-marker
+OBJCFLAGS += -fembed-bitcode
 endif
