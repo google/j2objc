@@ -18,6 +18,7 @@ import static com.google.devtools.j2objc.ast.InfixExpression.Operator.CONDITIONA
 import static com.google.devtools.j2objc.ast.InfixExpression.Operator.CONDITIONAL_OR;
 import static java.lang.Boolean.FALSE;
 
+import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.DoStatement;
@@ -27,6 +28,7 @@ import com.google.devtools.j2objc.ast.IfStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
+import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -43,6 +45,28 @@ import java.util.List;
  * @author Tom Ball
  */
 public class ConstantBranchPruner extends TreeVisitor {
+
+  /**
+   * Removes all unreachable statements that occur after a return statement in
+   * the given Block. Also recurses into child blocks.
+   */
+  private boolean removeUnreachable(Block block) {
+    List<Statement> stmts = block.getStatements();
+    for (int i = 0; i < stmts.size(); i++) {
+      Statement stmt = stmts.get(i);
+      if (stmt instanceof ReturnStatement
+          || (stmt instanceof Block && removeUnreachable((Block) stmt))) {
+        stmts.subList(i + 1, stmts.size()).clear();
+        return true;
+      }
+    }
+    return false;
+  }
+
+  @Override
+  public void endVisit(Block node) {
+    removeUnreachable(node);
+  }
 
   @Override
   public void endVisit(IfStatement node) {

@@ -208,4 +208,20 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "return JreLoadVolatileInt(&i_) == 1 && false;");
   }
+
+  // The JDT parser provides limited type information for local types declared
+  // in unreachable code, resulting in NPEs. ConstantBranchPruner should remove
+  // this unreachable code.
+  public void testUnreachableLocalClass() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { int test() { if (true) { return 5; } "
+        + "class Foo {}; return new Foo().hashCode(); } }", "Test", "Test.m");
+    assertNotInTranslation(translation, "Foo");
+    assertTranslatedLines(translation,
+        "- (jint)test {",
+        "  {",
+        "    return 5;",
+        "  }",
+        "}");
+  }
 }

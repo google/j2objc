@@ -131,6 +131,12 @@ public class TranslationProcessor extends FileProcessor {
     new GwtConverter().run(unit);
     ticker.tick("GwtConverter");
 
+    // Before: Rewriter - Pruning unreachable statements must happen before
+    //   rewriting labeled break statements.
+    // Before: AnonymousClassConverter - Removes unreachable local classes.
+    new ConstantBranchPruner().run(unit);
+    ticker.tick("ConstantBranchPruner");
+
     // Modify AST to be more compatible with Objective C
     new Rewriter(outerResolver).run(unit);
     ticker.tick("Rewriter");
@@ -188,9 +194,6 @@ public class TranslationProcessor extends FileProcessor {
 
     new JavaCloneWriter().run(unit);
     ticker.tick("JavaCloneWriter");
-
-    new ConstantBranchPruner().run(unit);
-    ticker.tick("ConstantBranchPruner");
 
     new OcniExtractor(unit).run(unit);
     ticker.tick("OcniExtractor");
