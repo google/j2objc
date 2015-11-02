@@ -24,8 +24,6 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
-import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.InfixExpression.Operator;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
@@ -413,29 +411,5 @@ public class CastResolver extends TreeVisitor {
     if (castCheck != null) {
       node.getBody().getStatements().add(0, new ExpressionStatement(castCheck));
     }
-  }
-
-  @Override
-  public void endVisit(InfixExpression node) {
-    // Clang reports an incompatible pointer comparison when comparing two
-    // objects with different interface types. That's potentially wrong both
-    // in Java and Objective-C, since a single class can implement both
-    // interfaces. CastResolverTest.testInterfaceComparisons() demonstrates
-    // the problem.
-    Operator operator = node.getOperator();
-    if (operator == InfixExpression.Operator.EQUALS
-        || operator == InfixExpression.Operator.NOT_EQUALS) {
-      List<Expression> operands = node.getOperands();
-      if (needsIdCast(operands.get(0), operands.get(1))) {
-        // Add (id) cast to right-hand operand(s).
-        operands.add(1, new CastExpression(typeEnv.getIdType(), operands.remove(1)));
-      }
-    }
-  }
-
-  private boolean needsIdCast(Expression lhs, Expression rhs) {
-    ITypeBinding lhsType = lhs.getTypeBinding();
-    ITypeBinding rhsType = rhs.getTypeBinding();
-    return !lhsType.isAssignmentCompatible(rhsType) && !rhsType.isAssignmentCompatible(lhsType);
   }
 }

@@ -184,35 +184,4 @@ public class CastResolverTest extends GenerationTest {
     assertTranslation(translation, "[self test1WithI2:((id<I2>) ((B *) nil_chk(b))->foo_)];");
     assertTranslation(translation, "Test_test2WithI2_(self, ((id<I2>) b->foo_));");
   }
-
-  /**
-   * Clang reports an incompatible pointer comparison when comparing two
-   * objects with different interface types. That's potentially wrong both
-   * in Java and Objective-C, since a single class can implement both interfaces.
-   */
-  public void testInterfaceComparisons() throws IOException {
-    String translation = translateSourceFile(
-        "class Test { "
-        + " interface Foo {}"
-        + " interface Bar {}"
-        + " static class Mumble implements Foo, Bar {}"
-        + " static boolean test(Foo f, Bar b) {"
-        + "   return f == b;"
-        + " }"
-        + " static boolean test2(Bar b, Foo f) {"
-        + "   return b != f;"
-        + " }"
-        + " public static void main(String... args) {"
-        + "   Mumble m = new Mumble();"
-        + "   test(m, m);"
-        + "   test2(m, m);"
-        + " }"
-        + "}", "Test", "Test.m");
-    // Wrong: clang will report a compare-distinct-pointer-types warning.
-    assertNotInTranslation(translation, "return f == b;");
-    assertNotInTranslation(translation, "return b != f;");
-    // Right: weaker right-hand type, since Java compiler already type-checked.
-    assertTranslation(translation, "return f == (id) b;");
-    assertTranslation(translation, "return b != (id) f;");
-  }
 }
