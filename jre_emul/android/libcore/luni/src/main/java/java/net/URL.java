@@ -17,6 +17,8 @@
 
 package java.net;
 
+import com.google.j2objc.net.IosURLStreamHandlerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
@@ -71,7 +73,8 @@ public final class URL implements Serializable {
     private static final long serialVersionUID = -7627629688361524110L;
 
     private static URLStreamHandlerFactory streamHandlerFactory;
-    private static URLStreamHandlerFactory iosStreamHandlerFactory;
+    private static URLStreamHandlerFactory iosStreamHandlerFactory =
+        new IosURLStreamHandlerFactory();
 
     /** Cache of protocols to their handlers */
     private static final Hashtable<String, URLStreamHandler> streamHandlers
@@ -96,15 +99,6 @@ public final class URL implements Serializable {
      * unspecified and may vary between VMs or versions.
      */
     private transient int hashCode;
-
-    static {
-        try {
-            Class<?> loaderClass =
-                Class.forName("com.google.j2objc.net.IosURLStreamHandlerFactory");
-            iosStreamHandlerFactory = (URLStreamHandlerFactory) loaderClass.newInstance();
-        } catch (Exception e) {
-        }
-    }
 
     /**
      * Sets the stream handler factory for this VM.

@@ -585,7 +585,7 @@ public class ObjectStreamClass implements Serializable {
         Class<?> digestClass = Class.forName("java.io.SerialVersionUIDDigest");
         return (Digest) digestClass.newInstance();
       } catch (Exception e) {
-        throw new AssertionError(
+        throw new NoClassDefFoundError(
             "SerialVersionUID hashing is unavailable. Fix this by:\n"
             + "1) If linking with -ObjC, add -ljre_security to the link flags.\n"
             + "2) If linking without -ObjC, call JavaIoSerialVersionUIDDigest_class_() to create a"
