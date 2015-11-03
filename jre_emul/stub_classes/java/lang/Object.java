@@ -186,7 +186,7 @@ public class Object {
    * these objects. This means that subclasses of {@code Object} usually
    * override either both methods or neither of them.
    *
-   * @param o
+   * @param obj
    *            the object to compare this instance with.
    * @return {@code true} if the specified object is equal to this {@code
    *         Object}; {@code false} otherwise.
@@ -336,7 +336,7 @@ public class Object {
    * <p>A timeout of zero means the calling thread should wait forever unless interrupted or
    * notified.
    *
-   * @param millis
+   * @param timeout
    *            the maximum time to wait in milliseconds.
    * @throws IllegalArgumentException
    *             if {@code millis < 0}.
@@ -373,7 +373,7 @@ public class Object {
    * <p>A timeout of zero means the calling thread should wait forever unless interrupted or
    * notified.
    *
-   * @param millis
+   * @param timeout
    *            the maximum time to wait in milliseconds.
    * @param nanos
    *            the fraction of a millisecond to wait, specified in
