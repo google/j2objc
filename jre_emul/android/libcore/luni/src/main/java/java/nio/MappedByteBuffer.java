@@ -37,10 +37,10 @@ import static libcore.io.OsConstants._SC_PAGE_SIZE;
  * {@code MappedByteBuffer} is undefined.
  */
 public abstract class MappedByteBuffer extends ByteBuffer {
-  final MapMode mapMode;
+  final int mapMode;
   final MemoryBlock block;
 
-  MappedByteBuffer(MemoryBlock block, int capacity, MapMode mapMode, long effectiveDirectAddress) {
+  MappedByteBuffer(MemoryBlock block, int capacity, int mapMode, long effectiveDirectAddress) {
     super(capacity, effectiveDirectAddress);
     this.mapMode = mapMode;
     this.block = block;
@@ -104,7 +104,7 @@ public abstract class MappedByteBuffer extends ByteBuffer {
   public final MappedByteBuffer force() {
     checkIsMapped();
 
-    if (mapMode == MapMode.READ_WRITE) {
+    if (mapMode == NioUtils.READ_WRITE) {
       try {
         Libcore.os.msync(block.toLong(), block.getSize(), MS_SYNC);
       } catch (ErrnoException errnoException) {
@@ -119,7 +119,7 @@ public abstract class MappedByteBuffer extends ByteBuffer {
   // DirectByteBuffer is a subclass of MappedByteBuffer, but not all DirectByteBuffers
   // actually correspond to an mmap(2)ed region.
   private void checkIsMapped() {
-    if (mapMode == null) {
+    if (mapMode == NioUtils.NO_MAP_MODE) {
       throw new UnsupportedOperationException();
     }
   }

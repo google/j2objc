@@ -101,7 +101,7 @@ public class FileOutputStream extends OutputStream {
         this.fd = fd;
         this.shouldClose = false;
         this.mode = O_WRONLY;
-        this.channel = NioUtils.newFileChannel(this, fd, mode);
+        this.channel = NioUtils.newFileChannelSafe(this, fd, mode);
         // Note that we do not call guard.open here because the
         // FileDescriptor is not owned by the stream.
     }

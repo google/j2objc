@@ -201,13 +201,13 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorChannel {
     /** @hide Until ready for a public API change */
     @Override
     public <T> T getOption(SocketOption<T> option) throws IOException {
-        return NioUtils.getSocketOption(this, StandardSocketOptions.SOCKET_OPTIONS, option);
+        return ChannelUtils.getSocketOption(this, StandardSocketOptions.SOCKET_OPTIONS, option);
     }
 
     /** @hide Until ready for a public API change */
     @Override
     public <T> SocketChannel setOption(SocketOption<T> option, T value) throws IOException {
-        NioUtils.setSocketOption(this, StandardSocketOptions.SOCKET_OPTIONS, option, value);
+        ChannelUtils.setSocketOption(this, StandardSocketOptions.SOCKET_OPTIONS, option, value);
         return this;
     }
 

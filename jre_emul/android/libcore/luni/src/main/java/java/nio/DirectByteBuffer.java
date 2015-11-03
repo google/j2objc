@@ -17,8 +17,6 @@
 
 package java.nio;
 
-import java.nio.channels.FileChannel.MapMode;
-
 import libcore.io.Memory;
 import libcore.io.SizeOf;
 
@@ -30,7 +28,7 @@ class DirectByteBuffer extends MappedByteBuffer {
 
   private final boolean isReadOnly;
 
-  protected DirectByteBuffer(MemoryBlock block, int capacity, int offset, boolean isReadOnly, MapMode mapMode) {
+  protected DirectByteBuffer(MemoryBlock block, int capacity, int offset, boolean isReadOnly, int mapMode) {
     super(block, capacity, mapMode, block.toLong() + offset);
 
     long baseSize = block.getSize();
@@ -47,7 +45,7 @@ class DirectByteBuffer extends MappedByteBuffer {
 
   // Used by the JNI NewDirectByteBuffer function.
   DirectByteBuffer(long address, int capacity) {
-    this(MemoryBlock.wrapFromJni(address, capacity), capacity, 0, false, null);
+    this(MemoryBlock.wrapFromJni(address, capacity), capacity, 0, false, NioUtils.NO_MAP_MODE);
   }
 
   private static DirectByteBuffer copy(DirectByteBuffer other, int markOfOther, boolean isReadOnly) {

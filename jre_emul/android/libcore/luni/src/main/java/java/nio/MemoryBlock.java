@@ -19,7 +19,6 @@ package java.nio;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
-import java.nio.channels.FileChannel.MapMode;
 import libcore.io.ErrnoException;
 import libcore.io.Libcore;
 import libcore.io.Memory;
@@ -99,7 +98,7 @@ class MemoryBlock {
     protected long address;
     protected final long size;
 
-    public static MemoryBlock mmap(FileDescriptor fd, long offset, long size, MapMode mapMode) throws IOException {
+    public static MemoryBlock mmap(FileDescriptor fd, long offset, long size, int mapMode) throws IOException {
         if (size == 0) {
             // You can't mmap(2) a zero-length region, but Java allows it.
             return new MemoryBlock(0, 0);
@@ -110,10 +109,10 @@ class MemoryBlock {
         }
         int prot;
         int flags;
-        if (mapMode == MapMode.PRIVATE) {
+        if (mapMode == NioUtils.PRIVATE) {
             prot = PROT_READ|PROT_WRITE;
             flags = MAP_PRIVATE;
-        } else if (mapMode == MapMode.READ_ONLY) {
+        } else if (mapMode == NioUtils.READ_ONLY) {
             prot = PROT_READ;
             flags = MAP_SHARED;
         } else { // mapMode == MapMode.READ_WRITE

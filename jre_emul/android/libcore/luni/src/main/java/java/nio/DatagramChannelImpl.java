@@ -164,7 +164,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
     /** @hide Until ready for a public API change */
     @Override
     public <T> T getOption(SocketOption<T> option) throws IOException {
-        return NioUtils.getSocketOption(
+        return ChannelUtils.getSocketOption(
                 this, StandardSocketOptions.DATAGRAM_SOCKET_OPTIONS, option);
     }
 
@@ -172,7 +172,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
     @Override
     public <T> DatagramChannel setOption(SocketOption<T> option, T value) throws IOException {
         checkOpen();
-        NioUtils.setSocketOption(
+        ChannelUtils.setSocketOption(
                 this, StandardSocketOptions.DATAGRAM_SOCKET_OPTIONS, option, value);
         return this;
     }

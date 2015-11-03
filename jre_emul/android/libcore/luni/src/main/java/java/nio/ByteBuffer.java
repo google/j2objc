@@ -69,7 +69,8 @@ public abstract class ByteBuffer extends Buffer implements Comparable<ByteBuffer
         if (capacity < 0) {
             throw new IllegalArgumentException("capacity < 0: " + capacity);
         }
-        return new DirectByteBuffer(MemoryBlock.allocate(capacity), capacity, 0, false, null);
+        return new DirectByteBuffer(MemoryBlock.allocate(capacity), capacity, 0, false,
+                                    NioUtils.NO_MAP_MODE);
     }
 
     /**

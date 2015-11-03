@@ -237,49 +237,9 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/InvalidMarkException.java \
   java/nio/LongBuffer.java \
   java/nio/MappedByteBuffer.java \
+  java/nio/NioUtils.java \
   java/nio/ReadOnlyBufferException.java \
   java/nio/ShortBuffer.java \
-  java/nio/channels/AlreadyBoundException.java \
-  java/nio/channels/AlreadyConnectedException.java \
-  java/nio/channels/AsynchronousCloseException.java \
-  java/nio/channels/ByteChannel.java \
-  java/nio/channels/CancelledKeyException.java \
-  java/nio/channels/Channel.java \
-  java/nio/channels/ClosedByInterruptException.java \
-  java/nio/channels/ClosedChannelException.java \
-  java/nio/channels/ClosedSelectorException.java \
-  java/nio/channels/ConnectionPendingException.java \
-  java/nio/channels/DatagramChannel.java \
-  java/nio/channels/FileChannel.java \
-  java/nio/channels/FileLock.java \
-  java/nio/channels/GatheringByteChannel.java \
-  java/nio/channels/IllegalBlockingModeException.java \
-  java/nio/channels/IllegalSelectorException.java \
-  java/nio/channels/InterruptibleChannel.java \
-  java/nio/channels/NetworkChannel.java \
-  java/nio/channels/NoConnectionPendingException.java \
-  java/nio/channels/NonReadableChannelException.java \
-  java/nio/channels/NonWritableChannelException.java \
-  java/nio/channels/NotYetBoundException.java \
-  java/nio/channels/NotYetConnectedException.java \
-  java/nio/channels/OverlappingFileLockException.java \
-  java/nio/channels/Pipe.java \
-  java/nio/channels/ReadableByteChannel.java \
-  java/nio/channels/ScatteringByteChannel.java \
-  java/nio/channels/SeekableByteChannel.java \
-  java/nio/channels/SelectableChannel.java \
-  java/nio/channels/SelectionKey.java \
-  java/nio/channels/Selector.java \
-  java/nio/channels/ServerSocketChannel.java \
-  java/nio/channels/SocketChannel.java \
-  java/nio/channels/UnresolvedAddressException.java \
-  java/nio/channels/UnsupportedAddressTypeException.java \
-  java/nio/channels/WritableByteChannel.java \
-  java/nio/channels/spi/AbstractInterruptibleChannel.java \
-  java/nio/channels/spi/AbstractSelectableChannel.java \
-  java/nio/channels/spi/AbstractSelectionKey.java \
-  java/nio/channels/spi/AbstractSelector.java \
-  java/nio/channels/spi/SelectorProvider.java \
   java/nio/charset/CharacterCodingException.java \
   java/nio/charset/Charset.java \
   java/nio/charset/CharsetDecoder.java \
@@ -455,24 +415,15 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/nio/ByteBufferAsShortBuffer.java \
   java/nio/CharArrayBuffer.java \
   java/nio/CharSequenceAdapter.java \
-  java/nio/DatagramChannelImpl.java \
   java/nio/DirectByteBuffer.java \
   java/nio/DoubleArrayBuffer.java \
-  java/nio/FileChannelImpl.java \
   java/nio/FileDescriptorChannel.java \
   java/nio/FloatArrayBuffer.java \
   java/nio/IntArrayBuffer.java \
   java/nio/IoVec.java \
   java/nio/LongArrayBuffer.java \
   java/nio/MemoryBlock.java \
-  java/nio/NioUtils.java \
-  java/nio/PipeImpl.java \
-  java/nio/SelectionKeyImpl.java \
-  java/nio/SelectorImpl.java \
-  java/nio/SelectorProviderImpl.java \
-  java/nio/ServerSocketChannelImpl.java \
   java/nio/ShortArrayBuffer.java \
-  java/nio/SocketChannelImpl.java \
   java/nio/charset/IOSCharset.java \
   java/nio/charset/IOSCharsetDecoder.java \
   java/nio/charset/IOSCharsetEncoder.java \
@@ -526,6 +477,63 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/MutableLong.java \
   libcore/util/Objects.java \
   libcore/util/SneakyThrow.java
+
+JAVA_PUBLIC_SOURCES_CHANNELS = \
+  java/nio/channels/AlreadyBoundException.java \
+  java/nio/channels/AlreadyConnectedException.java \
+  java/nio/channels/AsynchronousCloseException.java \
+  java/nio/channels/ByteChannel.java \
+  java/nio/channels/CancelledKeyException.java \
+  java/nio/channels/Channel.java \
+  java/nio/channels/Channels.java \
+  java/nio/channels/ClosedByInterruptException.java \
+  java/nio/channels/ClosedChannelException.java \
+  java/nio/channels/ClosedSelectorException.java \
+  java/nio/channels/ConnectionPendingException.java \
+  java/nio/channels/DatagramChannel.java \
+  java/nio/channels/FileChannel.java \
+  java/nio/channels/FileLock.java \
+  java/nio/channels/FileLockInterruptionException.java \
+  java/nio/channels/GatheringByteChannel.java \
+  java/nio/channels/IllegalBlockingModeException.java \
+  java/nio/channels/IllegalSelectorException.java \
+  java/nio/channels/InterruptibleChannel.java \
+  java/nio/channels/NetworkChannel.java \
+  java/nio/channels/NoConnectionPendingException.java \
+  java/nio/channels/NonReadableChannelException.java \
+  java/nio/channels/NonWritableChannelException.java \
+  java/nio/channels/NotYetBoundException.java \
+  java/nio/channels/NotYetConnectedException.java \
+  java/nio/channels/OverlappingFileLockException.java \
+  java/nio/channels/Pipe.java \
+  java/nio/channels/ReadableByteChannel.java \
+  java/nio/channels/ScatteringByteChannel.java \
+  java/nio/channels/SeekableByteChannel.java \
+  java/nio/channels/SelectableChannel.java \
+  java/nio/channels/SelectionKey.java \
+  java/nio/channels/Selector.java \
+  java/nio/channels/ServerSocketChannel.java \
+  java/nio/channels/SocketChannel.java \
+  java/nio/channels/UnresolvedAddressException.java \
+  java/nio/channels/UnsupportedAddressTypeException.java \
+  java/nio/channels/WritableByteChannel.java \
+  java/nio/channels/spi/AbstractInterruptibleChannel.java \
+  java/nio/channels/spi/AbstractSelectableChannel.java \
+  java/nio/channels/spi/AbstractSelectionKey.java \
+  java/nio/channels/spi/AbstractSelector.java \
+  java/nio/channels/spi/SelectorProvider.java
+
+JAVA_PRIVATE_SOURCES_CHANNELS = \
+  java/nio/ChannelFactoryImpl.java \
+  java/nio/ChannelUtils.java \
+  java/nio/DatagramChannelImpl.java \
+  java/nio/FileChannelImpl.java \
+  java/nio/PipeImpl.java \
+  java/nio/SelectionKeyImpl.java \
+  java/nio/SelectorImpl.java \
+  java/nio/SelectorProviderImpl.java \
+  java/nio/ServerSocketChannelImpl.java \
+  java/nio/SocketChannelImpl.java
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
   java/io/SerialVersionUIDDigest.java \
@@ -995,8 +1003,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/net/URLDecoder.java \
   java/net/URLEncoder.java \
   java/nio/NIOAccess.java \
-  java/nio/channels/Channels.java \
-  java/nio/channels/FileLockInterruptionException.java \
   java/sql/Array.java \
   java/sql/BatchUpdateException.java \
   java/sql/Blob.java \
@@ -1287,11 +1293,12 @@ ANDROID_PRIVATE_SOURCES = \
 
 JAVA_SOURCES_CORE = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PRIVATE_SOURCES_CORE)
 JAVA_SOURCES_NON_CORE = $(JAVA_PUBLIC_SOURCES_NON_CORE) $(JAVA_PRIVATE_SOURCES_NON_CORE)
+JAVA_SOURCES_CHANNELS = $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PRIVATE_SOURCES_CHANNELS)
 JAVA_SOURCES_SECURITY = $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PRIVATE_SOURCES_SECURITY)
 JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PRIVATE_SOURCES_XML)
 JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 
-JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_SECURITY) $(JAVA_SOURCES_XML) \
+JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_CHANNELS) $(JAVA_SOURCES_SECURITY) $(JAVA_SOURCES_XML) \
   $(JAVA_SOURCES_NON_CORE) $(JAVA_SOURCES_ANDROID)
-JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PUBLIC_SOURCES_SECURITY) \
+JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_SOURCES_CHANNELS) $(JAVA_PUBLIC_SOURCES_SECURITY) \
   $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PUBLIC_SOURCES_NON_CORE) $(ANDROID_PUBLIC_SOURCES)

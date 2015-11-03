@@ -89,13 +89,13 @@ final class ServerSocketChannelImpl extends ServerSocketChannel implements FileD
     /** @hide Until ready for a public API change */
     @Override
     public <T> T getOption(SocketOption<T> option) throws IOException {
-        return NioUtils.getSocketOption(this, StandardSocketOptions.SERVER_SOCKET_OPTIONS, option);
+        return ChannelUtils.getSocketOption(this, StandardSocketOptions.SERVER_SOCKET_OPTIONS, option);
     }
 
     /** @hide Until ready for a public API change */
     @Override
     public <T> ServerSocketChannel setOption(SocketOption<T> option, T value) throws IOException {
-        NioUtils.setSocketOption(this, StandardSocketOptions.SERVER_SOCKET_OPTIONS, option, value);
+        ChannelUtils.setSocketOption(this, StandardSocketOptions.SERVER_SOCKET_OPTIONS, option, value);
         return this;
     }
 
