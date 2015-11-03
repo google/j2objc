@@ -1244,6 +1244,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/GregorianCalendar.html#hashCode()">hashCode</a></span>()
         
+        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+  
   </td></tr>
 
 
@@ -1970,6 +1972,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Calendar.html#hashCode()">hashCode</a></span>()
         
+        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+  
   </td></tr>
 
 
@@ -2305,6 +2309,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#clone()">clone</a></span>()
         
+        <div class="jd-descrdiv">Creates and returns a copy of this <code>Object</code>.</div>
+  
   </td></tr>
 
 
@@ -2321,6 +2327,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
+        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
+ are equal.</div>
+  
   </td></tr>
 
 
@@ -2337,6 +2346,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#finalize()">finalize</a></span>()
         
+        <div class="jd-descrdiv">Invoked when the garbage collector has detected that this instance is no longer reachable.</div>
+  
   </td></tr>
 
 
@@ -2353,6 +2364,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#getClass()">getClass</a></span>()
         
+        <div class="jd-descrdiv">Returns the unique instance of <code><a href="reference/java/lang/Class.html">Class</a></code> that represents this
+ object's class.</div>
+  
   </td></tr>
 
 
@@ -2369,6 +2383,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode</a></span>()
         
+        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+  
   </td></tr>
 
 
@@ -2385,6 +2401,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#notify()">notify</a></span>()
         
+        <div class="jd-descrdiv">Causes a thread which is waiting on this object's monitor (by means of
+ calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
   </td></tr>
 
 
@@ -2401,6 +2420,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#notifyAll()">notifyAll</a></span>()
         
+        <div class="jd-descrdiv">Causes all threads which are waiting on this object's monitor (by means
+ of calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
   </td></tr>
 
 
@@ -2417,6 +2439,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#toString()">toString</a></span>()
         
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -2433,6 +2458,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait</a></span>(long timeout, int nanos)
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
   </td></tr>
 
 
@@ -2449,6 +2477,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long)">wait</a></span>(long timeout)
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
   </td></tr>
 
 
@@ -2465,6 +2496,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait()">wait</a></span>()
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object.</div>
+  
   </td></tr>
 
 
@@ -3076,6 +3109,15 @@ From interface
  properties.
 </p></div>
   <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>object</th>
+          <td>the object to compare this instance with.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Returns</h5>
       <ul class="nolist"><li><code>true</code> if the given object is equal to this <code>Calendar</code>, <code>false</code>
          otherwise.
@@ -3411,7 +3453,21 @@ From interface
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for this object. By contract, any two
+ objects for which <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> returns <code>true</code> must return
+ the same hash code value. This means that subclasses of <code>Object</code>
+ usually override both methods or neither method.
+
+ <p>Note that hash values must not change over time unless information used in equals
+ comparisons also changes.
+
+ <p>See <a href="../../../reference/java/lang/Object.html#writing_hashCode">Writing a correct
+ <code>hashCode</code> method</a>
+ if you intend implementing your own <code>hashCode</code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this object's hash code.</li></ul>
+  </div>
 
     </div>
 </div>

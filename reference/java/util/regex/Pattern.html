@@ -687,6 +687,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/regex/Pattern.html#toString()">toString</a></span>()
         
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -714,6 +717,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/util/regex/Pattern.html#finalize()">finalize</a></span>()
         
+        <div class="jd-descrdiv">Invoked when the garbage collector has detected that this instance is no longer reachable.</div>
+  
   </td></tr>
 
 
@@ -762,6 +767,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Object.html#clone()">clone</a></span>()
         
+        <div class="jd-descrdiv">Creates and returns a copy of this <code>Object</code>.</div>
+  
   </td></tr>
 
 
@@ -778,6 +785,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> obj)
         
+        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
+ are equal.</div>
+  
   </td></tr>
 
 
@@ -794,6 +804,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Object.html#finalize()">finalize</a></span>()
         
+        <div class="jd-descrdiv">Invoked when the garbage collector has detected that this instance is no longer reachable.</div>
+  
   </td></tr>
 
 
@@ -810,6 +822,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Object.html#getClass()">getClass</a></span>()
         
+        <div class="jd-descrdiv">Returns the unique instance of <code><a href="reference/java/lang/Class.html">Class</a></code> that represents this
+ object's class.</div>
+  
   </td></tr>
 
 
@@ -826,6 +841,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Object.html#hashCode()">hashCode</a></span>()
         
+        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+  
   </td></tr>
 
 
@@ -842,6 +859,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Object.html#notify()">notify</a></span>()
         
+        <div class="jd-descrdiv">Causes a thread which is waiting on this object's monitor (by means of
+ calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
   </td></tr>
 
 
@@ -858,6 +878,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Object.html#notifyAll()">notifyAll</a></span>()
         
+        <div class="jd-descrdiv">Causes all threads which are waiting on this object's monitor (by means
+ of calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
   </td></tr>
 
 
@@ -874,6 +897,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Object.html#toString()">toString</a></span>()
         
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -890,6 +916,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Object.html#wait(long, int)">wait</a></span>(long timeout, int nanos)
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
   </td></tr>
 
 
@@ -906,6 +935,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Object.html#wait(long)">wait</a></span>(long timeout)
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
   </td></tr>
 
 
@@ -922,6 +954,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../../reference/java/lang/Object.html#wait()">wait</a></span>()
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object.</div>
+  
   </td></tr>
 
 
@@ -1698,7 +1732,20 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
+ object. Subclasses are encouraged to override this method and provide an
+ implementation that takes into account the object's type and data. The
+ default implementation is equivalent to the following expression:
+ <pre>
+   getClass().getName() + '@' + Integer.toHexString(hashCode())</pre>
+ <p>See <a href="../../../../reference/java/lang/Object.html#writing_toString">Writing a useful
+ <code>toString</code> method</a>
+ if you intend implementing your own <code>toString</code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a printable representation of this object.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -1738,7 +1785,33 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Invoked when the garbage collector has detected that this instance is no longer reachable.
+ The default implementation does nothing, but this method can be overridden to free resources.
+
+ <p>Note that objects that override <code>finalize</code> are significantly more expensive than
+ objects that don't. Finalizers may be run a long time after the object is no longer
+ reachable, depending on memory pressure, so it's a bad idea to rely on them for cleanup.
+ Note also that finalizers are run on a single VM-wide finalizer thread,
+ so doing blocking work in a finalizer is a bad idea. A finalizer is usually only necessary
+ for a class that has a native peer and needs to call a native method to destroy that peer.
+ Even then, it's better to provide an explicit <code>close</code> method (and implement
+ <code><a href="reference/java/io/Closeable.html">Closeable</a></code>), and insist that callers manually dispose of instances. This
+ works well for something like files, but less well for something like a <code>BigInteger</code>
+ where typical calling code would have to deal with lots of temporaries. Unfortunately,
+ code that creates lots of temporaries is the worst kind of code from the point of view of
+ the single finalizer thread.
+
+ <p>If you <i>must</i> use finalizers, consider at least providing your own
+ <code><a href="reference/java/lang/ref/ReferenceQueue.html">ReferenceQueue</a></code> and having your own thread process that queue.
+
+ <p>Unlike constructors, finalizers are not automatically chained. You are responsible for
+ calling <code>super.finalize()</code> yourself.
+
+ <p>Uncaught exceptions thrown by finalizers are ignored and do not terminate the finalizer
+ thread.
+
+ See <i>Effective Java</i> Item 7, "Avoid finalizers" for more.
+</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">

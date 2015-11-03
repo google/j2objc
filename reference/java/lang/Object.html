@@ -144,12 +144,100 @@ layout: api
 
 
 <h2>Class Overview</h2>
-<p>Stub implementation of java.lang.Object.  This class is not translated,
- but is only included in jre_emul.jar so that jar can be used for
- verifying that the JRE emulation library supports all JRE references
- in specified sources.  The easiest way to do this is to run:
+<p>The root class of the Java class hierarchy. All non-primitive types
+ (including arrays) inherit either directly or indirectly from this class.
 
- javac -bootclasspath <path>/jre_emul.jar -extdirs '' <sources>
+ <a name="writing_equals"><h4>Writing a correct <code>equals</code> method</h4></a>
+ <p>Follow this style to write a canonical <code>equals</code> method:
+ <pre>
+   // Use @Override to avoid accidental overloading.
+   &#x0040;Override public boolean equals(Object o) {
+     // Return true if the objects are identical.
+     // (This is just an optimization, not required for correctness.)
+     if (this == o) {
+       return true;
+     }
+
+     // Return false if the other object has the wrong type.
+     // This type may be an interface depending on the interface's specification.
+     if (!(o instanceof MyType)) {
+       return false;
+     }
+
+     // Cast to the appropriate type.
+     // This will succeed because of the instanceof, and lets us access private fields.
+     MyType lhs = (MyType) o;
+
+     // Check each field. Primitive fields, reference fields, and nullable reference
+     // fields are all treated differently.
+     return primitiveField == lhs.primitiveField &amp;&amp;
+             referenceField.equals(lhs.referenceField) &amp;&amp;
+             (nullableField == null ? lhs.nullableField == null
+                                    : nullableField.equals(lhs.nullableField));
+   }
+ </pre>
+ <p>If you override <code>equals</code>, you should also override <code>hashCode</code>: equal
+ instances must have equal hash codes.
+
+ <p>See <i>Effective Java</i> item 8 for much more detail and clarification.
+
+ <a name="writing_hashCode"><h4>Writing a correct <code>hashCode</code> method</h4></a>
+ <p>Follow this style to write a canonical <code>hashCode</code> method:
+ <pre>
+   &#x0040;Override public int hashCode() {
+     // Start with a non-zero constant.
+     int result = 17;
+
+     // Include a hash for each field.
+     result = 31 * result + (booleanField ? 1 : 0);
+
+     result = 31 * result + byteField;
+     result = 31 * result + charField;
+     result = 31 * result + shortField;
+     result = 31 * result + intField;
+
+     result = 31 * result + (int) (longField ^ (longField >>> 32));
+
+     result = 31 * result + Float.floatToIntBits(floatField);
+
+     long doubleFieldBits = Double.doubleToLongBits(doubleField);
+     result = 31 * result + (int) (doubleFieldBits ^ (doubleFieldBits >>> 32));
+
+     result = 31 * result + Arrays.hashCode(arrayField);
+
+     result = 31 * result + referenceField.hashCode();
+     result = 31 * result +
+         (nullableReferenceField == null ? 0
+                                         : nullableReferenceField.hashCode());
+
+     return result;
+   }
+ </pre>
+
+ <p>If you don't intend your type to be used as a hash key, don't simply rely on the default
+ <code>hashCode</code> implementation, because that silently and non-obviously breaks any future
+ code that does use your type as a hash key. You should throw instead:
+ <pre>
+   &#x0040;Override public int hashCode() {
+     throw new UnsupportedOperationException();
+   }
+ </pre>
+
+ <p>See <i>Effective Java</i> item 9 for much more detail and clarification.
+
+ <a name="writing_toString"><h4>Writing a useful <code>toString</code> method</h4></a>
+ <p>For debugging convenience, it's common to override <code>toString</code> in this style:
+ <pre>
+   &#x0040;Override public String toString() {
+     return getClass().getName() + "[" +
+         "primitiveField=" + primitiveField + ", " +
+         "referenceField=" + referenceField + ", " +
+         "arrayField=" + Arrays.toString(arrayField) + "]";
+   }
+ </pre>
+ <p>The set of fields to include is generally the same as those that would be tested
+ in your <code>equals</code> implementation.
+ <p>See <i>Effective Java</i> item 10 for much more detail and clarification.
 </p>
 
 
@@ -218,6 +306,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#Object()">Object</a></span>()
         
+        <div class="jd-descrdiv">Constructs a new instance of <code>Object</code>.</div>
+  
   </td></tr>
 
 
@@ -247,6 +337,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
+        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
+ are equal.</div>
+  
   </td></tr>
 
 
@@ -263,6 +356,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#getClass()">getClass</a></span>()
         
+        <div class="jd-descrdiv">Returns the unique instance of <code><a href="reference/java/lang/Class.html">Class</a></code> that represents this
+ object's class.</div>
+  
   </td></tr>
 
 
@@ -279,6 +375,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode</a></span>()
         
+        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+  
   </td></tr>
 
 
@@ -295,6 +393,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#notify()">notify</a></span>()
         
+        <div class="jd-descrdiv">Causes a thread which is waiting on this object's monitor (by means of
+ calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
   </td></tr>
 
 
@@ -311,6 +412,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#notifyAll()">notifyAll</a></span>()
         
+        <div class="jd-descrdiv">Causes all threads which are waiting on this object's monitor (by means
+ of calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
   </td></tr>
 
 
@@ -327,6 +431,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#toString()">toString</a></span>()
         
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -343,6 +450,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait</a></span>(long timeout, int nanos)
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
   </td></tr>
 
 
@@ -359,6 +469,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long)">wait</a></span>(long timeout)
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
   </td></tr>
 
 
@@ -375,6 +488,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait()">wait</a></span>()
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object.</div>
+  
   </td></tr>
 
 
@@ -402,6 +517,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#clone()">clone</a></span>()
         
+        <div class="jd-descrdiv">Creates and returns a copy of this <code>Object</code>.</div>
+  
   </td></tr>
 
 
@@ -418,6 +535,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#finalize()">finalize</a></span>()
         
+        <div class="jd-descrdiv">Invoked when the garbage collector has detected that this instance is no longer reachable.</div>
+  
   </td></tr>
 
 
@@ -484,7 +603,8 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Constructs a new instance of <code>Object</code>.
+</p></div>
 
     </div>
 </div>
@@ -530,7 +650,39 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this instance with the specified object and indicates if they
+ are equal. In order to be equal, <code>o</code> must represent the same object
+ as this instance using a class-specific comparison. The general contract
+ is that this comparison should be reflexive, symmetric, and transitive.
+ Also, no object reference other than null is equal to null.
+
+ <p>The default implementation returns <code>true</code> only if <code>this ==
+ o</code>. See <a href="../../../reference/java/lang/Object.html#writing_equals">Writing a correct
+ <code>equals</code> method</a>
+ if you intend implementing your own <code>equals</code> method.
+
+ <p>The general contract for the <code>equals</code> and <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code> methods is that if <code>equals</code> returns <code>true</code> for
+ any two objects, then <code>hashCode()</code> must return the same value for
+ these objects. This means that subclasses of <code>Object</code> usually
+ override either both methods or neither of them.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>obj</th>
+          <td>the object to compare this instance with.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if the specified object is equal to this <code>Object</code>; <code>false</code> otherwise.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode()</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -561,7 +713,21 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns the unique instance of <code><a href="reference/java/lang/Class.html">Class</a></code> that represents this
+ object's class. Note that <code>getClass()</code> is a special case in that it
+ actually returns <code>Class<? extends Foo></code> where <code>Foo</code> is the
+ erasure of the type of the expression <code>getClass()</code> was called upon.
+ <p>
+ As an example, the following code actually compiles, although one might
+ think it shouldn't:
+ <p>
+ <pre><code>List<Integer> l = new ArrayList<Integer>();
+   Class<? extends List> c = l.getClass();</code></pre></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this object's <code>Class</code> instance.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -592,7 +758,26 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for this object. By contract, any two
+ objects for which <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> returns <code>true</code> must return
+ the same hash code value. This means that subclasses of <code>Object</code>
+ usually override both methods or neither method.
+
+ <p>Note that hash values must not change over time unless information used in equals
+ comparisons also changes.
+
+ <p>See <a href="../../../reference/java/lang/Object.html#writing_hashCode">Writing a correct
+ <code>hashCode</code> method</a>
+ if you intend implementing your own <code>hashCode</code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this object's hash code.</li></ul>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -623,7 +808,28 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Causes a thread which is waiting on this object's monitor (by means of
+ calling one of the <code>wait()</code> methods) to be woken up. If more than
+ one thread is waiting, one of them is chosen at the discretion of the
+ VM. The chosen thread will not run immediately. The thread
+ that called <code>notify()</code> has to release the object's monitor first.
+ Also, the chosen thread still has to compete against other threads that
+ try to synchronize on the same object.
+
+ <p>This method can only be invoked by a thread which owns this object's
+ monitor. A thread becomes owner of an object's monitor
+ <ul>
+ <li>by executing a synchronized method of that object;</li>
+ <li>by executing the body of a <code>synchronized</code> statement that
+ synchronizes on the object;</li>
+ <li>by executing a synchronized static method if the object is of type
+ <code>Class</code>.</li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#notifyAll()">notifyAll()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait()">wait()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait(long)">wait(long)</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait(long, int)</a></code></li><li><code><a href="../../../reference/java/lang/Thread.html">Thread</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -654,7 +860,36 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Causes all threads which are waiting on this object's monitor (by means
+ of calling one of the <code>wait()</code> methods) to be woken up. The threads
+ will not run immediately. The thread that called <code>notify()</code> has to
+ release the object's monitor first. Also, the threads still have to
+ compete against other threads that try to synchronize on the same object.
+
+ <p>This method can only be invoked by a thread which owns this object's
+ monitor. A thread becomes owner of an object's monitor
+ <ul>
+ <li>by executing a synchronized method of that object;</li>
+ <li>by executing the body of a <code>synchronized</code> statement that
+ synchronizes on the object;</li>
+ <li>by executing a synchronized static method if the object is of type
+ <code>Class</code>.</li>
+ </ul></p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Throws</h5>
+      <table class="jd-tagtable">
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td>if the thread calling this method is not the owner of this
+             object's monitor.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#notify()">notify()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait()">wait()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait(long)">wait(long)</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait(long, int)</a></code></li><li><code><a href="../../../reference/java/lang/Thread.html">Thread</a></code></li>
+      </ul>
+  </div>
 
     </div>
 </div>
@@ -685,7 +920,20 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
+ object. Subclasses are encouraged to override this method and provide an
+ implementation that takes into account the object's type and data. The
+ default implementation is equivalent to the following expression:
+ <pre>
+   getClass().getName() + '@' + Integer.toHexString(hashCode())</pre>
+ <p>See <a href="../../../reference/java/lang/Object.html#writing_toString">Writing a useful
+ <code>toString</code> method</a>
+ if you intend implementing your own <code>toString</code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a printable representation of this object.
+</li></ul>
+  </div>
 
     </div>
 </div>
@@ -716,15 +964,61 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires. This method can only be invoked by a thread
+ that owns this object's monitor; see <code><a href="reference/java/lang/Object.html#notify()">notify()</a></code> on how a thread
+ can become the owner of a monitor.
+
+ <p>A waiting thread can be sent <code>interrupt()</code> to cause it to
+ prematurely stop waiting, so <code>wait</code> should be called in a loop to
+ check that the condition that has been waited for has been met before
+ continuing.
+
+ <p>While the thread waits, it gives up ownership of this object's
+ monitor. When it is notified (or interrupted), it re-acquires the monitor
+ before it starts running.
+
+ <p>A timeout of zero means the calling thread should wait forever unless interrupted or
+ notified.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>timeout</th>
+          <td>the maximum time to wait in milliseconds.</td>
+        </tr>
+        <tr>
+          <th>nanos</th>
+          <td>the fraction of a millisecond to wait, specified in
+            nanoseconds.</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if <code>millis < 0</code>, <code>nanos < 0</code> or <code>nanos >
+             999999</code>.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td>if the thread calling this method is not the owner of this
+             object's monitor.</td>
+        </tr>
+        <tr>
             <th><a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
-            <td></td>
+            <td>if the current thread has been interrupted.
+             The interrupted status of the current thread will be cleared before the exception
+             is thrown.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#notify()">notify()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#notifyAll()">notifyAll()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait()">wait()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait(long, int)</a></code></li><li><code><a href="../../../reference/java/lang/Thread.html">Thread</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -756,15 +1050,55 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires. This method can only be invoked by a thread
+ which owns this object's monitor; see <code><a href="reference/java/lang/Object.html#notify()">notify()</a></code> on how a thread
+ can become the owner of a monitor.
+
+ <p>A waiting thread can be sent <code>interrupt()</code> to cause it to
+ prematurely stop waiting, so <code>wait</code> should be called in a loop to
+ check that the condition that has been waited for has been met before
+ continuing.
+
+ <p>While the thread waits, it gives up ownership of this object's
+ monitor. When it is notified (or interrupted), it re-acquires the monitor
+ before it starts running.
+
+ <p>A timeout of zero means the calling thread should wait forever unless interrupted or
+ notified.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>timeout</th>
+          <td>the maximum time to wait in milliseconds.</td>
+        </tr>
+      </table>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
+            <th><a href="../../../reference/java/lang/IllegalArgumentException.html">IllegalArgumentException</a></td>
+            <td>if <code>millis < 0</code>.</td>
+        </tr>
+        <tr>
+            <th><a href="../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td>if the thread calling this method is not the owner of this
+             object's monitor.</td>
+        </tr>
+        <tr>
             <th><a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
-            <td></td>
+            <td>if the current thread has been interrupted.
+             The interrupted status of the current thread will be cleared before the exception
+             is thrown.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#notify()">notify()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#notifyAll()">notifyAll()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait()">wait()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait(long, int)</a></code></li><li><code><a href="../../../reference/java/lang/Thread.html">Thread</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -796,15 +1130,38 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object. This method can
+ only be invoked by a thread which owns this object's monitor; see
+ <code><a href="reference/java/lang/Object.html#notify()">notify()</a></code> on how a thread can become the owner of a monitor.
+
+ <p>A waiting thread can be sent <code>interrupt()</code> to cause it to
+ prematurely stop waiting, so <code>wait</code> should be called in a loop to
+ check that the condition that has been waited for has been met before
+ continuing.
+
+ <p>While the thread waits, it gives up ownership of this object's
+ monitor. When it is notified (or interrupted), it re-acquires the monitor
+ before it starts running.</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
+            <th><a href="../../../reference/java/lang/IllegalMonitorStateException.html">IllegalMonitorStateException</a></td>
+            <td>if the thread calling this method is not the owner of this
+             object's monitor.</td>
+        </tr>
+        <tr>
             <th><a href="../../../reference/java/lang/InterruptedException.html">InterruptedException</a></td>
-            <td></td>
+            <td>if the current thread has been interrupted.
+             The interrupted status of the current thread will be cleared before the exception
+             is thrown.</td>
         </tr>
       </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">See Also</h5>
+      <ul class="nolist"><li><code><a href="../../../reference/java/lang/Object.html#notify()">notify()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#notifyAll()">notifyAll()</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait(long)">wait(long)</a></code></li><li><code><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait(long, int)</a></code></li><li><code><a href="../../../reference/java/lang/Thread.html">Thread</a></code></li>
+      </ul>
   </div>
 
     </div>
@@ -845,13 +1202,25 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Creates and returns a copy of this <code>Object</code>. The default
+ implementation returns a so-called "shallow" copy: It creates a new
+ instance of the same class and then copies the field values (including
+ object references) from this instance to the new instance. A "deep" copy,
+ in contrast, would also recursively clone nested objects. A subclass that
+ needs to implement this kind of cloning should call <code>super.clone()</code>
+ to create the new instance and then create deep copies of the nested,
+ mutable objects.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a copy of this object.</li></ul>
+  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/CloneNotSupportedException.html">CloneNotSupportedException</a></td>
-            <td></td>
+            <td>if this object's class does not implement the <code>Cloneable</code> interface.
+</td>
         </tr>
       </table>
   </div>
@@ -885,7 +1254,33 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Invoked when the garbage collector has detected that this instance is no longer reachable.
+ The default implementation does nothing, but this method can be overridden to free resources.
+
+ <p>Note that objects that override <code>finalize</code> are significantly more expensive than
+ objects that don't. Finalizers may be run a long time after the object is no longer
+ reachable, depending on memory pressure, so it's a bad idea to rely on them for cleanup.
+ Note also that finalizers are run on a single VM-wide finalizer thread,
+ so doing blocking work in a finalizer is a bad idea. A finalizer is usually only necessary
+ for a class that has a native peer and needs to call a native method to destroy that peer.
+ Even then, it's better to provide an explicit <code>close</code> method (and implement
+ <code><a href="reference/java/io/Closeable.html">Closeable</a></code>), and insist that callers manually dispose of instances. This
+ works well for something like files, but less well for something like a <code>BigInteger</code>
+ where typical calling code would have to deal with lots of temporaries. Unfortunately,
+ code that creates lots of temporaries is the worst kind of code from the point of view of
+ the single finalizer thread.
+
+ <p>If you <i>must</i> use finalizers, consider at least providing your own
+ <code><a href="reference/java/lang/ref/ReferenceQueue.html">ReferenceQueue</a></code> and having your own thread process that queue.
+
+ <p>Unlike constructors, finalizers are not automatically chained. You are responsible for
+ calling <code>super.finalize()</code> yourself.
+
+ <p>Uncaught exceptions thrown by finalizers are ignored and do not terminate the finalizer
+ thread.
+
+ See <i>Effective Java</i> Item 7, "Avoid finalizers" for more.
+</p></div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">

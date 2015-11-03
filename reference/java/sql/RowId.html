@@ -216,6 +216,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/RowId.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
+        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
+ are equal.</div>
+  
   </td></tr>
 
 
@@ -250,6 +253,8 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/RowId.html#hashCode()">hashCode</a></span>()
         
+        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+  
   </td></tr>
 
 
@@ -266,6 +271,9 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/sql/RowId.html#toString()">toString</a></span>()
         
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -342,7 +350,34 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Compares this instance with the specified object and indicates if they
+ are equal. In order to be equal, <code>o</code> must represent the same object
+ as this instance using a class-specific comparison. The general contract
+ is that this comparison should be reflexive, symmetric, and transitive.
+ Also, no object reference other than null is equal to null.
+
+ <p>The default implementation returns <code>true</code> only if <code>this ==
+ o</code>. See <a href="../../../reference/java/lang/Object.html#writing_equals">Writing a correct
+ <code>equals</code> method</a>
+ if you intend implementing your own <code>equals</code> method.
+
+ <p>The general contract for the <code>equals</code> and <code><a href="reference/java/lang/Object.html#hashCode()">hashCode()</a></code> methods is that if <code>equals</code> returns <code>true</code> for
+ any two objects, then <code>hashCode()</code> must return the same value for
+ these objects. This means that subclasses of <code>Object</code> usually
+ override either both methods or neither of them.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>obj</th>
+          <td>the object to compare this instance with.</td>
+        </tr>
+      </table>
+  </div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li><code>true</code> if the specified object is equal to this <code>Object</code>; <code>false</code> otherwise.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -405,7 +440,21 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns an integer hash code for this object. By contract, any two
+ objects for which <code><a href="reference/java/lang/Object.html#equals(java.lang.Object)">equals(Object)</a></code> returns <code>true</code> must return
+ the same hash code value. This means that subclasses of <code>Object</code>
+ usually override both methods or neither method.
+
+ <p>Note that hash values must not change over time unless information used in equals
+ comparisons also changes.
+
+ <p>See <a href="../../../reference/java/lang/Object.html#writing_hashCode">Writing a correct
+ <code>hashCode</code> method</a>
+ if you intend implementing your own <code>hashCode</code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>this object's hash code.</li></ul>
+  </div>
 
     </div>
 </div>
@@ -436,7 +485,20 @@ layout: api
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+  <div class="jd-tagdata jd-tagdescr"><p>Returns a string containing a concise, human-readable description of this
+ object. Subclasses are encouraged to override this method and provide an
+ implementation that takes into account the object's type and data. The
+ default implementation is equivalent to the following expression:
+ <pre>
+   getClass().getName() + '@' + Integer.toHexString(hashCode())</pre>
+ <p>See <a href="../../../reference/java/lang/Object.html#writing_toString">Writing a useful
+ <code>toString</code> method</a>
+ if you intend implementing your own <code>toString</code> method.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Returns</h5>
+      <ul class="nolist"><li>a printable representation of this object.
+</li></ul>
+  </div>
 
     </div>
 </div>

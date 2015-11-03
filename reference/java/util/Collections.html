@@ -1013,7 +1013,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#sort(java.util.List<T>)">sort</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list)
         
-        <div class="jd-descrdiv">Sorts the specified list in ascending natural order.</div>
+        <div class="jd-descrdiv">Sorts the given list in ascending natural order.</div>
   
   </td></tr>
 
@@ -1031,7 +1031,7 @@ layout: api
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/util/Collections.html#sort(java.util.List<T>, java.util.Comparator<? super T>)">sort</a></span>(<a href="../../../reference/java/util/List.html">List</a>&lt;T&gt; list, <a href="../../../reference/java/util/Comparator.html">Comparator</a>&lt;?&nbsp;super&nbsp;T&gt; comparator)
         
-        <div class="jd-descrdiv">Sorts the specified list using the specified comparator.</div>
+        <div class="jd-descrdiv">Sorts the given list using the given comparator.</div>
   
   </td></tr>
 
@@ -1336,6 +1336,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#clone()">clone</a></span>()
         
+        <div class="jd-descrdiv">Creates and returns a copy of this <code>Object</code>.</div>
+  
   </td></tr>
 
 
@@ -1352,6 +1354,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
+        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
+ are equal.</div>
+  
   </td></tr>
 
 
@@ -1368,6 +1373,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#finalize()">finalize</a></span>()
         
+        <div class="jd-descrdiv">Invoked when the garbage collector has detected that this instance is no longer reachable.</div>
+  
   </td></tr>
 
 
@@ -1384,6 +1391,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#getClass()">getClass</a></span>()
         
+        <div class="jd-descrdiv">Returns the unique instance of <code><a href="reference/java/lang/Class.html">Class</a></code> that represents this
+ object's class.</div>
+  
   </td></tr>
 
 
@@ -1400,6 +1410,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode</a></span>()
         
+        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+  
   </td></tr>
 
 
@@ -1416,6 +1428,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#notify()">notify</a></span>()
         
+        <div class="jd-descrdiv">Causes a thread which is waiting on this object's monitor (by means of
+ calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
   </td></tr>
 
 
@@ -1432,6 +1447,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#notifyAll()">notifyAll</a></span>()
         
+        <div class="jd-descrdiv">Causes all threads which are waiting on this object's monitor (by means
+ of calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
   </td></tr>
 
 
@@ -1448,6 +1466,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#toString()">toString</a></span>()
         
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -1464,6 +1485,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait</a></span>(long timeout, int nanos)
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
   </td></tr>
 
 
@@ -1480,6 +1504,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long)">wait</a></span>(long timeout)
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
   </td></tr>
 
 
@@ -1496,6 +1523,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait()">wait</a></span>()
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object.</div>
+  
   </td></tr>
 
 
@@ -3700,24 +3729,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sorts the specified list in ascending natural order. The algorithm is
+  <div class="jd-tagdata jd-tagdescr"><p>Sorts the given list in ascending natural order. The algorithm is
  stable which means equal elements don't get reordered.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>list</th>
-          <td>the list to be sorted.</td>
-        </tr>
-      </table>
-  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>when an element in the List does not implement Comparable or
-             elements cannot be compared to each other.
+            <td>if any element does not implement <code>Comparable</code>,
+     or if <code>compareTo</code> throws for any pair of elements.
 </td>
         </tr>
       </table>
@@ -3752,28 +3772,15 @@ From class
       </div>
     <div class="jd-details-descr">
       
-  <div class="jd-tagdata jd-tagdescr"><p>Sorts the specified list using the specified comparator. The algorithm is
+  <div class="jd-tagdata jd-tagdescr"><p>Sorts the given list using the given comparator. The algorithm is
  stable which means equal elements don't get reordered.</p></div>
-  <div class="jd-tagdata">
-      <h5 class="jd-tagtitle">Parameters</h5>
-      <table class="jd-tagtable">
-        <tr>
-          <th>list</th>
-          <td>the list to be sorted.</td>
-        </tr>
-        <tr>
-          <th>comparator</th>
-          <td>the comparator.</td>
-        </tr>
-      </table>
-  </div>
   <div class="jd-tagdata">
       <h5 class="jd-tagtitle">Throws</h5>
       <table class="jd-tagtable">
         <tr>
             <th><a href="../../../reference/java/lang/ClassCastException.html">ClassCastException</a></td>
-            <td>when elements in the list cannot be compared to each other
-             using the comparator.
+            <td>if any element does not implement <code>Comparable</code>,
+     or if <code>compareTo</code> throws for any pair of elements.
 </td>
         </tr>
       </table>

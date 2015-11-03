@@ -142,6 +142,10 @@ The functionality to check the different entries and extension fields of X.509 c
               <td class="jd-descrcol" width="100%">The interface specification for certification path algorithm parameters.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPathValidatorResult.html">CertPathValidatorResult</a></td>
+              <td class="jd-descrcol" width="100%">The interface specification for certification path validation results.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/X509Extension.html">X509Extension</a></td>
               <td class="jd-descrcol" width="100%">The interface specifying an X.509 Certificate or CRL extension.&nbsp;</td>
           </tr>
@@ -182,6 +186,16 @@ The functionality to check the different entries and extension fields of X.509 c
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPath.CertPathRep.html">CertPath.CertPathRep</a></td>
               <td class="jd-descrcol" width="100%">The alternate <code>Serializable</code> class to be used for serialization and
  deserialization on <code>CertPath</code> objects.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPathValidator.html">CertPathValidator</a></td>
+              <td class="jd-descrcol" width="100%">This class provides the functionality for validating certification paths
+ (certificate chains) establishing a trust chain from a certificate to a trust
+ anchor.&nbsp;</td>
+          </tr>
+        <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPathValidatorSpi.html">CertPathValidatorSpi</a></td>
+              <td class="jd-descrcol" width="100%">The <i>Service Provider Interface</i> (<b>SPI</b>) for the <code>CertPathValidator</code> class to be implemented by security providers.&nbsp;</td>
           </tr>
         <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CRL.html">CRL</a></td>
@@ -228,6 +242,11 @@ The functionality to check the different entries and extension fields of X.509 c
               <td class="jd-descrcol" width="100%">The exception that is thrown when a <code>Certificate</code> can not be parsed.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CertPathValidatorException.html">CertPathValidatorException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when a certification path (or certificate chain)
+ cannot be validated.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../../reference/java/security/cert/CRLException.html">CRLException</a></td>
               <td class="jd-descrcol" width="100%">The exception that is thrown if errors occur during handling of <code>CRL</code>s.&nbsp;</td>
           </tr>

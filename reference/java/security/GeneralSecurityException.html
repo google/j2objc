@@ -220,6 +220,8 @@ layout: api
             
               <a href="../../../reference/java/security/cert/CRLException.html">CRLException</a>,
             
+              <a href="../../../reference/java/security/cert/CertPathValidatorException.html">CertPathValidatorException</a>,
+            
               <a href="../../../reference/java/security/cert/CertificateException.html">CertificateException</a>,
             
               <a href="../../../reference/java/security/DigestException.html">DigestException</a>,
@@ -255,56 +257,61 @@ layout: api
               <td class="jd-descrcol" width="100%">The exception that is thrown if errors occur during handling of <code>CRL</code>s.&nbsp;</td>
           </tr>
         <tr class=" api apilevel-" >
+              <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertPathValidatorException.html">CertPathValidatorException</a></td>
+              <td class="jd-descrcol" width="100%">The exception that is thrown when a certification path (or certificate chain)
+ cannot be validated.&nbsp;</td>
+          </tr>
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/cert/CertificateException.html">CertificateException</a></td>
               <td class="jd-descrcol" width="100%">The base class for all <code>Certificate</code> related exceptions.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/DigestException.html">DigestException</a></td>
               <td class="jd-descrcol" width="100%"><code>DigestException</code> is a general message digest exception.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/InvalidAlgorithmParameterException.html">InvalidAlgorithmParameterException</a></td>
               <td class="jd-descrcol" width="100%"><code>InvalidAlgorithmParameterException</code> indicates the occurrence of
  invalid algorithm parameters.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/spec/InvalidKeySpecException.html">InvalidKeySpecException</a></td>
               <td class="jd-descrcol" width="100%">The exception that is thrown when an invalid key specification is
  encountered.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/spec/InvalidParameterSpecException.html">InvalidParameterSpecException</a></td>
               <td class="jd-descrcol" width="100%">The exception that is thrown when an invalid parameter specification is
  encountered.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/KeyException.html">KeyException</a></td>
               <td class="jd-descrcol" width="100%"><code>KeyException</code> is the common superclass of all key related exceptions.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/KeyStoreException.html">KeyStoreException</a></td>
               <td class="jd-descrcol" width="100%"><code>KeyStoreException</code> is a general <code>KeyStore</code> exception.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/NoSuchAlgorithmException.html">NoSuchAlgorithmException</a></td>
               <td class="jd-descrcol" width="100%"><code>NoSuchAlgorithmException</code> indicates that a requested algorithm could
  not be found.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/NoSuchProviderException.html">NoSuchProviderException</a></td>
               <td class="jd-descrcol" width="100%"><code>NoSuchProviderException</code> indicates that a requested security provider
  could not be found.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/javax/crypto/ShortBufferException.html">ShortBufferException</a></td>
               <td class="jd-descrcol" width="100%">The exception that is thrown when the result of an operation is attempted to
  store in a user provided buffer that is too small.&nbsp;</td>
           </tr>
-        <tr class=" api apilevel-" >
+        <tr class="alt-color api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/SignatureException.html">SignatureException</a></td>
               <td class="jd-descrcol" width="100%"><code>SignatureException</code> is a general <code>Signature</code> exception.&nbsp;</td>
           </tr>
-        <tr class="alt-color api apilevel-" >
+        <tr class=" api apilevel-" >
               <td class="jd-linkcol"><a href="../../../reference/java/security/UnrecoverableEntryException.html">UnrecoverableEntryException</a></td>
               <td class="jd-descrcol" width="100%"><code>UnrecoverableEntryException</code> indicates, that a <code>KeyStore.Entry</code>
  cannot be recovered from a <code>KeyStore</code>.&nbsp;</td>
@@ -794,6 +801,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#clone()">clone</a></span>()
         
+        <div class="jd-descrdiv">Creates and returns a copy of this <code>Object</code>.</div>
+  
   </td></tr>
 
 
@@ -810,6 +819,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../reference/java/lang/Object.html">Object</a> obj)
         
+        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
+ are equal.</div>
+  
   </td></tr>
 
 
@@ -826,6 +838,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#finalize()">finalize</a></span>()
         
+        <div class="jd-descrdiv">Invoked when the garbage collector has detected that this instance is no longer reachable.</div>
+  
   </td></tr>
 
 
@@ -842,6 +856,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#getClass()">getClass</a></span>()
         
+        <div class="jd-descrdiv">Returns the unique instance of <code><a href="reference/java/lang/Class.html">Class</a></code> that represents this
+ object's class.</div>
+  
   </td></tr>
 
 
@@ -858,6 +875,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#hashCode()">hashCode</a></span>()
         
+        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+  
   </td></tr>
 
 
@@ -874,6 +893,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#notify()">notify</a></span>()
         
+        <div class="jd-descrdiv">Causes a thread which is waiting on this object's monitor (by means of
+ calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
   </td></tr>
 
 
@@ -890,6 +912,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#notifyAll()">notifyAll</a></span>()
         
+        <div class="jd-descrdiv">Causes all threads which are waiting on this object's monitor (by means
+ of calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
   </td></tr>
 
 
@@ -906,6 +931,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#toString()">toString</a></span>()
         
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
   </td></tr>
 
 
@@ -922,6 +950,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long, int)">wait</a></span>(long timeout, int nanos)
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
   </td></tr>
 
 
@@ -938,6 +969,9 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait(long)">wait</a></span>(long timeout)
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
   </td></tr>
 
 
@@ -954,6 +988,8 @@ From class
         <td class="jd-linkcol" width="100%">
         <span class="sympad"><a href="../../../reference/java/lang/Object.html#wait()">wait</a></span>()
         
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object.</div>
+  
   </td></tr>
 
 

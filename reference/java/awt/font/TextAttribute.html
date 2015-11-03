@@ -1,0 +1,3308 @@
+---
+
+title: TextAttribute - JRE Emulation
+
+layout: api
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
+  <meta name="description" content="Javadoc API documentation for JRE Emulation." />
+
+<link rel="shortcut icon" type="image/x-icon" href="../../../../favicon.ico" />
+<title>
+
+  TextAttribute - JRE Emulation
+
+
+| JRE Emulation
+
+</title>
+<script src="../../../../assets/doclava-developer-docs.js" type="text/javascript"></script>
+
+<script src="../../../../assets/doclava-developer-reference.js" type="text/javascript"></script>
+
+<noscript>
+  <style type="text/css">
+    html,body{overflow:auto;}
+    #body-content{position:relative; top:0;}
+    #doc-content{overflow:visible;border-left:3px solid #666;}
+    #side-nav{padding:0;}
+    #side-nav .toggle-list ul {display:block;}
+    #resize-packages-nav{border-bottom:3px solid #666;}
+  </style>
+</noscript>
+</head>
+
+
+
+<div id="api-info-block">
+
+
+
+  
+   
+  
+  
+  
+   
+  
+  
+
+  
+   
+  
+  
+  
+  
+
+  
+  
+  
+  
+
+
+<div class="api-level">
+  
+
+
+  
+  
+
+</div>
+</div><!-- end api-info-block -->
+
+
+<!-- ======== START OF CLASS DATA ======== -->
+
+<div id="jd-header">
+    public
+    
+    final
+    
+    class
+<h1>TextAttribute</h1>
+
+
+
+  
+  
+  
+
+  
+    extends <a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a><br/>
+  
+  
+  
+
+  
+  
+  
+
+
+</div><!-- end header -->
+
+<div id="naMessage"></div>
+
+<div id="jd-content" class="api apilevel-">
+<table class="jd-inheritance-table">
+
+
+    <tr>
+        
+        <td colspan="3" class="jd-inheritance-class-cell"><a href="../../../../reference/java/lang/Object.html">java.lang.Object</a></td>
+    </tr>
+    
+
+    <tr>
+        
+            <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
+        
+        <td colspan="2" class="jd-inheritance-class-cell"><a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html">java.text.AttributedCharacterIterator.Attribute</a></td>
+    </tr>
+    
+
+    <tr>
+        
+            <td class="jd-inheritance-space">&nbsp;</td>
+        
+            <td class="jd-inheritance-space">&nbsp;&nbsp;&nbsp;&#x21b3;</td>
+        
+        <td colspan="1" class="jd-inheritance-class-cell">java.awt.font.TextAttribute</td>
+    </tr>
+    
+
+</table>
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Class Overview</h2>
+<p>The TextAttribute class defines attribute keys and attribute values
+ for text rendering. Each TextAttributes should have the following
+ information:
+ <ul>
+ <li>key name;</li>
+ <li>valid values;</li>
+ <li>relevant constants;</li>
+ <li>default action if the attribute is absent;</li>
+ <li>default action's description.</li>
+ </ul>
+</p>
+
+
+
+
+
+</div><!-- jd-descr -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="jd-descr">
+
+
+<h2>Summary</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<table id="lfields" class="jd-sumtable"><tr><th colspan="12">Fields</th></tr>
+
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#BACKGROUND">BACKGROUND</a></td>
+          <td class="jd-descrcol" width="100%">The BACKGROUND text attribute.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#BIDI_EMBEDDING">BIDI_EMBEDDING</a></td>
+          <td class="jd-descrcol" width="100%">The BIDI_EMBEDDING text attribute key.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#CHAR_REPLACEMENT">CHAR_REPLACEMENT</a></td>
+          <td class="jd-descrcol" width="100%">The CHAR_REPLACEMENT text attribute key.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#FAMILY">FAMILY</a></td>
+          <td class="jd-descrcol" width="100%">The FAMILY text attribute key.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#FONT">FONT</a></td>
+          <td class="jd-descrcol" width="100%">The FONT text attribute key.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#FOREGROUND">FOREGROUND</a></td>
+          <td class="jd-descrcol" width="100%">The FOREGROUND text attribute key.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#INPUT_METHOD_HIGHLIGHT">INPUT_METHOD_HIGHLIGHT</a></td>
+          <td class="jd-descrcol" width="100%">The INPUT_METHOD_HIGHLIGHT text attribute key.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#INPUT_METHOD_UNDERLINE">INPUT_METHOD_UNDERLINE</a></td>
+          <td class="jd-descrcol" width="100%">The INPUT_METHOD_UNDERLINE text attribute key.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#JUSTIFICATION">JUSTIFICATION</a></td>
+          <td class="jd-descrcol" width="100%">The JUSTIFICATION text attribute key.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#JUSTIFICATION_FULL">JUSTIFICATION_FULL</a></td>
+          <td class="jd-descrcol" width="100%">The Constant JUSTIFICATION_indicates the full requested width.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#JUSTIFICATION_NONE">JUSTIFICATION_NONE</a></td>
+          <td class="jd-descrcol" width="100%">The Constant JUSTIFICATION_NONE indicates that line is not
+ allowed for justification.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#KERNING">KERNING</a></td>
+          <td class="jd-descrcol" width="100%">The KERNING text attribute key.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Integer.html">Integer</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#KERNING_ON">KERNING_ON</a></td>
+          <td class="jd-descrcol" width="100%"></td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#LIGATURES">LIGATURES</a></td>
+          <td class="jd-descrcol" width="100%">The LIGATURES text attribute key.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Integer.html">Integer</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#LIGATURES_ON">LIGATURES_ON</a></td>
+          <td class="jd-descrcol" width="100%"></td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#NUMERIC_SHAPING">NUMERIC_SHAPING</a></td>
+          <td class="jd-descrcol" width="100%">The NUMERIC_SHAPING text attribute.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#POSTURE">POSTURE</a></td>
+          <td class="jd-descrcol" width="100%">The POSTURE text attribute.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#POSTURE_OBLIQUE">POSTURE_OBLIQUE</a></td>
+          <td class="jd-descrcol" width="100%">The Constant POSTURE_OBLIQUE indicates italic posture.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#POSTURE_REGULAR">POSTURE_REGULAR</a></td>
+          <td class="jd-descrcol" width="100%">The Constant POSTURE_REGULAR indicates regular posture.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#RUN_DIRECTION">RUN_DIRECTION</a></td>
+          <td class="jd-descrcol" width="100%">The RUN_DIRECTION text attribute.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Boolean.html">Boolean</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#RUN_DIRECTION_LTR">RUN_DIRECTION_LTR</a></td>
+          <td class="jd-descrcol" width="100%">The Constant RUN_DIRECTION_LTR indicates left-to-right run
+ direction.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Boolean.html">Boolean</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#RUN_DIRECTION_RTL">RUN_DIRECTION_RTL</a></td>
+          <td class="jd-descrcol" width="100%">The Constant RUN_DIRECTION_RTL indicates right-to-left run
+ direction.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#SIZE">SIZE</a></td>
+          <td class="jd-descrcol" width="100%">The SIZE text attribute.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#STRIKETHROUGH">STRIKETHROUGH</a></td>
+          <td class="jd-descrcol" width="100%">The STRIKETHROUGH text attribute.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Boolean.html">Boolean</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#STRIKETHROUGH_ON">STRIKETHROUGH_ON</a></td>
+          <td class="jd-descrcol" width="100%">The Constant STRIKETHROUGH_ON indicates a single strikethrough.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#SUPERSCRIPT">SUPERSCRIPT</a></td>
+          <td class="jd-descrcol" width="100%">The SUPERSCRIPT text attribute.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Integer.html">Integer</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#SUPERSCRIPT_SUB">SUPERSCRIPT_SUB</a></td>
+          <td class="jd-descrcol" width="100%">The Constant SUPERSCRIPT_SUB indicates a standard subscript.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Integer.html">Integer</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#SUPERSCRIPT_SUPER">SUPERSCRIPT_SUPER</a></td>
+          <td class="jd-descrcol" width="100%">The Constant SUPERSCRIPT_SUPER indicates a standard superscript.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#SWAP_COLORS">SWAP_COLORS</a></td>
+          <td class="jd-descrcol" width="100%">The SWAP_COLORS text attribute.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Boolean.html">Boolean</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#SWAP_COLORS_ON">SWAP_COLORS_ON</a></td>
+          <td class="jd-descrcol" width="100%">The Constant SWAP_COLORS_ON indicates a swap of foreground
+ and background.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#TRACKING">TRACKING</a></td>
+          <td class="jd-descrcol" width="100%">The TRACKING text attribute key.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#TRACKING_LOOSE">TRACKING_LOOSE</a></td>
+          <td class="jd-descrcol" width="100%"></td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#TRACKING_TIGHT">TRACKING_TIGHT</a></td>
+          <td class="jd-descrcol" width="100%"></td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#TRANSFORM">TRANSFORM</a></td>
+          <td class="jd-descrcol" width="100%">The TRANSFORM text attribute.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#UNDERLINE">UNDERLINE</a></td>
+          <td class="jd-descrcol" width="100%">The Constant UNDERLINE text attribute.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Integer.html">Integer</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#UNDERLINE_LOW_DASHED">UNDERLINE_LOW_DASHED</a></td>
+          <td class="jd-descrcol" width="100%">The Constant UNDERLINE_LOW_DASHED indicates single pixel dashed
+ low underline.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Integer.html">Integer</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#UNDERLINE_LOW_DOTTED">UNDERLINE_LOW_DOTTED</a></td>
+          <td class="jd-descrcol" width="100%">The Constant UNDERLINE_LOW_DOTTED indicates a
+ single pixel dotted low underline.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Integer.html">Integer</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#UNDERLINE_LOW_GRAY">UNDERLINE_LOW_GRAY</a></td>
+          <td class="jd-descrcol" width="100%">The Constant UNDERLINE_LOW_GRAY indicates double pixel
+ gray low underline.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Integer.html">Integer</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#UNDERLINE_LOW_ONE_PIXEL">UNDERLINE_LOW_ONE_PIXEL</a></td>
+          <td class="jd-descrcol" width="100%">The Constant UNDERLINE_LOW_ONE_PIXEL indicates a single
+ pixel solid low underline.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Integer.html">Integer</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#UNDERLINE_LOW_TWO_PIXEL">UNDERLINE_LOW_TWO_PIXEL</a></td>
+          <td class="jd-descrcol" width="100%">The Constant UNDERLINE_LOW_TWO_PIXEL indicates a double
+ pixel solid low underline.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Integer.html">Integer</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#UNDERLINE_ON">UNDERLINE_ON</a></td>
+          <td class="jd-descrcol" width="100%">The Constant UNDERLINE_ON indicates a standard underline
+ at the roman baseline for roman text.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT">WEIGHT</a></td>
+          <td class="jd-descrcol" width="100%">The WEIGHT text attribute.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT_BOLD">WEIGHT_BOLD</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WEIGHT_BOLD indicates the standard bold weight.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT_DEMIBOLD">WEIGHT_DEMIBOLD</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WEIGHT_DEMIBOLD indicates
+ a lighter weight than BOLD.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT_DEMILIGHT">WEIGHT_DEMILIGHT</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WEIGHT_DEMILIGHT indicates an intermediate weight
+ between LIGHT and STANDARD.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT_EXTRABOLD">WEIGHT_EXTRABOLD</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WEIGHT_EXTRABOLD indicates an extra heavy weight.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT_EXTRA_LIGHT">WEIGHT_EXTRA_LIGHT</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WEIGHT_EXTRA_LIGHT indicates the lightest
+ predefined weight.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT_HEAVY">WEIGHT_HEAVY</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WEIGHT_HEAVY indicates a heavier weight than BOLD.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT_LIGHT">WEIGHT_LIGHT</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WEIGHT_LIGHT indicates the standard light weight.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT_MEDIUM">WEIGHT_MEDIUM</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WEIGHT_MEDIUM indicates average weight
+ between the REGULAR and BOLD.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT_REGULAR">WEIGHT_REGULAR</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WEIGHT_REGULAR indicates the standart weight.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT_SEMIBOLD">WEIGHT_SEMIBOLD</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WEIGHT_SEMIBOLD indicates a semi weight
+ of REGULAR.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WEIGHT_ULTRABOLD">WEIGHT_ULTRABOLD</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WEIGHT_ULTRABOLD indicates the heaviest predefined
+ weight.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WIDTH">WIDTH</a></td>
+          <td class="jd-descrcol" width="100%">The WIDTH text attribute.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WIDTH_CONDENSED">WIDTH_CONDENSED</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WIDTH_CONDENSED indicates the most condensed
+ predefined width.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WIDTH_EXTENDED">WIDTH_EXTENDED</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WIDTH_EXTENDED indicates extended width.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WIDTH_REGULAR">WIDTH_REGULAR</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WIDTH_REGULAR indicates the standard width.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WIDTH_SEMI_CONDENSED">WIDTH_SEMI_CONDENSED</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WIDTH_SEMI_CONDENSED indicates
+ a semi condensed width.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/lang/Float.html">Float</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/awt/font/TextAttribute.html#WIDTH_SEMI_EXTENDED">WIDTH_SEMI_EXTENDED</a></td>
+          <td class="jd-descrcol" width="100%">The Constant WIDTH_SEMI_EXTENDED indicates semi extended width.</td>
+      </tr>
+      
+    
+
+</table>
+
+
+
+
+
+<!-- =========== FIELD SUMMARY =========== -->
+<table id="inhfields" class="jd-sumtable"><tr><th>
+  <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
+  <div style="clear:left;">Inherited Fields</div></th></tr>
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-fields-java.text.AttributedCharacterIterator.Attribute" class="jd-expando-trigger closed"
+          ><a id="inherited-fields-java.text.AttributedCharacterIterator.Attribute-trigger"
+          class="jd-expando-trigger-img" /></a>From class
+<a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html">java.text.AttributedCharacterIterator.Attribute</a>
+<div id="inherited-fields-java.text.AttributedCharacterIterator.Attribute">
+  <div id="inherited-fields-java.text.AttributedCharacterIterator.Attribute-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-fields-java.text.AttributedCharacterIterator.Attribute-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html#INPUT_METHOD_SEGMENT">INPUT_METHOD_SEGMENT</a></td>
+          <td class="jd-descrcol" width="100%">This attribute marks segments from an input method.</td>
+      </tr>
+      
+    
+      <tr class=" api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html#LANGUAGE">LANGUAGE</a></td>
+          <td class="jd-descrcol" width="100%">The attribute describing the language of a character.</td>
+      </tr>
+      
+    
+      <tr class="alt-color api apilevel-" >
+          <td class="jd-typecol">
+          public
+          static
+          final
+          <a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html">AttributedCharacterIterator.Attribute</a></td>
+          <td class="jd-linkcol"><a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html#READING">READING</a></td>
+          <td class="jd-descrcol" width="100%">For languages that have different reading directions of text (like
+ Japanese), this attribute allows to define which reading should be
+ used.</td>
+      </tr>
+      
+    
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+
+
+
+</table>
+
+
+
+
+
+
+<!-- ======== CONSTRUCTOR SUMMARY ======== -->
+<table id="proctors" class="jd-sumtable"><tr><th colspan="12">Protected Constructors</th></tr>
+
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/awt/font/TextAttribute.html#TextAttribute(java.lang.String)">TextAttribute</a></span>(<a href="../../../../reference/java/lang/String.html">String</a> name)
+        
+        <div class="jd-descrdiv">Instantiates a new TextAttribute with the specified name.</div>
+  
+  </td></tr>
+
+
+
+</table>
+
+
+
+
+
+
+
+
+
+<!-- ========== METHOD SUMMARY =========== -->
+<table id="inhmethods" class="jd-sumtable"><tr><th>
+  <div style="clear:left;">Inherited Methods</div>
+  <a href="#" class="toggle-all" onclick="return toggleAllInherited(this, null)">[Expand]</a>
+  </th></tr>
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.text.AttributedCharacterIterator.Attribute" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.text.AttributedCharacterIterator.Attribute-trigger"
+          class="jd-expando-trigger-img" /></a>
+From class
+
+  <a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html">java.text.AttributedCharacterIterator.Attribute</a>
+
+<div id="inherited-methods-java.text.AttributedCharacterIterator.Attribute">
+  <div id="inherited-methods-java.text.AttributedCharacterIterator.Attribute-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.text.AttributedCharacterIterator.Attribute-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> object)
+        
+        <div class="jd-descrdiv">Compares this attribute with the specified object.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html#getName()">getName</a></span>()
+        
+        <div class="jd-descrdiv">Returns the name of this attribute.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html#hashCode()">hashCode</a></span>()
+        
+        <div class="jd-descrdiv">Calculates the hash code for objects of type <code>Attribute</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html#readResolve()">readResolve</a></span>()
+        
+        <div class="jd-descrdiv">Resolves a deserialized instance to the correct constant attribute.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/text/AttributedCharacterIterator.Attribute.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns the name of the class followed by a "(", the name of the
+ attribute, and a ")".</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+<tr class="api apilevel-" >
+<td colspan="12">
+  <a href="#" onclick="return toggleInherited(this, null)" id="inherited-methods-java.lang.Object" class="jd-expando-trigger closed"
+          ><a id="inherited-methods-java.lang.Object-trigger"
+          class="jd-expando-trigger-img" /></a>
+From class
+
+  <a href="../../../../reference/java/lang/Object.html">java.lang.Object</a>
+
+<div id="inherited-methods-java.lang.Object">
+  <div id="inherited-methods-java.lang.Object-list"
+        class="jd-inheritedlinks">
+  </div>
+  <div id="inherited-methods-java.lang.Object-summary" style="display: none;">
+    <table class="jd-sumtable-expando">
+    
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/Object.html">Object</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Object.html#clone()">clone</a></span>()
+        
+        <div class="jd-descrdiv">Creates and returns a copy of this <code>Object</code>.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            boolean
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Object.html#equals(java.lang.Object)">equals</a></span>(<a href="../../../../reference/java/lang/Object.html">Object</a> obj)
+        
+        <div class="jd-descrdiv">Compares this instance with the specified object and indicates if they
+ are equal.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Object.html#finalize()">finalize</a></span>()
+        
+        <div class="jd-descrdiv">Invoked when the garbage collector has detected that this instance is no longer reachable.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            <a href="../../../../reference/java/lang/Class.html">Class</a>&lt;?&gt;
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Object.html#getClass()">getClass</a></span>()
+        
+        <div class="jd-descrdiv">Returns the unique instance of <code><a href="reference/java/lang/Class.html">Class</a></code> that represents this
+ object's class.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            int
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Object.html#hashCode()">hashCode</a></span>()
+        
+        <div class="jd-descrdiv">Returns an integer hash code for this object.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Object.html#notify()">notify</a></span>()
+        
+        <div class="jd-descrdiv">Causes a thread which is waiting on this object's monitor (by means of
+ calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Object.html#notifyAll()">notifyAll</a></span>()
+        
+        <div class="jd-descrdiv">Causes all threads which are waiting on this object's monitor (by means
+ of calling one of the <code>wait()</code> methods) to be woken up.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            
+            
+            
+            <a href="../../../../reference/java/lang/String.html">String</a>
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Object.html#toString()">toString</a></span>()
+        
+        <div class="jd-descrdiv">Returns a string containing a concise, human-readable description of this
+ object.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Object.html#wait(long, int)">wait</a></span>(long timeout, int nanos)
+        
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class=" api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Object.html#wait(long)">wait</a></span>(long timeout)
+        
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object or until the
+ specified timeout expires.</div>
+  
+  </td></tr>
+
+
+	 
+    <tr class="alt-color api apilevel-" >
+        <td class="jd-typecol">
+            
+            
+            final
+            
+            
+            void
+        </td>
+        <td class="jd-linkcol" width="100%">
+        <span class="sympad"><a href="../../../../reference/java/lang/Object.html#wait()">wait</a></span>()
+        
+        <div class="jd-descrdiv">Causes the calling thread to wait until another thread calls the <code>notify()</code> or <code>notifyAll()</code> method of this object.</div>
+  
+  </td></tr>
+
+
+</table>
+  </div>
+</div>
+</td></tr>
+
+
+
+
+</table>
+
+
+</div><!-- jd-descr (summary) -->
+
+<!-- Details -->
+
+
+
+
+
+
+
+
+<!-- XML Attributes -->
+
+
+<!-- Enum Values -->
+
+
+<!-- Constants -->
+
+
+<!-- Fields -->
+
+
+<!-- ========= FIELD DETAIL ======== -->
+<h2>Fields</h2>
+
+
+
+
+<a id="BACKGROUND"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        BACKGROUND
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The BACKGROUND text attribute.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="BIDI_EMBEDDING"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        BIDI_EMBEDDING
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The BIDI_EMBEDDING text attribute key. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="CHAR_REPLACEMENT"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        CHAR_REPLACEMENT
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The CHAR_REPLACEMENT text attribute key. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="FAMILY"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        FAMILY
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The FAMILY text attribute key. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="FONT"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        FONT
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The FONT text attribute key. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="FOREGROUND"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        FOREGROUND
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The FOREGROUND text attribute key. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="INPUT_METHOD_HIGHLIGHT"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        INPUT_METHOD_HIGHLIGHT
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The INPUT_METHOD_HIGHLIGHT text attribute key. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="INPUT_METHOD_UNDERLINE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        INPUT_METHOD_UNDERLINE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The INPUT_METHOD_UNDERLINE text attribute key. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="JUSTIFICATION"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        JUSTIFICATION
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The JUSTIFICATION text attribute key. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="JUSTIFICATION_FULL"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        JUSTIFICATION_FULL
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant JUSTIFICATION_indicates the full requested width. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="JUSTIFICATION_NONE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        JUSTIFICATION_NONE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant JUSTIFICATION_NONE indicates that line is not
+ allowed for justification.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="KERNING"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        KERNING
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The KERNING text attribute key.</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="KERNING_ON"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+        KERNING_ON
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="LIGATURES"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        LIGATURES
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The LIGATURES text attribute key.</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="LIGATURES_ON"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+        LIGATURES_ON
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="NUMERIC_SHAPING"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        NUMERIC_SHAPING
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The NUMERIC_SHAPING text attribute. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="POSTURE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        POSTURE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The POSTURE text attribute. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="POSTURE_OBLIQUE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        POSTURE_OBLIQUE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant POSTURE_OBLIQUE indicates italic posture. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="POSTURE_REGULAR"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        POSTURE_REGULAR
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant POSTURE_REGULAR indicates regular posture. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="RUN_DIRECTION"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        RUN_DIRECTION
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The RUN_DIRECTION text attribute. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="RUN_DIRECTION_LTR"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Boolean.html">Boolean</a>
+      </span>
+        RUN_DIRECTION_LTR
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant RUN_DIRECTION_LTR indicates left-to-right run
+ direction.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="RUN_DIRECTION_RTL"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Boolean.html">Boolean</a>
+      </span>
+        RUN_DIRECTION_RTL
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant RUN_DIRECTION_RTL indicates right-to-left run
+ direction.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="SIZE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        SIZE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The SIZE text attribute. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="STRIKETHROUGH"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        STRIKETHROUGH
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The STRIKETHROUGH text attribute. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="STRIKETHROUGH_ON"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Boolean.html">Boolean</a>
+      </span>
+        STRIKETHROUGH_ON
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant STRIKETHROUGH_ON indicates a single strikethrough. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="SUPERSCRIPT"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        SUPERSCRIPT
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The SUPERSCRIPT text attribute. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="SUPERSCRIPT_SUB"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+        SUPERSCRIPT_SUB
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant SUPERSCRIPT_SUB indicates a standard subscript. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="SUPERSCRIPT_SUPER"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+        SUPERSCRIPT_SUPER
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant SUPERSCRIPT_SUPER indicates a standard superscript. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="SWAP_COLORS"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        SWAP_COLORS
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The SWAP_COLORS text attribute. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="SWAP_COLORS_ON"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Boolean.html">Boolean</a>
+      </span>
+        SWAP_COLORS_ON
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant SWAP_COLORS_ON indicates a swap of foreground
+ and background.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="TRACKING"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        TRACKING
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The TRACKING text attribute key.</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="TRACKING_LOOSE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        TRACKING_LOOSE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="TRACKING_TIGHT"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        TRACKING_TIGHT
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p></p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="TRANSFORM"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        TRANSFORM
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The TRANSFORM text attribute. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="UNDERLINE"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        UNDERLINE
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant UNDERLINE text attribute. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="UNDERLINE_LOW_DASHED"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+        UNDERLINE_LOW_DASHED
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant UNDERLINE_LOW_DASHED indicates single pixel dashed
+ low underline.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="UNDERLINE_LOW_DOTTED"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+        UNDERLINE_LOW_DOTTED
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant UNDERLINE_LOW_DOTTED indicates a
+ single pixel dotted low underline.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="UNDERLINE_LOW_GRAY"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+        UNDERLINE_LOW_GRAY
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant UNDERLINE_LOW_GRAY indicates double pixel
+ gray low underline.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="UNDERLINE_LOW_ONE_PIXEL"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+        UNDERLINE_LOW_ONE_PIXEL
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant UNDERLINE_LOW_ONE_PIXEL indicates a single
+ pixel solid low underline.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="UNDERLINE_LOW_TWO_PIXEL"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+        UNDERLINE_LOW_TWO_PIXEL
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant UNDERLINE_LOW_TWO_PIXEL indicates a double
+ pixel solid low underline.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="UNDERLINE_ON"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Integer.html">Integer</a>
+      </span>
+        UNDERLINE_ON
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant UNDERLINE_ON indicates a standard underline
+ at the roman baseline for roman text.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        WEIGHT
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The WEIGHT text attribute. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT_BOLD"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WEIGHT_BOLD
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WEIGHT_BOLD indicates the standard bold weight. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT_DEMIBOLD"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WEIGHT_DEMIBOLD
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WEIGHT_DEMIBOLD indicates
+ a lighter weight than BOLD. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT_DEMILIGHT"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WEIGHT_DEMILIGHT
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WEIGHT_DEMILIGHT indicates an intermediate weight
+ between LIGHT and STANDARD.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT_EXTRABOLD"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WEIGHT_EXTRABOLD
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WEIGHT_EXTRABOLD indicates an extra heavy weight. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT_EXTRA_LIGHT"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WEIGHT_EXTRA_LIGHT
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WEIGHT_EXTRA_LIGHT indicates the lightest
+ predefined weight.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT_HEAVY"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WEIGHT_HEAVY
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WEIGHT_HEAVY indicates a heavier weight than BOLD. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT_LIGHT"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WEIGHT_LIGHT
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WEIGHT_LIGHT indicates the standard light weight.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT_MEDIUM"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WEIGHT_MEDIUM
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WEIGHT_MEDIUM indicates average weight
+ between the REGULAR and BOLD. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT_REGULAR"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WEIGHT_REGULAR
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WEIGHT_REGULAR indicates the standart weight.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT_SEMIBOLD"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WEIGHT_SEMIBOLD
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WEIGHT_SEMIBOLD indicates a semi weight
+ of REGULAR.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WEIGHT_ULTRABOLD"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WEIGHT_ULTRABOLD
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WEIGHT_ULTRABOLD indicates the heaviest predefined
+ weight.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WIDTH"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/awt/font/TextAttribute.html">TextAttribute</a>
+      </span>
+        WIDTH
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The WIDTH text attribute. </p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WIDTH_CONDENSED"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WIDTH_CONDENSED
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WIDTH_CONDENSED indicates the most condensed
+ predefined width.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WIDTH_EXTENDED"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WIDTH_EXTENDED
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WIDTH_EXTENDED indicates extended width.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WIDTH_REGULAR"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WIDTH_REGULAR
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WIDTH_REGULAR indicates the standard width.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WIDTH_SEMI_CONDENSED"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WIDTH_SEMI_CONDENSED
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WIDTH_SEMI_CONDENSED indicates
+ a semi condensed width.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+<a id="WIDTH_SEMI_EXTENDED"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        public
+        static
+        final
+        <a href="../../../../reference/java/lang/Float.html">Float</a>
+      </span>
+        WIDTH_SEMI_EXTENDED
+    </h4>
+      <div class="api-level">
+        
+
+
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>The Constant WIDTH_SEMI_EXTENDED indicates semi extended width.
+</p></div>
+
+    
+    </div>
+</div>
+
+
+
+
+<!-- Public ctors -->
+
+
+
+<!-- ========= CONSTRUCTOR DETAIL ======== -->
+<!-- Protected ctors -->
+
+<h2>Protected Constructors</h2>
+
+
+
+<a id="TextAttribute(java.lang.String)"></a>
+
+<div class="jd-details api apilevel-">
+    <h4 class="jd-details-title">
+      <span class="normal">
+        protected
+        
+        
+        
+        
+        
+      </span>
+      <span class="sympad">TextAttribute</span>
+      <span class="normal">(<a href="../../../../reference/java/lang/String.html">String</a> name)</span>
+    </h4>
+      <div class="api-level">
+        <div>
+
+</div>
+        
+  
+
+      </div>
+    <div class="jd-details-descr">
+      
+  <div class="jd-tagdata jd-tagdescr"><p>Instantiates a new TextAttribute with the specified name.</p></div>
+  <div class="jd-tagdata">
+      <h5 class="jd-tagtitle">Parameters</h5>
+      <table class="jd-tagtable">
+        <tr>
+          <th>name</th>
+          <td>the name of TextAttribute.
+</td>
+        </tr>
+      </table>
+  </div>
+
+    </div>
+</div>
+
+
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+<!-- Public methdos -->
+
+
+
+<!-- ========= METHOD DETAIL ======== -->
+
+
+
+<!-- ========= END OF CLASS DATA ========= -->
+<a id="navbar_top"></a>
+
+</div> <!-- jd-content -->
+<!-- end doc-content class -->
+</div> <!-- end body-content --> 
+
+<script type="text/javascript">
+init(); /* initialize doclava-developer-docs.js */
+</script>
