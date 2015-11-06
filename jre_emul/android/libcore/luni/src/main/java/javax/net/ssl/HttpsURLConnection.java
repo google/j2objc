@@ -17,6 +17,8 @@
 
 package javax.net.ssl;
 
+import com.google.j2objc.net.IosHttpsHandler;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.Principal;
@@ -310,4 +312,7 @@ public abstract class HttpsURLConnection extends HttpURLConnection {
         return sslSocketFactory;
     }
 
+    // Create a compile-time link on the https stream handler, which is loaded dynamically by
+    // URL.java.
+    private static final Class<?> unused = IosHttpsHandler.class;
 }

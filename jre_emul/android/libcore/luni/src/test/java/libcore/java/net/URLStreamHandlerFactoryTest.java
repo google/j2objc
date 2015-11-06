@@ -17,7 +17,6 @@
 package libcore.java.net;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
@@ -44,12 +43,9 @@ public final class URLStreamHandlerFactoryTest extends TestCase {
         fail("URL does not declare a URLStreamHandlerFactory field");
     }
 
-    public void tearDown() throws Exception {
-      // Use internal reset method to avoid "factory already set" error.
-      Method method = URL.class.getDeclaredMethod(
-          "resetURLStreamHandlerFactory", URLStreamHandlerFactory.class);
-      method.setAccessible(true);
-      method.invoke(null, (Object) null);
+    public void tearDown() throws IllegalAccessException {
+      factoryField.set(null, null);
+      URL.setURLStreamHandlerFactory(oldFactory);
     }
 
     public void testCreateURLStreamHandler() throws Exception {
@@ -77,7 +73,8 @@ public final class URLStreamHandlerFactoryTest extends TestCase {
 
     public void testInstallCustomProtocolHandler() throws Exception {
         // clear cached protocol handlers if they exist
-        factoryField.set(null, oldFactory);
+        factoryField.set(null, null);
+        URL.setURLStreamHandlerFactory(oldFactory);
 
         try {
             System.setProperty("java.protocol.handler.pkgs", getHandlerPackageName());
@@ -90,7 +87,8 @@ public final class URLStreamHandlerFactoryTest extends TestCase {
 
     public void testFirstUseIsCached() throws Exception {
         // clear cached protocol handlers if they exist
-        factoryField.set(null, oldFactory);
+        factoryField.set(null, null);
+        URL.setURLStreamHandlerFactory(oldFactory);
 
         // creating a connection should use the platform's default stream handler
         URLConnection connection1 = new URL("http://android.com/").openConnection();

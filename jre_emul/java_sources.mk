@@ -426,31 +426,48 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/Objects.java \
   libcore/util/SneakyThrow.java
 
-# TODO(kstanger): Evaluate which java.net sources from non_core should move into this library.
 JAVA_PUBLIC_SOURCES_NET = \
+  java/net/Authenticator.java \
   java/net/BindException.java \
+  java/net/CacheRequest.java \
+  java/net/CacheResponse.java \
   java/net/ConnectException.java \
   java/net/ContentHandler.java \
   java/net/ContentHandlerFactory.java \
+  java/net/CookieHandler.java \
+  java/net/CookieManager.java \
+  java/net/CookiePolicy.java \
+  java/net/CookieStore.java \
+  java/net/CookieStoreImpl.java \
   java/net/DatagramPacket.java \
   java/net/DatagramSocket.java \
   java/net/DatagramSocketImpl.java \
   java/net/DatagramSocketImplFactory.java \
   java/net/FileNameMap.java \
+  java/net/HttpCookie.java \
+  java/net/HttpRetryException.java \
   java/net/HttpURLConnection.java \
+  java/net/IDN.java \
   java/net/Inet4Address.java \
   java/net/Inet6Address.java \
   java/net/InetAddress.java \
   java/net/InetSocketAddress.java \
   java/net/InterfaceAddress.java \
   java/net/MalformedURLException.java \
+  java/net/MulticastSocket.java \
   java/net/NetworkInterface.java \
+  java/net/NoRouteToHostException.java \
+  java/net/PasswordAuthentication.java \
   java/net/PlainDatagramSocketImpl.java \
   java/net/PlainServerSocketImpl.java \
   java/net/PlainSocketImpl.java \
   java/net/PortUnreachableException.java \
   java/net/ProtocolException.java \
   java/net/Proxy.java \
+  java/net/ProxySelector.java \
+  java/net/ProxySelectorImpl.java \
+  java/net/ResponseCache.java \
+  java/net/SecureCacheResponse.java \
   java/net/ServerSocket.java \
   java/net/Socket.java \
   java/net/SocketAddress.java \
@@ -465,12 +482,15 @@ JAVA_PUBLIC_SOURCES_NET = \
   java/net/URISyntaxException.java \
   java/net/URL.java \
   java/net/URLConnection.java \
+  java/net/URLDecoder.java \
+  java/net/URLEncoder.java \
   java/net/URLStreamHandler.java \
   java/net/URLStreamHandlerFactory.java \
   java/net/UnknownServiceException.java
 
 JAVA_PRIVATE_SOURCES_NET = \
-  com/google/j2objc/net/IosURLStreamHandlerFactory.java \
+  com/google/j2objc/net/IosHttpHandler.java \
+  com/google/j2objc/net/IosHttpURLConnection.java \
   java/net/AddressCache.java \
   java/net/DefaultFileNameMap.java \
   java/net/InetUnixAddress.java \
@@ -479,11 +499,13 @@ JAVA_PRIVATE_SOURCES_NET = \
   java/net/SocketUtils.java \
   java/net/Socks4Message.java \
   java/net/StandardSocketOptions.java \
+  libcore/icu/NativeIDN.java \
   libcore/io/GaiException.java \
   libcore/io/NetworkBridge.java \
   libcore/io/NetworkOs.java \
   libcore/io/StructAddrinfo.java \
   libcore/net/UriCodec.java \
+  libcore/net/http/HttpDate.java \
   libcore/net/url/FileHandler.java \
   libcore/net/url/FileURLConnection.java
 
@@ -546,6 +568,7 @@ JAVA_PRIVATE_SOURCES_CHANNELS = \
 
 JAVA_PUBLIC_SOURCES_SECURITY = \
   java/io/SerialVersionUIDDigest.java \
+  java/net/URLClassLoader.java \
   java/security/AccessControlContext.java \
   java/security/AccessControlException.java \
   java/security/AccessController.java \
@@ -990,27 +1013,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/lang/reflect/MalformedParameterizedTypeException.java \
   java/lang/reflect/ReflectPermission.java \
   java/lang/reflect/UndeclaredThrowableException.java \
-  java/net/Authenticator.java \
-  java/net/CacheRequest.java \
-  java/net/CacheResponse.java \
-  java/net/CookieHandler.java \
-  java/net/CookieManager.java \
-  java/net/CookiePolicy.java \
-  java/net/CookieStore.java \
-  java/net/CookieStoreImpl.java \
-  java/net/HttpCookie.java \
-  java/net/HttpRetryException.java \
-  java/net/IDN.java \
-  java/net/MulticastSocket.java \
-  java/net/NoRouteToHostException.java \
-  java/net/PasswordAuthentication.java \
-  java/net/ProxySelector.java \
-  java/net/ProxySelectorImpl.java \
-  java/net/ResponseCache.java \
-  java/net/SecureCacheResponse.java \
-  java/net/URLClassLoader.java \
-  java/net/URLDecoder.java \
-  java/net/URLEncoder.java \
   java/nio/NIOAccess.java \
   java/sql/Array.java \
   java/sql/BatchUpdateException.java \
@@ -1229,19 +1231,15 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   javax/net/ssl/X509TrustManager.java
 
 JAVA_PRIVATE_SOURCES_NON_CORE = \
-  com/google/j2objc/net/IosHttpHandler.java \
   com/google/j2objc/net/IosHttpsHandler.java \
   com/google/j2objc/net/IosHttpsURLConnection.java \
-  com/google/j2objc/net/IosHttpURLConnection.java \
   java/awt/font/NumericShaper.java \
   java/awt/font/TextAttribute.java \
   java/beans/StandardBeanInfo.java \
-  libcore/icu/NativeIDN.java \
   libcore/icu/TimeZones.java \
   libcore/io/Base64.java \
   libcore/io/BufferIterator.java \
   libcore/io/HeapBufferIterator.java \
-  libcore/net/http/HttpDate.java \
   libcore/util/CountingOutputStream.java \
   org/apache/harmony/beans/BeansUtils.java \
   org/json/JSON.java \

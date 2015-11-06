@@ -17,7 +17,7 @@
 
 package java.net;
 
-import com.google.j2objc.net.IosURLStreamHandlerFactory;
+import com.google.j2objc.net.IosHttpHandler;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +26,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Hashtable;
 
+import libcore.net.url.FileHandler;
 import libcore.net.url.UrlUtils;
 
 /**
@@ -73,8 +74,6 @@ public final class URL implements Serializable {
     private static final long serialVersionUID = -7627629688361524110L;
 
     private static URLStreamHandlerFactory streamHandlerFactory;
-    private static URLStreamHandlerFactory iosStreamHandlerFactory =
-        new IosURLStreamHandlerFactory();
 
     /** Cache of protocols to their handlers */
     private static final Hashtable<String, URLStreamHandler> streamHandlers
@@ -110,12 +109,8 @@ public final class URL implements Serializable {
         if (streamHandlerFactory != null) {
             throw new Error("Factory already set");
         }
-        resetURLStreamHandlerFactory(factory);
-    }
-
-    private static void resetURLStreamHandlerFactory(URLStreamHandlerFactory factory) {
-      streamHandlers.clear();
-      streamHandlerFactory = factory;
+        streamHandlers.clear();
+        streamHandlerFactory = factory;
     }
 
     /**
@@ -423,12 +418,22 @@ public final class URL implements Serializable {
         }
 
         // Fall back to a built-in stream handler if the user didn't supply one
-        if (iosStreamHandlerFactory != null) {
-          streamHandler = iosStreamHandlerFactory.createURLStreamHandler(protocol);
-          if (streamHandler != null) {
-              streamHandlers.put(protocol, streamHandler);
-              return;
-          }
+        if (protocol.equals("file")) {
+            streamHandler = new FileHandler();
+        } else if (protocol.equals("http")) {
+            streamHandler = new IosHttpHandler();
+        } else if (protocol.equals("https")) {
+            try {
+                String name = "com.google.j2objc.net.IosHttpsHandler";
+                streamHandler = (URLStreamHandler) Class.forName(name).newInstance();
+            } catch (Exception e) {
+                throw new NoClassDefFoundError(
+                    "Https support is unavailable. Fix this by:\n"
+                    // TODO(kstanger): Create a library for https/ssl support.
+                    + "1) If linking with -ObjC, report a J2ObjC bug.\n"
+                    + "2) If linking without -ObjC, call JavaxNetSslHttpsURLConnection_class_()"
+                    + " to create a compile-time dependency");
+            }
         }
         if (streamHandler != null) {
             streamHandlers.put(protocol, streamHandler);
