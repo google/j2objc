@@ -780,6 +780,7 @@ run-initialization-test: $(TESTS_DIR)/jreinitialization
 
 run-core-size-test: $(TESTS_DIR)/core_size \
   $(TESTS_DIR)/core_plus_channels \
+  $(TESTS_DIR)/core_plus_net \
   $(TESTS_DIR)/core_plus_security \
   $(TESTS_DIR)/core_plus_xml
 	@for bin in $^; do \
@@ -875,14 +876,18 @@ $(TESTS_DIR)/core_size:
 	@mkdir -p $(@D)
 	../dist/j2objcc -o $@ -ObjC
 
+$(TESTS_DIR)/core_plus_net:
+	@mkdir -p $(@D)
+	../dist/j2objcc -ljre_net -o $@ -ObjC
+
 $(TESTS_DIR)/core_plus_channels:
 	@mkdir -p $(@D)
-	../dist/j2objcc -ljre_channels -o $@ -ObjC
+	../dist/j2objcc -ljre_channels -ljre_net -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_security:
 	@mkdir -p $(@D)
-	../dist/j2objcc -ljre_security -o $@ -ObjC
+	../dist/j2objcc -ljre_security -ljre_net -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_xml:
 	@mkdir -p $(@D)
-	../dist/j2objcc -ljre_xml -o $@ -ObjC
+	../dist/j2objcc -ljre_xml -ljre_net -o $@ -ObjC

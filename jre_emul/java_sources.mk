@@ -185,46 +185,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/math/BigInteger.java \
   java/math/MathContext.java \
   java/math/RoundingMode.java \
-  java/net/BindException.java \
-  java/net/ConnectException.java \
-  java/net/ContentHandler.java \
-  java/net/ContentHandlerFactory.java \
-  java/net/DatagramPacket.java \
-  java/net/DatagramSocket.java \
-  java/net/DatagramSocketImpl.java \
-  java/net/DatagramSocketImplFactory.java \
-  java/net/FileNameMap.java \
-  java/net/HttpURLConnection.java \
-  java/net/Inet4Address.java \
-  java/net/Inet6Address.java \
-  java/net/InetAddress.java \
-  java/net/InetSocketAddress.java \
-  java/net/InterfaceAddress.java \
-  java/net/MalformedURLException.java \
-  java/net/NetworkInterface.java \
-  java/net/PlainDatagramSocketImpl.java \
-  java/net/PlainServerSocketImpl.java \
-  java/net/PlainSocketImpl.java \
-  java/net/PortUnreachableException.java \
-  java/net/ProtocolException.java \
-  java/net/Proxy.java \
-  java/net/ServerSocket.java \
-  java/net/Socket.java \
-  java/net/SocketAddress.java \
-  java/net/SocketException.java \
-  java/net/SocketImpl.java \
-  java/net/SocketImplFactory.java \
-  java/net/SocketOptions.java \
-  java/net/SocketPermission.java \
-  java/net/SocketTimeoutException.java \
-  java/net/URI.java \
-  java/net/URISyntaxException.java \
-  java/net/URL.java \
-  java/net/URLConnection.java \
-  java/net/URLStreamHandler.java \
-  java/net/URLStreamHandlerFactory.java \
-  java/net/UnknownHostException.java \
-  java/net/UnknownServiceException.java \
   java/nio/Buffer.java \
   java/nio/BufferOverflowException.java \
   java/nio/BufferUnderflowException.java \
@@ -382,7 +342,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/security/PermissionCollection.java
 
 JAVA_PRIVATE_SOURCES_CORE = \
-  com/google/j2objc/net/IosURLStreamHandlerFactory.java \
   com/google/j2objc/util/ScopedLocalRef.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
@@ -399,13 +358,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   java/math/Logical.java \
   java/math/Multiplication.java \
   java/math/Primality.java \
-  java/net/AddressCache.java \
-  java/net/DefaultFileNameMap.java \
-  java/net/InetUnixAddress.java \
-  java/net/SocketOption.java \
-  java/net/SocketUtils.java \
-  java/net/Socks4Message.java \
-  java/net/StandardSocketOptions.java \
+  java/net/NetFactory.java \
   java/nio/ByteArrayBuffer.java \
   java/nio/ByteBufferAsCharBuffer.java \
   java/nio/ByteBufferAsDoubleBuffer.java \
@@ -438,7 +391,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/io/AsynchronousCloseMonitor.java \
   libcore/io/DeleteOnExit.java \
   libcore/io/ErrnoException.java \
-  libcore/io/GaiException.java \
   libcore/io/IoBridge.java \
   libcore/io/IoUtils.java \
   libcore/io/Libcore.java \
@@ -448,7 +400,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/io/Posix.java \
   libcore/io/SizeOf.java \
   libcore/io/Streams.java \
-  libcore/io/StructAddrinfo.java \
   libcore/io/StructFlock.java \
   libcore/io/StructGroupReq.java \
   libcore/io/StructGroupSourceReq.java \
@@ -459,9 +410,6 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/io/StructTimeval.java \
   libcore/io/StructUtsname.java \
   libcore/net/MimeUtils.java \
-  libcore/net/UriCodec.java \
-  libcore/net/url/FileHandler.java \
-  libcore/net/url/FileURLConnection.java \
   libcore/net/url/UrlUtils.java \
   libcore/reflect/GenericArrayTypeImpl.java \
   libcore/reflect/GenericSignatureParser.java \
@@ -477,6 +425,67 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/MutableLong.java \
   libcore/util/Objects.java \
   libcore/util/SneakyThrow.java
+
+# TODO(kstanger): Evaluate which java.net sources from non_core should move into this library.
+JAVA_PUBLIC_SOURCES_NET = \
+  java/net/BindException.java \
+  java/net/ConnectException.java \
+  java/net/ContentHandler.java \
+  java/net/ContentHandlerFactory.java \
+  java/net/DatagramPacket.java \
+  java/net/DatagramSocket.java \
+  java/net/DatagramSocketImpl.java \
+  java/net/DatagramSocketImplFactory.java \
+  java/net/FileNameMap.java \
+  java/net/HttpURLConnection.java \
+  java/net/Inet4Address.java \
+  java/net/Inet6Address.java \
+  java/net/InetAddress.java \
+  java/net/InetSocketAddress.java \
+  java/net/InterfaceAddress.java \
+  java/net/MalformedURLException.java \
+  java/net/NetworkInterface.java \
+  java/net/PlainDatagramSocketImpl.java \
+  java/net/PlainServerSocketImpl.java \
+  java/net/PlainSocketImpl.java \
+  java/net/PortUnreachableException.java \
+  java/net/ProtocolException.java \
+  java/net/Proxy.java \
+  java/net/ServerSocket.java \
+  java/net/Socket.java \
+  java/net/SocketAddress.java \
+  java/net/SocketException.java \
+  java/net/SocketImpl.java \
+  java/net/SocketImplFactory.java \
+  java/net/SocketOptions.java \
+  java/net/SocketPermission.java \
+  java/net/SocketTimeoutException.java \
+  java/net/UnknownHostException.java \
+  java/net/URI.java \
+  java/net/URISyntaxException.java \
+  java/net/URL.java \
+  java/net/URLConnection.java \
+  java/net/URLStreamHandler.java \
+  java/net/URLStreamHandlerFactory.java \
+  java/net/UnknownServiceException.java
+
+JAVA_PRIVATE_SOURCES_NET = \
+  com/google/j2objc/net/IosURLStreamHandlerFactory.java \
+  java/net/AddressCache.java \
+  java/net/DefaultFileNameMap.java \
+  java/net/InetUnixAddress.java \
+  java/net/NetFactoryImpl.java \
+  java/net/SocketOption.java \
+  java/net/SocketUtils.java \
+  java/net/Socks4Message.java \
+  java/net/StandardSocketOptions.java \
+  libcore/io/GaiException.java \
+  libcore/io/NetworkBridge.java \
+  libcore/io/NetworkOs.java \
+  libcore/io/StructAddrinfo.java \
+  libcore/net/UriCodec.java \
+  libcore/net/url/FileHandler.java \
+  libcore/net/url/FileURLConnection.java
 
 JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/AlreadyBoundException.java \
@@ -1293,12 +1302,14 @@ ANDROID_PRIVATE_SOURCES = \
 
 JAVA_SOURCES_CORE = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PRIVATE_SOURCES_CORE)
 JAVA_SOURCES_NON_CORE = $(JAVA_PUBLIC_SOURCES_NON_CORE) $(JAVA_PRIVATE_SOURCES_NON_CORE)
+JAVA_SOURCES_NET = $(JAVA_PUBLIC_SOURCES_NET) $(JAVA_PRIVATE_SOURCES_NET)
 JAVA_SOURCES_CHANNELS = $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PRIVATE_SOURCES_CHANNELS)
 JAVA_SOURCES_SECURITY = $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PRIVATE_SOURCES_SECURITY)
 JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PRIVATE_SOURCES_XML)
 JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 
-JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_CHANNELS) $(JAVA_SOURCES_SECURITY) $(JAVA_SOURCES_XML) \
-  $(JAVA_SOURCES_NON_CORE) $(JAVA_SOURCES_ANDROID)
-JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_SOURCES_CHANNELS) $(JAVA_PUBLIC_SOURCES_SECURITY) \
-  $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PUBLIC_SOURCES_NON_CORE) $(ANDROID_PUBLIC_SOURCES)
+JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_NET) $(JAVA_SOURCES_CHANNELS) \
+  $(JAVA_SOURCES_SECURITY) $(JAVA_SOURCES_XML) $(JAVA_SOURCES_NON_CORE) $(JAVA_SOURCES_ANDROID)
+JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PUBLIC_SOURCES_NET) \
+  $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PUBLIC_SOURCES_XML) \
+  $(JAVA_PUBLIC_SOURCES_NON_CORE) $(ANDROID_PUBLIC_SOURCES)

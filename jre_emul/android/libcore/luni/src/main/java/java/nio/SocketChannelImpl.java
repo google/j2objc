@@ -51,9 +51,9 @@ import java.util.Arrays;
 import java.util.Set;
 
 import libcore.io.ErrnoException;
-import libcore.io.Libcore;
-import libcore.io.IoBridge;
 import libcore.io.IoUtils;
+import libcore.io.NetworkBridge;
+import libcore.io.NetworkOs;
 import static libcore.io.OsConstants.*;
 
 /*
@@ -108,7 +108,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorChannel {
     public SocketChannelImpl(SelectorProvider selectorProvider, boolean connect) throws IOException {
         super(selectorProvider);
         status = SOCKET_STATUS_UNCONNECTED;
-        fd = (connect ? IoBridge.socket(true) : new FileDescriptor());
+        fd = (connect ? NetworkBridge.socket(true) : new FileDescriptor());
     }
 
     /*
@@ -159,7 +159,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorChannel {
         }
 
         InetSocketAddress localAddress = (InetSocketAddress) local;
-        IoBridge.bind(fd, localAddress.getAddress(), localAddress.getPort());
+        NetworkBridge.bind(fd, localAddress.getAddress(), localAddress.getPort());
         onBind(true /* updateSocketState */);
         return this;
     }
@@ -176,7 +176,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorChannel {
     void onBind(boolean updateSocketState) {
         SocketAddress sa;
         try {
-            sa = Libcore.os.getsockname(fd);
+            sa = NetworkOs.getsockname(fd);
         } catch (ErrnoException errnoException) {
             throw new AssertionError(errnoException);
         }
@@ -252,7 +252,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorChannel {
             // When in blocking mode, IoBridge.connect() will return without an exception when the
             // socket is connected. When in non-blocking mode it will return without an exception
             // without knowing the result of the connection attempt, which could still be going on.
-            IoBridge.connect(fd, normalAddr, port);
+            NetworkBridge.connect(fd, normalAddr, port);
             newStatus = isBlocking ? SOCKET_STATUS_CONNECTED : SOCKET_STATUS_PENDING;
             finished = true;
         } catch (IOException e) {
@@ -330,7 +330,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorChannel {
             begin();
             InetAddress inetAddress = connectAddress.getAddress();
             int port = connectAddress.getPort();
-            finished = IoBridge.isConnected(fd, inetAddress, port, 0, 0); // Return immediately.
+            finished = NetworkBridge.isConnected(fd, inetAddress, port, 0, 0); // Return immediately.
         } catch (ConnectException e) {
             if (isOpen()) {
                 close();
@@ -395,7 +395,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorChannel {
                 if (isBlocking()) {
                     begin();
                 }
-                readCount = IoBridge.recvfrom(true, fd, dst, 0, null, false);
+                readCount = NetworkBridge.recvfrom(true, fd, dst, 0, null, false);
                 if (readCount > 0) {
                     dst.position(dst.position() + readCount);
                 }
@@ -459,7 +459,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorChannel {
                 if (isBlocking()) {
                     begin();
                 }
-                writeCount = IoBridge.sendto(fd, src, 0, null, 0);
+                writeCount = NetworkBridge.sendto(fd, src, 0, null, 0);
                 if (writeCount > 0) {
                     src.position(src.position() + writeCount);
                 }
@@ -526,7 +526,7 @@ class SocketChannelImpl extends SocketChannel implements FileDescriptorChannel {
             status = SOCKET_STATUS_CLOSED;
             // IoBridge.closeSocket(fd) is idempotent: It is safe to call on an already-closed file
             // descriptor.
-            IoBridge.closeSocket(fd);
+            NetworkBridge.closeSocket(fd);
             if (socket != null && !socket.isClosed()) {
                 socket.onClose();
             }

@@ -50,7 +50,7 @@ public final class GaiException extends RuntimeException {
         if (gaiName == null) {
             gaiName = "GAI_ error " + error;
         }
-        String description = Libcore.os.gai_strerror(error);
+        String description = NetworkOs.gai_strerror(error);
         return functionName + " failed: " + gaiName + " (" + description + ")";
     }
 

@@ -35,9 +35,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 import libcore.io.ErrnoException;
 import libcore.io.GaiException;
-import libcore.io.IoBridge;
 import libcore.io.Libcore;
 import libcore.io.Memory;
+import libcore.io.NetworkBridge;
+import libcore.io.NetworkOs;
 import libcore.io.StructAddrinfo;
 import static libcore.io.OsConstants.*;
 
@@ -254,7 +255,7 @@ public class InetAddress implements Serializable {
         // If inet_pton(3) can't parse it, it must have been a deprecated format.
         // We need to return inet_pton(3)'s result to ensure that numbers assumed to be octal
         // by getaddrinfo(3) are reinterpreted by inet_pton(3) as decimal.
-        return Libcore.os.inet_pton(AF_INET, address);
+        return NetworkOs.inet_pton(AF_INET, address);
     }
 
     private static InetAddress parseNumericAddressNoThrow(String address) {
@@ -266,7 +267,7 @@ public class InetAddress implements Serializable {
         hints.ai_flags = AI_NUMERICHOST;
         InetAddress[] addresses = null;
         try {
-            addresses = Libcore.os.getaddrinfo(address, hints);
+            addresses = NetworkOs.getaddrinfo(address, hints);
         } catch (GaiException ignored) {
         }
         return (addresses != null) ? addresses[0] : null;
@@ -293,7 +294,7 @@ public class InetAddress implements Serializable {
      * Returns the numeric representation of this IP address (such as "127.0.0.1").
      */
     public String getHostAddress() {
-        return Libcore.os.getnameinfo(this, NI_NUMERICHOST); // Can't throw.
+        return NetworkOs.getnameinfo(this, NI_NUMERICHOST); // Can't throw.
     }
 
     /**
@@ -413,7 +414,7 @@ public class InetAddress implements Serializable {
             // for SOCK_STREAM and one for SOCK_DGRAM. Since we do not return the family
             // anyway, just pick one.
             hints.ai_socktype = SOCK_STREAM;
-            InetAddress[] addresses = Libcore.os.getaddrinfo(host, hints);
+            InetAddress[] addresses = NetworkOs.getaddrinfo(host, hints);
             // TODO: should getaddrinfo set the hostname of the InetAddresses it returns?
             for (InetAddress address : addresses) {
                 address.hostName = host;
@@ -430,7 +431,8 @@ public class InetAddress implements Serializable {
                 }
             }
             // Otherwise, throw an UnknownHostException.
-            String detailMessage = "Unable to resolve host \"" + host + "\": " + Libcore.os.gai_strerror(gaiException.error);
+            String detailMessage = "Unable to resolve host \"" + host + "\": "
+                + NetworkOs.gai_strerror(gaiException.error);
             addressCache.putUnknownHost(host, detailMessage);
             throw gaiException.rethrowAsUnknownHostException(detailMessage);
         }
@@ -448,7 +450,7 @@ public class InetAddress implements Serializable {
     private static InetAddress getHostByAddrImpl(InetAddress address) throws UnknownHostException {
         BlockGuard.getThreadPolicy().onNetwork();
         try {
-            String hostname = Libcore.os.getnameinfo(address, NI_NAMEREQD);
+            String hostname = NetworkOs.getnameinfo(address, NI_NAMEREQD);
             return makeInetAddress(address.ipaddress.clone(), hostname);
         } catch (GaiException gaiException) {
             throw gaiException.rethrowAsUnknownHostException();
@@ -730,13 +732,13 @@ public class InetAddress implements Serializable {
 
     private boolean isReachable(InetAddress destination, InetAddress source, int timeout) throws IOException {
         // TODO: try ICMP first (http://code.google.com/p/android/issues/detail?id=20106)
-        FileDescriptor fd = IoBridge.socket(true);
+        FileDescriptor fd = NetworkBridge.socket(true);
         boolean reached = false;
         try {
             if (source != null) {
-                IoBridge.bind(fd, source, 0);
+                NetworkBridge.bind(fd, source, 0);
             }
-            IoBridge.connect(fd, destination, 7, timeout);
+            NetworkBridge.connect(fd, destination, 7, timeout);
             reached = true;
         } catch (IOException e) {
             if (e.getCause() instanceof ErrnoException) {
@@ -745,7 +747,7 @@ public class InetAddress implements Serializable {
             }
         }
 
-        IoBridge.closeSocket(fd);
+        NetworkBridge.closeSocket(fd);
 
         return reached;
     }

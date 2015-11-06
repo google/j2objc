@@ -24,7 +24,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.SocketChannel;
 
-import libcore.io.IoBridge;
+import libcore.io.NetworkBridge;
 
 /**
  * Provides a client-side TCP socket.
@@ -999,7 +999,7 @@ public class Socket implements Closeable {
     }
 
     private void cacheLocalAddress() throws SocketException {
-        this.localAddress = IoBridge.getSocketLocalAddress(impl.fd);
+        this.localAddress = NetworkBridge.getSocketLocalAddress(impl.fd);
     }
 
     /**

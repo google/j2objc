@@ -17,7 +17,6 @@
 package libcore.io;
 
 import java.io.IOException;
-import java.net.SocketException;
 
 /**
  * A checked exception thrown when {@link Os} methods fail. This exception contains the native
@@ -57,9 +56,5 @@ public final class ErrnoException extends Exception {
         IOException newException = new IOException(getMessage());
         newException.initCause(this);
         throw newException;
-    }
-
-    public SocketException rethrowAsSocketException() throws SocketException {
-        throw new SocketException(getMessage(), this);
     }
 }

@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import libcore.io.IoBridge;
+import libcore.io.NetworkBridge;
 
 /**
  * Defines the set standard of socket options that can be supported by network channels.
@@ -62,7 +62,7 @@ public final class StandardSocketOptions {
    * Multicasting</a> for more information about IP multicast.
    */
   public static final SocketOption<Integer> IP_MULTICAST_TTL =
-      new ByteRangeSocketOption("IP_MULTICAST_TTL", IoBridge.JAVA_IP_MULTICAST_TTL);
+      new ByteRangeSocketOption("IP_MULTICAST_TTL", NetworkBridge.JAVA_IP_MULTICAST_TTL);
 
   /**
    * The value for the type-of-service field of the IPv4 header, or the traffic class field of the
@@ -254,7 +254,7 @@ public final class StandardSocketOptions {
         throw new AssertionError("Invalid type " + value + " of value for " + name);
       }
       Object objectValue = validateAndConvertValueBeforeSet(fd, value);
-      IoBridge.setSocketOption(fd, socketOption, objectValue);
+      NetworkBridge.setSocketOption(fd, socketOption, objectValue);
     }
 
     /**
@@ -276,7 +276,7 @@ public final class StandardSocketOptions {
      * @hide internal method
      */
     public final T getValue(FileDescriptor fd) throws IOException {
-      Object value = IoBridge.getSocketOption(fd, socketOption);
+      Object value = NetworkBridge.getSocketOption(fd, socketOption);
       T typedValue = validateAndConvertValueAfterGet(fd, value);
       if (typedValue != null && !type.isAssignableFrom(typedValue.getClass())) {
         // Sanity check required because of type erasure.

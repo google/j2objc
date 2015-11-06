@@ -46,9 +46,9 @@ import java.util.Arrays;
 import java.util.Set;
 
 import libcore.io.ErrnoException;
-import libcore.io.IoBridge;
 import libcore.io.IoUtils;
-import libcore.io.Libcore;
+import libcore.io.NetworkBridge;
+import libcore.io.NetworkOs;
 import libcore.util.EmptyArray;
 
 /*
@@ -84,7 +84,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
      */
     protected DatagramChannelImpl(SelectorProvider selectorProvider) throws IOException {
         super(selectorProvider);
-        fd = IoBridge.socket(false);
+        fd = NetworkBridge.socket(false);
     }
 
     /*
@@ -124,7 +124,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
         }
 
         InetSocketAddress localAddress = (InetSocketAddress) local;
-        IoBridge.bind(fd, localAddress.getAddress(), localAddress.getPort());
+        NetworkBridge.bind(fd, localAddress.getAddress(), localAddress.getPort());
         onBind(true /* updateSocketState */);
         return this;
     }
@@ -141,7 +141,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
     void onBind(boolean updateSocketState) {
         SocketAddress sa;
         try {
-            sa = Libcore.os.getsockname(fd);
+            sa = NetworkOs.getsockname(fd);
         } catch (ErrnoException errnoException) {
             throw new AssertionError(errnoException);
         }
@@ -203,7 +203,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
         int remotePort = inetSocketAddress.getPort();
         try {
             begin();
-            IoBridge.connect(fd, remoteAddress, remotePort);
+            NetworkBridge.connect(fd, remoteAddress, remotePort);
         } catch (ConnectException e) {
             // ConnectException means connect fail, not exception
         } finally {
@@ -244,7 +244,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
         onDisconnect(true /* updateSocketState */);
 
         try {
-            Libcore.os.connect(fd, InetAddress.UNSPECIFIED, 0);
+            NetworkOs.connect(fd, InetAddress.UNSPECIFIED, 0);
         } catch (ErrnoException errnoException) {
             throw errnoException.rethrowAsIOException();
         }
@@ -307,7 +307,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
             receivePacket = new DatagramPacket(new byte[target.remaining()], target.remaining());
         }
         do {
-            received = IoBridge.recvfrom(false, fd, receivePacket.getData(), receivePacket.getOffset(), receivePacket.getLength(), 0, receivePacket, isConnected());
+            received = NetworkBridge.recvfrom(false, fd, receivePacket.getData(), receivePacket.getOffset(), receivePacket.getLength(), 0, receivePacket, isConnected());
             if (receivePacket.getAddress() != null) {
                 if (received > 0) {
                     if (target.hasArray()) {
@@ -330,7 +330,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
         int oldposition = target.position();
         int received;
         do {
-            received = IoBridge.recvfrom(false, fd, target, 0, receivePacket, isConnected());
+            received = NetworkBridge.recvfrom(false, fd, target, 0, receivePacket, isConnected());
             if (receivePacket.getAddress() != null) {
                 // copy the data of received packet
                 if (received > 0) {
@@ -363,7 +363,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
             try {
                 begin();
                 int oldPosition = source.position();
-                sendCount = IoBridge.sendto(fd, source, 0, isa.getAddress(), isa.getPort());
+                sendCount = NetworkBridge.sendto(fd, source, 0, isa.getAddress(), isa.getPort());
                 if (sendCount > 0) {
                     source.position(oldPosition + sendCount);
                 }
@@ -441,7 +441,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
             int readCount = 0;
             try {
                 begin();
-                readCount = IoBridge.recvfrom(false, fd, dst, 0, null, isConnected());
+                readCount = NetworkBridge.recvfrom(false, fd, dst, 0, null, isConnected());
             } catch (InterruptedIOException e) {
                 // InterruptedIOException will be thrown when timeout.
                 return 0;
@@ -506,7 +506,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
             int result = 0;
             try {
                 begin();
-                result = IoBridge.sendto(fd, buf, 0, null, 0);
+                result = NetworkBridge.sendto(fd, buf, 0, null, 0);
             } finally {
                 end(result > 0);
             }
@@ -517,7 +517,7 @@ class DatagramChannelImpl extends DatagramChannel implements FileDescriptorChann
     @Override protected synchronized void implCloseSelectableChannel() throws IOException {
         // A closed channel is not connected.
         onDisconnect(true /* updateSocketState */);
-        IoBridge.closeSocket(fd);
+        NetworkBridge.closeSocket(fd);
 
         if (socket != null && !socket.isClosed()) {
             socket.onClose();

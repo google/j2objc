@@ -36,6 +36,8 @@ import libcore.io.ErrnoException;
 import libcore.io.IoBridge;
 import libcore.io.Libcore;
 import libcore.io.Memory;
+import libcore.io.NetworkBridge;
+import libcore.io.NetworkOs;
 import libcore.io.Streams;
 import static libcore.io.OsConstants.*;
 
@@ -94,7 +96,7 @@ public class PlainSocketImpl extends SocketImpl {
 
         try {
             InetSocketAddress peerAddress = new InetSocketAddress();
-            FileDescriptor clientFd = Libcore.os.accept(fd, peerAddress);
+            FileDescriptor clientFd = NetworkOs.accept(fd, peerAddress);
 
             // TODO: we can't just set newImpl.fd to clientFd because a nio SocketChannel may
             newImpl.fd.setInt$(clientFd.getInt$());
@@ -105,13 +107,13 @@ public class PlainSocketImpl extends SocketImpl {
             if (errnoException.errno == EAGAIN) {
                 throw new SocketTimeoutException(errnoException);
             }
-            throw errnoException.rethrowAsSocketException();
+            throw new SocketException(errnoException.getMessage(), errnoException);
         }
 
         // Reset the client's inherited read timeout to the Java-specified default of 0.
         newImpl.setOption(SocketOptions.SO_TIMEOUT, Integer.valueOf(0));
 
-        newImpl.localport = IoBridge.getSocketLocalPort(newImpl.fd);
+        newImpl.localport = NetworkBridge.getSocketLocalPort(newImpl.fd);
     }
 
     private boolean usingSocks() {
@@ -145,19 +147,19 @@ public class PlainSocketImpl extends SocketImpl {
     }
 
     @Override protected void bind(InetAddress address, int port) throws IOException {
-        IoBridge.bind(fd, address, port);
+        NetworkBridge.bind(fd, address, port);
         this.address = address;
         if (port != 0) {
             this.localport = port;
         } else {
-            this.localport = IoBridge.getSocketLocalPort(fd);
+            this.localport = NetworkBridge.getSocketLocalPort(fd);
         }
     }
 
     @Override
     protected synchronized void close() throws IOException {
         guard.close();
-        IoBridge.closeSocket(fd);
+        NetworkBridge.closeSocket(fd);
     }
 
     @Override
@@ -187,7 +189,7 @@ public class PlainSocketImpl extends SocketImpl {
         if (streaming && usingSocks()) {
             socksConnect(anAddr, aPort, 0);
         } else {
-            IoBridge.connect(fd, normalAddr, aPort, timeout);
+            NetworkBridge.connect(fd, normalAddr, aPort, timeout);
         }
         super.address = normalAddr;
         super.port = aPort;
@@ -196,7 +198,7 @@ public class PlainSocketImpl extends SocketImpl {
     @Override
     protected void create(boolean streaming) throws IOException {
         this.streaming = streaming;
-        this.fd = IoBridge.socket(streaming);
+        this.fd = NetworkBridge.socket(streaming);
     }
 
     @Override protected void finalize() throws Throwable {
@@ -240,7 +242,7 @@ public class PlainSocketImpl extends SocketImpl {
     }
 
     @Override public Object getOption(int option) throws SocketException {
-        return IoBridge.getSocketOption(fd, option);
+        return NetworkBridge.getSocketOption(fd, option);
     }
 
     @Override protected synchronized OutputStream getOutputStream() throws IOException {
@@ -278,13 +280,13 @@ public class PlainSocketImpl extends SocketImpl {
         try {
             Libcore.os.listen(fd, backlog);
         } catch (ErrnoException errnoException) {
-            throw errnoException.rethrowAsSocketException();
+            throw new SocketException(errnoException.getMessage(), errnoException);
         }
     }
 
     @Override
     public void setOption(int option, Object value) throws SocketException {
-        IoBridge.setSocketOption(fd, option, value);
+        NetworkBridge.setSocketOption(fd, option, value);
     }
 
     /**
@@ -319,7 +321,7 @@ public class PlainSocketImpl extends SocketImpl {
      */
     private void socksConnect(InetAddress applicationServerAddress, int applicationServerPort, int timeout) throws IOException {
         try {
-            IoBridge.connect(fd, socksGetServerAddress(), socksGetServerPort(), timeout);
+            NetworkBridge.connect(fd, socksGetServerAddress(), socksGetServerPort(), timeout);
         } catch (Exception e) {
             throw new SocketException("SOCKS connection failed", e);
         }
@@ -363,7 +365,7 @@ public class PlainSocketImpl extends SocketImpl {
         try {
             Libcore.os.shutdown(fd, SHUT_RD);
         } catch (ErrnoException errnoException) {
-            throw errnoException.rethrowAsSocketException();
+            throw new SocketException(errnoException.getMessage(), errnoException);
         }
     }
 
@@ -375,7 +377,7 @@ public class PlainSocketImpl extends SocketImpl {
         try {
             Libcore.os.shutdown(fd, SHUT_WR);
         } catch (ErrnoException errnoException) {
-            throw errnoException.rethrowAsSocketException();
+            throw new SocketException(errnoException.getMessage(), errnoException);
         }
     }
 
@@ -384,7 +386,7 @@ public class PlainSocketImpl extends SocketImpl {
      */
     private void socksBind() throws IOException {
         try {
-            IoBridge.connect(fd, socksGetServerAddress(), socksGetServerPort());
+            NetworkBridge.connect(fd, socksGetServerAddress(), socksGetServerPort());
         } catch (Exception e) {
             throw new IOException("Unable to connect to SOCKS server", e);
         }
@@ -466,9 +468,9 @@ public class PlainSocketImpl extends SocketImpl {
     protected void sendUrgentData(int value) throws IOException {
         try {
             byte[] buffer = new byte[] { (byte) value };
-            Libcore.os.sendto(fd, buffer, 0, 1, MSG_OOB, null, 0);
+            NetworkOs.sendto(fd, buffer, 0, 1, MSG_OOB, null, 0);
         } catch (ErrnoException errnoException) {
-            throw errnoException.rethrowAsSocketException();
+            throw new SocketException(errnoException.getMessage(), errnoException);
         }
     }
 
@@ -483,7 +485,7 @@ public class PlainSocketImpl extends SocketImpl {
         if (shutdownInput) {
             return -1;
         }
-        int readCount = IoBridge.recvfrom(true, fd, buffer, offset, byteCount, 0, null, false);
+        int readCount = NetworkBridge.recvfrom(true, fd, buffer, offset, byteCount, 0, null, false);
         // Return of zero bytes for a blocking socket means a timeout occurred
         if (readCount == 0) {
             throw new SocketTimeoutException();
@@ -502,7 +504,7 @@ public class PlainSocketImpl extends SocketImpl {
         Arrays.checkOffsetAndCount(buffer.length, offset, byteCount);
         if (streaming) {
             while (byteCount > 0) {
-                int bytesWritten = IoBridge.sendto(fd, buffer, offset, byteCount, 0, null, 0);
+                int bytesWritten = NetworkBridge.sendto(fd, buffer, offset, byteCount, 0, null, 0);
                 byteCount -= bytesWritten;
                 offset += bytesWritten;
             }
@@ -510,7 +512,7 @@ public class PlainSocketImpl extends SocketImpl {
             // Unlike writes to a streaming socket, writes to a datagram
             // socket are all-or-nothing, so we don't need a loop here.
             // http://code.google.com/p/android/issues/detail?id=15304
-            IoBridge.sendto(fd, buffer, offset, byteCount, 0, address, port);
+            NetworkBridge.sendto(fd, buffer, offset, byteCount, 0, address, port);
         }
     }
 }

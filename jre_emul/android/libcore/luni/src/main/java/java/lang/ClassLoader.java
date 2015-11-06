@@ -44,6 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /*-[
+#import "java/net/NetFactory.h"
 #import "java/util/ArrayList.h"
 #import "java/util/Collections.h"
 ]-*/
@@ -385,6 +386,7 @@ public abstract class ClassLoader {
      * @see Class#getResourceAsStream
      */
     public InputStream getResourceAsStream(String resName) {
+        // TODO(kstanger): Get the stream without using java.net.
         try {
             URL url = getResource(resName);
             if (url != null) {
@@ -699,8 +701,7 @@ class SystemClassLoader extends ClassLoader {
     }
     NSBundle *bundle = [NSBundle mainBundle];
     NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
-    return nativeURL ? AUTORELEASE([[JavaNetURL alloc] initWithNSString:[nativeURL description]])
-        : nil;
+    return nativeURL ? JavaNetNetFactory_newURLWithNSString_([nativeURL description]) : nil;
   ]-*/;
 
   @Override
@@ -712,9 +713,7 @@ class SystemClassLoader extends ClassLoader {
     for (NSBundle *bundle in [NSBundle allBundles]) {
       NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
       if (nativeURL) {
-        JavaNetURL *url =
-            AUTORELEASE([[JavaNetURL alloc] initWithNSString:[nativeURL description]]);
-        [urls addWithId:url];
+        [urls addWithId:JavaNetNetFactory_newURLWithNSString_([nativeURL description])];
       }
     }
     return JavaUtilCollections_enumerationWithJavaUtilCollection_(urls);

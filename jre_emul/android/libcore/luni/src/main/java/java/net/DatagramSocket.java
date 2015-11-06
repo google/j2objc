@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.nio.channels.DatagramChannel;
 
 import libcore.io.ErrnoException;
-import libcore.io.IoBridge;
-import libcore.io.Libcore;
+import libcore.io.NetworkBridge;
+import libcore.io.NetworkOs;
 import static libcore.io.OsConstants.*;
 
 /**
@@ -182,7 +182,7 @@ public class DatagramSocket implements Closeable {
      */
     public InetAddress getLocalAddress() {
         try {
-            return IoBridge.getSocketLocalAddress(impl.fd);
+            return NetworkBridge.getSocketLocalAddress(impl.fd);
         } catch (SocketException ex) {
             return null;
         }
@@ -320,9 +320,9 @@ public class DatagramSocket implements Closeable {
             throw new NullPointerException("netInterface == null");
         }
         try {
-            Libcore.os.setsockoptIfreq(impl.fd, SOL_SOCKET, SO_BINDTODEVICE, netInterface.getName());
+            NetworkOs.setsockoptIfreq(impl.fd, SOL_SOCKET, SO_BINDTODEVICE, netInterface.getName());
         } catch (ErrnoException errnoException) {
-            throw errnoException.rethrowAsSocketException();
+            throw new SocketException(errnoException.getMessage(), errnoException);
         }
     }
 

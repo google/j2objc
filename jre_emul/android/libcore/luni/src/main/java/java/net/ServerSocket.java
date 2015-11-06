@@ -21,7 +21,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.nio.channels.ServerSocketChannel;
 
-import libcore.io.IoBridge;
+import libcore.io.NetworkBridge;
 
 /**
  * This class represents a server-side socket that waits for incoming client
@@ -116,7 +116,7 @@ public class ServerSocket implements Closeable {
      * Read the cached isBound and localAddress state from the underlying OS socket.
      */
     private void readBackBindState() throws SocketException {
-        localAddress = IoBridge.getSocketLocalAddress(impl.fd);
+        localAddress = NetworkBridge.getSocketLocalAddress(impl.fd);
         isBound = true;
     }
 

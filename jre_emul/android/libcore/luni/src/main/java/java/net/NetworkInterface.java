@@ -27,6 +27,7 @@ import java.util.List;
 import libcore.io.ErrnoException;
 import libcore.io.IoUtils;
 import libcore.io.Libcore;
+import libcore.io.NetworkOs;
 import static libcore.io.OsConstants.*;
 
 /*-[
@@ -576,16 +577,16 @@ public final class NetworkInterface extends Object {
         FileDescriptor fd = null;
         try {
             fd = Libcore.os.socket(AF_INET, SOCK_DGRAM, 0);
-            InetAddress address = Libcore.os.ioctlInetAddress(fd, SIOCGIFADDR, interfaceName);
+            InetAddress address = NetworkOs.ioctlInetAddress(fd, SIOCGIFADDR, interfaceName);
             InetAddress broadcast = Inet4Address.ANY;
             try {
-                broadcast = Libcore.os.ioctlInetAddress(fd, SIOCGIFBRDADDR, interfaceName);
+                broadcast = NetworkOs.ioctlInetAddress(fd, SIOCGIFBRDADDR, interfaceName);
             } catch (ErrnoException e) {
                 if (e.errno != EINVAL) {
                     throw e;
                 }
             }
-            InetAddress netmask = Libcore.os.ioctlInetAddress(fd, SIOCGIFNETMASK, interfaceName);
+            InetAddress netmask = NetworkOs.ioctlInetAddress(fd, SIOCGIFNETMASK, interfaceName);
             if (broadcast.equals(Inet4Address.ANY)) {
                 broadcast = null;
             }

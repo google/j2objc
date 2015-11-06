@@ -39,6 +39,7 @@ import static libcore.io.OsConstants.S_IXUSR;
 import static libcore.io.OsConstants.W_OK;
 import static libcore.io.OsConstants.X_OK;
 
+import java.net.NetFactory;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -1154,18 +1155,13 @@ public class File implements Serializable, Comparable<File> {
      */
     public URI toURI() {
         String name = getAbsoluteName();
-        try {
-            if (!name.startsWith("/")) {
-                // start with sep.
-                return new URI("file", null, "/" + name, null, null);
-            } else if (name.startsWith("//")) {
-                return new URI("file", "", name, null); // UNC path
-            }
-            return new URI("file", null, name, null, null);
-        } catch (URISyntaxException e) {
-            // this should never happen
-            return null;
+        if (!name.startsWith("/")) {
+            // start with sep.
+            return NetFactory.newURI("file", null, "/" + name, null, null);
+        } else if (name.startsWith("//")) {
+            return NetFactory.newURI("file", "", name, null); // UNC path
         }
+        return NetFactory.newURI("file", null, name, null, null);
     }
 
     /**
@@ -1184,11 +1180,11 @@ public class File implements Serializable, Comparable<File> {
         String name = getAbsoluteName();
         if (!name.startsWith("/")) {
             // start with sep.
-            return new URL("file", "", -1, "/" + name, null);
+            return NetFactory.newURL("file", "", -1, "/" + name, null);
         } else if (name.startsWith("//")) {
-            return new URL("file:" + name); // UNC path
+            return NetFactory.newURL("file:" + name); // UNC path
         }
-        return new URL("file", "", -1, name, null);
+        return NetFactory.newURL("file", "", -1, name, null);
     }
 
     // TODO: is this really necessary, or can it be replaced with getAbsolutePath?
