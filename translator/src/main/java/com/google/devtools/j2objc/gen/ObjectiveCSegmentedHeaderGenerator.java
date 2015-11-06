@@ -112,9 +112,9 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     }
 
     newline();
-    printf("#if !defined (_%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, varPrefix,
+    printf("#if !defined (%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, varPrefix,
            typeName);
-    printf("#define _%s_\n", typeName);
+    printf("#define %s_\n", typeName);
 
     Set<Import> forwardDeclarations = Sets.newHashSet(type.getHeaderForwardDeclarations());
 

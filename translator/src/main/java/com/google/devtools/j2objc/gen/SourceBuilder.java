@@ -199,10 +199,9 @@ public class SourceBuilder {
   public void syncFilename(String fileName) {
     if (emitLineDirectives) {
       if (!fileName.equals(currentFile)) {
-        // In the dominant usage pattern, the filename is synced right before the line is synced.
-        // Emit 0 so readers don't think the line number is still meaningful.
-        currentLine = 0;
-        buffer.append(String.format("\n#line 0 \"%s\"\n", fileName));
+        currentLine = BEGINNING_OF_FILE;
+        // C11 spec. (6.10.4) requires a line number between 1 and 2147483647.
+        buffer.append(String.format("\n#line 1 \"%s\"\n", fileName));
       }
     }
     currentFile = fileName;

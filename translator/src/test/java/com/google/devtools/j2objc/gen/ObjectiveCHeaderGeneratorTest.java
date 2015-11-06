@@ -57,17 +57,17 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     // Non-letters should be replaced
     String translation = translateSourceFile(
         "public class ¢ents {}", "¢ents", "¢ents.h");
-    assertTranslation(translation, "#ifndef __ents_H_");
+    assertTranslation(translation, "#ifndef _ents_H");
 
     // Unicode letters outside the Basic Latin range should not be replaced
     translation = translateSourceFile(
         "public class こんにちは {}", "こんにちは", "こんにちは.h");
-    assertTranslation(translation, "#ifndef _こんにちは_H");
+    assertTranslation(translation, "#ifndef こんにちは_H");
 
     // Egyptian heiroglyph letters outside UCS-2, requiring two UTF-16 chars
     translation = translateSourceFile(
         "public class egyptian\uD80C\uDC00 {}", "egyptian\uD80C\uDC00", "egyptian\uD80C\uDC00.h");
-    assertTranslation(translation, "#ifndef _Egyptian\uD80C\uDC00_H");
+    assertTranslation(translation, "#ifndef Egyptian\uD80C\uDC00_H");
   }
 
   public void testDeprecatedTypeNameTranslation() throws IOException {
@@ -234,8 +234,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
     String header = translateCombinedFiles(
         "unit/Foo", ".h", "unit/Test.java", "unit/AnotherTest.java");
-    assertTranslation(header, "#ifndef _UnitFoo_H_");
-    assertTranslation(header, "#define _UnitFoo_H_");
+    assertTranslation(header, "#ifndef UnitFoo_H");
+    assertTranslation(header, "#define UnitFoo_H");
     assertTranslation(header, "@interface UnitTest");
     assertTranslation(header, "- (instancetype)init;");
     assertTranslation(header, "- (void)Dummy;");

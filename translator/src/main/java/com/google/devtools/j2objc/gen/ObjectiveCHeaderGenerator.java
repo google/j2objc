@@ -70,8 +70,8 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   }
 
   protected void generateFileHeader() {
-    printf("#ifndef _%s_H_\n", varPrefix);
-    printf("#define _%s_H_\n", varPrefix);
+    printf("#ifndef %s_H\n", varPrefix);
+    printf("#define %s_H\n", varPrefix);
     pushIgnoreDeprecatedDeclarationsPragma();
 
     Set<String> seenTypes = Sets.newHashSet();
@@ -110,7 +110,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
   protected void generateFileFooter() {
     newline();
     popIgnoreDeprecatedDeclarationsPragma();
-    printf("#endif // _%s_H_\n", varPrefix);
+    printf("#endif // %s_H\n", varPrefix);
   }
 
   protected static String getVarPrefix(String header) {

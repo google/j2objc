@@ -42,11 +42,11 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
         "#undef Test_RESTRICT");
     assertTranslation(translation, "#pragma pop_macro(\"Test_INCLUDE_ALL\")");
     assertTranslatedLines(translation,
-        "#if !defined (_Test_) && (Test_INCLUDE_ALL || Test_INCLUDE)",
-        "#define _Test_");
+        "#if !defined (Test_) && (Test_INCLUDE_ALL || Test_INCLUDE)",
+        "#define Test_");
     assertTranslatedLines(translation,
-        "#if !defined (_Test_Inner_) && (Test_INCLUDE_ALL || Test_Inner_INCLUDE)",
-        "#define _Test_Inner_");
+        "#if !defined (Test_Inner_) && (Test_INCLUDE_ALL || Test_Inner_INCLUDE)",
+        "#define Test_Inner_");
   }
 
   public void testIncludedType() throws IOException {
