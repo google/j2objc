@@ -602,6 +602,8 @@
 		510AF07E1BCD9D5D00C2AD84 /* LinkedTransferQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 510AF07B1BCD9D4F00C2AD84 /* LinkedTransferQueueTest.m */; };
 		5110C61F19AFCBAA00FA26E1 /* ClassTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110C61E19AFCBAA00FA26E1 /* ClassTest.m */; };
 		5110C62519AFCC2E00FA26E1 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110C62419AFCC2E00FA26E1 /* ProxyTest.m */; };
+		514171471BED5CAE0044F0FD /* MockHomonymySubjectBeanInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 514171461BED5CAE0044F0FD /* MockHomonymySubjectBeanInfo.m */; };
+		514171491BED5CD70044F0FD /* MockHomonymySubjectBeanInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 514171481BED5CD70044F0FD /* MockHomonymySubjectBeanInfo.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -673,8 +675,8 @@
 		0615D3C61BD83E7300132067 /* FakeFox031.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FakeFox031.m; path = org/apache/harmony/beans/tests/support/mock/FakeFox031.m; sourceTree = "<group>"; };
 		0615D3C71BD83E7300132067 /* FakeFox041.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FakeFox041.m; path = org/apache/harmony/beans/tests/support/mock/FakeFox041.m; sourceTree = "<group>"; };
 		0615D3C81BD83E7300132067 /* FakeFox0411.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FakeFox0411.m; path = org/apache/harmony/beans/tests/support/mock/FakeFox0411.m; sourceTree = "<group>"; };
-		0615D3C91BD83E7300132067 /* MockHomonymySubject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockHomonymySubject.m; path = org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject1/MockHomonymySubject.m; sourceTree = "<group>"; };
-		0615D3CA1BD83E7300132067 /* MockHomonymySubject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockHomonymySubject.m; path = org/apache/harmony/beans/tests/support/mock/homonymy/mocksubject2/MockHomonymySubject.m; sourceTree = "<group>"; };
+		0615D3C91BD83E7300132067 /* MockHomonymySubject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockHomonymySubject.m; path = beans/tests/support/mock/homonymy/mocksubject1/MockHomonymySubject.m; sourceTree = "<group>"; };
+		0615D3CA1BD83E7300132067 /* MockHomonymySubject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockHomonymySubject.m; path = beans/tests/support/mock/homonymy/mocksubject2/MockHomonymySubject.m; sourceTree = "<group>"; };
 		0615D3CB1BD83E7300132067 /* MockButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockButton.m; path = org/apache/harmony/beans/tests/support/mock/MockButton.m; sourceTree = "<group>"; };
 		0615D3CC1BD83E7300132067 /* MockFakeListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockFakeListener.m; path = org/apache/harmony/beans/tests/support/mock/MockFakeListener.m; sourceTree = "<group>"; };
 		0615D3CD1BD83E7300132067 /* MockFoo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockFoo.m; path = org/apache/harmony/beans/tests/support/mock/MockFoo.m; sourceTree = "<group>"; };
@@ -3915,6 +3917,8 @@
 		510AF07B1BCD9D4F00C2AD84 /* LinkedTransferQueueTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = LinkedTransferQueueTest.m; path = jsr166/LinkedTransferQueueTest.m; sourceTree = "<group>"; };
 		5110C61E19AFCBAA00FA26E1 /* ClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClassTest.m; path = com/google/j2objc/ClassTest.m; sourceTree = "<group>"; };
 		5110C62419AFCC2E00FA26E1 /* ProxyTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ProxyTest.m; path = java/lang/reflect/ProxyTest.m; sourceTree = "<group>"; };
+		514171461BED5CAE0044F0FD /* MockHomonymySubjectBeanInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockHomonymySubjectBeanInfo.m; path = beans/tests/support/mock/homonymy/mocksubject1/info/MockHomonymySubjectBeanInfo.m; sourceTree = "<group>"; };
+		514171481BED5CD70044F0FD /* MockHomonymySubjectBeanInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockHomonymySubjectBeanInfo.m; path = beans/tests/support/mock/homonymy/mocksubject2/info/MockHomonymySubjectBeanInfo.m; sourceTree = "<group>"; };
 		51719E5318EEDDCE006DEEB7 /* IOSPrimitiveArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSPrimitiveArray.h; sourceTree = "<group>"; };
 		51719E5418EEDDCE006DEEB7 /* IOSPrimitiveArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSPrimitiveArray.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -6505,8 +6509,6 @@
 				0615D3D21BD83E7300132067 /* MockFooSub.m */,
 				0615D3D31BD83E7300132067 /* MockFooSubSub.m */,
 				06574A3A1A8EB04A000A3616 /* MockHandler.m */,
-				0615D3C91BD83E7300132067 /* MockHomonymySubject.m */,
-				0615D3CA1BD83E7300132067 /* MockHomonymySubject.m */,
 				0615D3D41BD83E7300132067 /* MockInterface.m */,
 				069681081BA8DC97007AFADF /* MockJavaBean.m */,
 				0615D3D51BD83E7300132067 /* MockNullSubClass.m */,
@@ -7175,6 +7177,7 @@
 		06E4E4FB197F1D46005DDE69 /* harmony */ = {
 			isa = PBXGroup;
 			children = (
+				5141713D1BED5BF80044F0FD /* beans */,
 				06E4E4FC197F1D46005DDE69 /* archive */,
 				06E4E503197F1D46005DDE69 /* logging */,
 				06E4E529197F1D47005DDE69 /* luni */,
@@ -7958,6 +7961,81 @@
 			name = jsr166;
 			sourceTree = "<group>";
 		};
+		5141713D1BED5BF80044F0FD /* beans */ = {
+			isa = PBXGroup;
+			children = (
+				5141713E1BED5C060044F0FD /* tests */,
+			);
+			name = beans;
+			sourceTree = "<group>";
+		};
+		5141713E1BED5C060044F0FD /* tests */ = {
+			isa = PBXGroup;
+			children = (
+				5141713F1BED5C0D0044F0FD /* support */,
+			);
+			name = tests;
+			sourceTree = "<group>";
+		};
+		5141713F1BED5C0D0044F0FD /* support */ = {
+			isa = PBXGroup;
+			children = (
+				514171401BED5C140044F0FD /* mock */,
+			);
+			name = support;
+			sourceTree = "<group>";
+		};
+		514171401BED5C140044F0FD /* mock */ = {
+			isa = PBXGroup;
+			children = (
+				514171411BED5C1B0044F0FD /* homonymy */,
+			);
+			name = mock;
+			sourceTree = "<group>";
+		};
+		514171411BED5C1B0044F0FD /* homonymy */ = {
+			isa = PBXGroup;
+			children = (
+				514171421BED5C240044F0FD /* mocksubject1 */,
+				514171431BED5C300044F0FD /* mocksubject2 */,
+			);
+			name = homonymy;
+			sourceTree = "<group>";
+		};
+		514171421BED5C240044F0FD /* mocksubject1 */ = {
+			isa = PBXGroup;
+			children = (
+				514171441BED5C5E0044F0FD /* info */,
+				0615D3C91BD83E7300132067 /* MockHomonymySubject.m */,
+			);
+			name = mocksubject1;
+			sourceTree = "<group>";
+		};
+		514171431BED5C300044F0FD /* mocksubject2 */ = {
+			isa = PBXGroup;
+			children = (
+				514171451BED5C690044F0FD /* info */,
+				0615D3CA1BD83E7300132067 /* MockHomonymySubject.m */,
+			);
+			name = mocksubject2;
+			sourceTree = "<group>";
+		};
+		514171441BED5C5E0044F0FD /* info */ = {
+			isa = PBXGroup;
+			children = (
+				514171461BED5CAE0044F0FD /* MockHomonymySubjectBeanInfo.m */,
+			);
+			name = info;
+			sourceTree = "<group>";
+		};
+		514171451BED5C690044F0FD /* info */ = {
+			isa = PBXGroup;
+			children = (
+				514171481BED5CD70044F0FD /* MockHomonymySubjectBeanInfo.m */,
+			);
+			name = info;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXLegacyTarget section */
@@ -8331,6 +8409,7 @@
 				06E4E809197F1D48005DDE69 /* TimerTest.m in Sources */,
 				06E4E6B4197F1D47005DDE69 /* AbstractQueueTest.m in Sources */,
 				06E4E788197F1D47005DDE69 /* ClassTest.m in Sources */,
+				514171491BED5CD70044F0FD /* MockHomonymySubjectBeanInfo.m in Sources */,
 				06E4E743197F1D47005DDE69 /* Charset_TestGenerator.m in Sources */,
 				06574A8B1A8EB150000A3616 /* ECPublicKeySpecTest.m in Sources */,
 				06E4E732197F1D47005DDE69 /* Handler.m in Sources */,
@@ -8689,6 +8768,7 @@
 				061AA0D019FEF01800457D2B /* PackageTest.m in Sources */,
 				062463DA1A005995006D52C9 /* JRELogPaneViewController.m in Sources */,
 				0696810E1BA8DC97007AFADF /* MockPropertyChangeListener.m in Sources */,
+				514171471BED5CAE0044F0FD /* MockHomonymySubjectBeanInfo.m in Sources */,
 				06E4E70C197F1D47005DDE69 /* OldFilterInputStreamTest.m in Sources */,
 				06E4E7DF197F1D48005DDE69 /* DoubleTest.m in Sources */,
 				06E4E6CA197F1D47005DDE69 /* ConcurrentHashMapTest.m in Sources */,
