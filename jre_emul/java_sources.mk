@@ -510,6 +510,7 @@ JAVA_PRIVATE_SOURCES_NET = \
   libcore/net/url/FileURLConnection.java
 
 JAVA_PUBLIC_SOURCES_CHANNELS = \
+  java/nio/ChannelFactoryImpl.java \
   java/nio/channels/AlreadyBoundException.java \
   java/nio/channels/AlreadyConnectedException.java \
   java/nio/channels/AsynchronousCloseException.java \
@@ -555,7 +556,6 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/spi/SelectorProvider.java
 
 JAVA_PRIVATE_SOURCES_CHANNELS = \
-  java/nio/ChannelFactoryImpl.java \
   java/nio/ChannelUtils.java \
   java/nio/DatagramChannelImpl.java \
   java/nio/FileChannelImpl.java \

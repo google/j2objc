@@ -69,14 +69,15 @@ public final class NioUtils {
       static final ChannelFactory INSTANCE = getChannelFactory();
     }
 
-    private static ChannelFactory getChannelFactory() {
-      try {
-        Class<?> factoryClass = Class.forName("java.nio.ChannelFactoryImpl");
-        return (ChannelFactory) factoryClass.newInstance();
-      } catch (Exception e) {
-        return null;
+    // Native implementation avoids the use of Class.forName(). This code might end up invoked from
+    // within the internals of Class.forName(), and re-invoking it causes deadlock.
+    private static native ChannelFactory getChannelFactory() /*-[
+      Class cls = NSClassFromString(@"JavaNioChannelFactoryImpl");
+      if (cls) {
+        return [[[cls alloc] init] autorelease];
       }
-    }
+      return nil;
+    ]-*/;
 
     /**
      * Exposes the array backing a non-direct ByteBuffer, even if the ByteBuffer is read-only.

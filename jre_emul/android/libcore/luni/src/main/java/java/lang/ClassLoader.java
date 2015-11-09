@@ -44,6 +44,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /*-[
+#import "java/io/BufferedInputStream.h"
+#import "java/io/FileInputStream.h"
 #import "java/net/NetFactory.h"
 #import "java/util/ArrayList.h"
 #import "java/util/Collections.h"
@@ -386,7 +388,6 @@ public abstract class ClassLoader {
      * @see Class#getResourceAsStream
      */
     public InputStream getResourceAsStream(String resName) {
-        // TODO(kstanger): Get the stream without using java.net.
         try {
             URL url = getResource(resName);
             if (url != null) {
@@ -717,6 +718,21 @@ class SystemClassLoader extends ClassLoader {
       }
     }
     return JavaUtilCollections_enumerationWithJavaUtilCollection_(urls);
+  ]-*/;
+
+  // Gets the resource stream without needing to construct a URL object, which is in libjre_net.
+  @Override
+  public native InputStream getResourceAsStream(String name) /*-[
+    if (!name) {
+      return nil;
+    }
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSString *path = [bundle pathForResource:name ofType:nil];
+    if (!path) {
+      return nil;
+    }
+    return [new_JavaIoBufferedInputStream_initWithJavaIoInputStream_(
+        [new_JavaIoFileInputStream_initWithNSString_(path) autorelease]) autorelease];
   ]-*/;
 
   @Override
