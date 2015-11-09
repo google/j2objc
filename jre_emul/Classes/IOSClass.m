@@ -601,18 +601,20 @@ IOSClass *IOSClass_forName_(NSString *className) {
     for (int i = 0; i < classCount; i++) {
       Class cls = classes[i];
       NSString *cls_name = [[NSString alloc] initWithUTF8String:class_getName(cls)];
-      if (cls_name.length > bufsize) {
-        nameBuf = (unichar *)realloc(nameBuf, cls_name.length);
-        bufsize = cls_name.length;
+      NSUInteger name_len = cls_name.length;
+      if (name_len > bufsize) {
+        nameBuf = (unichar *)realloc(nameBuf, name_len);
+        bufsize = name_len;
       }
-      [cls_name getCharacters:nameBuf range:NSMakeRange(0, cls_name.length)];
+      [cls_name getCharacters:nameBuf range:NSMakeRange(0, name_len)];
+      [cls_name release];
 
       UErrorCode status = U_ZERO_ERROR;
-      uregex_setText(pattern, nameBuf, (int32_t)cls_name.length, &status);
+      uregex_setText(pattern, nameBuf, (int32_t)name_len, &status);
       if (!U_SUCCESS(status)) {
         continue;
       }
-      uregex_setRegion(pattern, 0, (int32_t)cls_name.length, &status);
+      uregex_setRegion(pattern, 0, (int32_t)name_len, &status);
       if (!U_SUCCESS(status)) {
         continue;
       }
