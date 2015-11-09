@@ -396,4 +396,7 @@ public class PropertyChangeSupport implements Serializable {
             p.propertyChange(event);
         }
     }
+
+    // Create a compile-time link to BeansFactoryImpl.
+    private static final Class<?> unused = BeansFactoryImpl.class;
 }

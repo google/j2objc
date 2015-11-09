@@ -779,6 +779,7 @@ run-initialization-test: $(TESTS_DIR)/jreinitialization
 	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
 
 run-core-size-test: $(TESTS_DIR)/core_size \
+  $(TESTS_DIR)/core_plus_beans \
   $(TESTS_DIR)/core_plus_channels \
   $(TESTS_DIR)/core_plus_net \
   $(TESTS_DIR)/core_plus_security \
@@ -891,3 +892,7 @@ $(TESTS_DIR)/core_plus_security:
 $(TESTS_DIR)/core_plus_xml:
 	@mkdir -p $(@D)
 	../dist/j2objcc -ljre_xml -ljre_net -o $@ -ObjC
+
+$(TESTS_DIR)/core_plus_beans:
+	@mkdir -p $(@D)
+	../dist/j2objcc -ljre_beans -o $@ -ObjC

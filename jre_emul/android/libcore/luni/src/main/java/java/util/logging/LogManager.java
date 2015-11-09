@@ -17,6 +17,7 @@
 
 package java.util.logging;
 
+import java.beans.BeansFactory;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.io.BufferedInputStream;
@@ -190,7 +191,7 @@ public class LogManager {
     protected LogManager() {
         loggers = new Hashtable<String, Logger>();
         props = new Properties();
-        listeners = new PropertyChangeSupport(this);
+        listeners = BeansFactory.newPropertyChangeSupportSafe(this);
         // add shutdown hook to ensure that the associated resource will be
         // freed when JVM exits
         Runtime.getRuntime().addShutdownHook(new Thread() {
@@ -403,7 +404,9 @@ public class LogManager {
                 logger.setLevel(Level.parse(property));
             }
         }
-        listeners.firePropertyChange(null, null, null);
+        if (listeners != null) {
+          listeners.firePropertyChange(null, null, null);
+        }
     }
 
     /**
@@ -458,6 +461,9 @@ public class LogManager {
         if (l == null) {
             throw new NullPointerException("l == null");
         }
+        if (listeners == null) {
+            BeansFactory.throwNotLoadedError();
+        }
         checkAccess();
         listeners.addPropertyChangeListener(l);
     }
@@ -470,6 +476,9 @@ public class LogManager {
      *            the {@code PropertyChangeListener} to be removed.
      */
     public void removePropertyChangeListener(PropertyChangeListener l) {
+        if (listeners == null) {
+            BeansFactory.throwNotLoadedError();
+        }
         checkAccess();
         listeners.removePropertyChangeListener(l);
     }

@@ -16,11 +16,6 @@
 
 # Java sources to be translated normally and included in the core library.
 JAVA_PUBLIC_SOURCES_CORE = \
-  java/beans/IndexedPropertyChangeEvent.java \
-  java/beans/PropertyChangeEvent.java \
-  java/beans/PropertyChangeListener.java \
-  java/beans/PropertyChangeListenerProxy.java \
-  java/beans/PropertyChangeSupport.java \
   java/io/BufferedInputStream.java \
   java/io/BufferedOutputStream.java \
   java/io/BufferedReader.java \
@@ -345,6 +340,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/util/ScopedLocalRef.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
+  java/beans/BeansFactory.java \
   java/io/EmulatedFields.java \
   java/io/EmulatedFieldsForDumping.java \
   java/io/EmulatedFieldsForLoading.java \
@@ -970,20 +966,33 @@ JAVA_PRIVATE_SOURCES_XML = \
   org/xmlpull/v1/XmlSerializer.java \
   org/xmlpull/v1/sax2/Driver.java
 
-# Java sources to be translated normally and included in the full library.
-JAVA_PUBLIC_SOURCES_NON_CORE = \
+JAVA_PUBLIC_SOURCES_BEANS = \
   java/beans/BeanDescriptor.java \
   java/beans/BeanInfo.java \
   java/beans/EventSetDescriptor.java \
   java/beans/FeatureDescriptor.java \
+  java/beans/IndexedPropertyChangeEvent.java \
   java/beans/IndexedPropertyDescriptor.java \
   java/beans/IntrospectionException.java \
   java/beans/Introspector.java \
   java/beans/MethodDescriptor.java \
   java/beans/ParameterDescriptor.java \
+  java/beans/PropertyChangeEvent.java \
+  java/beans/PropertyChangeListener.java \
+  java/beans/PropertyChangeListenerProxy.java \
+  java/beans/PropertyChangeSupport.java \
   java/beans/PropertyDescriptor.java \
   java/beans/PropertyVetoException.java \
   java/beans/SimpleBeanInfo.java \
+  java/util/TooManyListenersException.java
+
+JAVA_PRIVATE_SOURCES_BEANS = \
+  java/beans/BeansFactoryImpl.java \
+  java/beans/StandardBeanInfo.java \
+  org/apache/harmony/beans/BeansUtils.java
+
+# Java sources to be translated normally and included in the full library.
+JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/io/CharArrayReader.java \
   java/io/CharArrayWriter.java \
   java/io/CharConversionException.java \
@@ -1083,7 +1092,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/util/Stack.java \
   java/util/Timer.java \
   java/util/TimerTask.java \
-  java/util/TooManyListenersException.java \
   java/util/UUID.java \
   java/util/UnknownFormatFlagsException.java \
   java/util/concurrent/AbstractExecutorService.java \
@@ -1235,13 +1243,11 @@ JAVA_PRIVATE_SOURCES_NON_CORE = \
   com/google/j2objc/net/IosHttpsURLConnection.java \
   java/awt/font/NumericShaper.java \
   java/awt/font/TextAttribute.java \
-  java/beans/StandardBeanInfo.java \
   libcore/icu/TimeZones.java \
   libcore/io/Base64.java \
   libcore/io/BufferIterator.java \
   libcore/io/HeapBufferIterator.java \
   libcore/util/CountingOutputStream.java \
-  org/apache/harmony/beans/BeansUtils.java \
   org/json/JSON.java \
   org/json/JSONArray.java \
   org/json/JSONException.java \
@@ -1304,10 +1310,12 @@ JAVA_SOURCES_NET = $(JAVA_PUBLIC_SOURCES_NET) $(JAVA_PRIVATE_SOURCES_NET)
 JAVA_SOURCES_CHANNELS = $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PRIVATE_SOURCES_CHANNELS)
 JAVA_SOURCES_SECURITY = $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PRIVATE_SOURCES_SECURITY)
 JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PRIVATE_SOURCES_XML)
+JAVA_SOURCES_BEANS = $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PRIVATE_SOURCES_BEANS)
 JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 
 JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_NET) $(JAVA_SOURCES_CHANNELS) \
-  $(JAVA_SOURCES_SECURITY) $(JAVA_SOURCES_XML) $(JAVA_SOURCES_NON_CORE) $(JAVA_SOURCES_ANDROID)
+  $(JAVA_SOURCES_SECURITY) $(JAVA_SOURCES_XML) $(JAVA_SOURCES_BEANS) $(JAVA_SOURCES_NON_CORE) \
+  $(JAVA_SOURCES_ANDROID)
 JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PUBLIC_SOURCES_NET) \
   $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PUBLIC_SOURCES_XML) \
-  $(JAVA_PUBLIC_SOURCES_NON_CORE) $(ANDROID_PUBLIC_SOURCES)
+  $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PUBLIC_SOURCES_NON_CORE) $(ANDROID_PUBLIC_SOURCES)
