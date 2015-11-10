@@ -39,12 +39,6 @@ install-man-pages: $(MAN_PAGES)
 	@mkdir -p $(DIST_DIR)/man/man1
 	@install -C -m 0644 $? $(DIST_DIR)/man/man1
 
-dist: print_environment translator_dist jre_emul_dist junit_dist jsr305_dist \
-	  javax_inject_dist guava_dist mockito_dist cycle_finder_dist install-man-pages
-
-protobuf_dist: protobuf_compiler_dist protobuf_runtime_dist
-
-
 frameworks: dist
 	@cd jre_emul && $(MAKE) framework
 	@cd junit && $(MAKE) framework
@@ -52,9 +46,17 @@ frameworks: dist
 	@cd inject/javax_inject && $(MAKE) framework
 	@cd guava && $(MAKE) framework
 	@cd testing/mockito && $(MAKE) framework
+
+all_frameworks: frameworks protobuf_dist
 	@cd protobuf/runtime && $(MAKE) framework
 
-all_dist: dist protobuf_dist frameworks
+dist: print_environment translator_dist jre_emul_dist junit_dist jsr305_dist \
+	  javax_inject_dist guava_dist mockito_dist cycle_finder_dist install-man-pages
+
+protobuf_dist: protobuf_compiler_dist protobuf_runtime_dist
+
+
+all_dist: dist all_frameworks
 
 clean:
 	@rm -rf $(BUILD_DIR) $(DIST_DIR)
