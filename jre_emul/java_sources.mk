@@ -796,6 +796,47 @@ JAVA_PRIVATE_SOURCES_SECURITY = \
   org/apache/harmony/security/x509/Validity.java \
   org/apache/harmony/security/x509/X509PublicKey.java
 
+JAVA_PUBLIC_SOURCES_SSL = \
+  javax/net/DefaultServerSocketFactory.java \
+  javax/net/DefaultSocketFactory.java \
+  javax/net/ServerSocketFactory.java \
+  javax/net/SocketFactory.java \
+  javax/net/ssl/DefaultSSLServerSocketFactory.java \
+  javax/net/ssl/DefaultSSLSocketFactory.java \
+  javax/net/ssl/HandshakeCompletedEvent.java \
+  javax/net/ssl/HandshakeCompletedListener.java \
+  javax/net/ssl/HostnameVerifier.java \
+  javax/net/ssl/HttpsURLConnection.java \
+  javax/net/ssl/KeyManager.java \
+  javax/net/ssl/KeyManagerFactory.java \
+  javax/net/ssl/KeyManagerFactorySpi.java \
+  javax/net/ssl/ManagerFactoryParameters.java \
+  javax/net/ssl/SSLContext.java \
+  javax/net/ssl/SSLContextSpi.java \
+  javax/net/ssl/SSLEngine.java \
+  javax/net/ssl/SSLEngineResult.java \
+  javax/net/ssl/SSLException.java \
+  javax/net/ssl/SSLHandshakeException.java \
+  javax/net/ssl/SSLParameters.java \
+  javax/net/ssl/SSLPeerUnverifiedException.java \
+  javax/net/ssl/SSLProtocolException.java \
+  javax/net/ssl/SSLServerSocket.java \
+  javax/net/ssl/SSLServerSocketFactory.java \
+  javax/net/ssl/SSLSession.java \
+  javax/net/ssl/SSLSessionBindingEvent.java \
+  javax/net/ssl/SSLSessionBindingListener.java \
+  javax/net/ssl/SSLSessionContext.java \
+  javax/net/ssl/SSLSocket.java \
+  javax/net/ssl/SSLSocketFactory.java \
+  javax/net/ssl/TrustManager.java \
+  javax/net/ssl/TrustManagerFactory.java \
+  javax/net/ssl/TrustManagerFactorySpi.java \
+  javax/net/ssl/X509TrustManager.java
+
+JAVA_PRIVATE_SOURCES_SSL = \
+  com/google/j2objc/net/IosHttpsHandler.java \
+  com/google/j2objc/net/IosHttpsURLConnection.java
+
 JAVA_PUBLIC_SOURCES_XML = \
   java/util/PropertiesXmlLoader.java \
   javax/xml/XMLConstants.java \
@@ -1201,46 +1242,9 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   javax/annotation/PostConstruct.java \
   javax/annotation/PreDestroy.java \
   javax/annotation/Resources.java \
-  javax/lang/model/element/Modifier.java \
-  javax/net/DefaultServerSocketFactory.java \
-  javax/net/DefaultSocketFactory.java \
-  javax/net/ServerSocketFactory.java \
-  javax/net/SocketFactory.java \
-  javax/net/ssl/DefaultSSLServerSocketFactory.java \
-  javax/net/ssl/DefaultSSLSocketFactory.java \
-  javax/net/ssl/HandshakeCompletedEvent.java \
-  javax/net/ssl/HandshakeCompletedListener.java \
-  javax/net/ssl/HostnameVerifier.java \
-  javax/net/ssl/HttpsURLConnection.java \
-  javax/net/ssl/KeyManager.java \
-  javax/net/ssl/KeyManagerFactory.java \
-  javax/net/ssl/KeyManagerFactorySpi.java \
-  javax/net/ssl/ManagerFactoryParameters.java \
-  javax/net/ssl/SSLContext.java \
-  javax/net/ssl/SSLContextSpi.java \
-  javax/net/ssl/SSLEngine.java \
-  javax/net/ssl/SSLEngineResult.java \
-  javax/net/ssl/SSLException.java \
-  javax/net/ssl/SSLHandshakeException.java \
-  javax/net/ssl/SSLParameters.java \
-  javax/net/ssl/SSLPeerUnverifiedException.java \
-  javax/net/ssl/SSLProtocolException.java \
-  javax/net/ssl/SSLServerSocket.java \
-  javax/net/ssl/SSLServerSocketFactory.java \
-  javax/net/ssl/SSLSession.java \
-  javax/net/ssl/SSLSessionBindingEvent.java \
-  javax/net/ssl/SSLSessionBindingListener.java \
-  javax/net/ssl/SSLSessionContext.java \
-  javax/net/ssl/SSLSocket.java \
-  javax/net/ssl/SSLSocketFactory.java \
-  javax/net/ssl/TrustManager.java \
-  javax/net/ssl/TrustManagerFactory.java \
-  javax/net/ssl/TrustManagerFactorySpi.java \
-  javax/net/ssl/X509TrustManager.java
+  javax/lang/model/element/Modifier.java
 
 JAVA_PRIVATE_SOURCES_NON_CORE = \
-  com/google/j2objc/net/IosHttpsHandler.java \
-  com/google/j2objc/net/IosHttpsURLConnection.java \
   java/awt/font/NumericShaper.java \
   java/awt/font/TextAttribute.java \
   libcore/icu/TimeZones.java \
@@ -1309,13 +1313,15 @@ JAVA_SOURCES_NON_CORE = $(JAVA_PUBLIC_SOURCES_NON_CORE) $(JAVA_PRIVATE_SOURCES_N
 JAVA_SOURCES_NET = $(JAVA_PUBLIC_SOURCES_NET) $(JAVA_PRIVATE_SOURCES_NET)
 JAVA_SOURCES_CHANNELS = $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PRIVATE_SOURCES_CHANNELS)
 JAVA_SOURCES_SECURITY = $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PRIVATE_SOURCES_SECURITY)
+JAVA_SOURCES_SSL = $(JAVA_PUBLIC_SOURCES_SSL) $(JAVA_PRIVATE_SOURCES_SSL)
 JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PRIVATE_SOURCES_XML)
 JAVA_SOURCES_BEANS = $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PRIVATE_SOURCES_BEANS)
 JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 
 JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_NET) $(JAVA_SOURCES_CHANNELS) \
-  $(JAVA_SOURCES_SECURITY) $(JAVA_SOURCES_XML) $(JAVA_SOURCES_BEANS) $(JAVA_SOURCES_NON_CORE) \
-  $(JAVA_SOURCES_ANDROID)
+  $(JAVA_SOURCES_SECURITY) $(JAVA_SOURCES_SSL) $(JAVA_SOURCES_XML) $(JAVA_SOURCES_BEANS) \
+  $(JAVA_SOURCES_NON_CORE) $(JAVA_SOURCES_ANDROID)
 JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PUBLIC_SOURCES_NET) \
-  $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PUBLIC_SOURCES_XML) \
-  $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PUBLIC_SOURCES_NON_CORE) $(ANDROID_PUBLIC_SOURCES)
+  $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PUBLIC_SOURCES_SSL) \
+  $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PUBLIC_SOURCES_NON_CORE) \
+  $(ANDROID_PUBLIC_SOURCES)
