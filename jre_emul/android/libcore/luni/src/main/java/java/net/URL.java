@@ -17,6 +17,7 @@
 
 package java.net;
 
+import com.google.j2objc.LibraryNotLinkedError;
 import com.google.j2objc.net.IosHttpHandler;
 
 import java.io.IOException;
@@ -427,12 +428,8 @@ public final class URL implements Serializable {
                 String name = "com.google.j2objc.net.IosHttpsHandler";
                 streamHandler = (URLStreamHandler) Class.forName(name).newInstance();
             } catch (Exception e) {
-                throw new NoClassDefFoundError(
-                    "Https support is unavailable. Fix this by:\n"
-                    // TODO(kstanger): Create a library for https/ssl support.
-                    + "1) If linking with -ObjC, report a J2ObjC bug.\n"
-                    + "2) If linking without -ObjC, call JavaxNetSslHttpsURLConnection_class_()"
-                    + " to create a compile-time dependency");
+                throw new LibraryNotLinkedError("Https support", "jre_ssl",
+                    "JavaxNetSslHttpsURLConnection");
             }
         }
         if (streamHandler != null) {

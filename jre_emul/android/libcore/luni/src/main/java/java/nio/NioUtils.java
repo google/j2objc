@@ -16,6 +16,8 @@
 
 package java.nio;
 
+import com.google.j2objc.LibraryNotLinkedError;
+
 import java.io.FileDescriptor;
 import java.nio.channels.FileChannel;
 
@@ -45,11 +47,8 @@ public final class NioUtils {
     public static FileChannel newFileChannel(Object stream, FileDescriptor fd, int mode) {
         ChannelFactory factory = ChannelFactory.INSTANCE;
         if (factory == null) {
-          throw new NoClassDefFoundError(
-              "Channel support is unavailable. Fix this by:\n"
-              + "1) If linking with -ObjC, add -ljre_channels to the link flags.\n"
-              + "2) If linking without -ObjC, call JavaNioChannelFactoryImpl_class_() to create a"
-              + " compile-time dependency.");
+          throw new LibraryNotLinkedError("Channel support", "jre_channels",
+              "JavaNioChannelFactoryImpl");
         }
         return factory.newFileChannel(stream, fd, mode);
     }

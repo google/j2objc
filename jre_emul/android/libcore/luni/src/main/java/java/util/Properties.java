@@ -17,6 +17,8 @@
 
 package java.util;
 
+import com.google.j2objc.LibraryNotLinkedError;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -564,10 +566,7 @@ public class Properties extends Hashtable<Object, Object> {
             InvalidPropertiesFormatException {
       XmlLoader loader = XmlLoader.INSTANCE;
       if (loader == null) {
-        throw new NoClassDefFoundError(
-            "XML support is unavailable. If linking with -ObjC you must also link jre_emul_xml."
-            + " Otherwise, create a compile-time depencency by calling"
-            + " \"JavaUtilProperties_xml_class_();\".");
+        throw new LibraryNotLinkedError("XML support", "jre_xml", "JavaUtilPropertiesXmlLoader");
       }
       loader.load(this, in);
     }

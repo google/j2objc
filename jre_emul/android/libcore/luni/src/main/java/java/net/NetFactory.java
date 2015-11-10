@@ -17,6 +17,8 @@
 
 package java.net;
 
+import com.google.j2objc.LibraryNotLinkedError;
+
 public class NetFactory {
 
   public static URL newURL(String spec) throws MalformedURLException {
@@ -43,11 +45,7 @@ public class NetFactory {
   private static FactoryInterface getImpl() {
     FactoryInterface impl = IMPL;
     if (impl == null) {
-      throw new NoClassDefFoundError(
-          "java.net support is unavailable. Fix this by:\n"
-          + "1) If linking with -ObjC, add -ljre_net to the link flags.\n"
-          + "2) If linking without -ObjC, call JavaNetURL_class_() to create a compile-time"
-          + " dependency.");
+      throw new LibraryNotLinkedError("java.net", "jre_net ", "JavaNetURL");
     }
     return impl;
   }

@@ -17,6 +17,8 @@
 
 package java.io;
 
+import com.google.j2objc.LibraryNotLinkedError;
+
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -585,12 +587,9 @@ public class ObjectStreamClass implements Serializable {
         Class<?> digestClass = Class.forName("java.io.SerialVersionUIDDigest");
         return (Digest) digestClass.newInstance();
       } catch (Exception e) {
-        throw new NoClassDefFoundError(
-            "SerialVersionUID hashing is unavailable. Fix this by:\n"
-            + "1) If linking with -ObjC, add -ljre_security to the link flags.\n"
-            + "2) If linking without -ObjC, call JavaIoSerialVersionUIDDigest_class_() to create a"
-            + " compile-time dependency.\n"
-            + "3) Add serialVersionUID fields to all Serializable classes.");
+        throw new LibraryNotLinkedError(
+            "SerialVersionUID hashing", "jre_security", "JavaIoSerialVersionUIDDigest",
+            "3) Add serialVersionUID fields to all Serializable classes.");
       }
     }
 

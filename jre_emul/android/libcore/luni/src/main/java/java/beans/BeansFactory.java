@@ -17,6 +17,8 @@
 
 package java.beans;
 
+import com.google.j2objc.LibraryNotLinkedError;
+
 public class BeansFactory {
 
   public static PropertyChangeSupport newPropertyChangeSupportSafe(Object sourceBean) {
@@ -29,11 +31,8 @@ public class BeansFactory {
   }
 
   public static void throwNotLoadedError() {
-    throw new NoClassDefFoundError(
-        "java.beans support is unavailable. Fix this by:\n"
-        + "1) If linking with -ObjC, add -ljre_beans to the link flags.\n"
-        + "2) If linking without -ObjC, call JavaBeansPropertyChangeSupport_class_() to create a"
-        + " compile-time dependency.");
+    throw new LibraryNotLinkedError("java.beans support", "jre_beans",
+        "JavaBeansPropertyChangeSupport");
   }
 
   private static final FactoryInterface IMPL = findImplementation();
