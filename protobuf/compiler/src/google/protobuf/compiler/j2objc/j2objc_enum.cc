@@ -129,6 +129,8 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   }
 }
 
+const int kMaxRowChars = 80;
+
 void EnumGenerator::GenerateSource(io::Printer* printer) {
   printer->Print(
       "\nJ2OBJC_INITIALIZED_DEFN($classname$)\n"
@@ -140,32 +142,44 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "\n"
       "@implementation $classname$\n"
       "\n"
-      "- (id)initWithName:(NSString *)name withIndex:(jint)index"
-          " withValue:(jint)value {\n"
-      "  if (self = [super initWithNSString:name withInt:index]) {\n"
-      "    value_ = value;\n"
-      "  }\n"
-      "  return self;\n"
-      "}\n"
-      "\n"
       "+ (void)initialize {\n"
-      "  if (self == [$classname$ class]) {\n",
+      "  if (self == [$classname$ class]) {\n"
+      "    static NSString *names[] = {",
       "classname", ClassName(descriptor_),
       "count", SimpleItoa(canonical_values_.size()));
 
+  // Count characters and only add line breaks when the line exceeds the max.
+  int row_chars = kMaxRowChars + 1;
   for (int i = 0; i < canonical_values_.size(); i++) {
-    printer->Print(
-      "    $classname$_$name$ = [[$classname$ alloc] initWithName:@\"$name$\"",
-      "classname", ClassName(descriptor_),
-      "name", canonical_values_[i]->name());
-    printer->Print(" withIndex:$index$ withValue:$value$];\n",
-      "index", SimpleItoa(i),
-      "value", SimpleItoa(canonical_values_[i]->number()));
+    string name = canonical_values_[i]->name();
+    size_t added_chars = name.length() + 5;
+    if (row_chars + added_chars > kMaxRowChars) {
+      printer->Print("\n     ");
+      row_chars = 5;
+    };
+    printer->Print(" @\"$name$\",", "name", canonical_values_[i]->name());
+    row_chars += added_chars;
+  }
+  printer->Print("\n"
+      "    };\n"
+      "    static jint int_values[] = {");
+  row_chars = kMaxRowChars + 1;
+  for (int i = 0; i < canonical_values_.size(); i++) {
+    string value = SimpleItoa(canonical_values_[i]->number());
+    size_t added_chars = value.length() + 2;
+    if (row_chars + added_chars > kMaxRowChars) {
+      printer->Print("\n     ");
+      row_chars = 5;
+    };
+    printer->Print(" $value$,", "value", value);
+    row_chars += added_chars;
   }
 
-  printer->Print(
+  printer->Print("\n"
+      "    };\n"
       "    $classname$_descriptor = "
-          "CGPNewEnumDescriptor(self, $count$, $classname$_values_);\n"
+          "CGPInitializeEnumType(self, $count$, $classname$_values_, names,"
+          " int_values);\n"
       "    J2OBJC_SET_INITIALIZED($classname$)\n"
       "  }\n"
       "}\n"
