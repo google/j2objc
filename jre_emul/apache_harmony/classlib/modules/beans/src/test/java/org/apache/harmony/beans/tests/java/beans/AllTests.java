@@ -45,7 +45,7 @@ public class AllTests {
 //        suite.addTestSuite(ExpressionTest.class);
         suite.addTestSuite(IndexedPropertyDescriptorTest.class);
         suite.addTestSuite(EventSetDescriptorTest.class);
-//        suite.addTestSuite(IntrospectionExceptionTest.class);
+        suite.addTestSuite(IntrospectionExceptionTest.class);
         suite.addTestSuite(FeatureDescriptorTest.class);
 //        suite.addTestSuite(CustomizedPersistenceDelegateTest.class);
 //        suite.addTestSuite(VetoableChangeListenerProxyTest.class);

@@ -20,6 +20,7 @@ package java.lang;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.io.Serializable;
+import java.util.List;
 
 /*
  * Stub implementation of java.lang.Throwable.
@@ -47,7 +48,14 @@ import java.io.Serializable;
  * @see Exception
  * @see RuntimeException
  */
+@SuppressWarnings("unused")
 public class Throwable implements Serializable {
+  private String detailMessage;
+  private Throwable cause;
+  private StackTraceElement[] stackTrace;
+  private List<Throwable> suppressedExceptions;
+
+  private static final long serialVersionUID = -3042686055658047285L;
 
   public Throwable() {}
 
@@ -95,6 +103,11 @@ public class Throwable implements Serializable {
   public final void addSuppressed(Throwable exception) {}
 
   public final Throwable[] getSuppressed() {
+    return null;
+  }
+
+  @Override
+  public String toString() {
     return null;
   }
 }
