@@ -267,6 +267,23 @@ public class ClassTest extends TestCase {
     assertEquals("javax.annotation.Resource", Resource.class.getName());
   }
 
+  // Verify that mapped classes return the correct superclass from a Java view.
+  public void testCertainSuperclasses() {
+    assertNull("Non-null Object superclass", Object.class.getSuperclass());
+    assertNull("Non-null Cloneable superclass", Cloneable.class.getSuperclass());
+    assertNull("Non-null Iterable superclass", Iterable.class.getSuperclass());
+    assertNull("Non-null Resource superclass", Resource.class.getSuperclass());
+
+    assertEquals("Bad String superclass", Object.class, String.class.getSuperclass());
+    assertEquals("Bad Number superclass", Object.class, Number.class.getSuperclass());
+    assertEquals("Bad Throwable superclass", Object.class, Throwable.class.getSuperclass());
+    assertEquals("Bad AccessibleObject superclass", Object.class,
+        AccessibleObject.class.getSuperclass());
+
+    // Check a String subclass.
+    assertEquals("Bad String superclass", Object.class, "foo".getClass().getSuperclass());
+  }
+
   /**
    * Verify that a class with a package that has been renamed using an
    * ObjectiveCName annotation can be reflexively loaded.

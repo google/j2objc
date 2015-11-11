@@ -361,7 +361,6 @@ TEST_SOURCES := \
     org/apache/harmony/beans/tests/java/beans/FeatureDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/IndexedPropertyDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/IntrospectorTest.java \
-    org/apache/harmony/beans/tests/java/beans/IntrospectionExceptionTest.java \
     org/apache/harmony/beans/tests/java/beans/MethodDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/ParameterDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/PropertyChangeEventTest.java \
@@ -463,7 +462,6 @@ TEST_SOURCES := \
     org/apache/harmony/regex/tests/java/util/regex/Matcher2Test.java \
     org/apache/harmony/regex/tests/java/util/regex/ModeTest.java \
     org/apache/harmony/regex/tests/java/util/regex/Pattern2Test.java \
-    org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
     org/apache/harmony/regex/tests/java/util/regex/PatternTest.java \
     org/apache/harmony/regex/tests/java/util/regex/ReplaceTest.java \
     org/apache/harmony/regex/tests/java/util/regex/SplitTest.java \
@@ -614,7 +612,9 @@ SUITE_SOURCES := $(SUITE_SOURCES) \
 endif
 
 TESTS_TO_SKIP = \
-    ExchangerTest.java
+    ExchangerTest.java \
+    org/apache/harmony/beans/tests/java/beans/IntrospectionExceptionTest.java \
+    org/apache/harmony/regex/tests/java/util/regex/PatternSyntaxExceptionTest.java \
 
 FAILING_TESTS = \
     libcore/java/text/DateFormatSymbolsTest.java
