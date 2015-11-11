@@ -1008,6 +1008,58 @@ JAVA_PRIVATE_SOURCES_XML = \
   org/xmlpull/v1/XmlSerializer.java \
   org/xmlpull/v1/sax2/Driver.java
 
+JAVA_PUBLIC_SOURCES_SQL = \
+  java/sql/Array.java \
+  java/sql/BatchUpdateException.java \
+  java/sql/Blob.java \
+  java/sql/CallableStatement.java \
+  java/sql/ClientInfoStatus.java \
+  java/sql/Clob.java \
+  java/sql/Connection.java \
+  java/sql/DataTruncation.java \
+  java/sql/DatabaseMetaData.java \
+  java/sql/Date.java \
+  java/sql/Driver.java \
+  java/sql/DriverManager.java \
+  java/sql/DriverPropertyInfo.java \
+  java/sql/NClob.java \
+  java/sql/ParameterMetaData.java \
+  java/sql/PreparedStatement.java \
+  java/sql/Ref.java \
+  java/sql/ResultSet.java \
+  java/sql/ResultSetMetaData.java \
+  java/sql/RowId.java \
+  java/sql/RowIdLifetime.java \
+  java/sql/SQLClientInfoException.java \
+  java/sql/SQLData.java \
+  java/sql/SQLDataException.java \
+  java/sql/SQLException.java \
+  java/sql/SQLFeatureNotSupportedException.java \
+  java/sql/SQLInput.java \
+  java/sql/SQLIntegrityConstraintViolationException.java \
+  java/sql/SQLInvalidAuthorizationSpecException.java \
+  java/sql/SQLNonTransientConnectionException.java \
+  java/sql/SQLNonTransientException.java \
+  java/sql/SQLOutput.java \
+  java/sql/SQLPermission.java \
+  java/sql/SQLRecoverableException.java \
+  java/sql/SQLSyntaxErrorException.java \
+  java/sql/SQLTimeoutException.java \
+  java/sql/SQLTransactionRollbackException.java \
+  java/sql/SQLTransientConnectionException.java \
+  java/sql/SQLTransientException.java \
+  java/sql/SQLWarning.java \
+  java/sql/SQLXML.java \
+  java/sql/Savepoint.java \
+  java/sql/Statement.java \
+  java/sql/Struct.java \
+  java/sql/Time.java \
+  java/sql/Timestamp.java \
+  java/sql/Types.java \
+  java/sql/Wrapper.java
+
+JAVA_PRIVATE_SOURCES_SQL =
+
 JAVA_PUBLIC_SOURCES_BEANS = \
   java/beans/BeanDescriptor.java \
   java/beans/BeanInfo.java \
@@ -1065,54 +1117,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/lang/reflect/ReflectPermission.java \
   java/lang/reflect/UndeclaredThrowableException.java \
   java/nio/NIOAccess.java \
-  java/sql/Array.java \
-  java/sql/BatchUpdateException.java \
-  java/sql/Blob.java \
-  java/sql/CallableStatement.java \
-  java/sql/ClientInfoStatus.java \
-  java/sql/Clob.java \
-  java/sql/Connection.java \
-  java/sql/DataTruncation.java \
-  java/sql/DatabaseMetaData.java \
-  java/sql/Date.java \
-  java/sql/Driver.java \
-  java/sql/DriverManager.java \
-  java/sql/DriverPropertyInfo.java \
-  java/sql/NClob.java \
-  java/sql/ParameterMetaData.java \
-  java/sql/PreparedStatement.java \
-  java/sql/Ref.java \
-  java/sql/ResultSet.java \
-  java/sql/ResultSetMetaData.java \
-  java/sql/RowId.java \
-  java/sql/RowIdLifetime.java \
-  java/sql/SQLClientInfoException.java \
-  java/sql/SQLData.java \
-  java/sql/SQLDataException.java \
-  java/sql/SQLException.java \
-  java/sql/SQLFeatureNotSupportedException.java \
-  java/sql/SQLInput.java \
-  java/sql/SQLIntegrityConstraintViolationException.java \
-  java/sql/SQLInvalidAuthorizationSpecException.java \
-  java/sql/SQLNonTransientConnectionException.java \
-  java/sql/SQLNonTransientException.java \
-  java/sql/SQLOutput.java \
-  java/sql/SQLPermission.java \
-  java/sql/SQLRecoverableException.java \
-  java/sql/SQLSyntaxErrorException.java \
-  java/sql/SQLTimeoutException.java \
-  java/sql/SQLTransactionRollbackException.java \
-  java/sql/SQLTransientConnectionException.java \
-  java/sql/SQLTransientException.java \
-  java/sql/SQLWarning.java \
-  java/sql/SQLXML.java \
-  java/sql/Savepoint.java \
-  java/sql/Statement.java \
-  java/sql/Struct.java \
-  java/sql/Time.java \
-  java/sql/Timestamp.java \
-  java/sql/Types.java \
-  java/sql/Wrapper.java \
   java/text/CollationKey.java \
   java/text/Collator.java \
   java/text/IOSCollator.java \
@@ -1316,13 +1320,29 @@ JAVA_SOURCES_CHANNELS = $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PRIVATE_SOURCES_C
 JAVA_SOURCES_SECURITY = $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PRIVATE_SOURCES_SECURITY)
 JAVA_SOURCES_SSL = $(JAVA_PUBLIC_SOURCES_SSL) $(JAVA_PRIVATE_SOURCES_SSL)
 JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PRIVATE_SOURCES_XML)
+JAVA_SOURCES_SQL = $(JAVA_PUBLIC_SOURCES_SQL) $(JAVA_PRIVATE_SOURCES_SQL)
 JAVA_SOURCES_BEANS = $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PRIVATE_SOURCES_BEANS)
 JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 
-JAVA_SOURCES = $(JAVA_SOURCES_CORE) $(JAVA_SOURCES_NET) $(JAVA_SOURCES_CHANNELS) \
-  $(JAVA_SOURCES_SECURITY) $(JAVA_SOURCES_SSL) $(JAVA_SOURCES_XML) $(JAVA_SOURCES_BEANS) \
-  $(JAVA_SOURCES_NON_CORE) $(JAVA_SOURCES_ANDROID)
-JAVA_PUBLIC_SOURCES = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PUBLIC_SOURCES_NET) \
-  $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PUBLIC_SOURCES_SSL) \
-  $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PUBLIC_SOURCES_NON_CORE) \
+JAVA_SOURCES = \
+  $(JAVA_SOURCES_CORE) \
+  $(JAVA_SOURCES_NET) \
+  $(JAVA_SOURCES_CHANNELS) \
+  $(JAVA_SOURCES_SECURITY) \
+  $(JAVA_SOURCES_SSL) \
+  $(JAVA_SOURCES_XML) \
+  $(JAVA_SOURCES_SQL) \
+  $(JAVA_SOURCES_BEANS) \
+  $(JAVA_SOURCES_NON_CORE) \
+  $(JAVA_SOURCES_ANDROID)
+JAVA_PUBLIC_SOURCES = \
+  $(JAVA_PUBLIC_SOURCES_CORE) \
+  $(JAVA_PUBLIC_SOURCES_NET) \
+  $(JAVA_PUBLIC_SOURCES_CHANNELS) \
+  $(JAVA_PUBLIC_SOURCES_SECURITY) \
+  $(JAVA_PUBLIC_SOURCES_SSL) \
+  $(JAVA_PUBLIC_SOURCES_XML) \
+  $(JAVA_PUBLIC_SOURCES_SQL) \
+  $(JAVA_PUBLIC_SOURCES_BEANS) \
+  $(JAVA_PUBLIC_SOURCES_NON_CORE) \
   $(ANDROID_PUBLIC_SOURCES)
