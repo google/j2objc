@@ -244,9 +244,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/DuplicateFormatFlagsException.java \
   java/util/EmptyStackException.java \
   java/util/Enumeration.java \
-  java/util/EventListener.java \
-  java/util/EventListenerProxy.java \
-  java/util/EventObject.java \
   java/util/FormatFlagsConversionMismatchException.java \
   java/util/Formattable.java \
   java/util/FormattableFlags.java \
@@ -287,8 +284,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/Random.java \
   java/util/RandomAccess.java \
   java/util/ResourceBundle.java \
-  java/util/ServiceConfigurationError.java \
-  java/util/ServiceLoader.java \
   java/util/Set.java \
   java/util/SimpleTimeZone.java \
   java/util/SortedMap.java \
@@ -506,6 +501,106 @@ JAVA_PRIVATE_SOURCES_NET = \
   libcore/net/url/FileHandler.java \
   libcore/net/url/FileURLConnection.java
 
+JAVA_PUBLIC_SOURCES_UTIL = \
+  java/util/ArrayDeque.java \
+  java/util/BitSet.java \
+  java/util/EnumMap.java \
+  java/util/EnumSet.java \
+  java/util/EventListener.java \
+  java/util/EventListenerProxy.java \
+  java/util/EventObject.java \
+  java/util/HugeEnumSet.java \
+  java/util/IdentityHashMap.java \
+  java/util/MiniEnumSet.java \
+  java/util/Observable.java \
+  java/util/Observer.java \
+  java/util/PriorityQueue.java \
+  java/util/PropertyPermission.java \
+  java/util/ServiceConfigurationError.java \
+  java/util/ServiceLoader.java \
+  java/util/Stack.java \
+  java/util/Timer.java \
+  java/util/TimerTask.java \
+  java/util/UnknownFormatFlagsException.java \
+  java/util/logging/ConsoleHandler.java \
+  java/util/logging/MemoryHandler.java \
+  java/util/logging/SimpleFormatter.java \
+  java/util/logging/StreamHandler.java \
+  java/util/logging/XMLFormatter.java
+
+JAVA_PRIVATE_SOURCES_UTIL =
+
+JAVA_PUBLIC_SOURCES_CONCURRENT = \
+  java/util/concurrent/AbstractExecutorService.java \
+  java/util/concurrent/ArrayBlockingQueue.java \
+  java/util/concurrent/BlockingDeque.java \
+  java/util/concurrent/BlockingQueue.java \
+  java/util/concurrent/BrokenBarrierException.java \
+  java/util/concurrent/Callable.java \
+  java/util/concurrent/CancellationException.java \
+  java/util/concurrent/CompletionService.java \
+  java/util/concurrent/ConcurrentHashMap.java \
+  java/util/concurrent/ConcurrentLinkedDeque.java \
+  java/util/concurrent/ConcurrentLinkedQueue.java \
+  java/util/concurrent/ConcurrentMap.java \
+  java/util/concurrent/ConcurrentNavigableMap.java \
+  java/util/concurrent/ConcurrentSkipListMap.java \
+  java/util/concurrent/ConcurrentSkipListSet.java \
+  java/util/concurrent/CopyOnWriteArraySet.java \
+  java/util/concurrent/CountedCompleter.java \
+  java/util/concurrent/CyclicBarrier.java \
+  java/util/concurrent/DelayQueue.java \
+  java/util/concurrent/Delayed.java \
+  java/util/concurrent/Exchanger.java \
+  java/util/concurrent/ExecutionException.java \
+  java/util/concurrent/Executor.java \
+  java/util/concurrent/ExecutorCompletionService.java \
+  java/util/concurrent/ExecutorService.java \
+  java/util/concurrent/Executors.java \
+  java/util/concurrent/ForkJoinPool.java \
+  java/util/concurrent/ForkJoinTask.java \
+  java/util/concurrent/ForkJoinWorkerThread.java \
+  java/util/concurrent/Future.java \
+  java/util/concurrent/FutureTask.java \
+  java/util/concurrent/LinkedBlockingDeque.java \
+  java/util/concurrent/LinkedBlockingQueue.java \
+  java/util/concurrent/LinkedTransferQueue.java \
+  java/util/concurrent/Phaser.java \
+  java/util/concurrent/PriorityBlockingQueue.java \
+  java/util/concurrent/RecursiveAction.java \
+  java/util/concurrent/RecursiveTask.java \
+  java/util/concurrent/RejectedExecutionException.java \
+  java/util/concurrent/RejectedExecutionHandler.java \
+  java/util/concurrent/RunnableFuture.java \
+  java/util/concurrent/RunnableScheduledFuture.java \
+  java/util/concurrent/ScheduledExecutorService.java \
+  java/util/concurrent/ScheduledFuture.java \
+  java/util/concurrent/ScheduledThreadPoolExecutor.java \
+  java/util/concurrent/Semaphore.java \
+  java/util/concurrent/SynchronousQueue.java \
+  java/util/concurrent/ThreadFactory.java \
+  java/util/concurrent/ThreadLocalRandom.java \
+  java/util/concurrent/ThreadPoolExecutor.java \
+  java/util/concurrent/TimeoutException.java \
+  java/util/concurrent/TransferQueue.java \
+  java/util/concurrent/atomic/AtomicIntegerArray.java \
+  java/util/concurrent/atomic/AtomicIntegerFieldUpdater.java \
+  java/util/concurrent/atomic/AtomicLong.java \
+  java/util/concurrent/atomic/AtomicLongArray.java \
+  java/util/concurrent/atomic/AtomicLongFieldUpdater.java \
+  java/util/concurrent/atomic/AtomicMarkableReference.java \
+  java/util/concurrent/atomic/AtomicReferenceArray.java \
+  java/util/concurrent/atomic/AtomicReferenceFieldUpdater.java \
+  java/util/concurrent/atomic/AtomicStampedReference.java \
+  java/util/concurrent/atomic/Fences.java \
+  java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
+  java/util/concurrent/locks/Lock.java \
+  java/util/concurrent/locks/ReadWriteLock.java \
+  java/util/concurrent/locks/ReentrantLock.java \
+  java/util/concurrent/locks/ReentrantReadWriteLock.java
+
+JAVA_PRIVATE_SOURCES_CONCURRENT =
+
 JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/ChannelFactoryImpl.java \
   java/nio/channels/AlreadyBoundException.java \
@@ -550,7 +645,9 @@ JAVA_PUBLIC_SOURCES_CHANNELS = \
   java/nio/channels/spi/AbstractSelectableChannel.java \
   java/nio/channels/spi/AbstractSelectionKey.java \
   java/nio/channels/spi/AbstractSelector.java \
-  java/nio/channels/spi/SelectorProvider.java
+  java/nio/channels/spi/SelectorProvider.java \
+  java/util/InputMismatchException.java \
+  java/util/Scanner.java
 
 JAVA_PRIVATE_SOURCES_CHANNELS = \
   java/nio/ChannelUtils.java \
@@ -673,6 +770,7 @@ JAVA_PUBLIC_SOURCES_SECURITY = \
   java/security/spec/RSAPrivateKeySpec.java \
   java/security/spec/RSAPublicKeySpec.java \
   java/security/spec/X509EncodedKeySpec.java \
+  java/util/UUID.java \
   javax/crypto/Mac.java \
   javax/crypto/MacSpi.java \
   javax/crypto/SecretKey.java \
@@ -1122,91 +1220,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/text/IOSCollator.java \
   java/text/Normalizer.java \
   java/text/StringCharacterIterator.java \
-  java/util/ArrayDeque.java \
-  java/util/BitSet.java \
-  java/util/EnumMap.java \
-  java/util/EnumSet.java \
-  java/util/HugeEnumSet.java \
-  java/util/IdentityHashMap.java \
-  java/util/InputMismatchException.java \
-  java/util/MiniEnumSet.java \
-  java/util/Observable.java \
-  java/util/Observer.java \
-  java/util/PriorityQueue.java \
-  java/util/PropertyPermission.java \
-  java/util/Scanner.java \
-  java/util/Stack.java \
-  java/util/Timer.java \
-  java/util/TimerTask.java \
-  java/util/UUID.java \
-  java/util/UnknownFormatFlagsException.java \
-  java/util/concurrent/AbstractExecutorService.java \
-  java/util/concurrent/ArrayBlockingQueue.java \
-  java/util/concurrent/BlockingDeque.java \
-  java/util/concurrent/BlockingQueue.java \
-  java/util/concurrent/BrokenBarrierException.java \
-  java/util/concurrent/Callable.java \
-  java/util/concurrent/CancellationException.java \
-  java/util/concurrent/CompletionService.java \
-  java/util/concurrent/ConcurrentHashMap.java \
-  java/util/concurrent/ConcurrentLinkedDeque.java \
-  java/util/concurrent/ConcurrentLinkedQueue.java \
-  java/util/concurrent/ConcurrentMap.java \
-  java/util/concurrent/ConcurrentNavigableMap.java \
-  java/util/concurrent/ConcurrentSkipListMap.java \
-  java/util/concurrent/ConcurrentSkipListSet.java \
-  java/util/concurrent/CopyOnWriteArraySet.java \
-  java/util/concurrent/CountedCompleter.java \
-  java/util/concurrent/CyclicBarrier.java \
-  java/util/concurrent/DelayQueue.java \
-  java/util/concurrent/Delayed.java \
-  java/util/concurrent/Exchanger.java \
-  java/util/concurrent/ExecutionException.java \
-  java/util/concurrent/Executor.java \
-  java/util/concurrent/ExecutorCompletionService.java \
-  java/util/concurrent/ExecutorService.java \
-  java/util/concurrent/Executors.java \
-  java/util/concurrent/ForkJoinPool.java \
-  java/util/concurrent/ForkJoinTask.java \
-  java/util/concurrent/ForkJoinWorkerThread.java \
-  java/util/concurrent/Future.java \
-  java/util/concurrent/FutureTask.java \
-  java/util/concurrent/LinkedBlockingDeque.java \
-  java/util/concurrent/LinkedBlockingQueue.java \
-  java/util/concurrent/LinkedTransferQueue.java \
-  java/util/concurrent/Phaser.java \
-  java/util/concurrent/PriorityBlockingQueue.java \
-  java/util/concurrent/RecursiveAction.java \
-  java/util/concurrent/RecursiveTask.java \
-  java/util/concurrent/RejectedExecutionException.java \
-  java/util/concurrent/RejectedExecutionHandler.java \
-  java/util/concurrent/RunnableFuture.java \
-  java/util/concurrent/RunnableScheduledFuture.java \
-  java/util/concurrent/ScheduledExecutorService.java \
-  java/util/concurrent/ScheduledFuture.java \
-  java/util/concurrent/ScheduledThreadPoolExecutor.java \
-  java/util/concurrent/Semaphore.java \
-  java/util/concurrent/SynchronousQueue.java \
-  java/util/concurrent/ThreadFactory.java \
-  java/util/concurrent/ThreadLocalRandom.java \
-  java/util/concurrent/ThreadPoolExecutor.java \
-  java/util/concurrent/TimeoutException.java \
-  java/util/concurrent/TransferQueue.java \
-  java/util/concurrent/atomic/AtomicIntegerArray.java \
-  java/util/concurrent/atomic/AtomicIntegerFieldUpdater.java \
-  java/util/concurrent/atomic/AtomicLong.java \
-  java/util/concurrent/atomic/AtomicLongArray.java \
-  java/util/concurrent/atomic/AtomicLongFieldUpdater.java \
-  java/util/concurrent/atomic/AtomicMarkableReference.java \
-  java/util/concurrent/atomic/AtomicReferenceArray.java \
-  java/util/concurrent/atomic/AtomicReferenceFieldUpdater.java \
-  java/util/concurrent/atomic/AtomicStampedReference.java \
-  java/util/concurrent/atomic/Fences.java \
-  java/util/concurrent/locks/AbstractQueuedLongSynchronizer.java \
-  java/util/concurrent/locks/Lock.java \
-  java/util/concurrent/locks/ReadWriteLock.java \
-  java/util/concurrent/locks/ReentrantLock.java \
-  java/util/concurrent/locks/ReentrantReadWriteLock.java \
   java/util/jar/Attributes.java \
   java/util/jar/JarEntry.java \
   java/util/jar/JarException.java \
@@ -1216,11 +1229,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/util/jar/JarVerifier.java \
   java/util/jar/Manifest.java \
   java/util/jar/ManifestReader.java \
-  java/util/logging/ConsoleHandler.java \
-  java/util/logging/MemoryHandler.java \
-  java/util/logging/SimpleFormatter.java \
-  java/util/logging/StreamHandler.java \
-  java/util/logging/XMLFormatter.java \
   java/util/zip/Adler32.java \
   java/util/zip/CRC32.java \
   java/util/zip/CheckedInputStream.java \
@@ -1316,6 +1324,8 @@ ANDROID_PRIVATE_SOURCES = \
 JAVA_SOURCES_CORE = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PRIVATE_SOURCES_CORE)
 JAVA_SOURCES_NON_CORE = $(JAVA_PUBLIC_SOURCES_NON_CORE) $(JAVA_PRIVATE_SOURCES_NON_CORE)
 JAVA_SOURCES_NET = $(JAVA_PUBLIC_SOURCES_NET) $(JAVA_PRIVATE_SOURCES_NET)
+JAVA_SOURCES_UTIL = $(JAVA_PUBLIC_SOURCES_UTIL) $(JAVA_PRIVATE_SOURCES_UTIL)
+JAVA_SOURCES_CONCURRENT = $(JAVA_PUBLIC_SOURCES_CONCURRENT) $(JAVA_PRIVATE_SOURCES_CONCURRENT)
 JAVA_SOURCES_CHANNELS = $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PRIVATE_SOURCES_CHANNELS)
 JAVA_SOURCES_SECURITY = $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PRIVATE_SOURCES_SECURITY)
 JAVA_SOURCES_SSL = $(JAVA_PUBLIC_SOURCES_SSL) $(JAVA_PRIVATE_SOURCES_SSL)
@@ -1327,6 +1337,8 @@ JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 JAVA_SOURCES = \
   $(JAVA_SOURCES_CORE) \
   $(JAVA_SOURCES_NET) \
+  $(JAVA_SOURCES_UTIL) \
+  $(JAVA_SOURCES_CONCURRENT) \
   $(JAVA_SOURCES_CHANNELS) \
   $(JAVA_SOURCES_SECURITY) \
   $(JAVA_SOURCES_SSL) \
@@ -1338,6 +1350,8 @@ JAVA_SOURCES = \
 JAVA_PUBLIC_SOURCES = \
   $(JAVA_PUBLIC_SOURCES_CORE) \
   $(JAVA_PUBLIC_SOURCES_NET) \
+  $(JAVA_PUBLIC_SOURCES_UTIL) \
+  $(JAVA_PUBLIC_SOURCES_CONCURRENT) \
   $(JAVA_PUBLIC_SOURCES_CHANNELS) \
   $(JAVA_PUBLIC_SOURCES_SECURITY) \
   $(JAVA_PUBLIC_SOURCES_SSL) \

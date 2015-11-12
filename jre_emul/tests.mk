@@ -781,10 +781,12 @@ run-initialization-test: $(TESTS_DIR)/jreinitialization
 run-core-size-test: $(TESTS_DIR)/core_size \
   $(TESTS_DIR)/core_plus_beans \
   $(TESTS_DIR)/core_plus_channels \
+  $(TESTS_DIR)/core_plus_concurrent \
   $(TESTS_DIR)/core_plus_net \
   $(TESTS_DIR)/core_plus_security \
   $(TESTS_DIR)/core_plus_sql \
   $(TESTS_DIR)/core_plus_ssl \
+  $(TESTS_DIR)/core_plus_util \
   $(TESTS_DIR)/core_plus_xml
 	@for bin in $^; do \
 	  echo Binary size for $$(basename $$bin):; \
@@ -883,9 +885,17 @@ $(TESTS_DIR)/core_plus_net:
 	@mkdir -p $(@D)
 	../dist/j2objcc -ljre_net -o $@ -ObjC
 
+$(TESTS_DIR)/core_plus_util:
+	@mkdir -p $(@D)
+	../dist/j2objcc -ljre_util -o $@ -ObjC
+
+$(TESTS_DIR)/core_plus_concurrent:
+	@mkdir -p $(@D)
+	../dist/j2objcc -ljre_concurrent -ljre_util -o $@ -ObjC
+
 $(TESTS_DIR)/core_plus_channels:
 	@mkdir -p $(@D)
-	../dist/j2objcc -ljre_channels -ljre_net -o $@ -ObjC
+	../dist/j2objcc -ljre_channels -ljre_net -ljre_util -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_security:
 	@mkdir -p $(@D)
@@ -893,7 +903,7 @@ $(TESTS_DIR)/core_plus_security:
 
 $(TESTS_DIR)/core_plus_ssl:
 	@mkdir -p $(@D)
-	../dist/j2objcc -ljre_ssl -ljre_net -ljre_security -o $@ -ObjC
+	../dist/j2objcc -ljre_ssl -ljre_net -ljre_security -ljre_util -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_xml:
 	@mkdir -p $(@D)
@@ -905,4 +915,4 @@ $(TESTS_DIR)/core_plus_sql:
 
 $(TESTS_DIR)/core_plus_beans:
 	@mkdir -p $(@D)
-	../dist/j2objcc -ljre_beans -o $@ -ObjC
+	../dist/j2objcc -ljre_beans -ljre_util -o $@ -ObjC

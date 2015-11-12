@@ -10,11 +10,8 @@ import com.google.j2objc.annotations.AutoreleasePool;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.security.AccessControlContext;
-import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.PrivilegedExceptionAction;
-import java.security.PrivilegedActionException;
 
 // BEGIN android-note
 // removed security manager docs
@@ -397,7 +394,7 @@ public class Executors {
     public static <T> Callable<T> privilegedCallable(Callable<T> callable) {
         if (callable == null)
             throw new NullPointerException();
-        return new PrivilegedCallable<T>(callable);
+        return callable;
     }
 
     /**
@@ -430,38 +427,11 @@ public class Executors {
     }
 
     /**
-     * A callable that runs under established access control settings
-     */
-    static final class PrivilegedCallable<T> implements Callable<T> {
-        private final Callable<T> task;
-        private final AccessControlContext acc;
-
-        PrivilegedCallable(Callable<T> task) {
-            this.task = task;
-            this.acc = AccessController.getContext();
-        }
-
-        public T call() throws Exception {
-            try {
-                return AccessController.doPrivileged(
-                    new PrivilegedExceptionAction<T>() {
-                        public T run() throws Exception {
-                            return task.call();
-                        }
-                    }, acc);
-            } catch (PrivilegedActionException e) {
-                throw e.getException();
-            }
-        }
-    }
-
-    /**
      * A callable that runs under established access control settings and
      * current ClassLoader
      */
     static final class PrivilegedCallableUsingCurrentClassLoader<T> implements Callable<T> {
         private final Callable<T> task;
-        private final AccessControlContext acc;
         private final ClassLoader ccl;
 
         PrivilegedCallableUsingCurrentClassLoader(Callable<T> task) {
@@ -479,31 +449,21 @@ public class Executors {
             // }
             // END android-removed
             this.task = task;
-            this.acc = AccessController.getContext();
             this.ccl = Thread.currentThread().getContextClassLoader();
         }
 
         public T call() throws Exception {
-            try {
-                return AccessController.doPrivileged(
-                    new PrivilegedExceptionAction<T>() {
-                        public T run() throws Exception {
-                            Thread t = Thread.currentThread();
-                            ClassLoader cl = t.getContextClassLoader();
-                            if (ccl == cl) {
-                                return task.call();
-                            } else {
-                                t.setContextClassLoader(ccl);
-                                try {
-                                    return task.call();
-                                } finally {
-                                    t.setContextClassLoader(cl);
-                                }
-                            }
-                        }
-                    }, acc);
-            } catch (PrivilegedActionException e) {
-                throw e.getException();
+            Thread t = Thread.currentThread();
+            ClassLoader cl = t.getContextClassLoader();
+            if (ccl == cl) {
+                return task.call();
+            } else {
+                t.setContextClassLoader(ccl);
+                try {
+                    return task.call();
+                } finally {
+                    t.setContextClassLoader(cl);
+                }
             }
         }
     }
@@ -542,7 +502,6 @@ public class Executors {
      * Thread factory capturing access control context and class loader
      */
     static class PrivilegedThreadFactory extends DefaultThreadFactory {
-        private final AccessControlContext acc;
         private final ClassLoader ccl;
 
         PrivilegedThreadFactory() {
@@ -559,20 +518,14 @@ public class Executors {
             //     sm.checkPermission(new RuntimePermission("setContextClassLoader"));
             // }
             // END android-removed
-            this.acc = AccessController.getContext();
             this.ccl = Thread.currentThread().getContextClassLoader();
         }
 
         public Thread newThread(final Runnable r) {
             return super.newThread(new Runnable() {
                 public void run() {
-                    AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                        public Void run() {
-                            Thread.currentThread().setContextClassLoader(ccl);
-                            r.run();
-                            return null;
-                        }
-                    }, acc);
+                    Thread.currentThread().setContextClassLoader(ccl);
+                    r.run();
                 }
             });
         }

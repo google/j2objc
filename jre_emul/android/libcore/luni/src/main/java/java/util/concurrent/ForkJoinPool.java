@@ -494,18 +494,6 @@ public class ForkJoinPool extends AbstractExecutorService {
      */
     // android-note: Removed references to CountedCompleters.
 
-    // Static utilities
-
-    /**
-     * If there is a security manager, makes sure caller has
-     * permission to modify threads.
-     */
-    private static void checkPermission() {
-        SecurityManager security = System.getSecurityManager();
-        if (security != null)
-            security.checkPermission(modifyThreadPermission);
-    }
-
     // Nested classes
 
     /**
@@ -1057,12 +1045,6 @@ public class ForkJoinPool extends AbstractExecutorService {
      */
     public static final ForkJoinWorkerThreadFactory
         defaultForkJoinWorkerThreadFactory;
-
-    /**
-     * Permission required for callers of methods that may start or
-     * kill threads.
-     */
-    private static final RuntimePermission modifyThreadPermission;
 
     /**
      * Common (static) pool. Non-null for public use unless a static
@@ -2405,7 +2387,6 @@ public class ForkJoinPool extends AbstractExecutorService {
              handler,
              (asyncMode ? FIFO_QUEUE : LIFO_QUEUE),
              "ForkJoinPool-" + nextPoolId() + "-worker-");
-        checkPermission();
     }
 
     private static int checkParallelism(int parallelism) {
@@ -2900,7 +2881,6 @@ public class ForkJoinPool extends AbstractExecutorService {
      * may not be rejected.
      */
     public void shutdown() {
-        checkPermission();
         tryTerminate(false, true);
     }
 
@@ -2919,7 +2899,6 @@ public class ForkJoinPool extends AbstractExecutorService {
      * @return an empty list
      */
     public List<Runnable> shutdownNow() {
-        checkPermission();
         tryTerminate(true, true);
         return Collections.emptyList();
     }
@@ -3232,11 +3211,8 @@ public class ForkJoinPool extends AbstractExecutorService {
         submitters = new ThreadLocal<Submitter>();
         defaultForkJoinWorkerThreadFactory =
             new DefaultForkJoinWorkerThreadFactory();
-        modifyThreadPermission = new RuntimePermission("modifyThread");
 
-        common = java.security.AccessController.doPrivileged
-            (new java.security.PrivilegedAction<ForkJoinPool>() {
-                public ForkJoinPool run() { return makeCommonPool(); }});
+        common = makeCommonPool();
         int par = common.parallelism; // report 1 even if threads disabled
         commonParallelism = par > 0 ? par : 1;
     }
