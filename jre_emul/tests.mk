@@ -198,6 +198,7 @@ TEST_SOURCES := \
     com/google/j2objc/ClassTest.java \
     com/google/j2objc/PackageTest.java \
     com/google/j2objc/ThrowableTest.java \
+    com/google/j2objc/net/NSErrorExceptionTest.java \
     com/google/j2objc/security/IosSecureRandomImplTest.java \
     dalvik/system/JniTest.java \
     java/lang/SystemTest.java \

@@ -419,6 +419,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/SneakyThrow.java
 
 JAVA_PUBLIC_SOURCES_NET = \
+  com/google/j2objc/net/NSErrorException.java \
   java/net/Authenticator.java \
   java/net/BindException.java \
   java/net/CacheRequest.java \

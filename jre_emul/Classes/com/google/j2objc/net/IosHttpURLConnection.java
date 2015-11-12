@@ -21,6 +21,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
@@ -38,6 +39,7 @@ import java.util.Map;
 #include "NSDataInputStream.h"
 #include "NSDataOutputStream.h"
 #include "NSDictionaryMap.h"
+#include "com/google/j2objc/net/NSErrorException.h"
 #include "java/lang/Double.h"
 #include "java/net/ConnectException.h"
 #include "java/net/MalformedURLException.h"
@@ -415,10 +417,13 @@ public class IosHttpURLConnection extends HttpURLConnection {
                   [[JavaNetMalformedURLException alloc] initWithNSString:url];
               break;
             case NSURLErrorCannotConnectToHost:
-            case NSURLErrorNotConnectedToInternet:
-            case NSURLErrorSecureConnectionFailed:
               self->responseException_ =
                   [[JavaNetConnectException alloc] initWithNSString:[error description]];
+              break;
+            case NSURLErrorSecureConnectionFailed:
+              self->responseException_ = RETAIN_(
+                  ComGoogleJ2objcNetIosHttpURLConnection_secureConnectionExceptionWithNSString_
+                      ([error description]));
               break;
             case NSURLErrorCannotFindHost:
               self->responseException_ = [[JavaNetUnknownHostException alloc] initWithNSString:url];
@@ -433,6 +438,10 @@ public class IosHttpURLConnection extends HttpURLConnection {
           self->responseException_ =
               [[JavaIoIOException alloc] initWithNSString:[error description]];
         }
+        ComGoogleJ2objcNetNSErrorException *cause =
+            [[ComGoogleJ2objcNetNSErrorException alloc] initWithId:error];
+        [self->responseException_ initCauseWithJavaLangThrowable:cause];
+        [cause release];
         @throw self->responseException_;
       }
 
@@ -455,6 +464,22 @@ public class IosHttpURLConnection extends HttpURLConnection {
       }];
     }
   ]-*/;
+
+  /**
+   * Returns an SSLException if that class is linked into the application,
+   * otherwise IOException.
+   */
+  private static IOException secureConnectionException(String description) {
+    try {
+      Class<?> sslExceptionClass = Class.forName("javax.net.ssl.SSLException");
+      Constructor<?> constructor = sslExceptionClass.getConstructor(String.class);
+      return (IOException) constructor.newInstance(description);
+    } catch (ClassNotFoundException e) {
+      return new IOException(description);
+    } catch (Exception e) {
+      throw new AssertionError("unexpected exception", e);
+    }
+  }
 
   /*-[- (void)URLSession:(NSURLSession *)session
               task:(NSURLSessionTask *)task
