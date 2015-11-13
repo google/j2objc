@@ -21,6 +21,8 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -126,6 +128,18 @@ public class ErrorUtil {
    */
   public static void warning(TreeNode node, String message) {
     warning(formatMessage(node, message));
+  }
+
+  /**
+   * Report that an internal error happened when translating a specific source.
+   */
+  public static void fatalError(Throwable error, String path) {
+    StringWriter msg = new StringWriter();
+    PrintWriter writer = new PrintWriter(msg);
+    writer.println(String.format("internal error translating \"%s\"", path));
+    error.printStackTrace(writer);
+    writer.flush();
+    error(msg.toString());
   }
 
   private static String formatMessage(TreeNode node, String message) {

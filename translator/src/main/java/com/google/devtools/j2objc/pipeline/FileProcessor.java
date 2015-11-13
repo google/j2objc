@@ -164,11 +164,16 @@ abstract class FileProcessor {
     if (closureQueue != null) {
       closureQueue.addProcessedName(FileUtil.getQualifiedMainTypeName(file, unit));
     }
-    com.google.devtools.j2objc.ast.CompilationUnit convertedUnit =
-        TreeConverter.convertCompilationUnit(
-            unit, input.getOriginalSourcePath(), FileUtil.getMainTypeName(file), source,
-            nameTableFactory);
-    processConvertedTree(input, convertedUnit);
+    try {
+      com.google.devtools.j2objc.ast.CompilationUnit convertedUnit =
+          TreeConverter.convertCompilationUnit(
+              unit, input.getOriginalSourcePath(), FileUtil.getMainTypeName(file), source,
+              nameTableFactory);
+      processConvertedTree(input, convertedUnit);
+    } catch (Throwable t) {
+      // Report any uncaught exceptions.
+      ErrorUtil.fatalError(t, input.getOriginalSourcePath());
+    }
   }
 
   protected abstract void processConvertedTree(
