@@ -418,6 +418,28 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/util/Objects.java \
   libcore/util/SneakyThrow.java
 
+JAVA_PUBLIC_SOURCES_IO = \
+  java/io/CharArrayReader.java \
+  java/io/CharArrayWriter.java \
+  java/io/CharConversionException.java \
+  java/io/FileReader.java \
+  java/io/FileWriter.java \
+  java/io/FilterReader.java \
+  java/io/FilterWriter.java \
+  java/io/LineNumberInputStream.java \
+  java/io/LineNumberReader.java \
+  java/io/PipedInputStream.java \
+  java/io/PipedOutputStream.java \
+  java/io/PipedReader.java \
+  java/io/PipedWriter.java \
+  java/io/PushbackReader.java \
+  java/io/RandomAccessFile.java \
+  java/io/SequenceInputStream.java \
+  java/io/StreamTokenizer.java \
+  java/io/StringBufferInputStream.java
+
+JAVA_PRIVATE_SOURCES_IO =
+
 JAVA_PUBLIC_SOURCES_NET = \
   com/google/j2objc/net/NSErrorException.java \
   java/net/Authenticator.java \
@@ -1107,6 +1129,45 @@ JAVA_PRIVATE_SOURCES_XML = \
   org/xmlpull/v1/XmlSerializer.java \
   org/xmlpull/v1/sax2/Driver.java
 
+JAVA_PUBLIC_SOURCES_ZIP = \
+  java/util/jar/Attributes.java \
+  java/util/jar/JarEntry.java \
+  java/util/jar/JarException.java \
+  java/util/jar/JarFile.java \
+  java/util/jar/JarInputStream.java \
+  java/util/jar/JarOutputStream.java \
+  java/util/jar/JarVerifier.java \
+  java/util/jar/Manifest.java \
+  java/util/jar/ManifestReader.java \
+  java/util/zip/Adler32.java \
+  java/util/zip/CRC32.java \
+  java/util/zip/CheckedInputStream.java \
+  java/util/zip/CheckedOutputStream.java \
+  java/util/zip/Checksum.java \
+  java/util/zip/DataFormatException.java \
+  java/util/zip/Deflater.java \
+  java/util/zip/DeflaterInputStream.java \
+  java/util/zip/DeflaterOutputStream.java \
+  java/util/zip/GZIPInputStream.java \
+  java/util/zip/GZIPOutputStream.java \
+  java/util/zip/Inflater.java \
+  java/util/zip/InflaterInputStream.java \
+  java/util/zip/InflaterOutputStream.java \
+  java/util/zip/Zip64.java \
+  java/util/zip/ZipConstants.java \
+  java/util/zip/ZipEntry.java \
+  java/util/zip/ZipError.java \
+  java/util/zip/ZipException.java \
+  java/util/zip/ZipFile.java \
+  java/util/zip/ZipInputStream.java \
+  java/util/zip/ZipOutputStream.java
+
+JAVA_PRIVATE_SOURCES_ZIP = \
+  libcore/io/Base64.java \
+  libcore/io/BufferIterator.java \
+  libcore/io/HeapBufferIterator.java \
+  libcore/util/CountingOutputStream.java
+
 JAVA_PUBLIC_SOURCES_SQL = \
   java/sql/Array.java \
   java/sql/BatchUpdateException.java \
@@ -1186,24 +1247,6 @@ JAVA_PRIVATE_SOURCES_BEANS = \
 
 # Java sources to be translated normally and included in the full library.
 JAVA_PUBLIC_SOURCES_NON_CORE = \
-  java/io/CharArrayReader.java \
-  java/io/CharArrayWriter.java \
-  java/io/CharConversionException.java \
-  java/io/FileReader.java \
-  java/io/FileWriter.java \
-  java/io/FilterReader.java \
-  java/io/FilterWriter.java \
-  java/io/LineNumberInputStream.java \
-  java/io/LineNumberReader.java \
-  java/io/PipedInputStream.java \
-  java/io/PipedOutputStream.java \
-  java/io/PipedReader.java \
-  java/io/PipedWriter.java \
-  java/io/PushbackReader.java \
-  java/io/RandomAccessFile.java \
-  java/io/SequenceInputStream.java \
-  java/io/StreamTokenizer.java \
-  java/io/StringBufferInputStream.java \
   java/lang/IllegalAccessError.java \
   java/lang/InheritableThreadLocal.java \
   java/lang/NoSuchMethodError.java \
@@ -1221,37 +1264,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/text/IOSCollator.java \
   java/text/Normalizer.java \
   java/text/StringCharacterIterator.java \
-  java/util/jar/Attributes.java \
-  java/util/jar/JarEntry.java \
-  java/util/jar/JarException.java \
-  java/util/jar/JarFile.java \
-  java/util/jar/JarInputStream.java \
-  java/util/jar/JarOutputStream.java \
-  java/util/jar/JarVerifier.java \
-  java/util/jar/Manifest.java \
-  java/util/jar/ManifestReader.java \
-  java/util/zip/Adler32.java \
-  java/util/zip/CRC32.java \
-  java/util/zip/CheckedInputStream.java \
-  java/util/zip/CheckedOutputStream.java \
-  java/util/zip/Checksum.java \
-  java/util/zip/DataFormatException.java \
-  java/util/zip/Deflater.java \
-  java/util/zip/DeflaterInputStream.java \
-  java/util/zip/DeflaterOutputStream.java \
-  java/util/zip/GZIPInputStream.java \
-  java/util/zip/GZIPOutputStream.java \
-  java/util/zip/Inflater.java \
-  java/util/zip/InflaterInputStream.java \
-  java/util/zip/InflaterOutputStream.java \
-  java/util/zip/Zip64.java \
-  java/util/zip/ZipConstants.java \
-  java/util/zip/ZipEntry.java \
-  java/util/zip/ZipError.java \
-  java/util/zip/ZipException.java \
-  java/util/zip/ZipFile.java \
-  java/util/zip/ZipInputStream.java \
-  java/util/zip/ZipOutputStream.java \
   javax/annotation/Generated.java \
   javax/annotation/PostConstruct.java \
   javax/annotation/PreDestroy.java \
@@ -1262,10 +1274,6 @@ JAVA_PRIVATE_SOURCES_NON_CORE = \
   java/awt/font/NumericShaper.java \
   java/awt/font/TextAttribute.java \
   libcore/icu/TimeZones.java \
-  libcore/io/Base64.java \
-  libcore/io/BufferIterator.java \
-  libcore/io/HeapBufferIterator.java \
-  libcore/util/CountingOutputStream.java \
   org/json/JSON.java \
   org/json/JSONArray.java \
   org/json/JSONException.java \
@@ -1324,6 +1332,7 @@ ANDROID_PRIVATE_SOURCES = \
 
 JAVA_SOURCES_CORE = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PRIVATE_SOURCES_CORE)
 JAVA_SOURCES_NON_CORE = $(JAVA_PUBLIC_SOURCES_NON_CORE) $(JAVA_PRIVATE_SOURCES_NON_CORE)
+JAVA_SOURCES_IO = $(JAVA_PUBLIC_SOURCES_IO) $(JAVA_PRIVATE_SOURCES_IO)
 JAVA_SOURCES_NET = $(JAVA_PUBLIC_SOURCES_NET) $(JAVA_PRIVATE_SOURCES_NET)
 JAVA_SOURCES_UTIL = $(JAVA_PUBLIC_SOURCES_UTIL) $(JAVA_PRIVATE_SOURCES_UTIL)
 JAVA_SOURCES_CONCURRENT = $(JAVA_PUBLIC_SOURCES_CONCURRENT) $(JAVA_PRIVATE_SOURCES_CONCURRENT)
@@ -1331,12 +1340,14 @@ JAVA_SOURCES_CHANNELS = $(JAVA_PUBLIC_SOURCES_CHANNELS) $(JAVA_PRIVATE_SOURCES_C
 JAVA_SOURCES_SECURITY = $(JAVA_PUBLIC_SOURCES_SECURITY) $(JAVA_PRIVATE_SOURCES_SECURITY)
 JAVA_SOURCES_SSL = $(JAVA_PUBLIC_SOURCES_SSL) $(JAVA_PRIVATE_SOURCES_SSL)
 JAVA_SOURCES_XML = $(JAVA_PUBLIC_SOURCES_XML) $(JAVA_PRIVATE_SOURCES_XML)
+JAVA_SOURCES_ZIP = $(JAVA_PUBLIC_SOURCES_ZIP) $(JAVA_PRIVATE_SOURCES_ZIP)
 JAVA_SOURCES_SQL = $(JAVA_PUBLIC_SOURCES_SQL) $(JAVA_PRIVATE_SOURCES_SQL)
 JAVA_SOURCES_BEANS = $(JAVA_PUBLIC_SOURCES_BEANS) $(JAVA_PRIVATE_SOURCES_BEANS)
 JAVA_SOURCES_ANDROID = $(ANDROID_PUBLIC_SOURCES) $(ANDROID_PRIVATE_SOURCES)
 
 JAVA_SOURCES = \
   $(JAVA_SOURCES_CORE) \
+  $(JAVA_SOURCES_IO) \
   $(JAVA_SOURCES_NET) \
   $(JAVA_SOURCES_UTIL) \
   $(JAVA_SOURCES_CONCURRENT) \
@@ -1344,12 +1355,14 @@ JAVA_SOURCES = \
   $(JAVA_SOURCES_SECURITY) \
   $(JAVA_SOURCES_SSL) \
   $(JAVA_SOURCES_XML) \
+  $(JAVA_SOURCES_ZIP) \
   $(JAVA_SOURCES_SQL) \
   $(JAVA_SOURCES_BEANS) \
   $(JAVA_SOURCES_NON_CORE) \
   $(JAVA_SOURCES_ANDROID)
 JAVA_PUBLIC_SOURCES = \
   $(JAVA_PUBLIC_SOURCES_CORE) \
+  $(JAVA_PUBLIC_SOURCES_IO) \
   $(JAVA_PUBLIC_SOURCES_NET) \
   $(JAVA_PUBLIC_SOURCES_UTIL) \
   $(JAVA_PUBLIC_SOURCES_CONCURRENT) \
@@ -1357,6 +1370,7 @@ JAVA_PUBLIC_SOURCES = \
   $(JAVA_PUBLIC_SOURCES_SECURITY) \
   $(JAVA_PUBLIC_SOURCES_SSL) \
   $(JAVA_PUBLIC_SOURCES_XML) \
+  $(JAVA_PUBLIC_SOURCES_ZIP) \
   $(JAVA_PUBLIC_SOURCES_SQL) \
   $(JAVA_PUBLIC_SOURCES_BEANS) \
   $(JAVA_PUBLIC_SOURCES_NON_CORE) \

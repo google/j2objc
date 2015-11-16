@@ -780,15 +780,18 @@ run-initialization-test: $(TESTS_DIR)/jreinitialization
 	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
 
 run-core-size-test: $(TESTS_DIR)/core_size \
+  $(TESTS_DIR)/full_jre_size \
   $(TESTS_DIR)/core_plus_beans \
   $(TESTS_DIR)/core_plus_channels \
   $(TESTS_DIR)/core_plus_concurrent \
+  $(TESTS_DIR)/core_plus_io \
   $(TESTS_DIR)/core_plus_net \
   $(TESTS_DIR)/core_plus_security \
   $(TESTS_DIR)/core_plus_sql \
   $(TESTS_DIR)/core_plus_ssl \
   $(TESTS_DIR)/core_plus_util \
-  $(TESTS_DIR)/core_plus_xml
+  $(TESTS_DIR)/core_plus_xml \
+  $(TESTS_DIR)/core_plus_zip
 	@for bin in $^; do \
 	  echo Binary size for $$(basename $$bin):; \
 	  ls -l $$bin; \
@@ -882,6 +885,14 @@ $(TESTS_DIR)/core_size:
 	@mkdir -p $(@D)
 	../dist/j2objcc -o $@ -ObjC
 
+$(TESTS_DIR)/full_jre_size:
+	@mkdir -p $(@D)
+	../dist/j2objcc -ljre_emul -o $@ -ObjC
+
+$(TESTS_DIR)/core_plus_io:
+	@mkdir -p $(@D)
+	../dist/j2objcc -ljre_io -o $@ -ObjC
+
 $(TESTS_DIR)/core_plus_net:
 	@mkdir -p $(@D)
 	../dist/j2objcc -ljre_net -o $@ -ObjC
@@ -909,6 +920,10 @@ $(TESTS_DIR)/core_plus_ssl:
 $(TESTS_DIR)/core_plus_xml:
 	@mkdir -p $(@D)
 	../dist/j2objcc -ljre_xml -ljre_net -o $@ -ObjC
+
+$(TESTS_DIR)/core_plus_zip:
+	@mkdir -p $(@D)
+	../dist/j2objcc -ljre_zip -ljre_security -ljre_net -ljre_io -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_sql:
 	@mkdir -p $(@D)
