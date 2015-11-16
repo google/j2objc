@@ -100,10 +100,17 @@ public abstract class TreeNode {
   }
 
   public final void accept(TreeVisitor visitor) {
-    if (visitor.preVisit(this)) {
-      acceptInner(visitor);
+    try {
+      if (visitor.preVisit(this)) {
+        acceptInner(visitor);
+      }
+      visitor.postVisit(this);
+    } catch (TreeVisitorAssertionError e) {
+      // Avoid re-wrapping.
+      throw e;
+    } catch (AssertionError e) {
+      throw new TreeVisitorAssertionError(e, this);
     }
-    visitor.postVisit(this);
   }
 
   protected abstract void acceptInner(TreeVisitor visitor);
