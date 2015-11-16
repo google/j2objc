@@ -77,6 +77,7 @@
 		062463D41A000CE3006D52C9 /* JRETestsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */; };
 		062463DA1A005995006D52C9 /* JRELogPaneViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 062463D91A005995006D52C9 /* JRELogPaneViewController.m */; };
 		06459FC71A4223F000F5ED23 /* libicucore.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C54AD31A40C7A4004B3ACD /* libicucore.dylib */; };
+		064EDBEF1BF5580900D25A14 /* NSErrorExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 064EDBEE1BF5577000D25A14 /* NSErrorExceptionTest.m */; };
 		06574A1A1A8EAF0B000A3616 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06C73F5719180E64001D3CC8 /* Security.framework */; };
 		06574A1C1A8EAF84000A3616 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 06574A1B1A8EAF84000A3616 /* QuartzCore.framework */; };
 		06574A3D1A8EB04A000A3616 /* AlgorithmParametersSpiTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06574A1D1A8EB04A000A3616 /* AlgorithmParametersSpiTest.m */; };
@@ -1210,6 +1211,7 @@
 		0649A7BD1AE07A4500DE2494 /* XMLFilter.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = XMLFilter.m; path = build_result/Classes/org/xml/sax/XMLFilter.m; sourceTree = "<group>"; };
 		0649A7BE1AE07A4500DE2494 /* XMLReader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = XMLReader.m; path = build_result/Classes/org/xml/sax/XMLReader.m; sourceTree = "<group>"; };
 		0649A7BF1AE07A4500DE2494 /* XmlSerializer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = XmlSerializer.m; path = build_result/Classes/org/xmlpull/v1/XmlSerializer.m; sourceTree = "<group>"; };
+		064EDBEE1BF5577000D25A14 /* NSErrorExceptionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NSErrorExceptionTest.m; path = com/google/j2objc/net/NSErrorExceptionTest.m; sourceTree = "<group>"; };
 		064FB746172705F400DC0D51 /* URI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URI.h; path = build_result/Classes/java/net/URI.h; sourceTree = "<group>"; };
 		064FB747172705F400DC0D51 /* URI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URI.m; path = build_result/Classes/java/net/URI.m; sourceTree = "<group>"; };
 		064FB74A172705F400DC0D51 /* URISyntaxException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URISyntaxException.h; path = build_result/Classes/java/net/URISyntaxException.h; sourceTree = "<group>"; };
@@ -6528,6 +6530,7 @@
 				06FADA7C1B3B29B300A9579E /* NoPackageTest.h */,
 				06FADA7D1B3B29B300A9579E /* NoPackageTest.m */,
 				06574A631A8EB150000A3616 /* NormalizerTest.m */,
+				064EDBEE1BF5577000D25A14 /* NSErrorExceptionTest.m */,
 				06E4E4F9197F1D46005DDE69 /* org */,
 				0615D3DB1BD83E7300132067 /* OtherBean.m */,
 				061AA0CC19FEF01800457D2B /* package-info.h */,
@@ -8217,6 +8220,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				064EDBEF1BF5580900D25A14 /* NSErrorExceptionTest.m in Sources */,
 				0600C0121B715D13005FDEF9 /* CreationReferenceTest.m in Sources */,
 				0600C0131B715D13005FDEF9 /* ExpressionMethodReferenceTest.m in Sources */,
 				0600C0141B715D13005FDEF9 /* Lambdas.m in Sources */,

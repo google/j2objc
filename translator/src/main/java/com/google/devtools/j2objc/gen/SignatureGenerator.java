@@ -174,7 +174,8 @@ public class SignatureGenerator {
   }
 
   private static boolean hasGenericSignature(IMethodBinding method) {
-    if (method.isGenericMethod() || method.getReturnType().isTypeVariable()) {
+    if (method.isGenericMethod() || method.getReturnType().isTypeVariable()
+        || method.getReturnType().isParameterizedType()) {
       return true;
     }
     for (ITypeBinding param : method.getParameterTypes()) {

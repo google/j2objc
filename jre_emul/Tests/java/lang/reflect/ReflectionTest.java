@@ -36,6 +36,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.List;
 
 import junit.framework.TestCase;
 
@@ -53,6 +54,13 @@ public class ReflectionTest extends TestCase {
 
     @Mumble
     public NoEquals(String s) {}
+  }
+
+  static class ParameterizedReturnTest {
+    // Method that returns a parameterized type.
+    public List<String> getStringList() {
+      return null;
+    }
   }
 
   // Assert equals method can be found using reflection. Because it's a mapped
@@ -91,4 +99,9 @@ public class ReflectionTest extends TestCase {
     }
   }
 
+  public void testParameterizedTypeMethodReturn() throws Exception {
+    Method method = ParameterizedReturnTest.class.getMethod("getStringList");
+    Type returnType = method.getGenericReturnType();
+    assertTrue(returnType instanceof ParameterizedType);
+  }
 }

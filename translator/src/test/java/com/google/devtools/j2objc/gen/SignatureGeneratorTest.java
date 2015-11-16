@@ -188,4 +188,13 @@ public class SignatureGeneratorTest extends GenerationTest {
     assertTranslation(translation,
         "\"set_\", NULL, 0x0, \"Ljava.util.Set;\", NULL, \"Ljava/util/Set<TT;>;\",");
   }
+
+  public void testMethodParameterizedReturnTypeMetadata() throws IOException {
+    String translation = translateSourceFile(
+        "import java.util.*; class Test { List<String> getStringList() { return null; }}",
+        "Test", "Test.m");
+
+    // Assert method metadata has generic return signature.
+    assertTranslation(translation, "\"()Ljava/util/List<Ljava/lang/String;>;\"");
+  }
 }
