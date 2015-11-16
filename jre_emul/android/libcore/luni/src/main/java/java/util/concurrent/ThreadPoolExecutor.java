@@ -1046,41 +1046,15 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      */
     final void runWorker(Worker w) {
         Thread wt = Thread.currentThread();
-        Runnable task = w.firstTask;
-        w.firstTask = null;
         w.unlock(); // allow interrupts
+        boolean isFirstRun = true;
         boolean completedAbruptly = true;
         try {
-            while (task != null || (task = getTask()) != null) {
-                w.lock();
-                // If pool is stopping, ensure thread is interrupted;
-                // if not, ensure thread is not interrupted.  This
-                // requires a recheck in second case to deal with
-                // shutdownNow race while clearing interrupt
-                if ((runStateAtLeast(ctl.get(), STOP) ||
-                     (Thread.interrupted() &&
-                      runStateAtLeast(ctl.get(), STOP))) &&
-                    !wt.isInterrupted())
-                    wt.interrupt();
-                try {
-                    beforeExecute(wt, task);
-                    Throwable thrown = null;
-                    try {
-                        runTask(task);
-                    } catch (RuntimeException x) {
-                        thrown = x; throw x;
-                    } catch (Error x) {
-                        thrown = x; throw x;
-                    } catch (Throwable x) {
-                        thrown = x; throw new Error(x);
-                    } finally {
-                        afterExecute(task, thrown);
-                    }
-                } finally {
-                    task = null;
-                    w.completedTasks++;
-                    w.unlock();
+            while (true) {
+                if (runTask(isFirstRun, wt, w)) {
+                    break;
                 }
+                isFirstRun = false;
             }
             completedAbruptly = false;
         } finally {
@@ -1088,9 +1062,54 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         }
     }
 
+    /**
+     * Runs a single scheduled and ready task.
+     *
+     * @param isFirstRun Whether this is the first scheduled task to be run
+     * @param wt Worker thread
+     * @param w Worker
+     * @return true if there are no more tasks left ready for execution
+     */
     @AutoreleasePool
-    private void runTask(Runnable task) {
-      task.run();
+    private boolean runTask(boolean isFirstRun, Thread wt, Worker w) {
+        w.lock();
+        Runnable task = null;
+        if (isFirstRun) {
+            task = w.firstTask;
+            w.firstTask = null;
+        }
+        if (task == null && (task = getTask()) == null) {
+            return true;
+        }
+        // If pool is stopping, ensure thread is interrupted;
+        // if not, ensure thread is not interrupted.  This
+        // requires a recheck in second case to deal with
+        // shutdownNow race while clearing interrupt
+        if ((runStateAtLeast(ctl.get(), STOP) ||
+             (Thread.interrupted() &&
+              runStateAtLeast(ctl.get(), STOP))) &&
+            !wt.isInterrupted())
+            wt.interrupt();
+        try {
+            beforeExecute(wt, task);
+            Throwable thrown = null;
+            try {
+                task.run();
+            } catch (RuntimeException x) {
+                thrown = x; throw x;
+            } catch (Error x) {
+                thrown = x; throw x;
+            } catch (Throwable x) {
+                thrown = x; throw new Error(x);
+            } finally {
+                afterExecute(task, thrown);
+            }
+        } finally {
+            task = null;
+            w.completedTasks++;
+            w.unlock();
+        }
+        return false;
     }
 
     // Public constructors and methods
