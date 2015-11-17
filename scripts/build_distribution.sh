@@ -17,7 +17,7 @@ fi
 DISTRIBUTION_NAME=j2objc-$1
 
 # Set j2objc flags used for public builds.
-TRANSLATE_GLOBAL_FLAGS="--doc-comments;--generate-deprecated;--static-accessor-methods"
+TRANSLATE_GLOBAL_FLAGS="--doc-comments;--generate-deprecated;--swift-friendly"
 
 ENV_CMD="env -i PATH=$PATH HOME=$HOME J2OBJC_VERSION=${1%/} PROTOBUF_ROOT_DIR=${2%/}"
 ENV_CMD="${ENV_CMD} TRANSLATE_GLOBAL_FLAGS=${TRANSLATE_GLOBAL_FLAGS}"

@@ -89,6 +89,7 @@ public class Options {
   private String processors = null;
   private boolean disallowInheritedConstructors = false;
   private boolean swiftFriendly = false;
+  private boolean nullability = false;
 
   private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
@@ -371,6 +372,8 @@ public class Options {
         processors = args[nArg];
       } else if (arg.equals("--disallow-inherited-constructors")) {
         disallowInheritedConstructors = true;
+      } else if (arg.equals("--nullability")) {
+        nullability = true;
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -426,6 +429,7 @@ public class Options {
 
     if (swiftFriendly) {
       staticAccessorMethods = true;
+      nullability = true;
     }
 
     // Pull source version from system properties if it is not passed with -source flag.
@@ -838,5 +842,15 @@ public class Options {
   public static void setSwiftFriendly(boolean b) {
     instance.swiftFriendly = b;
     instance.staticAccessorMethods = b;
+    instance.nullability = b;
+  }
+
+  public static boolean nullability() {
+    return instance.nullability;
+  }
+
+  @VisibleForTesting
+  public static void setNullability(boolean b) {
+    instance.nullability = b;
   }
 }

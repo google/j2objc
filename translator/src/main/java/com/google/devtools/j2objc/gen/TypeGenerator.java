@@ -29,19 +29,32 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
+import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.Opcodes;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * The base class for TypeDeclarationGenerator and TypeImplementationGenerator,
@@ -61,6 +74,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final boolean typeNeedsReflection;
 
   private final List<BodyDeclaration> declarations;
+  private final boolean parametersNonnullByDefault;
 
   protected TypeGenerator(SourceBuilder builder, AbstractTypeDeclaration node) {
     super(builder);
@@ -72,6 +86,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     typeName = nameTable.getFullName(typeBinding);
     typeNeedsReflection = TranslationUtil.needsReflection(typeBinding);
     declarations = filterDeclarations(node.getBodyDeclarations());
+    parametersNonnullByDefault = Options.nullability()
+        && areParametersNonnullByDefault();
   }
 
   protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
@@ -253,7 +269,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       // Explicitly test hashCode() because of NSObject's hash return value.
       returnType = "NSUInteger";
     }
-    sb.append(String.format("%c (%s)", prefix, returnType));
+    sb.append(String.format("%c (%s%s)", prefix, returnType, nullability(binding, false)));
 
     List<SingleVariableDeclaration> params = m.getParameters();
     String[] selParts = selector.split(":");
@@ -271,12 +287,69 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         }
         IVariableBinding var = params.get(i).getVariableBinding();
         String typeName = nameTable.getSpecificObjCType(var.getType());
-        sb.append(String.format(
-            "%s:(%s)%s", selParts[i], typeName, nameTable.getVariableShortName(var)));
+        sb.append(String.format("%s:(%s%s)%s", selParts[i], typeName, nullability(var, true),
+            nameTable.getVariableShortName(var)));
       }
     }
 
     return sb.toString();
+  }
+
+  /**
+   * Returns an Objective-C nullability attribute string if there is a matching
+   * JSR305 annotation, or an empty string.
+   */
+  private String nullability(IBinding binding, boolean isParameter) {
+    if (Options.nullability()) {
+      if (BindingUtil.hasAnnotation(binding, Nullable.class)) {
+        return " __nullable";
+      }
+      if (isParameter
+          && (parametersNonnullByDefault || BindingUtil.hasAnnotation(binding, Nonnull.class))) {
+        return " __nonnull";
+      }
+    }
+    return "";
+  }
+
+  private boolean areParametersNonnullByDefault() {
+    if (BindingUtil.hasAnnotation(typeBinding, ParametersAreNonnullByDefault.class)) {
+      return true;
+    }
+    IPackageBinding pkg = typeBinding.getPackage();
+    try {
+      // See if a package-info source file has a ParametersAreNonnullByDefault annotation.
+      InputFile file = FileUtil.findOnSourcePath(pkg.getName() + ".package-info");
+      if (file != null) {
+        String pkgInfo = FileUtil.readFile(file);
+        if (pkgInfo.indexOf("@ParametersAreNonnullByDefault") >= 0) {
+          return true;
+        }
+        if (pkgInfo.indexOf("@javax.annotation.ParametersAreNonnullByDefault") >= 0) {
+          return true;
+        }
+      }
+
+      // See if the package-info class file has it.
+      final boolean[] result = new boolean[1];
+      file = FileUtil.findOnClassPath(pkg.getName() + ".package-info");
+      if (file != null) {
+        ClassReader classReader = new ClassReader(file.getInputStream());
+        classReader.accept(new ClassVisitor(Opcodes.ASM5) {
+          @Override
+          public AnnotationVisitor visitAnnotation(String desc, boolean visible) {
+            if (desc.equals("Ljavax/annotation/ParametersAreNonnullByDefault;")) {
+              result[0] = true;
+            }
+            return null;
+          }
+        }, 0);
+        return result[0];
+      }
+    } catch (IOException e) {
+      // fall-through
+    }
+    return false;
   }
 
   protected String getFunctionSignature(FunctionDeclaration function) {

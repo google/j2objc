@@ -240,4 +240,34 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     translateSourceFile(source, "Foo", "Foo.h");
     assertErrorCount(1);
   }
+
+  public void testNullabilityAttributes() throws IOException {
+    String source = "import javax.annotation.*; "
+        + "@ParametersAreNonnullByDefault public class Test {"
+        + "  @Nullable String test(@Nonnull String msg, Object var) { "
+        + "    return msg.isEmpty() ? null : msg; }"
+        + "}";
+    Options.setNullability(true);
+    String translation = translateSourceFile(source, "Test", "Test.h");
+    // var is also nonnull because of the default annotation on the class.
+    assertTranslatedLines(translation,
+        "- (NSString * __nullable)testWithNSString:(NSString * __nonnull)msg",
+        "withId:(id __nonnull)var;");
+  }
+
+  public void testDefaultNonnullParameters() throws IOException {
+    addSourceFile("@ParametersAreNonnullByDefault package foo.bar; "
+        + "import javax.annotation.ParametersAreNonnullByDefault;", "foo/bar/package-info.java");
+    String source = "package foo.bar; import javax.annotation.*; "
+        + "public class Test {"
+        + "  @Nullable String test(@Nonnull String msg, Object var) { "
+        + "    return msg.isEmpty() ? null : msg; }"
+        + "}";
+    Options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    // var is also nonnull because of the default annotation on the class.
+    assertTranslatedLines(translation,
+        "- (NSString * __nullable)testWithNSString:(NSString * __nonnull)msg",
+        "withId:(id __nonnull)var;");
+  }
 }
