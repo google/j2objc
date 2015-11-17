@@ -1072,7 +1072,6 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
      */
     @AutoreleasePool
     private boolean runTask(boolean isFirstRun, Thread wt, Worker w) {
-        w.lock();
         Runnable task = null;
         if (isFirstRun) {
             task = w.firstTask;
@@ -1081,6 +1080,7 @@ public class ThreadPoolExecutor extends AbstractExecutorService {
         if (task == null && (task = getTask()) == null) {
             return true;
         }
+        w.lock();
         // If pool is stopping, ensure thread is interrupted;
         // if not, ensure thread is not interrupted.  This
         // requires a recheck in second case to deal with
