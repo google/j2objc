@@ -1258,7 +1258,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
   java/lang/reflect/MalformedParameterizedTypeException.java \
   java/lang/reflect/ReflectPermission.java \
   java/lang/reflect/UndeclaredThrowableException.java \
-  java/nio/NIOAccess.java \
   java/text/CollationKey.java \
   java/text/Collator.java \
   java/text/IOSCollator.java \

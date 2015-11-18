@@ -33,7 +33,6 @@
 #include "java/lang/reflect/Method.h"
 #include "java/nio/Buffer.h"
 #include "java/nio/DirectByteBuffer.h"
-#include "java/nio/NIOAccess.h"
 
 static IOSClass *IOSClass_forName(const char *name) {
   NSString *nameString = [NSString stringWithUTF8String:name];

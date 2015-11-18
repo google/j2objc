@@ -775,8 +775,6 @@
 		0649A6091AE0778600DE2494 /* MappedByteBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MappedByteBuffer.m; path = build_result/Classes/java/nio/MappedByteBuffer.m; sourceTree = "<group>"; };
 		0649A60A1AE0778600DE2494 /* MemoryBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MemoryBlock.h; path = build_result/Classes/java/nio/MemoryBlock.h; sourceTree = "<group>"; };
 		0649A60B1AE0778700DE2494 /* MemoryBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MemoryBlock.m; path = build_result/Classes/java/nio/MemoryBlock.m; sourceTree = "<group>"; };
-		0649A60C1AE0778700DE2494 /* NIOAccess.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NIOAccess.h; path = build_result/Classes/java/nio/NIOAccess.h; sourceTree = "<group>"; };
-		0649A60D1AE0778700DE2494 /* NIOAccess.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NIOAccess.m; path = build_result/Classes/java/nio/NIOAccess.m; sourceTree = "<group>"; };
 		0649A60E1AE0778700DE2494 /* NioUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NioUtils.h; path = build_result/Classes/java/nio/NioUtils.h; sourceTree = "<group>"; };
 		0649A60F1AE0778700DE2494 /* NioUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NioUtils.m; path = build_result/Classes/java/nio/NioUtils.m; sourceTree = "<group>"; };
 		0649A6101AE0778700DE2494 /* PipeImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = PipeImpl.h; path = build_result/Classes/java/nio/PipeImpl.h; sourceTree = "<group>"; };
@@ -5377,8 +5375,6 @@
 				06C73DD819180C99001D3CC8 /* NetworkInterface.m */,
 				064FB7DE1727081D00DC0D51 /* NewInstance.h */,
 				064FB7DF1727081D00DC0D51 /* NewInstance.m */,
-				0649A60C1AE0778700DE2494 /* NIOAccess.h */,
-				0649A60D1AE0778700DE2494 /* NIOAccess.m */,
 				0649A60E1AE0778700DE2494 /* NioUtils.h */,
 				0649A60F1AE0778700DE2494 /* NioUtils.m */,
 				0649A5E61AE0773400DE2494 /* NoClassDefFoundError.h */,
