@@ -255,19 +255,44 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "withId:(id __nonnull)var;");
   }
 
+  // Verify ParametersAreNonnullByDefault sets unspecified parameter as non-null.
   public void testDefaultNonnullParameters() throws IOException {
-    addSourceFile("@ParametersAreNonnullByDefault package foo.bar; "
-        + "import javax.annotation.ParametersAreNonnullByDefault;", "foo/bar/package-info.java");
     String source = "package foo.bar; import javax.annotation.*; "
-        + "public class Test {"
-        + "  @Nullable String test(@Nonnull String msg, Object var) { "
+        + "@ParametersAreNonnullByDefault public class Test {"
+        + "  @Nullable String test(@Nullable String msg, Object var, int count) { "
         + "    return msg.isEmpty() ? null : msg; }"
         + "}";
     Options.setNullability(true);
     String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
     // var is also nonnull because of the default annotation on the class.
     assertTranslatedLines(translation,
-        "- (NSString * __nullable)testWithNSString:(NSString * __nonnull)msg",
-        "withId:(id __nonnull)var;");
+        // Verify parameter isn't affected by default.
+        "- (NSString * __nullable)testWithNSString:(NSString * __nullable)msg",
+        // Verify default nonnull is specified.
+        "withId:(id __nonnull)var",
+        // Default should not apply to primitive type.
+        "withInt:(jint)count;");
+  }
+
+  // Verify a ParametersAreNonnullByDefault package annotation sets unspecified
+  // parameter as non-null.
+  public void testDefaultNonnullParametersPackage() throws IOException {
+    addSourceFile("@ParametersAreNonnullByDefault package foo.bar; "
+        + "import javax.annotation.ParametersAreNonnullByDefault;", "foo/bar/package-info.java");
+    String source = "package foo.bar; import javax.annotation.*; "
+        + "public class Test {"
+        + "  @Nullable String test(@Nullable String msg, Object var, int count) { "
+        + "    return msg.isEmpty() ? null : msg; }"
+        + "}";
+    Options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    // var is also nonnull because of the default annotation on the class.
+    assertTranslatedLines(translation,
+        // Verify parameter isn't affected by default.
+        "- (NSString * __nullable)testWithNSString:(NSString * __nullable)msg",
+        // Verify default nonnull is specified.
+        "withId:(id __nonnull)var",
+        // Default should not apply to primitive type.
+        "withInt:(jint)count;");
   }
 }
