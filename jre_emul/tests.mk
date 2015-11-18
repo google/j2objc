@@ -213,6 +213,7 @@ TEST_SOURCES := \
     jsr166/LinkedTransferQueueTest.java \
     libcore/icu/ICUTest.java \
     libcore/icu/LocaleDataTest.java \
+    libcore/icu/NativeDecimalFormatTest.java \
     libcore/io/MemoryTest.java \
     libcore/io/PosixTest.java \
     libcore/java/awt/font/TextAttributeTest.java \

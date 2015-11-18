@@ -664,14 +664,18 @@ public final class NativeDecimalFormat implements Cloneable {
       if (range.length > 0 && [formatter allowsFloats] == NO &&
           [string characterAtIndex:start] == '0') {
         BOOL onlyZeroes = YES;
-        for (NSUInteger i = start + 1; i < range.length + start; i++) {
-          if ([string characterAtIndex:i] != '0') {
-            onlyZeroes = NO;
+        NSUInteger i = start + 1;
+        for (; i < range.length + start; i++) {
+          jchar ch = [string characterAtIndex:i];
+          if (ch != '0') {
+            if (ch >= '1' && ch <= '9') {
+              onlyZeroes = NO;
+            } // else it's an unknown character, such as in a date format string.
             break;
           }
         }
         if (onlyZeroes) {
-          [position setIndexWithInt:start + (int) range.length];
+          [position setIndexWithInt:(int) i];
           return JavaLangLong_valueOfWithLong_(0L);
         }
       }
