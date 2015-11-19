@@ -84,7 +84,7 @@ public class Options {
   private boolean extractUnsequencedModifications = true;
   private boolean docCommentsEnabled = false;
   private boolean staticAccessorMethods = false;
-  private int batchTranslateMaximum = 0;
+  private int batchTranslateMaximum = -1;
   private List<String> headerMappingFiles = null;
   private String processors = null;
   private boolean disallowInheritedConstructors = false;
@@ -435,6 +435,12 @@ public class Options {
     // Pull source version from system properties if it is not passed with -source flag.
     if (sourceVersion == null) {
       sourceVersion = System.getProperty("java.version").substring(0, 3);
+    }
+
+    // Java 6 had a 1G max heap limit, removed in Java 7.
+    boolean java7orHigher = sourceVersion.charAt(2) >= '7';
+    if (batchTranslateMaximum == -1) {  // Not set by flag.
+      batchTranslateMaximum = java7orHigher ? 300 : 0;
     }
 
     int nFiles = args.length - nArg;

@@ -109,7 +109,7 @@ TRANSLATE_NAME = jre_emul
 TRANSLATE_JAVA_FULL = $(JAVA_TO_TRANSLATE)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_TO_TRANSLATE)
 TRANSLATE_ARGS = -q -sourcepath $(JRE_SRC) -classpath $(EMULATION_JAR) \
-  $(J2OBJC_DEBUGFLAGS) -encoding UTF-8 --batch-translate-max=300 --doc-comments \
+  $(J2OBJC_DEBUGFLAGS) -encoding UTF-8 --batch-translate-max=1200 --doc-comments \
   -J-Xmx2G
 TRANSLATE_USE_SYSTEM_BOOT_PATH = TRUE
 include ../make/translate.mk
