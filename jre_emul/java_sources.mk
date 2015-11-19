@@ -101,6 +101,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/Exception.java \
   java/lang/ExceptionInInitializerError.java \
   java/lang/Float.java \
+  java/lang/IllegalAccessError.java \
   java/lang/IllegalAccessException.java \
   java/lang/IllegalArgumentException.java \
   java/lang/IllegalMonitorStateException.java \
@@ -108,6 +109,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/IllegalThreadStateException.java \
   java/lang/IncompatibleClassChangeError.java \
   java/lang/IndexOutOfBoundsException.java \
+  java/lang/InheritableThreadLocal.java \
   java/lang/InstantiationException.java \
   java/lang/Integer.java \
   java/lang/IntegralToString.java \
@@ -120,6 +122,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/NoClassDefFoundError.java \
   java/lang/NoSuchFieldError.java \
   java/lang/NoSuchFieldException.java \
+  java/lang/NoSuchMethodError.java \
   java/lang/NoSuchMethodException.java \
   java/lang/NullPointerException.java \
   java/lang/NumberFormatException.java \
@@ -131,10 +134,12 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/Runnable.java \
   java/lang/Runtime.java \
   java/lang/RuntimeException.java \
+  java/lang/RuntimePermission.java \
   java/lang/SafeVarargs.java \
   java/lang/SecurityException.java \
   java/lang/SecurityManager.java \
   java/lang/Short.java \
+  java/lang/StackOverflowError.java \
   java/lang/StackTraceElement.java \
   java/lang/StrictMath.java \
   java/lang/StringBuffer.java \
@@ -151,8 +156,11 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/VirtualMachineError.java \
   java/lang/Void.java \
   java/lang/annotation/Annotation.java \
+  java/lang/annotation/AnnotationFormatError.java \
+  java/lang/annotation/AnnotationTypeMismatchException.java \
   java/lang/annotation/Documented.java \
   java/lang/annotation/ElementType.java \
+  java/lang/annotation/IncompleteAnnotationException.java \
   java/lang/annotation/Inherited.java \
   java/lang/annotation/Retention.java \
   java/lang/annotation/RetentionPolicy.java \
@@ -169,12 +177,15 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/reflect/GenericSignatureFormatError.java \
   java/lang/reflect/InvocationHandler.java \
   java/lang/reflect/InvocationTargetException.java \
+  java/lang/reflect/MalformedParameterizedTypeException.java \
   java/lang/reflect/Member.java \
   java/lang/reflect/Modifier.java \
   java/lang/reflect/ParameterizedType.java \
   java/lang/reflect/Proxy.java \
+  java/lang/reflect/ReflectPermission.java \
   java/lang/reflect/Type.java \
   java/lang/reflect/TypeVariable.java \
+  java/lang/reflect/UndeclaredThrowableException.java \
   java/lang/reflect/WildcardType.java \
   java/math/BigDecimal.java \
   java/math/BigInteger.java \
@@ -207,22 +218,32 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/nio/charset/StandardCharsets.java \
   java/nio/charset/UnmappableCharacterException.java \
   java/nio/charset/UnsupportedCharsetException.java \
+  java/security/AllPermission.java \
+  java/security/AllPermissionCollection.java \
+  java/security/BasicPermission.java \
+  java/security/Permission.java \
+  java/security/PermissionCollection.java \
   java/text/Annotation.java \
   java/text/AttributedCharacterIterator.java \
   java/text/AttributedString.java \
   java/text/CharacterIterator.java \
   java/text/ChoiceFormat.java \
+  java/text/CollationKey.java \
+  java/text/Collator.java \
   java/text/DateFormat.java \
   java/text/DateFormatSymbols.java \
   java/text/DecimalFormat.java \
   java/text/DecimalFormatSymbols.java \
   java/text/FieldPosition.java \
   java/text/Format.java \
+  java/text/IOSCollator.java \
   java/text/MessageFormat.java \
+  java/text/Normalizer.java \
   java/text/NumberFormat.java \
   java/text/ParseException.java \
   java/text/ParsePosition.java \
   java/text/SimpleDateFormat.java \
+  java/text/StringCharacterIterator.java \
   java/util/AbstractCollection.java \
   java/util/AbstractList.java \
   java/util/AbstractMap.java \
@@ -324,12 +345,11 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/regex/Pattern.java \
   java/util/regex/PatternSyntaxException.java \
   java/util/regex/Splitter.java \
-  sun/misc/Unsafe.java \
-  java/security/AllPermission.java \
-  java/security/AllPermissionCollection.java \
-  java/security/BasicPermission.java \
-  java/security/Permission.java \
-  java/security/PermissionCollection.java
+  javax/annotation/Generated.java \
+  javax/annotation/PostConstruct.java \
+  javax/annotation/PreDestroy.java \
+  javax/annotation/Resources.java \
+  sun/misc/Unsafe.java
 
 JAVA_PRIVATE_SOURCES_CORE = \
   com/google/j2objc/LibraryNotLinkedError.java \
@@ -1247,26 +1267,6 @@ JAVA_PRIVATE_SOURCES_BEANS = \
 
 # Java sources to be translated normally and included in the full library.
 JAVA_PUBLIC_SOURCES_NON_CORE = \
-  java/lang/IllegalAccessError.java \
-  java/lang/InheritableThreadLocal.java \
-  java/lang/NoSuchMethodError.java \
-  java/lang/RuntimePermission.java \
-  java/lang/StackOverflowError.java \
-  java/lang/annotation/AnnotationFormatError.java \
-  java/lang/annotation/AnnotationTypeMismatchException.java \
-  java/lang/annotation/IncompleteAnnotationException.java \
-  java/lang/reflect/MalformedParameterizedTypeException.java \
-  java/lang/reflect/ReflectPermission.java \
-  java/lang/reflect/UndeclaredThrowableException.java \
-  java/text/CollationKey.java \
-  java/text/Collator.java \
-  java/text/IOSCollator.java \
-  java/text/Normalizer.java \
-  java/text/StringCharacterIterator.java \
-  javax/annotation/Generated.java \
-  javax/annotation/PostConstruct.java \
-  javax/annotation/PreDestroy.java \
-  javax/annotation/Resources.java \
   javax/lang/model/element/Modifier.java
 
 JAVA_PRIVATE_SOURCES_NON_CORE = \
