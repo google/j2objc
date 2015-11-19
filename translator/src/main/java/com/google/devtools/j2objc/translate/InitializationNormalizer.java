@@ -200,13 +200,17 @@ public class InitializationNormalizer extends TreeVisitor {
    */
   void normalizeMethod(MethodDeclaration node, List<Statement> initStatements) {
     if (isDesignatedConstructor(node)) {
+      ITypeBinding superType = node.getMethodBinding().getDeclaringClass().getSuperclass();
+      if (superType == null) {  // java.lang.Object supertype is null.
+        return;
+      }
+
       List<Statement> stmts = node.getBody().getStatements();
       int superCallIdx = findSuperConstructorInvocation(stmts);
 
       // Insert initializer statements after the super invocation. If there
       // isn't a super invocation, add one (like all Java compilers do).
       if (superCallIdx == -1) {
-        ITypeBinding superType = node.getMethodBinding().getDeclaringClass().getSuperclass();
         stmts.add(0, new SuperConstructorInvocation(
             TranslationUtil.findDefaultConstructorBinding(superType, typeEnv)));
         superCallIdx = 0;

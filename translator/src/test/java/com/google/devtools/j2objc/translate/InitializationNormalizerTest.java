@@ -232,4 +232,17 @@ public class InitializationNormalizerTest extends GenerationTest {
     assertTranslation(translation, "A_initWithNSObjectArray_(self, "
         + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]);");
   }
+
+  /**
+   * Verify that the java/lang/Object.java stub file can be translated.
+   * InitializationNormalizer.normalizeMethod() threw an NPE because
+   * Object's supertype is null.
+   */
+  public void testTranslateObject() throws IOException {
+    String source = "package java.lang;"
+        + "public class Object {"
+        + "  public Object() {}}";
+    String translation = translateSourceFile(source, "Object", "java/lang/Object.h");
+    assertTranslation(translation, "@interface NSObject");
+  }
 }
