@@ -1271,13 +1271,7 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
 
 JAVA_PRIVATE_SOURCES_NON_CORE = \
   java/awt/font/NumericShaper.java \
-  java/awt/font/TextAttribute.java \
-  org/json/JSON.java \
-  org/json/JSONArray.java \
-  org/json/JSONException.java \
-  org/json/JSONObject.java \
-  org/json/JSONStringer.java \
-  org/json/JSONTokener.java
+  java/awt/font/TextAttribute.java
 
 ANDROID_PUBLIC_SOURCES = \
   android/os/AsyncTask.java \
@@ -1320,6 +1314,12 @@ ANDROID_PUBLIC_SOURCES = \
   android/util/SparseBooleanArray.java \
   android/util/SparseIntArray.java \
   android/util/SparseLongArray.java \
+  org/json/JSON.java \
+  org/json/JSONArray.java \
+  org/json/JSONException.java \
+  org/json/JSONObject.java \
+  org/json/JSONStringer.java \
+  org/json/JSONTokener.java
 
 ANDROID_PRIVATE_SOURCES = \
   android/util/ContainerHelpers.java \
