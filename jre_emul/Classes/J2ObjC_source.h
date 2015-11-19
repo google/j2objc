@@ -32,10 +32,21 @@
 #pragma push_macro("I")
 #undef I
 
-__attribute__((always_inline)) inline id check_protocol_cast(
-    id __unsafe_unretained p, IOSClass *protocol) {
+__attribute__ ((unused)) static inline id cast_chk(id __unsafe_unretained p, Class clazz) {
 #if !defined(J2OBJC_DISABLE_CAST_CHECKS)
-  if (__builtin_expect(p && ![protocol isInstance:p], 0)) {
+  if (__builtin_expect(p && ![p isKindOfClass:clazz], 0)) {
+    JreThrowClassCastException();
+  }
+#endif
+  return p;
+}
+
+// Similar to above, but with an IOSClass parameter instead of a Class
+// parameter. This check is necessary for interface and array types and is
+// faster than a conformsToProtocol check for interfaces.
+__attribute__((always_inline)) inline id cast_check(id __unsafe_unretained p, IOSClass *cls) {
+#if !defined(J2OBJC_DISABLE_CAST_CHECKS)
+  if (__builtin_expect(p && ![cls isInstance:p], 0)) {
     JreThrowClassCastException();
   }
 #endif

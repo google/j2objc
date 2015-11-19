@@ -450,7 +450,7 @@ public class AutoboxerTest extends GenerationTest {
         + "int test2(Integer i) { return (int) i; } }", "Test", "Test.m");
     assertTranslation(translation,
         "return [((JavaLangInteger *) nil_chk((JavaLangInteger *) "
-        + "check_class_cast(o, [JavaLangInteger class]))) intValue];");
+        + "cast_chk(o, [JavaLangInteger class]))) intValue];");
     // Make sure we don't unnecessarily add a cast check if the object type
     // matches the primitive cast type.
     assertTranslation(translation,

@@ -1336,9 +1336,17 @@ public class StatementGenerator extends TreeVisitor {
     ITypeBinding type = node.getType().getTypeBinding();
     if (type.isPrimitive()) {
       buffer.append(String.format("[IOSClass %sClass]", type.getName()));
+    } else if (type.isArray()) {
+      ITypeBinding elementType = type.getElementType();
+      if (elementType.isPrimitive()) {
+        buffer.append("IOSClass_").append(elementType.getName()).append("Array(");
+      } else {
+        buffer.append("IOSClass_arrayType(").append(nameTable.getFullName(elementType))
+            .append("_class_(), ");
+      }
+      buffer.append(type.getDimensions()).append(")");
     } else {
-      buffer.append(nameTable.getFullName(type));
-      buffer.append("_class_()");
+      buffer.append(nameTable.getFullName(type)).append("_class_()");
     }
     return false;
   }

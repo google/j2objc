@@ -101,7 +101,7 @@ public class ArrayRewriter extends TreeVisitor {
 
     // Add the type argument for object arrays.
     if (!componentType.isPrimitive()) {
-      invocation.getArguments().add(newTypeLiteral(componentType));
+      invocation.getArguments().add(new TypeLiteral(componentType, typeEnv));
     }
 
     return invocation;
@@ -157,7 +157,7 @@ public class ArrayRewriter extends TreeVisitor {
 
     // Add the type argument for object arrays.
     if (!componentType.isPrimitive()) {
-      invocation.getArguments().add(newTypeLiteral(componentType));
+      invocation.getArguments().add(new TypeLiteral(componentType, typeEnv));
     }
 
     return invocation;
@@ -188,7 +188,7 @@ public class ArrayRewriter extends TreeVisitor {
     invocation.getArguments().add(dimensionsArg);
 
     if (!componentType.isPrimitive()) {
-      invocation.getArguments().add(newTypeLiteral(componentType));
+      invocation.getArguments().add(new TypeLiteral(componentType, typeEnv));
     }
 
     return invocation;
@@ -310,40 +310,8 @@ public class ArrayRewriter extends TreeVisitor {
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
         "isInstance", Modifier.PUBLIC, typeEnv.resolveJavaType("boolean"), typeEnv.getIOSClass());
     binding.addParameter(typeEnv.resolveIOSType("id"));
-    MethodInvocation invocation = new MethodInvocation(binding, newTypeLiteralInvocation(type));
+    MethodInvocation invocation = new MethodInvocation(binding, new TypeLiteral(type, typeEnv));
     invocation.getArguments().add(TreeUtil.remove(node.getLeftOperand()));
     node.replaceWith(invocation);
-  }
-
-  @Override
-  public void endVisit(TypeLiteral node) {
-    ITypeBinding type = node.getType().getTypeBinding();
-    if (type.isArray()) {
-      node.replaceWith(newTypeLiteralInvocation(type));
-    }
-  }
-
-  private Expression newTypeLiteral(ITypeBinding type) {
-    if (type.isArray()) {
-      return newTypeLiteralInvocation(type);
-    }
-    return new TypeLiteral(type, typeEnv);
-  }
-
-  private FunctionInvocation newTypeLiteralInvocation(ITypeBinding type) {
-    assert type.isArray();
-    ITypeBinding elementType = type.getElementType();
-    ITypeBinding iosClassType = typeEnv.getIOSClass();
-    String funcName = elementType.isPrimitive()
-        ? String.format("IOSClass_%sArray", elementType.getName()) : "IOSClass_arrayType";
-    FunctionBinding binding = new FunctionBinding(funcName, iosClassType, iosClassType);
-    FunctionInvocation invocation = new FunctionInvocation(binding, iosClassType);
-    if (!elementType.isPrimitive()) {
-      binding.addParameter(iosClassType);
-      invocation.getArguments().add(new TypeLiteral(elementType, typeEnv));
-    }
-    binding.addParameter(typeEnv.resolveJavaType("int"));
-    invocation.getArguments().add(NumberLiteral.newIntLiteral(type.getDimensions(), typeEnv));
-    return invocation;
   }
 }

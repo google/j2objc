@@ -698,8 +698,7 @@ public final class StringBuilder extends AbstractStringBuilder implements
             ClassNotFoundException /*-[
       [((JavaIoObjectInputStream *) nil_chk(inArg)) defaultReadObject];
       jint count = [inArg readInt];
-      IOSCharArray *value = (IOSCharArray *) check_class_cast(
-        [inArg readObject], [IOSCharArray class]);
+      IOSCharArray *value = (IOSCharArray *) cast_chk([inArg readObject], [IOSCharArray class]);
       [self setWithCharArray:value withInt:count];
     ]-*/;
 

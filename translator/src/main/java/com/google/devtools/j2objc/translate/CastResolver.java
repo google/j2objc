@@ -91,7 +91,7 @@ public class CastResolver extends TreeVisitor {
     }
 
     // Lean on Java's type-checking.
-    if (!type.isPrimitive() && exprType.isAssignmentCompatible(type)) {
+    if (!type.isPrimitive() && exprType.isAssignmentCompatible(type.getErasure())) {
       node.replaceWith(TreeUtil.remove(expr));
       return;
     }
@@ -116,24 +116,18 @@ public class CastResolver extends TreeVisitor {
   }
 
   private FunctionInvocation createCastCheck(ITypeBinding type, Expression expr) {
-    // Find the first bound for a type variable.
-    while (type.isTypeVariable()) {
-      ITypeBinding[] bounds = type.getTypeBounds();
-      if (bounds.length == 0) {
-        break;
-      }
-      type = bounds[0];
-    }
+    type = type.getErasure();
     ITypeBinding idType = typeEnv.resolveIOSType("id");
     FunctionInvocation invocation = null;
-    if (type.isInterface() && !type.isAnnotation()) {
-      FunctionBinding binding = new FunctionBinding("check_protocol_cast", idType, null);
+    if ((type.isInterface() && !type.isAnnotation())
+        || (type.isArray() && !type.getComponentType().isPrimitive())) {
+      FunctionBinding binding = new FunctionBinding("cast_check", idType, null);
       binding.addParameters(idType, typeEnv.getIOSClass());
       invocation = new FunctionInvocation(binding, idType);
       invocation.getArguments().add(TreeUtil.remove(expr));
       invocation.getArguments().add(new TypeLiteral(type, typeEnv));
     } else if (type.isClass() || type.isArray() || type.isAnnotation() || type.isEnum()) {
-      FunctionBinding binding = new FunctionBinding("check_class_cast", idType, null);
+      FunctionBinding binding = new FunctionBinding("cast_chk", idType, null);
       binding.addParameters(idType, idType);
       invocation = new FunctionInvocation(binding, idType);
       invocation.getArguments().add(TreeUtil.remove(expr));

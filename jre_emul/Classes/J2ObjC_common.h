@@ -105,17 +105,6 @@ __attribute__ ((unused)) static inline id nil_chk(id __unsafe_unretained p) {
   return p;
 }
 
-// Separate methods for class and protocol cast checks are used to reduce
-// overhead, since the difference is statically known.
-__attribute__ ((unused)) static inline id check_class_cast(id __unsafe_unretained p, Class clazz) {
-#if !defined(J2OBJC_DISABLE_CAST_CHECKS)
-  if (__builtin_expect(p && ![p isKindOfClass:clazz], 0)) {
-    JreThrowClassCastException();
-  }
-#endif
-  return p;
-}
-
 #if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(
     id *pIvar, NS_RELEASES_ARGUMENT id value) {

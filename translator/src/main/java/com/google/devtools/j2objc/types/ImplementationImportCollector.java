@@ -332,6 +332,9 @@ public class ImplementationImportCollector extends TreeVisitor {
     ITypeBinding type = node.getType().getTypeBinding();
     if (type.isPrimitive()) {
       addImports(typeEnv.resolveIOSType("IOSClass"));
+    } else if (type.isArray()) {
+      addImports(typeEnv.resolveIOSType("IOSClass"));
+      addImports(type.getElementType());
     } else {
       addImports(node.getType());
     }

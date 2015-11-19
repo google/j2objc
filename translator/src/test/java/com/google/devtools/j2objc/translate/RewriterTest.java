@@ -209,7 +209,7 @@ public class RewriterTest extends GenerationTest {
         + "  public int compareTo(Test t) { return i - t.i; } }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (jint)compareToWithId:(Test *)t {",
-        "check_class_cast(t, [Test class]);");
+        "cast_chk(t, [Test class]);");
   }
 
   public void testAdditionWithinStringConcatenation() throws IOException {
@@ -342,7 +342,7 @@ public class RewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation, "(object == self) || "
         + "(([object isKindOfClass:[Test class]]) && (i_ == ((Test *) nil_chk(((Test *) "
-        + "check_class_cast(object, [Test class]))))->i_));");
+        + "cast_chk(object, [Test class]))))->i_));");
   }
 
   // Objective-C requires that bit-wise and tests be surrounded by parens when mixed with or tests.
@@ -400,7 +400,7 @@ public class RewriterTest extends GenerationTest {
         + "JreLoadStatic(NSString, CASE_INSENSITIVE_ORDER_)) autorelease];");
     assertTranslation(translation,
         "return [((id<JavaUtilComparator>) nil_chk(((id<JavaUtilComparator>) "
-        + "check_protocol_cast(c->var_, JavaUtilComparator_class_())))) "
+        + "cast_check(c->var_, JavaUtilComparator_class_())))) "
         + "compareWithId:s1 withId:s2] == 0;");
     assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *thing = "
         + "[new_ComGoogleJ2objcUtilScopedLocalRef_initWithId_(t) autorelease];");

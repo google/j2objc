@@ -109,10 +109,10 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals("JavaLangThrowable *t = "
-        + "(JavaLangThrowable *) check_class_cast(o, [JavaLangThrowable class]);", result);
+        + "(JavaLangThrowable *) cast_chk(o, [JavaLangThrowable class]);", result);
     result = generateStatement(stmts.get(2));
     assertEquals("IOSIntArray *i = "
-        + "(IOSIntArray *) check_class_cast(o, [IOSIntArray class]);", result);
+        + "(IOSIntArray *) cast_chk(o, [IOSIntArray class]);", result);
   }
 
   public void testInterfaceCastTranslation() throws IOException {
@@ -122,7 +122,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals("id<JavaUtilList> l = "
-        + "(id<JavaUtilList>) check_protocol_cast(al, JavaUtilList_class_());", result);
+        + "(id<JavaUtilList>) cast_check(al, JavaUtilList_class_());", result);
   }
 
   public void testCatchTranslation() throws IOException {

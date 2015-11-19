@@ -219,4 +219,17 @@ public class CastResolverTest extends GenerationTest {
     assertTranslation(translation, "return b != (id) f;");
     assertTranslation(translation, "IOSByteArray_Get(nil_chk(buffer), offset) != 'Z';");
   }
+
+  public void testGenericArrayCast() throws IOException {
+    String translation = translateSourceFile(
+        "class Test<E> { E[] test(Object[] o) { return (E[])o; } }", "Test", "Test.m");
+    // No need to check the cast because the erasure of E[] is Object[].
+    assertTranslation(translation, "return o;");
+    translation = translateSourceFile(
+        "class Test<E extends String> { E[] test(Object[] o) { return (E[])o; } }",
+        "Test", "Test.m");
+    // Need to check the cast because the erasure of E[] is String[].
+    assertTranslation(translation,
+        "return (IOSObjectArray *) cast_check(o, IOSClass_arrayType(NSString_class_(), 1));");
+  }
 }
