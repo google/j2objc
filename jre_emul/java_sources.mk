@@ -1241,6 +1241,8 @@ JAVA_PUBLIC_SOURCES_SQL = \
 JAVA_PRIVATE_SOURCES_SQL =
 
 JAVA_PUBLIC_SOURCES_BEANS = \
+  java/awt/font/NumericShaper.java \
+  java/awt/font/TextAttribute.java \
   java/beans/BeanDescriptor.java \
   java/beans/BeanInfo.java \
   java/beans/EventSetDescriptor.java \
@@ -1265,13 +1267,13 @@ JAVA_PRIVATE_SOURCES_BEANS = \
   java/beans/StandardBeanInfo.java \
   org/apache/harmony/beans/BeansUtils.java
 
-# Java sources to be translated normally and included in the full library.
-JAVA_PUBLIC_SOURCES_NON_CORE = \
+# These sources are not included in any sub-library, only the full jre_emul.
+# javax.lang.model.element.Modifier is required by mockito, so it is only needed
+# in a testing environment.
+JAVA_PUBLIC_SOURCES_OTHER = \
   javax/lang/model/element/Modifier.java
 
-JAVA_PRIVATE_SOURCES_NON_CORE = \
-  java/awt/font/NumericShaper.java \
-  java/awt/font/TextAttribute.java
+JAVA_PRIVATE_SOURCES_OTHER =
 
 ANDROID_PUBLIC_SOURCES = \
   android/os/AsyncTask.java \
@@ -1329,7 +1331,7 @@ ANDROID_PRIVATE_SOURCES = \
   com/google/android/collect/Sets.java \
 
 JAVA_SOURCES_CORE = $(JAVA_PUBLIC_SOURCES_CORE) $(JAVA_PRIVATE_SOURCES_CORE)
-JAVA_SOURCES_NON_CORE = $(JAVA_PUBLIC_SOURCES_NON_CORE) $(JAVA_PRIVATE_SOURCES_NON_CORE)
+JAVA_SOURCES_OTHER = $(JAVA_PUBLIC_SOURCES_OTHER) $(JAVA_PRIVATE_SOURCES_OTHER)
 JAVA_SOURCES_IO = $(JAVA_PUBLIC_SOURCES_IO) $(JAVA_PRIVATE_SOURCES_IO)
 JAVA_SOURCES_NET = $(JAVA_PUBLIC_SOURCES_NET) $(JAVA_PRIVATE_SOURCES_NET)
 JAVA_SOURCES_UTIL = $(JAVA_PUBLIC_SOURCES_UTIL) $(JAVA_PRIVATE_SOURCES_UTIL)
@@ -1356,7 +1358,7 @@ JAVA_SOURCES = \
   $(JAVA_SOURCES_ZIP) \
   $(JAVA_SOURCES_SQL) \
   $(JAVA_SOURCES_BEANS) \
-  $(JAVA_SOURCES_NON_CORE) \
+  $(JAVA_SOURCES_OTHER) \
   $(JAVA_SOURCES_ANDROID)
 JAVA_PUBLIC_SOURCES = \
   $(JAVA_PUBLIC_SOURCES_CORE) \
@@ -1371,5 +1373,5 @@ JAVA_PUBLIC_SOURCES = \
   $(JAVA_PUBLIC_SOURCES_ZIP) \
   $(JAVA_PUBLIC_SOURCES_SQL) \
   $(JAVA_PUBLIC_SOURCES_BEANS) \
-  $(JAVA_PUBLIC_SOURCES_NON_CORE) \
+  $(JAVA_PUBLIC_SOURCES_OTHER) \
   $(ANDROID_PUBLIC_SOURCES)
