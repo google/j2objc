@@ -1272,7 +1272,6 @@ JAVA_PUBLIC_SOURCES_NON_CORE = \
 JAVA_PRIVATE_SOURCES_NON_CORE = \
   java/awt/font/NumericShaper.java \
   java/awt/font/TextAttribute.java \
-  libcore/icu/TimeZones.java \
   org/json/JSON.java \
   org/json/JSONArray.java \
   org/json/JSONException.java \

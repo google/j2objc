@@ -2502,8 +2502,6 @@
 		06DD334516A1406A00AD7ACE /* TimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZone.m; path = build_result/Classes/java/util/TimeZone.m; sourceTree = "<group>"; };
 		06DDF48516E83FF800A08BE0 /* BasicLruCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicLruCache.h; path = build_result/Classes/libcore/util/BasicLruCache.h; sourceTree = "<group>"; };
 		06DDF48616E83FF800A08BE0 /* BasicLruCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicLruCache.m; path = build_result/Classes/libcore/util/BasicLruCache.m; sourceTree = "<group>"; };
-		06DDF48916E8401600A08BE0 /* TimeZones.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TimeZones.h; path = build_result/Classes/libcore/icu/TimeZones.h; sourceTree = "<group>"; };
-		06DDF48A16E8401600A08BE0 /* TimeZones.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZones.m; path = build_result/Classes/libcore/icu/TimeZones.m; sourceTree = "<group>"; };
 		06E4E365197F1D46005DDE69 /* AbstractExecutorServiceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractExecutorServiceTest.h; sourceTree = "<group>"; };
 		06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbstractExecutorServiceTest.m; sourceTree = "<group>"; };
 		06E4E367197F1D46005DDE69 /* AbstractQueuedSynchronizerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractQueuedSynchronizerTest.h; sourceTree = "<group>"; };
@@ -6091,8 +6089,6 @@
 				06DD334516A1406A00AD7ACE /* TimeZone.m */,
 				06ED3DE617D1666A0014750E /* TimeZoneNames.h */,
 				06ED3DE717D1666A0014750E /* TimeZoneNames.m */,
-				06DDF48916E8401600A08BE0 /* TimeZones.h */,
-				06DDF48A16E8401600A08BE0 /* TimeZones.m */,
 				0699FF8818D7851500278029 /* TimSort.h */,
 				0699FF8918D7851500278029 /* TimSort.m */,
 				06F290B518972DA300676F1D /* TooManyListenersException.h */,
