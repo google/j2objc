@@ -16,7 +16,6 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.base.Function;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
@@ -46,7 +45,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -285,8 +283,15 @@ public class NameTable {
     // concurrent map, or make a copy for each NameTable.
     private PackagePrefixes prefixMap = Options.getPackagePrefixes();
 
-    private final Map<String, String> methodMappings = ImmutableMap.copyOf(
-        Maps.transformValues(Options.getMethodMappings(), EXTRACT_SELECTOR_FUNC));
+    private final Map<String, String> methodMappings =
+        ImmutableMap.copyOf(Options.getMethodMappings());
+
+    private Factory() {
+      // Make sure the input mapping files have valid selectors.
+      for (String selector : methodMappings.values()) {
+        validateMethodSelector(selector);
+      }
+    }
 
     public NameTable newNameTable(Types typeEnv) {
       return new NameTable(typeEnv, prefixMap, methodMappings);
@@ -296,13 +301,6 @@ public class NameTable {
   public static Factory newFactory() {
     return new Factory();
   }
-
-  private static final Function<String, String> EXTRACT_SELECTOR_FUNC =
-      new Function<String, String>() {
-    public String apply(String value) {
-      return extractMethodSelector(value);
-    }
-  };
 
   private NameTable(
       Types typeEnv, PackagePrefixes prefixMap, Map<String, String> methodMappings) {
@@ -475,46 +473,12 @@ public class NameTable {
     return "with" + capitalize(getParameterTypeKeyword(type));
   }
 
-  // Matches the class name prefix or a parameter declarations of a method
-  // signature. After removing these parts, the selector remains.
-  private static final Pattern SIGNATURE_STRIPPER =
-      Pattern.compile("^\\w* |\\s*\\([^)]*\\)\\s*\\w+\\s*");
-
-  // TODO(kstanger): Phase out usage of full method signatures when renaming methods.
-  private static String parseSelectorFromSignature(String s) {
-    if (s.endsWith(";")) {
-      s = s.substring(0, s.length() - 1);
-    }
-    Matcher matcher = SIGNATURE_STRIPPER.matcher(s);
-    return matcher.replaceAll("");
-  }
-
   private static final Pattern SELECTOR_VALIDATOR = Pattern.compile("\\w+|(\\w+\\:)+");
 
-  private static boolean validateMethodSelector(String selector) {
+  private static void validateMethodSelector(String selector) {
     if (!SELECTOR_VALIDATOR.matcher(selector).matches()) {
       ErrorUtil.error("Invalid method selector: " + selector);
-      return false;
     }
-    return true;
-  }
-
-  // Be nice and only print the warning once per method.
-  private static Set<String> renamingWarned = Sets.newHashSet();
-
-  private static String extractMethodSelector(String value) {
-    String selector = value;
-    if (value.contains(" ") || value.contains("(")) {
-      selector = parseSelectorFromSignature(value);
-      if (validateMethodSelector(selector) && !renamingWarned.contains(value)) {
-        ErrorUtil.warning("Method renaming with full signature is being phased out. "
-            + "Please replace \"" + value + "\" with \"" + selector + "\".");
-        renamingWarned.add(value);
-      }
-    } else {
-      validateMethodSelector(selector);
-    }
-    return selector;
   }
 
   public static String getMethodName(IMethodBinding method) {
@@ -683,7 +647,8 @@ public class NameTable {
     IAnnotationBinding annotation = BindingUtil.getAnnotation(method, ObjectiveCName.class);
     if (annotation != null) {
       String value = (String) BindingUtil.getAnnotationValue(annotation, "value");
-      return extractMethodSelector(value);
+      validateMethodSelector(value);
+      return value;
     }
     return null;
   }
