@@ -16,6 +16,8 @@
 
 package org.apache.harmony.xml.dom;
 
+import com.google.j2objc.annotations.Weak;
+
 import org.w3c.dom.Attr;
 import org.w3c.dom.DOMException;
 import org.w3c.dom.Element;
@@ -35,7 +37,7 @@ import org.w3c.dom.TypeInfo;
 public final class AttrImpl extends NodeImpl implements Attr {
 
     // Maintained by ElementImpl.
-    ElementImpl ownerElement;
+    @Weak ElementImpl ownerElement;
     boolean isId;
 
     boolean namespaceAware;

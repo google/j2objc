@@ -16,6 +16,8 @@
 
 package java.nio;
 
+import com.google.j2objc.annotations.Weak;
+
 import java.nio.channels.CancelledKeyException;
 import java.nio.channels.SelectableChannel;
 import java.nio.channels.SelectionKey;
@@ -29,7 +31,7 @@ import java.nio.channels.spi.AbstractSelectionKey;
  */
 final class SelectionKeyImpl extends AbstractSelectionKey {
 
-    private AbstractSelectableChannel channel;
+    @Weak private AbstractSelectableChannel channel;
 
     private int interestOps;
 
