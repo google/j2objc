@@ -222,8 +222,11 @@ public class CastResolverTest extends GenerationTest {
 
   public void testGenericArrayCast() throws IOException {
     String translation = translateSourceFile(
-        "class Test<E> { E[] test(Object[] o) { return (E[])o; } }", "Test", "Test.m");
-    // No need to check the cast because the erasure of E[] is Object[].
+        "class Test<E> { E[] test(Object[] o) { E[] e = (E[]) new Object[0]; return (E[])o; } }",
+        "Test", "Test.m");
+    // No need to check either cast because the erasure of E[] is Object[].
+    assertTranslation(translation,
+        "IOSObjectArray *e = [IOSObjectArray arrayWithLength:0 type:NSObject_class_()];");
     assertTranslation(translation, "return o;");
     translation = translateSourceFile(
         "class Test<E extends String> { E[] test(Object[] o) { return (E[])o; } }",

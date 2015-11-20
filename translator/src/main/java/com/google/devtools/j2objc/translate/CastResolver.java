@@ -165,7 +165,7 @@ public class CastResolver extends TreeVisitor {
         // In most cases we don't need to cast from an id type. However, if the
         // expression is being dereferenced then the compiler needs the type
         // info.
-        || (declaredType == typeEnv.getIdType() && !shouldCastFromId)
+        || (typeEnv.isIdType(declaredType) && !shouldCastFromId)
         // If the declared type can be assigned into the actual type, or the
         // expected type, then the compiler already has sufficient type info.
         || typeEnv.isIdType(exprType) || typeEnv.isIdType(expectedType)

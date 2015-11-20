@@ -86,7 +86,7 @@ public class ArrayRewriter extends TreeVisitor {
       methodBinding.addParameter(typeEnv.getIOSClass());
     }
     MethodInvocation invocation =
-        new MethodInvocation(methodBinding, new SimpleName(iosArrayBinding));
+        new MethodInvocation(methodBinding, arrayType, new SimpleName(iosArrayBinding));
 
     // Create the array initializer and add it as the first parameter.
     ArrayInitializer arrayInit = new ArrayInitializer(arrayType);
@@ -150,7 +150,7 @@ public class ArrayRewriter extends TreeVisitor {
       methodBinding.addParameter(typeEnv.getIOSClass());
     }
     MethodInvocation invocation =
-        new MethodInvocation(methodBinding, new SimpleName(iosArrayBinding));
+        new MethodInvocation(methodBinding, arrayType, new SimpleName(iosArrayBinding));
 
     // Add the array length argument.
     invocation.getArguments().add(dimensionExpr.copy());
@@ -164,8 +164,9 @@ public class ArrayRewriter extends TreeVisitor {
   }
 
   private MethodInvocation newMultiDimensionArrayInvocation(
-      ITypeBinding componentType, List<Expression> dimensions, boolean retainedResult) {
+      ITypeBinding arrayType, List<Expression> dimensions, boolean retainedResult) {
     assert dimensions.size() > 1;
+    ITypeBinding componentType = arrayType;
     for (int i = 0; i < dimensions.size(); i++) {
       componentType = componentType.getComponentType();
     }
@@ -174,7 +175,7 @@ public class ArrayRewriter extends TreeVisitor {
     IOSMethodBinding methodBinding = getMultiDimensionMethod(
         componentType, iosArrayBinding, retainedResult);
     MethodInvocation invocation =
-        new MethodInvocation(methodBinding, new SimpleName(iosArrayBinding));
+        new MethodInvocation(methodBinding, arrayType, new SimpleName(iosArrayBinding));
 
     // Add the dimension count argument.
     invocation.getArguments().add(NumberLiteral.newIntLiteral(dimensions.size(), typeEnv));
@@ -195,12 +196,12 @@ public class ArrayRewriter extends TreeVisitor {
   }
 
   private IOSMethodBinding getMultiDimensionMethod(
-      ITypeBinding componentType, IOSTypeBinding arrayType, boolean retainedResult) {
+      ITypeBinding componentType, IOSTypeBinding iosArrayType, boolean retainedResult) {
     String selector = (retainedResult ? "newArray" : "array") + "WithDimensions:lengths:"
         + (componentType.isPrimitive() ? "" : "type:");
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
         selector, Modifier.PUBLIC | Modifier.STATIC, typeEnv.resolveIOSType("IOSObjectArray"),
-        arrayType);
+        iosArrayType);
     ITypeBinding intType = typeEnv.resolveJavaType("int");
     binding.addParameter(intType);
     binding.addParameter(GeneratedTypeBinding.newArrayType(intType));

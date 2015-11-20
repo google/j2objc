@@ -27,6 +27,8 @@ import java.util.List;
 public class MethodInvocation extends Expression {
 
   private IMethodBinding methodBinding = null;
+  // The context-specific known type of this expression.
+  private ITypeBinding typeBinding = null;
   private ChildLink<Expression> expression = ChildLink.create(Expression.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildList<Expression> arguments = ChildList.create(Expression.class, this);
@@ -34,6 +36,7 @@ public class MethodInvocation extends Expression {
   public MethodInvocation(org.eclipse.jdt.core.dom.MethodInvocation jdtNode) {
     super(jdtNode);
     methodBinding = jdtNode.resolveMethodBinding();
+    typeBinding = jdtNode.resolveTypeBinding();
     expression.set((Expression) TreeConverter.convert(jdtNode.getExpression()));
     name.set((SimpleName) TreeConverter.convert(jdtNode.getName()));
     for (Object argument : jdtNode.arguments()) {
@@ -44,15 +47,21 @@ public class MethodInvocation extends Expression {
   public MethodInvocation(MethodInvocation other) {
     super(other);
     methodBinding = other.getMethodBinding();
+    typeBinding = other.getTypeBinding();
     expression.copyFrom(other.getExpression());
     name.copyFrom(other.getName());
     arguments.copyFrom(other.getArguments());
   }
 
-  public MethodInvocation(IMethodBinding binding, Expression expression) {
+  public MethodInvocation(IMethodBinding binding, ITypeBinding typeBinding, Expression expression) {
     methodBinding = binding;
+    this.typeBinding = typeBinding;
     this.expression.set(expression);
     name.set(new SimpleName(binding));
+  }
+
+  public MethodInvocation(IMethodBinding binding, Expression expression) {
+    this(binding, binding.getReturnType(), expression);
   }
 
   @Override
@@ -70,7 +79,11 @@ public class MethodInvocation extends Expression {
 
   @Override
   public ITypeBinding getTypeBinding() {
-    return methodBinding != null ? methodBinding.getReturnType() : null;
+    return typeBinding;
+  }
+
+  public void setTypeBinding(ITypeBinding newTypeBinding) {
+    typeBinding = newTypeBinding;
   }
 
   public Expression getExpression() {
