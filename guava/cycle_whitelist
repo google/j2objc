@@ -29,8 +29,7 @@ FIELD java.util.concurrent.LinkedBlockingDeque.lock com.google.common.collect.Ma
 FIELD java.util.concurrent.LinkedBlockingQueue.putLock com.google.common.collect.MapMakerInternalMap.Segment
 FIELD java.util.concurrent.SynchronousQueue.qlock com.google.common.collect.MapMakerInternalMap.Segment
 
-TYPE com.google.common.util.concurrent.AbstractService.$
-TYPE com.google.common.util.concurrent.AbstractIdleService.$
+FIELD com.google.common.util.concurrent.AbstractService.listeners
 
 # TODO(kstanger): investigate these cycles:
 NAMESPACE com.google.common.cache

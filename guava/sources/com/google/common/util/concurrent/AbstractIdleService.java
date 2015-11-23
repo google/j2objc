@@ -19,6 +19,7 @@ package com.google.common.util.concurrent;
 import com.google.common.annotations.Beta;
 import com.google.common.base.Supplier;
 import com.google.common.base.Throwables;
+import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
@@ -38,14 +39,20 @@ import java.util.concurrent.TimeoutException;
 public abstract class AbstractIdleService implements Service {
 
   /* Thread names will look like {@code "MyService STARTING"}. */
-  private final Supplier<String> threadNameSupplier = new Supplier<String>() {
+  private final Supplier<String> threadNameSupplier = new ThreadNameSupplier();
+
+  @WeakOuter
+  private final class ThreadNameSupplier implements Supplier<String> {
     @Override public String get() {
       return serviceName() + " " + state();
     }
-  };
+  }
 
   /* use AbstractService for state management */
-  private final Service delegate = new AbstractService() {
+  private final Service delegate = new DelegateService();
+
+  @WeakOuter
+  private final class DelegateService extends AbstractService {
     @Override protected final void doStart() {
       MoreExecutors.renamingDecorator(executor(), threadNameSupplier)
           .execute(new Runnable() {
@@ -75,7 +82,7 @@ public abstract class AbstractIdleService implements Service {
             }
           });
     }
-  };
+  }
 
   /** Constructor for use by subclasses. */
   protected AbstractIdleService() {}
