@@ -888,7 +888,7 @@ NSString *NSString_formatWithJavaUtilLocale_withNSString_withNSObjectArray_(
 }
 
 - (jboolean)matches:(NSString *)regex {
-  return JavaUtilRegexPattern_matchesWithNSString_withJavaLangCharSequence_(regex, self);
+  return JavaUtilRegexPattern_matchesWithNSString_withNSString_(regex, self);
 }
 
 - (jboolean)contentEqualsCharSequence:(id<JavaLangCharSequence>)seq {

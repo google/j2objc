@@ -421,8 +421,10 @@ public final class Pattern implements Serializable {
      * @see Matcher#matches()
      */
     public static boolean matches(String regularExpression, CharSequence input) {
-        return new Matcher(new Pattern(regularExpression, 0), input).matches();
+        return matches(regularExpression, input.toString());
     }
+
+    static native boolean matches(String regularExpression, String input);
 
     /**
      * Quotes the given {@code string} using "\Q" and "\E", so that all

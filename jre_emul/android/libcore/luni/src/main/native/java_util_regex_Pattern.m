@@ -89,3 +89,24 @@ jlong Java_java_util_regex_Pattern_compileImpl(
   }
   return (jlong)result;
 }
+
+extern bool maybeThrowIcuException(const char* function, UErrorCode error);
+
+jboolean Java_java_util_regex_Pattern_matches(
+    JNIEnv *env, jclass cls, NSString *regex, NSString *input) {
+  URegularExpression *pattern = (URegularExpression *)
+      Java_java_util_regex_Pattern_compileImpl(env, cls, regex, 0);
+  int32_t len = (int32_t)[input length];
+  unichar *chars = malloc(len * sizeof(unichar));
+  [input getCharacters:chars range:NSMakeRange(0, len)];
+
+  UErrorCode status = U_ZERO_ERROR;
+  uregex_setText(pattern, chars, len, &status);
+  uregex_setRegion(pattern, 0, len, &status);
+  maybeThrowIcuException("uregex_setText", status);
+  jboolean result = uregex_matches(pattern, -1, &status);
+  free(chars);
+  uregex_close(pattern);
+  maybeThrowIcuException("uregex_matches", status);
+  return result;
+}
