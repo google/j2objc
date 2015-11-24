@@ -86,7 +86,6 @@ JAR_ONLY_SOURCES = \
 MAIN_OBJ = J2ObjCMain.o
 
 JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
-OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 STUB_JAVA_SOURCES := $(shell find $(STUBS_DIR) -name *.java)
 ALL_JAVA_SOURCES = $(JAVA_SOURCES) $(IOS_JAVA_OBJS:.o=.java) $(JAR_ONLY_SOURCES)
@@ -294,15 +293,40 @@ $(JAVA_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR
 java_sources_manifest: $(JAVA_SOURCES_MANIFEST)
 	@:
 
-$(OBJC_SOURCES_MANIFEST): $(ALL_JAVA_SOURCES) | $(BUILD_DIR)
-	@echo "building $$(basename $@)"
-	@if [ -e $@ ]; then rm $@; fi
-	@for i in $(JAVA_SOURCES); do \
-	  echo $(GEN_OBJC_DIR)/$${i%.java}.h >> $@; \
-	  echo $(GEN_OBJC_DIR)/$${i%.java}.m >> $@; \
+define objc_sources_manifest_target
+$(BUILD_DIR)/$(1).mf: $(2)
+	@mkdir -p $$(@D)
+	@echo "building $$$$(basename $$@)"
+	@if [ -e $$@ ]; then rm $$@; fi
+	@for i in $(2); do \
+	  echo $(GEN_OBJC_DIR)/$$$${i%.java}.h >> $$@; \
+	  echo $(GEN_OBJC_DIR)/$$$${i%.java}.m >> $$@; \
 	done
+endef
+
+objc_manifest = $(eval $(call objc_sources_manifest_target,$(1),$(2))) $(BUILD_DIR)/$(1).mf
+
+OBJC_SOURCES_MANIFEST := $(call objc_manifest,objc_sources,$(JAVA_SOURCES))
+
+OBJC_SOURCES_MANIFESTS := \
+  $(OBJC_SOURCES_MANIFEST) \
+  $(call objc_manifest,objc_sources_core,$(JAVA_SOURCES_CORE)) \
+  $(call objc_manifest,objc_sources_io,$(JAVA_SOURCES_IO)) \
+  $(call objc_manifest,objc_sources_net,$(JAVA_SOURCES_NET)) \
+  $(call objc_manifest,objc_sources_util,$(JAVA_SOURCES_UTIL)) \
+  $(call objc_manifest,objc_sources_concurrent,$(JAVA_SOURCES_CONCURRENT)) \
+  $(call objc_manifest,objc_sources_channels,$(JAVA_SOURCES_CHANNELS)) \
+  $(call objc_manifest,objc_sources_security,$(JAVA_SOURCES_SECURITY)) \
+  $(call objc_manifest,objc_sources_ssl,$(JAVA_SOURCES_SSL)) \
+  $(call objc_manifest,objc_sources_xml,$(JAVA_SOURCES_XML)) \
+  $(call objc_manifest,objc_sources_zip,$(JAVA_SOURCES_ZIP)) \
+  $(call objc_manifest,objc_sources_sql,$(JAVA_SOURCES_SQL)) \
+  $(call objc_manifest,objc_sources_beans,$(JAVA_SOURCES_BEANS)) \
+  $(call objc_manifest,objc_sources_android,$(JAVA_SOURCES_ANDROID))
 
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
+
+all_objc_sources_manifests: $(OBJC_SOURCES_MANIFESTS)
 
 find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
 	$(DIST_DIR)/cycle_finder -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
