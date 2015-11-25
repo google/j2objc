@@ -135,15 +135,6 @@ jboolean Java_java_util_regex_Matcher_requireEndImpl(JNIEnv *env, jclass cls, jl
   return result;
 }
 
-void Java_java_util_regex_Matcher_setInputImpl(
-    JNIEnv *env, jclass cls, jlong addr, IOSCharArray *javaText, jint start, jint end) {
-  URegularExpression *regex = (URegularExpression *)addr;
-  UErrorCode status = U_ZERO_ERROR;
-  uregex_setText(regex, javaText->buffer_, javaText->size_, &status);
-  uregex_setRegion(regex, start, end, &status);
-  maybeThrowIcuException("uregex_setText", status);
-}
-
 void Java_java_util_regex_Matcher_useAnchoringBoundsImpl(
     JNIEnv *env, jclass cls, jlong addr, jboolean value) {
   UErrorCode status = U_ZERO_ERROR;
@@ -156,4 +147,16 @@ void Java_java_util_regex_Matcher_useTransparentBoundsImpl(
   UErrorCode status = U_ZERO_ERROR;
   uregex_useTransparentBounds((URegularExpression *)addr, value, &status);
   maybeThrowIcuException("uregex_useTransparentBounds", status);
+}
+
+void Java_java_util_regex_Matcher_setInputImpl(
+    JNIEnv *env, jclass cls, jlong addr, IOSCharArray *javaText, jint start, jint end,
+    jboolean anchoringBounds, jboolean transparentBounds) {
+  URegularExpression *regex = (URegularExpression *)addr;
+  UErrorCode status = U_ZERO_ERROR;
+  uregex_setText(regex, javaText->buffer_, javaText->size_, &status);
+  uregex_setRegion(regex, start, end, &status);
+  maybeThrowIcuException("uregex_setText", status);
+  Java_java_util_regex_Matcher_useAnchoringBoundsImpl(env, cls, addr, anchoringBounds);
+  Java_java_util_regex_Matcher_useTransparentBoundsImpl(env, cls, addr, transparentBounds);
 }

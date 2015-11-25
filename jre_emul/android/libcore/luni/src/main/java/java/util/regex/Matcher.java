@@ -177,7 +177,7 @@ public final class Matcher implements MatchResult {
      * @return the {@code Matcher} itself.
      */
     public Matcher reset(CharSequence input) {
-        return reset(input, 0, input.length());
+        return reset(input.toString(), 0, input.length());
     }
 
     /**
@@ -196,7 +196,7 @@ public final class Matcher implements MatchResult {
      *
      * @return the matcher itself.
      */
-    private Matcher reset(CharSequence input, int start, int end) {
+    private Matcher reset(String input, int start, int end) {
         if (input == null) {
             throw new IllegalArgumentException("input == null");
         }
@@ -205,7 +205,7 @@ public final class Matcher implements MatchResult {
             throw new IndexOutOfBoundsException();
         }
 
-        this.input = input.toString();
+        this.input = input;
         this.inputChars = this.input.toCharArray();
         this.regionStart = start;
         this.regionEnd = end;
@@ -250,9 +250,8 @@ public final class Matcher implements MatchResult {
     }
 
     private void resetForInput() {
-        setInputImpl(address, inputChars, regionStart, regionEnd);
-        useAnchoringBoundsImpl(address, anchoringBounds);
-        useTransparentBoundsImpl(address, transparentBounds);
+        setInputImpl(address, inputChars, regionStart, regionEnd, anchoringBounds,
+            transparentBounds);
     }
 
     /**
@@ -603,7 +602,8 @@ public final class Matcher implements MatchResult {
     private static native boolean matchesImpl(long addr, int[] offsets);
     private static native long openImpl(long patternAddr);
     private static native boolean requireEndImpl(long addr);
-    private static native void setInputImpl(long addr, char[] s, int start, int end);
+    private static native void setInputImpl(long addr, char[] s, int start, int end,
+        boolean anchoringBounds, boolean transparentBounds);
     private static native void useAnchoringBoundsImpl(long addr, boolean value);
     private static native void useTransparentBoundsImpl(long addr, boolean value);
 }
