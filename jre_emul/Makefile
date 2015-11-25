@@ -322,6 +322,7 @@ OBJC_SOURCES_MANIFESTS := \
   $(call objc_manifest,objc_sources_zip,$(JAVA_SOURCES_ZIP)) \
   $(call objc_manifest,objc_sources_sql,$(JAVA_SOURCES_SQL)) \
   $(call objc_manifest,objc_sources_beans,$(JAVA_SOURCES_BEANS)) \
+  $(call objc_manifest,objc_sources_other,$(JAVA_SOURCES_OTHER)) \
   $(call objc_manifest,objc_sources_android,$(JAVA_SOURCES_ANDROID))
 
 objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
