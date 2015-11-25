@@ -782,6 +782,7 @@ run-initialization-test: $(TESTS_DIR)/jreinitialization
 
 run-core-size-test: $(TESTS_DIR)/core_size \
   $(TESTS_DIR)/full_jre_size \
+  $(TESTS_DIR)/core_plus_android_util \
   $(TESTS_DIR)/core_plus_beans \
   $(TESTS_DIR)/core_plus_channels \
   $(TESTS_DIR)/core_plus_concurrent \
@@ -933,3 +934,7 @@ $(TESTS_DIR)/core_plus_sql:
 $(TESTS_DIR)/core_plus_beans:
 	@mkdir -p $(@D)
 	../dist/j2objcc -ljre_beans -ljre_util -o $@ -ObjC
+
+$(TESTS_DIR)/core_plus_android_util:
+	@mkdir -p $(@D)
+	../dist/j2objcc -landroid_util -ljre_net -ljre_util -ljre_concurrent -o $@ -ObjC
