@@ -148,6 +148,25 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 - (IOSObjectArray *)getParameterTypes {
   jint nArgs = [self getNumParams];
   IOSObjectArray *parameters = [IOSObjectArray arrayWithLength:nArgs type:IOSClass_class_()];
+  if (nArgs == 0) {
+    return parameters;
+  }
+
+  // If method has genericSignature with no generic types, it's a concrete implementation
+  // of a generic method and its signature has the declared parameter types.
+  if ([metadata_ genericSignature]) {
+    IOSObjectArray *genericParameterTypes = [self getGenericParameterTypes];
+    BOOL hasTypeParameter = NO;
+    for (jint i = 0; i < nArgs; i++) {
+      if (![IOSObjectArray_Get(genericParameterTypes, i) isKindOfClass:[IOSClass class]]) {
+        hasTypeParameter = YES;
+        break;
+      }
+    }
+    if (!hasTypeParameter) {
+      return genericParameterTypes;
+    }
+  }
 
   NSString *selectorStr = NSStringFromSelector(selector_);
   // Remove method name prefix.

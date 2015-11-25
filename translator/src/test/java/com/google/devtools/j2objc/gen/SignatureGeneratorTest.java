@@ -197,4 +197,15 @@ public class SignatureGeneratorTest extends GenerationTest {
     // Assert method metadata has generic return signature.
     assertTranslation(translation, "\"()Ljava/util/List<Ljava/lang/String;>;\"");
   }
+
+  public void testGenericMethodWithConcreteTypeArgument() throws IOException {
+    CompilationUnit unit = translateType("MyList",
+        "abstract class MyList extends java.util.AbstractList<String> { "
+        + "public boolean add(String s) { return true; }}");
+    IMethodBinding[] methods = unit.getTypes().get(0).getTypeBinding().getDeclaredMethods();
+    assertEquals(2, methods.length); // methods[0] is the default constructor.
+
+    // Verify a signature is created for add(String), even though it isn't itself generic.
+    assertEquals("(Ljava/lang/String;)Z", SignatureGenerator.createMethodTypeSignature(methods[1]));
+  }
 }

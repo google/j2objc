@@ -174,13 +174,41 @@ public class SignatureGenerator {
   }
 
   private static boolean hasGenericSignature(IMethodBinding method) {
+    // Is this method generic?
     if (method.isGenericMethod() || method.getReturnType().isTypeVariable()
         || method.getReturnType().isParameterizedType()) {
       return true;
     }
+
+    // Are any of its parameters?
     for (ITypeBinding param : method.getParameterTypes()) {
       if (param.isTypeVariable() || param.getTypeArguments().length > 0) {
         return true;
+      }
+    }
+
+    // Does it override a generic method?
+    ITypeBinding superParent = method.getDeclaringClass().getSuperclass();
+    if (superParent != null) {
+      for (IMethodBinding m : superParent.getTypeDeclaration().getDeclaredMethods()) {
+        if (method.overrides(m)) {
+          if (hasGenericSignature(m)) {
+            return true;
+          }
+          break;
+        }
+      }
+    }
+
+    // Or implement a generic method?
+    for (ITypeBinding intr : method.getDeclaringClass().getInterfaces()) {
+      for (IMethodBinding m : intr.getDeclaredMethods()) {
+        if (method.overrides(m)) {
+          if (hasGenericSignature(m)) {
+            return true;
+          }
+          break;
+        }
       }
     }
     return false;

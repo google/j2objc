@@ -205,6 +205,7 @@ TEST_SOURCES := \
     java/lang/ref/PhantomReferenceTest.java \
     java/lang/ref/SoftReferenceTest.java \
     java/lang/ref/WeakReferenceTest.java \
+    java/lang/reflect/MethodTest.java \
     java/lang/reflect/ProxyTest.java \
     java/lang/reflect/ReflectionTest.java \
     java/util/TreeMapTest.java \
