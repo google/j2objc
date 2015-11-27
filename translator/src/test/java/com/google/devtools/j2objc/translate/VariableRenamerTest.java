@@ -57,4 +57,13 @@ public class VariableRenamerTest extends GenerationTest {
     // Make sure that "C" does not cause "foo" to ge renamed to "foo_B<Object>_".
     assertTranslation(translation, "int foo_B_;");
   }
+
+  public void testStaticFieldAndMethodCollision() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { static final int foo = 3; static void foo() {}}", "Test", "Test.h");
+    // The variable is renamed.
+    assertTranslation(translation, "#define Test_foo_ 3");
+    // The functionized static method is unchanged.
+    assertTranslation(translation, "void Test_foo();");
+  }
 }
