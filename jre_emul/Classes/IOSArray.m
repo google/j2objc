@@ -19,7 +19,7 @@
 //  Created by Tom Ball on 6/21/11.
 //
 
-#import "IOSArray.h"
+#import "IOSArray_PackagePrivate.h"
 
 #import "IOSArrayClass.h"
 #import "IOSClass.h"

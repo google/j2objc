@@ -17,6 +17,7 @@
 
 #import "IOSPrimitiveArray.h"
 
+#import "IOSArray_PackagePrivate.h"
 #import "IOSClass.h"
 #import "java/lang/NegativeArraySizeException.h"
 
@@ -56,6 +57,15 @@
   \
   + (instancetype)arrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count { \
     return [IOS##U_NAME##Array_NewArrayWith##U_NAME##s((jint)count, buf) autorelease]; \
+  } \
+  \
+  + (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths { \
+    return [IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil) \
+        autorelease]; \
+  } \
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths \
+    __attribute__((objc_method_family(none), ns_returns_retained)) { \
+    return IOSArray_NewArrayWithDimensions(self, dimensionCount, dimensionLengths, nil); \
   }
 
 /*!
