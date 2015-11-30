@@ -1,3 +1,5 @@
+// Copyright 2011 Google Inc. All Rights Reserved.
+//
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
@@ -14,9 +16,11 @@
 //  IOSArray.h
 //  JreEmulation
 //
+//  Created by Tom Ball on 6/21/11.
+//
 
-#ifndef IOSARRAY_H
-#define IOSARRAY_H
+#ifndef _IOSARRAY_H
+#define _IOSARRAY_H
 
 #import "J2ObjC_common.h"
 #import "NSObject+JavaObject.h"
@@ -29,31 +33,42 @@
  */
 @interface IOSArray : NSObject < NSCopying > {
  @public
-  /**
-   * Size of the array. This field is read-only, visible only for
-   * performance reasons. DO NOT MODIFY!
-   */
   jint size_;
 }
 
-/** Returns the size of this array. */
-- (jint)length;
+// Create an empty multi-dimensional array.
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount
+                  lengths:(const jint *)dimensionLengths;
+// We must set the method family to "none" because as a "new" method family
+// clang will assume the return type to be the same type as the class being
+// called.
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount
+                     lengths:(const jint *)dimensionLengths
+    __attribute__((objc_method_family(none), ns_returns_retained));
 
-/** Returns the description of a specified element in the array. */
++ (id)iosClass;
+
+// Returns the size of this array.
+- (jint)length;
+// DEPRECATED: Use length instead.
+- (NSUInteger)count __attribute__((deprecated));
+
 - (NSString *)descriptionOfElementAtIndex:(jint)index;
 
-/** Returns the element type of this array. */
+// Returns the element type of this array.
 - (IOSClass *)elementType;
 
-/** Creates and returns an array containing the values from this array. */
+// Creates and returns an array containing the values from this array.
 - (id)clone;
 
-/**
- * @brief Returns a pointer to the underlying array of elements.
- * The returned value is a raw pointer, so there are no index or
- * range checks. It is equivalent to the "IOS*Array_GetRef(array, 0)"
- * functions.
- */
+// Copies a range of elements from this array into another.  This method is
+// only called from java.lang.System.arraycopy(), which verifies that the
+// destination array is the same type as this array.
+- (void)arraycopy:(jint)offset
+      destination:(IOSArray *)destination
+        dstOffset:(jint)dstOffset
+           length:(jint)length;
+
 - (void *)buffer;
 
 @end
@@ -63,10 +78,9 @@ void IOSArray_throwOutOfBounds();
 void IOSArray_throwOutOfBoundsWithMsg(jint size, jint index);
 CF_EXTERN_C_END
 
-/** Implements the IOSArray |checkIndex| method as a C function. This
- * allows IOSArray index checks to be completely removed via the
- * J2OBJC_DISABLE_ARRAY_CHECKS macro to improve performance.
- */
+// Implement IOSArray |checkIndex| and |checkRange| methods as C functions. This
+// allows IOSArray index and range checks to be completely removed via the
+// J2OBJC_DISABLE_ARRAY_CHECKS macro to improve performance.
 __attribute__((always_inline)) inline void IOSArray_checkIndex(jint size, jint index) {
 #if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
   if (__builtin_expect(index < 0 || index >= size, 0)) {
@@ -75,10 +89,6 @@ __attribute__((always_inline)) inline void IOSArray_checkIndex(jint size, jint i
 #endif
 }
 
-/** Implements the IOSArray |checkRange| method as a C function. This
- * allows IOSArray range checks to be completely removed via the
- * J2OBJC_DISABLE_ARRAY_CHECKS macro to improve performance.
- */
 __attribute__((always_inline)) inline void IOSArray_checkRange(
     jint size, jint offset, jint length) {
 #if !defined(J2OBJC_DISABLE_ARRAY_BOUND_CHECKS)
@@ -88,4 +98,4 @@ __attribute__((always_inline)) inline void IOSArray_checkRange(
 #endif
 }
 
-#endif // IOSARRAY_H
+#endif // _IOSARRAY_H

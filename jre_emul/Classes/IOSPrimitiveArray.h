@@ -28,8 +28,8 @@
 // IOSFloatArray
 // IOSDoubleArray
 
-#ifndef IOSPrimitiveArray_H
-#define IOSPrimitiveArray_H
+#ifndef _IOSPrimitiveArray_H_
+#define _IOSPrimitiveArray_H_
 
 #import "IOSArray.h"
 
@@ -59,9 +59,6 @@
 + (instancetype)arrayWithLength:(NSUInteger)length; \
 + (instancetype)newArrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count; \
 + (instancetype)arrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count; \
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths; \
-+ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths \
-    __attribute__((objc_method_family(none), ns_returns_retained)); \
 - (C_TYPE)L_NAME##AtIndex:(NSUInteger)index; \
 - (C_TYPE *)L_NAME##RefAtIndex:(NSUInteger)index; \
 - (C_TYPE)replace##U_NAME##AtIndex:(NSUInteger)index with##U_NAME:(C_TYPE)value; \
@@ -118,9 +115,6 @@ __attribute__((always_inline)) inline void IOS##U_NAME##Array_SetRange( \
 
 @interface IOSBooleanArray : IOSArray {
  @public
-  /**
-   * The elements of this array.
-   */
   jboolean buffer_[0];
 }
 
@@ -135,9 +129,6 @@ PRIMITIVE_ARRAY_C_INTERFACE(boolean, Boolean, jboolean)
 
 @interface IOSCharArray : IOSArray {
  @public
-  /**
-   * The elements of this array.
-   */
   jchar buffer_[0];
 }
 
@@ -155,9 +146,6 @@ PRIMITIVE_ARRAY_C_INTERFACE(char, Char, jchar)
 
 @interface IOSByteArray : IOSArray {
  @public
-  /**
-   * The elements of this array.
-   */
   jbyte buffer_[0];
 }
 
@@ -191,9 +179,6 @@ PRIMITIVE_ARRAY_C_INTERFACE(byte, Byte, jbyte)
 
 @interface IOSShortArray : IOSArray {
  @public
-  /**
-   * The elements of this array.
-   */
   jshort buffer_[0];
 }
 
@@ -208,9 +193,6 @@ PRIMITIVE_ARRAY_C_INTERFACE(short, Short, jshort)
 
 @interface IOSIntArray : IOSArray {
  @public
-  /**
-   * The elements of this array.
-   */
   // Ensure alignment for java.util.concurrent.atomic.AtomicIntegerArray.
   jint buffer_[0] __attribute__((aligned(__alignof__(volatile_jint))));
 }
@@ -226,9 +208,6 @@ PRIMITIVE_ARRAY_C_INTERFACE(int, Int, jint)
 
 @interface IOSLongArray : IOSArray {
  @public
-  /**
-   * The elements of this array.
-   */
   // Ensure alignment for java.util.concurrent.atomic.AtomicLongArray.
   jlong buffer_[0] __attribute__((aligned(__alignof__(volatile_jlong))));
 }
@@ -244,9 +223,6 @@ PRIMITIVE_ARRAY_C_INTERFACE(long, Long, jlong)
 
 @interface IOSFloatArray : IOSArray {
  @public
-  /**
-   * The elements of this array.
-   */
   jfloat buffer_[0];
 }
 
@@ -261,9 +237,6 @@ PRIMITIVE_ARRAY_C_INTERFACE(float, Float, jfloat)
 
 @interface IOSDoubleArray : IOSArray {
  @public
-  /**
-   * The elements of this array.
-   */
   jdouble buffer_[0];
 }
 
@@ -277,4 +250,4 @@ PRIMITIVE_ARRAY_C_INTERFACE(double, Double, jdouble)
 #undef PRIMITIVE_ARRAY_INTERFACE
 #undef PRIMITIVE_ARRAY_C_INTERFACE
 
-#endif // IOSPrimitiveArray_H
+#endif // _IOSPrimitiveArray_H_
