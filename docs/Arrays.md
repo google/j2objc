@@ -44,8 +44,7 @@ name, followed by the function's action; for example, `IOSByteArray_Get(array, i
 
 The "GetRef" functions are similar to "Get" functions, but return a pointer to the specified
 element. This allows faster access to read or modify the contents of an array using C expressions.
-Since this access has no range, bounds, or type checking, *it is critical that these functions be
-used carefully.*
+Since this access has no type checking, *it is critical that these functions be used carefully.*
 
 ### Object Arrays
 
@@ -55,7 +54,9 @@ representing all non-primitive arrays. `IOSObjectArray` retains and releases its
 `NSMutableArray` does.
 
 In addition to the functions defined for primitive arrays, `IOSObjectArray` adds a "SetAndConsume"
-function. This function releases the object being set if an exception is thrown by the function.
+function. This function provides consume semantics
+([ns_consumed](http://clang-analyzer.llvm.org/annotations.html#attr_ns_consumed)) where the caller
+must provide a retained item.
 
 ### Multi-dimensional Arrays
 
