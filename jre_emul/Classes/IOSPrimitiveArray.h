@@ -33,89 +33,13 @@
 
 #import "IOSArray.h"
 
-/*!
- * Declares all of the common methods for the primitive array types. For example
- * this would declare the following for IOSIntArray:
- *
- *  Constructors:
- *  + (instancetype)newArrayWithInts:(const int *)buf count:(NSUInteger)count;
- *  + (instancetype)arrayWithInts:(const int *)buf count:(NSUInteger)count;
- *
- *  Accessors - These throw IndexOutOfBoundsException if index is out of range:
- *  FOUNDATION_EXPORT int IOSIntArray_Get(IOSIntrray *array, NSUInteger index);
- *  FOUNDATION_EXPORT int *IOSIntArray_GetRef(IOSIntArray *array, NSUInteger index);
- *  - (int)intAtIndex:(NSUInteger)index;
- *  - (int *)intRefAtIndex:(NSUInteger)index;
- *  - (int)replaceIntAtIndex:(NSUInteger)index withInt:(int)value;
- *  - (void)getInts:(int *)buffer length:(NSUInteger)length;
- *
- * @define PRIMITIVE_ARRAY_INTERFACE
- * @param L_NAME Lowercase name of the primitive type. (e.g. "char")
- * @param U_NAME Uppercase name of the primitive type. (e.g. "Char")
- * @param C_TYPE Objective-C type for the primitive type, (e.g. "jchar")
- */
-#define PRIMITIVE_ARRAY_INTERFACE(L_NAME, U_NAME, C_TYPE) \
-+ (instancetype)newArrayWithLength:(NSUInteger)length; \
-+ (instancetype)arrayWithLength:(NSUInteger)length; \
-+ (instancetype)newArrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count; \
-+ (instancetype)arrayWith##U_NAME##s:(const C_TYPE *)buf count:(NSUInteger)count; \
-+ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths; \
-+ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths \
-    __attribute__((objc_method_family(none), ns_returns_retained)); \
-- (C_TYPE)L_NAME##AtIndex:(NSUInteger)index; \
-- (C_TYPE *)L_NAME##RefAtIndex:(NSUInteger)index; \
-- (C_TYPE)replace##U_NAME##AtIndex:(NSUInteger)index with##U_NAME:(C_TYPE)value; \
-- (void)get##U_NAME##s:(C_TYPE *)buffer length:(NSUInteger)length; \
-
-/*!
- * Defines the C interface for the primitive array types. For example, this
- * would declare the following for IOSIntArray:
- *
- * inline jint IOSIntArray_Get(IOSIntArray *array, NSUInteger index);
- * inline jint *IOSIntArray_GetRef(IOSIntArray *array, NSUInteger index);
- * inline void IOSIntArray_GetRange(
- *     jint *buffer, IOSIntArray *array, jint offset, jint length);
- * inline void IOSIntArray_PutRange(
- *     IOSIntArray *array, jint *buffer, jint offset, jint length);
- *
- * This macro is used after the @end declaration for the @interface.
- *
- * @define PRIMITIVE_ARRAY_C_INTERFACE
- * @param L_NAME Lowercase name of the primitive type. (e.g. "char")
- * @param U_NAME Uppercase name of the primitive type. (e.g. "Char")
- * @param C_TYPE Objective-C type for the primitive type, (e.g. "jchar")
- */
-#define PRIMITIVE_ARRAY_C_INTERFACE(L_NAME, U_NAME, C_TYPE) \
-\
-__attribute__((always_inline)) inline C_TYPE IOS##U_NAME##Array_Get( \
-    __unsafe_unretained IOS##U_NAME##Array *array, NSUInteger index) { \
-  IOSArray_checkIndex(array->size_, (jint)index); \
-  return array->buffer_[index]; \
-} \
-\
-__attribute__((always_inline)) inline C_TYPE *IOS##U_NAME##Array_GetRef( \
-    __unsafe_unretained IOS##U_NAME##Array *array, NSUInteger index) { \
-  IOSArray_checkIndex(array->size_, (jint)index); \
-  return &array->buffer_[index]; \
-} \
-\
-__attribute__((always_inline)) inline void IOS##U_NAME##Array_GetRange( \
-    C_TYPE *buffer, __unsafe_unretained const IOS##U_NAME##Array *array, \
-    jint offset, jint length) { \
-  IOSArray_checkRange(array->size_, offset, length); \
-  memcpy(buffer, array->buffer_ + (offset * sizeof(C_TYPE)), length * sizeof(C_TYPE)); \
-} \
-\
-__attribute__((always_inline)) inline void IOS##U_NAME##Array_SetRange( \
-    __unsafe_unretained IOS##U_NAME##Array *array, const C_TYPE *buffer, \
-    jint offset, jint length) { \
-  IOSArray_checkRange(array->size_, offset, length); \
-  memcpy(array->buffer_ + (offset * sizeof(C_TYPE)), buffer, length * sizeof(C_TYPE)); \
-} \
-
 
 // ********** IOSBooleanArray **********
 
+/**
+ * An Objective-C representation of a Java boolean array. Like a Java array,
+ * an IOSBooleanArray is fixed-size but its elements are mutable.
+ */
 @interface IOSBooleanArray : IOSArray {
  @public
   /**
@@ -124,15 +48,106 @@ __attribute__((always_inline)) inline void IOS##U_NAME##Array_SetRange( \
   jboolean buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(boolean, Boolean, jboolean)
+/**
+ * Create a new array of a specified length, setting all booleans to false.
+ */
++ (instancetype)newArrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new autoreleased array of a specified length, setting all booleans to false.
+ */
++ (instancetype)arrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)newArrayWithBooleans:(const jboolean *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new autoreleased array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)arrayWithBooleans:(const jboolean *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new multi-dimensional array of booleans.
+ */
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
+
+/**
+ * Create a new autoreleased multi-dimensional array of booleans.
+ */
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
+    __attribute__((objc_method_family(none), ns_returns_retained));
+
+/**
+ * Return the boolean at the specified index.
+ */
+- (jboolean)booleanAtIndex:(NSUInteger)index;
+
+/**
+ * Return a pointer to the boolean at the specified index.
+ */
+- (jboolean *)booleanRefAtIndex:(NSUInteger)index;
+
+/**
+ * Replace the boolean at the specified index. Return the new value.
+ */
+- (jboolean)replaceBooleanAtIndex:(NSUInteger)index withBoolean:(jboolean)value;
+
+/**
+ * Copy this array's booleans to a buffer.
+ */
+- (void)getBooleans:(jboolean *)buffer length:(NSUInteger)length;
 
 @end
 
-PRIMITIVE_ARRAY_C_INTERFACE(boolean, Boolean, jboolean)
+/**
+ * @brief Return the boolean at the specified index.
+ * Equivalent to booleanAtIndex:.
+ */
+__attribute__((always_inline)) inline jboolean IOSBooleanArray_Get(
+    __unsafe_unretained IOSBooleanArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return array->buffer_[index];
+}
+
+/**
+ * @brief Return a pointer to the boolean at the specified index.
+ * Equivalent to booleanRefAtIndex:.
+ */
+__attribute__((always_inline)) inline jboolean *IOSBooleanArray_GetRef(
+    __unsafe_unretained IOSBooleanArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return &array->buffer_[index];
+}
+
+/**
+ * Copies a range of this array's booleans to a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSBooleanArray_GetRange(
+    jboolean *buffer, __unsafe_unretained const IOSBooleanArray *array,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(buffer, array->buffer_ + (offset * sizeof(jboolean)), length * sizeof(jboolean));
+}
+
+/**
+ * Replaces a range of this array's booleans with the contents of a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSBooleanArray_SetRange(
+    __unsafe_unretained IOSBooleanArray *array, const jboolean *buffer,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(array->buffer_ + (offset * sizeof(jboolean)), buffer, length * sizeof(jboolean));
+}
 
 
 // ********** IOSCharArray **********
 
+/**
+ * An Objective-C representation of a Java char array. Like a Java array,
+ * an IOSCharArray is fixed-size but its elements are mutable.
+ */
 @interface IOSCharArray : IOSArray {
  @public
   /**
@@ -141,18 +156,111 @@ PRIMITIVE_ARRAY_C_INTERFACE(boolean, Boolean, jboolean)
   jchar buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(char, Char, jchar)
+/**
+ * Create a new array of a specified length, setting all chars to '\u0000'.
+ */
++ (instancetype)newArrayWithLength:(NSUInteger)length;
 
-// Create an array from an NSString.
+/**
+ * Create a new autoreleased array of a specified length, setting all chars to '\u0000'.
+ */
++ (instancetype)arrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)newArrayWithChars:(const jchar *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new autoreleased array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)arrayWithChars:(const jchar *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new multi-dimensional array of chars.
+ */
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
+
+/**
+ * Create a new autoreleased multi-dimensional array of chars.
+ */
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
+    __attribute__((objc_method_family(none), ns_returns_retained));
+
+/**
+ * Return the L_NAME at the specified index.
+ */
+- (jchar)charAtIndex:(NSUInteger)index;
+
+/**
+ * Return a pointer to the char at the specified index.
+ */
+- (jchar *)charRefAtIndex:(NSUInteger)index;
+
+/**
+ * Replace the char at the specified index. Return the new value.
+ */
+- (jchar)replaceCharAtIndex:(NSUInteger)index withChar:(jchar)value;
+
+/**
+ * Copy this array's chars to a buffer.
+ */
+- (void)getChars:(jchar *)buffer length:(NSUInteger)length;
+
+/**
+ * Create a char array from an NSString.
+ */
 + (instancetype)arrayWithNSString:(NSString *)string;
 
 @end
 
-PRIMITIVE_ARRAY_C_INTERFACE(char, Char, jchar)
+/**
+ * @brief Return the char at the specified index.
+ * Equivalent to charAtIndex:.
+ */
+__attribute__((always_inline)) inline jchar IOSCharArray_Get(
+    __unsafe_unretained IOSCharArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return array->buffer_[index];
+}
+
+/**
+ * @brief Return a pointer to the char at the specified index.
+ * Equivalent to charRefAtIndex:.
+ */
+__attribute__((always_inline)) inline jchar *IOSCharArray_GetRef(
+    __unsafe_unretained IOSCharArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return &array->buffer_[index];
+}
+
+/**
+ * Copies a range of this array's chars to a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSCharArray_GetRange(
+    jchar *buffer, __unsafe_unretained const IOSCharArray *array,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(buffer, array->buffer_ + (offset * sizeof(jchar)), length * sizeof(jchar));
+}
+
+/**
+ * Replaces a range of this array's chars with the contents of a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSCharArray_SetRange(
+    __unsafe_unretained IOSCharArray *array, const jchar *buffer,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(array->buffer_ + (offset * sizeof(jchar)), buffer, length * sizeof(jchar));
+}
 
 
 // ********** IOSByteArray **********
 
+/**
+ * An Objective-C representation of a Java byte array. Like a Java array,
+ * an IOSByteArray is fixed-size but its elements are mutable.
+ */
 @interface IOSByteArray : IOSArray {
  @public
   /**
@@ -161,7 +269,56 @@ PRIMITIVE_ARRAY_C_INTERFACE(char, Char, jchar)
   jbyte buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(byte, Byte, jbyte)
+/**
+ * Create a new array of a specified length, setting all bytes to 0.
+ */
++ (instancetype)newArrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new autoreleased array of a specified length, setting all bytes to 0.
+ */
++ (instancetype)arrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)newArrayWithBytes:(const jbyte *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new autoreleased array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)arrayWithBytes:(const jbyte *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new multi-dimensional array of bytes.
+ */
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
+
+/**
+ * Create a new autoreleased multi-dimensional array of bytes.
+ */
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
+    __attribute__((objc_method_family(none), ns_returns_retained));
+
+/**
+ * Return the byte at the specified index.
+ */
+- (jbyte)byteAtIndex:(NSUInteger)index;
+
+/**
+ * Return a pointer to the byte at the specified index.
+ */
+- (jbyte *)byteRefAtIndex:(NSUInteger)index;
+
+/**
+ * Replace the byte at the specified index. Return the new value.
+ */
+- (jbyte)replaceByteAtIndex:(NSUInteger)index withByte:(jbyte)value;
+
+/**
+ * Copy this array's bytes to a buffer.
+ */
+- (void)getBytes:(jbyte *)buffer length:(NSUInteger)length;
 
 // Create an array from an NSData object.
 + (instancetype)arrayWithNSData:(NSData *)data;
@@ -184,11 +341,53 @@ PRIMITIVE_ARRAY_INTERFACE(byte, Byte, jbyte)
 
 @end
 
-PRIMITIVE_ARRAY_C_INTERFACE(byte, Byte, jbyte)
+/**
+ * @brief Return the byte at the specified index.
+ * Equivalent to byteAtIndex:.
+ */
+__attribute__((always_inline)) inline jbyte IOSByteArray_Get(
+    __unsafe_unretained IOSByteArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return array->buffer_[index];
+}
+
+/**
+ * @brief Return a pointer to the byte at the specified index.
+ * Equivalent to byteRefAtIndex:.
+ */
+__attribute__((always_inline)) inline jbyte *IOSByteArray_GetRef(
+    __unsafe_unretained IOSByteArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return &array->buffer_[index];
+}
+
+/**
+ * Copies a range of this array's bytes to a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSByteArray_GetRange(
+    jbyte *buffer, __unsafe_unretained const IOSByteArray *array,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(buffer, array->buffer_ + (offset * sizeof(jbyte)), length * sizeof(jbyte));
+}
+
+/**
+ * Replaces a range of this array's bytes with the contents of a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSByteArray_SetRange(
+    __unsafe_unretained IOSByteArray *array, const jbyte *buffer,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(array->buffer_ + (offset * sizeof(jbyte)), buffer, length * sizeof(jbyte));
+}
 
 
 // ********** IOSShortArray **********
 
+/**
+ * An Objective-C representation of a Java array of shorts. Like a Java array,
+ * an IOSShortArray is fixed-size but its elements are mutable.
+ */
 @interface IOSShortArray : IOSArray {
  @public
   /**
@@ -197,15 +396,106 @@ PRIMITIVE_ARRAY_C_INTERFACE(byte, Byte, jbyte)
   jshort buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(short, Short, jshort)
+/**
+ * Create a new array of a specified length, setting all shorts to 0.
+ */
++ (instancetype)newArrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new autoreleased array of a specified length, setting all shorts to 0.
+ */
++ (instancetype)arrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)newArrayWithShorts:(const jshort *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new autoreleased array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)arrayWithShorts:(const jshort *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new multi-dimensional array of shorts.
+ */
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
+
+/**
+ * Create a new autoreleased multi-dimensional array of shorts.
+ */
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
+    __attribute__((objc_method_family(none), ns_returns_retained));
+
+/**
+ * Return the short at the specified index.
+ */
+- (jshort)shortAtIndex:(NSUInteger)index;
+
+/**
+ * Return a pointer to the short at the specified index.
+ */
+- (jshort *)shortRefAtIndex:(NSUInteger)index;
+
+/**
+ * Replace the short at the specified index. Return the new value.
+ */
+- (jshort)replaceShortAtIndex:(NSUInteger)index withShort:(jshort)value;
+
+/**
+ * Copy this array's shorts to a buffer.
+ */
+- (void)getShorts:(jshort *)buffer length:(NSUInteger)length;
 
 @end
 
-PRIMITIVE_ARRAY_C_INTERFACE(short, Short, jshort)
+/**
+ * @brief Return the short at the specified index.
+ * Equivalent to shortAtIndex:.
+ */
+__attribute__((always_inline)) inline jshort IOSShortArray_Get(
+    __unsafe_unretained IOSShortArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return array->buffer_[index];
+}
+
+/**
+ * @brief Return a pointer to the short at the specified index.
+ * Equivalent to shortRefAtIndex:.
+ */
+__attribute__((always_inline)) inline jshort *IOSShortArray_GetRef(
+    __unsafe_unretained IOSShortArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return &array->buffer_[index];
+}
+
+/**
+ * Copies a range of this array's shorts to a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSShortArray_GetRange(
+    jshort *buffer, __unsafe_unretained const IOSShortArray *array,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(buffer, array->buffer_ + (offset * sizeof(jshort)), length * sizeof(jshort));
+}
+
+/**
+ * Replaces a range of this array's shorts with the contents of a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSShortArray_SetRange(
+    __unsafe_unretained IOSShortArray *array, const jshort *buffer,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(array->buffer_ + (offset * sizeof(jshort)), buffer, length * sizeof(jshort));
+}
 
 
 // ********** IOSIntArray **********
 
+/**
+ * An Objective-C representation of a Java int array. Like a Java array,
+ * an IOSIntArray is fixed-size but its elements are mutable.
+ */
 @interface IOSIntArray : IOSArray {
  @public
   /**
@@ -215,15 +505,106 @@ PRIMITIVE_ARRAY_C_INTERFACE(short, Short, jshort)
   jint buffer_[0] __attribute__((aligned(__alignof__(volatile_jint))));
 }
 
-PRIMITIVE_ARRAY_INTERFACE(int, Int, jint)
+/**
+ * Create a new array of a specified length, setting all ints to 0.
+ */
++ (instancetype)newArrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new autoreleased array of a specified length, setting all ints to 0.
+ */
++ (instancetype)arrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)newArrayWithInts:(const jint *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new autoreleased array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)arrayWithInts:(const jint *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new multi-dimensional array of ints.
+ */
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
+
+/**
+ * Create a new autoreleased multi-dimensional array of ints.
+ */
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
+    __attribute__((objc_method_family(none), ns_returns_retained));
+
+/**
+ * Return the int at the specified index.
+ */
+- (jint)intAtIndex:(NSUInteger)index;
+
+/**
+ * Return a pointer to the int at the specified index.
+ */
+- (jint *)intRefAtIndex:(NSUInteger)index;
+
+/**
+ * Replace the int at the specified index. Return the new value.
+ */
+- (jint)replaceIntAtIndex:(NSUInteger)index withInt:(jint)value;
+
+/**
+ * Copy this array's ints to a buffer.
+ */
+- (void)getInts:(jint *)buffer length:(NSUInteger)length;
 
 @end
 
-PRIMITIVE_ARRAY_C_INTERFACE(int, Int, jint)
+/**
+ * @brief Return the int at the specified index.
+ * Equivalent to shortAtIndex:.
+ */
+__attribute__((always_inline)) inline jint IOSIntArray_Get(
+    __unsafe_unretained IOSIntArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return array->buffer_[index];
+}
+
+/**
+ * @brief Return a pointer to the int at the specified index.
+ * Equivalent to shortRefAtIndex:.
+ */
+__attribute__((always_inline)) inline jint *IOSIntArray_GetRef(
+    __unsafe_unretained IOSIntArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return &array->buffer_[index];
+}
+
+/**
+ * Copies a range of this array's ints to a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSIntArray_GetRange(
+    jint *buffer, __unsafe_unretained const IOSIntArray *array,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(buffer, array->buffer_ + (offset * sizeof(jint)), length * sizeof(jint));
+}
+
+/**
+ * Replaces a range of this array's ints with the contents of a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSIntArray_SetRange(
+    __unsafe_unretained IOSIntArray *array, const jint *buffer,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(array->buffer_ + (offset * sizeof(jint)), buffer, length * sizeof(jint));
+}
 
 
 // ********** IOSLongArray **********
 
+/**
+ * An Objective-C representation of a Java long array. Like a Java array,
+ * an IOSLongArray is fixed-size but its elements are mutable.
+ */
 @interface IOSLongArray : IOSArray {
  @public
   /**
@@ -233,15 +614,106 @@ PRIMITIVE_ARRAY_C_INTERFACE(int, Int, jint)
   jlong buffer_[0] __attribute__((aligned(__alignof__(volatile_jlong))));
 }
 
-PRIMITIVE_ARRAY_INTERFACE(long, Long, jlong)
+/**
+ * Create a new array of a specified length, setting all longs to 0L.
+ */
++ (instancetype)newArrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new autoreleased array of a specified length, setting all longs to 0L.
+ */
++ (instancetype)arrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)newArrayWithLongs:(const jlong *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new autoreleased array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)arrayWithLongs:(const jlong *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new multi-dimensional array of longs.
+ */
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
+
+/**
+ * Create a new autoreleased multi-dimensional array of longs.
+ */
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
+    __attribute__((objc_method_family(none), ns_returns_retained));
+
+/**
+ * Return the long at the specified index.
+ */
+- (jlong)longAtIndex:(NSUInteger)index;
+
+/**
+ * Return a pointer to the long at the specified index.
+ */
+- (jlong *)longRefAtIndex:(NSUInteger)index;
+
+/**
+ * Replace the long at the specified index. Return the new value.
+ */
+- (jlong)replaceLongAtIndex:(NSUInteger)index withLong:(jlong)value;
+
+/**
+ * Copy this array's longs to a buffer.
+ */
+- (void)getLongs:(jlong *)buffer length:(NSUInteger)length;
 
 @end
 
-PRIMITIVE_ARRAY_C_INTERFACE(long, Long, jlong)
+/**
+ * @brief Return the long at the specified index.
+ * Equivalent to longAtIndex:.
+ */
+__attribute__((always_inline)) inline jlong IOSLongArray_Get(
+    __unsafe_unretained IOSLongArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return array->buffer_[index];
+}
+
+/**
+ * @brief Return a pointer to the long at the specified index.
+ * Equivalent to longRefAtIndex:.
+ */
+__attribute__((always_inline)) inline jlong *IOSLongArray_GetRef(
+    __unsafe_unretained IOSLongArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return &array->buffer_[index];
+}
+
+/**
+ * Copies a range of this array's longs to a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSLongArray_GetRange(
+    jlong *buffer, __unsafe_unretained const IOSLongArray *array,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(buffer, array->buffer_ + (offset * sizeof(jlong)), length * sizeof(jlong));
+}
+
+/**
+ * Replaces a range of this array's longs with the contents of a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSLongArray_SetRange(
+    __unsafe_unretained IOSLongArray *array, const jlong *buffer,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(array->buffer_ + (offset * sizeof(jlong)), buffer, length * sizeof(jlong));
+}
 
 
 // ********** IOSFloatArray **********
 
+/**
+ * An Objective-C representation of a Java float array. Like a Java array,
+ * an IOSFloatArray is fixed-size but its elements are mutable.
+ */
 @interface IOSFloatArray : IOSArray {
  @public
   /**
@@ -250,15 +722,106 @@ PRIMITIVE_ARRAY_C_INTERFACE(long, Long, jlong)
   jfloat buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(float, Float, jfloat)
+/**
+ * Create a new array of a specified length, setting all floats to 0.0F.
+ */
++ (instancetype)newArrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new autoreleased array of a specified length, setting all floats to 0.0F.
+ */
++ (instancetype)arrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)newArrayWithFloats:(const jfloat *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new autoreleased array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)arrayWithFloats:(const jfloat *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new multi-dimensional array of floats.
+ */
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
+
+/**
+ * Create a new autoreleased multi-dimensional array of floats.
+ */
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
+    __attribute__((objc_method_family(none), ns_returns_retained));
+
+/**
+ * Return the float at the specified index.
+ */
+- (jfloat)floatAtIndex:(NSUInteger)index;
+
+/**
+ * Return a pointer to the float at the specified index.
+ */
+- (jfloat *)floatRefAtIndex:(NSUInteger)index;
+
+/**
+ * Replace the float at the specified index. Return the new value.
+ */
+- (jfloat)replaceFloatAtIndex:(NSUInteger)index withFloat:(jfloat)value;
+
+/**
+ * Copy this array's floats to a buffer.
+ */
+- (void)getFloats:(jfloat *)buffer length:(NSUInteger)length;
 
 @end
 
-PRIMITIVE_ARRAY_C_INTERFACE(float, Float, jfloat)
+/**
+ * @brief Return the float at the specified index.
+ * Equivalent to floatAtIndex:.
+ */
+__attribute__((always_inline)) inline jfloat IOSFloatArray_Get(
+    __unsafe_unretained IOSFloatArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return array->buffer_[index];
+}
+
+/**
+ * @brief Return a pointer to the float at the specified index.
+ * Equivalent to floatRefAtIndex:.
+ */
+__attribute__((always_inline)) inline jfloat *IOSFloatArray_GetRef(
+    __unsafe_unretained IOSFloatArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return &array->buffer_[index];
+}
+
+/**
+ * Copies a range of this array's floats to a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSFloatArray_GetRange(
+    jfloat *buffer, __unsafe_unretained const IOSFloatArray *array,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(buffer, array->buffer_ + (offset * sizeof(jfloat)), length * sizeof(jfloat));
+}
+
+/**
+ * Replaces a range of this array's floats with the contents of a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSFloatArray_SetRange(
+    __unsafe_unretained IOSFloatArray *array, const jfloat *buffer,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(array->buffer_ + (offset * sizeof(jfloat)), buffer, length * sizeof(jfloat));
+}
 
 
 // ********** IOSDoubleArray **********
 
+/**
+ * An Objective-C representation of a Java double array. Like a Java array,
+ * an IOSDoubleArray is fixed-size but its elements are mutable.
+ */
 @interface IOSDoubleArray : IOSArray {
  @public
   /**
@@ -267,11 +830,98 @@ PRIMITIVE_ARRAY_C_INTERFACE(float, Float, jfloat)
   jdouble buffer_[0];
 }
 
-PRIMITIVE_ARRAY_INTERFACE(double, Double, jdouble)
+/**
+ * Create a new array of a specified length, setting all doubles to 0.0.
+ */
++ (instancetype)newArrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new autoreleased array of a specified length, setting all doubles to 0.0.
+ */
++ (instancetype)arrayWithLength:(NSUInteger)length;
+
+/**
+ * Create a new array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)newArrayWithDoubles:(const jdouble *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new autoreleased array of a specified length, setting the elements to the values in buf.
+ */
++ (instancetype)arrayWithDoubles:(const jdouble *)buf count:(NSUInteger)count;
+
+/**
+ * Create a new multi-dimensional array of doubles.
+ */
++ (id)arrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths;
+
+/**
+ * Create a new autoreleased multi-dimensional array of doubles.
+ */
++ (id)newArrayWithDimensions:(NSUInteger)dimensionCount lengths:(const jint *)dimensionLengths
+    __attribute__((objc_method_family(none), ns_returns_retained));
+
+/**
+ * Return the double at the specified index.
+ */
+- (jdouble)doubleAtIndex:(NSUInteger)index;
+
+/**
+ * Return a pointer to the double at the specified index.
+ */
+- (jdouble *)doubleRefAtIndex:(NSUInteger)index;
+
+/**
+ * Replace the double at the specified index. Return the new value.
+ */
+- (jdouble)replaceDoubleAtIndex:(NSUInteger)index withDouble:(jdouble)value;
+
+/**
+ * Copy this array's doubles to a buffer.
+ */
+- (void)getDoubles:(jdouble *)buffer length:(NSUInteger)length;
 
 @end
 
-PRIMITIVE_ARRAY_C_INTERFACE(double, Double, jdouble)
+/**
+ * @brief Return the double at the specified index.
+ * Equivalent to doubleAtIndex:.
+ */
+__attribute__((always_inline)) inline jdouble IOSDoubleArray_Get(
+    __unsafe_unretained IOSDoubleArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return array->buffer_[index];
+}
+
+/**
+ * @brief Return a pointer to the double at the specified index.
+ * Equivalent to doubleRefAtIndex:.
+ */
+__attribute__((always_inline)) inline jdouble *IOSDoubleArray_GetRef(
+    __unsafe_unretained IOSDoubleArray *array, NSUInteger index) {
+  IOSArray_checkIndex(array->size_, (jint)index);
+  return &array->buffer_[index];
+}
+
+/**
+ * Copies a range of this array's doubles to a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSDoubleArray_GetRange(
+    jdouble *buffer, __unsafe_unretained const IOSDoubleArray *array,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(buffer, array->buffer_ + (offset * sizeof(jdouble)), length * sizeof(jdouble));
+}
+
+/**
+ * Replaces a range of this array's doubles with the contents of a supplied buffer.
+ */
+__attribute__((always_inline)) inline void IOSDoubleArray_SetRange(
+    __unsafe_unretained IOSDoubleArray *array, const jdouble *buffer,
+    jint offset, jint length) {
+  IOSArray_checkRange(array->size_, offset, length);
+  memcpy(array->buffer_ + (offset * sizeof(jdouble)), buffer, length * sizeof(jdouble));
+}
 
 
 #undef PRIMITIVE_ARRAY_INTERFACE
