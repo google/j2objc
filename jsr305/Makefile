@@ -33,6 +33,7 @@ include ../make/create_jar.mk
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES)
+# Batch translate is turned off due to an open JDT bug.
 TRANSLATE_ARGS = -sourcepath $(JAVA_SRC_DIR) -q --batch-translate-max=0
 include ../make/translate.mk
 
