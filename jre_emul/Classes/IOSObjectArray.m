@@ -21,6 +21,7 @@
 
 #import "IOSObjectArray.h"
 
+#import "IOSArray_PackagePrivate.h"
 #import "IOSClass.h"
 #import "java/lang/ArrayStoreException.h"
 #import "java/lang/AssertionError.h"

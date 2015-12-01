@@ -21,6 +21,7 @@ package java.lang;
 #import <UIKit/UIKit.h>
 #endif
 
+#import "IOSArray_PackagePrivate.h"
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
 #import "NSDictionaryMap.h"
