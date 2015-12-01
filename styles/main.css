@@ -267,3 +267,9 @@ code, pre{
   color: #600;
   font-weight: normal;
 }
+.devsite-nav-toggle.devsite-nav-toggle-collapsed::before {
+    content: '\25b8';
+}
+.devsite-nav-toggle.devsite-nav-toggle-expanded::before {
+    content: '\25be';
+}
