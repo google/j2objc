@@ -163,4 +163,15 @@ public class LambdaExpressionTest extends GenerationTest {
         "Test.m");
     assertTranslatedLines(translation, "^jint(id _self){", "return f_;");
   }
+
+  // Verify that an #include is generated for the lambda's functionalType.
+  public void testLambdaFunctionalTypeImport() throws IOException {
+    String translation = translateSourceFile("import java.util.*;"
+        + "class Test { "
+        + "  public void test(List<String> names) { "
+        + "    Collections.sort(names, (p1, p2) -> p1.compareTo(p2)); "
+        + "  }"
+        + "}", "Test", "Test.m");
+    assertTranslation(translation, "#include \"java/util/Comparator.h\"");
+  }
 }

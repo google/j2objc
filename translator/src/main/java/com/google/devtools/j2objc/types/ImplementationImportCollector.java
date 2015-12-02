@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InstanceofExpression;
+import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
@@ -189,6 +190,11 @@ public class ImplementationImportCollector extends TreeVisitor {
   public boolean visit(InstanceofExpression node) {
     addImports(node.getRightOperand().getTypeBinding());
     return true;
+  }
+
+  @Override
+  public void endVisit(LambdaExpression node) {
+    addImports(node.functionalTypeBinding());
   }
 
   @Override
