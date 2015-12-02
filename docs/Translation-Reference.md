@@ -162,6 +162,7 @@ NSString *s = ComGoogleFoo_get_myString_();
 ComGoogleFoo_set_myString_(@"bar");
 ```
 **TODO(kstanger): Provide "\_set\_" function for primitives.**
+
 **TODO(kstanger): Resolve inconsistency with trailing underscores.**
 
 ## Enums
