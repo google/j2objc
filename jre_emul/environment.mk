@@ -169,6 +169,6 @@ endif
 # Specify bitcode flag if clang version 7 or greater. This is necessary to support
 # iOS 9 apps that have the 'Enable bitcode' option set, which is the default for
 # new apps in Xcode 7.
-ifeq ("$(SUPPORTS_BITCODE)", "YES")
+ifeq ("$(XCODE_7_MINIMUM)", "YES")
 OBJCFLAGS += -fembed-bitcode
 endif

@@ -30,7 +30,12 @@ CLASSES_DIR = $(BUILD_DIR)/classes
 JSR305_SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(JSR305_SOURCE_JAR)
 JSR305_JAR_FULL = $(JAVA_DEPS_JAR_DIR)/$(JSR305_JAR)
 
-WARNINGS = -Wall -Werror -Wno-nullability-completeness
+WARNINGS := -Wall -Werror
+
+ifeq ("$(XCODE_7_MINIMUM)", "YES")
+# Disable clang nullability warnings, since Java semantics are different.
+WARNINGS += -Wno-nullability-completeness
+endif
 
 OBJCFLAGS := -ObjC $(WARNINGS) $(DEBUGFLAGS)
 

@@ -32,8 +32,14 @@ SOURCEPATH = $(SRC_DIR)
 
 INCLUDE_DIRS = $(GEN_OBJC_DIR)
 
-J2OBJCC = $(ARCH_BIN_DIR)/j2objcc -c -fobjc-abi-version=2 -fobjc-legacy-dispatch \
-  -Wno-nullability-completeness $(INCLUDE_DIRS:%=-I%)
+J2OBJCC := $(ARCH_BIN_DIR)/j2objcc -c -fobjc-abi-version=2 -fobjc-legacy-dispatch \
+  $(INCLUDE_DIRS:%=-I%)
+
+ifeq ("$(XCODE_7_MINIMUM)", "YES")
+# Disable clang nullability warnings, since Java semantics are different.
+J2OBJCC += -Wno-nullability-completeness
+endif
+
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(SRC_DIR)/%=%)

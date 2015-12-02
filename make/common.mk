@@ -153,8 +153,8 @@ define long_list_to_file
 @if [ ! -e $(1) ]; then touch $(1); fi
 endef
 
-# Specify bitcode flag if clang version 7 or greater. This is necessary to support
+# Specify flag if clang version 7 or greater. This is necessary to support
 # iOS 9 apps that have the 'Enable bitcode' option set, which is the default for
 # new apps in Xcode 7.
-SUPPORTS_BITCODE := $(shell $(CLANG) --version | \
+XCODE_7_MINIMUM := $(shell $(CLANG) --version | \
     awk '/^Apple/ { split($$4, arr, "."); print (arr[1] >= 7) ? "YES" : "NO"; }')
