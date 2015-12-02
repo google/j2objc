@@ -128,8 +128,8 @@ These libraries implement classes defined by J2ObjC's JRE emulation:
 
 The `jre_emul` library contains all the classes included in J2ObjC's JRE emulation. If an app is
 linked with `jre_emul`, none of the other jre_* libraries should be included, or the linker will
-report duplicate symbol errors. That is because `jre_emul` is includes all classes defined in
-those other libraries.
+report duplicate symbol errors. That is because `jre_emul` includes all classes defined in those
+other libraries.
 
 ## Other J2ObjC Libraries
 
