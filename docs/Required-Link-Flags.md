@@ -73,6 +73,54 @@ These libraries implement classes defined by J2ObjC's JRE emulation:
       Several classes in the `java.io` package. Many `java.io` classes are in `jre_core`, though,
       so only include this library if there are unresolved JavaIo* symbol errors.
     </td>
+  </tr><tr>
+    <td>libjre_net.a</td>
+    <td style="white-space: nowrap;">-l jre_net</td>
+    <td>
+      The classes in the `java.net` package. The `java.net.URLClassLoader` class is in
+      `jre_security`, while the `javax.net` and `javax.net.ssl` classes are in `jre_ssl`.
+    </td>
+  </tr><tr>
+    <td>libjre_security.a</td>
+    <td style="white-space: nowrap;">-l jre_security</td>
+    <td>
+      Most classes in the `java.security` package (a few are in `jre_core`), as well as
+      the classes in `java.security.*`, `javax.crypto.*`, and `javax.security.*`. 
+    </td>
+  </tr><tr>
+    <td>libjre_sql.a</td>
+    <td style="white-space: nowrap;">-l jre_sql</td>
+    <td>
+      The classes in the `java.sql` package.
+    </td>
+  </tr><tr>
+    <td>libjre_ssl.a</td>
+    <td style="white-space: nowrap;">-l jre_ssl</td>
+    <td>
+      The classes in the `javax.net` and `javax.net.ssl` packages.
+    </td>
+  </tr><tr>
+    <td>libjre_util.a</td>
+    <td style="white-space: nowrap;">-l jre_util</td>
+    <td>
+      Several classes from the `java.util` package, as well as the `java.util.logging` package. 
+      Most `java.util` classes are in `jre_core`, though, so only include this library if there
+      are unresolved JavaUtil* symbol errors (JavaUtilConcurrent* symbols are in the
+      `jre_concurrent` library).
+    </td>
+  </tr><tr>
+    <td>libjre_xml.a</td>
+    <td style="white-space: nowrap;">-l jre_xml</td>
+    <td>
+      The classes from the XML-related packages, including `javax.xml.*`, `org.w3c.dom.*`, and
+      `org.xml.sax.*`.
+    </td>
+  </tr><tr>
+    <td>libjre_zip.a</td>
+    <td style="white-space: nowrap;">-l jre_zip</td>
+    <td>
+      The classes from the `java.util.zip` and `java.util.jar` packages.
+    </td>
   </tr>
 </table>
 
