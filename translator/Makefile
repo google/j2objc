@@ -225,15 +225,17 @@ JAVA_SOURCES = \
 	translate/VariableRenamer.java \
 	types/AbstractBinding.java \
 	types/AbstractTypeBinding.java \
+	types/FunctionBinding.java \
 	types/GeneratedMethodBinding.java \
 	types/GeneratedPackageBinding.java \
 	types/GeneratedTypeBinding.java \
 	types/GeneratedVariableBinding.java \
 	types/HeaderImportCollector.java \
-	types/ImplementationImportCollector.java \
-	types/Import.java \
 	types/IOSMethodBinding.java \
 	types/IOSTypeBinding.java \
+	types/ImplementationImportCollector.java \
+	types/Import.java \
+	types/LambdaTypeBinding.java \
 	types/NullTypeBinding.java \
 	types/PointerTypeBinding.java \
 	types/Types.java \
