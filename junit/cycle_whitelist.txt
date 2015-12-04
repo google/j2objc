@@ -1,4 +1,14 @@
 # TODO(tball): resolve these
 TYPE junit.framework.JUnit4TestAdapter
-
 FIELD org.junit.runners.ParentRunner.fScheduler
+
+# *** False Positives ***
+FIELD org.junit.internal.runners.InitializationError.fErrors
+FIELD org.junit.rules.RuleChain.rulesStartingWithInnerMost
+FIELD org.junit.runner.Description.fChildren
+FIELD org.junit.runners.Parameterized.runners
+FIELD org.junit.runners.ParentRunner.fFilteredChildren
+FIELD org.junit.runners.Suite.fRunners
+FIELD org.junit.runners.model.InitializationError.fErrors
+FIELD org.junit.runners.model.MultipleFailureException.fErrors
+TYPE junit.framework.JUnit4TestAdapterCache.getNotifier.$
