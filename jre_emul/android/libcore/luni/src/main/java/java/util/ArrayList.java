@@ -59,7 +59,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
     /**
      * The elements in this list, followed by nulls.
      */
-    transient Object[] array;
+    transient E[] array;
 
     /**
      * Constructs a new instance of {@code ArrayList} with the specified
@@ -72,14 +72,14 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
         if (capacity < 0) {
             throw new IllegalArgumentException("capacity < 0: " + capacity);
         }
-        array = (capacity == 0 ? EmptyArray.OBJECT : new Object[capacity]);
+        array = (E[]) (capacity == 0 ? EmptyArray.OBJECT : new Object[capacity]);
     }
 
     /**
      * Constructs a new {@code ArrayList} instance with zero initial capacity.
      */
     public ArrayList() {
-        array = EmptyArray.OBJECT;
+        array = (E[]) EmptyArray.OBJECT;
     }
 
     /**
@@ -94,9 +94,9 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
             throw new NullPointerException("collection == null");
         }
 
-        Object[] a = collection.toArray();
+        E[] a = (E[]) collection.toArray();
         if (a.getClass() != Object[].class) {
-            Object[] newArray = new Object[a.length];
+            E[] newArray = (E[]) new Object[a.length];
             System.arraycopy(a, 0, newArray, 0, a.length);
             a = newArray;
         }
@@ -112,10 +112,10 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
      * @return always true
      */
     @Override public boolean add(E object) {
-        Object[] a = array;
+        E[] a = array;
         int s = size;
         if (s == a.length) {
-            Object[] newArray = new Object[s +
+            E[] newArray = (E[]) new Object[s +
                     (s < (MIN_CAPACITY_INCREMENT / 2) ?
                      MIN_CAPACITY_INCREMENT : s >> 1)];
             System.arraycopy(a, 0, newArray, 0, s);
@@ -141,7 +141,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
      *             when {@code location < 0 || location > size()}
      */
     @Override public void add(int index, E object) {
-        Object[] a = array;
+        E[] a = array;
         int s = size;
         if (index > s || index < 0) {
             throwIndexOutOfBoundsException(index, s);
@@ -151,7 +151,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
             System.arraycopy(a, index, a, index + 1, s - index);
         } else {
             // assert s == a.length;
-            Object[] newArray = new Object[newCapacity(s)];
+            E[] newArray = (E[]) new Object[newCapacity(s)];
             System.arraycopy(a, 0, newArray, 0, index);
             System.arraycopy(a, index, newArray, index + 1, s - index);
             array = a = newArray;
@@ -185,17 +185,17 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
      *         otherwise.
      */
     @Override public boolean addAll(Collection<? extends E> collection) {
-        Object[] newPart = collection.toArray();
+        E[] newPart = (E[]) collection.toArray();
         int newPartSize = newPart.length;
         if (newPartSize == 0) {
             return false;
         }
-        Object[] a = array;
+        E[] a = array;
         int s = size;
         int newSize = s + newPartSize; // If add overflows, arraycopy will fail
         if (newSize > a.length) {
             int newCapacity = newCapacity(newSize - 1);  // ~33% growth room
-            Object[] newArray = new Object[newCapacity];
+            E[] newArray = (E[]) new Object[newCapacity];
             System.arraycopy(a, 0, newArray, 0, s);
             array = a = newArray;
         }
@@ -225,18 +225,18 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
         if (index > s || index < 0) {
             throwIndexOutOfBoundsException(index, s);
         }
-        Object[] newPart = collection.toArray();
+        E[] newPart = (E[]) collection.toArray();
         int newPartSize = newPart.length;
         if (newPartSize == 0) {
             return false;
         }
-        Object[] a = array;
+        E[] a = array;
         int newSize = s + newPartSize; // If add overflows, arraycopy will fail
         if (newSize <= a.length) {
              System.arraycopy(a, index, a, index + newPartSize, s - index);
         } else {
             int newCapacity = newCapacity(newSize - 1);  // ~33% growth room
-            Object[] newArray = new Object[newCapacity];
+            E[] newArray = (E[]) new Object[newCapacity];
             System.arraycopy(a, 0, newArray, 0, index);
             System.arraycopy(a, index, newArray, index + newPartSize, s-index);
             array = a = newArray;
@@ -278,8 +278,8 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
      */
     @Override public Object clone() {
         try {
-            ArrayList<?> result = (ArrayList<?>) super.clone();
-            result.array = array.clone();
+            ArrayList<E> result = (ArrayList<E>) super.clone();
+            result.array = (E[]) array.clone();
             return result;
         } catch (CloneNotSupportedException e) {
            throw new AssertionError();
@@ -294,9 +294,9 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
      *            the minimum capacity asked for.
      */
     public void ensureCapacity(int minimumCapacity) {
-        Object[] a = array;
+        E[] a = array;
         if (a.length < minimumCapacity) {
-            Object[] newArray = new Object[minimumCapacity];
+            E[] newArray = (E[]) new Object[minimumCapacity];
             System.arraycopy(a, 0, newArray, 0, size);
             array = newArray;
             modCount++;
@@ -332,7 +332,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
      *         {@code ArrayList}, {@code false} otherwise
      */
     @Override public boolean contains(Object object) {
-        Object[] a = array;
+        E[] a = array;
         int s = size;
         if (object != null) {
             for (int i = 0; i < s; i++) {
@@ -351,7 +351,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
     }
 
     @Override public int indexOf(Object object) {
-        Object[] a = array;
+        E[] a = array;
         int s = size;
         if (object != null) {
             for (int i = 0; i < s; i++) {
@@ -370,7 +370,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
     }
 
     @Override public int lastIndexOf(Object object) {
-        Object[] a = array;
+        E[] a = array;
         if (object != null) {
             for (int i = size - 1; i >= 0; i--) {
                 if (object.equals(a[i])) {
@@ -397,7 +397,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
      *             when {@code location < 0 || location >= size()}
      */
     @Override public E remove(int index) {
-        Object[] a = array;
+        E[] a = array;
         int s = size;
         if (index >= s) {
             throwIndexOutOfBoundsException(index, s);
@@ -411,7 +411,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
     }
 
     @Override public boolean remove(Object object) {
-        Object[] a = array;
+        E[] a = array;
         int s = size;
         if (object != null) {
             for (int i = 0; i < s; i++) {
@@ -441,7 +441,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
         if (fromIndex == toIndex) {
             return;
         }
-        Object[] a = array;
+        E[] a = array;
         int s = size;
         if (fromIndex < 0) {
             throw new IndexOutOfBoundsException("Array index out of range: " + fromIndex);
@@ -479,7 +479,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
      *             when {@code location < 0 || location >= size()}
      */
     @Override public E set(int index, E object) {
-        Object[] a = array;
+        E[] a = array;
         if (index >= size) {
             throwIndexOutOfBoundsException(index, size);
         }
@@ -494,9 +494,9 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
      *
      * @return an array of the elements from this {@code ArrayList}
      */
-    @Override public Object[] toArray() {
+    @Override public E[] toArray() {
         int s = size;
-        Object[] result = new Object[s];
+        E[] result = (E[]) new Object[s];
         System.arraycopy(array, 0, result, 0, s);
         return result;
     }
@@ -542,9 +542,9 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
             return;
         }
         if (s == 0) {
-            array = EmptyArray.OBJECT;
+            array = (E[]) EmptyArray.OBJECT;
         } else {
-            Object[] newArray = new Object[s];
+            E[] newArray = (E[]) new Object[s];
             System.arraycopy(array, 0, newArray, 0, s);
             array = newArray;
         }
@@ -583,7 +583,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
         }
 
         public void remove() {
-            Object[] a = array;
+            E[] a = array;
             int removalIdx = removalIndex;
             if (modCount != expectedModCount) {
                 throw new ConcurrentModificationException();
@@ -599,7 +599,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
     }
 
     @Override public int hashCode() {
-        Object[] a = array;
+        E[] a = array;
         int hashCode = 1;
         for (int i = 0, s = size; i < s; i++) {
             Object e = a[i];
@@ -620,7 +620,7 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
         if (that.size() != s) {
             return false;
         }
-        Object[] a = array;
+        E[] a = array;
         if (that instanceof RandomAccess) {
             for (int i = 0; i < s; i++) {
                 Object eThis = a[i];
@@ -659,9 +659,9 @@ public class ArrayList<E> extends AbstractList<E> implements Cloneable, Serializ
             throw new InvalidObjectException(
                     "Capacity: " + cap + " < size: " + size);
         }
-        array = (cap == 0 ? EmptyArray.OBJECT : new Object[cap]);
+        array = (E[]) (cap == 0 ? EmptyArray.OBJECT : new Object[cap]);
         for (int i = 0; i < size; i++) {
-            array[i] = stream.readObject();
+            array[i] = (E) stream.readObject();
         }
     }
 
