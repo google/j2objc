@@ -487,6 +487,10 @@ static IOSClass *FindMappedClass(NSString *name) {
   }
   NSString *mappedName =
       [prefix stringByAppendingString:[name substringFromIndex:lastDot.location + 1]];
+  IOSClass *result = ClassForIosName(mappedName);
+  if (result) {
+    return result;
+  }
   mappedName = [mappedName stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
   return ClassForIosName(mappedName);
 }
@@ -498,8 +502,8 @@ static IOSClass *FindMappedClass(NSString *name) {
 static IOSClass *ClassForJavaName(NSString *name) {
   IOSClass *cls = ClassForIosName(IOSClass_JavaToIOSName(name));
   if (!cls && [name indexOf:'$'] >= 0) {
-    name = [name stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
-    cls = ClassForIosName(IOSClass_JavaToIOSName(name));
+    NSString *fixedName = [name stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
+    cls = ClassForIosName(IOSClass_JavaToIOSName(fixedName));
   }
   if (!cls) {
     cls = FindMappedClass(name);
