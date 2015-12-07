@@ -246,13 +246,25 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "@ParametersAreNonnullByDefault public class Test {"
         + "  @Nullable String test(@Nonnull String msg, Object var) { "
         + "    return msg.isEmpty() ? null : msg; }"
+        + "  String test2() { "
+        + "    return \"\"; }"
+        + "  @Nonnull String test3() { "
+        + "    return \"\"; }"
         + "}";
     Options.setNullability(true);
     String translation = translateSourceFile(source, "Test", "Test.h");
-    // var is also nonnull because of the default annotation on the class.
+
+    // Verify return type and parameters are all annotated.
     assertTranslatedLines(translation,
         "- (NSString * __nullable)testWithNSString:(NSString * __nonnull)msg",
+        // var is also nonnull because of the default annotation on the class.
         "withId:(id __nonnull)var;");
+
+    // Verify return type isn't annotated, as only parameters should be by default.
+    assertTranslatedLines(translation, "- (NSString *)test2;");
+
+    // Verify return type is annotated.
+    assertTranslation(translation, "- (NSString * __nonnull)test3;");
   }
 
   // Verify ParametersAreNonnullByDefault sets unspecified parameter as non-null.

@@ -306,6 +306,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       if (BindingUtil.hasAnnotation(binding, Nullable.class)) {
         return " __nullable";
       }
+      if (BindingUtil.hasAnnotation(binding, Nonnull.class)) {
+        return " __nonnull";
+      }
       if (isParameter && !((IVariableBinding) binding).getType().isPrimitive()
           && (parametersNonnullByDefault || BindingUtil.hasAnnotation(binding, Nonnull.class))) {
         return " __nonnull";
