@@ -38,23 +38,23 @@
 #import "com/google/protobuf/FieldTypes.h"
 #import "com/google/protobuf/common.h"
 
-@class ComGoogleProtobufDescriptorProtos$FieldOptions;
-@class ComGoogleProtobufDescriptors$Descriptor;
-@class ComGoogleProtobufDescriptors$EnumDescriptor;
-@class ComGoogleProtobufDescriptors$EnumValueDescriptor;
-@class ComGoogleProtobufDescriptors$FieldDescriptor;
+@class ComGoogleProtobufDescriptorProtos_FieldOptions;
+@class ComGoogleProtobufDescriptors_Descriptor;
+@class ComGoogleProtobufDescriptors_EnumDescriptor;
+@class ComGoogleProtobufDescriptors_EnumValueDescriptor;
+@class ComGoogleProtobufDescriptors_FieldDescriptor;
 @class ComGoogleProtobufGeneratedMessage;
-@class ComGoogleProtobufGeneratedMessage$Builder;
+@class ComGoogleProtobufGeneratedMessage_Builder;
 @protocol ComGoogleProtobufProtocolMessageEnum;
 @protocol JavaUtilList;
 
-typedef ComGoogleProtobufDescriptors$Descriptor CGPDescriptor;
-typedef ComGoogleProtobufDescriptors$EnumDescriptor CGPEnumDescriptor;
-typedef ComGoogleProtobufDescriptors$EnumValueDescriptor CGPEnumValueDescriptor;
-typedef ComGoogleProtobufDescriptors$FieldDescriptor CGPFieldDescriptor;
-typedef ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum CGPFieldJavaType;
+typedef ComGoogleProtobufDescriptors_Descriptor CGPDescriptor;
+typedef ComGoogleProtobufDescriptors_EnumDescriptor CGPEnumDescriptor;
+typedef ComGoogleProtobufDescriptors_EnumValueDescriptor CGPEnumValueDescriptor;
+typedef ComGoogleProtobufDescriptors_FieldDescriptor CGPFieldDescriptor;
+typedef ComGoogleProtobufDescriptors_FieldDescriptor_JavaType CGPFieldJavaType;
 
-@interface ComGoogleProtobufDescriptors$Descriptor : NSObject
+@interface ComGoogleProtobufDescriptors_Descriptor : NSObject
 
 - (id<JavaUtilList>)getFields;
 
@@ -62,18 +62,15 @@ typedef ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum CGPFieldJavaT
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors$Descriptor)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors_Descriptor)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$Descriptor)
-// TODO(kstanger): Remove after users migrate.
-#define ComGoogleProtobufDescriptors_Descriptor ComGoogleProtobufDescriptors$Descriptor
-#define ComGoogleProtobufDescriptors_Descriptor_class_ ComGoogleProtobufDescriptors$Descriptor_class_
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_Descriptor)
 
-@interface ComGoogleProtobufDescriptors$FieldDescriptor : NSObject
+@interface ComGoogleProtobufDescriptors_FieldDescriptor : NSObject
 
-- (ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *)getType;
+- (ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum *)getType;
 
-- (ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum *)getJavaType;
+- (ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum *)getJavaType;
 
 - (int)getNumber;
 
@@ -91,31 +88,25 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$Descriptor)
 
 - (id)getDefaultValue;
 
-- (ComGoogleProtobufDescriptorProtos$FieldOptions *)getOptions;
+- (ComGoogleProtobufDescriptorProtos_FieldOptions *)getOptions;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors$FieldDescriptor)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors_FieldDescriptor)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$FieldDescriptor)
-// TODO(kstanger): Remove after users migrate.
-#define ComGoogleProtobufDescriptors_FieldDescriptor ComGoogleProtobufDescriptors$FieldDescriptor
-#define ComGoogleProtobufDescriptors_FieldDescriptor_class_ ComGoogleProtobufDescriptors$FieldDescriptor_class_
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_FieldDescriptor)
 
-@interface ComGoogleProtobufDescriptors$EnumDescriptor : NSObject
+@interface ComGoogleProtobufDescriptors_EnumDescriptor : NSObject
 
 - (CGPEnumValueDescriptor *)findValueByNumberWithInt:(int)number;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors$EnumDescriptor)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors_EnumDescriptor)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$EnumDescriptor)
-// TODO(kstanger): Remove after users migrate.
-#define ComGoogleProtobufDescriptors_EnumDescriptor ComGoogleProtobufDescriptors$EnumDescriptor
-#define ComGoogleProtobufDescriptors_EnumDescriptor_class_ ComGoogleProtobufDescriptors$EnumDescriptor_class_
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_EnumDescriptor)
 
-@interface ComGoogleProtobufDescriptors$EnumValueDescriptor : NSObject
+@interface ComGoogleProtobufDescriptors_EnumValueDescriptor : NSObject
 
 - (int)getNumber;
 
@@ -123,11 +114,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$EnumDescriptor)
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors$EnumValueDescriptor)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors_EnumValueDescriptor)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$EnumValueDescriptor)
-// TODO(kstanger): Remove after users migrate.
-#define ComGoogleProtobufDescriptors_EnumValueDescriptor ComGoogleProtobufDescriptors$EnumValueDescriptor
-#define ComGoogleProtobufDescriptors_EnumValueDescriptor_class_ ComGoogleProtobufDescriptors$EnumValueDescriptor_class_
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_EnumValueDescriptor)
 
 #endif // __ComGoogleProtobufDescriptors_H__

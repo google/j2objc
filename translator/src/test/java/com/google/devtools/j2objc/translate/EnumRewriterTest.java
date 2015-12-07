@@ -46,8 +46,10 @@ public class EnumRewriterTest extends GenerationTest {
     Options.setSwiftFriendly(true);
     String translation = translateSourceFile("enum Test { A }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (Test_Enum)toNSEnum {",
-        "  return (Test_Enum)[self ordinal];",
+        "- (Test)toNSEnum {",
+        "  return (Test)[self ordinal];",
         "}");
   }
 }
+
+

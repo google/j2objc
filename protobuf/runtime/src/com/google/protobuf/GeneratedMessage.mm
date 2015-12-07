@@ -542,7 +542,7 @@ static BOOL ResolveSetAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
     tail += paramLen;
     if (strcmp(":", tail) == 0) {
       return AddSetterMethod(cls, sel, field);
-    } else if (strcmp("$Builder:", tail) == 0) {
+    } else if (strcmp("_Builder:", tail) == 0) {
       return AddBuilderSetterMethod(cls, sel, field);
     }
   }
@@ -587,7 +587,7 @@ static BOOL ResolveAddAccessor(Class cls, CGPDescriptor *descriptor, SEL sel, co
     tail += paramLen;
     if (strcmp(":", tail) == 0) {
       AddAdderMethod(cls, sel, field);
-    } else if (strcmp("$Builder:", tail) == 0) {
+    } else if (strcmp("_Builder:", tail) == 0) {
       AddBuilderAdderMethod(cls, sel, field);
     }
   }
@@ -3019,19 +3019,19 @@ J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableMes
 
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage$ExtendableBuilder)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_ExtendableBuilder)
 
 @implementation ComGoogleProtobufGeneratedMessage_GeneratedExtension
 @end
 
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage$GeneratedExtension)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufGeneratedMessage_GeneratedExtension)
 
 // Define the type literal accessors for all the Message type interfaces here
 // because they don't have source files.
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufMessage)
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufMessage$Builder)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufMessage_Builder)
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufMessageOrBuilder)
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufMessageLite)
-J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufMessageLite$Builder)
+J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufMessageLite_Builder)
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufMessageLiteOrBuilder)
 J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE(ComGoogleProtobufProtocolMessageEnum)

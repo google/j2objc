@@ -72,20 +72,20 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Distance", "Distance.m");
     assertTranslation(translation,
         "[IOSObjectArray newArrayWithObjects:(id[]){ "
-        + "[new_Distance$SimplexVertex_initWithDistance_(outer$) autorelease] } "
-        + "count:1 type:Distance$SimplexVertex_class_()]");
+        + "[new_Distance_SimplexVertex_initWithDistance_(outer$) autorelease] } "
+        + "count:1 type:Distance_SimplexVertex_class_()]");
   }
 
   public void testStaticVarInitialization() throws IOException {
     String translation = translateSourceFile(
         "class Test { static java.util.Date date = new java.util.Date(); }", "Test", "Test.m");
     // test that initializer was stripped from the declaration
-    assertTranslation(translation, "JavaUtilDate *Test_date;");
+    assertTranslation(translation, "JavaUtilDate *Test_date_;");
     // test that initializer was moved to new initialize method
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_date, new_JavaUtilDate_init());");
+        "JreStrongAssignAndConsume(&Test_date_, new_JavaUtilDate_init());");
   }
 
   public void testFieldInitializer() throws IOException {
@@ -123,7 +123,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "+ (void)initialize {",
         "if (self == [Test class]) {",
         "{",
-        "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
+        "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out_))) "
             + "printlnWithNSString:@\"foo\"];");
   }
 
@@ -144,7 +144,7 @@ public class InitializationNormalizerTest extends GenerationTest {
         "  {",
         "    JreStrongAssignAndConsume(&self->date_, new_JavaUtilDate_init());",
         "  }",
-        "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
+        "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out_))) "
           + "printlnWithInt:i];",
         "}");
   }
@@ -173,18 +173,18 @@ public class InitializationNormalizerTest extends GenerationTest {
   public void testStringWithInvalidCppCharacters() throws IOException {
     String source = "class Test { static final String foo = \"\\uffff\"; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "NSString *Test_foo;");
+    assertTranslation(translation, "NSString *Test_foo_;");
     assertTranslation(translation,
-        "JreStrongAssign(&Test_foo, [NSString stringWithCharacters:(jchar[]) { "
+        "JreStrongAssign(&Test_foo_, [NSString stringWithCharacters:(jchar[]) { "
         + "(int) 0xffff } length:1]);");
   }
 
   public void testStringConcatWithInvalidCppCharacters() throws IOException {
     String source = "class Test { static final String foo = \"hello\" + \"\\uffff\"; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(translation, "NSString *Test_foo;");
+    assertTranslation(translation, "NSString *Test_foo_;");
     assertTranslation(translation,
-        "JreStrongAssign(&Test_foo, JreStrcat(\"$$\", @\"hello\", "
+        "JreStrongAssign(&Test_foo_, JreStrcat(\"$$\", @\"hello\", "
         + "[NSString stringWithCharacters:(jchar[]) { (int) 0xffff } length:1]));");
   }
 
@@ -207,9 +207,9 @@ public class InitializationNormalizerTest extends GenerationTest {
         + "  static { iSet.add(I); } "
         + "  public static final int iSetSize = iSet.size(); }";
     String translation = translateSourceFile(source, "Test", "Test.m");
-    String setInit = "JreStrongAssignAndConsume(&Test_iSet, new_JavaUtilHashSet_init())";
-    String setAdd = "[Test_iSet addWithId:JavaLangInteger_valueOfWithInt_(Test_I)]";
-    String setSize = "Test_iSetSize = [Test_iSet size]";
+    String setInit = "JreStrongAssignAndConsume(&Test_iSet_, new_JavaUtilHashSet_init())";
+    String setAdd = "[Test_iSet_ addWithId:JavaLangInteger_valueOfWithInt_(Test_I)]";
+    String setSize = "Test_iSetSize_ = [Test_iSet_ size]";
     assertTranslation(translation, setInit);
     assertTranslation(translation, setAdd);
     assertTranslation(translation, setSize);
@@ -221,7 +221,7 @@ public class InitializationNormalizerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static final String FOO = Inner.BAR; "
         + "class Inner { static final String BAR = \"bar\"; } }", "Test", "Test.m");
-    assertTranslation(translation, "NSString *Test_FOO = @\"bar\";");
+    assertTranslation(translation, "NSString *Test_FOO_ = @\"bar\";");
   }
 
   public void testVarargConstructorCallFromSubclass() throws IOException {

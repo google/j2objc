@@ -71,7 +71,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final Types typeEnv;
   protected final NameTable nameTable;
   protected final String typeName;
-  protected final String oldTypeName; // TODO(kstanger): Remove after users migrate.
   protected final boolean typeNeedsReflection;
 
   private final List<BodyDeclaration> declarations;
@@ -85,7 +84,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     typeEnv = compilationUnit.getTypeEnv();
     nameTable = compilationUnit.getNameTable();
     typeName = nameTable.getFullName(typeBinding);
-    oldTypeName = nameTable.getFullName(typeBinding, true);
     typeNeedsReflection = TranslationUtil.needsReflection(typeBinding);
     declarations = filterDeclarations(node.getBodyDeclarations());
     parametersNonnullByDefault = Options.nullability()

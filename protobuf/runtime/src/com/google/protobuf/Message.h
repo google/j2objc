@@ -42,13 +42,13 @@
 @class ComGoogleProtobufDescriptors_FieldDescriptor;
 @class ComGoogleProtobufExtensionRegistryLite;
 @class JavaIoInputStream;
-@protocol ComGoogleProtobufMessage$Builder;
+@protocol ComGoogleProtobufMessage_Builder;
 
 @protocol ComGoogleProtobufMessage
     <ComGoogleProtobufMessageLite, ComGoogleProtobufMessageOrBuilder, NSObject, JavaObject>
 
-- (id<ComGoogleProtobufMessage$Builder>)toBuilder;
-- (id<ComGoogleProtobufMessage$Builder>)newBuilderForType NS_RETURNS_NOT_RETAINED;
+- (id<ComGoogleProtobufMessage_Builder>)toBuilder;
+- (id<ComGoogleProtobufMessage_Builder>)newBuilderForType NS_RETURNS_NOT_RETAINED;
 - (ComGoogleProtobufByteString *)toByteString;
 - (NSData *)toNSData;
 
@@ -60,47 +60,47 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessage)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessage)
 
-@protocol ComGoogleProtobufMessage$Builder
-    <ComGoogleProtobufMessageLite$Builder, ComGoogleProtobufMessageOrBuilder, NSObject, JavaObject>
+@protocol ComGoogleProtobufMessage_Builder
+    <ComGoogleProtobufMessageLite_Builder, ComGoogleProtobufMessageOrBuilder, NSObject, JavaObject>
 
-- (id<ComGoogleProtobufMessage$Builder>)
-    setRepeatedFieldWithComGoogleProtobufDescriptors$FieldDescriptor:(id)descriptor
+- (id<ComGoogleProtobufMessage_Builder>)
+    setRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(id)descriptor
                                                              withInt:(jint)index
                                                               withId:(id)object;
 
-- (id<ComGoogleProtobufMessage$Builder>)
-    setFieldWithComGoogleProtobufDescriptors$FieldDescriptor:(id)descriptor
+- (id<ComGoogleProtobufMessage_Builder>)
+    setFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(id)descriptor
                                                       withId:(id)object;
 
-- (id<ComGoogleProtobufMessage$Builder>)clear;
+- (id<ComGoogleProtobufMessage_Builder>)clear;
 
-- (id<ComGoogleProtobufMessage$Builder>)
-    clearFieldWithComGoogleProtobufDescriptors$FieldDescriptor:(id)descriptor;
+- (id<ComGoogleProtobufMessage_Builder>)
+    clearFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(id)descriptor;
 
-- (id<ComGoogleProtobufMessage$Builder>)
-    addRepeatedFieldWithComGoogleProtobufDescriptors$FieldDescriptor:(id)descriptor
+- (id<ComGoogleProtobufMessage_Builder>)
+    addRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(id)descriptor
                                                               withId:(id)object;
 
-- (id<ComGoogleProtobufMessage$Builder>)
-      newBuilderForFieldWithComGoogleProtobufDescriptors$FieldDescriptor:
+- (id<ComGoogleProtobufMessage_Builder>)
+      newBuilderForFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
           (ComGoogleProtobufDescriptors_FieldDescriptor *)fieldDescriptor OBJC_METHOD_FAMILY_NONE;
 
-- (id<ComGoogleProtobufMessage$Builder>)mergeFromWithComGoogleProtobufMessage:
+- (id<ComGoogleProtobufMessage_Builder>)mergeFromWithComGoogleProtobufMessage:
     (id<ComGoogleProtobufMessage>)message;
 
-- (id<ComGoogleProtobufMessage$Builder>)
+- (id<ComGoogleProtobufMessage_Builder>)
     mergeFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)data
     withComGoogleProtobufExtensionRegistryLite:
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
 
-- (id<ComGoogleProtobufMessage$Builder>)mergeFromWithByteArray:(IOSByteArray *)data
+- (id<ComGoogleProtobufMessage_Builder>)mergeFromWithByteArray:(IOSByteArray *)data
     withComGoogleProtobufExtensionRegistryLite:
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
 
-- (id<ComGoogleProtobufMessage$Builder>)
+- (id<ComGoogleProtobufMessage_Builder>)
     mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input;
 
-- (id<ComGoogleProtobufMessage$Builder>)
+- (id<ComGoogleProtobufMessage_Builder>)
     mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input
     withComGoogleProtobufExtensionRegistryLite:
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
@@ -118,16 +118,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessage)
 + (id)getDescriptor;
 
 @end
-// TODO(kstanger): Remove when users have migrated.
-#define ComGoogleProtobufMessage_Builder ComGoogleProtobufMessage$Builder
-#define setRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor setRepeatedFieldWithComGoogleProtobufDescriptors$FieldDescriptor
-#define setFieldWithComGoogleProtobufDescriptors_FieldDescriptor setFieldWithComGoogleProtobufDescriptors$FieldDescriptor
-#define clearFieldWithComGoogleProtobufDescriptors_FieldDescriptor clearFieldWithComGoogleProtobufDescriptors$FieldDescriptor
-#define addRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor addRepeatedFieldWithComGoogleProtobufDescriptors$FieldDescriptor
-#define newBuilderForFieldWithComGoogleProtobufDescriptors_FieldDescriptor newBuilderForFieldWithComGoogleProtobufDescriptors$FieldDescriptor
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessage$Builder)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessage_Builder)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessage$Builder)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessage_Builder)
 
 #endif // __ComGoogleProtobufMessage_H__

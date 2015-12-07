@@ -186,12 +186,12 @@ string GetJavaClassPrefix(const FileDescriptor *file,
 string GetClassPrefix(const FileDescriptor *file,
                       const Descriptor *containing_type) {
   if (containing_type != NULL) {
-    return ClassName(containing_type) + "$";
+    return ClassName(containing_type) + "_";
   } else {
     if (file->options().java_multiple_files()) {
       return GetPackagePrefix(file);
     } else {
-      return ClassName(file) + "$";
+      return ClassName(file) + "_";
     }
   }
 }
@@ -257,15 +257,6 @@ string JavaPackageToDir(string package_name) {
   return package_dir;
 }
 
-string ToOldStyleName(string name) {
-  size_t start_pos = 0;
-  while ((start_pos = name.find("$", start_pos)) != string::npos) {
-    name.replace(start_pos, 1, "_");
-    start_pos++;
-  }
-  return name;
-}
-
 string ClassName(const Descriptor *descriptor) {
   return GetClassPrefix(descriptor->file(), descriptor->containing_type())
       + descriptor->name();
@@ -274,10 +265,6 @@ string ClassName(const Descriptor *descriptor) {
 string TypeName(const EnumDescriptor *descriptor) {
   return GetClassPrefix(descriptor->file(), descriptor->containing_type())
       + descriptor->name();
-}
-
-string CEnumName(const EnumDescriptor *descriptor) {
-  return TypeName(descriptor) + "_Enum";
 }
 
 string ClassName(const EnumDescriptor *descriptor) {
@@ -289,7 +276,7 @@ string ClassName(const FileDescriptor *descriptor) {
 }
 
 string EnumValueName(const EnumValueDescriptor *descriptor) {
-  return CEnumName(descriptor->type()) + "_" + descriptor->name();
+  return TypeName(descriptor->type()) + "_" + descriptor->name();
 }
 
 string FieldConstantName(const FieldDescriptor *field) {

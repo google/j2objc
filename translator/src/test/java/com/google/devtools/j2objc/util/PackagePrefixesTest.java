@@ -82,7 +82,7 @@ public class PackagePrefixesTest extends GenerationTest {
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getNameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
-    assertEquals("FBSomeClass$Inner", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FBSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   public void testPackageWildcards() throws IOException {

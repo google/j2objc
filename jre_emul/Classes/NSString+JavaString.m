@@ -978,8 +978,8 @@ jint javaStringHashCode(NSString *string) {
     { "contentEqualsStringBuffer:", NULL, "Z", 0x1, NULL },
   };
   static J2ObjcFieldInfo fields[] = {
-    { "CASE_INSENSITIVE_ORDER", NULL, 0x19, "Ljava/util/Comparator;", &NSString_CASE_INSENSITIVE_ORDER },
-    { "serialPersistentFields", NULL, 0x1a, "[Ljava/io/ObjectStreamField;", &NSString_serialPersistentFields },
+    { "CASE_INSENSITIVE_ORDER_", NULL, 0x19, "Ljava/util/Comparator;", &NSString_CASE_INSENSITIVE_ORDER_ },
+    { "serialPersistentFields_", NULL, 0x1a, "[Ljava/io/ObjectStreamField;", &NSString_serialPersistentFields_ },
     { "serialVersionUID_", NULL, 0x1a, "J", NULL, .constantValue.asLong = JavaLangString_serialVersionUID },
   };
   static J2ObjcClassInfo _JavaLangString = {
@@ -1020,16 +1020,16 @@ jint javaStringHashCode(NSString *string) {
 
 J2OBJC_INITIALIZED_DEFN(NSString)
 
-id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER;
-IOSObjectArray *NSString_serialPersistentFields;
+id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER_;
+IOSObjectArray *NSString_serialPersistentFields_;
 
 @implementation JreStringCategoryDummy
 
 + (void)initialize {
   if (self == [JreStringCategoryDummy class]) {
-    JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
+    JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER_,
         [[JavaLangString_CaseInsensitiveComparator alloc] init]);
-    JreStrongAssignAndConsume(&NSString_serialPersistentFields,
+    JreStrongAssignAndConsume(&NSString_serialPersistentFields_,
         [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
     J2OBJC_SET_INITIALIZED(NSString)
   }

@@ -152,9 +152,9 @@ public class RewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_a, "
+        "JreStrongAssignAndConsume(&Test_a_, "
             + "[IOSIntArray newArrayWithInts:(jint[]){ 1, 2, 3 } count:3]);",
-        "JreStrongAssignAndConsume(&Test_b, "
+        "JreStrongAssignAndConsume(&Test_b_, "
             + "[IOSCharArray newArrayWithChars:(jchar[]){ '4', '5' } count:2]);");
   }
 
@@ -177,7 +177,7 @@ public class RewriterTest extends GenerationTest {
   public void testInterfaceFieldsAreStaticFinal() throws IOException {
     String source = "interface Test { String foo = \"bar\"; }";
     String translation = translateSourceFile(source, "Test", "Test.h");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, foo, NSString *)");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, foo_, NSString *)");
     assertFalse(translation.contains("J2OBJC_STATIC_FIELD_SETTER"));
   }
 
@@ -397,7 +397,7 @@ public class RewriterTest extends GenerationTest {
     assertNotInTranslation(translation, "RetainedLocalRef");
     assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *c = "
         + "[new_ComGoogleJ2objcUtilScopedLocalRef_initWithId_("
-        + "JreLoadStatic(NSString, CASE_INSENSITIVE_ORDER)) autorelease];");
+        + "JreLoadStatic(NSString, CASE_INSENSITIVE_ORDER_)) autorelease];");
     assertTranslation(translation,
         "return [((id<JavaUtilComparator>) nil_chk(((id<JavaUtilComparator>) "
         + "cast_check(c->var_, JavaUtilComparator_class_())))) "
@@ -405,7 +405,7 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *thing = "
         + "[new_ComGoogleJ2objcUtilScopedLocalRef_initWithId_(t) autorelease];");
     assertTranslation(translation,
-        "return [((id<JavaUtilComparator>) nil_chk(((Test$Thing *) nil_chk(t))->comp_)) "
+        "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(t))->comp_)) "
         + "compareWithId:s1 withId:s2] == 0;");
   }
 

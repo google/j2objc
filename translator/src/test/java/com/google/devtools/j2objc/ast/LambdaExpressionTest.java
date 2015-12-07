@@ -89,8 +89,8 @@ public class LambdaExpressionTest extends GenerationTest {
   public void testStaticFunctions() throws IOException {
     String translation = translateSourceFile(
         functionHeader + "class Test { static Function staticF = (x) -> x;}", "Test", "Test.m");
-    assertTranslatedSegments(translation, "id<Function> Test_staticF;",
-        "if (self == [Test class]) {", "JreStrongAssign(&Test_staticF, GetNonCapturingLambda");
+    assertTranslatedSegments(translation, "id<Function> Test_staticF_;",
+        "if (self == [Test class]) {", "JreStrongAssign(&Test_staticF_, GetNonCapturingLambda");
   }
 
   public void testNestedLambdas() throws IOException {
@@ -131,7 +131,7 @@ public class LambdaExpressionTest extends GenerationTest {
         + "class Test { class Foo{ class Bar { Function f = x -> x; }}\n"
         + "Function f = x -> x;}",
         "Test", "Test.m");
-    assertTranslatedSegments(translation, "@\"Test_lambda$", "@\"Test$Foo$Bar_lambda");
+    assertTranslatedSegments(translation, "@\"Test_lambda$", "@\"Test_Foo_Bar_lambda");
   }
 
   public void testLargeArgumentCount() throws IOException {

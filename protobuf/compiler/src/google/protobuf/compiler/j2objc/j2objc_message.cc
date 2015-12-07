@@ -90,7 +90,7 @@ MessageGenerator::~MessageGenerator() {
 
 void MessageGenerator::CollectForwardDeclarations(set<string> &declarations)
     const {
-  declarations.insert("@class " + ClassName(descriptor_) + "$Builder");
+  declarations.insert("@class " + ClassName(descriptor_) + "_Builder");
   declarations.insert("@class ComGoogleProtobufDescriptors_Descriptor");
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
@@ -172,10 +172,10 @@ void MessageGenerator::GenerateMessageHeader(io::Printer* printer) {
       "@interface $classname$ : $superclassname$<$classname$OrBuilder>\n\n"
       "+ ($classname$ *)getDefaultInstance;\n"
       "- ($classname$ *)getDefaultInstanceForType;\n"
-      "+ ($classname$$$Builder *)newBuilder OBJC_METHOD_FAMILY_NONE;\n"
-      "- ($classname$$$Builder *)newBuilderForType OBJC_METHOD_FAMILY_NONE;\n"
-      "- ($classname$$$Builder *)toBuilder;\n"
-      "+ ($classname$$$Builder *)newBuilderWith$classname$:"
+      "+ ($classname$_Builder *)newBuilder OBJC_METHOD_FAMILY_NONE;\n"
+      "- ($classname$_Builder *)newBuilderForType OBJC_METHOD_FAMILY_NONE;\n"
+      "- ($classname$_Builder *)toBuilder;\n"
+      "+ ($classname$_Builder *)newBuilderWith$classname$:"
           "($classname$ *)message OBJC_METHOD_FAMILY_NONE;\n"
       "+ (ComGoogleProtobufDescriptors_Descriptor *)getDescriptor;\n"
       "+ ($classname$ *)parseFromWithByteArray:(IOSByteArray *)bytes;\n"
@@ -208,19 +208,11 @@ void MessageGenerator::GenerateMessageHeader(io::Printer* printer) {
   }
 
   printer->Print("\n"
-      "@end\n");
-  string className = ClassName(descriptor_);
-  string oldClassName = ToOldStyleName(className);
-  if (className != oldClassName) {
-    printer->Print(
-        "#define $oldname$ $newname$\n",
-        "oldname", oldClassName,
-        "newname", className);
-  }
-  printer->Print("\n"
+      "@end\n"
+      "\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_getDefaultInstance();\n"
-      "FOUNDATION_EXPORT $classname$$$Builder *$classname$_newBuilder();\n"
-      "FOUNDATION_EXPORT $classname$$$Builder *$classname$_newBuilderWith"
+      "FOUNDATION_EXPORT $classname$_Builder *$classname$_newBuilder();\n"
+      "FOUNDATION_EXPORT $classname$_Builder *$classname$_newBuilderWith"
           "$classname$_($classname$ *message);\n"
       "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
           "*$classname$_getDescriptor();\n"
@@ -336,7 +328,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   printer->Print(
       "};\n"
       "CGPInitDescriptor(&$classname$_descriptor_, "
-          "self, [$classname$$$Builder class], $flags$, "
+          "self, [$classname$_Builder class], $flags$, "
           "sizeof($classname$_Storage), $fieldcount$, fields);\n"
       "",
       "classname", ClassName(descriptor_),
@@ -374,16 +366,16 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
           "autorelease];\n"
       "}\n"
       "\n"
-      "$classname$$$Builder *$classname$_newBuilder() {\n"
+      "$classname$_Builder *$classname$_newBuilder() {\n"
       "  $classname$_initialize();\n"
-      "  return ($classname$$$Builder *)[CGPNewBuilder($classname$_descriptor_)"
-          " autorelease];\n"
+      "  return ($classname$_Builder *)[CGPNewBuilder($classname$_descriptor_) "
+          "autorelease];\n"
       "}\n"
       "\n"
-      "$classname$$$Builder *$classname$_newBuilderWith$classname$_("
+      "$classname$_Builder *$classname$_newBuilderWith$classname$_("
           "$classname$ *message) {\n"
       "  $classname$_initialize();\n"
-      "  return ($classname$$$Builder *)CGPBuilderFromPrototype("
+      "  return ($classname$_Builder *)CGPBuilderFromPrototype("
           "$classname$_descriptor_, message);\n"
       "}\n"
       "\n"
@@ -428,19 +420,19 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
 }
 
 void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
-  string superclassName = "ComGoogleProtobufGeneratedMessage$Builder";
+  string superclassName = "ComGoogleProtobufGeneratedMessage_Builder";
   if (descriptor_->extension_range_count() > 0) {
-    superclassName = "ComGoogleProtobufGeneratedMessage$ExtendableBuilder";
+    superclassName = "ComGoogleProtobufGeneratedMessage_ExtendableBuilder";
   }
 
   printer->Print("\n"
-      "@interface $classname$$$Builder : "
+      "@interface $classname$_Builder : "
           "$superclassname$<$classname$OrBuilder>\n"
       "\n"
       "- ($classname$ *)getDefaultInstanceForType;\n"
-      "- ($classname$$$Builder *)mergeFromWith$classname$:"
+      "- ($classname$_Builder *)mergeFromWith$classname$:"
           "($classname$ *)message;\n"
-      "- ($classname$$$Builder *)mergeFromWithComGoogleProtobufMessage:"
+      "- ($classname$_Builder *)mergeFromWithComGoogleProtobufMessage:"
           "(id<ComGoogleProtobufMessage>)message;\n"
       "- ($classname$ *)build;\n"
       "- ($classname$ *)buildPartial;\n"
@@ -456,35 +448,29 @@ void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
   printer->Print("\n"
       "@end\n\n"
       "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
-          "*$classname$$$Builder_getDescriptor();\n"
+          "*$classname$_Builder_getDescriptor();\n"
       "\n"
-      "J2OBJC_EMPTY_STATIC_INIT($classname$$$Builder)\n"
+      "J2OBJC_EMPTY_STATIC_INIT($classname$_Builder)\n"
       "\n"
-      "J2OBJC_TYPE_LITERAL_HEADER($classname$$$Builder)\n",
+      "J2OBJC_TYPE_LITERAL_HEADER($classname$_Builder)\n",
       "classname", ClassName(descriptor_));
-
-  // TODO(kstanger): Remove when users have migrated.
-  string className = ClassName(descriptor_) + "$Builder";
-  string oldName = ToOldStyleName(className);
-  printer->Print("#define $oldname$ $newname$\n",
-                 "oldname", oldName, "newname", className);
 }
 
 void MessageGenerator::GenerateBuilderSource(io::Printer* printer) {
   printer->Print("\n"
-      "@implementation $classname$$$Builder\n\n"
+      "@implementation $classname$_Builder\n\n"
       "+ (ComGoogleProtobufDescriptors_Descriptor *)getDescriptor {\n"
       "  return [$classname$ getDescriptor];\n"
       "}\n"
       "\n"
       "@end\n"
       "\n"
-      "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$$$Builder)\n"
+      "J2OBJC_CLASS_TYPE_LITERAL_SOURCE($classname$_Builder)\n"
       // We don't generate a source file for the "OrBuilder" protocol.
       "J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE($classname$OrBuilder)\n"
       "\n"
       "ComGoogleProtobufDescriptors_Descriptor "
-          "*$classname$$$Builder_getDescriptor() {\n"
+          "*$classname$_Builder_getDescriptor() {\n"
       "  $classname$_initialize();\n"
       "  return $classname$_descriptor_;\n"
       "}\n",

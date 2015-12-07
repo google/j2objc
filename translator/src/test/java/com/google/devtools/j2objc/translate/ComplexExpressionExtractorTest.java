@@ -63,7 +63,7 @@ public class ComplexExpressionExtractorTest extends GenerationTest {
           + "[new_JavaLangStringBuilder_init() autorelease]) appendWithChar:'a']);",
         "NSString *complex$2 = [((JavaLangStringBuilder *) nil_chk([complex$1 "
           + "appendWithChar:'b'])) description];",
-        "JreStrongAssign(&Test_s, complex$2);");
+        "JreStrongAssign(&Test_s_, complex$2);");
   }
 
   public void testLongExpression() throws IOException {

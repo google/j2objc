@@ -40,7 +40,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "class MyClass {}", "Example", "mypackage/Example.h");
     assertTranslation(translation, "@interface MypackageExample");
     // enum declaration
-    assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MypackageAbcd_Enum) {");
+    assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MypackageAbcd) {");
     assertTranslation(translation, "@interface MypackageAbcdEnum");
     assertTranslation(translation, "@interface MypackageMyClass");
     assertTranslation(translation, "MypackageMyClass *myclass_;");
@@ -101,8 +101,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "package unit.test; public class Example { class Inner {}}",
         "Example", "unit/test/Example.h");
     assertTranslation(translation, "@interface UnitTestExample ");
-    assertTranslation(translation, "Example$Inner");
-    assertTranslation(translation, "@interface UnitTestExample$Inner ");
+    assertTranslation(translation, "Example_Inner");
+    assertTranslation(translation, "@interface UnitTestExample_Inner ");
   }
 
   public void testSuperclassTypeTranslation() throws IOException {
@@ -370,9 +370,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today; }",
         "Example", "Example.h");
     assertTranslatedLines(translation,
-        "FOUNDATION_EXPORT JavaUtilDate *Example_today;",
-        "J2OBJC_STATIC_FIELD_GETTER(Example, today, JavaUtilDate *)",
-        "J2OBJC_STATIC_FIELD_SETTER(Example, today, JavaUtilDate *)");
+        "FOUNDATION_EXPORT JavaUtilDate *Example_today_;",
+        "J2OBJC_STATIC_FIELD_GETTER(Example, today_, JavaUtilDate *)",
+        "J2OBJC_STATIC_FIELD_SETTER(Example, today_, JavaUtilDate *)");
     assertFalse(translation.contains("initialize"));
     assertFalse(translation.contains("dealloc"));
   }
@@ -382,9 +382,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today = new java.util.Date(); }",
         "Example", "Example.h");
     assertTranslatedLines(translation,
-        "FOUNDATION_EXPORT JavaUtilDate *Example_today;",
-        "J2OBJC_STATIC_FIELD_GETTER(Example, today, JavaUtilDate *)",
-        "J2OBJC_STATIC_FIELD_SETTER(Example, today, JavaUtilDate *)");
+        "FOUNDATION_EXPORT JavaUtilDate *Example_today_;",
+        "J2OBJC_STATIC_FIELD_GETTER(Example, today_, JavaUtilDate *)",
+        "J2OBJC_STATIC_FIELD_SETTER(Example, today_, JavaUtilDate *)");
     assertFalse(translation.contains("+ (void)initialize;"));
     assertFalse(translation.contains("dealloc"));
   }
@@ -441,7 +441,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { class Inner {} }",
       "Example", "Example.h");
-    assertTranslation(translation, "@interface Example$Inner : NSObject");
+    assertTranslation(translation, "@interface Example_Inner : NSObject");
     assertNotInTranslation(translation, "Example *this");
     assertTranslation(translation, "- (instancetype)initWithExample:(Example *)outer$;");
   }
@@ -450,7 +450,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { int i; class Inner { void test() { int j = i; } } }",
       "Example", "Example.h");
-    assertTranslation(translation, "@interface Example$Inner : NSObject");
+    assertTranslation(translation, "@interface Example_Inner : NSObject");
     assertTranslation(translation, "- (instancetype)initWithExample:(Example *)outer$;");
     translation = getTranslatedFile("Example.m");
     assertTranslation(translation, "Example *this$0_;");
@@ -461,23 +461,23 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       "public enum Color { RED, WHITE, BLUE }",
       "Color", "Color.h");
     assertTranslatedLines(translation,
-        "typedef NS_ENUM(NSUInteger, Color_Enum) {",
-        "  Color_Enum_RED = 0,",
-        "  Color_Enum_WHITE = 1,",
-        "  Color_Enum_BLUE = 2,",
+        "typedef NS_ENUM(NSUInteger, Color) {",
+        "  Color_RED = 0,",
+        "  Color_WHITE = 1,",
+        "  Color_BLUE = 2,",
         "};");
     assertTranslation(translation, "@interface ColorEnum : JavaLangEnum < NSCopying >");
     assertTranslation(translation, "+ (IOSObjectArray *)values;");
     assertTranslation(translation, "+ (ColorEnum *)valueOfWithNSString:(NSString *)name;");
     assertTranslation(translation, "FOUNDATION_EXPORT ColorEnum *ColorEnum_values_[];");
     assertTranslatedLines(translation,
-        "#define ColorEnum_RED ColorEnum_values_[Color_Enum_RED]",
+        "#define ColorEnum_RED ColorEnum_values_[Color_RED]",
         "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, RED)");
     assertTranslatedLines(translation,
-        "#define ColorEnum_WHITE ColorEnum_values_[Color_Enum_WHITE]",
+        "#define ColorEnum_WHITE ColorEnum_values_[Color_WHITE]",
         "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, WHITE)");
     assertTranslatedLines(translation,
-        "#define ColorEnum_BLUE ColorEnum_values_[Color_Enum_BLUE]",
+        "#define ColorEnum_BLUE ColorEnum_values_[Color_BLUE]",
         "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, BLUE)");
   }
 
@@ -542,7 +542,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { Foo foo; class Foo {} }", "Example", "Example.h");
     // Test that Foo is forward declared because Example contains a field of
     // type Foo and Foo is declared after Example.
-    assertTranslation(translation, "@class Example$Foo;");
+    assertTranslation(translation, "@class Example_Foo;");
   }
 
   public void testAnnotationGeneration() throws IOException {
@@ -580,10 +580,10 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public enum MyEnum { ONE, TWO, THREE }",
         "MyEnum", "MyEnum.h");
-    assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MyEnum_Enum) {");
+    assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MyEnum) {");
     assertTranslation(translation, "@interface MyEnumEnum : JavaLangEnum");
     assertTranslation(translation, "FOUNDATION_EXPORT MyEnumEnum *MyEnumEnum_values_[];");
-    assertTranslation(translation, "#define MyEnumEnum_ONE MyEnumEnum_values_[MyEnum_Enum_ONE]");
+    assertTranslation(translation, "#define MyEnumEnum_ONE MyEnumEnum_values_[MyEnum_ONE]");
   }
 
   public void testNoImportForMappedTypes() throws IOException {
@@ -613,8 +613,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertFalse(header.contains("typedef enum {\n} A_Foo;"));
 
     // Verify there's still a Java enum type.
-    assertTranslation(header, "@interface A$FooEnum : JavaLangEnum");
-    assertTranslation(impl, "@implementation A$FooEnum");
+    assertTranslation(header, "@interface A_FooEnum : JavaLangEnum");
+    assertTranslation(impl, "@implementation A_FooEnum");
   }
 
   public void testEnumWithInterfaces() throws IOException {
@@ -623,7 +623,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "enum Foo implements I, Runnable, Cloneable { "
         + "A, B, C; public void run() {}}}", "A", "A.h");
     assertTranslation(translation,
-        "@interface A$FooEnum : JavaLangEnum < NSCopying, A$I, JavaLangRunnable >");
+        "@interface A_FooEnum : JavaLangEnum < NSCopying, A_I, JavaLangRunnable >");
     assertTranslation(translation, "#include \"java/lang/Runnable.h\"");
   }
 
@@ -661,8 +661,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.m");
     assertTranslatedLines(translation,
-        "__weak FooBar$Internal *fieldBar_;",
-        "FooBar$Internal *fieldFoo_;");
+        "__weak FooBar_Internal *fieldBar_;",
+        "FooBar_Internal *fieldFoo_;");
   }
 
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
@@ -693,8 +693,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD) "
         + "public @interface Initialize {}}";
     String translation = translateSourceFile(source, "Test", "Test.h");
-    assertTranslation(translation, "@protocol Test$Initialize < JavaLangAnnotationAnnotation >");
-    assertTranslation(translation, "@interface Test$Initialize : NSObject < Test$Initialize >");
+    assertTranslation(translation, "@protocol Test_Initialize < JavaLangAnnotationAnnotation >");
+    assertTranslation(translation, "@interface Test_Initialize : NSObject < Test_Initialize >");
   }
 
   public void testFieldSetterGeneration() throws IOException {

@@ -324,16 +324,7 @@ public class NameTable {
    * or suffix attached.
    */
   public String getVariableBaseName(IVariableBinding var) {
-    return getVariableBaseName(var, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param when users have migrated.
-  public String getVariableBaseName(IVariableBinding var, boolean oldStyle) {
-    if (oldStyle) {
-      return getVarBaseName(var, BindingUtil.isPrimitiveConstant(var) || var.isEnumConstant());
-    } else {
-      return getVarBaseName(var, BindingUtil.isGlobalVar(var));
-    }
+    return getVarBaseName(var, BindingUtil.isPrimitiveConstant(var) || var.isEnumConstant());
   }
 
   /**
@@ -379,15 +370,8 @@ public class NameTable {
    * Gets the non-qualified variable name, with underscore suffix.
    */
   public String getVariableShortName(IVariableBinding var) {
-    return getVariableShortName(var, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param when users have migrated.
-  public String getVariableShortName(IVariableBinding var, boolean oldStyle) {
-    String baseName = getVariableBaseName(var, oldStyle);
-    if (var.isField() && (oldStyle
-        ? (!BindingUtil.isPrimitiveConstant(var) && !var.isEnumConstant())
-        : !BindingUtil.isGlobalVar(var))) {
+    String baseName = getVariableBaseName(var);
+    if (var.isField() && !BindingUtil.isPrimitiveConstant(var) && !var.isEnumConstant()) {
       return baseName + '_';
     }
     return baseName;
@@ -397,12 +381,7 @@ public class NameTable {
    * Gets the name of the variable as it is declared in ObjC, fully qualified.
    */
   public String getVariableQualifiedName(IVariableBinding var) {
-    return getVariableQualifiedName(var, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param when users have migrated.
-  public String getVariableQualifiedName(IVariableBinding var, boolean oldStyle) {
-    String shortName = getVariableShortName(var, oldStyle);
+    String shortName = getVariableShortName(var);
     if (BindingUtil.isGlobalVar(var)) {
       return getFullName(var.getDeclaringClass()) + '_' + shortName;
     }
@@ -455,9 +434,7 @@ public class NameTable {
 
   // TODO(kstanger): See whether the logic in this method can be simplified.
   //     Also, what about type variables?
-  // TODO(kstanger): Remove oldStyle param when users have migrated
-  private String getArrayTypeParameterKeyword(
-      ITypeBinding elementType, int dimensions, boolean oldStyle) {
+  private String getArrayTypeParameterKeyword(ITypeBinding elementType, int dimensions) {
     if (elementType.isParameterizedType()) {
       elementType = elementType.getErasure();
     }
@@ -470,36 +447,30 @@ public class NameTable {
         elementType = bound;
       }
     }
-    String name = getFullName(elementType, oldStyle) + "Array";
+    String name = getFullName(elementType) + "Array";
     if (dimensions > 1) {
       name += dimensions;
     }
     return name;
   }
 
-  // TODO(kstanger): Remove oldStyle param when users have migrated
-  private String getParameterTypeKeyword(ITypeBinding type, boolean oldStyle) {
+  private String getParameterTypeKeyword(ITypeBinding type) {
     if (typeEnv.isIdType(type) || type.isTypeVariable()) {
       ITypeBinding[] bounds = type.getTypeBounds();
       if (bounds.length > 0) {
-        return getParameterTypeKeyword(bounds[0], oldStyle);
+        return getParameterTypeKeyword(bounds[0]);
       }
       return ID_TYPE;
     } else if (type.isPrimitive()) {
       return type.getName();
     } else if (type.isArray()) {
-      return getArrayTypeParameterKeyword(type.getElementType(), type.getDimensions(), oldStyle);
+      return getArrayTypeParameterKeyword(type.getElementType(), type.getDimensions());
     }
-    return getFullName(type, oldStyle);
+    return getFullName(type);
   }
 
   public String parameterKeyword(ITypeBinding type) {
-    return parameterKeyword(type, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param when users have migrated
-  private String parameterKeyword(ITypeBinding type, boolean oldStyle) {
-    return "with" + capitalize(getParameterTypeKeyword(type, oldStyle));
+    return "with" + capitalize(getParameterTypeKeyword(type));
   }
 
   private static final Pattern SELECTOR_VALIDATOR = Pattern.compile("\\w+|(\\w+\\:)+");
@@ -521,13 +492,12 @@ public class NameTable {
     return name;
   }
 
-  // TODO(kstanger): Remove oldStyle param when users have migrated
-  private String addParamNames(IMethodBinding method, String name, char delim, boolean oldStyle) {
+  private String addParamNames(IMethodBinding method, String name, char delim) {
     method = method.getMethodDeclaration();
     StringBuilder sb = new StringBuilder(name);
     ITypeBinding[] paramTypes = method.getParameterTypes();
     for (int i = 0; i < paramTypes.length; i++) {
-      String keyword = parameterKeyword(paramTypes[i], oldStyle);
+      String keyword = parameterKeyword(paramTypes[i]);
       if (i == 0) {
         keyword = capitalize(keyword);
       }
@@ -537,11 +507,6 @@ public class NameTable {
   }
 
   public String getMethodSelector(IMethodBinding method) {
-    return getMethodSelector(method, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param when users have migrated.
-  public String getMethodSelector(IMethodBinding method, boolean oldStyle) {
     if (method instanceof IOSMethodBinding) {
       return ((IOSMethodBinding) method).getSelector();
     }
@@ -549,9 +514,9 @@ public class NameTable {
       return DEALLOC_METHOD;
     }
     if (method.isConstructor() || BindingUtil.isStatic(method)) {
-      return selectorForOriginalBinding(method, oldStyle);
+      return selectorForOriginalBinding(method);
     }
-    return selectorForOriginalBinding(getOriginalMethodBindings(method).get(0), oldStyle);
+    return selectorForOriginalBinding(getOriginalMethodBindings(method).get(0));
   }
 
   private String getRenamedMethodName(IMethodBinding method) {
@@ -568,21 +533,15 @@ public class NameTable {
   }
 
   public String selectorForMethodName(IMethodBinding method, String name) {
-    return selectorForMethodName(method, name, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle after users have migrated.
-  private String selectorForMethodName(IMethodBinding method, String name, boolean oldStyle) {
     if (name.contains(":")) {
       return name;
     }
-    return addParamNames(method, name, ':', oldStyle);
+    return addParamNames(method, name, ':');
   }
 
-  private String selectorForOriginalBinding(IMethodBinding method, boolean oldStyle) {
+  private String selectorForOriginalBinding(IMethodBinding method) {
     String selector = getRenamedMethodName(method);
-    return selectorForMethodName(
-        method, selector != null ? selector : getMethodName(method), oldStyle);
+    return selectorForMethodName(method, selector != null ? selector : getMethodName(method));
   }
 
   /**
@@ -597,9 +556,9 @@ public class NameTable {
     }
     List<IMethodBinding> originalMethods = getOriginalMethodBindings(method);
     List<String> extraSelectors = Lists.newArrayList();
-    String actualSelector = selectorForOriginalBinding(originalMethods.get(0), false);
+    String actualSelector = selectorForOriginalBinding(originalMethods.get(0));
     for (int i = 1; i < originalMethods.size(); i++) {
-      String selector = selectorForOriginalBinding(originalMethods.get(i), false);
+      String selector = selectorForOriginalBinding(originalMethods.get(i));
       if (!selector.equals(actualSelector)) {
         extraSelectors.add(selector);
       }
@@ -613,13 +572,7 @@ public class NameTable {
    * guaranteed to be unique within the app.
    */
   public String getFullFunctionName(IMethodBinding method) {
-    return getFullFunctionName(method, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param when users have migrated.
-  public String getFullFunctionName(IMethodBinding method, boolean oldStyle) {
-    return getFullName(method.getDeclaringClass(), oldStyle) + '_'
-        + getFunctionName(method, oldStyle);
+    return getFullName(method.getDeclaringClass()) + '_' + getFunctionName(method);
   }
 
   /**
@@ -631,8 +584,7 @@ public class NameTable {
   public String getMethodReferenceName(IMethodBinding method, IMethodBinding functionalInterface) {
     if (method.isVarargs()) {
       return getFullName(method.getDeclaringClass()) + '_'
-          + addParamNames(functionalInterface.getMethodDeclaration(), getMethodName(method), '_',
-                          false);
+          + addParamNames(functionalInterface.getMethodDeclaration(), getMethodName(method), '_');
     } else {
       return getFullFunctionName(method);
     }
@@ -672,12 +624,7 @@ public class NameTable {
    * the form of "new_TypeName_ConstructorName".
    */
   public String getAllocatingConstructorName(IMethodBinding method) {
-    return getAllocatingConstructorName(method, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param when users have migrated.
-  public String getAllocatingConstructorName(IMethodBinding method, boolean oldStyle) {
-    return "new_" + getFullFunctionName(method, oldStyle);
+    return "new_" + getFullFunctionName(method);
   }
 
   /**
@@ -687,17 +634,12 @@ public class NameTable {
    * prefix to avoid collisions with methods from other classes.
    */
   public String getFunctionName(IMethodBinding method) {
-    return getFunctionName(method, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param when users have migrated.
-  public String getFunctionName(IMethodBinding method, boolean oldStyle) {
     method = method.getMethodDeclaration();
     String name = getRenamedMethodName(method);
     if (name != null) {
       return name.replaceAll(":", "_");
     } else {
-      return addParamNames(method, getMethodName(method), '_', oldStyle);
+      return addParamNames(method, getMethodName(method), '_');
     }
   }
 
@@ -916,17 +858,11 @@ public class NameTable {
    * name is "JavaUtilArrayList_ListItr".
    */
   public String getFullName(ITypeBinding binding) {
-    return getFullName(binding, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param after users migrate.
-  public String getFullName(ITypeBinding binding, boolean oldStyle) {
-    String name = getFullNameInner(binding, oldStyle);
+    String name = getFullNameInner(binding);
     return binding.isEnum() ? (name + "Enum") : name;
   }
 
-  // TODO(kstanger): Remove oldStyle param after users migrate.
-  private String getFullNameInner(ITypeBinding binding, boolean oldStyle) {
+  private String getFullNameInner(ITypeBinding binding) {
     binding = typeEnv.mapType(binding.getErasure());  // Make sure type variables aren't included.
 
     // Use ObjectiveCType annotation, if it exists.
@@ -937,8 +873,7 @@ public class NameTable {
 
     ITypeBinding outerBinding = binding.getDeclaringClass();
     if (outerBinding != null) {
-      return getFullNameInner(outerBinding, oldStyle) + (oldStyle ? '_' : '$')
-          + getTypeSubName(binding);
+      return getFullNameInner(outerBinding) + '_' + getTypeSubName(binding);
     }
     String name = binding.getQualifiedName();
 

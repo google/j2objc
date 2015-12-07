@@ -105,7 +105,7 @@ typedef struct CGPFieldData {
   CGPFieldJavaType javaType_;
   // Either nil, a Descriptor or a EnumDescriptor depending on the field type.
   id valueType_;
-  ComGoogleProtobufDescriptorProtos$FieldOptions *fieldOptions_;
+  ComGoogleProtobufDescriptorProtos_FieldOptions *fieldOptions_;
 }
 
 - (instancetype)initWithData:(CGPFieldData *)data;
@@ -194,15 +194,15 @@ CGP_ALWAYS_INLINE inline uint32_t CGPFieldGetOffset(const CGPFieldDescriptor *fi
 }
 
 CGP_ALWAYS_INLINE inline BOOL CGPTypeIsGroup(CGPFieldType type) {
-  return type == ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_GROUP;
+  return type == ComGoogleProtobufDescriptors_FieldDescriptor_Type_GROUP;
 }
 
 CGP_ALWAYS_INLINE inline BOOL CGPJavaTypeIsMessage(CGPFieldJavaType type) {
-  return type == ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_MESSAGE;
+  return type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_MESSAGE;
 }
 
 CGP_ALWAYS_INLINE inline BOOL CGPJavaTypeIsEnum(CGPFieldJavaType type) {
-  return type == ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_ENUM;
+  return type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_ENUM;
 }
 
 CGP_ALWAYS_INLINE inline int CGPEnumGetIntValue(CGPEnumDescriptor *descriptor, id enumObj) {
@@ -224,20 +224,20 @@ CF_EXTERN_C_END
 // The remainder of this file is copied from the translation of the types
 // FieldDescriptor.Type and FieldDescriptor.JavaType in Descriptor.java.
 
-@interface ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum () {
+@interface ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum () {
  @public
-  ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum *javaType_;
+  ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum *javaType_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum, javaType_, ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum *)
+J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum, javaType_, ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum *)
 
-@interface ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum () {
+@interface ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum () {
  @public
   id defaultDefault_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum, defaultDefault_, id)
+J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum, defaultDefault_, id)
 
 #endif // __ComGoogleProtobufDescriptors_PackagePrivate_H__

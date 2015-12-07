@@ -197,7 +197,7 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         + "  if (DEBUG && TEST && nonConstant) return false; "
         + "  return true; }}", "A", "A.m");
     assertTranslatedLines(translation,
-        "- (jboolean)test {", "if (A_nonConstant) return false;", "return true;", "}");
+        "- (jboolean)test {", "if (A_nonConstant_) return false;", "return true;", "}");
   }
 
   // Verify that volatile loads aren't pruned because they provide a memory

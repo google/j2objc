@@ -155,7 +155,7 @@ namespace {
     } else if (type == JAVATYPE_MESSAGE) {
       string classname = ClassName(descriptor->message_type());
       declarations.insert("@class " + classname);
-      declarations.insert("@class " + classname + "$Builder");
+      declarations.insert("@class " + classname + "_Builder");
     }
   }
 }  // namespace
@@ -217,30 +217,14 @@ void SingleFieldGenerator::CollectSourceImports(set<string> &imports) const {
 void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     const {
   printer->Print(variables_, "\n"
-      "- ($classname$$$Builder *)set$capitalized_name$With$parameter_type$:\n"
+      "- ($classname$_Builder *)set$capitalized_name$With$parameter_type$:\n"
       "    ($storage_type$)value;\n"
-      "- ($classname$$$Builder *)clear$capitalized_name$;\n");
-  // TODO(kstanger): Remove when users have migrated.
-  string paramType = variables_.at("parameter_type");
-  string oldParamType = ToOldStyleName(paramType);
-  if (paramType != oldParamType) {
-    printer->Print(
-        "#define set$capitalized_name$With$oldtype$"
-        " set$capitalized_name$With$newtype$\n",
-        "capitalized_name", variables_.at("capitalized_name"),
-        "oldtype", oldParamType, "newtype", paramType);
-  }
+      "- ($classname$_Builder *)clear$capitalized_name$;\n");
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
-        "- ($classname$$$Builder*)\n"
-        "    set$capitalized_name$With$parameter_type$$$Builder:\n"
-        "    ($parameter_type$$$Builder *)value;\n");
-    // TODO(kstanger): Remove when users have migrated.
-    printer->Print(
-        "#define set$capitalized_name$With$oldtype$_Builder"
-        " set$capitalized_name$With$newtype$$$Builder\n",
-        "capitalized_name", variables_.at("capitalized_name"),
-        "oldtype", oldParamType, "newtype", paramType);
+        "- ($classname$_Builder*)\n"
+        "    set$capitalized_name$With$parameter_type$_Builder:\n"
+        "    ($parameter_type$_Builder *)value;\n");
   }
 }
 
@@ -279,35 +263,19 @@ void RepeatedFieldGenerator::CollectMessageOrBuilderImports(set<string> &imports
 void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
     const {
   printer->Print(variables_,
-      "- ($classname$$$Builder*)set$capitalized_name$WithInt:(int)index\n"
+      "- ($classname$_Builder*)set$capitalized_name$WithInt:(int)index\n"
       "    with$parameter_type$:($storage_type$)value;\n"
-      "- ($classname$$$Builder*)add$capitalized_name$With$parameter_type$:\n"
+      "- ($classname$_Builder*)add$capitalized_name$With$parameter_type$:\n"
       "    ($storage_type$)value;\n"
-      "- ($classname$$$Builder*)addAll$capitalized_name$WithJavaLangIterable:\n"
+      "- ($classname$_Builder*)addAll$capitalized_name$WithJavaLangIterable:\n"
       "    (id<JavaLangIterable>)values;\n"
-      "- ($classname$$$Builder*)clear$capitalized_name$;\n"
+      "- ($classname$_Builder*)clear$capitalized_name$;\n"
   );
-  // TODO(kstanger): Remove when users have migrated.
-  string paramType = variables_.at("parameter_type");
-  string oldParamType = ToOldStyleName(paramType);
-  if (paramType != oldParamType) {
-    printer->Print(
-        "#define add$capitalized_name$With$oldtype$"
-        " add$capitalized_name$With$newtype$\n",
-        "capitalized_name", variables_.at("capitalized_name"),
-        "oldtype", oldParamType, "newtype", paramType);
-  }
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
-        "- ($classname$$$Builder*)\n"
-        "    add$capitalized_name$With$parameter_type$$$Builder:\n"
-        "    ($parameter_type$$$Builder *)value;\n");
-    // TODO(kstanger): Remove when users have migrated.
-    printer->Print(
-        "#define add$capitalized_name$With$oldtype$_Builder"
-        " add$capitalized_name$With$newtype$$$Builder\n",
-        "capitalized_name", variables_.at("capitalized_name"),
-        "oldtype", oldParamType, "newtype", paramType);
+        "- ($classname$_Builder*)\n"
+        "    add$capitalized_name$With$parameter_type$_Builder:\n"
+        "    ($parameter_type$_Builder *)value;\n");
   }
 }
 

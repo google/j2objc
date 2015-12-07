@@ -72,15 +72,9 @@ void ExtensionGenerator::CollectSourceImports(set<string> &imports) {
 void ExtensionGenerator::GenerateMembersHeader(io::Printer* printer) {
   printer->Print(
       "\nFOUNDATION_EXPORT ComGoogleProtobufGeneratedMessage_GeneratedExtension"
-          " *$classname$_$name$;\n"
-      "J2OBJC_STATIC_FIELD_GETTER($classname$, $name$, "
+          " *$classname$_$name$_;\n"
+      "J2OBJC_STATIC_FIELD_GETTER($classname$, $name$_, "
           "ComGoogleProtobufGeneratedMessage_GeneratedExtension *)\n",
-      "name", UnderscoresToCamelCase(descriptor_),
-      "classname", ContainingClassName(descriptor_));
-  // TODO(kstanger): Remove when users have migrated.
-  printer->Print(
-      "#define $classname$_$name$_ $classname$_$name$\n"
-      "#define $classname$_get_$name$_ $classname$_get_$name$\n",
       "name", UnderscoresToCamelCase(descriptor_),
       "classname", ContainingClassName(descriptor_));
 }

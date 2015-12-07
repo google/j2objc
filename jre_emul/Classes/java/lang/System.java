@@ -82,25 +82,25 @@ public class System {
 
   public static native void setIn(InputStream newIn) /*-[
 #if __has_feature(objc_arc)
-    JavaLangSystem_in = newIn;
+    JavaLangSystem_in_ = newIn;
 #else
-    JreStrongAssign(&JavaLangSystem_in, newIn);
+    JreStrongAssign(&JavaLangSystem_in_, newIn);
 #endif
   ]-*/;
 
   public static native void setOut(java.io.PrintStream newOut) /*-[
 #if __has_feature(objc_arc)
-    JavaLangSystem_out = newOut;
+    JavaLangSystem_out_ = newOut;
 #else
-    JreStrongAssign(&JavaLangSystem_out, newOut);
+    JreStrongAssign(&JavaLangSystem_out_, newOut);
 #endif
   ]-*/;
 
   public static native void setErr(java.io.PrintStream newErr)  /*-[
 #if __has_feature(objc_arc)
-    JavaLangSystem_err = newErr;
+    JavaLangSystem_err_ = newErr;
 #else
-    JreStrongAssign(&JavaLangSystem_err, newErr);
+    JreStrongAssign(&JavaLangSystem_err_, newErr);
 #endif
   ]-*/;
 
@@ -152,40 +152,40 @@ public class System {
   public native static Properties getProperties() /*-[
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-      JreStrongAssignAndConsume(&JavaLangSystem_props, [[JavaUtilProperties alloc] init]);
+      JreStrongAssignAndConsume(&JavaLangSystem_props_, [[JavaUtilProperties alloc] init]);
 
-      [JavaLangSystem_props setPropertyWithNSString:@"java.class.path" withNSString:@""];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.class.version" withNSString:@"0"];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.compiler" withNSString:@""];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.ext.dirs" withNSString:@""];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.library.path" withNSString:@""];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.specification.name"
-                                       withNSString:@"J2ObjC"];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.specification.vendor"
-                                       withNSString:@"J2ObjC"];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.specification.version"
-                                       withNSString:@"0"];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.vendor" withNSString:@"J2ObjC"];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.vendor.url"
-                                       withNSString:@"http://j2objc.org/"];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.version" withNSString:@"0"];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.vm.name" withNSString:@""];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.vm.specification.name"
-                                       withNSString:@"J2ObjC"];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.vm.specification.vendor"
-                                       withNSString:@"J2ObjC"];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.vm.specification.version"
-                                       withNSString:@"0"];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.vm.vendor" withNSString:@"J2ObjC"];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.vm.version" withNSString:@"0"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.class.path" withNSString:@""];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.class.version" withNSString:@"0"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.compiler" withNSString:@""];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.ext.dirs" withNSString:@""];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.library.path" withNSString:@""];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.specification.name"
+                                        withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.specification.vendor"
+                                        withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.specification.version"
+                                        withNSString:@"0"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vendor" withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vendor.url"
+                                        withNSString:@"http://j2objc.org/"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.version" withNSString:@"0"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.name" withNSString:@""];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.specification.name"
+                                        withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.specification.vendor"
+                                        withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.specification.version"
+                                        withNSString:@"0"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.vendor" withNSString:@"J2ObjC"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.vm.version" withNSString:@"0"];
 
       // Get os.arch from J2OBJC_BUILD_ARCH defined in fat_lib.mk.
       #define J2OBJC_BUILD_ARCH_STRINGIFY(x) #x
       #define J2OBJC_BUILD_ARCH_CSTR(x) J2OBJC_BUILD_ARCH_STRINGIFY(x)
       #define J2OBJC_BUILD_ARCH_NSSTR ([NSString stringWithUTF8String: \
                                         J2OBJC_BUILD_ARCH_CSTR(J2OBJC_BUILD_ARCH)])
-      [JavaLangSystem_props setPropertyWithNSString:@"os.arch"
-                                       withNSString:J2OBJC_BUILD_ARCH_NSSTR];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"os.arch"
+                                        withNSString:J2OBJC_BUILD_ARCH_NSSTR];
       #undef J2OBJC_BUILD_ARCH_NSSTR
       #undef J2OBJC_BUILD_ARCH_CSTR
       #undef J2OBJC_BUILD_ARCH_STRINGIFY
@@ -244,42 +244,42 @@ public class System {
 #endif  // #if TARGET_OS_IPHONE || TARGET_OS_IPHONE_SIMULATOR
       }
 
-      [JavaLangSystem_props setPropertyWithNSString:@"os.version" withNSString:versionString];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"os.version" withNSString:versionString];
 
-      [JavaLangSystem_props setPropertyWithNSString:@"file.separator" withNSString:@"/"];
-      [JavaLangSystem_props setPropertyWithNSString:@"line.separator" withNSString:@"\n"];
-      [JavaLangSystem_props setPropertyWithNSString:@"path.separator" withNSString:@":"];
-      [JavaLangSystem_props setPropertyWithNSString:@"org.xml.sax.driver"
-                                       withNSString:@"org.xmlpull.v1.sax2.Driver"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"file.separator" withNSString:@"/"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"line.separator" withNSString:@"\n"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"path.separator" withNSString:@":"];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"org.xml.sax.driver"
+                                        withNSString:@"org.xmlpull.v1.sax2.Driver"];
 
       NSString *homeDirectory = NSHomeDirectory();
-      [JavaLangSystem_props setPropertyWithNSString:@"user.home" withNSString:homeDirectory];
-      [JavaLangSystem_props setPropertyWithNSString:@"user.name" withNSString:NSUserName()];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"user.home" withNSString:homeDirectory];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"user.name" withNSString:NSUserName()];
 
 #if TARGET_IPHONE_SIMULATOR
-      [JavaLangSystem_props setPropertyWithNSString:@"os.name" withNSString:@"iPhone Simulator"];
-      [JavaLangSystem_props
+      [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"iPhone Simulator"];
+      [JavaLangSystem_props_
           setPropertyWithNSString:@"user.dir"
                      withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
 #elif TARGET_OS_IPHONE
-      [JavaLangSystem_props setPropertyWithNSString:@"os.name" withNSString:@"iPhone"];
-      [JavaLangSystem_props
+      [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"iPhone"];
+      [JavaLangSystem_props_
           setPropertyWithNSString:@"user.dir"
                      withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
 #else
       if (onSimulator) {
-        [JavaLangSystem_props setPropertyWithNSString:@"os.name" withNSString:@"iPhone Simulator"];
-        [JavaLangSystem_props
+        [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"iPhone Simulator"];
+        [JavaLangSystem_props_
             setPropertyWithNSString:@"user.dir"
                        withNSString:[homeDirectory stringByAppendingString:@"/Documents"]];
       } else {
-        [JavaLangSystem_props setPropertyWithNSString:@"os.name" withNSString:@"Mac OS X"];
+        [JavaLangSystem_props_ setPropertyWithNSString:@"os.name" withNSString:@"Mac OS X"];
         NSString *curDir = [[NSFileManager defaultManager] currentDirectoryPath];
         if ([curDir isEqualToString:@"/"]) {
           // Workaround for simulator bug.
           curDir = [homeDirectory stringByAppendingString:@"/Documents"];
         }
-        [JavaLangSystem_props setPropertyWithNSString:@"user.dir" withNSString:curDir];
+        [JavaLangSystem_props_ setPropertyWithNSString:@"user.dir" withNSString:curDir];
       }
 #endif
 
@@ -288,8 +288,8 @@ public class System {
       if (iLast >= 0 && [tmpDir characterAtIndex:iLast] == '/') {
         tmpDir = [tmpDir substringToIndex:iLast];
       }
-      [JavaLangSystem_props setPropertyWithNSString:@"java.io.tmpdir" withNSString:tmpDir];
-      [JavaLangSystem_props setPropertyWithNSString:@"java.home"
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.io.tmpdir" withNSString:tmpDir];
+      [JavaLangSystem_props_ setPropertyWithNSString:@"java.home"
                                         withNSString:[[NSBundle mainBundle] bundlePath]];
 
       char *fileEncoding = getenv("file_encoding");  // Shell variables cannot have periods.
@@ -299,7 +299,7 @@ public class System {
       if (fileEncoding) {
         NSString *enc = [NSString stringWithCString:fileEncoding
                                            encoding:[NSString defaultCStringEncoding]];
-        [JavaLangSystem_props setPropertyWithNSString:@"file.encoding" withNSString:enc];
+        [JavaLangSystem_props_ setPropertyWithNSString:@"file.encoding" withNSString:enc];
       }
 
       // These properties are used to define the default Locale.
@@ -307,18 +307,18 @@ public class System {
       NSDictionary *components = [NSLocale componentsFromLocaleIdentifier:localeId];
       NSString *language = [components objectForKey:NSLocaleLanguageCode];
       if (language) {
-        [JavaLangSystem_props setPropertyWithNSString:@"user.language" withNSString:language];
+        [JavaLangSystem_props_ setPropertyWithNSString:@"user.language" withNSString:language];
       }
       NSString *country = [components objectForKey:NSLocaleCountryCode];
       if (country) {
-        [JavaLangSystem_props setPropertyWithNSString:@"user.region" withNSString:country];
+        [JavaLangSystem_props_ setPropertyWithNSString:@"user.region" withNSString:country];
       }
       NSString *variant = [components objectForKey:NSLocaleVariantCode];
       if (variant) {
-        [JavaLangSystem_props setPropertyWithNSString:@"user.variant" withNSString:variant];
+        [JavaLangSystem_props_ setPropertyWithNSString:@"user.variant" withNSString:variant];
       }
     });
-    return JavaLangSystem_props;
+    return JavaLangSystem_props_;
   ]-*/;
 
   public static String getProperty(String key) {

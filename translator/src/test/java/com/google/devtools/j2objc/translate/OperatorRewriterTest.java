@@ -111,12 +111,12 @@ public class OperatorRewriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "jint li = JreLoadVolatileInt(&i_);",
         "JreAssignVolatileInt(&i_, 2);",
-        "li = JreLoadVolatileInt(&Test_si);",
-        "JreAssignVolatileInt(&Test_si, 3);",
+        "li = JreLoadVolatileInt(&Test_si_);",
+        "JreAssignVolatileInt(&Test_si_, 3);",
         "NSString *ls = JreLoadVolatileId(&s_);",
         "JreVolatileStrongAssign(&s_, @\"foo\");",
-        "ls = JreLoadVolatileId(&Test_vs);",
-        "JreVolatileStrongAssign(&Test_vs, @\"foo\");",
+        "ls = JreLoadVolatileId(&Test_vs_);",
+        "JreVolatileStrongAssign(&Test_vs_, @\"foo\");",
         "ls = JreLoadVolatileId(&ws_);",
         "JreAssignVolatileId(&ws_, @\"foo\");");
   }

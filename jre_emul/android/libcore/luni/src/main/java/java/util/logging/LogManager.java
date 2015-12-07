@@ -174,7 +174,7 @@ public class LogManager {
       // DISABLE_JAVA_LOG_CONFIGURATION to non-zero in project.
       #if !defined(DISABLE_JAVA_LOG_CONFIGURATION) || DISABLE_JAVA_LOG_CONFIGURATION == 0
         @try {
-          [JavaUtilLoggingLogManager_manager readConfiguration];
+          [JavaUtilLoggingLogManager_manager_ readConfiguration];
         }
         @catch (JavaIoIOException *e) {
           [e printStackTrace];
