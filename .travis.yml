@@ -15,8 +15,8 @@ before_script:
   - scripts/osx-set-java.sh
 
 # Travis-CI kills the build after 50 minutes, so break it up into
-# smaller commands.
-script: make -j4 dist
+# smaller commands and only bulid two archs.
+script: J2OBJC_ARCHS="macosx iphone" make -j4 dist
 after_script:
   - make test_translator
   - make test_cycle_finder
