@@ -1,10 +1,10 @@
 Build Requirements
 ==================
 
-This package must be built on a Mac OS X system, with:
+This package must be built on an OS X system, with:
 
- * Xcode 4 or higher (https://developer.apple.com/xcode/index.php)
- * Java for OS X (http://support.apple.com/downloads/#java)
+ * Xcode 7.1.1 or higher (https://developer.apple.com/xcode/)
+ * JDK for OS X (http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
  * Apache Maven (http://maven.apache.org/)
 
 Build Instructions
