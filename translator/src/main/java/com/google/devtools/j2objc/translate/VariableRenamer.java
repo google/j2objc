@@ -64,7 +64,7 @@ public class VariableRenamer extends TreeVisitor {
       }
       for (IVariableBinding field : type.getDeclaredFields()) {
         String fieldName = field.getName();
-        if (BindingUtil.isPrimitiveConstant(field) || field.isEnumConstant()) {
+        if (BindingUtil.isGlobalVar(field)) {
           if (staticMethodNames.contains(fieldName)) {
             while (staticMethodNames.contains(fieldName)) {
               fieldName += "_";

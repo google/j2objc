@@ -427,7 +427,7 @@ public class AutoboxerTest extends GenerationTest {
         + "void test(Entry<? extends Long> entry) { long l = entry.getValue(); } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "jlong l = [((JavaLangLong *) nil_chk([((id<Test_Entry>) nil_chk(entry_)) "
+        "jlong l = [((JavaLangLong *) nil_chk([((id<Test$Entry>) nil_chk(entry_)) "
         + "getValue])) longLongValue];");
   }
 

@@ -101,7 +101,7 @@ public class FunctionizerTest extends GenerationTest {
         + "  private String str() { super.hello = \"hi\"; return super.hello; }}}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "NSString *A_B_str(A_B *self) {",
+        "NSString *A$B_str(A$B *self) {",
         "JreStrongAssign(&self->hello_, @\"hi\");",
         "return self->hello_;");
   }
@@ -188,8 +188,8 @@ public class FunctionizerTest extends GenerationTest {
         + "    private void test(B b) { b.test(); }}}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "- (void)testWithA_B:(A_B *)b {",
-        "A_B_test(nil_chk(b));");
+        "- (void)testWithA$B:(A$B *)b {",
+        "A$B_test(nil_chk(b));");
   }
 
   // Verify annotation parameters are ignored.
@@ -318,7 +318,7 @@ public class FunctionizerTest extends GenerationTest {
         + "  void use() { test2(); }}",
         "A", "A.m");
     // Verify static class function calls class init.
-    assertTranslatedLines(translation, "id A_foo() {", "A_initialize();", "return A_o_;", "}");
+    assertTranslatedLines(translation, "id A_foo() {", "A_initialize();", "return A_o;", "}");
     // Verify class method doesn't call class init.
     assertTranslatedLines(translation, "- (void)test {", "A_foo();", "}");
     // Verify non-static class function doesn't call class init.
@@ -338,7 +338,7 @@ public class FunctionizerTest extends GenerationTest {
         "AEnum_initialize();", "for (int i = 0; i < 2; i++) {");
     // Verify static class function calls class init.
     assertTranslatedLines(translation,
-        "id AEnum_foo() {", "AEnum_initialize();", "return AEnum_o_;", "}");
+        "id AEnum_foo() {", "AEnum_initialize();", "return AEnum_o;", "}");
     // Verify class method doesn't call class init.
     assertTranslatedLines(translation, "- (void)test {", "AEnum_foo();", "}");
     // Verify non-static class function doesn't call class init.
@@ -471,7 +471,7 @@ public class FunctionizerTest extends GenerationTest {
         + "static class Foo extends Base { void test2() { super.test(); } }}", "A", "A.m");
     assertTranslatedLines(translation,
         "- (void)test2 {",
-        "  A_Base_test();",
+        "  A$Base_test();",
         "}");
   }
 

@@ -109,6 +109,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printInnerDeclarations();
     printDisallowedConstructors();
     println("\n@end");
+    // TODO(kstanger): Remove after users have migrated.
+    if (!oldTypeName.equals(typeName)) {
+      printf("#define %s %s\n", oldTypeName, typeName);
+    }
 
     printCompanionClassDeclaration();
     printStaticInitFunction();
@@ -145,8 +149,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     List<EnumConstantDeclaration> constants = ((EnumDeclaration) typeNode).getEnumConstants();
 
     // Strip enum type suffix.
-    String bareTypeName =
-        typeName.endsWith("Enum") ? typeName.substring(0, typeName.length() - 4) : typeName;
+    String bareTypeName = typeName.endsWith("Enum")
+        ? typeName.substring(0, typeName.length() - 4) + "_Enum" : typeName;
 
     // C doesn't allow empty enum declarations.  Java does, so we skip the
     // C enum declaration and generate the type declaration.
@@ -163,6 +167,15 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
       unindent();
       print("};\n");
+
+      // TODO(kstanger): Remove after users have migrated.
+      String oldBareTypeName = oldTypeName.endsWith("Enum")
+          ? oldTypeName.substring(0, oldTypeName.length() - 4) : oldTypeName;
+      printf("#define %s %s\n", oldBareTypeName, bareTypeName);
+      for (EnumConstantDeclaration constant : constants) {
+        String constantName = constant.getName().getIdentifier();
+        printf("#define %s_%s %s_%s\n", oldBareTypeName, constantName, bareTypeName, constantName);
+      }
     }
   }
 
@@ -383,8 +396,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   private void printEnumConstants() {
     if (typeNode instanceof EnumDeclaration) {
       // Strip enum type suffix.
-      String bareTypeName =
-          typeName.endsWith("Enum") ? typeName.substring(0, typeName.length() - 4) : typeName;
+      String bareTypeName = typeName.endsWith("Enum")
+          ? typeName.substring(0, typeName.length() - 4) + "_Enum" : typeName;
       printf("\nFOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
       for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
         String varName = nameTable.getVariableBaseName(constant.getVariableBinding());
@@ -392,6 +405,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         printf("\n#define %s_%s %s_values_[%s_%s]\n",
             typeName, varName, typeName, bareTypeName, valueName);
         printf("J2OBJC_ENUM_CONSTANT_GETTER(%s, %s)\n", typeName, varName);
+        // TODO(kstanger): Remove after users migrate.
+        if (!oldTypeName.equals(typeName)) {
+          printf("#define %s_get_%s %s_get_%s", oldTypeName, varName, typeName, varName);
+        }
       }
     }
   }
@@ -418,6 +435,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       String isVolatile = BindingUtil.isVolatile(var) ? "_VOLATILE" : "";
       println(String.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
           isVolatile, typeName, fieldName, typeStr));
+      // TODO(kstanger): Remove when users have migrated.
+      if (!oldTypeName.equals(typeName)) {
+        printf("#define %s_set_%s %s_set_%s\n", oldTypeName, fieldName, typeName, fieldName);
+      }
     }
   }
 
@@ -449,9 +470,22 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printf("J2OBJC_STATIC%s_FIELD_GETTER(%s, %s, %s)\n", volatileStr, typeName, name, objcType);
     if (!isFinal) {
       if (isPrimitive && !isVolatile) {
-        printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)", typeName, name, objcType);
+        printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)\n", typeName, name, objcType);
       } else {
         printf("J2OBJC_STATIC%s_FIELD_SETTER(%s, %s, %s)\n", volatileStr, typeName, name, objcType);
+      }
+    }
+    // TODO(kstanger): Remove when users have migrated.
+    String oldName = nameTable.getVariableShortName(var, true);
+    if (!oldName.equals(name) || !oldTypeName.equals(typeName)) {
+      printf("#define %s_%s %s_%s\n", oldTypeName, oldName, typeName, name);
+      printf("#define %s_get_%s %s_get_%s\n", oldTypeName, oldName, typeName, name);
+      if (!isFinal) {
+        if (isPrimitive && !isVolatile) {
+          printf("#define %s_getRef_%s %s_getRef_%s\n", oldTypeName, oldName, typeName, name);
+        } else {
+          printf("#define %s_set_%s %s_set_%s\n", oldTypeName, oldName, typeName, name);
+        }
       }
     }
   }
@@ -459,6 +493,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   private void printTypeLiteralDeclaration() {
     newline();
     printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", typeName);
+    // TODO(kstanger): Remove when users have migrated.
+    if (!oldTypeName.equals(typeName)) {
+      printf("#define %s_class_ %s_class_\n", oldTypeName, typeName);
+    }
   }
 
   private void printBoxedOperators() {
@@ -608,6 +646,21 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print(" " + DEPRECATED_ATTRIBUTE);
     }
     println(";");
+
+    // TODO(kstanger): Remove code below when users have migrated.
+    String oldMethodName = nameTable.getMethodSelector(m.getMethodBinding(), true);
+    if (oldMethodName.equals(methodName)) {
+      return;
+    }
+    String[] selParts = methodName.split(":");
+    String[] oldSelParts = oldMethodName.split(":");
+    for (int i = 0; i < selParts.length; i++) {
+      String part = selParts[i];
+      String oldPart = oldSelParts[i];
+      if (!part.equals(oldPart)) {
+        printf("#define %s %s\n", oldPart, part);
+      }
+    }
   }
 
   private boolean needsObjcMethodFamilyNoneAttribute(String name) {
@@ -647,6 +700,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print(" NS_RETURNS_RETAINED");
     }
     println(";");
+
+    // TODO(kstanger): Remove when users have migrated.
+    String name = function.getName();
+    String oldName = function.getOldName();
+    if (!oldName.equals(name)) {
+      printf("#define %s %s\n", oldName, name);
+    }
   }
 
   /**
