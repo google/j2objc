@@ -35,8 +35,8 @@
 
 #import "JreEmulation.h"
 
-@class ComGoogleProtobufDescriptors_Descriptor;
-@class ComGoogleProtobufDescriptors_FieldDescriptor;
+@class ComGoogleProtobufDescriptors$Descriptor;
+@class ComGoogleProtobufDescriptors$FieldDescriptor;
 @protocol ComGoogleProtobufMessage;
 @protocol JavaUtilMap;
 
@@ -44,26 +44,31 @@
 
 - (id<ComGoogleProtobufMessage>)getDefaultInstanceForType;
 
-- (jint)getRepeatedFieldCountWithComGoogleProtobufDescriptors_FieldDescriptor:
-    (ComGoogleProtobufDescriptors_FieldDescriptor *)descriptor;
+- (jint)getRepeatedFieldCountWithComGoogleProtobufDescriptors$FieldDescriptor:
+    (ComGoogleProtobufDescriptors$FieldDescriptor *)descriptor;
 
-- (id)getRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
-    (ComGoogleProtobufDescriptors_FieldDescriptor *)descriptor withInt:(jint)index;
+- (id)getRepeatedFieldWithComGoogleProtobufDescriptors$FieldDescriptor:
+    (ComGoogleProtobufDescriptors$FieldDescriptor *)descriptor withInt:(jint)index;
 
 - (id<JavaUtilMap>)getAllFields;
 
-- (BOOL)hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
-    (ComGoogleProtobufDescriptors_FieldDescriptor *)descriptor;
+- (BOOL)hasFieldWithComGoogleProtobufDescriptors$FieldDescriptor:
+    (ComGoogleProtobufDescriptors$FieldDescriptor *)descriptor;
 
-- (id)getFieldWithComGoogleProtobufDescriptors_FieldDescriptor:
-    (ComGoogleProtobufDescriptors_FieldDescriptor *)descriptor;
+- (id)getFieldWithComGoogleProtobufDescriptors$FieldDescriptor:
+    (ComGoogleProtobufDescriptors$FieldDescriptor *)descriptor;
 
-- (ComGoogleProtobufDescriptors_Descriptor *)getDescriptorForType;
+- (ComGoogleProtobufDescriptors$Descriptor *)getDescriptorForType;
 
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessageOrBuilder)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessageOrBuilder)
+// TODO(kstanger): Remove after users have migrated.
+#define getRepeatedFieldCountWithComGoogleProtobufDescriptors_FieldDescriptor getRepeatedFieldCountWithComGoogleProtobufDescriptors$FieldDescriptor
+#define getRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor getRepeatedFieldWithComGoogleProtobufDescriptors$FieldDescriptor
+#define hasFieldWithComGoogleProtobufDescriptors_FieldDescriptor hasFieldWithComGoogleProtobufDescriptors$FieldDescriptor
+#define getFieldWithComGoogleProtobufDescriptors_FieldDescriptor getFieldWithComGoogleProtobufDescriptors$FieldDescriptor
 
 #endif // __ComGoogleProtobufMessageOrBuilder_H__

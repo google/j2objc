@@ -24,6 +24,7 @@ import java.util.List;
 public class FunctionDeclaration extends BodyDeclaration {
 
   private String name = null;
+  private String oldName = null; // TODO(kstanger): Remove when users have migrated.
   private boolean returnsRetained = false;
   private final ChildLink<Type> returnType = ChildLink.create(Type.class, this);
   private final ChildList<SingleVariableDeclaration> parameters =
@@ -35,6 +36,7 @@ public class FunctionDeclaration extends BodyDeclaration {
   public FunctionDeclaration(FunctionDeclaration other) {
     super(other);
     name = other.getName();
+    oldName = other.getOldName();
     returnsRetained = other.returnsRetained();
     returnType.copyFrom(other.getReturnType());
     parameters.copyFrom(other.getParameters());
@@ -43,8 +45,10 @@ public class FunctionDeclaration extends BodyDeclaration {
     jniSignature = other.jniSignature;
   }
 
-  public FunctionDeclaration(String name, ITypeBinding returnType, ITypeBinding declaringClass) {
+  public FunctionDeclaration(
+      String name, String oldName, ITypeBinding returnType, ITypeBinding declaringClass) {
     this.name = name;
+    this.oldName = oldName;
     this.returnType.set(Type.newType(returnType));
     this.declaringClass = declaringClass;
   }
@@ -56,6 +60,10 @@ public class FunctionDeclaration extends BodyDeclaration {
 
   public String getName() {
     return name;
+  }
+
+  public String getOldName() {
+    return oldName;
   }
 
   public boolean returnsRetained() {

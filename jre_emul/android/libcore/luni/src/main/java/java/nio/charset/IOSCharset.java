@@ -174,7 +174,7 @@ class IOSCharset extends Charset {
                                      withNSString:info.name
                                 withNSStringArray:aliases
                                         withFloat:info.charBytes] autorelease];
-    [JavaNioCharsetIOSCharset_encodings_ putWithId:info.name withId:cs];
+    [JavaNioCharsetIOSCharset_encodings putWithId:info.name withId:cs];
     return cs;
   }
   ]-*/
@@ -203,6 +203,6 @@ class IOSCharset extends Charset {
         addEncoding(iosCharsets[i]);
       }
     });
-    return JavaNioCharsetIOSCharset_encodings_;
+    return JavaNioCharsetIOSCharset_encodings;
   ]-*/;
 }

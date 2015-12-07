@@ -45,10 +45,10 @@
 
 @class ComGoogleProtobufDescriptors_FieldDescriptor;
 @class ComGoogleProtobufExtensionRegistryLite;
-@class ComGoogleProtobufGeneratedMessage_GeneratedExtension;
+@class ComGoogleProtobufGeneratedMessage$GeneratedExtension;
 struct CGPFieldData;
 
-typedef ComGoogleProtobufGeneratedMessage_GeneratedExtension CGPGeneratedExtension;
+typedef ComGoogleProtobufGeneratedMessage$GeneratedExtension CGPGeneratedExtension;
 
 @interface ComGoogleProtobufGeneratedMessage : NSObject<ComGoogleProtobufMessage>
 
@@ -60,7 +60,7 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage)
 
-@interface ComGoogleProtobufGeneratedMessage_Builder : NSObject<ComGoogleProtobufMessage_Builder>
+@interface ComGoogleProtobufGeneratedMessage$Builder : NSObject<ComGoogleProtobufMessage$Builder>
 
 - (id)mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input;
 - (id)mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input
@@ -68,6 +68,8 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage)
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
 
 @end
+// TODO(kstanger): Remove when users have migrated.
+#define ComGoogleProtobufGeneratedMessage_Builder ComGoogleProtobufGeneratedMessage$Builder
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_Builder)
 
@@ -108,7 +110,7 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
 
-@interface ComGoogleProtobufGeneratedMessage_ExtendableBuilder :
+@interface ComGoogleProtobufGeneratedMessage$ExtendableBuilder :
     ComGoogleProtobufGeneratedMessage_Builder
     <ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder>
 
@@ -127,16 +129,20 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
 - (id)clearExtensionWithComGoogleProtobufExtension:(CGPExtension *)extension;
 
 @end
+// TODO(kstanger): Remove when users have migrated.
+#define ComGoogleProtobufGeneratedMessage_ExtendableBuilder ComGoogleProtobufGeneratedMessage$ExtendableBuilder
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_ExtendableBuilder)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage$ExtendableBuilder)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableBuilder)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage$ExtendableBuilder)
 
-@interface ComGoogleProtobufGeneratedMessage_GeneratedExtension : CGPExtension
+@interface ComGoogleProtobufGeneratedMessage$GeneratedExtension : CGPExtension
 @end
+// TODO(kstanger): Remove when users have migrated.
+#define ComGoogleProtobufGeneratedMessage_GeneratedExtension ComGoogleProtobufGeneratedMessage$GeneratedExtension
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_GeneratedExtension)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage$GeneratedExtension)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_GeneratedExtension)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage$GeneratedExtension)
 
 #endif // __ComGoogleProtobufGeneratedMessage_H__

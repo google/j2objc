@@ -138,9 +138,18 @@ public class EnumRewriter extends TreeVisitor {
         + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);\n\n"
         + "- (id)copyWithZone:(NSZone *)zone;\n", typeName, typeName, typeName, typeName));
 
-    // Strip enum type suffix.
-    String bareTypeName =
-        typeName.endsWith("Enum") ? typeName.substring(0, typeName.length() - 4) : typeName;
+    // TODO(kstanger): Remove after users have migrated.
+    String oldTypeName = nameTable.getFullName(node.getTypeBinding(), true);
+    if (!oldTypeName.equals(typeName)) {
+      header.append(String.format(
+          "#define %s_values %s_values\n"
+          + "#define %s_valueOfWithNSString_ %s_valueOfWithNSString_\n",
+          oldTypeName, typeName, oldTypeName, typeName));
+    }
+
+    // Append enum type suffix.
+    String bareTypeName = typeName.endsWith("Enum")
+        ? typeName.substring(0, typeName.length() - 4) + "_Enum" : typeName;
 
     if (swiftFriendly) {
       header.append(String.format(

@@ -218,9 +218,9 @@ public class JavaToIOSMethodTranslatorTest extends GenerationTest {
     assertTranslation(translation,
         "return (Example *) cast_chk([self clone], [Example class]);");
     assertTranslation(translation, "- (id)copyWithZone:(NSZone *)zone {");
-    assertTranslation(translation, "Example_Inner *inner = "
-        + "(Example_Inner *) cast_chk([super clone], [Example_Inner class]);");
-    assertTranslation(translation, "((Example_Inner *) nil_chk(inner))->i_ = i_;");
+    assertTranslation(translation, "Example$Inner *inner = "
+        + "(Example$Inner *) cast_chk([super clone], [Example$Inner class]);");
+    assertTranslation(translation, "((Example$Inner *) nil_chk(inner))->i_ = i_;");
   }
 
   // Ensure using the builder pattern does not invoke O(2^N) running time.

@@ -45,8 +45,8 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
         "#if !defined (Test_) && (Test_INCLUDE_ALL || Test_INCLUDE)",
         "#define Test_");
     assertTranslatedLines(translation,
-        "#if !defined (Test_Inner_) && (Test_INCLUDE_ALL || Test_Inner_INCLUDE)",
-        "#define Test_Inner_");
+        "#if !defined (Test$Inner_) && (Test_INCLUDE_ALL || Test$Inner_INCLUDE)",
+        "#define Test$Inner_");
   }
 
   public void testIncludedType() throws IOException {
@@ -62,7 +62,7 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static class Inner extends Test {} }", "Test", "Test.h");
     assertTranslatedLines(translation,
-        "#if Test_Inner_INCLUDE",
+        "#if Test$Inner_INCLUDE",
         "#define Test_INCLUDE 1",
         "#endif");
   }
@@ -106,7 +106,7 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
         "#include \"Foo.h\"");
     // Forward declaration for Foo_Bar is needed because the include of Foo.h
     // is restricted to only the Foo type.
-    assertTranslation(translation, "@class Foo_Bar");
+    assertTranslation(translation, "@class Foo$Bar");
   }
 
   public void testCombinedJarVariableNames() throws IOException {

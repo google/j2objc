@@ -39,12 +39,12 @@
 @class ComGoogleProtobufExtensionRegistryLite;
 @class JavaIoInputStream;
 @class JavaIoOutputStream;
-@protocol ComGoogleProtobufMessageLite_Builder;
+@protocol ComGoogleProtobufMessageLite$Builder;
 
 @protocol ComGoogleProtobufMessageLite<ComGoogleProtobufMessageLiteOrBuilder, NSObject, JavaObject>
 
-- (id<ComGoogleProtobufMessageLite_Builder>)toBuilder;
-- (id<ComGoogleProtobufMessageLite_Builder>)newBuilderForType NS_RETURNS_NOT_RETAINED;
+- (id<ComGoogleProtobufMessageLite$Builder>)toBuilder;
+- (id<ComGoogleProtobufMessageLite$Builder>)newBuilderForType NS_RETURNS_NOT_RETAINED;
 
 - (int)getSerializedSize;
 - (IOSByteArray *)toByteArray;
@@ -58,24 +58,24 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessageLite)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessageLite)
 
-@protocol ComGoogleProtobufMessageLite_Builder
+@protocol ComGoogleProtobufMessageLite$Builder
     <ComGoogleProtobufMessageLiteOrBuilder, NSObject, JavaObject>
 
 - (id<ComGoogleProtobufMessageLite>)build;
 
-- (id<ComGoogleProtobufMessageLite_Builder>)
+- (id<ComGoogleProtobufMessageLite$Builder>)
     mergeFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)data;
-- (id<ComGoogleProtobufMessageLite_Builder>)
+- (id<ComGoogleProtobufMessageLite$Builder>)
     mergeFromWithComGoogleProtobufByteString:(ComGoogleProtobufByteString *)data
     withComGoogleProtobufExtensionRegistryLite:
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
-- (id<ComGoogleProtobufMessageLite_Builder>)mergeFromWithByteArray:(IOSByteArray *)data;
-- (id<ComGoogleProtobufMessageLite_Builder>)mergeFromWithByteArray:(IOSByteArray *)data
+- (id<ComGoogleProtobufMessageLite$Builder>)mergeFromWithByteArray:(IOSByteArray *)data;
+- (id<ComGoogleProtobufMessageLite$Builder>)mergeFromWithByteArray:(IOSByteArray *)data
     withComGoogleProtobufExtensionRegistryLite:
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
-- (id<ComGoogleProtobufMessageLite_Builder>)
+- (id<ComGoogleProtobufMessageLite$Builder>)
     mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input;
-- (id<ComGoogleProtobufMessageLite_Builder>)
+- (id<ComGoogleProtobufMessageLite$Builder>)
     mergeFromWithJavaIoInputStream:(JavaIoInputStream *)input
     withComGoogleProtobufExtensionRegistryLite:
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
@@ -85,9 +85,11 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessageLite)
         (ComGoogleProtobufExtensionRegistryLite *)extensionRegistry;
 
 @end
+// TODO(kstanger): Remove when users have migrated.
+#define ComGoogleProtobufMessageLite_Builder ComGoogleProtobufMessageLite$Builder
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessageLite_Builder)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessageLite$Builder)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessageLite_Builder)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessageLite$Builder)
 
 #endif // __ComGoogleProtobufMessageLite_H__

@@ -30,7 +30,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { Runnable run = new Runnable() { public void run() {} }; }",
       "Example", "Example.m");
-    assertTranslation(translation, "@interface Example_$1 : NSObject < JavaLangRunnable >");
+    assertTranslation(translation, "@interface Example$$1 : NSObject < JavaLangRunnable >");
     assertTranslation(translation, "- (void)run;");
     // Outer reference is not required.
     assertNotInTranslation(translation, "Example *this");

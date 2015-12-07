@@ -299,7 +299,8 @@ public class Functionizer extends TreeVisitor {
     boolean isInstanceMethod = !BindingUtil.isStatic(m) && !m.isConstructor();
 
     FunctionDeclaration function = new FunctionDeclaration(
-        nameTable.getFullFunctionName(m), m.getReturnType(), declaringClass);
+        nameTable.getFullFunctionName(m), nameTable.getFullFunctionName(m, true), m.getReturnType(),
+        declaringClass);
     function.setJniSignature(SignatureGenerator.createJniFunctionSignature(m));
     function.setLineNumber(method.getName().getLineNumber());
 
@@ -344,7 +345,8 @@ public class Functionizer extends TreeVisitor {
     ITypeBinding declaringClass = binding.getDeclaringClass();
 
     FunctionDeclaration function = new FunctionDeclaration(
-        nameTable.getAllocatingConstructorName(binding), declaringClass, declaringClass);
+        nameTable.getAllocatingConstructorName(binding),
+        nameTable.getAllocatingConstructorName(binding, true), declaringClass, declaringClass);
     function.setLineNumber(method.getName().getLineNumber());
     function.setModifiers(BindingUtil.isPrivate(binding) ? Modifier.PRIVATE : Modifier.PUBLIC);
     function.setReturnsRetained(true);
