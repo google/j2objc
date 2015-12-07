@@ -328,6 +328,13 @@ public class ClassTest extends TestCase {
     assertEquals(CharSequence.class, Class.forName("java.lang.CharSequence"));
   }
 
+  public void testFindPrefixMappedClass() throws Exception {
+    Class<?> cls = Class.forName("com.google.j2objc.mappedpkg.TestClass");
+    assertNotNull(cls);
+    cls = Class.forName("com.google.j2objc.mappedpkg.TestClass$Inner");
+    assertNotNull(cls);
+  }
+
   boolean canCallAsSubclass(Class<?> x, Class<?> y) {
     boolean callSuccessful;
     try {
