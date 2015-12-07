@@ -1,6 +1,7 @@
 # j2objc is a mixed-language project, but setting objective-c forces the OS to OSX.
 language: objective-c
 os: osx
+osx_image: xcode7.1
 
 env:
   - LATEST_JAVA=true
