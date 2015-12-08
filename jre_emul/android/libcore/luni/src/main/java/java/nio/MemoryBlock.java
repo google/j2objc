@@ -131,7 +131,7 @@ class MemoryBlock {
       IOSByteArray *array = [IOSByteArray arrayWithLength:byteCount];
       long long address = (long long) (uintptr_t) array->buffer_;
       return AUTORELEASE(
-          [[JavaNioMemoryBlock_NonMovableHeapBlock alloc] initWithByteArray:array
+          [[JavaNioMemoryBlock$NonMovableHeapBlock alloc] initWithByteArray:array
                                                                    withLong:address
                                                                    withLong:byteCount]);
     ]-*/;

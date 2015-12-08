@@ -418,13 +418,17 @@ public final class NativeDecimalFormat implements Cloneable {
     public native void setRoundingMode(RoundingMode roundingMode, double roundingIncrement) /*-[
       int nsRoundingMode;
       switch ([roundingMode ordinal]) {
-        case JavaMathRoundingMode_CEILING: nsRoundingMode = NSNumberFormatterRoundCeiling; break;
-        case JavaMathRoundingMode_FLOOR: nsRoundingMode = NSNumberFormatterRoundFloor; break;
-        case JavaMathRoundingMode_DOWN: nsRoundingMode = NSNumberFormatterRoundDown; break;
-        case JavaMathRoundingMode_UP: nsRoundingMode = NSNumberFormatterRoundUp; break;
-        case JavaMathRoundingMode_HALF_EVEN: nsRoundingMode = NSNumberFormatterRoundHalfEven; break;
-        case JavaMathRoundingMode_HALF_DOWN: nsRoundingMode = NSNumberFormatterRoundHalfDown; break;
-        case JavaMathRoundingMode_HALF_UP: nsRoundingMode = NSNumberFormatterRoundHalfUp; break;
+        case JavaMathRoundingMode_Enum_CEILING:
+          nsRoundingMode = NSNumberFormatterRoundCeiling; break;
+        case JavaMathRoundingMode_Enum_FLOOR: nsRoundingMode = NSNumberFormatterRoundFloor; break;
+        case JavaMathRoundingMode_Enum_DOWN: nsRoundingMode = NSNumberFormatterRoundDown; break;
+        case JavaMathRoundingMode_Enum_UP: nsRoundingMode = NSNumberFormatterRoundUp; break;
+        case JavaMathRoundingMode_Enum_HALF_EVEN:
+          nsRoundingMode = NSNumberFormatterRoundHalfEven; break;
+        case JavaMathRoundingMode_Enum_HALF_DOWN:
+          nsRoundingMode = NSNumberFormatterRoundHalfDown; break;
+        case JavaMathRoundingMode_Enum_HALF_UP:
+          nsRoundingMode = NSNumberFormatterRoundHalfUp; break;
         default:
           @throw [[JavaLangAssertionError alloc] init];
       }

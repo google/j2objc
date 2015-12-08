@@ -134,7 +134,7 @@ public final class IosMockMaker implements MockMaker {
   private static native <T> Class<T> generateClassProxy(String name, Class<T> classToMock,
       Class<?>[] interfaces) throws IllegalArgumentException /*-[
     Class proxyClass =
-        objc_allocateClassPair([OrgMockitoInternalCreationIosIosMockMaker_ClassProxy class],
+        objc_allocateClassPair([OrgMockitoInternalCreationIosIosMockMaker$ClassProxy class],
             [name UTF8String], 0);
     jint interfaceCount = interfaces->size_;
     for (jint i = 0; i < interfaceCount; i++) {
@@ -165,7 +165,7 @@ public final class IosMockMaker implements MockMaker {
         struct objc_method_description *md) {
       IOSClass *mockClass = IOSClass_fromClass(cls);
       IOSClass *mockedClass =
-          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache_ getWithId:mockClass];
+          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache getWithId:mockClass];
 
       // Check for an instance method with this selector.
       unsigned nMethods;

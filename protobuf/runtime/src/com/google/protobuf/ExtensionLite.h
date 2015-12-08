@@ -48,7 +48,7 @@ struct CGPFieldData;
 
 - (instancetype)initWithFieldData:(struct CGPFieldData *)data;
 
-- (ComGoogleProtobufDescriptors_FieldDescriptor *)getDescriptor;
+- (ComGoogleProtobufDescriptors$FieldDescriptor *)getDescriptor;
 
 - (id<ComGoogleProtobufMessage>)getMessageDefaultInstance;
 

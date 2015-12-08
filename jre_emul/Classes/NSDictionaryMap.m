@@ -11,7 +11,7 @@
 #import "java/util/LinkedHashSet.h"
 #import "java/util/LinkedList.h"
 
-@interface NSDictionaryMap_Entry : NSObject<JavaUtilMap_Entry> {
+@interface NSDictionaryMap_Entry : NSObject<JavaUtilMap$Entry> {
 @private
   NSMutableDictionary *dictionary_;
   id key_;

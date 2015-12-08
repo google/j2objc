@@ -1002,7 +1002,7 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
     - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state
                                       objects:(__unsafe_unretained id *)stackbuf
                                         count:(NSUInteger)len {
-      __unsafe_unretained JavaUtilLinkedList_Link *link = (ARCBRIDGE id) (void *) state->extra[0];
+      __unsafe_unretained JavaUtilLinkedList$Link *link = (ARCBRIDGE id) (void *) state->extra[0];
       if (!link) {
         state->mutationsPtr = (unsigned long *) &modCount_;
         link = voidLink_->next_;

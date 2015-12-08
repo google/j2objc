@@ -551,12 +551,12 @@ public class Thread implements Runnable {
 
   public native State getState() /*-[
     if ([(NSThread *) self->nsThread_ isCancelled] || [(NSThread *) self->nsThread_ isFinished]) {
-      return JavaLangThread_StateEnum_get_TERMINATED();
+      return JavaLangThread$StateEnum_get_TERMINATED();
     }
     if ([(NSThread *) self->nsThread_ isExecuting]) {
-      return JavaLangThread_StateEnum_get_RUNNABLE();
+      return JavaLangThread$StateEnum_get_RUNNABLE();
     }
-    return JavaLangThread_StateEnum_get_NEW();
+    return JavaLangThread$StateEnum_get_NEW();
   ]-*/;
 
   public ThreadGroup getThreadGroup() {
@@ -1031,7 +1031,7 @@ public class Thread implements Runnable {
    */
   public native UncaughtExceptionHandler getUncaughtExceptionHandler() /*-[
     NSDictionary *threadData = [(NSThread *) nsThread_ threadDictionary];
-    id<JavaLangThread_UncaughtExceptionHandler> uncaughtHandler =
+    id<JavaLangThread$UncaughtExceptionHandler> uncaughtHandler =
         [threadData objectForKey:JavaLangThread_UNCAUGHT_HANDLER];
     if (uncaughtHandler) {
       return uncaughtHandler;

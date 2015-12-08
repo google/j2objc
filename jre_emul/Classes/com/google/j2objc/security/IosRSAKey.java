@@ -85,7 +85,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
     @Override
     public native byte[] getEncoded() /*-[
       NSData *publicKey = nil;
-      NSData *publicTag = [ComGoogleJ2objcSecurityIosRSAKey_PUBLIC_KEY_TAG_
+      NSData *publicTag = [ComGoogleJ2objcSecurityIosRSAKey_PUBLIC_KEY_TAG
                            dataUsingEncoding:NSUTF8StringEncoding];
 
       NSMutableDictionary *publicKeyQuery = [[NSMutableDictionary alloc] init];
@@ -149,7 +149,7 @@ public abstract class IosRSAKey implements RSAKey, Key {
     @Override
     public native byte[] getEncoded() /*-[
       NSData *privateKey = nil;
-      NSData *privateTag = [ComGoogleJ2objcSecurityIosRSAKey_PRIVATE_KEY_TAG_
+      NSData *privateTag = [ComGoogleJ2objcSecurityIosRSAKey_PRIVATE_KEY_TAG
                            dataUsingEncoding:NSUTF8StringEncoding];
 
       NSMutableDictionary *privateKeyQuery = [[NSMutableDictionary alloc] init];

@@ -187,32 +187,32 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
      * Modified to avoid extra retain/autorelease calls.
      */
     @Override native void addNewEntry(K key, V value, int hash, int index) /*-[
-      JavaUtilLinkedHashMap_LinkedEntry *header = self->header_;
-      JavaUtilLinkedHashMap_LinkedEntry *eldest = header->nxt_;
-      if (eldest != header && [self removeEldestEntryWithJavaUtilMap_Entry:eldest]) {
+      JavaUtilLinkedHashMap$LinkedEntry *header = self->header_;
+      JavaUtilLinkedHashMap$LinkedEntry *eldest = header->nxt_;
+      if (eldest != header && [self removeEldestEntryWithJavaUtilMap$Entry:eldest]) {
         [self removeWithId:eldest->key_];
       }
-      JavaUtilLinkedHashMap_LinkedEntry *oldTail = header->prv_;
-      JavaUtilLinkedHashMap_LinkedEntry *newTail = [[JavaUtilLinkedHashMap_LinkedEntry alloc]
+      JavaUtilLinkedHashMap$LinkedEntry *oldTail = header->prv_;
+      JavaUtilLinkedHashMap$LinkedEntry *newTail = [[JavaUtilLinkedHashMap$LinkedEntry alloc]
           initWithId:key withId:value withInt:hash_
-          withJavaUtilHashMap_HashMapEntry:nil
-          withJavaUtilLinkedHashMap_LinkedEntry:header
-          withJavaUtilLinkedHashMap_LinkedEntry:oldTail];
+          withJavaUtilHashMap$HashMapEntry:nil
+          withJavaUtilLinkedHashMap$LinkedEntry:header
+          withJavaUtilLinkedHashMap$LinkedEntry:oldTail];
       newTail->next_ = self->table_->buffer_[index];
       self->table_->buffer_[index] = oldTail->nxt_ = header->prv_ = newTail;
     ]-*/;
 
     @Override native void addNewEntryForNullKey(V value) /*-[
-      JavaUtilLinkedHashMap_LinkedEntry *header = self->header_;
-      JavaUtilLinkedHashMap_LinkedEntry *eldest = header->nxt_;
-      if (eldest != header && [self removeEldestEntryWithJavaUtilMap_Entry:eldest]) {
+      JavaUtilLinkedHashMap$LinkedEntry *header = self->header_;
+      JavaUtilLinkedHashMap$LinkedEntry *eldest = header->nxt_;
+      if (eldest != header && [self removeEldestEntryWithJavaUtilMap$Entry:eldest]) {
         [self removeWithId:eldest->key_];
       }
-      JavaUtilLinkedHashMap_LinkedEntry *oldTail = header->prv_;
-      JavaUtilLinkedHashMap_LinkedEntry *newTail = [[JavaUtilLinkedHashMap_LinkedEntry alloc]
-          initWithId:nil withId:value withInt:0 withJavaUtilHashMap_HashMapEntry:nil
-          withJavaUtilLinkedHashMap_LinkedEntry:header
-          withJavaUtilLinkedHashMap_LinkedEntry:oldTail];
+      JavaUtilLinkedHashMap$LinkedEntry *oldTail = header->prv_;
+      JavaUtilLinkedHashMap$LinkedEntry *newTail = [[JavaUtilLinkedHashMap$LinkedEntry alloc]
+          initWithId:nil withId:value withInt:0 withJavaUtilHashMap$HashMapEntry:nil
+          withJavaUtilLinkedHashMap$LinkedEntry:header
+          withJavaUtilLinkedHashMap$LinkedEntry:oldTail];
       JavaUtilHashMap_setAndConsume_entryForNullKey_(self, oldTail->nxt_ = header->prv_ = newTail);
     ]-*/;
 
@@ -225,12 +225,12 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
      */
     @Override native HashMapEntry<K, V> constructorNewRetainedEntry(
             K key, V value, int hash, HashMapEntry<K, V> next) /*-[
-      JavaUtilLinkedHashMap_LinkedEntry *header = self->header_;
-      JavaUtilLinkedHashMap_LinkedEntry *oldTail = header->prv_;
-      JavaUtilLinkedHashMap_LinkedEntry *newTail = [[JavaUtilLinkedHashMap_LinkedEntry alloc]
-          initWithId:key withId:value withInt:hash_ withJavaUtilHashMap_HashMapEntry:nil
-          withJavaUtilLinkedHashMap_LinkedEntry:header
-          withJavaUtilLinkedHashMap_LinkedEntry:oldTail];
+      JavaUtilLinkedHashMap$LinkedEntry *header = self->header_;
+      JavaUtilLinkedHashMap$LinkedEntry *oldTail = header->prv_;
+      JavaUtilLinkedHashMap$LinkedEntry *newTail = [[JavaUtilLinkedHashMap$LinkedEntry alloc]
+          initWithId:key withId:value withInt:hash_ withJavaUtilHashMap$HashMapEntry:nil
+          withJavaUtilLinkedHashMap$LinkedEntry:header
+          withJavaUtilLinkedHashMap$LinkedEntry:oldTail];
       newTail->next_ = next;
       return oldTail->nxt_ = header->prv_ = newTail;
     ]-*/;
@@ -407,13 +407,13 @@ public class LinkedHashMap<K, V> extends HashMap<K, V> {
     - (NSUInteger)enumerateEntriesWithState:(NSFastEnumerationState *)state
                                     objects:(__unsafe_unretained id *)stackbuf
                                       count:(NSUInteger)len {
-      __unsafe_unretained JavaUtilLinkedHashMap_LinkedEntry *entry;
+      __unsafe_unretained JavaUtilLinkedHashMap$LinkedEntry *entry;
       if (state->state == 0) {
         state->state = 1;
         state->mutationsPtr = (unsigned long *) &modCount_;
         entry = header_->nxt_;
       } else {
-        entry = (JavaUtilLinkedHashMap_LinkedEntry *) state->extra[0];
+        entry = (JavaUtilLinkedHashMap$LinkedEntry *) state->extra[0];
       }
       state->itemsPtr = stackbuf;
       NSUInteger objCount = 0;

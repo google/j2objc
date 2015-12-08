@@ -43,7 +43,7 @@
 #import "com/google/protobuf/MessageOrBuilder.h"
 #import "com/google/protobuf/common.h"
 
-@class ComGoogleProtobufDescriptors_FieldDescriptor;
+@class ComGoogleProtobufDescriptors$FieldDescriptor;
 @class ComGoogleProtobufExtensionRegistryLite;
 @class ComGoogleProtobufGeneratedMessage$GeneratedExtension;
 struct CGPFieldData;
@@ -73,9 +73,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage)
 #define ComGoogleProtobufGeneratedMessage_Builder ComGoogleProtobufGeneratedMessage$Builder
 #endif // J2OBJC_RENAME_ALIASES
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_Builder)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage$Builder)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_Builder)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage$Builder)
 
 @protocol ComGoogleProtobufGeneratedMessage$ExtendableMessageOrBuilder
     <ComGoogleProtobufMessageOrBuilder>
@@ -104,25 +104,25 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_Builder)
 #define ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder ComGoogleProtobufGeneratedMessage$ExtendableMessageOrBuilder
 #endif // J2OBJC_RENAME_ALIASES
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage$ExtendableMessageOrBuilder)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage$ExtendableMessageOrBuilder)
 
 @interface ComGoogleProtobufGeneratedMessage$ExtendableMessage :
-    ComGoogleProtobufGeneratedMessage<ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder>
+    ComGoogleProtobufGeneratedMessage<ComGoogleProtobufGeneratedMessage$ExtendableMessageOrBuilder>
 @end
 // TODO(kstanger): Remove when users have migrated.
 #ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufGeneratedMessage_ExtendableMessage ComGoogleProtobufGeneratedMessage$ExtendableMessage
 #endif // J2OBJC_RENAME_ALIASES
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage$ExtendableMessage)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage$ExtendableMessage)
 
 @interface ComGoogleProtobufGeneratedMessage$ExtendableBuilder :
-    ComGoogleProtobufGeneratedMessage_Builder
-    <ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder>
+    ComGoogleProtobufGeneratedMessage$Builder
+    <ComGoogleProtobufGeneratedMessage$ExtendableMessageOrBuilder>
 
 - (id)setExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension withId:(id)value;

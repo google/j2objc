@@ -335,7 +335,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
       request.timeoutInterval = readTimeout > 0 ? (readTimeout / 1000.0) : JavaLangDouble_MAX_VALUE;
       int n = [self->headers_ size];
       for (int i = 0; i < n; i++) {
-        ComGoogleJ2objcNetIosHttpURLConnection_HeaderEntry *entry = [self->headers_ getWithInt:i];
+        ComGoogleJ2objcNetIosHttpURLConnection$HeaderEntry *entry = [self->headers_ getWithInt:i];
         if (entry->key_) {
           [request setValue:[entry getValue] forHTTPHeaderField:entry->key_];
         }

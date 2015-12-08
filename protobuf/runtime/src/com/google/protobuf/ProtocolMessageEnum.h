@@ -35,13 +35,13 @@
 #ifndef __ComGoogleProtobufProtocolMessageEnum_H__
 #define __ComGoogleProtobufProtocolMessageEnum_H__
 
-@class ComGoogleProtobufDescriptors_EnumValueDescriptor;
+@class ComGoogleProtobufDescriptors$EnumValueDescriptor;
 
 @protocol ComGoogleProtobufProtocolMessageEnum
 
 - (int)getNumber;
 
-- (ComGoogleProtobufDescriptors_EnumValueDescriptor *)getValueDescriptor;
+- (ComGoogleProtobufDescriptors$EnumValueDescriptor *)getValueDescriptor;
 
 @end
 
