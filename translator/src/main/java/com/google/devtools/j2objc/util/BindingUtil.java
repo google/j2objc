@@ -33,6 +33,7 @@ import java.util.Comparator;
 import java.util.Deque;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 /**
  * Utility methods for working with binding types.
@@ -374,6 +375,30 @@ public final class BindingUtil {
   public static boolean hasNamedAnnotation(IBinding binding, String annotationName) {
     for (IAnnotationBinding annotation : binding.getAnnotations()) {
       if (annotation.getName().equals(annotationName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Return true if a binding has a named "Nullable" annotation. Package names aren't
+   * checked because different nullable annotations are defined by several different
+   * Java frameworks.
+   */
+  public static boolean hasNullableAnnotation(IBinding binding) {
+    return hasNamedAnnotation(binding, "Nullable");
+  }
+
+  /**
+   * Return true if a binding has a named "Nonnull" annotation. Package names aren't
+   * checked because different nonnull annotations are defined in several Java
+   * frameworks, with varying but similar names.
+   */
+  public static boolean hasNonnullAnnotation(IBinding binding) {
+    Pattern p = Pattern.compile("No[nt][Nn]ull");
+    for (IAnnotationBinding annotation : binding.getAnnotations()) {
+      if (p.matcher(annotation.getName()).matches()) {
         return true;
       }
     }

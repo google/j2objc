@@ -52,8 +52,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -303,14 +301,14 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
    */
   private String nullability(IBinding binding, boolean isParameter) {
     if (Options.nullability()) {
-      if (BindingUtil.hasAnnotation(binding, Nullable.class)) {
+      if (BindingUtil.hasNullableAnnotation(binding)) {
         return " __nullable";
       }
-      if (BindingUtil.hasAnnotation(binding, Nonnull.class)) {
+      if (BindingUtil.hasNonnullAnnotation(binding)) {
         return " __nonnull";
       }
       if (isParameter && !((IVariableBinding) binding).getType().isPrimitive()
-          && (parametersNonnullByDefault || BindingUtil.hasAnnotation(binding, Nonnull.class))) {
+          && (parametersNonnullByDefault || BindingUtil.hasNonnullAnnotation(binding))) {
         return " __nonnull";
       }
     }
