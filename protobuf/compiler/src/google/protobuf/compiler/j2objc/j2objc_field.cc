@@ -196,7 +196,7 @@ void FieldGenerator::GenerateFieldData(io::Printer *printer) const {
       "  .javaName = \"$capitalized_name$\",\n"
       "  .number = $field_number$,\n"
       "  .flags = $flags$,\n"
-      "  .type = ComGoogleProtobufDescriptors_FieldDescriptor_Type_"
+      "  .type = ComGoogleProtobufDescriptors$$FieldDescriptor$$Type_Enum_"
           "$field_type$,\n"
       "  .defaultValue.value$default_value_type$ = $default_value$,\n"
       "  .hasBitIndex = $has_bit_index$,\n"
