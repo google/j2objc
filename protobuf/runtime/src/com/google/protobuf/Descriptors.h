@@ -66,8 +66,10 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors$Descriptor)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$Descriptor)
 // TODO(kstanger): Remove after users migrate.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_Descriptor ComGoogleProtobufDescriptors$Descriptor
 #define ComGoogleProtobufDescriptors_Descriptor_class_ ComGoogleProtobufDescriptors$Descriptor_class_
+#endif // J2OBJC_RENAME_ALIASES
 
 @interface ComGoogleProtobufDescriptors$FieldDescriptor : NSObject
 
@@ -99,8 +101,10 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors$FieldDescriptor)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$FieldDescriptor)
 // TODO(kstanger): Remove after users migrate.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_FieldDescriptor ComGoogleProtobufDescriptors$FieldDescriptor
 #define ComGoogleProtobufDescriptors_FieldDescriptor_class_ ComGoogleProtobufDescriptors$FieldDescriptor_class_
+#endif // J2OBJC_RENAME_ALIASES
 
 @interface ComGoogleProtobufDescriptors$EnumDescriptor : NSObject
 
@@ -112,8 +116,10 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors$EnumDescriptor)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$EnumDescriptor)
 // TODO(kstanger): Remove after users migrate.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_EnumDescriptor ComGoogleProtobufDescriptors$EnumDescriptor
 #define ComGoogleProtobufDescriptors_EnumDescriptor_class_ ComGoogleProtobufDescriptors$EnumDescriptor_class_
+#endif // J2OBJC_RENAME_ALIASES
 
 @interface ComGoogleProtobufDescriptors$EnumValueDescriptor : NSObject
 
@@ -127,7 +133,9 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufDescriptors$EnumValueDescriptor)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$EnumValueDescriptor)
 // TODO(kstanger): Remove after users migrate.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_EnumValueDescriptor ComGoogleProtobufDescriptors$EnumValueDescriptor
 #define ComGoogleProtobufDescriptors_EnumValueDescriptor_class_ ComGoogleProtobufDescriptors$EnumValueDescriptor_class_
+#endif // J2OBJC_RENAME_ALIASES
 
 #endif // __ComGoogleProtobufDescriptors_H__

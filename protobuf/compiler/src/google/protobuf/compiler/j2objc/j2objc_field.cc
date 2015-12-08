@@ -224,11 +224,13 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
   string paramType = variables_.at("parameter_type");
   string oldParamType = ToOldStyleName(paramType);
   if (paramType != oldParamType) {
+    printer->Print("#ifdef J2OBJC_RENAME_ALIASES\n");
     printer->Print(
         "#define set$capitalized_name$With$oldtype$"
         " set$capitalized_name$With$newtype$\n",
         "capitalized_name", variables_.at("capitalized_name"),
         "oldtype", oldParamType, "newtype", paramType);
+    printer->Print("#endif // J2OBJC_RENAME_ALIASES\n");
   }
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
@@ -236,11 +238,13 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
         "    set$capitalized_name$With$parameter_type$$$Builder:\n"
         "    ($parameter_type$$$Builder *)value;\n");
     // TODO(kstanger): Remove when users have migrated.
+    printer->Print("#ifdef J2OBJC_RENAME_ALIASES\n");
     printer->Print(
         "#define set$capitalized_name$With$oldtype$_Builder"
         " set$capitalized_name$With$newtype$$$Builder\n",
         "capitalized_name", variables_.at("capitalized_name"),
         "oldtype", oldParamType, "newtype", paramType);
+    printer->Print("#endif // J2OBJC_RENAME_ALIASES\n");
   }
 }
 
@@ -291,11 +295,13 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
   string paramType = variables_.at("parameter_type");
   string oldParamType = ToOldStyleName(paramType);
   if (paramType != oldParamType) {
+    printer->Print("#ifdef J2OBJC_RENAME_ALIASES\n");
     printer->Print(
         "#define add$capitalized_name$With$oldtype$"
         " add$capitalized_name$With$newtype$\n",
         "capitalized_name", variables_.at("capitalized_name"),
         "oldtype", oldParamType, "newtype", paramType);
+    printer->Print("#endif // J2OBJC_RENAME_ALIASES\n");
   }
   if (GetJavaType(descriptor_) == JAVATYPE_MESSAGE) {
     printer->Print(variables_,
@@ -303,11 +309,13 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
         "    add$capitalized_name$With$parameter_type$$$Builder:\n"
         "    ($parameter_type$$$Builder *)value;\n");
     // TODO(kstanger): Remove when users have migrated.
+    printer->Print("#ifdef J2OBJC_RENAME_ALIASES\n");
     printer->Print(
         "#define add$capitalized_name$With$oldtype$_Builder"
         " add$capitalized_name$With$newtype$$$Builder\n",
         "capitalized_name", variables_.at("capitalized_name"),
         "oldtype", oldParamType, "newtype", paramType);
+    printer->Print("#endif // J2OBJC_RENAME_ALIASES\n");
   }
 }
 

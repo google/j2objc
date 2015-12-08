@@ -188,6 +188,7 @@ typedef NS_ENUM(NSUInteger, ComGoogleProtobufDescriptors$FieldDescriptor$Type_En
   ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SINT64 = 17,
 };
 // TODO(kstanger): Remove after users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_FieldDescriptor_Type ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum
 #define ComGoogleProtobufDescriptors_FieldDescriptor_Type_DOUBLE ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_DOUBLE
 #define ComGoogleProtobufDescriptors_FieldDescriptor_Type_FLOAT ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_FLOAT
@@ -207,6 +208,7 @@ typedef NS_ENUM(NSUInteger, ComGoogleProtobufDescriptors$FieldDescriptor$Type_En
 #define ComGoogleProtobufDescriptors_FieldDescriptor_Type_SFIXED64 ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SFIXED64
 #define ComGoogleProtobufDescriptors_FieldDescriptor_Type_SINT32 ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SINT32
 #define ComGoogleProtobufDescriptors_FieldDescriptor_Type_SINT64 ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SINT64
+#endif // J2OBJC_RENAME_ALIASES
 
 typedef ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum CGPFieldType;
 
@@ -223,7 +225,9 @@ typedef ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum CGPFieldType;
 
 + (ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *)valueOfWithComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum:(ComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum *)type;
 // TODO(kstanger): Remove after users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_TypeEnum valueOfWithComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum
+#endif // J2OBJC_RENAME_ALIASES
 
 + (IOSObjectArray *)values;
 FOUNDATION_EXPORT IOSObjectArray *ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_values();
@@ -231,19 +235,25 @@ FOUNDATION_EXPORT IOSObjectArray *ComGoogleProtobufDescriptors$FieldDescriptor$T
 + (ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *)valueOfWithNSString:(NSString *)name;
 FOUNDATION_EXPORT ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_valueOfWithNSString_(NSString *name);
 // TODO(kstanger): Remove after users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum_valueOfWithNSString_ ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_valueOfWithNSString_
+#endif // J2OBJC_RENAME_ALIASES
 
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 // TODO(kstanger): Remove after users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum
+#endif // J2OBJC_RENAME_ALIASES
 
 J2OBJC_STATIC_INIT(ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum)
 
 FOUNDATION_EXPORT ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_valueOfWithComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum_(ComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum *type);
 // TODO(kstanger): Remove after users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum_valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_TypeEnum_ ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_valueOfWithComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum_
+#endif // J2OBJC_RENAME_ALIASES
 
 FOUNDATION_EXPORT ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_values_[];
 
@@ -303,7 +313,9 @@ J2OBJC_ENUM_CONSTANT_GETTER(ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnu
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum)
 // TODO(kstanger): Remove these defines when users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum_class_ ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_class_
+#endif // J2OBJC_RENAME_ALIASES
 
 typedef NS_ENUM(NSUInteger, ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum) {
   ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_INT = 0,
@@ -317,6 +329,7 @@ typedef NS_ENUM(NSUInteger, ComGoogleProtobufDescriptors$FieldDescriptor$JavaTyp
   ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_MESSAGE = 8,
 };
 // TODO(kstanger): Remove these defines when users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_FieldDescriptor_JavaType ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum
 #define ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_INT ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_INT
 #define ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_LONG ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_LONG
@@ -327,6 +340,7 @@ typedef NS_ENUM(NSUInteger, ComGoogleProtobufDescriptors$FieldDescriptor$JavaTyp
 #define ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_BYTE_STRING ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_BYTE_STRING
 #define ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_ENUM ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_ENUM
 #define ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_MESSAGE ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_MESSAGE
+#endif // J2OBJC_RENAME_ALIASES
 
 @interface ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum : JavaLangEnum < NSCopying > {
 }
@@ -345,7 +359,9 @@ FOUNDATION_EXPORT ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum *Com
 
 @end
 // TODO(kstanger): Remove after users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum
+#endif // J2OBJC_RENAME_ALIASES
 
 J2OBJC_STATIC_INIT(ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum)
 
@@ -380,6 +396,8 @@ J2OBJC_ENUM_CONSTANT_GETTER(ComGoogleProtobufDescriptors$FieldDescriptor$JavaTyp
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum)
 // TODO(kstanger): Remove after users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum_class_ ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_class_
+#endif // J2OBJC_RENAME_ALIASES
 
 #endif // __ComGoogleProtobufFieldTypes_H__

@@ -211,11 +211,14 @@ void MessageGenerator::GenerateMessageHeader(io::Printer* printer) {
       "@end\n");
   string className = ClassName(descriptor_);
   string oldClassName = ToOldStyleName(className);
+  // TODO(kstanger): Remove when users have migrated.
   if (className != oldClassName) {
+    printer->Print("#ifdef J2OBJC_RENAME_ALIASES\n");
     printer->Print(
         "#define $oldname$ $newname$\n",
         "oldname", oldClassName,
         "newname", className);
+    printer->Print("#endif // J2OBJC_RENAME_ALIASES\n");
   }
   printer->Print("\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_getDefaultInstance();\n"
@@ -466,8 +469,10 @@ void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
   // TODO(kstanger): Remove when users have migrated.
   string className = ClassName(descriptor_) + "$Builder";
   string oldName = ToOldStyleName(className);
+  printer->Print("#ifdef J2OBJC_RENAME_ALIASES\n");
   printer->Print("#define $oldname$ $newname$\n",
                  "oldname", oldName, "newname", className);
+  printer->Print("#endif // J2OBJC_RENAME_ALIASES\n");
 }
 
 void MessageGenerator::GenerateBuilderSource(io::Printer* printer) {

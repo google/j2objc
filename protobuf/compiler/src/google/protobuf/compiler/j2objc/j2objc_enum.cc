@@ -84,6 +84,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   printer->Print("};\n\n");
 
   // TODO(kstanger): Remove after users have migrated.
+  printer->Print("#ifdef J2OBJC_RENAME_ALIASES\n");
   printer->Print(
       "#define $oldname$ $newname$\n",
       "oldname", ToOldStyleName(TypeName(descriptor_)),
@@ -95,6 +96,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
         "newname", CEnumName(descriptor_),
         "value", canonical_values_[i]->name());
   }
+  printer->Print("#endif // J2OBJC_RENAME_ALIASES\n");
 
   for (int i = 0; i < canonical_values_.size(); i++) {
     printer->Print(
@@ -105,6 +107,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   }
 
   // TODO(kstanger): Remove after users have migrated.
+  printer->Print("#ifdef J2OBJC_RENAME_ALIASES\n");
   for (int i = 0; i < canonical_values_.size(); i++) {
     printer->Print(
         "#define $classname$_$name$_VALUE $value$\n",
@@ -112,6 +115,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
         "name", canonical_values_[i]->name(),
         "value", SimpleItoa(canonical_values_[i]->number()));
   }
+  printer->Print("#endif // J2OBJC_RENAME_ALIASES\n");
 
   printer->Print(
       "\n"
@@ -145,6 +149,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   string className = ClassName(descriptor_);
   string oldClassName = ToOldStyleName(className);
   if (className != oldClassName) {
+    printer->Print("#ifdef J2OBJC_RENAME_ALIASES\n");
     printer->Print(
         "#define $oldname$ $newname$\n"
         "#define $oldname$_values $newname$_values\n"
@@ -152,6 +157,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
         "#define $oldname$_valueOfWithInt_ $newname$_valueOfWithInt_\n",
         "oldname", oldClassName,
         "newname", className);
+    printer->Print("#endif // J2OBJC_RENAME_ALIASES\n");
   }
 
   for (int i = 0; i < canonical_values_.size(); i++) {
@@ -164,11 +170,13 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
 
     // TODO(kstanger): Remove when users have migrated.
     if (className != oldClassName) {
+      printer->Print("#ifdef J2OBJC_RENAME_ALIASES\n");
       printer->Print(
           "#define $oldname$_get_$name$ $newname$_get_$name$\n",
           "oldname", oldClassName,
           "newname", className,
           "name", canonical_values_[i]->name());
+      printer->Print("#endif // J2OBJC_RENAME_ALIASES\n");
     }
   }
 }

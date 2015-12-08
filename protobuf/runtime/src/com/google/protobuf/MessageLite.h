@@ -86,7 +86,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessageLite)
 
 @end
 // TODO(kstanger): Remove when users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufMessageLite_Builder ComGoogleProtobufMessageLite$Builder
+#endif // J2OBJC_RENAME_ALIASES
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessageLite$Builder)
 

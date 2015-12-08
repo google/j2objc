@@ -141,10 +141,12 @@ public class EnumRewriter extends TreeVisitor {
     // TODO(kstanger): Remove after users have migrated.
     String oldTypeName = nameTable.getFullName(node.getTypeBinding(), true);
     if (!oldTypeName.equals(typeName)) {
+      header.append("#ifdef J2OBJC_RENAME_ALIASES\n");
       header.append(String.format(
           "#define %s_values %s_values\n"
           + "#define %s_valueOfWithNSString_ %s_valueOfWithNSString_\n",
           oldTypeName, typeName, oldTypeName, typeName));
+      header.append("#endif // J2OBJC_RENAME_ALIASES\n");
     }
 
     // Append enum type suffix.

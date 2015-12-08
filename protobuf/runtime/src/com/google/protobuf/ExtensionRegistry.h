@@ -60,7 +60,9 @@ typedef ComGoogleProtobufExtensionRegistry$ExtensionInfo CGPExtensionInfo;
         (ComGoogleProtobufDescriptors$Descriptor *)descriptor
     withInt:(int)fieldId;
 // TODO(kstanger): Remove when users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define findExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor findExtensionByNumberWithComGoogleProtobufDescriptors$Descriptor
+#endif // J2OBJC_RENAME_ALIASES
 
 - (ComGoogleProtobufExtensionRegistry *)getUnmodifiable;
 
@@ -84,8 +86,10 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufExtensionRegistry$ExtensionInfo)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionRegistry$ExtensionInfo)
 // TODO(kstanger): Remove when users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufExtensionRegistry_ExtensionInfo ComGoogleProtobufExtensionRegistry$ExtensionInfo
 #define ComGoogleProtobufExtensionRegistry_ExtensionInfo_class_ ComGoogleProtobufExtensionRegistry$ExtensionInfo_class_
+#endif // J2OBJC_RENAME_ALIASES
 
 CF_EXTERN_C_BEGIN
 

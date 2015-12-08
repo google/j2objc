@@ -69,7 +69,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage)
 
 @end
 // TODO(kstanger): Remove when users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufGeneratedMessage_Builder ComGoogleProtobufGeneratedMessage$Builder
+#endif // J2OBJC_RENAME_ALIASES
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_Builder)
 
@@ -130,7 +132,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
 
 @end
 // TODO(kstanger): Remove when users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufGeneratedMessage_ExtendableBuilder ComGoogleProtobufGeneratedMessage$ExtendableBuilder
+#endif // J2OBJC_RENAME_ALIASES
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage$ExtendableBuilder)
 
@@ -139,7 +143,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage$ExtendableBuilder)
 @interface ComGoogleProtobufGeneratedMessage$GeneratedExtension : CGPExtension
 @end
 // TODO(kstanger): Remove when users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
 #define ComGoogleProtobufGeneratedMessage_GeneratedExtension ComGoogleProtobufGeneratedMessage$GeneratedExtension
+#endif // J2OBJC_RENAME_ALIASES
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage$GeneratedExtension)
 
