@@ -424,7 +424,7 @@ destinationBegin:(int)destinationBegin {
   }
   int length = end - start;
   NSRange range = NSMakeRange((NSUInteger) start, (NSUInteger) length);
-  unichar *buffer = (unichar *)calloc(length, sizeof(unichar));
+  unichar *buffer = malloc(length * sizeof(unichar));
   [self getCharacters:buffer range:range];
   NSString *subString = [NSString stringWithCharacters:buffer length:length];
   free(buffer);
@@ -432,8 +432,21 @@ destinationBegin:(int)destinationBegin {
 }
 
 - (NSString *)replace:(unichar)oldchar withChar:(unichar)newchar {
-  return [self replace:[NSString stringWithCharacters:&oldchar length:1]
-          withSequence:[NSString stringWithCharacters:&newchar length:1]];
+  CFStringRef this = (__bridge CFStringRef)self;
+  CFIndex length = CFStringGetLength(this);
+  unichar *chars = malloc(length * sizeof(unichar));
+  CFRange range = { 0, length };
+  CFStringGetCharacters(this, range, chars);
+  BOOL modified = NO;
+  for (CFIndex i = 0; i < length; i++) {
+    if (chars[i] == oldchar) {
+      chars[i] = newchar;
+      modified = YES;
+    }
+  }
+  NSString *result = modified ? [NSString stringWithCharacters:chars length:length] : self;
+  free(chars);
+  return result;
 }
 
 - (NSString *)replace:(id<JavaLangCharSequence>)oldSequence
@@ -546,7 +559,7 @@ NSStringEncoding parseCharsetName(NSString *charset) {
                        offset:(NSUInteger)offset
                        length:(NSUInteger)length {
   jbyte *bytes = value->buffer_;
-  unichar *chars = (unichar *)calloc(length, sizeof(unichar));
+  unichar *chars = malloc(length * sizeof(unichar));
   for (NSUInteger i = 0; i < length; i++) {
     jbyte b = bytes[i + offset];
     // Expression from String(byte[],int) javadoc.
