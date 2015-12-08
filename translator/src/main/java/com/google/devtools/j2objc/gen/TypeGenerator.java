@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.file.InputFile;
 import com.google.devtools.j2objc.types.Types;
@@ -71,6 +72,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final String typeName;
   protected final String oldTypeName; // TODO(kstanger): Remove after users migrate.
   protected final boolean typeNeedsReflection;
+  protected final boolean hasNullabilityAnnotations;
 
   private final List<BodyDeclaration> declarations;
   private final boolean parametersNonnullByDefault;
@@ -88,6 +90,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     declarations = filterDeclarations(node.getBodyDeclarations());
     parametersNonnullByDefault = Options.nullability()
         && areParametersNonnullByDefault();
+    hasNullabilityAnnotations = Options.nullability()
+        && (parametersNonnullByDefault || hasNullabilityAnnotations());
   }
 
   protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
@@ -353,6 +357,30 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       // fall-through
     }
     return false;
+  }
+
+  private boolean hasNullabilityAnnotations() {
+    final boolean[] hasAnnotation = new boolean[1];
+    typeNode.accept(new TreeVisitor() {
+      @Override
+      public void endVisit(MethodDeclaration node) {
+        IMethodBinding method = node.getMethodBinding();
+        if (BindingUtil.hasNullableAnnotation(method)
+            || BindingUtil.hasNonnullAnnotation(method)) {
+          hasAnnotation[0] = true;
+        } else {
+          for (SingleVariableDeclaration param : node.getParameters()) {
+            IVariableBinding paramBinding = param.getVariableBinding();
+            if (BindingUtil.hasNullableAnnotation(paramBinding)
+                || BindingUtil.hasNonnullAnnotation(paramBinding)) {
+              hasAnnotation[0] = true;
+              break;
+            }
+          }
+        }
+      }
+    });
+    return hasAnnotation[0];
   }
 
   protected String getFunctionSignature(FunctionDeclaration function) {

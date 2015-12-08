@@ -90,6 +90,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void generateInitialDeclaration() {
+    pushNullabilityCompletenessPragma();
     printConstantDefines();
     printNativeEnum();
 
@@ -126,6 +127,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printBoxedOperators();
 
     printUnprefixedAlias();
+    popNullabilityCompletenessPragma();
   }
 
   protected void printConstantDefines() {
@@ -846,5 +848,29 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       }
     }
     return sb.toString();
+  }
+
+  /**
+   * Ignores nullability completeness warnings. If clang finds any nullability
+   * annotations, it checks that all annotatable sites have annotations. Java
+   * checker frameworks don't have that requirement.
+   */
+  private void pushNullabilityCompletenessPragma() {
+    if (hasNullabilityAnnotations) {
+      newline();
+      println("#if __has_feature(nullability)");
+      println("#pragma clang diagnostic push");
+      println("#pragma GCC diagnostic ignored \"-Wnullability-completeness\"");
+      println("#endif");
+    }
+  }
+
+  private void popNullabilityCompletenessPragma() {
+    if (hasNullabilityAnnotations) {
+      newline();
+      println("#if __has_feature(nullability)");
+      println("#pragma clang diagnostic pop");
+      println("#endif");
+    }
   }
 }

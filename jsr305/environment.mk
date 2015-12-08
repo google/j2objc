@@ -32,11 +32,6 @@ JSR305_JAR_FULL = $(JAVA_DEPS_JAR_DIR)/$(JSR305_JAR)
 
 WARNINGS := -Wall -Werror
 
-ifeq ("$(XCODE_7_MINIMUM)", "YES")
-# Disable clang nullability warnings, since Java semantics are different.
-WARNINGS += -Wno-nullability-completeness
-endif
-
 OBJCFLAGS := -ObjC $(WARNINGS) $(DEBUGFLAGS)
 
 # J2ObjC settings

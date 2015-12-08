@@ -307,4 +307,23 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         // Default should not apply to primitive type.
         "withInt:(jint)count;");
   }
+
+  public void testNullabilityPragmas() throws IOException {
+    String source = "package foo.bar; import javax.annotation.*; "
+        + "public class Test {"
+        + "  String test(@Nullable String msg, Object var, int count) { "
+        + "    return msg.isEmpty() ? null : msg; }"
+        + "}";
+    Options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertTranslatedLines(translation,
+        "#if __has_feature(nullability)",
+        "#pragma clang diagnostic push",
+        "#pragma GCC diagnostic ignored \"-Wnullability-completeness\"",
+        "#endif");
+    assertTranslatedLines(translation,
+        "#if __has_feature(nullability)",
+        "#pragma clang diagnostic pop",
+        "#endif");
+  }
 }
