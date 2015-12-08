@@ -1,6 +1,7 @@
 # j2objc is a mixed-language project, but setting objective-c forces the OS to OSX.
 language: objective-c
 os: osx
+osx_image: xcode7.1
 
 env:
   - LATEST_JAVA=true
@@ -14,8 +15,8 @@ before_script:
   - scripts/osx-set-java.sh
 
 # Travis-CI kills the build after 50 minutes, so break it up into
-# smaller commands.
-script: make -j4 dist
+# smaller commands and only bulid two archs.
+script: J2OBJC_ARCHS="macosx iphone" make -j4 dist
 after_script:
   - make test_translator
   - make test_cycle_finder
