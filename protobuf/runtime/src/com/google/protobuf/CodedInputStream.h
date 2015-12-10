@@ -358,7 +358,7 @@ inline CGPCodedInputStream::CGPCodedInputStream(JavaIoInputStream *input,
                                                 int input_limit)
   : input_(input),
     input_limit_(input_limit),
-    bytes_([IOSByteArray arrayWithLength:CGP_CODED_STREAM_BUFFER_SIZE]),
+    bytes_([IOSByteArray newArrayWithLength:CGP_CODED_STREAM_BUFFER_SIZE]),
     buffer_(NULL),
     buffer_end_(NULL),
     total_bytes_read_(0),

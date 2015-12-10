@@ -41,7 +41,7 @@ static const int kMaxVarint32Bytes = 5;
 
 CGPCodedOutputStream::CGPCodedOutputStream(JavaIoOutputStream *output)
   : output_(output),
-    bytes_([IOSByteArray arrayWithLength:CGP_CODED_STREAM_BUFFER_SIZE]),
+    bytes_([IOSByteArray newArrayWithLength:CGP_CODED_STREAM_BUFFER_SIZE]),
     buffer_((uint8 *)bytes_->buffer_),
     buffer_size_((int)bytes_->size_),
     total_bytes_((int)bytes_->size_),
@@ -61,6 +61,7 @@ CGPCodedOutputStream::~CGPCodedOutputStream() {
   if (output_ != NULL) {
     FlushBuffer();
   }
+  [bytes_ release];
 }
 
 bool CGPCodedOutputStream::Skip(int count) {

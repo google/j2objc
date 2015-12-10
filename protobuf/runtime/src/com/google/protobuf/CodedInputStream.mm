@@ -41,6 +41,7 @@ static const int kMaxVarint32Bytes = 5;
 }  // namespace
 
 CGPCodedInputStream::~CGPCodedInputStream() {
+  [bytes_ release];
 }
 
 inline void CGPCodedInputStream::RecomputeBufferLimits() {
