@@ -30,7 +30,7 @@ public class ReferenceQueue<T> {
     private Reference<? extends T> head;
 
     // j2objc: Use a sentinel to avoid the "reference.queueNext = reference" leak.
-    private final Reference<? extends T> SENTINEL = new WeakReference<>(null, null);
+    private static final Reference SENTINEL = new WeakReference<>(null, null);
 
     /**
      * Constructs a new instance of this class.

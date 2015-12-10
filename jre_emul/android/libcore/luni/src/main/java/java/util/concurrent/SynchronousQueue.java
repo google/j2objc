@@ -195,8 +195,8 @@ public class SynchronousQueue<E> extends AbstractQueue<E>
         /** Node is fulfilling another unfulfilled DATA or REQUEST */
         static final int FULFILLING = 2;
 
-        private static SNode CANCELLED = new SNode(null);
-        private static SNode FINISHED = new SNode(null);
+        private static final SNode CANCELLED = new SNode(null);
+        private static final SNode FINISHED = new SNode(null);
 
         /** Returns true if m has fulfilling bit set. */
         static boolean isFulfilling(int m) { return (m & FULFILLING) != 0; }
