@@ -36,6 +36,7 @@
 #include "J2ObjC_header.h"
 
 @class IOSByteArray;
+@class JavaIoInputStream;
 
 @interface ComGoogleProtobufByteString : NSObject {
  @package
@@ -47,27 +48,51 @@
     copyFromWithByteArray:(IOSByteArray *)bytes OBJC_METHOD_FAMILY_NONE;
 
 - (jbyte)byteAtWithInt:(jint)index;
+- (jint)size;
+- (jboolean)isEmpty;
 - (IOSByteArray *)toByteArray;
 - (NSString *)toStringWithNSString:(NSString *)charsetName;
 - (NSString *)toStringUtf8;
+
++ (ComGoogleProtobufByteString *)readFromWithJavaIoInputStream:(JavaIoInputStream *)streamToDrain;
++ (ComGoogleProtobufByteString *)readFromWithJavaIoInputStream:(JavaIoInputStream *)streamToDrain
+                                                       withInt:(jint)chunkSize;
++ (ComGoogleProtobufByteString *)readFromWithJavaIoInputStream:(JavaIoInputStream *)streamToDrain
+                                                       withInt:(jint)minChunkSize
+                                                       withInt:(jint)maxChunkSize;
 
 @end
 
 typedef ComGoogleProtobufByteString CGPByteString;
 
-FOUNDATION_EXPORT ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromWithByteArray_(
+CF_EXTERN_C_BEGIN
+
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromWithByteArray_(
     IOSByteArray *bytes);
 
-FOUNDATION_EXPORT ComGoogleProtobufByteString
-    *ComGoogleProtobufByteString_copyFromUtf8WithNSString_(NSString *text);
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSString_(NSString *text);
 
-FOUNDATION_EXPORT ComGoogleProtobufByteString *CGPNewByteString(jint len);
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_readFromWithJavaIoInputStream_(
+    JavaIoInputStream *streamToDrain);
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_readFromWithJavaIoInputStream_withInt_(
+    JavaIoInputStream *streamToDrain, jint chunkSize);
+ComGoogleProtobufByteString
+    *ComGoogleProtobufByteString_readFromWithJavaIoInputStream_withInt_withInt_(
+    JavaIoInputStream *streamToDrain, jint minChunkSize, jint maxChunkSize);
+
+ComGoogleProtobufByteString *CGPNewByteString(jint len);
+
+CF_EXTERN_C_END
 
 J2OBJC_STATIC_INIT(ComGoogleProtobufByteString)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufByteString)
+FOUNDATION_EXPORT ComGoogleProtobufByteString *ComGoogleProtobufByteString_EMPTY;
+J2OBJC_STATIC_FIELD_GETTER(ComGoogleProtobufByteString, EMPTY, ComGoogleProtobufByteString *)
+// TODO(kstanger): Remove when users have migrated.
+#ifdef J2OBJC_RENAME_ALIASES
+#define ComGoogleProtobufByteString_get_EMPTY_ ComGoogleProtobufByteString_get_EMPTY
+#endif // J2OBJC_RENAME_ALIASES
 
-FOUNDATION_EXPORT ComGoogleProtobufByteString *ComGoogleProtobufByteString_EMPTY_;
-J2OBJC_STATIC_FIELD_GETTER(ComGoogleProtobufByteString, EMPTY_, ComGoogleProtobufByteString *)
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufByteString)
 
 #endif // __ComGoogleProtobufByteString_H__

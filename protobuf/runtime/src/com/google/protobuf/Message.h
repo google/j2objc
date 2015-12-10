@@ -49,7 +49,6 @@
 
 - (id<ComGoogleProtobufMessage$Builder>)toBuilder;
 - (id<ComGoogleProtobufMessage$Builder>)newBuilderForType NS_RETURNS_NOT_RETAINED;
-- (ComGoogleProtobufByteString *)toByteString;
 - (NSData *)toNSData;
 
 + (id)getDescriptor;

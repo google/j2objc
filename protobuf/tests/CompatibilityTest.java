@@ -1062,6 +1062,7 @@ public class CompatibilityTest extends ProtobufTest {
     MessageLite.Builder builder = TypicalData.newBuilder();
     MessageLite message = builder.build();
     assertTrue(message instanceof MessageLite);
+    message.toByteString();
   }
 
   public void testMutatingBuilderDoesntMutateMessage() throws Exception {
@@ -1244,5 +1245,25 @@ public class CompatibilityTest extends ProtobufTest {
     assertEquals(98, bstr.byteAt(0));
     assertEquals(97, bstr.byteAt(1));
     assertEquals(114, bstr.byteAt(2));
+  }
+
+  public void testEmptyByteString() throws Exception {
+    ByteString empty = ByteString.EMPTY;
+    assertTrue(empty instanceof ByteString);
+    assertEquals(0, empty.size());
+    assertTrue(empty.isEmpty());
+  }
+
+  public void testByteStringFromInputStream() throws Exception {
+    byte[] randomBytes = readStream(getTestData("randombytes"));
+    ByteArrayInputStream in = new ByteArrayInputStream(randomBytes);
+    ByteString bs = ByteString.readFrom(in, 2, 256);
+    checkBytes(randomBytes, bs.toByteArray());
+    in = new ByteArrayInputStream(randomBytes);
+    bs = ByteString.readFrom(in, 256);
+    checkBytes(randomBytes, bs.toByteArray());
+    in = new ByteArrayInputStream(randomBytes);
+    bs = ByteString.readFrom(in);
+    checkBytes(randomBytes, bs.toByteArray());
   }
 }

@@ -36,11 +36,15 @@
 
 #import "IOSPrimitiveArray.h"
 #import "J2ObjC_source.h"
+#import "java/io/InputStream.h"
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
+
+#define MIN_READ_FROM_CHUNK_SIZE 0x100   // 256b
+#define MAX_READ_FROM_CHUNK_SIZE 0x2000  // 8k
 
 J2OBJC_INITIALIZED_DEFN(ComGoogleProtobufByteString)
 
-ComGoogleProtobufByteString *ComGoogleProtobufByteString_EMPTY_;
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_EMPTY;
 
 ComGoogleProtobufByteString *CGPNewByteString(jint len) {
   CGPByteString *byteString = NSAllocateObject([CGPByteString class], len, nil);
@@ -86,6 +90,14 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
   return buffer_[index];
 }
 
+- (jint)size {
+  return size_;
+}
+
+- (jboolean)isEmpty {
+  return size_ == 0;
+}
+
 - (IOSByteArray *)toByteArray {
   return [IOSByteArray arrayWithBytes:buffer_ count:size_];
 }
@@ -98,6 +110,23 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
   return [[[NSString alloc] initWithBytes:buffer_
                                    length:size_
                                  encoding:NSUTF8StringEncoding] autorelease];
+}
+
++ (ComGoogleProtobufByteString *)readFromWithJavaIoInputStream:(JavaIoInputStream *)streamToDrain {
+  return ComGoogleProtobufByteString_readFromWithJavaIoInputStream_(streamToDrain);
+}
+
++ (ComGoogleProtobufByteString *)readFromWithJavaIoInputStream:(JavaIoInputStream *)streamToDrain
+                                                       withInt:(jint)chunkSize {
+  return ComGoogleProtobufByteString_readFromWithJavaIoInputStream_withInt_(
+      streamToDrain, chunkSize);
+}
+
++ (ComGoogleProtobufByteString *)readFromWithJavaIoInputStream:(JavaIoInputStream *)streamToDrain
+                                                       withInt:(jint)minChunkSize
+                                                       withInt:(jint)maxChunkSize {
+  return ComGoogleProtobufByteString_readFromWithJavaIoInputStream_withInt_withInt_(
+      streamToDrain, minChunkSize, maxChunkSize);
 }
 
 - (BOOL)isEqual:(id)other {
@@ -127,11 +156,97 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
 
 + (void)initialize {
   if (self == [ComGoogleProtobufByteString class]) {
-    ComGoogleProtobufByteString_EMPTY_ = CGPNewByteString(0);
+    ComGoogleProtobufByteString_EMPTY = CGPNewByteString(0);
     J2OBJC_SET_INITIALIZED(ComGoogleProtobufByteString)
   }
 }
 
 @end
+
+// We commission the first few bytes of each byte array chunk as metadata so
+// that we can chain the chunks without requiring additional memory allocation.
+typedef struct ChunkData {
+  jint numBytes;
+  IOSByteArray *next;
+} ChunkData;
+
+static bool ReadChunk(JavaIoInputStream *input, jint chunkSize, IOSByteArray **pChunk) {
+  IOSByteArray *chunk = [IOSByteArray newArrayWithLength:sizeof(ChunkData) + chunkSize];
+  *pChunk = chunk;
+  jint *bytesRead = &((ChunkData *)chunk->buffer_)->numBytes;
+  while (*bytesRead < chunkSize) {
+    jint count = [input readWithByteArray:chunk
+                                  withInt:sizeof(ChunkData) + *bytesRead
+                                  withInt:chunkSize - *bytesRead];
+    if (count == -1) {
+      return true;
+    }
+    *bytesRead += count;
+  }
+  return false;
+}
+
+static void ReleaseChunks(IOSByteArray *chunk) {
+  while (chunk) {
+    ChunkData *chunkData = (ChunkData *)chunk->buffer_;
+    IOSByteArray *next = chunkData->next;
+    [chunk release];
+    chunk = next;
+  }
+}
+
+ComGoogleProtobufByteString *ByteStringFromChunks(jint size, IOSByteArray *chunk) {
+  CGPByteString *byteString = CGPNewByteString(size);
+  void *buffer = byteString->buffer_;
+  while (chunk) {
+    ChunkData *chunkData = (ChunkData *)chunk->buffer_;
+    memcpy(buffer, (void *)chunk->buffer_ + sizeof(ChunkData), chunkData->numBytes);
+    buffer += chunkData->numBytes;
+    IOSByteArray *next = chunkData->next;
+    [chunk release];
+    chunk = next;
+  }
+  return [byteString autorelease];
+}
+
+// Unlike the Java implementation, which uses RopeByteString to chain the chunks
+// together, this implementation simply copies the contents of the chunks back
+// into a single buffer.
+ComGoogleProtobufByteString
+    *ComGoogleProtobufByteString_readFromWithJavaIoInputStream_withInt_withInt_(
+    JavaIoInputStream *streamToDrain, jint minChunkSize, jint maxChunkSize) {
+  jint chunkSize = minChunkSize;
+  jint totalBytes = 0;
+  IOSByteArray *firstChunk;
+
+  @try {
+    IOSByteArray **nextChunk = &firstChunk;
+    bool finished;
+    do {
+      finished = ReadChunk(streamToDrain, chunkSize, nextChunk);
+      ChunkData *chunkData = (ChunkData *)((*nextChunk)->buffer_);
+      chunkSize = MIN(chunkSize * 2, maxChunkSize);
+      totalBytes += chunkData->numBytes;
+      nextChunk = &chunkData->next;
+    } while (!finished);
+  } @catch (id e) {
+    ReleaseChunks(firstChunk);
+    @throw e;
+  }
+
+  return ByteStringFromChunks(totalBytes, firstChunk);
+}
+
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_readFromWithJavaIoInputStream_(
+    JavaIoInputStream *streamToDrain) {
+  return ComGoogleProtobufByteString_readFromWithJavaIoInputStream_withInt_withInt_(
+      streamToDrain, MIN_READ_FROM_CHUNK_SIZE, MAX_READ_FROM_CHUNK_SIZE);
+}
+
+ComGoogleProtobufByteString *ComGoogleProtobufByteString_readFromWithJavaIoInputStream_withInt_(
+    JavaIoInputStream *streamToDrain, jint chunkSize) {
+  return ComGoogleProtobufByteString_readFromWithJavaIoInputStream_withInt_withInt_(
+      streamToDrain, chunkSize, chunkSize);
+}
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufByteString)

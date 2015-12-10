@@ -47,6 +47,7 @@
 - (id<ComGoogleProtobufMessageLite$Builder>)newBuilderForType NS_RETURNS_NOT_RETAINED;
 
 - (int)getSerializedSize;
+- (ComGoogleProtobufByteString *)toByteString;
 - (IOSByteArray *)toByteArray;
 
 - (void)writeToWithJavaIoOutputStream:(JavaIoOutputStream *)output;

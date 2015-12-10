@@ -328,7 +328,7 @@ void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
       }
     case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_BYTE_STRING:
       if (data->defaultValue.valueId == nil) {
-        data->defaultValue.valueId = ComGoogleProtobufByteString_get_EMPTY_();
+        data->defaultValue.valueId = ComGoogleProtobufByteString_get_EMPTY();
       } else {
         // Default byte string data is written to static data as a length
         // prefixed c-string.
@@ -583,7 +583,7 @@ ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum *ComGoogleProtobufDesc
     ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_DOUBLE = [[ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum alloc] initWithId:JavaLangDouble_valueOfWithDouble_(0.0) withNSString:@"DOUBLE" withInt:3];
     ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_BOOLEAN = [[ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum alloc] initWithId:JavaLangBoolean_valueOfWithBoolean_(NO) withNSString:@"BOOLEAN" withInt:4];
     ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_STRING = [[ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum alloc] initWithId:@"" withNSString:@"STRING" withInt:5];
-    ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_BYTE_STRING = [[ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum alloc] initWithId:ComGoogleProtobufByteString_get_EMPTY_() withNSString:@"BYTE_STRING" withInt:6];
+    ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_BYTE_STRING = [[ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum alloc] initWithId:ComGoogleProtobufByteString_get_EMPTY() withNSString:@"BYTE_STRING" withInt:6];
     ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_ENUM = [[ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum alloc] initWithId:nil withNSString:@"ENUM" withInt:7];
     ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_MESSAGE = [[ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum alloc] initWithId:nil withNSString:@"MESSAGE" withInt:8];
     J2OBJC_SET_INITIALIZED(ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum)
