@@ -128,7 +128,8 @@ __attribute__((always_inline)) inline void IOSBooleanArray_GetRange(
     jboolean *buffer, __unsafe_unretained const IOSBooleanArray *array,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(buffer, array->buffer_ + (offset * sizeof(jboolean)), length * sizeof(jboolean));
+  memcpy(buffer, array->buffer_ + ((size_t)offset * sizeof(jboolean)),
+      (size_t)length * sizeof(jboolean));
 }
 
 /**
@@ -138,7 +139,8 @@ __attribute__((always_inline)) inline void IOSBooleanArray_SetRange(
     __unsafe_unretained IOSBooleanArray *array, const jboolean *buffer,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(array->buffer_ + (offset * sizeof(jboolean)), buffer, length * sizeof(jboolean));
+  memcpy(array->buffer_ + ((size_t)offset * sizeof(jboolean)), buffer,
+      (size_t)length * sizeof(jboolean));
 }
 
 
@@ -241,7 +243,7 @@ __attribute__((always_inline)) inline void IOSCharArray_GetRange(
     jchar *buffer, __unsafe_unretained const IOSCharArray *array,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(buffer, array->buffer_ + (offset * sizeof(jchar)), length * sizeof(jchar));
+  memcpy(buffer, array->buffer_ + ((size_t)offset * sizeof(jchar)), (size_t)length * sizeof(jchar));
 }
 
 /**
@@ -251,7 +253,7 @@ __attribute__((always_inline)) inline void IOSCharArray_SetRange(
     __unsafe_unretained IOSCharArray *array, const jchar *buffer,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(array->buffer_ + (offset * sizeof(jchar)), buffer, length * sizeof(jchar));
+  memcpy(array->buffer_ + ((size_t)offset * sizeof(jchar)), buffer, (size_t)length * sizeof(jchar));
 }
 
 
@@ -368,7 +370,7 @@ __attribute__((always_inline)) inline void IOSByteArray_GetRange(
     jbyte *buffer, __unsafe_unretained const IOSByteArray *array,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(buffer, array->buffer_ + (offset * sizeof(jbyte)), length * sizeof(jbyte));
+  memcpy(buffer, array->buffer_ + ((size_t)offset * sizeof(jbyte)), (size_t)length * sizeof(jbyte));
 }
 
 /**
@@ -378,7 +380,7 @@ __attribute__((always_inline)) inline void IOSByteArray_SetRange(
     __unsafe_unretained IOSByteArray *array, const jbyte *buffer,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(array->buffer_ + (offset * sizeof(jbyte)), buffer, length * sizeof(jbyte));
+  memcpy(array->buffer_ + ((size_t)offset * sizeof(jbyte)), buffer, (size_t)length * sizeof(jbyte));
 }
 
 
@@ -476,7 +478,8 @@ __attribute__((always_inline)) inline void IOSShortArray_GetRange(
     jshort *buffer, __unsafe_unretained const IOSShortArray *array,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(buffer, array->buffer_ + (offset * sizeof(jshort)), length * sizeof(jshort));
+  memcpy(buffer, array->buffer_ + ((size_t)offset * sizeof(jshort)),
+      (size_t)length * sizeof(jshort));
 }
 
 /**
@@ -486,7 +489,8 @@ __attribute__((always_inline)) inline void IOSShortArray_SetRange(
     __unsafe_unretained IOSShortArray *array, const jshort *buffer,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(array->buffer_ + (offset * sizeof(jshort)), buffer, length * sizeof(jshort));
+  memcpy(array->buffer_ + ((size_t)offset * sizeof(jshort)), buffer,
+      (size_t)length * sizeof(jshort));
 }
 
 
@@ -585,7 +589,7 @@ __attribute__((always_inline)) inline void IOSIntArray_GetRange(
     jint *buffer, __unsafe_unretained const IOSIntArray *array,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(buffer, array->buffer_ + (offset * sizeof(jint)), length * sizeof(jint));
+  memcpy(buffer, array->buffer_ + ((size_t)offset * sizeof(jint)), (size_t)length * sizeof(jint));
 }
 
 /**
@@ -595,7 +599,7 @@ __attribute__((always_inline)) inline void IOSIntArray_SetRange(
     __unsafe_unretained IOSIntArray *array, const jint *buffer,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(array->buffer_ + (offset * sizeof(jint)), buffer, length * sizeof(jint));
+  memcpy(array->buffer_ + ((size_t)offset * sizeof(jint)), buffer, (size_t)length * sizeof(jint));
 }
 
 
@@ -694,7 +698,7 @@ __attribute__((always_inline)) inline void IOSLongArray_GetRange(
     jlong *buffer, __unsafe_unretained const IOSLongArray *array,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(buffer, array->buffer_ + (offset * sizeof(jlong)), length * sizeof(jlong));
+  memcpy(buffer, array->buffer_ + ((size_t)offset * sizeof(jlong)), (size_t)length * sizeof(jlong));
 }
 
 /**
@@ -704,7 +708,7 @@ __attribute__((always_inline)) inline void IOSLongArray_SetRange(
     __unsafe_unretained IOSLongArray *array, const jlong *buffer,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(array->buffer_ + (offset * sizeof(jlong)), buffer, length * sizeof(jlong));
+  memcpy(array->buffer_ + ((size_t)offset * sizeof(jlong)), buffer, (size_t)length * sizeof(jlong));
 }
 
 
@@ -802,7 +806,8 @@ __attribute__((always_inline)) inline void IOSFloatArray_GetRange(
     jfloat *buffer, __unsafe_unretained const IOSFloatArray *array,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(buffer, array->buffer_ + (offset * sizeof(jfloat)), length * sizeof(jfloat));
+  memcpy(buffer, array->buffer_ + ((size_t)offset * sizeof(jfloat)),
+      (size_t)length * sizeof(jfloat));
 }
 
 /**
@@ -812,7 +817,8 @@ __attribute__((always_inline)) inline void IOSFloatArray_SetRange(
     __unsafe_unretained IOSFloatArray *array, const jfloat *buffer,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(array->buffer_ + (offset * sizeof(jfloat)), buffer, length * sizeof(jfloat));
+  memcpy(array->buffer_ + ((size_t)offset * sizeof(jfloat)), buffer,
+      (size_t)length * sizeof(jfloat));
 }
 
 
@@ -910,7 +916,8 @@ __attribute__((always_inline)) inline void IOSDoubleArray_GetRange(
     jdouble *buffer, __unsafe_unretained const IOSDoubleArray *array,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(buffer, array->buffer_ + (offset * sizeof(jdouble)), length * sizeof(jdouble));
+  memcpy(buffer, array->buffer_ + ((size_t)offset * sizeof(jdouble)),
+      (size_t)length * sizeof(jdouble));
 }
 
 /**
@@ -920,7 +927,8 @@ __attribute__((always_inline)) inline void IOSDoubleArray_SetRange(
     __unsafe_unretained IOSDoubleArray *array, const jdouble *buffer,
     jint offset, jint length) {
   IOSArray_checkRange(array->size_, offset, length);
-  memcpy(array->buffer_ + (offset * sizeof(jdouble)), buffer, length * sizeof(jdouble));
+  memcpy(array->buffer_ + ((size_t)offset * sizeof(jdouble)), buffer,
+      (size_t)length * sizeof(jdouble));
 }
 
 
