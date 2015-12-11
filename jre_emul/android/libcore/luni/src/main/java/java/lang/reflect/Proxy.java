@@ -58,8 +58,7 @@ public class Proxy implements Serializable {
     protected InvocationHandler handler;
     protected Map<String,Method> methodMap = new HashMap<String,Method>();
 
-    @SuppressWarnings("unused")
-        private Proxy() {
+    private Proxy() {
     }
 
     /**
@@ -277,7 +276,7 @@ public class Proxy implements Serializable {
         throw new IllegalArgumentException("not a proxy instance");
     }
 
-    private static native Class generateProxy(String name, Class[] interfaces,
+    private static native Class<?> generateProxy(String name, Class<?>[] interfaces,
         ClassLoader loader) throws IllegalArgumentException /*-[
       Class proxyClass = objc_allocateClassPair([JavaLangReflectProxy class], [name UTF8String], 0);
       jint interfaceCount = interfaces->size_;
@@ -339,11 +338,11 @@ public class Proxy implements Serializable {
           jint numArgs = paramTypes->size_;
           IOSObjectArray *args = [IOSObjectArray arrayWithLength:numArgs type:NSObject_class_()];
 
-          for (jint i = 0; i < numArgs; i++) {
+          for (jint j = 0; j < numArgs; j++) {
             J2ObjcRawValue arg;
-            [anInvocation getArgument:&arg atIndex:i + 2];
-            id javaArg = [paramTypes->buffer_[i] __boxValue:&arg];
-            [args replaceObjectAtIndex:i withObject:javaArg];
+            [anInvocation getArgument:&arg atIndex:j + 2];
+            id javaArg = [paramTypes->buffer_[j] __boxValue:&arg];
+            [args replaceObjectAtIndex:j withObject:javaArg];
           }
           id javaResult = [handler_ invokeWithId:self
                        withJavaLangReflectMethod:method
