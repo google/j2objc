@@ -37,6 +37,7 @@
 
 @class IOSByteArray;
 @class JavaIoInputStream;
+@class JavaIoOutputStream;
 
 @interface ComGoogleProtobufByteString : NSObject {
  @package
@@ -62,6 +63,7 @@
 + (ComGoogleProtobufByteString *)readFromWithJavaIoInputStream:(JavaIoInputStream *)streamToDrain
                                                        withInt:(jint)minChunkSize
                                                        withInt:(jint)maxChunkSize;
+- (void)writeToWithJavaIoOutputStream:(JavaIoOutputStream *)output;
 
 @end
 

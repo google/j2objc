@@ -37,6 +37,7 @@
 #import "IOSPrimitiveArray.h"
 #import "J2ObjC_source.h"
 #import "java/io/InputStream.h"
+#import "java/io/OutputStream.h"
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
 #import "java/lang/IndexOutOfBoundsException.h"
 
@@ -146,6 +147,17 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
                                                        withInt:(jint)maxChunkSize {
   return ComGoogleProtobufByteString_readFromWithJavaIoInputStream_withInt_withInt_(
       streamToDrain, minChunkSize, maxChunkSize);
+}
+
+- (void)writeToWithJavaIoOutputStream:(JavaIoOutputStream *)output {
+  if (size_ > 0) {
+    IOSByteArray *bytes = [IOSByteArray newArrayWithBytes:buffer_ count:size_];
+    @try {
+      [output writeWithByteArray:bytes];
+    } @finally {
+      [bytes release];
+    }
+  }
 }
 
 - (BOOL)isEqual:(id)other {

@@ -1267,6 +1267,14 @@ public class CompatibilityTest extends ProtobufTest {
     checkBytes(randomBytes, bs.toByteArray());
   }
 
+  public void testByteStringToOutputStream() throws Exception {
+    byte[] randomBytes = readStream(getTestData("randombytes"));
+    ByteString bs = ByteString.copyFrom(randomBytes);
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    bs.writeTo(out);
+    checkBytes(randomBytes, out.toByteArray());
+  }
+
   private void expectSubstringIndexOutOfBounds(ByteString bs, int startIndex, int endIndex) {
     try {
       bs.substring(startIndex, endIndex);
