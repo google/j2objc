@@ -123,8 +123,7 @@ TEST_SRC = $(subst $(eval) ,:,$(TEST_SRC_ROOTS))
 vpath %.java $(JRE_SRC):$(TEST_SRC):$(STUBS_DIR)
 
 # Clang warnings
-WARNINGS := $(WARNINGS) -Wall -Werror -Wshorten-64-to-32 -Wsign-compare \
-  -Wno-unused-variable
+WARNINGS := $(CC_WARNINGS) $(WARNINGS)
 
 ifeq ("$(strip $(XCODE_VERSION_MAJOR))", "0500")
 OBJCFLAGS += -DSET_MIN_IOS_VERSION
