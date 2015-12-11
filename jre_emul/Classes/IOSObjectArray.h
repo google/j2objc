@@ -132,7 +132,7 @@ FOUNDATION_EXPORT id IOSObjectArray_SetAndConsume(
 
 __attribute__((always_inline)) inline id IOSObjectArray_Get(
     __unsafe_unretained IOSObjectArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, (jint)index);
+  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
   return array->buffer_[index];
 }
 
@@ -146,7 +146,7 @@ typedef struct JreArrayRef {
 // Internal only functions.
 __attribute__((always_inline)) inline JreArrayRef IOSObjectArray_GetRef(
     __unsafe_unretained IOSObjectArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, (jint)index);
+  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
   return (JreArrayRef){ .arr = array, .pValue = &array->buffer_[index] };
 }
 FOUNDATION_EXPORT id IOSObjectArray_SetRef(JreArrayRef ref, id value);
