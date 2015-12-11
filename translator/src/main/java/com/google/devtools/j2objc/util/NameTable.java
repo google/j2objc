@@ -137,6 +137,7 @@ public class NameTable {
       "va_list", "fpos_t", "FILE", "off_t", "ssize_t", "BUFSIZ", "EOF", "FOPEN_MAX",
       "FILENAME_MAX", "R_OK", "SEEK_SET", "SEEK_CUR", "SEEK_END", "stdin", "STDIN_FILENO",
       "stdout", "STDOUT_FILENO", "stderr", "STDERR_FILENO", "TMP_MAX", "W_OK", "X_OK",
+      "sys_errlist",
 
       // Definitions from stdlib.h
       "ct_rune_t", "rune_t", "div_t", "ldiv_t", "lldiv_t", "dev_t", "mode_t",
@@ -168,7 +169,7 @@ public class NameTable {
       "O_TRUNC", "O_EXCL", "O_NOCTTY", "O_NOFOLLOW",
 
       // Definitions from math.h
-      "DOMAIN", "HUGE", "INFINITY", "NAN", "OVERFLOW", "SING", "UNDERFLOW",
+      "DOMAIN", "HUGE", "INFINITY", "NAN", "OVERFLOW", "SING", "UNDERFLOW", "signgam",
 
       // Definitions from mman.h
       "MAP_FIXED", "MAP_PRIVATE", "MAP_SHARED", "MCL_CURRENT", "MCL_FUTURE", "MS_ASYNC",
@@ -210,13 +211,16 @@ public class NameTable {
       "QUAD_MIN", "SCHAR_MAX", "SCHAR_MIN", "SHRT_MAX", "SHRT_MIN", "SIZE_T_MAX", "SSIZE_MAX",
       "UCHAR_MAX", "UINT_MAX", "ULONG_MAX", "UQUAD_MAX", "USHRT_MAX", "UULONG_MAX", "WORD_BIT",
 
+      // Definitions from time.h
+      "daylight", "getdate_err", "tzname",
+
       // Definitions from types.h
       "S_IRGRP", "S_IROTH", "S_IRUSR", "S_IRWXG", "S_IRWXO", "S_IRWXU", "S_IWGRP", "S_IWOTH",
       "S_IWUSR", "S_IXGRP", "S_IXOTH", "S_IXUSR",
 
       // Definitions from unistd.h
       "F_OK", "R_OK", "STDERR_FILENO", "STDIN_FILENO", "STDOUT_FILENO", "W_OK", "X_OK",
-      "_SC_PAGESIZE", "_SC_PAGE_SIZE",
+      "_SC_PAGESIZE", "_SC_PAGE_SIZE", "optind", "opterr", "optopt", "optreset",
 
       // Cocoa definitions from ConditionalMacros.h
       "CFMSYSTEMCALLS", "CGLUESUPPORTED", "FUNCTION_PASCAL", "FUNCTION_DECLSPEC",
