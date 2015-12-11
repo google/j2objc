@@ -717,6 +717,12 @@ class SystemClassLoader extends ClassLoader {
         [urls addWithId:JavaNetNetFactory_newURLWithNSString_([nativeURL description])];
       }
     }
+    for (NSBundle *bundle in [NSBundle allFrameworks]) {
+      NSURL *nativeURL = [bundle URLForResource:name withExtension:nil];
+      if (nativeURL) {
+        [urls addWithId:JavaNetNetFactory_newURLWithNSString_([nativeURL description])];
+      }
+    }
     return JavaUtilCollections_enumerationWithJavaUtilCollection_(urls);
   ]-*/;
 
