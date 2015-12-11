@@ -89,8 +89,26 @@
 }
 
 + (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "authenticationType", "authenticationType", "Ljavax.annotation.Resource$AuthenticationType;",
+      0x401, NULL, NULL },
+    { "authenticationTypeDefault", "authenticationType",
+      "Ljavax.annotation.Resource$AuthenticationType;", 0x100a, NULL, NULL },
+    { "description", "description", "Ljava.lang.String;", 0x401, NULL, NULL },
+    { "descriptionDefault", "description", "Ljava.lang.String;", 0x100a, NULL, NULL },
+    { "mappedName", "mappedName", "Ljava.lang.String;", 0x401, NULL, NULL },
+    { "mappedNameDefault", "mappedName", "Ljava.lang.String;", 0x100a, NULL, NULL },
+    { "name", "name", "Ljava.lang.String;", 0x401, NULL, NULL },
+    { "nameDefault", "name", "Ljava.lang.String;", 0x100a, NULL, NULL },
+    { "shareable", "shareable", "Z", 0x401, NULL, NULL },
+    { "shareableDefault", "shareable", "Z", 0x100a, NULL, NULL },
+    { "type", "type", "Ljava.lang.Class;", 0x401, NULL, NULL },
+    { "typeDefault", "type", "Ljava.lang.Class;", 0x100a, NULL, NULL },
+  };
+  static const char *inner_classes[] = {"Ljavax.annotation.Resource$AuthenticationType;"};
   static const J2ObjcClassInfo _JavaxAnnotationResource = {
-    1, "Resource", "javax.annotation", NULL, 0x2201, 0, NULL, 0, NULL, 0, NULL
+    2, "Resource", "javax.annotation", NULL, 0x2609, 12, methods, 0, NULL, 0, NULL,
+    1, inner_classes, NULL, NULL
   };
   return &_JavaxAnnotationResource;
 }
@@ -156,20 +174,20 @@ JavaxAnnotationResource_AuthenticationTypeEnum *
 }
 
 + (const J2ObjcClassInfo *)__metadata {
-  static const J2ObjcMethodInfo methods[] = {
-    { "initWithNSString:withInt:", "init", NULL, 0x1, NULL },
-  };
   static const J2ObjcFieldInfo fields[] = {
     { "APPLICATION", "APPLICATION", 0x4019, "Ljavax.annotation.Resource$AuthenticationType;",
-        &JavaxAnnotationResource_AuthenticationTypeEnum_APPLICATION,  },
+      &JavaxAnnotationResource_AuthenticationTypeEnum_APPLICATION, NULL, .constantValue.asLong = 0
+    },
     { "CONTAINER", "CONTAINER", 0x4019, "Ljavax.annotation.Resource$AuthenticationType;",
-        &JavaxAnnotationResource_AuthenticationTypeEnum_CONTAINER,  },
+      &JavaxAnnotationResource_AuthenticationTypeEnum_CONTAINER, NULL, .constantValue.asLong = 0 },
   };
   static const char *superclass_type_args[] = {"Ljavax.annotation.Resource$AuthenticationType;"};
-  static const J2ObjcClassInfo _JavaxAnnotationResource_AuthenticationTypeEnum = {
-    1, "AuthenticationType", "javax.annotation", "Resource", 0x4019, 1,
-    methods, 2, fields, 1, superclass_type_args};
-  return &_JavaxAnnotationResource_AuthenticationTypeEnum;
+  static const J2ObjcClassInfo _JavaxAnnotationResource$AuthenticationTypeEnum = {
+    2, "AuthenticationType", "javax.annotation", "Resource", 0x4019, 0, NULL, 2, fields,
+    1, superclass_type_args, 0, NULL, NULL,
+    "Ljava/lang/Enum<Ljavax/annotation/Resource$AuthenticationType;>;"
+  };
+  return &_JavaxAnnotationResource$AuthenticationTypeEnum;
 }
 
 @end

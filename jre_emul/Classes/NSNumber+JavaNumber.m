@@ -25,23 +25,23 @@
 
 @implementation NSNumber (JavaNumber)
 
-+ (J2ObjcClassInfo *)__metadata {
-  static J2ObjcMethodInfo methods[] = {
-    { "charValue", "byteValue", "B", 0x1, NULL },
-    { "doubleValue", NULL, "D", 0x401, NULL },
-    { "floatValue", NULL, "F", 0x401, NULL },
-    { "intValue", NULL, "I", 0x401, NULL },
-    { "longLongValue", "longValue", "J", 0x401, NULL },
-    { "shortValue", NULL, "S", 0x401, NULL },
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "init", "Number", NULL, 0x1, NULL, NULL },
+    { "charValue", "byteValue", "B", 0x1, NULL, NULL },
+    { "doubleValue", NULL, "D", 0x401, NULL, NULL },
+    { "floatValue", NULL, "F", 0x401, NULL, NULL },
+    { "intValue", NULL, "I", 0x401, NULL, NULL },
+    { "longLongValue", "longValue", "J", 0x401, NULL, NULL },
+    { "shortValue", NULL, "S", 0x1, NULL, NULL },
   };
-  static J2ObjcFieldInfo fields[] = {
-    { "serialVersionUID_", NULL, 0x1a, "J", NULL,
+  static const J2ObjcFieldInfo fields[] = {
+    { "serialVersionUID", "serialVersionUID", 0x1a, "J", NULL, NULL,
       .constantValue.asLong = JavaLangNumber_serialVersionUID },
   };
-  static J2ObjcClassInfo _JavaLangNumber = {
-    1, "Number", "java.lang", NULL, 0x401, 6, methods, 1, fields, 0, NULL
-  };
-  return &_JavaLangNumber;
+  static const J2ObjcClassInfo _NSNumber = {
+    2, "Number", "java.lang", NULL, 0x401, 7, methods, 1, fields, 0, NULL, 0, NULL, NULL, NULL };
+  return &_NSNumber;
 }
 
 @end

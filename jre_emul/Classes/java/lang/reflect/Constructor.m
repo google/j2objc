@@ -145,26 +145,32 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "getModifiers", NULL, "I", 0x1, NULL },
-    { "getDeclaringClass", NULL, "Ljava.lang.Class;", 0x1, NULL },
-    { "getParameterTypes", NULL, "[Ljava.lang.Class;", 0x1, NULL },
-    { "getGenericParameterTypes", NULL, "[Ljava.lang.reflect.Type;", 0x1, NULL },
-    { "newInstanceWithNSObjectArray:", "newInstance", "TT;", 0x81, "Ljava.lang.InstantiationException;Ljava.lang.IllegalAccessException;Ljava.lang.IllegalArgumentException;Ljava.lang.reflect.InvocationTargetException;" },
-    { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL },
-    { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL },
-    { "getParameterAnnotations", NULL, "[[Ljava.lang.annotation.Annotation;", 0x1, NULL },
-    { "getTypeParameters", NULL, "[Ljava.lang.reflect.TypeVariable;", 0x1, NULL },
-    { "isSynthetic", NULL, "Z", 0x1, NULL },
-    { "getExceptionTypes", NULL, "[Ljava.lang.Class;", 0x1, NULL },
-    { "getGenericExceptionTypes", NULL, "[Ljava.lang.reflect.Type;", 0x1, NULL },
-    { "toGenericString", NULL, "Ljava.lang.String;", 0x1, NULL },
-    { "isBridge", NULL, "Z", 0x1, NULL },
-    { "isVarArgs", NULL, "Z", 0x1, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
+    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "getModifiers", NULL, "I", 0x1, NULL, NULL },
+    { "getDeclaringClass", NULL, "Ljava.lang.Class;", 0x1, NULL, "()Ljava/lang/Class<TT;>;" },
+    { "getParameterTypes", NULL, "[Ljava.lang.Class;", 0x1, NULL, NULL },
+    { "getGenericParameterTypes", NULL, "[Ljava.lang.reflect.Type;", 0x1, NULL, NULL },
+    { "newInstanceWithNSObjectArray:", "newInstance", "TT;", 0x81,
+      "Ljava.lang.InstantiationException;Ljava.lang.IllegalAccessException;"
+      "Ljava.lang.IllegalArgumentException;Ljava.lang.reflect.InvocationTargetException;",
+      "([Ljava/lang/Object;)TT;" },
+    { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL,
+      "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" },
+    { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL, NULL },
+    { "getParameterAnnotations", NULL, "[[Ljava.lang.annotation.Annotation;", 0x1, NULL, NULL },
+    { "getTypeParameters", NULL, "[Ljava.lang.reflect.TypeVariable;", 0x1, NULL, NULL },
+    { "isSynthetic", NULL, "Z", 0x1, NULL, NULL },
+    { "getExceptionTypes", NULL, "[Ljava.lang.Class;", 0x1, NULL, NULL },
+    { "getGenericExceptionTypes", NULL, "[Ljava.lang.reflect.Type;", 0x1, NULL, NULL },
+    { "toGenericString", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "isBridge", NULL, "Z", 0x1, NULL, NULL },
+    { "isVarArgs", NULL, "Z", 0x1, NULL, NULL },
+    { "init", NULL, NULL, 0x1, NULL, NULL },
   };
   static const J2ObjcClassInfo _JavaLangReflectConstructor = {
-    1, "Constructor", "java.lang.reflect", NULL, 0x1, 17, methods, 0, NULL, 0, NULL
+    2, "Constructor", "java.lang.reflect", NULL, 0x1, 17, methods, 0, NULL, 0, NULL, 0, NULL, NULL,
+    "<T:Ljava/lang/Object;>Ljava/lang/reflect/AccessibleObject;"
+    "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;"
   };
   return &_JavaLangReflectConstructor;
 }

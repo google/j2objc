@@ -45,7 +45,7 @@
 #import "java_lang_IntegralToString.h"
 #import "java_lang_RealToString.h"
 
-#define JavaLangString_serialVersionUID -6849794470754667710LL
+#define NSString_serialVersionUID -6849794470754667710LL
 
 @implementation NSString (JavaString)
 
@@ -940,64 +940,109 @@ jint javaStringHashCode(NSString *string) {
   return hash;
 }
 
-+ (J2ObjcClassInfo *)__metadata {
-  static J2ObjcMethodInfo methods[] = {
-    { "initWithByteArray:withInt:withInt:withNSString:", NULL, NULL, 0x1, "Ljava/io/UnsupportedEncodingException;" },
-    { "initWithByteArray:withNSString:", NULL, NULL, 0x1, "Ljava/io/UnsupportedEncodingException;" },
-    { "initWithInt:withInt:withCharArray:", NULL, NULL, 0x0, NULL },
-    { "formatWithJavaUtilLocale:withNSString:withNSObjectArray:", NULL, "Ljava/lang/String;", 0x89, NULL },
-    { "formatWithNSString:withNSObjectArray:", NULL, "Ljava/lang/String;", 0x89, NULL },
-    { "valueOf:", "valueOf", "Ljava/lang/String;", 0x9, NULL },
-    { "valueOfBool:", "valueOf", "Ljava/lang/String;", 0x9, NULL },
-    { "valueOfChar:", "valueOf", "Ljava/lang/String;", 0x9, NULL },
-    { "valueOfChars:", "valueOf", "Ljava/lang/String;", 0x9, NULL },
-    { "valueOfChars:offset:count:", "valueOf", "Ljava/lang/String;", 0x9, NULL },
-    { "valueOfDouble:", "valueOf", "Ljava/lang/String;", 0x9, NULL },
-    { "valueOfFloat:", "valueOf", "Ljava/lang/String;", 0x9, NULL },
-    { "valueOfInt:", "valueOf", "Ljava/lang/String;", 0x9, NULL },
-    { "valueOfLong:", "valueOf", "Ljava/lang/String;", 0x9, NULL },
-    { "concat:", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "contains:", NULL, "Z", 0x1, NULL },
-    { "codePointAt:", NULL, "I", 0x1, NULL },
-    { "codePointBefore:", NULL, "I", 0x1, NULL },
-    { "codePointCount:endIndex:", NULL, "I", 0x1, NULL },
-    { "hasSuffix:", "endsWith", "Z", 0x1, NULL },
-    { "equalsIgnoreCase:", NULL, "Z", 0x1, NULL },
-    { "getBytes", NULL, "[B", 0x1, NULL },
-    { "getBytesWithCharset:", NULL, "[B", 0x1, NULL },
-    { "getBytesWithCharsetName:", NULL, "[B", 0x1, "Ljava/io/UnsupportedEncodingException;" },
-    { "intern", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "isEmpty", NULL, "Z", 0x1, NULL },
-    { "length", NULL, "I", 0x1, NULL },
-    { "matches:", NULL, "Z", 0x1, NULL },
-    { "regionMatches:thisOffset:aString:otherOffset:count:", NULL, "Z", 0x1, NULL },
-    { "regionMatches:aString:otherOffset:count:", NULL, "Z", 0x1, NULL },
-    { "replace:withChar:", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "replace:withSequence:", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "replaceAll:withReplacement:", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "replaceFirst:withReplacement:", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "split:", NULL, "[Ljava/lang/String;", 0x1, NULL },
-    { "split:limit:", NULL, "[Ljava/lang/String;", 0x1, NULL },
-    { "hasPrefix:", NULL, "Z", 0x1, NULL },
-    { "hasPrefix:offset:", NULL, "Z", 0x1, NULL },
-    { "substring:", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "substring:endIndex:", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "toCharArray", NULL, "[C", 0x1, NULL },
-    { "lowercaseString", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "uppercaseStringWithJRELocale:", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "uppercaseString", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "trim", NULL, "Ljava/lang/String;", 0x1, NULL },
-    { "contentEqualsCharSequence:", NULL, "Z", 0x1, NULL },
-    { "contentEqualsStringBuffer:", NULL, "Z", 0x1, NULL },
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "init", "String", NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:", "String", NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:withInt:", "String", NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:withInt:withInt:", "String", NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:withInt:withInt:withInt:", "String", NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:withInt:withInt:withNSString:", "String", NULL, 0x1,
+      "Ljava.io.UnsupportedEncodingException;", NULL },
+    { "initWithByteArray:withInt:withInt:withJavaNioCharsetCharset:", "String", NULL, 0x1, NULL,
+      NULL },
+    { "initWithByteArray:withJavaNioCharsetCharset:", "String", NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:withNSString:", "String", NULL, 0x1,
+      "Ljava.io.UnsupportedEncodingException;", NULL },
+    { "initWithCharArray:", "String", NULL, 0x1, NULL, NULL },
+    { "initWithCharArray:withInt:withInt:", "String", NULL, 0x1, NULL, NULL },
+    { "initWithIntArray:withInt:withInt:", "String", NULL, 0x1, NULL, NULL },
+    { "initWithInt:withInt:withCharArray:", "String", NULL, 0x0, NULL, NULL },
+    { "initWithNSString:", "String", NULL, 0x1, NULL, NULL },
+    { "initWithJavaLangStringBuffer:", "String", NULL, 0x1, NULL, NULL },
+    { "initWithJavaLangStringBuilder:", "String", NULL, 0x1, NULL, NULL },
+    { "valueOfChars:", "copyValueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
+    { "valueOfChars:offset:count:", "copyValueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
+    { "formatWithJavaUtilLocale:withNSString:withNSObjectArray:", "format", "Ljava.lang.String;",
+      0x89, NULL, NULL },
+    { "formatWithNSString:withNSObjectArray:", "format", "Ljava.lang.String;", 0x89, NULL, NULL },
+    { "valueOfBool:", "valueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
+    { "valueOfChar:", "valueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
+    { "valueOfChars:", "valueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
+    { "valueOfChars:offset:count:", "valueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
+    { "valueOfDouble:", "valueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
+    { "valueOfFloat:", "valueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
+    { "valueOfInt:", "valueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
+    { "valueOfLong:", "valueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
+    { "valueOf:", "valueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
+    { "charAtWithInt:", "charAt", "C", 0x1, NULL, NULL },
+    { "codePointAt:", "codePointAt", "I", 0x1, NULL, NULL },
+    { "codePointBefore:", "codePointBefore", "I", 0x1, NULL, NULL },
+    { "codePointCount:endIndex:", "codePointCount", "I", 0x1, NULL, NULL },
+    { "compareToWithId:", "compareTo", "I", 0x1, NULL, NULL },
+    { "compareToIgnoreCase:", "compareToIgnoreCase", "I", 0x1, NULL, NULL },
+    { "concat:", "concat", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "contains:", "contains", "Z", 0x1, NULL, NULL },
+    { "hasSuffix:", "endsWith", "Z", 0x1, NULL, NULL },
+    { "equalsIgnoreCase:", "equalsIgnoreCase", "Z", 0x1, NULL, NULL },
+    { "getBytes", NULL, "[B", 0x1, NULL, NULL },
+    { "getBytesWithCharset:", "getBytes", "[B", 0x1, NULL, NULL },
+    { "getBytesWithCharsetName:", "getBytes", "[B", 0x1, "Ljava.io.UnsupportedEncodingException;",
+      NULL },
+    { "getBytesWithSrcBegin:withSrcEnd:withDst:withDstBegin:", "getBytes", "V", 0x1, NULL, NULL },
+    { "getChars:sourceEnd:destination:destinationBegin:", "getChars", "V", 0x1, NULL, NULL },
+    { "indexOf:", "indexOf", "I", 0x1, NULL, NULL },
+    { "indexOf:fromIndex:", "indexOf", "I", 0x1, NULL, NULL },
+    { "indexOfString:", "indexOf", "I", 0x1, NULL, NULL },
+    { "indexOfString:fromIndex:", "indexOf", "I", 0x1, NULL, NULL },
+    { "intern", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "isEmpty", NULL, "Z", 0x1, NULL, NULL },
+    { "lastIndexOf:", "lastIndexOf", "I", 0x1, NULL, NULL },
+    { "lastIndexOf:fromIndex:", "lastIndexOf", "I", 0x1, NULL, NULL },
+    { "lastIndexOfString:", "lastIndexOf", "I", 0x1, NULL, NULL },
+    { "lastIndexOfString:fromIndex:", "lastIndexOf", "I", 0x1, NULL, NULL },
+    { "length", NULL, "I", 0x1, NULL, NULL },
+    { "matches:", "matches", "Z", 0x1, NULL, NULL },
+    { "offsetByCodePoints:codePointOffset:", "offsetByCodePoints", "I", 0x1, NULL, NULL },
+    { "regionMatches:thisOffset:aString:otherOffset:count:", "regionMatches", "Z", 0x1, NULL,
+      NULL },
+    { "regionMatches:aString:otherOffset:count:", "regionMatches", "Z", 0x1, NULL, NULL },
+    { "replace:withChar:", "replace", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "replace:withSequence:", "replace", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "replaceAll:withReplacement:", "replaceAll", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "replaceFirst:withReplacement:", "replaceFirst", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "split:", "split", "[Ljava.lang.String;", 0x1, NULL, NULL },
+    { "split:limit:", "split", "[Ljava.lang.String;", 0x1, NULL, NULL },
+    { "hasPrefix:", "startsWith", "Z", 0x1, NULL, NULL },
+    { "hasPrefix:offset:", "startsWith", "Z", 0x1, NULL, NULL },
+    { "subSequenceFrom:to:", "subSequence", "Ljava.lang.CharSequence;", 0x1, NULL, NULL },
+    { "substring:", "substring", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "substring:endIndex:", "substring", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "toCharArray", NULL, "[C", 0x1, NULL, NULL },
+    { "lowercaseString", "toLowerCase", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "lowercaseStringWithJRELocale:", "toLowerCase", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "uppercaseString", "toUpperCase", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "uppercaseStringWithJRELocale:", "toUpperCase", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "trim", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "contentEqualsCharSequence:", "contentEquals", "Z", 0x1, NULL, NULL },
+    { "contentEqualsStringBuffer:", "contentEquals", "Z", 0x1, NULL, NULL },
   };
-  static J2ObjcFieldInfo fields[] = {
-    { "CASE_INSENSITIVE_ORDER", NULL, 0x19, "Ljava/util/Comparator;", &NSString_CASE_INSENSITIVE_ORDER },
-    { "serialPersistentFields", NULL, 0x1a, "[Ljava/io/ObjectStreamField;", &NSString_serialPersistentFields },
-    { "serialVersionUID_", NULL, 0x1a, "J", NULL, .constantValue.asLong = JavaLangString_serialVersionUID },
+  static const J2ObjcFieldInfo fields[] = {
+    { "CASE_INSENSITIVE_ORDER", "CASE_INSENSITIVE_ORDER", 0x19, "Ljava.util.Comparator;",
+      &NSString_CASE_INSENSITIVE_ORDER, "Ljava/util/Comparator<Ljava/lang/String;>;",
+      .constantValue.asLong = 0 },
+    { "serialVersionUID", "serialVersionUID", 0x1a, "J", NULL, NULL,
+      .constantValue.asLong = NSString_serialVersionUID },
+    { "serialPersistentFields", "serialPersistentFields", 0x1a, "[Ljava.io.ObjectStreamField;",
+      &NSString_serialPersistentFields, NULL, .constantValue.asLong = 0 },
   };
-  static J2ObjcClassInfo _JavaLangString = {
-      1, "String", "java.lang", NULL, 0x1, 46, methods, 3, fields, 0, NULL };
-  return &_JavaLangString;
+  static const char *inner_classes[] = {"Ljava.lang.String$CaseInsensitiveComparator;"};
+  static const J2ObjcClassInfo _NSString = {
+    2, "String", "java.lang", NULL, 0x1, 78, methods, 3, fields, 0, NULL, 1, inner_classes, NULL,
+    "Ljava/lang/Object;Ljava/lang/CharSequence;"
+    "Ljava/lang/Comparable<Ljava/lang/String;>;Ljava/io/Serializable;"
+  };
+  return &_NSString;
 }
 
 @end
@@ -1018,15 +1063,20 @@ jint javaStringHashCode(NSString *string) {
   return [o1 compareToIgnoreCase:o2];
 }
 
-+ (J2ObjcClassInfo *)__metadata {
-  static J2ObjcFieldInfo fields[] = {
-    { "serialVersionUID_", NULL, 0x1a, "J", NULL,
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "compareWithId:withId:", "compare", "I", 0x1, NULL, NULL },
+    { "init", NULL, NULL, 0x2, NULL, NULL },
+  };
+  static const J2ObjcFieldInfo fields[] = {
+    { "serialVersionUID", "serialVersionUID", 0x1a, "J", NULL, NULL,
       .constantValue.asLong = CaseInsensitiveComparator_serialVersionUID },
   };
-  static J2ObjcClassInfo _JavaLangString_CaseInsensitiveComparator = {
-    1, "CaseInsensitiveComparator", "java.lang", "String", 0xa, 0, NULL, 1, fields, 0, NULL
-  };
-  return &_JavaLangString_CaseInsensitiveComparator;
+  static const J2ObjcClassInfo _NSString$CaseInsensitiveComparator = {
+    2, "CaseInsensitiveComparator", "java.lang", "String", 0xa, 2, methods,
+    1, fields, 0, NULL, 0, NULL, NULL,
+    "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;" };
+  return &_NSString$CaseInsensitiveComparator;
 }
 
 @end

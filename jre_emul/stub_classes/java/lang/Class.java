@@ -36,6 +36,7 @@ import java.security.ProtectionDomain;
  * @see java.lang.Object
  */
 public final class Class<T> implements AnnotatedElement, GenericDeclaration, Serializable, Type {
+  private static final long serialVersionUID = 3206093459760846163L;
 
   public static Class<?> forName(String className) throws ClassNotFoundException {
     return null;

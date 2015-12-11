@@ -103,17 +103,21 @@ JavaLangReflectAccessibleObject *new_JavaLangReflectAccessibleObject_init() {
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "isAccessible", NULL, "Z", 0x1, NULL },
-    { "setAccessibleWithjbooleanean:", "setAccessible", "V", 0x1, NULL },
-    { "setAccessibleWithJavaLangReflectAccessibleObjectArray:withjbooleanean:", "setAccessible", "V", 0x9, NULL },
-    { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL },
-    { "isAnnotationPresentWithIOSClass:", "isAnnotationPresent", "Z", 0x1, NULL },
-    { "getAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL },
-    { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL },
-    { "init", NULL, NULL, 0x1, NULL },
+    { "isAccessible", NULL, "Z", 0x1, NULL, NULL },
+    { "setAccessibleWithBoolean:", "setAccessible", "V", 0x1, NULL, NULL },
+    { "setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:",
+      "setAccessible", "V", 0x9, NULL, NULL },
+    { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL,
+      "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" },
+    { "isAnnotationPresentWithIOSClass:", "isAnnotationPresent", "Z", 0x1, NULL,
+      "(Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z" },
+    { "getAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL, NULL },
+    { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL, NULL },
+    { "init", NULL, NULL, 0x1, NULL, NULL },
   };
   static const J2ObjcClassInfo _JavaLangReflectAccessibleObject = {
-    1, "AccessibleObject", "java.lang.reflect", NULL, 0x1, 8, methods, 0, NULL, 0, NULL
+    2, "AccessibleObject", "java.lang.reflect", NULL, 0x1, 8, methods, 0, NULL, 0, NULL,
+    0, NULL, NULL, NULL
   };
   return &_JavaLangReflectAccessibleObject;
 }

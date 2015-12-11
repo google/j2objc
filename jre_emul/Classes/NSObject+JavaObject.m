@@ -163,22 +163,23 @@ static void doWait(id obj, long long timeout) {
 - (void)__javaClone:(id)original {
 }
 
-+ (J2ObjcClassInfo *)__metadata {
-  static J2ObjcMethodInfo methods[] = {
-    { "getClass", NULL, "LIOSClass;", 0x11, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL },
-    { "clone", NULL, "Ljava.lang.Object;", 0x4, "Ljava.lang.CloneNotSupportedException;" },
-    { "dealloc", "finalize", "V", 0x4, "Ljava.lang.Throwable;" },
-    { "notify", NULL, "V", 0x11, NULL },
-    { "notifyAll", NULL, "V", 0x11, NULL },
-    { "waitWithLong:", "wait", "V", 0x11, "Ljava.lang.InterruptedException;" },
-    { "waitWithLong:withInt:", "wait", "V", 0x11, "Ljava.lang.InterruptedException;" },
-    { "wait", NULL, "V", 0x11, "Ljava.lang.InterruptedException;" },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL },
-    { "hash", "hashCode", "I", 0x1, NULL },
++ (const J2ObjcClassInfo *)__metadata {
+  static const J2ObjcMethodInfo methods[] = {
+    { "init", "Object", NULL, 0x1, NULL, NULL },
+    { "getClass", NULL, "Ljava.lang.Class;", 0x11, NULL, "()Ljava/lang/Class<*>;" },
+    { "hash", "hashCode", "I", 0x1, NULL, NULL },
+    { "isEqual:", "equals", "Z", 0x1, NULL, NULL },
+    { "clone", NULL, "Ljava.lang.Object;", 0x4, "Ljava.lang.CloneNotSupportedException;", NULL },
+    { "description", "toString", "Ljava.lang.String;", 0x1, NULL, NULL },
+    { "dealloc", "finalize", "V", 0x4, "Ljava.lang.Throwable;", NULL },
+    { "notify", NULL, "V", 0x11, NULL, NULL },
+    { "notifyAll", NULL, "V", 0x11, NULL, NULL },
+    { "waitWithLong:", "wait", "V", 0x11, "Ljava.lang.InterruptedException;", NULL },
+    { "waitWithLong:withInt:", "wait", "V", 0x11, "Ljava.lang.InterruptedException;", NULL },
+    { "wait", NULL, "V", 0x11, "Ljava.lang.InterruptedException;", NULL },
   };
-  static J2ObjcClassInfo _JavaLangObject = {
-    1, "Object", "java.lang", NULL, 0x1, 11, methods, 0, NULL, 0, NULL
+  static const J2ObjcClassInfo _JavaLangObject = {
+    2, "Object", "java.lang", NULL, 0x1, 12, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL
   };
   return &_JavaLangObject;
 }

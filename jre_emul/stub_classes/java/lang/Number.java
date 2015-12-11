@@ -23,7 +23,8 @@ package java.lang;
  * @see java.lang.Object
  */
 public abstract class Number implements java.io.Serializable {
-
+  private static final long serialVersionUID = -8742448824652078965L;
+  
   public Number() {}
 
   public byte byteValue() {
