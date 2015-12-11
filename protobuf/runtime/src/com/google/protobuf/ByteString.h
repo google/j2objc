@@ -50,6 +50,8 @@
 - (jbyte)byteAtWithInt:(jint)index;
 - (jint)size;
 - (jboolean)isEmpty;
+- (ComGoogleProtobufByteString *)substringWithInt:(jint)beginIndex;
+- (ComGoogleProtobufByteString *)substringWithInt:(jint)beginIndex withInt:(jint)endIndex;
 - (IOSByteArray *)toByteArray;
 - (NSString *)toStringWithNSString:(NSString *)charsetName;
 - (NSString *)toStringUtf8;

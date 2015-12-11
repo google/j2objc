@@ -1266,4 +1266,26 @@ public class CompatibilityTest extends ProtobufTest {
     bs = ByteString.readFrom(in);
     checkBytes(randomBytes, bs.toByteArray());
   }
+
+  private void expectSubstringIndexOutOfBounds(ByteString bs, int startIndex, int endIndex) {
+    try {
+      bs.substring(startIndex, endIndex);
+      fail("Expected IndexOutOfBoundsException to be thrown");
+    } catch (IndexOutOfBoundsException e) {
+      // Expected
+    }
+  }
+
+  public void testByteStringSubstring() throws Exception {
+    ByteString bs1 = ByteString.copyFrom("abcdefghijklmnop".getBytes());
+    ByteString bs2 = bs1.substring(1, 15);
+    assertEquals("bcdefghijklmno", new String(bs2.toByteArray()));
+    ByteString bs3 = bs1.substring(12);
+    assertEquals("mnop", new String(bs3.toByteArray()));
+    ByteString bs4 = bs1.substring(11, 11);
+    assertTrue(bs4.isEmpty());
+    expectSubstringIndexOutOfBounds(bs1, -1, 1);
+    expectSubstringIndexOutOfBounds(bs1, 0, 17);
+    expectSubstringIndexOutOfBounds(bs1, 7, 6);
+  }
 }

@@ -38,6 +38,7 @@
 #import "J2ObjC_source.h"
 #import "java/io/InputStream.h"
 #import "java/lang/ArrayIndexOutOfBoundsException.h"
+#import "java/lang/IndexOutOfBoundsException.h"
 
 #define MIN_READ_FROM_CHUNK_SIZE 0x100   // 256b
 #define MAX_READ_FROM_CHUNK_SIZE 0x2000  // 8k
@@ -96,6 +97,24 @@ ComGoogleProtobufByteString *ComGoogleProtobufByteString_copyFromUtf8WithNSStrin
 
 - (jboolean)isEmpty {
   return size_ == 0;
+}
+
+- (ComGoogleProtobufByteString *)substringWithInt:(jint)beginIndex {
+  return [self substringWithInt:beginIndex withInt:size_];
+}
+
+- (ComGoogleProtobufByteString *)substringWithInt:(jint)beginIndex withInt:(jint)endIndex {
+  jint substringLength = endIndex - beginIndex;
+  if (beginIndex < 0 || endIndex > size_ || substringLength < 0) {
+    @throw [[[JavaLangIndexOutOfBoundsException alloc] init] autorelease];
+  }
+  if (substringLength == 0) {
+    return ComGoogleProtobufByteString_EMPTY;
+  } else {
+    CGPByteString *byteString = CGPNewByteString(substringLength);
+    memcpy(byteString->buffer_, buffer_ + beginIndex, substringLength);
+    return [byteString autorelease];
+  }
 }
 
 - (IOSByteArray *)toByteArray {
@@ -215,6 +234,7 @@ ComGoogleProtobufByteString *ByteStringFromChunks(jint size, IOSByteArray *chunk
 ComGoogleProtobufByteString
     *ComGoogleProtobufByteString_readFromWithJavaIoInputStream_withInt_withInt_(
     JavaIoInputStream *streamToDrain, jint minChunkSize, jint maxChunkSize) {
+  ComGoogleProtobufByteString_initialize();
   jint chunkSize = minChunkSize;
   jint totalBytes = 0;
   IOSByteArray *firstChunk;
@@ -234,7 +254,12 @@ ComGoogleProtobufByteString
     @throw e;
   }
 
-  return ByteStringFromChunks(totalBytes, firstChunk);
+  if (totalBytes == 0) {
+    ReleaseChunks(firstChunk);
+    return ComGoogleProtobufByteString_EMPTY;
+  } else {
+    return ByteStringFromChunks(totalBytes, firstChunk);
+  }
 }
 
 ComGoogleProtobufByteString *ComGoogleProtobufByteString_readFromWithJavaIoInputStream_(
