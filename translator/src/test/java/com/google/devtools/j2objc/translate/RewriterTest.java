@@ -405,7 +405,7 @@ public class RewriterTest extends GenerationTest {
     assertTranslation(translation, "ComGoogleJ2objcUtilScopedLocalRef *thing = "
         + "[new_ComGoogleJ2objcUtilScopedLocalRef_initWithId_(t) autorelease];");
     assertTranslation(translation,
-        "return [((id<JavaUtilComparator>) nil_chk(((Test$Thing *) nil_chk(t))->comp_)) "
+        "return [((id<JavaUtilComparator>) nil_chk(((Test_Thing *) nil_chk(t))->comp_)) "
         + "compareWithId:s1 withId:s2] == 0;");
   }
 

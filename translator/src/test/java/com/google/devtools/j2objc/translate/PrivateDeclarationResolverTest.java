@@ -30,7 +30,7 @@ public class PrivateDeclarationResolverTest extends GenerationTest {
         "class Test { private static class A {} public static class B extends A {} }",
         "Test", "Test.h");
     // Make sure the private superclass is still declared in the header.
-    assertTranslation(translation, "@interface Test$A");
+    assertTranslation(translation, "@interface Test_A");
   }
 
   public void testPrivateGenericSuperclassOfPublicClass() throws IOException {
@@ -38,14 +38,14 @@ public class PrivateDeclarationResolverTest extends GenerationTest {
         "class Test { private static class A<T> {} public static class B extends A<String> {} }",
         "Test", "Test.h");
     // Make sure the private superclass is still declared in the header.
-    assertTranslation(translation, "@interface Test$A");
+    assertTranslation(translation, "@interface Test_A");
   }
 
   public void testPublicClassInsidePrivateClass() throws IOException {
     String translation = translateSourceFile(
         "class Test { private static class A { public static class B {} } }", "Test", "Test.h");
     // "B" should not be public because it is inside the private class "A".
-    assertNotInTranslation(translation, "Test$A$B");
+    assertNotInTranslation(translation, "Test_A_B");
   }
 
   public void testPrivateBaseClassExposedBySubclass() throws IOException {
@@ -56,6 +56,6 @@ public class PrivateDeclarationResolverTest extends GenerationTest {
     assertTranslation(translation, "jint field_");
     assertTranslation(translation, "- (void)method;");
     assertTranslation(translation, "+ (void)staticMethod;");
-    assertTranslation(translation, "FOUNDATION_EXPORT void Test$Base_staticMethod();");
+    assertTranslation(translation, "FOUNDATION_EXPORT void Test_Base_staticMethod();");
   }
 }

@@ -67,8 +67,6 @@ string FileJavaPackage(const FileDescriptor* file);
 // Returns output directory for the given package name.
 string JavaPackageToDir(string package_name);
 
-string ToOldStyleName(string name);
-
 // These return the J2ObjC class name corresponding to the given descriptor.
 string ClassName(const Descriptor *descriptor);
 string ClassName(const EnumDescriptor *descriptor);

@@ -59,7 +59,7 @@ public class NameTableTest extends GenerationTest {
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getNameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
-    assertEquals("FooBarSomeClass$Inner", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify the name of an inner class of an enum.
@@ -70,10 +70,10 @@ public class NameTableTest extends GenerationTest {
     NameTable nameTable = unit.getNameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
     // Outer type should not have "Enum" added to name.
-    assertEquals("FooBarSomeClass$Inner", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
     // Inner enum should have "Enum" added to name.
     decl = unit.getTypes().get(2);
-    assertEquals("FooBarSomeClass$Inner2Enum", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_Inner2Enum", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify local class name.
@@ -85,9 +85,9 @@ public class NameTableTest extends GenerationTest {
     CompilationUnit unit = translateType("SomeClass", source);
     NameTable nameTable = unit.getNameTable();
     AbstractTypeDeclaration decl = unit.getTypes().get(1);
-    assertEquals("FooBarSomeClass$1Foo", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_1Foo", nameTable.getFullName(decl.getTypeBinding()));
     decl = unit.getTypes().get(2);
-    assertEquals("FooBarSomeClass$2Foo", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_2Foo", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   public void testTypeVariableWithTypeVariableBounds() {

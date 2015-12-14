@@ -35,8 +35,8 @@
 
 #import "JreEmulation.h"
 
-@class ComGoogleProtobufDescriptors$Descriptor;
-@class ComGoogleProtobufDescriptors$FieldDescriptor;
+@class ComGoogleProtobufDescriptors_Descriptor;
+@class ComGoogleProtobufDescriptors_FieldDescriptor;
 @class ComGoogleProtobufExtension;
 @class ComGoogleProtobufExtensionRegistryLite;
 
@@ -57,8 +57,8 @@ ComGoogleProtobufExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_n
 void CGPExtensionRegistryAdd(
     CGPExtensionRegistryLite *registry, ComGoogleProtobufExtension *extension);
 
-ComGoogleProtobufDescriptors$FieldDescriptor *CGPExtensionRegistryFind(
-    CGPExtensionRegistryLite *registry, ComGoogleProtobufDescriptors$Descriptor *descriptor,
+ComGoogleProtobufDescriptors_FieldDescriptor *CGPExtensionRegistryFind(
+    CGPExtensionRegistryLite *registry, ComGoogleProtobufDescriptors_Descriptor *descriptor,
     int fieldNumber);
 
 CF_EXTERN_C_END

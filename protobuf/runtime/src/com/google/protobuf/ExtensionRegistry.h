@@ -36,16 +36,16 @@
 #import "JreEmulation.h"
 #import "com/google/protobuf/ExtensionRegistryLite.h"
 
-@class ComGoogleProtobufDescriptors$Descriptor;
-@class ComGoogleProtobufDescriptors$FieldDescriptor;
+@class ComGoogleProtobufDescriptors_Descriptor;
+@class ComGoogleProtobufDescriptors_FieldDescriptor;
 @class ComGoogleProtobufExtension;
 @class ComGoogleProtobufExtensionRegistry;
-@class ComGoogleProtobufExtensionRegistry$ExtensionInfo;
-@class ComGoogleProtobufGeneratedMessage$GeneratedExtension;
+@class ComGoogleProtobufExtensionRegistry_ExtensionInfo;
+@class ComGoogleProtobufGeneratedMessage_GeneratedExtension;
 @protocol ComGoogleProtobufMessage;
 
 typedef ComGoogleProtobufExtensionRegistry CGPExtensionRegistry;
-typedef ComGoogleProtobufExtensionRegistry$ExtensionInfo CGPExtensionInfo;
+typedef ComGoogleProtobufExtensionRegistry_ExtensionInfo CGPExtensionInfo;
 
 @interface ComGoogleProtobufExtensionRegistry : ComGoogleProtobufExtensionRegistryLite
 
@@ -55,14 +55,10 @@ typedef ComGoogleProtobufExtensionRegistry$ExtensionInfo CGPExtensionInfo;
 
 - (void)addWithComGoogleProtobufExtension:(ComGoogleProtobufExtension *)extension;
 
-- (ComGoogleProtobufExtensionRegistry$ExtensionInfo *)
-    findExtensionByNumberWithComGoogleProtobufDescriptors$Descriptor:
-        (ComGoogleProtobufDescriptors$Descriptor *)descriptor
+- (ComGoogleProtobufExtensionRegistry_ExtensionInfo *)
+    findExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor:
+        (ComGoogleProtobufDescriptors_Descriptor *)descriptor
     withInt:(int)fieldId;
-// TODO(kstanger): Remove when users have migrated.
-#ifdef J2OBJC_RENAME_ALIASES
-#define findExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor findExtensionByNumberWithComGoogleProtobufDescriptors$Descriptor
-#endif // J2OBJC_RENAME_ALIASES
 
 - (ComGoogleProtobufExtensionRegistry *)getUnmodifiable;
 
@@ -72,24 +68,19 @@ J2OBJC_STATIC_INIT(ComGoogleProtobufExtensionRegistry)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionRegistry)
 
-@interface ComGoogleProtobufExtensionRegistry$ExtensionInfo : NSObject {
+@interface ComGoogleProtobufExtensionRegistry_ExtensionInfo : NSObject {
  @public
-  ComGoogleProtobufDescriptors$FieldDescriptor *descriptor_;
+  ComGoogleProtobufDescriptors_FieldDescriptor *descriptor_;
   id<ComGoogleProtobufMessage> defaultInstance_;
 }
 
-- (instancetype)initWithField:(ComGoogleProtobufDescriptors$FieldDescriptor *)field;
+- (instancetype)initWithField:(ComGoogleProtobufDescriptors_FieldDescriptor *)field;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufExtensionRegistry$ExtensionInfo)
+J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufExtensionRegistry_ExtensionInfo)
 
-J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionRegistry$ExtensionInfo)
-// TODO(kstanger): Remove when users have migrated.
-#ifdef J2OBJC_RENAME_ALIASES
-#define ComGoogleProtobufExtensionRegistry_ExtensionInfo ComGoogleProtobufExtensionRegistry$ExtensionInfo
-#define ComGoogleProtobufExtensionRegistry_ExtensionInfo_class_ ComGoogleProtobufExtensionRegistry$ExtensionInfo_class_
-#endif // J2OBJC_RENAME_ALIASES
+J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufExtensionRegistry_ExtensionInfo)
 
 CF_EXTERN_C_BEGIN
 

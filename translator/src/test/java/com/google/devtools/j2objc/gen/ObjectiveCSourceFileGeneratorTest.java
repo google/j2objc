@@ -190,8 +190,8 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static class Inner1 extends Inner2<String> {} static class Inner2<T> {} }",
         "Test", "Test.h");
-    String inner1 = "@interface Test$Inner1";
-    String inner2 = "@interface Test$Inner2";
+    String inner1 = "@interface Test_Inner1";
+    String inner2 = "@interface Test_Inner2";
     assertTranslation(translation, inner1);
     assertTranslation(translation, inner2);
     assertTrue(translation.indexOf(inner2) < translation.indexOf(inner1));

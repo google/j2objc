@@ -42,7 +42,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         .build();
     setDeadCodeMap(map);
     String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation, "@interface A$B");
+    assertTranslation(translation, "@interface A_B");
     assertNotInTranslation(translation, "bar");
     assertTranslation(translation, "baz");
   }
@@ -195,9 +195,9 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "class Baz extends Foo.Bar {\n"
         + "}\n";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
-    assertTranslation(translation, "@interface Foo$Bar : NSObject");
+    assertTranslation(translation, "@interface Foo_Bar : NSObject");
     translation = getTranslatedFile("Foo.m");
-    assertTranslation(translation, "Foo$Bar_init");
+    assertTranslation(translation, "Foo_Bar_init");
   }
 
   public void testDeadClass_DeadStaticNestedClass() throws IOException {
@@ -212,14 +212,14 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  static class Baz { void g() {} }\n"
         + "}\n";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
-    assertTranslation(translation, "@interface Foo$Bar");
+    assertTranslation(translation, "@interface Foo_Bar");
     assertNotInTranslation(translation, "- (void)f");
-    assertTranslation(translation, "@interface Foo$Baz");
+    assertTranslation(translation, "@interface Foo_Baz");
     assertNotInTranslation(translation, "- (void)g");
     translation = getTranslatedFile("Foo.m");
-    assertTranslation(translation, "Foo$Bar_init");
+    assertTranslation(translation, "Foo_Bar_init");
     assertNotInTranslation(translation, "- (void)f");
-    assertTranslation(translation, "Foo$Baz_init");
+    assertTranslation(translation, "Foo_Baz_init");
     assertNotInTranslation(translation, "- (void)g");
   }
 
@@ -242,7 +242,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "  }\n"
         + "}\n";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
-    assertTranslation(translation, "@interface Foo$A");
+    assertTranslation(translation, "@interface Foo_A");
     assertNotInTranslation(translation, "z_;");
     translation = getTranslatedFile("Foo.m");
     assertNotInTranslation(translation, "Foo *this$0_;");

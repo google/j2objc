@@ -63,9 +63,9 @@ public class StaticVarRewriterTest extends GenerationTest {
         + " int c = getTest().i++; int d = getTest().i = 6; } } }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "jint a = JreLoadStatic(Test, i);",
-        "jint b = (Test$Inner_getTest(), JreLoadStatic(Test, i));",
-        "jint c = (*(Test$Inner_getTest(), JreLoadStaticRef(Test, i)))++;",
-        "jint d = *(Test$Inner_getTest(), JreLoadStaticRef(Test, i)) = 6;");
+        "jint b = (Test_Inner_getTest(), JreLoadStatic(Test, i));",
+        "jint c = (*(Test_Inner_getTest(), JreLoadStaticRef(Test, i)))++;",
+        "jint d = *(Test_Inner_getTest(), JreLoadStaticRef(Test, i)) = 6;");
   }
 
   public void testStaticLoadWithArrayAccess() throws IOException {
@@ -74,8 +74,8 @@ public class StaticVarRewriterTest extends GenerationTest {
         + " int test() { Inner.ints[0] = 1; Inner.ints[0] += 2; return Inner.ints[0]; } }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "*IOSIntArray_GetRef(nil_chk(JreLoadStatic(Test$Inner, ints)), 0) = 1;",
-        "*IOSIntArray_GetRef(JreLoadStatic(Test$Inner, ints), 0) += 2;",
-        "return IOSIntArray_Get(JreLoadStatic(Test$Inner, ints), 0);");
+        "*IOSIntArray_GetRef(nil_chk(JreLoadStatic(Test_Inner, ints)), 0) = 1;",
+        "*IOSIntArray_GetRef(JreLoadStatic(Test_Inner, ints), 0) += 2;",
+        "return IOSIntArray_Get(JreLoadStatic(Test_Inner, ints), 0);");
   }
 }

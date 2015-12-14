@@ -101,7 +101,7 @@ public class FunctionizerTest extends GenerationTest {
         + "  private String str() { super.hello = \"hi\"; return super.hello; }}}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "NSString *A$B_str(A$B *self) {",
+        "NSString *A_B_str(A_B *self) {",
         "JreStrongAssign(&self->hello_, @\"hi\");",
         "return self->hello_;");
   }
@@ -188,8 +188,8 @@ public class FunctionizerTest extends GenerationTest {
         + "    private void test(B b) { b.test(); }}}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "- (void)testWithA$B:(A$B *)b {",
-        "A$B_test(nil_chk(b));");
+        "- (void)testWithA_B:(A_B *)b {",
+        "A_B_test(nil_chk(b));");
   }
 
   // Verify annotation parameters are ignored.
@@ -471,7 +471,7 @@ public class FunctionizerTest extends GenerationTest {
         + "static class Foo extends Base { void test2() { super.test(); } }}", "A", "A.m");
     assertTranslatedLines(translation,
         "- (void)test2 {",
-        "  A$Base_test();",
+        "  A_Base_test();",
         "}");
   }
 

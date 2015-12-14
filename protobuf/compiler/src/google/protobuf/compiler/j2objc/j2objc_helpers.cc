@@ -186,12 +186,12 @@ string GetJavaClassPrefix(const FileDescriptor *file,
 string GetClassPrefix(const FileDescriptor *file,
                       const Descriptor *containing_type) {
   if (containing_type != NULL) {
-    return ClassName(containing_type) + "$";
+    return ClassName(containing_type) + "_";
   } else {
     if (file->options().java_multiple_files()) {
       return GetPackagePrefix(file);
     } else {
-      return ClassName(file) + "$";
+      return ClassName(file) + "_";
     }
   }
 }
@@ -255,15 +255,6 @@ string JavaPackageToDir(string package_name) {
     StringReplace(package_name, ".", "/", true);
   if (!package_dir.empty()) package_dir += "/";
   return package_dir;
-}
-
-string ToOldStyleName(string name) {
-  size_t start_pos = 0;
-  while ((start_pos = name.find("$", start_pos)) != string::npos) {
-    name.replace(start_pos, 1, "_");
-    start_pos++;
-  }
-  return name;
 }
 
 string ClassName(const Descriptor *descriptor) {

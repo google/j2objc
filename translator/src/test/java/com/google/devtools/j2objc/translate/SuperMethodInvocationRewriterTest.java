@@ -32,14 +32,14 @@ public class SuperMethodInvocationRewriterTest extends GenerationTest {
         + "public void run() { Inner.super.foo(1); } }; } } }", "Test", "Test.m");
     // Declaration of the super function.
     assertTranslation(translation,
-        "static jdouble (*Test$Inner_super$_fooWithInt_)(id, SEL, jint);");
+        "static jdouble (*Test_Inner_super$_fooWithInt_)(id, SEL, jint);");
     // Initialization of the super function.
     assertTranslation(translation,
-        "Test$Inner_super$_fooWithInt_ = (jdouble (*)(id, SEL, jint))"
+        "Test_Inner_super$_fooWithInt_ = (jdouble (*)(id, SEL, jint))"
         + "[Test instanceMethodForSelector:@selector(fooWithInt:)];");
     // Invocation of the super function.
     assertTranslation(translation,
-        "Test$Inner_super$_fooWithInt_(this$0_, @selector(fooWithInt:), 1);");
+        "Test_Inner_super$_fooWithInt_(this$0_, @selector(fooWithInt:), 1);");
   }
 
   public void testSuperFunctionInitializedBeforeStaticInit() throws IOException {

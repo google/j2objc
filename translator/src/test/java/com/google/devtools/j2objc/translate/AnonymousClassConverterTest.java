@@ -58,10 +58,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "    public void remove() {}};}};}"
         + "}";
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(impl, "@interface Test$$1$$1 : NSObject < JavaUtilIterator >");
-    assertTranslation(impl, "@interface Test$$1 : JavaUtilAbstractSet");
-    assertTranslation(impl, "@interface Test$$2$$1 : NSObject < JavaUtilIterator >");
-    assertTranslation(impl, "@interface Test$$2 : JavaUtilAbstractCollection");
+    assertTranslation(impl, "@interface Test_$1_$1 : NSObject < JavaUtilIterator >");
+    assertTranslation(impl, "@interface Test_$1 : JavaUtilAbstractSet");
+    assertTranslation(impl, "@interface Test_$2_$1 : NSObject < JavaUtilIterator >");
+    assertTranslation(impl, "@interface Test_$2 : JavaUtilAbstractCollection");
   }
 
   public void testFinalArrayInnerAccess() throws IOException {
@@ -73,7 +73,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(impl,
         "- (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0;");
     assertTranslation(impl, "IOSBooleanArray *bar = [IOSBooleanArray arrayWithLength:1];");
-    assertTranslation(impl, "new_Test$$1_initWithBooleanArray_(bar)");
+    assertTranslation(impl, "new_Test_$1_initWithBooleanArray_(bar)");
     assertTranslation(impl, "*IOSBooleanArray_GetRef(nil_chk(val$bar_), 0) = true;");
   }
 
@@ -103,7 +103,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_t, new_Test$$1_initWithIOSClass_(Test_class_()));");
+        "JreStrongAssignAndConsume(&Test_t, new_Test_$1_initWithIOSClass_(Test_class_()));");
   }
 
   public void testFinalParameter() throws IOException {
@@ -114,9 +114,9 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "      System.out.println(test.toString());"
         + "    } }; } }", "Test", "Test.m");
     assertTranslation(translation,
-        "id<JavaLangRunnable> r = [new_Test$$1_initWithId_(test) autorelease];");
+        "id<JavaLangRunnable> r = [new_Test_$1_initWithId_(test) autorelease];");
     assertTranslatedLines(translation,
-        "void Test$$1_initWithId_(Test$$1 *self, id capture$0) {",
+        "void Test_$1_initWithId_(Test_$1 *self, id capture$0) {",
         "  JreStrongAssign(&self->val$test_, capture$0);",
         "  NSObject_init(self);",
         "}");
@@ -132,9 +132,9 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "      System.out.println(foo.toString());"
         + "    } }; } }", "Test", "Test.m");
     assertTranslation(translation,
-        "id<JavaLangRunnable> r = [new_Test$$1_initWithId_(foo) autorelease];");
+        "id<JavaLangRunnable> r = [new_Test_$1_initWithId_(foo) autorelease];");
     assertTranslatedLines(translation,
-        "void Test$$1_initWithId_(Test$$1 *self, id capture$0) {",
+        "void Test_$1_initWithId_(Test_$1 *self, id capture$0) {",
         "  JreStrongAssign(&self->val$foo_, capture$0);",
         "  NSObject_init(self);",
         "}");
@@ -162,7 +162,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "+ (void)initialize {",
         "if (self == [Test class]) {",
-        "JreStrongAssignAndConsume(&Test_EMPTY_ENUMERATION, new_Test$$1_init());");
+        "JreStrongAssignAndConsume(&Test_EMPTY_ENUMERATION, new_Test_$1_init());");
   }
 
   public void testFinalParameterAccess() throws IOException {
@@ -177,7 +177,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(translation, "- (void)fooWithId:(id)bar_Arg {");
     assertTranslation(translation, "Test_logWithInt_withId_(self, 2, bar_Arg);");
 
-    // Test$$: since bar_ is an unshadowed field, the parameter name is
+    // Test_$: since bar_ is an unshadowed field, the parameter name is
     // unchanged.
     assertTranslation(translation, "Test_logWithInt_withId_(this$0_, 1, val$bar__);");
     assertTranslation(translation, "JreStrongAssign(&self->val$bar__, capture$0);");
@@ -192,7 +192,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
       + "    Runnable run = new Runnable() { public void run() { int j = foo.i; } }; } }",
       "Test", "Test.m");
 
-    assertTranslation(translation, "int j = ((Test$Foo *) nil_chk(val$foo_))->i_");
+    assertTranslation(translation, "int j = ((Test_Foo *) nil_chk(val$foo_))->i_");
   }
 
   public void testMultipleReferencesToSameVar() throws IOException {
@@ -236,7 +236,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     NameTable nameTable = unit.getNameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(1);
-    assertEquals("Test$$1", nameTable.getFullName(r1.getTypeBinding()));
+    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
       if (var.getName().getIdentifier().equals("val$i")) {
         fail("found field that shouldn't be declared");
@@ -245,7 +245,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Method var in r1.run() becomes a field in r2.
     AbstractTypeDeclaration r2 = types.get(2);
-    assertEquals("Test$$1$$1", nameTable.getFullName(r2.getTypeBinding()));
+    assertEquals("Test_$1_$1", nameTable.getFullName(r2.getTypeBinding()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r2)) {
       if (var.getName().getIdentifier().equals("val$i")) {
@@ -256,7 +256,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify constructor takes both outer field and var.
     String translation = generateFromUnit(unit, "Test.m");
-    assertTranslation(translation, "r2 = [new_Test$$1$$1_initWithJavaLangInteger_(i) autorelease]");
+    assertTranslation(translation, "r2 = [new_Test_$1_$1_initWithJavaLangInteger_(i) autorelease]");
   }
 
   public void testMethodVarInAnonymousClass() throws IOException {
@@ -274,7 +274,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     NameTable nameTable = unit.getNameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(1);
-    assertEquals("Test$$1", nameTable.getFullName(r1.getTypeBinding()));
+    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
       if (var.getName().getIdentifier().equals("val$i")) {
@@ -285,7 +285,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var is passed to constructor.
     String translation = generateFromUnit(unit, "Test.m");
-    assertTranslation(translation, "r = [new_Test$$1_initWithJavaLangInteger_(i) autorelease]");
+    assertTranslation(translation, "r = [new_Test_$1_initWithJavaLangInteger_(i) autorelease]");
   }
 
   public void testMethodVarInSwitch() throws IOException {
@@ -303,7 +303,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     NameTable nameTable = unit.getNameTable();
     List<AbstractTypeDeclaration> types = unit.getTypes();
     AbstractTypeDeclaration r1 = types.get(2);
-    assertEquals("Test$$1", nameTable.getFullName(r1.getTypeBinding()));
+    assertEquals("Test_$1", nameTable.getFullName(r1.getTypeBinding()));
     boolean found = false;
     for (VariableDeclarationFragment var : TreeUtil.getAllFields(r1)) {
       if (var.getName().getIdentifier().equals("val$i")) {
@@ -314,7 +314,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var is passed to constructor.
     String translation = generateFromUnit(unit, "Test.m");
-    assertTranslation(translation, "r = [new_Test$$1_initWithJavaLangInteger_(i) autorelease]");
+    assertTranslation(translation, "r = [new_Test_$1_initWithJavaLangInteger_(i) autorelease]");
   }
 
   public void testAnonymousClassField() throws IOException {
@@ -338,16 +338,16 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "public abstract boolean isUp(); }";
     String impl = translateSourceFile(source, "Test", "Test.m");
 
-    assertTranslation(impl, "@interface Test$$1Enum : TestEnum");
-    assertTranslation(impl, "@interface Test$$2Enum : TestEnum");
+    assertTranslation(impl, "@interface Test_$1Enum : TestEnum");
+    assertTranslation(impl, "@interface Test_$2Enum : TestEnum");
     assertTranslatedLines(impl,
         "- (instancetype)initWithNSString:(NSString *)__name",
         "withInt:(jint)__ordinal {");
 
     assertTranslation(impl, "TestEnum_initWithNSString_withInt_(self, __name, __ordinal);");
-    assertTranslation(impl, "TestEnum_UP = new_Test$$1Enum_initWithNSString_withInt_(@\"UP\", 0);");
+    assertTranslation(impl, "TestEnum_UP = new_Test_$1Enum_initWithNSString_withInt_(@\"UP\", 0);");
     assertTranslation(impl,
-        "TestEnum_DOWN = new_Test$$2Enum_initWithNSString_withInt_(@\"DOWN\", 1);");
+        "TestEnum_DOWN = new_Test_$2Enum_initWithNSString_withInt_(@\"DOWN\", 1);");
   }
 
   public void testTwoOutersInAnonymousSubClassOfInner() throws IOException {
@@ -360,14 +360,14 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "new_Test$A$$1_initWithTest$A_withTest$B_withTest$B_withInt_(self, b, b, 1)");
+        "new_Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_(self, b, b, 1)");
     assertTranslatedLines(translation,
-        "void Test$A$$1_initWithTest$A_withTest$B_withTest$B_withInt_("
-          + "Test$A$$1 *self, Test$A *outer$, Test$B *capture$0, Test$B *superOuter$, "
+        "void Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_("
+          + "Test_A_$1 *self, Test_A *outer$, Test_B *capture$0, Test_B *superOuter$, "
           + "jint arg$0) {",
         "  JreStrongAssign(&self->this$1_, outer$);",
         "  JreStrongAssign(&self->val$b_, capture$0);",
-        "  Test$B$Inner_initWithTest$B_withInt_(self, superOuter$, arg$0);",
+        "  Test_B_Inner_initWithTest_B_withInt_(self, superOuter$, arg$0);",
         "}");
   }
 
@@ -378,7 +378,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "  static A.Inner inner = new A.Inner(1) { int foo() { return 2; } }; }",
         "Test", "Test.m");
     // This is probably not the right output - but it compiles and works.
-    assertTranslation(translation, "new_Test$$1_initWithInt_(1)");
+    assertTranslation(translation, "new_Test_$1_initWithInt_(1)");
   }
 
   public void testAnonymousClassObjectParameter() throws IOException {
@@ -410,13 +410,13 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify ColorEnum$$1 constructor.
     assertTranslatedLines(impl,
-        "void Color$$1Enum_initWithInt_withNSString_withInt_("
-          + "Color$$1Enum *self, jint arg$0, NSString *__name, jint __ordinal) {",
+        "void Color_$1Enum_initWithInt_withNSString_withInt_("
+          + "Color_$1Enum *self, jint arg$0, NSString *__name, jint __ordinal) {",
         "  ColorEnum_initWithInt_withNSString_withInt_(self, arg$0, __name, __ordinal);",
         "}");
 
     // Verify constant initialization.
-    assertTranslation(impl, "new_Color$$1Enum_initWithInt_withNSString_withInt_(42, @\"RED\", 0)");
+    assertTranslation(impl, "new_Color_$1Enum_initWithInt_withNSString_withInt_(42, @\"RED\", 0)");
   }
 
   public void testEnumWithInnerEnum() throws IOException {
@@ -434,7 +434,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify InnerValue constant initialization.
     assertTranslation(impl,
-        "new_OuterValue$InnerValueEnum_initWithNSString_withInt_(@\"VALUE1\", 0)");
+        "new_OuterValue_InnerValueEnum_initWithNSString_withInt_(@\"VALUE1\", 0)");
   }
 
   // Tests a field initialized with an anonymous class and multiple
@@ -449,8 +449,8 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "  A() {} "
         + "  A(String foo) {} }",
         "A", "A.m");
-    assertOccurrences(impl, "@implementation A$$1", 1);
-    assertOccurrences(impl, "JreStrongAssignAndConsume(&self->my_i_, new_A$$1_init());", 2);
+    assertOccurrences(impl, "@implementation A_$1", 1);
+    assertOccurrences(impl, "JreStrongAssignAndConsume(&self->my_i_, new_A_$1_init());", 2);
   }
 
   public void testNestedAnonymousClasses() throws IOException {
@@ -476,10 +476,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test<T> { Test(T t) {} void test() { new Test<String>(\"foo\") {}; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "new_Test$$1_initWithNSString_(@\"foo\")");
+    assertTranslation(translation, "new_Test_$1_initWithNSString_(@\"foo\")");
     assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)arg$0 {");
     assertTranslatedLines(translation,
-        "void Test$$1_initWithNSString_(Test$$1 *self, NSString *arg$0) {",
+        "void Test_$1_initWithNSString_(Test_$1 *self, NSString *arg$0) {",
         "  Test_initWithId_(self, arg$0);",
         "}");
   }
@@ -492,21 +492,21 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "Test", "Test.m");
     // check the invocations.
     assertTranslation(translation,
-        "[new_Test$$1_initWithNSString_withNSObjectArray_(@\"%s %s\", "
+        "[new_Test_$1_initWithNSString_withNSObjectArray_(@\"%s %s\", "
         + "[IOSObjectArray arrayWithObjects:(id[]){ @\"1\", @\"2\" } count:2 "
         + "type:NSObject_class_()]) autorelease];");
     assertTranslation(translation,
-        "[new_Test$$2_initWithNSString_withNSObjectArray_(@\"foo\", "
+        "[new_Test_$2_initWithNSString_withNSObjectArray_(@\"foo\", "
         + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]) autorelease];");
     // check the generated constructors.
     assertTranslatedLines(translation,
-        "void Test$$1_initWithNSString_withNSObjectArray_("
-          + "Test$$1 *self, NSString *arg$0, IOSObjectArray *arg$1) {",
+        "void Test_$1_initWithNSString_withNSObjectArray_("
+          + "Test_$1 *self, NSString *arg$0, IOSObjectArray *arg$1) {",
         "  Test_initWithNSString_withNSObjectArray_(self, arg$0, arg$1);",
         "}");
     assertTranslatedLines(translation,
-        "void Test$$2_initWithNSString_withNSObjectArray_("
-          + "Test$$2 *self, NSString *arg$0, IOSObjectArray *arg$1) {",
+        "void Test_$2_initWithNSString_withNSObjectArray_("
+          + "Test_$2 *self, NSString *arg$0, IOSObjectArray *arg$1) {",
         "  Test_initWithNSString_withNSObjectArray_(self, arg$0, arg$1);",
         "}");
   }

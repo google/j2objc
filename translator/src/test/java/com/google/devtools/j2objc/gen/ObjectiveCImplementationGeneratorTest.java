@@ -70,7 +70,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "package unit.test; public class Example { class Inner {}}",
         "Example", "unit/test/Example.m");
     assertTranslation(translation, "#include \"unit/test/Example.h\"");
-    assertFalse(translation.contains("#include \"unit/test/Example$Inner.h\""));
+    assertFalse(translation.contains("#include \"unit/test/Example_Inner.h\""));
   }
 
   public void testSameClassMethodInvocation() throws IOException {
@@ -146,8 +146,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "    static int foo = 1; "
         + "    final int myFoo = foo++; }}",
         "Example", "Example.m");
-    assertTranslation(translation, "int Example$Inner_foo = 1");
-    assertTranslation(translation, "myFoo_ = Example$Inner_foo++");
+    assertTranslation(translation, "int Example_Inner_foo = 1");
+    assertTranslation(translation, "myFoo_ = Example_Inner_foo++");
   }
 
   public void testStaticVariableWithGenericTypeCast() throws IOException {
@@ -395,8 +395,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertFalse(header.contains("isPackableWithTest_TypeEnum"));
     assertFalse(impl.contains("\n  return NO;\n  [super initWithTest_TypeEnum:arg$0]}"));
     assertTranslation(impl,
-        "Test$FieldEnum_STRING = new_Test$Field$$1Enum_initWithTest$TypeEnum_withNSString_withInt_("
-        + "JreLoadStatic(Test$TypeEnum, STRING), @\"STRING\", 2);");
+        "Test_FieldEnum_STRING = new_Test_Field_$1Enum_initWithTest_TypeEnum_withNSString_withInt_("
+        + "JreLoadStatic(Test_TypeEnum, STRING), @\"STRING\", 2);");
   }
 
   public void testAutoreleasePoolMethod() throws IOException {
@@ -484,21 +484,21 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "- (instancetype)initWithTest:(Test *)outer$ {",
-        "  Test$Inner_initWithTest_(self, outer$);",
+        "  Test_Inner_initWithTest_(self, outer$);",
         "  return self;",
         "}");
     assertTranslatedLines(translation,
         "- (instancetype)initWithTest:(Test *)outer$",
         "                     withInt:(jint)i {",
-        "  Test$Inner_initWithTest_withInt_(self, outer$, i);",
+        "  Test_Inner_initWithTest_withInt_(self, outer$, i);",
         "  return self;",
         "}");
     assertTranslatedLines(translation,
-        "void Test$Inner_initWithTest_(Test$Inner *self, Test *outer$) {",
-        "  Test$Inner_initWithTest_withInt_(self, outer$, 42);",
+        "void Test_Inner_initWithTest_(Test_Inner *self, Test *outer$) {",
+        "  Test_Inner_initWithTest_withInt_(self, outer$, 42);",
         "}");
     assertTranslatedLines(translation,
-        "void Test$Inner_initWithTest_withInt_(Test$Inner *self, Test *outer$, jint i) {",
+        "void Test_Inner_initWithTest_withInt_(Test_Inner *self, Test *outer$, jint i) {",
         "  NSObject_init(self);",
         "}");
   }
@@ -634,7 +634,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertOccurrences(translation, "OCNI2", 1);
     assertOccurrences(translation, "OCNI3", 1);
     String testType = "@implementation Test\n";
-    String innerType = "@implementation Test$InnerEnum";
+    String innerType = "@implementation Test_InnerEnum";
     String method1 = "- (void)method1";
     String method2 = "- (void)method2";
     String method3 = "- (void)method3";
@@ -925,7 +925,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "public @interface OuterAnn { InnerAnn test() default @InnerAnn(); }}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "+ (id<A$InnerAnn>)testDefault {", "return [[[A$InnerAnn alloc] init] autorelease];", "}");
+        "+ (id<A_InnerAnn>)testDefault {", "return [[[A_InnerAnn alloc] init] autorelease];", "}");
   }
 
   public void testAnnotationWithDefaultAnnotationWithArguments() throws IOException {
@@ -937,8 +937,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "public @interface OuterAnn { InnerAnn test() default @InnerAnn(foo=\"bar\", num=5); }}",
         "A", "A.m");
     assertTranslatedLines(translation,
-        "+ (id<A$InnerAnn>)testDefault {",
-        "return [[[A$InnerAnn alloc] initWithFoo:@\"bar\" withNum:5] autorelease];",
+        "+ (id<A_InnerAnn>)testDefault {",
+        "return [[[A_InnerAnn alloc] initWithFoo:@\"bar\" withNum:5] autorelease];",
         "}");
   }
 
@@ -995,17 +995,17 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "static const J2ObjCEnclosingMethodInfo "
         + "enclosing_method = { \"A\", \"initWithNSString:\" };",
-        "static const J2ObjcClassInfo _A$1B = { 2, \"B\", NULL, \"A\", 0x0, 1, methods, "
+        "static const J2ObjcClassInfo _A_1B = { 2, \"B\", NULL, \"A\", 0x0, 1, methods, "
         + "0, NULL, 0, NULL, 0, NULL, &enclosing_method, NULL };");
     assertTranslatedLines(translation,
         "static const J2ObjCEnclosingMethodInfo "
         + "enclosing_method = { \"A\", \"testWithInt:withLong:\" };",
-        "static const J2ObjcClassInfo _A$1C = { 2, \"C\", NULL, \"A\", 0x0, 1, methods, "
+        "static const J2ObjcClassInfo _A_1C = { 2, \"C\", NULL, \"A\", 0x0, 1, methods, "
         + "0, NULL, 0, NULL, 1, inner_classes, &enclosing_method, NULL };");
 
     // Verify D is not enclosed by test(), as it's enclosed by C.
     assertTranslation(translation,
-        "J2ObjcClassInfo _A$1C$D = { 2, \"D\", NULL, \"A$C\", 0x0, 1, methods, "
+        "J2ObjcClassInfo _A_1C_D = { 2, \"D\", NULL, \"A$C\", 0x0, 1, methods, "
         + "0, NULL, 0, NULL, 0, NULL, NULL, NULL }");
   }
 
@@ -1018,6 +1018,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "@Outer(innerAnnotation=@Inner(name=\"Bar\")) class Foo {}}",
         "A", "A.m");
     assertTranslation(translation,
-        "[[[A$Outer alloc] initWithInnerAnnotation:[[[A$Inner alloc] initWithName:@\"Bar\"]");
+        "[[[A_Outer alloc] initWithInnerAnnotation:[[[A_Inner alloc] initWithName:@\"Bar\"]");
   }
 }

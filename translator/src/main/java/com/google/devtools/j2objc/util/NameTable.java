@@ -941,8 +941,7 @@ public class NameTable {
 
     ITypeBinding outerBinding = binding.getDeclaringClass();
     if (outerBinding != null) {
-      return getFullNameInner(outerBinding, oldStyle) + (oldStyle ? '_' : '$')
-          + getTypeSubName(binding);
+      return getFullNameInner(outerBinding, oldStyle) + '_' + getTypeSubName(binding);
     }
     String name = binding.getQualifiedName();
 

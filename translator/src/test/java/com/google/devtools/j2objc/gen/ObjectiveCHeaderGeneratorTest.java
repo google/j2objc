@@ -101,8 +101,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "package unit.test; public class Example { class Inner {}}",
         "Example", "unit/test/Example.h");
     assertTranslation(translation, "@interface UnitTestExample ");
-    assertTranslation(translation, "Example$Inner");
-    assertTranslation(translation, "@interface UnitTestExample$Inner ");
+    assertTranslation(translation, "Example_Inner");
+    assertTranslation(translation, "@interface UnitTestExample_Inner ");
   }
 
   public void testSuperclassTypeTranslation() throws IOException {
@@ -441,7 +441,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { class Inner {} }",
       "Example", "Example.h");
-    assertTranslation(translation, "@interface Example$Inner : NSObject");
+    assertTranslation(translation, "@interface Example_Inner : NSObject");
     assertNotInTranslation(translation, "Example *this");
     assertTranslation(translation, "- (instancetype)initWithExample:(Example *)outer$;");
   }
@@ -450,7 +450,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public class Example { int i; class Inner { void test() { int j = i; } } }",
       "Example", "Example.h");
-    assertTranslation(translation, "@interface Example$Inner : NSObject");
+    assertTranslation(translation, "@interface Example_Inner : NSObject");
     assertTranslation(translation, "- (instancetype)initWithExample:(Example *)outer$;");
     translation = getTranslatedFile("Example.m");
     assertTranslation(translation, "Example *this$0_;");
@@ -542,7 +542,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { Foo foo; class Foo {} }", "Example", "Example.h");
     // Test that Foo is forward declared because Example contains a field of
     // type Foo and Foo is declared after Example.
-    assertTranslation(translation, "@class Example$Foo;");
+    assertTranslation(translation, "@class Example_Foo;");
   }
 
   public void testAnnotationGeneration() throws IOException {
@@ -613,8 +613,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertFalse(header.contains("typedef enum {\n} A_Foo;"));
 
     // Verify there's still a Java enum type.
-    assertTranslation(header, "@interface A$FooEnum : JavaLangEnum");
-    assertTranslation(impl, "@implementation A$FooEnum");
+    assertTranslation(header, "@interface A_FooEnum : JavaLangEnum");
+    assertTranslation(impl, "@implementation A_FooEnum");
   }
 
   public void testEnumWithInterfaces() throws IOException {
@@ -623,7 +623,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "enum Foo implements I, Runnable, Cloneable { "
         + "A, B, C; public void run() {}}}", "A", "A.h");
     assertTranslation(translation,
-        "@interface A$FooEnum : JavaLangEnum < NSCopying, A$I, JavaLangRunnable >");
+        "@interface A_FooEnum : JavaLangEnum < NSCopying, A_I, JavaLangRunnable >");
     assertTranslation(translation, "#include \"java/lang/Runnable.h\"");
   }
 
@@ -661,8 +661,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "}";
     String translation = translateSourceFile(sourceContent, "FooBar", "FooBar.m");
     assertTranslatedLines(translation,
-        "__weak FooBar$Internal *fieldBar_;",
-        "FooBar$Internal *fieldFoo_;");
+        "__weak FooBar_Internal *fieldBar_;",
+        "FooBar_Internal *fieldFoo_;");
   }
 
   public void testAddIgnoreDeprecationWarningsPragmaIfDeprecatedDeclarationsIsEnabled()
@@ -693,8 +693,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "@Retention(RetentionPolicy.RUNTIME) @Target(ElementType.METHOD) "
         + "public @interface Initialize {}}";
     String translation = translateSourceFile(source, "Test", "Test.h");
-    assertTranslation(translation, "@protocol Test$Initialize < JavaLangAnnotationAnnotation >");
-    assertTranslation(translation, "@interface Test$Initialize : NSObject < Test$Initialize >");
+    assertTranslation(translation, "@protocol Test_Initialize < JavaLangAnnotationAnnotation >");
+    assertTranslation(translation, "@interface Test_Initialize : NSObject < Test_Initialize >");
   }
 
   public void testFieldSetterGeneration() throws IOException {

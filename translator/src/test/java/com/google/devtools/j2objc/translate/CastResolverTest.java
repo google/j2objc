@@ -108,9 +108,9 @@ public class CastResolverTest extends GenerationTest {
         + "  }"
         + "}", "Test", "Test.m");
     // Verify foo.derivedMethod() has cast of appropriate type variable.
-    assertTranslation(translation, "[((Test$DerivedFoo *) foo_) derivedMethod];");
+    assertTranslation(translation, "[((Test_DerivedFoo *) foo_) derivedMethod];");
     // Verify that a cast can be added to a QualifiedName node.
-    assertTranslation(translation, "return ((Test$DerivedFoo *) foo_)->myInt_;");
+    assertTranslation(translation, "return ((Test_DerivedFoo *) foo_)->myInt_;");
   }
 
   public void testCapturedType() throws IOException {
@@ -120,7 +120,7 @@ public class CastResolverTest extends GenerationTest {
         + " static class Foo<T extends Bar> { T get() { return null; } }"
         + " void test(Foo<?> foo) { foo.get().bar(); } }", "Test", "Test.m");
     assertTranslation(translation,
-        "[((id<Test$Bar>) nil_chk([((Test$Foo *) nil_chk(foo)) get])) bar];");
+        "[((id<Test_Bar>) nil_chk([((Test_Foo *) nil_chk(foo)) get])) bar];");
   }
 
   public void testChainedFieldLookup() throws IOException {
@@ -137,7 +137,7 @@ public class CastResolverTest extends GenerationTest {
         + " return foo.bar.baz; } } }", "Test", "Test.m");
     // This is actually a regression for a NPE in the translator, but we may as
     // well check the output.
-    assertTranslation(translation, "return ((Test$Foo *) foo_)->bar_->baz_;");
+    assertTranslation(translation, "return ((Test_Foo *) foo_)->bar_->baz_;");
   }
 
   public void testCastOfParenthesizedExpression() throws IOException {
@@ -146,7 +146,7 @@ public class CastResolverTest extends GenerationTest {
         + " Node getNext() { return null; }"
         + " int test() { return (next = getNext()).key; } }", "Test", "Test.m");
     assertTranslation(translation,
-        "return ((Test$Node *) (JreStrongAssign(&Test_next, [self getNext])))->key_;");
+        "return ((Test_Node *) (JreStrongAssign(&Test_next, [self getNext])))->key_;");
   }
 
   public void testCastOfInferredWildcardType() throws IOException {
@@ -158,13 +158,13 @@ public class CastResolverTest extends GenerationTest {
         + " I test() { genericMethod(new Bar(), new Baz()).foo();"
         + " return genericMethod(new Bar(), new Baz()); } }", "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (id<Test$I>)test {",
+        "- (id<Test_I>)test {",
         // Type cast must contain both "Test_C" and "Test_I".
-        "  [((Test$C<Test$I> *) nil_chk([self genericMethodWithId:[new_Test$Bar_init() autorelease]"
-          + " withId:[new_Test$Baz_init() autorelease]])) foo];",
+        "  [((Test_C<Test_I> *) nil_chk([self genericMethodWithId:[new_Test_Bar_init() autorelease]"
+          + " withId:[new_Test_Baz_init() autorelease]])) foo];",
         // No need for a cast because genericMethodWithId:withId: is declared to return "id".
-        "  return [self genericMethodWithId:[new_Test$Bar_init() autorelease]"
-          + " withId:[new_Test$Baz_init() autorelease]];",
+        "  return [self genericMethodWithId:[new_Test_Bar_init() autorelease]"
+          + " withId:[new_Test_Baz_init() autorelease]];",
         "}");
   }
 
