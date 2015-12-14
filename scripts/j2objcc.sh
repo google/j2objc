@@ -57,7 +57,7 @@ for arg; do
     # Check whether linking is disabled by a -c, -S, or -E option.
     -[cSE]) DO_LINK="no" ;;
     # Check whether we need to build for C++ instead of C.
-    objective-c\+\+) CC_FLAGS="${CC_FLAGS} -std=c++98" OBJC= ;;
+    objective-c\+\+) CC_FLAGS="${CC_FLAGS} -std=c++11" OBJC= ;;
     # Save sysroot path for later inspection.
     -isysroot) SYSROOT_PATH="${i#*=}" ;;
     -ObjC) EMUL_LIB="-ljre_core" ;;
