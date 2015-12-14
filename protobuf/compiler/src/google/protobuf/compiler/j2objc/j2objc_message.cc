@@ -91,7 +91,7 @@ MessageGenerator::~MessageGenerator() {
 void MessageGenerator::CollectForwardDeclarations(set<string> &declarations)
     const {
   declarations.insert("@class " + ClassName(descriptor_) + "$Builder");
-  declarations.insert("@class ComGoogleProtobufDescriptors$Descriptor");
+  declarations.insert("@class ComGoogleProtobufDescriptors_Descriptor");
 
   for (int i = 0; i < descriptor_->field_count(); i++) {
     field_generators_.get(descriptor_->field(i))
@@ -165,7 +165,7 @@ void MessageGenerator::GenerateEnumHeader(io::Printer* printer) {
 void MessageGenerator::GenerateMessageHeader(io::Printer* printer) {
   string superclassName = "ComGoogleProtobufGeneratedMessage";
   if (descriptor_->extension_range_count() > 0) {
-    superclassName = "ComGoogleProtobufGeneratedMessage$ExtendableMessage";
+    superclassName = "ComGoogleProtobufGeneratedMessage_ExtendableMessage";
   }
 
   printer->Print("\n"
@@ -177,7 +177,7 @@ void MessageGenerator::GenerateMessageHeader(io::Printer* printer) {
       "- ($classname$$$Builder *)toBuilder;\n"
       "+ ($classname$$$Builder *)newBuilderWith$classname$:"
           "($classname$ *)message OBJC_METHOD_FAMILY_NONE;\n"
-      "+ (ComGoogleProtobufDescriptors$$Descriptor *)getDescriptor;\n"
+      "+ (ComGoogleProtobufDescriptors_Descriptor *)getDescriptor;\n"
       "+ ($classname$ *)parseFromWithByteArray:(IOSByteArray *)bytes;\n"
       "+ ($classname$ *)parseFromWithByteArray:(IOSByteArray *)bytes "
           "withComGoogleProtobufExtensionRegistryLite:"
@@ -225,7 +225,7 @@ void MessageGenerator::GenerateMessageHeader(io::Printer* printer) {
       "FOUNDATION_EXPORT $classname$$$Builder *$classname$_newBuilder();\n"
       "FOUNDATION_EXPORT $classname$$$Builder *$classname$_newBuilderWith"
           "$classname$_($classname$ *message);\n"
-      "FOUNDATION_EXPORT ComGoogleProtobufDescriptors$$Descriptor "
+      "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
           "*$classname$_getDescriptor();\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_parseFromWithByteArray_with"
           "ComGoogleProtobufExtensionRegistryLite_(IOSByteArray *bytes, "
@@ -258,7 +258,7 @@ void MessageGenerator::GenerateMessageHeader(io::Printer* printer) {
       "\n"
       "J2OBJC_TYPE_LITERAL_HEADER($classname$)\n"
       "\n"
-      "FOUNDATION_EXPORT ComGoogleProtobufDescriptors$$Descriptor "
+      "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
           "*$classname$_descriptor_;\n",
       "classname", ClassName(descriptor_));
 
@@ -292,7 +292,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   printer->Print("\n"
       "J2OBJC_INITIALIZED_DEFN($classname$);\n"
       "\n"
-      "ComGoogleProtobufDescriptors$$Descriptor *$classname$_descriptor_;\n",
+      "ComGoogleProtobufDescriptors_Descriptor *$classname$_descriptor_;\n",
       "classname", ClassName(descriptor_));
 
   for (int i = 0; i < descriptor_->extension_count(); i++) {
@@ -319,7 +319,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
   printer->Print(
       "} $classname$_Storage;\n"
       "\n"
-      "+ (ComGoogleProtobufDescriptors$$Descriptor *)getDescriptor {\n"
+      "+ (ComGoogleProtobufDescriptors_Descriptor *)getDescriptor {\n"
       "  return $classname$_descriptor_;\n"
       "}\n",
       "classname", ClassName(descriptor_));
@@ -390,8 +390,7 @@ void MessageGenerator::GenerateSource(io::Printer* printer) {
           "$classname$_descriptor_, message);\n"
       "}\n"
       "\n"
-      "ComGoogleProtobufDescriptors$$Descriptor "
-          "*$classname$_getDescriptor() {\n"
+      "ComGoogleProtobufDescriptors_Descriptor *$classname$_getDescriptor() {\n"
       "  $classname$_initialize();\n"
       "  return $classname$_descriptor_;\n"
       "}\n"
@@ -448,7 +447,7 @@ void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
           "(id<ComGoogleProtobufMessage>)message;\n"
       "- ($classname$ *)build;\n"
       "- ($classname$ *)buildPartial;\n"
-      "+ (ComGoogleProtobufDescriptors$$Descriptor *)getDescriptor;\n",
+      "+ (ComGoogleProtobufDescriptors_Descriptor *)getDescriptor;\n",
       "classname", ClassName(descriptor_),
       "superclassname", superclassName);
 
@@ -459,7 +458,7 @@ void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
 
   printer->Print("\n"
       "@end\n\n"
-      "FOUNDATION_EXPORT ComGoogleProtobufDescriptors$$Descriptor "
+      "FOUNDATION_EXPORT ComGoogleProtobufDescriptors_Descriptor "
           "*$classname$$$Builder_getDescriptor();\n"
       "\n"
       "J2OBJC_EMPTY_STATIC_INIT($classname$$$Builder)\n"
@@ -479,7 +478,7 @@ void MessageGenerator::GenerateBuilderHeader(io::Printer* printer) {
 void MessageGenerator::GenerateBuilderSource(io::Printer* printer) {
   printer->Print("\n"
       "@implementation $classname$$$Builder\n\n"
-      "+ (ComGoogleProtobufDescriptors$$Descriptor *)getDescriptor {\n"
+      "+ (ComGoogleProtobufDescriptors_Descriptor *)getDescriptor {\n"
       "  return [$classname$ getDescriptor];\n"
       "}\n"
       "\n"
@@ -489,7 +488,7 @@ void MessageGenerator::GenerateBuilderSource(io::Printer* printer) {
       // We don't generate a source file for the "OrBuilder" protocol.
       "J2OBJC_INTERFACE_TYPE_LITERAL_SOURCE($classname$OrBuilder)\n"
       "\n"
-      "ComGoogleProtobufDescriptors$$Descriptor "
+      "ComGoogleProtobufDescriptors_Descriptor "
           "*$classname$$$Builder_getDescriptor() {\n"
       "  $classname$_initialize();\n"
       "  return $classname$_descriptor_;\n"
@@ -501,7 +500,7 @@ void MessageGenerator::GenerateMessageOrBuilder(io::Printer* printer) {
   string protocolName = "ComGoogleProtobufMessageOrBuilder";
   if (descriptor_->extension_range_count() > 0) {
     protocolName =
-        "ComGoogleProtobufGeneratedMessage$ExtendableMessageOrBuilder";
+        "ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder";
   }
 
   printer->Print("\n"

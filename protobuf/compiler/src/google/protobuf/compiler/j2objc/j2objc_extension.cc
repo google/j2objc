@@ -71,10 +71,10 @@ void ExtensionGenerator::CollectSourceImports(set<string> &imports) {
 
 void ExtensionGenerator::GenerateMembersHeader(io::Printer* printer) {
   printer->Print(
-      "\nFOUNDATION_EXPORT ComGoogleProtobufGeneratedMessage"
-          "$$GeneratedExtension *$classname$_$name$;\n"
+      "\nFOUNDATION_EXPORT ComGoogleProtobufGeneratedMessage_GeneratedExtension"
+          " *$classname$_$name$;\n"
       "J2OBJC_STATIC_FIELD_GETTER($classname$, $name$, "
-          "ComGoogleProtobufGeneratedMessage$$GeneratedExtension *)\n",
+          "ComGoogleProtobufGeneratedMessage_GeneratedExtension *)\n",
       "name", UnderscoresToCamelCase(descriptor_),
       "classname", ContainingClassName(descriptor_));
   // TODO(kstanger): Remove when users have migrated.
@@ -89,8 +89,8 @@ void ExtensionGenerator::GenerateMembersHeader(io::Printer* printer) {
 
 void ExtensionGenerator::GenerateSourceDefinition(io::Printer* printer) {
   printer->Print(
-      "ComGoogleProtobufGeneratedMessage$$GeneratedExtension"
-          " *$classname$_$name$;\n",
+      "ComGoogleProtobufGeneratedMessage_GeneratedExtension"
+          " *$classname$_$name$_;\n",
       "name", UnderscoresToCamelCase(descriptor_),
       "classname", ContainingClassName(descriptor_));
 }
@@ -113,7 +113,7 @@ void ExtensionGenerator::GenerateFieldData(io::Printer* printer) {
       "  .javaName = \"$capitalized_name$\",\n"
       "  .number = $field_number$,\n"
       "  .flags = $flags$,\n"
-      "  .type = ComGoogleProtobufDescriptors$$FieldDescriptor$$Type_Enum_"
+      "  .type = ComGoogleProtobufDescriptors_FieldDescriptor_Type_"
           "$field_type$,\n"
       "  .defaultValue.value$default_value_type$ = $default_value$,\n"
       "  .hasBitIndex = 0,\n"
@@ -126,8 +126,8 @@ void ExtensionGenerator::GenerateFieldData(io::Printer* printer) {
 
 void ExtensionGenerator::GenerateSourceInitializer(io::Printer* printer) {
   printer->Print(
-      "$classname$_$name$ = "
-          "[[ComGoogleProtobufGeneratedMessage$$GeneratedExtension alloc] "
+      "$classname$_$name$_ = "
+          "[[ComGoogleProtobufGeneratedMessage_GeneratedExtension alloc] "
           "initWithFieldData:&extensionFields[$num$]];\n",
       "classname", ContainingClassName(descriptor_),
       "name", UnderscoresToCamelCase(descriptor_),
@@ -136,7 +136,7 @@ void ExtensionGenerator::GenerateSourceInitializer(io::Printer* printer) {
 
 void ExtensionGenerator::GenerateRegistrationCode(io::Printer* printer) {
   printer->Print(
-      "CGPExtensionRegistryAdd(extensionRegistry, $classname$_get_$name$());\n",
+      "CGPExtensionRegistryAdd(extensionRegistry, $classname$_get_$name$_());\n",
       "classname", ContainingClassName(descriptor_),
       "name", UnderscoresToCamelCase(descriptor_));
 }

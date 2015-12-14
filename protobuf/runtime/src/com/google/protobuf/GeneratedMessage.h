@@ -77,7 +77,7 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_Builder)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_Builder)
 
-@protocol ComGoogleProtobufGeneratedMessage$ExtendableMessageOrBuilder
+@protocol ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder
     <ComGoogleProtobufMessageOrBuilder>
 
 - (BOOL)hasExtensionWithComGoogleProtobufExtensionLite:
@@ -99,22 +99,14 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_Builder)
 - (int)getExtensionCountWithComGoogleProtobufExtension:(CGPExtension *)extension;
 
 @end
-// TODO(kstanger): Remove when users have migrated.
-#ifdef J2OBJC_RENAME_ALIASES
-#define ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder ComGoogleProtobufGeneratedMessage$ExtendableMessageOrBuilder
-#endif // J2OBJC_RENAME_ALIASES
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder)
 
-@interface ComGoogleProtobufGeneratedMessage$ExtendableMessage :
+@interface ComGoogleProtobufGeneratedMessage_ExtendableMessage :
     ComGoogleProtobufGeneratedMessage<ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder>
 @end
-// TODO(kstanger): Remove when users have migrated.
-#ifdef J2OBJC_RENAME_ALIASES
-#define ComGoogleProtobufGeneratedMessage_ExtendableMessage ComGoogleProtobufGeneratedMessage$ExtendableMessage
-#endif // J2OBJC_RENAME_ALIASES
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_ExtendableMessage)
 
