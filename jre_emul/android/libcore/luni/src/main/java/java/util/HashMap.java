@@ -440,28 +440,28 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
      */
     private native void constructorPut(K key, V value) /*-[
       if (key == nil) {
-        JavaUtilHashMap$HashMapEntry *entry_ = self->entryForNullKey_;
+        JavaUtilHashMap_HashMapEntry *entry_ = self->entryForNullKey_;
         if (entry_ == nil) {
           self->entryForNullKey_ = [self constructorNewRetainedEntryWithId:nil withId:value
-              withInt:0 withJavaUtilHashMap$HashMapEntry:nil];
+              withInt:0 withJavaUtilHashMap_HashMapEntry:nil];
           self->size_++;
         } else {
-          JavaUtilHashMap$HashMapEntry_set_value_(entry_, value);
+          JavaUtilHashMap_HashMapEntry_set_value_(entry_, value);
         }
         return;
       }
       jint hash_ = JavaUtilCollections_secondaryHashWithId_(key);
       IOSObjectArray *tab = self->table_;
       jint index = hash_ & (tab->size_ - 1);
-      JavaUtilHashMap$HashMapEntry *first = tab->buffer_[index];
-      for (JavaUtilHashMap$HashMapEntry *e = first; e != nil; e = e->next_) {
+      JavaUtilHashMap_HashMapEntry *first = tab->buffer_[index];
+      for (JavaUtilHashMap_HashMapEntry *e = first; e != nil; e = e->next_) {
         if (e->hash__ == hash_ && [key isEqual:e->key_]) {
-          JavaUtilHashMap$HashMapEntry_set_value_(e, value);
+          JavaUtilHashMap_HashMapEntry_set_value_(e, value);
           return;
         }
       }
       tab->buffer_[index] = [self constructorNewRetainedEntryWithId:key withId:value withInt:hash_
-          withJavaUtilHashMap$HashMapEntry:first];
+          withJavaUtilHashMap_HashMapEntry:first];
       self->size_++;
     ]-*/;
 
@@ -475,8 +475,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
      * entry already in the table.
      */
     native void addNewEntry(K key, V value, int hash, int index) /*-[
-      JavaUtilHashMap$HashMapEntry *newEntry = [[JavaUtilHashMap$HashMapEntry alloc]
-          initWithId:key withId:value withInt:hash_ withJavaUtilHashMap$HashMapEntry:nil];
+      JavaUtilHashMap_HashMapEntry *newEntry = [[JavaUtilHashMap_HashMapEntry alloc]
+          initWithId:key withId:value withInt:hash_ withJavaUtilHashMap_HashMapEntry:nil];
       newEntry->next_ = table_->buffer_[index];
       table_->buffer_[index] = newEntry;
     ]-*/;
@@ -501,8 +501,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
      */
     native HashMapEntry<K, V> constructorNewRetainedEntry(
             K key, V value, int hash, HashMapEntry<K, V> first) /*-[
-      JavaUtilHashMap$HashMapEntry *entry = [[JavaUtilHashMap$HashMapEntry alloc]
-          initWithId:key withId:value withInt:hash_ withJavaUtilHashMap$HashMapEntry:nil];
+      JavaUtilHashMap_HashMapEntry *entry = [[JavaUtilHashMap_HashMapEntry alloc]
+          initWithId:key withId:value withInt:hash_ withJavaUtilHashMap_HashMapEntry:nil];
       entry->next_ = first;
       return entry;
     ]-*/;
@@ -549,10 +549,10 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
       if (self->size_ != 0) {
         jint newMask = newCapacity - 1;
         for (jint i = 0; i < oldCapacity; i++) {
-          for (JavaUtilHashMap$HashMapEntry *e = oldTable->buffer_[i]; e != nil; ) {
-            JavaUtilHashMap$HashMapEntry *oldNext = e->next_;
+          for (JavaUtilHashMap_HashMapEntry *e = oldTable->buffer_[i]; e != nil; ) {
+            JavaUtilHashMap_HashMapEntry *oldNext = e->next_;
             jint newIndex = e->hash__ & newMask;
-            JavaUtilHashMap$HashMapEntry *newNext = newTable->buffer_[newIndex];
+            JavaUtilHashMap_HashMapEntry *newNext = newTable->buffer_[newIndex];
             newTable->buffer_[newIndex] = e;
             e->next_ = newNext;
             e = oldNext;
@@ -597,14 +597,14 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
         return newTable;
       }
       for (jint j = 0; j < oldCapacity; j++) {
-        JavaUtilHashMap$HashMapEntry *e = oldTable->buffer_[j];
+        JavaUtilHashMap_HashMapEntry *e = oldTable->buffer_[j];
         if (e == nil) {
           continue;
         }
         jint highBit = e->hash__ & oldCapacity;
-        JavaUtilHashMap$HashMapEntry *broken = nil;
+        JavaUtilHashMap_HashMapEntry *broken = nil;
         newTable->buffer_[j | highBit] = e;
-        for (JavaUtilHashMap$HashMapEntry *n = e->next_; n != nil; e = n, n = n->next_) {
+        for (JavaUtilHashMap_HashMapEntry *n = e->next_; n != nil; e = n, n = n->next_) {
           jint nextHighBit = n->hash__ & oldCapacity;
           if (nextHighBit != highBit) {
             if (broken == nil)
@@ -636,20 +636,20 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
      */
     @Override public native V remove(Object key) /*-[
       if (key == nil) {
-        JavaUtilHashMap$HashMapEntry *e = self->entryForNullKey_;
+        JavaUtilHashMap_HashMapEntry *e = self->entryForNullKey_;
         if (e == nil) {
           return nil;
         }
         JavaUtilHashMap_set_entryForNullKey_(self, nil);
         modCount_++;
         size_--;
-        [self postRemoveWithJavaUtilHashMap$HashMapEntry:e];
+        [self postRemoveWithJavaUtilHashMap_HashMapEntry:e];
         return e->value_;
       }
       jint hash_ = JavaUtilCollections_secondaryHashWithId_(key);
       IOSObjectArray *tab = table_;
       jint index = hash_ & (tab->size_ - 1);
-      for (JavaUtilHashMap$HashMapEntry *e = tab->buffer_[index], *prev = nil; e != nil;
+      for (JavaUtilHashMap_HashMapEntry *e = tab->buffer_[index], *prev = nil; e != nil;
           prev = e, e = e->next_) {
         if (e->hash__ == hash_ && [key isEqual:e->key_]) {
           if (prev == nil) {
@@ -661,7 +661,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
           [e autorelease];  // Balance the missing release on e above.
           modCount_++;
           size_--;
-          [self postRemoveWithJavaUtilHashMap$HashMapEntry:e];
+          [self postRemoveWithJavaUtilHashMap_HashMapEntry:e];
           return e->value_;
         }
       }
@@ -875,20 +875,20 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
      */
     private native boolean removeMapping(Object key, Object value) /*-[
       if (key == nil) {
-        JavaUtilHashMap$HashMapEntry *e = self->entryForNullKey_;
+        JavaUtilHashMap_HashMapEntry *e = self->entryForNullKey_;
         if (e == nil || !LibcoreUtilObjects_equalWithId_withId_(value, e->value_)) {
           return NO;
         }
         JavaUtilHashMap_set_entryForNullKey_(self, nil);
         self->modCount_++;
         self->size_--;
-        [self postRemoveWithJavaUtilHashMap$HashMapEntry:e];
+        [self postRemoveWithJavaUtilHashMap_HashMapEntry:e];
         return YES;
       }
       jint hash_ = JavaUtilCollections_secondaryHashWithId_(key);
       IOSObjectArray *tab = self->table_;
       jint index = hash_ & (tab->size_ - 1);
-      for (JavaUtilHashMap$HashMapEntry *e = tab->buffer_[index], *prev = nil; e != nil;
+      for (JavaUtilHashMap_HashMapEntry *e = tab->buffer_[index], *prev = nil; e != nil;
           prev = e, e = e->next_) {
         if (e->hash__ == hash_ && [key isEqual:e->key_]) {
           if (!LibcoreUtilObjects_equalWithId_withId_(value, e->value_)) {
@@ -903,7 +903,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
           [e autorelease];  // Balance the missing release on e above.
           self->modCount_++;
           self->size_--;
-          [self postRemoveWithJavaUtilHashMap$HashMapEntry:e];
+          [self postRemoveWithJavaUtilHashMap_HashMapEntry:e];
           return YES;
         }
       }
@@ -945,7 +945,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
           NSUInteger objCount =
               [this$0_ enumerateEntriesWithState:state objects:stackbuf count:len];
           for (id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
-            *e = ((JavaUtilHashMap$HashMapEntry *) *e)->key_;
+            *e = ((JavaUtilHashMap_HashMapEntry *) *e)->key_;
           }
           return objCount;
         }
@@ -977,7 +977,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
           NSUInteger objCount =
               [this$0_ enumerateEntriesWithState:state objects:stackbuf count:len];
           for (id *e = state->itemsPtr, *end = e + objCount; e < end; e++) {
-            *e = ((JavaUtilHashMap$HashMapEntry *) *e)->value_;
+            *e = ((JavaUtilHashMap_HashMapEntry *) *e)->value_;
           }
           return objCount;
         }
@@ -1081,7 +1081,7 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
         state->extra[1] = 0;
       }
       NSUInteger position = state->extra[0];
-      JavaUtilHashMap$HashMapEntry *entry = (JavaUtilHashMap$HashMapEntry *) state->extra[1];
+      JavaUtilHashMap_HashMapEntry *entry = (JavaUtilHashMap_HashMapEntry *) state->extra[1];
       state->itemsPtr = stackbuf;
       NSUInteger objCount = 0;
       if (state->state == 1 && objCount < len) {

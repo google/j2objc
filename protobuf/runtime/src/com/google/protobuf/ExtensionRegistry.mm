@@ -51,8 +51,8 @@ static CGPExtensionRegistry *CGPExtensionRegistry_EMPTY_;
   CGPExtensionRegistryAdd(self, extension);
 }
 
-- (ComGoogleProtobufExtensionRegistry$ExtensionInfo *)
-    findExtensionByNumberWithComGoogleProtobufDescriptors$Descriptor:(CGPDescriptor *)descriptor
+- (ComGoogleProtobufExtensionRegistry_ExtensionInfo *)
+    findExtensionByNumberWithComGoogleProtobufDescriptors_Descriptor:(CGPDescriptor *)descriptor
     withInt:(int)fieldId {
   CGPFieldDescriptor *field = CGPExtensionRegistryFind(self, descriptor, fieldId);
   if (field != nil) {
@@ -86,7 +86,7 @@ ComGoogleProtobufExtensionRegistry *ComGoogleProtobufExtensionRegistry_getEmptyR
   return CGPExtensionRegistry_EMPTY_;
 }
 
-@implementation ComGoogleProtobufExtensionRegistry$ExtensionInfo
+@implementation ComGoogleProtobufExtensionRegistry_ExtensionInfo
 
 - (instancetype)initWithField:(CGPFieldDescriptor *)field {
   if (self = [super init]) {

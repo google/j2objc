@@ -158,7 +158,7 @@ void my_malloc_reset_and_report() {
     int size = malloc_size(ptr);
     total_bytes += size;
 #ifdef REPORT_EACH_BLOCK
-    [JavaLangSystem_get_out() printlnWithNSString:[NSString stringWithFormat:
+    [JavaLangSystem_get_out_() printlnWithNSString:[NSString stringWithFormat:
         @"Class: %@, size: %d", className, size]];
 #endif
 #ifdef REPORT_BACKTRACES
@@ -170,6 +170,6 @@ void my_malloc_reset_and_report() {
     }
 #endif
   }
-  [JavaLangSystem_get_out() printlnWithNSString:[NSString stringWithFormat:
+  [JavaLangSystem_get_out_() printlnWithNSString:[NSString stringWithFormat:
       @"Total bytes: %d", total_bytes]];
 }

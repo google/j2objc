@@ -59,16 +59,16 @@
 
 BOOL CGPIsRetainedType(CGPFieldJavaType type) {
   switch (type) {
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_INT:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_LONG:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_FLOAT:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_DOUBLE:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_BOOLEAN:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_ENUM:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_INT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_LONG:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_FLOAT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_DOUBLE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_BOOLEAN:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_ENUM:
       return NO;
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_STRING:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_BYTE_STRING:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_MESSAGE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_BYTE_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_MESSAGE:
       return YES;
   }
 }
@@ -90,7 +90,7 @@ void CGPInitDescriptor(
     fieldsBuf[i] = [[CGPFieldDescriptor alloc] initWithData:&fieldData[i]];
   }
   IOSObjectArray *fields = [IOSObjectArray arrayWithObjects:fieldsBuf count:fieldCount
-      type:ComGoogleProtobufDescriptors$FieldDescriptor_class_()];
+      type:ComGoogleProtobufDescriptors_FieldDescriptor_class_()];
   CGPDescriptor *descriptor = [[CGPDescriptor alloc]
       initWithMessageClass:messageClass
               builderClass:builderClass
@@ -119,7 +119,7 @@ CGPEnumDescriptor *CGPInitializeEnumType(
   uintptr_t enumValueDescPtr = enumDescPtr + enumDescSize;
 
   IOSObjectArray *valuesArray = [IOSObjectArray newArrayWithLength:valuesCount
-      type:ComGoogleProtobufDescriptors$EnumValueDescriptor_class_()];
+      type:ComGoogleProtobufDescriptors_EnumValueDescriptor_class_()];
   id *valueDescBuf = valuesArray->buffer_;
 
   for (jint i = 0; i < valuesCount; i++) {
@@ -146,12 +146,12 @@ CGPEnumDescriptor *CGPInitializeEnumType(
   return [enumDesc initWithValueOffset:valueOffset retainedValues:valuesArray];
 }
 
-static inline ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *GetTypeObj(CGPFieldType type) {
+static inline ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum *GetTypeObj(CGPFieldType type) {
   ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_initialize();
   return ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_values_[type];
 }
 
-@implementation ComGoogleProtobufDescriptors$Descriptor
+@implementation ComGoogleProtobufDescriptors_Descriptor
 
 - (instancetype)initWithMessageClass:(Class)messageClass
                         builderClass:(Class)builderClass
@@ -191,14 +191,14 @@ J2OBJC_ETERNAL_SINGLETON
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors$Descriptor)
 
-@implementation ComGoogleProtobufDescriptors$FieldDescriptor
+@implementation ComGoogleProtobufDescriptors_FieldDescriptor
 
 static uint32_t TagFromData(CGPFieldData *data) {
   BOOL isPacked = data->flags & CGPFieldFlagPacked;
   return CGPWireFormatMakeTag(data->number, CGPWireFormatForType(data->type, isPacked));
 }
 
-static ComGoogleProtobufDescriptorProtos$FieldOptions *InitFieldOptions(const char *data) {
+static ComGoogleProtobufDescriptorProtos_FieldOptions *InitFieldOptions(const char *data) {
   if (data == NULL) {
     return nil;
   }
@@ -209,7 +209,7 @@ static ComGoogleProtobufDescriptorProtos$FieldOptions *InitFieldOptions(const ch
     return nil;
   }
   data += sizeof(optionsLength);
-  CGPDescriptor *descriptor = [ComGoogleProtobufDescriptorProtos$FieldOptions getDescriptor];
+  CGPDescriptor *descriptor = [ComGoogleProtobufDescriptorProtos_FieldOptions getDescriptor];
   id msg = CGPNewMessage(descriptor);
   CGPMergeFromRawData(msg, descriptor, data, optionsLength);
   return msg;
@@ -225,11 +225,11 @@ static ComGoogleProtobufDescriptorProtos$FieldOptions *InitFieldOptions(const ch
   return self;
 }
 
-- (ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *)getType {
+- (ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum *)getType {
   return GetTypeObj(data_->type);
 }
 
-- (ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum *)getJavaType {
+- (ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum *)getJavaType {
   return GetTypeObj(data_->type)->javaType_;
 }
 
@@ -278,11 +278,11 @@ static ComGoogleProtobufDescriptorProtos$FieldOptions *InitFieldOptions(const ch
   return CGPFieldGetDefaultValue(self);
 }
 
-- (ComGoogleProtobufDescriptorProtos$FieldOptions *)getOptions {
+- (ComGoogleProtobufDescriptorProtos_FieldOptions *)getOptions {
   if (fieldOptions_ != nil) {
     return fieldOptions_;
   } else {
-    return [ComGoogleProtobufDescriptorProtos$FieldOptions getDefaultInstance];
+    return [ComGoogleProtobufDescriptorProtos_FieldOptions getDefaultInstance];
   }
 }
 
@@ -309,14 +309,14 @@ id CGPFieldGetDefaultValue(CGPFieldDescriptor *field) {
 void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
   CGPFieldData *data = descriptor->data_;
   switch (descriptor->javaType_) {
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_INT:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_LONG:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_FLOAT:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_DOUBLE:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_BOOLEAN:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_INT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_LONG:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_FLOAT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_DOUBLE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_BOOLEAN:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_STRING:
       break;
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_ENUM:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_ENUM:
       {
         Class enumClass = objc_getClass(data->className);
         CGPEnumDescriptor *enumDescriptor = [enumClass performSelector:@selector(getDescriptor)];
@@ -326,7 +326,7 @@ void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
         descriptor->valueType_ = enumDescriptor;
         break;
       }
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_BYTE_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_BYTE_STRING:
       if (data->defaultValue.valueId == nil) {
         data->defaultValue.valueId = ComGoogleProtobufByteString_get_EMPTY();
       } else {
@@ -342,7 +342,7 @@ void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
         data->defaultValue.valueId = byteString;
       }
       break;
-    case ComGoogleProtobufDescriptors$FieldDescriptor$JavaType_Enum_MESSAGE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_MESSAGE:
       {
         Class msgClass = objc_getClass(data->className);
         CGPDescriptor *msgDescriptor = [msgClass performSelector:@selector(getDescriptor)];
@@ -371,7 +371,7 @@ CGPEnumValueDescriptor *CGPEnumValueDescriptorFromInt(CGPEnumDescriptor *enumTyp
   return nil;
 }
 
-@implementation ComGoogleProtobufDescriptors$EnumDescriptor
+@implementation ComGoogleProtobufDescriptors_EnumDescriptor
 
 - (instancetype)initWithValueOffset:(ptrdiff_t)valueOffset retainedValues:(IOSObjectArray *)values {
   if (self = [super init]) {
@@ -391,7 +391,7 @@ J2OBJC_ETERNAL_SINGLETON
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors$EnumDescriptor)
 
-@implementation ComGoogleProtobufDescriptors$EnumValueDescriptor
+@implementation ComGoogleProtobufDescriptors_EnumValueDescriptor
 
 - (int)getNumber {
   return number_;
@@ -425,35 +425,34 @@ ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *ComGoogleProtobufDescript
   return self;
 }
 
-- (ComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum *)toProto {
-  return ComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum_valueOfWithInt_([self ordinal] + 1);
+- (ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_TypeEnum *)toProto {
+  return ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_TypeEnum_valueOfWithInt_([self ordinal] + 1);
 }
 
-- (ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum *)getJavaType {
+- (ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum *)getJavaType {
   return javaType_;
 }
 
-+ (ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *)valueOfWithComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum:(ComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum *)type {
-  return ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_valueOfWithComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum_(type);
++ (ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum *)valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_TypeEnum:(ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_TypeEnum *)type {
+  return ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum_valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_TypeEnum_(type);
 }
 
-IOSObjectArray *ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_values() {
+IOSObjectArray *ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum_values() {
   ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_initialize();
-  return [IOSObjectArray arrayWithObjects:ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_values_ count:18 type:ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_class_()];
+  return [IOSObjectArray arrayWithObjects:ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_values_ count:18 type:ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum_class_()];
 }
-
 + (IOSObjectArray *)values {
-  return ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_values();
+  return ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum_values();
 }
 
-+ (ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *)valueOfWithNSString:(NSString *)name {
-  return ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_valueOfWithNSString_(name);
++ (ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum *)valueOfWithNSString:(NSString *)name {
+  return ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum_valueOfWithNSString_(name);
 }
 
-ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_valueOfWithNSString_(NSString *name) {
+ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum *ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum_valueOfWithNSString_(NSString *name) {
   ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_initialize();
   for (int i = 0; i < 18; i++) {
-    ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *e = ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_values_[i];
+    ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum *e = ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_values_[i];
     if ([name isEqual:[e name]]) {
       return e;
     }
@@ -495,7 +494,7 @@ ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *ComGoogleProtobufDescript
     { "initWithComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum:withNSString:withInt:", "Type", NULL, 0x2, NULL },
     { "toProto", NULL, "Lcom.google.protobuf.DescriptorProtos$FieldDescriptorProto$Type;", 0x1, NULL },
     { "getJavaType", NULL, "Lcom.google.protobuf.Descriptors$FieldDescriptor$JavaType;", 0x1, NULL },
-    { "valueOfWithComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum:", "valueOf", "Lcom.google.protobuf.Descriptors$FieldDescriptor$Type;", 0x9, NULL },
+    { "valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_TypeEnum:", "valueOf", "Lcom.google.protobuf.Descriptors$FieldDescriptor$Type;", 0x9, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "DOUBLE", "DOUBLE", 0x4019, "Lcom.google.protobuf.Descriptors$FieldDescriptor$Type;", &ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_DOUBLE,  },
@@ -525,9 +524,9 @@ ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *ComGoogleProtobufDescript
 
 @end
 
-ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum *ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_valueOfWithComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum_(ComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum *type) {
+ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum *ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum_valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_TypeEnum_(ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_TypeEnum *type) {
   ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_initialize();
-  return IOSObjectArray_Get(nil_chk(ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum_values()), [((ComGoogleProtobufDescriptorProtos$FieldDescriptorProto$TypeEnum *) nil_chk(type)) getNumber] - 1);
+  return IOSObjectArray_Get(nil_chk(ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum_values()), [((ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_TypeEnum *) nil_chk(type)) getNumber] - 1);
 }
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors$FieldDescriptor$TypeEnum)
@@ -547,19 +546,19 @@ ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum *ComGoogleProtobufDesc
   return self;
 }
 
-IOSObjectArray *ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_values() {
+IOSObjectArray *ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum_values() {
   ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_initialize();
-  return [IOSObjectArray arrayWithObjects:ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_values_ count:9 type:ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_class_()];
+  return [IOSObjectArray arrayWithObjects:ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_values_ count:9 type:ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum_class_()];
 }
 + (IOSObjectArray *)values {
-  return ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_values();
+  return ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum_values();
 }
 
-+ (ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum *)valueOfWithNSString:(NSString *)name {
-  return ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_valueOfWithNSString_(name);
++ (ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum *)valueOfWithNSString:(NSString *)name {
+  return ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum_valueOfWithNSString_(name);
 }
 
-ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum *ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_valueOfWithNSString_(NSString *name) {
+ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum *ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum_valueOfWithNSString_(NSString *name) {
   ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_initialize();
   for (int i = 0; i < 9; i++) {
     ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum *e = ComGoogleProtobufDescriptors$FieldDescriptor$JavaTypeEnum_values_[i];

@@ -39,7 +39,7 @@
 #import "com/google/protobuf/MessageOrBuilder.h"
 
 @class ComGoogleProtobufByteString;
-@class ComGoogleProtobufDescriptors$FieldDescriptor;
+@class ComGoogleProtobufDescriptors_FieldDescriptor;
 @class ComGoogleProtobufExtensionRegistryLite;
 @class JavaIoInputStream;
 @protocol ComGoogleProtobufMessage$Builder;
@@ -82,7 +82,7 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessage)
 
 - (id<ComGoogleProtobufMessage$Builder>)
       newBuilderForFieldWithComGoogleProtobufDescriptors$FieldDescriptor:
-          (ComGoogleProtobufDescriptors$FieldDescriptor *)fieldDescriptor OBJC_METHOD_FAMILY_NONE;
+          (ComGoogleProtobufDescriptors_FieldDescriptor *)fieldDescriptor OBJC_METHOD_FAMILY_NONE;
 
 - (id<ComGoogleProtobufMessage$Builder>)mergeFromWithComGoogleProtobufMessage:
     (id<ComGoogleProtobufMessage>)message;

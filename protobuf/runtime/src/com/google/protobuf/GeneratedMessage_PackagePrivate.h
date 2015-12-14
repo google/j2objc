@@ -47,21 +47,21 @@
 @end
 
 CGP_ALWAYS_INLINE inline ComGoogleProtobufGeneratedMessage *CGPNewMessage(
-    ComGoogleProtobufDescriptors$Descriptor *descriptor) {
+    ComGoogleProtobufDescriptors_Descriptor *descriptor) {
   ComGoogleProtobufGeneratedMessage *msg =
       NSAllocateObject(descriptor->messageClass_, descriptor->storageSize_, nil);
   msg->memoizedSize_ = -1;
   return msg;
 }
 
-CGP_ALWAYS_INLINE inline ComGoogleProtobufGeneratedMessage$Builder *CGPNewBuilder(
-    ComGoogleProtobufDescriptors$Descriptor *descriptor) {
+CGP_ALWAYS_INLINE inline ComGoogleProtobufGeneratedMessage_Builder *CGPNewBuilder(
+    ComGoogleProtobufDescriptors_Descriptor *descriptor) {
   return NSAllocateObject(descriptor->builderClass_, descriptor->storageSize_, nil);
 }
 
 CF_EXTERN_C_BEGIN
 
-ComGoogleProtobufGeneratedMessage$Builder *CGPBuilderFromPrototype(
+ComGoogleProtobufGeneratedMessage_Builder *CGPBuilderFromPrototype(
     CGPDescriptor *descriptor, ComGoogleProtobufGeneratedMessage *prototype);
 
 void CGPMergeFromRawData(id msg, CGPDescriptor *descriptor, const char *data, uint32_t length);

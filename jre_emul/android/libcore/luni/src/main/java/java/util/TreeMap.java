@@ -1886,7 +1886,7 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
 
     /*-[
     static inline void SetBoundedMapEndpoints(
-        __unsafe_unretained JavaUtilTreeMap$BoundedMap *bMap, NSFastEnumerationState *state) {
+        __unsafe_unretained JavaUtilTreeMap_BoundedMap *bMap, NSFastEnumerationState *state) {
       if (state->state == 0) {
         state->extra[1] = (unsigned long) [bMap endpointWithBoolean:YES];
         state->extra[2] = (unsigned long) [bMap endpointWithBoolean:NO];
@@ -1899,9 +1899,9 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
         __unsafe_unretained JavaUtilTreeMap *map, NSFastEnumerationState *state,
         __unsafe_unretained id *stackbuf, NSUInteger len, int type, BOOL forward) {
       // Note: Must not use extra[4] because it is set by TreeSet.
-      __unsafe_unretained JavaUtilTreeMap$Node *node;
-      __unsafe_unretained JavaUtilTreeMap$Node *startNode = (ARCBRIDGE id) (void *) state->extra[1];
-      __unsafe_unretained JavaUtilTreeMap$Node *endNode = (ARCBRIDGE id) (void *) state->extra[2];
+      __unsafe_unretained JavaUtilTreeMap_Node *node;
+      __unsafe_unretained JavaUtilTreeMap_Node *startNode = (ARCBRIDGE id) (void *) state->extra[1];
+      __unsafe_unretained JavaUtilTreeMap_Node *endNode = (ARCBRIDGE id) (void *) state->extra[2];
       if (state->state == 0) {
         state->state = 1;
         state->mutationsPtr = (unsigned long *) &map->modCount_;

@@ -80,7 +80,7 @@ typedef struct CGPFieldData {
   const char *optionsData;
 } CGPFieldData;
 
-@interface ComGoogleProtobufDescriptors$Descriptor () {
+@interface ComGoogleProtobufDescriptors_Descriptor () {
  @package
   Class messageClass_;
   Class builderClass_;
@@ -98,7 +98,7 @@ typedef struct CGPFieldData {
 
 @end
 
-@interface ComGoogleProtobufDescriptors$FieldDescriptor () {
+@interface ComGoogleProtobufDescriptors_FieldDescriptor () {
  @package
   CGPFieldData *data_;
   uint32_t tag_;
@@ -112,7 +112,7 @@ typedef struct CGPFieldData {
 
 @end
 
-@interface ComGoogleProtobufDescriptors$EnumDescriptor () {
+@interface ComGoogleProtobufDescriptors_EnumDescriptor () {
  @package
   ptrdiff_t valueOffset_;
   IOSObjectArray *values_;
@@ -122,7 +122,7 @@ typedef struct CGPFieldData {
 
 @end
 
-@interface ComGoogleProtobufDescriptors$EnumValueDescriptor () {
+@interface ComGoogleProtobufDescriptors_EnumValueDescriptor () {
  @package
   JavaLangEnum<ComGoogleProtobufProtocolMessageEnum> *enum_;
   int number_;

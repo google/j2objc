@@ -60,7 +60,7 @@ static JavaLangStringIndexOutOfBoundsException *StartEndAndLength(
 - (void)setWithCharArray:(IOSCharArray *)val
                  withInt:(jint)len {
   if (val == nil) {
-    val = LibcoreUtilEmptyArray_get_CHAR();
+    val = LibcoreUtilEmptyArray_get_CHAR_();
   }
   if (((IOSCharArray *) nil_chk(val))->size_ < len) {
     @throw [[[JavaIoInvalidObjectException alloc] initWithNSString:@"count out of range"]

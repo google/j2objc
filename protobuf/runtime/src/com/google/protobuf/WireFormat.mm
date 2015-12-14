@@ -37,28 +37,28 @@ CGPWireFormat CGPWireFormatForType(CGPFieldType type, BOOL isPacked) {
     return CGPWireFormatLengthDelimited;
   }
   switch (type) {
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_INT64:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_UINT64:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_INT32:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_BOOL:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_UINT32:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_ENUM:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SINT32:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SINT64:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_INT64:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_UINT64:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_INT32:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_BOOL:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_UINT32:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_ENUM:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_SINT32:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_SINT64:
       return CGPWireFormatVarint;
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_FLOAT:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_FIXED32:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SFIXED32:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_FLOAT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_FIXED32:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_SFIXED32:
       return CGPWireFormatFixed32;
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_DOUBLE:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_FIXED64:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SFIXED64:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_DOUBLE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_FIXED64:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_SFIXED64:
       return CGPWireFormatFixed64;
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_STRING:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_MESSAGE:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_BYTES:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_MESSAGE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_BYTES:
       return CGPWireFormatLengthDelimited;
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_GROUP:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_GROUP:
       return CGPWireFormatStartGroup;
   }
   __builtin_unreachable();
@@ -66,27 +66,27 @@ CGPWireFormat CGPWireFormatForType(CGPFieldType type, BOOL isPacked) {
 
 size_t CGPTypeFixedSize(CGPFieldType type) {
   switch (type) {
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_BOOL:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_BOOL:
       return 1;
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_FIXED32:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SFIXED32:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_FLOAT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_FIXED32:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_SFIXED32:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_FLOAT:
       return sizeof(uint32_t);
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_FIXED64:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SFIXED64:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_DOUBLE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_FIXED64:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_SFIXED64:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_DOUBLE:
       return sizeof(uint64_t);
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_INT32:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_UINT32:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SINT32:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_INT64:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_UINT64:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_SINT64:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_ENUM:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_STRING:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_MESSAGE:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_BYTES:
-    case ComGoogleProtobufDescriptors$FieldDescriptor$Type_Enum_GROUP:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_INT32:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_UINT32:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_SINT32:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_INT64:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_UINT64:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_SINT64:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_ENUM:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_MESSAGE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_BYTES:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_Type_GROUP:
       return 0;
   }
   __builtin_unreachable();
