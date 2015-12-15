@@ -85,12 +85,13 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     // If the type is private, then generate nothing in the header. The initial
     // declaration will go in the implementation file instead.
     if (!typeNode.hasPrivateDeclaration()) {
+      pushNullabilityCompletenessPragma();
       generateInitialDeclaration();
+      popNullabilityCompletenessPragma();
     }
   }
 
   protected void generateInitialDeclaration() {
-    pushNullabilityCompletenessPragma();
     printConstantDefines();
     printNativeEnum();
 
@@ -127,7 +128,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printBoxedOperators();
 
     printUnprefixedAlias();
-    popNullabilityCompletenessPragma();
   }
 
   protected void printConstantDefines() {
@@ -855,7 +855,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
    * annotations, it checks that all annotatable sites have annotations. Java
    * checker frameworks don't have that requirement.
    */
-  private void pushNullabilityCompletenessPragma() {
+  protected void pushNullabilityCompletenessPragma() {
     if (hasNullabilityAnnotations) {
       newline();
       println("#if __has_feature(nullability)");
@@ -865,7 +865,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
-  private void popNullabilityCompletenessPragma() {
+  protected void popNullabilityCompletenessPragma() {
     if (hasNullabilityAnnotations) {
       newline();
       println("#if __has_feature(nullability)");

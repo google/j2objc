@@ -44,11 +44,13 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
   }
 
   private void generate() {
+    pushNullabilityCompletenessPragma();
     if (typeNode.hasPrivateDeclaration()) {
       generateInitialDeclaration();
     } else {
       generateDeclarationExtension();
     }
+    popNullabilityCompletenessPragma();
   }
 
   private void generateDeclarationExtension() {

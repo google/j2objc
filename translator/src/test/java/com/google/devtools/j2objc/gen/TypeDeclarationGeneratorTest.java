@@ -326,4 +326,32 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         "#pragma clang diagnostic pop",
         "#endif");
   }
+
+  public void testPrivateNullabilityPragmas() throws IOException {
+    String source = "package foo.bar; import javax.annotation.*; "
+        + "public class Test {"
+        + " private static class Inner {"
+        + "  String test(@Nullable String msg, Object var, int count) { "
+        + "    return msg.isEmpty() ? null : msg;"
+        + "  }"
+        + " }"
+        + "}";
+    Options.setNullability(true);
+    String translation = translateSourceFile(source, "foo.bar.Test", "foo/bar/Test.h");
+    assertNotInTranslation(translation, "nullability");
+    translation = getTranslatedFile("foo/bar/Test.m");
+    assertTranslatedLines(translation,
+        "#if __has_feature(nullability)",
+        "#pragma clang diagnostic push",
+        "#pragma GCC diagnostic ignored \"-Wnullability-completeness\"",
+        "#endif",
+        "",
+        "@interface FooBarTest_Inner : NSObject");
+    assertTranslatedLines(translation,
+        "J2OBJC_TYPE_LITERAL_HEADER(FooBarTest_Inner)",
+        "",
+        "#if __has_feature(nullability)",
+        "#pragma clang diagnostic pop",
+        "#endif");
+  }
 }
