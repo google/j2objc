@@ -59,16 +59,16 @@
 
 BOOL CGPIsRetainedType(CGPFieldJavaType type) {
   switch (type) {
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_INT:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_LONG:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_FLOAT:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_DOUBLE:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_BOOLEAN:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_ENUM:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_LONG:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
       return NO;
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_STRING:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_BYTE_STRING:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_MESSAGE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
       return YES;
   }
 }
@@ -309,14 +309,14 @@ id CGPFieldGetDefaultValue(CGPFieldDescriptor *field) {
 void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
   CGPFieldData *data = descriptor->data_;
   switch (descriptor->javaType_) {
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_INT:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_LONG:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_FLOAT:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_DOUBLE:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_BOOLEAN:
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_INT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_LONG:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_FLOAT:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_DOUBLE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BOOLEAN:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING:
       break;
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_ENUM:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_ENUM:
       {
         Class enumClass = objc_getClass(data->className);
         CGPEnumDescriptor *enumDescriptor = [enumClass performSelector:@selector(getDescriptor)];
@@ -326,7 +326,7 @@ void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
         descriptor->valueType_ = enumDescriptor;
         break;
       }
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_BYTE_STRING:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_BYTE_STRING:
       if (data->defaultValue.valueId == nil) {
         data->defaultValue.valueId = ComGoogleProtobufByteString_get_EMPTY();
       } else {
@@ -342,7 +342,7 @@ void CGPFieldFixDefaultValue(CGPFieldDescriptor *descriptor) {
         data->defaultValue.valueId = byteString;
       }
       break;
-    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_MESSAGE:
+    case ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_MESSAGE:
       {
         Class msgClass = objc_getClass(data->className);
         CGPDescriptor *msgDescriptor = [msgClass performSelector:@selector(getDescriptor)];

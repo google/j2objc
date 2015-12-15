@@ -266,7 +266,7 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
 }
 
 - (void)printStackTrace {
-  [self printStackTraceWithJavaIoPrintStream:JavaLangSystem_get_err_()];
+  [self printStackTraceWithJavaIoPrintStream:JavaLangSystem_get_err()];
 }
 
 - (void)printStackTraceWithJavaIoPrintWriter:(JavaIoPrintWriter *)pw {
@@ -333,7 +333,7 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
             toArrayWithNSObjectArray:[IOSObjectArray arrayWithLength:[suppressedExceptions_ size]
                                                                 type:JavaLangThrowable_class_()]];
   } else {
-    return JreLoadStatic(LibcoreUtilEmptyArray, THROWABLE_);
+    return JreLoadStatic(LibcoreUtilEmptyArray, THROWABLE);
   }
 }
 

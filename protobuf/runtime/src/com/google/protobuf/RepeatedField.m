@@ -249,7 +249,7 @@ void CGPRepeatedFieldOutOfBounds(jint idx, uint32_t size) {
 
 id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaType type) {
   CGPRepeatedFieldList *list =
-      type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_STRING ?
+      type == ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING ?
       [[CGPRepeatedStringFieldList alloc] init] : [[CGPRepeatedFieldList alloc] init];
   CGPRepeatedFieldData *data = field->data;
   if (data != NULL) {
@@ -310,7 +310,7 @@ id<JavaUtilList> CGPNewRepeatedFieldList(CGPRepeatedField *field, CGPFieldJavaTy
 }
 
 - (void)dealloc {
-  ReleaseData(field_.data, ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_STRING);
+  ReleaseData(field_.data, ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum_STRING);
   [super dealloc];
 }
 

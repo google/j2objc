@@ -165,7 +165,7 @@ public final class IosMockMaker implements MockMaker {
         struct objc_method_description *md) {
       IOSClass *mockClass = IOSClass_fromClass(cls);
       IOSClass *mockedClass =
-          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache_ getWithId:mockClass];
+          [OrgMockitoInternalCreationIosIosMockMaker_proxyCache getWithId:mockClass];
 
       // Check for an instance method with this selector.
       unsigned nMethods;

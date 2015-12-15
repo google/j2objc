@@ -90,7 +90,7 @@ void ExtensionGenerator::GenerateMembersHeader(io::Printer* printer) {
 void ExtensionGenerator::GenerateSourceDefinition(io::Printer* printer) {
   printer->Print(
       "ComGoogleProtobufGeneratedMessage_GeneratedExtension"
-          " *$classname$_$name$_;\n",
+          " *$classname$_$name$;\n",
       "name", UnderscoresToCamelCase(descriptor_),
       "classname", ContainingClassName(descriptor_));
 }
@@ -113,7 +113,7 @@ void ExtensionGenerator::GenerateFieldData(io::Printer* printer) {
       "  .javaName = \"$capitalized_name$\",\n"
       "  .number = $field_number$,\n"
       "  .flags = $flags$,\n"
-      "  .type = ComGoogleProtobufDescriptors_FieldDescriptor_Type_"
+      "  .type = ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum_"
           "$field_type$,\n"
       "  .defaultValue.value$default_value_type$ = $default_value$,\n"
       "  .hasBitIndex = 0,\n"
@@ -126,7 +126,7 @@ void ExtensionGenerator::GenerateFieldData(io::Printer* printer) {
 
 void ExtensionGenerator::GenerateSourceInitializer(io::Printer* printer) {
   printer->Print(
-      "$classname$_$name$_ = "
+      "$classname$_$name$ = "
           "[[ComGoogleProtobufGeneratedMessage_GeneratedExtension alloc] "
           "initWithFieldData:&extensionFields[$num$]];\n",
       "classname", ContainingClassName(descriptor_),
@@ -136,7 +136,7 @@ void ExtensionGenerator::GenerateSourceInitializer(io::Printer* printer) {
 
 void ExtensionGenerator::GenerateRegistrationCode(io::Printer* printer) {
   printer->Print(
-      "CGPExtensionRegistryAdd(extensionRegistry, $classname$_get_$name$_());\n",
+      "CGPExtensionRegistryAdd(extensionRegistry, $classname$_get_$name$());\n",
       "classname", ContainingClassName(descriptor_),
       "name", UnderscoresToCamelCase(descriptor_));
 }

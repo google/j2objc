@@ -40,13 +40,13 @@ public class IosRSAKeyPairGenerator extends KeyPairGeneratorSpi {
     // Requested keypair attributes.
     NSMutableDictionary * privateKeyAttr = [[NSMutableDictionary alloc] init];
     [privateKeyAttr setObject:[NSNumber numberWithBool:true] forKey:(id)kSecAttrIsPermanent];
-    NSData *privateTag = [ComGoogleJ2objcSecurityIosRSAKey_PRIVATE_KEY_TAG_
+    NSData *privateTag = [ComGoogleJ2objcSecurityIosRSAKey_get_PRIVATE_KEY_TAG()
                           dataUsingEncoding:NSUTF8StringEncoding];
     [privateKeyAttr setObject:privateTag forKey:(id)kSecAttrApplicationTag];
 
     NSMutableDictionary * publicKeyAttr = [[NSMutableDictionary alloc] init];
     [publicKeyAttr setObject:[NSNumber numberWithBool:true] forKey:(id)kSecAttrIsPermanent];
-    NSData *publicTag = [ComGoogleJ2objcSecurityIosRSAKey_PUBLIC_KEY_TAG_
+    NSData *publicTag = [ComGoogleJ2objcSecurityIosRSAKey_get_PUBLIC_KEY_TAG()
                          dataUsingEncoding:NSUTF8StringEncoding];
     [publicKeyAttr setObject:publicTag forKey:(id)kSecAttrApplicationTag];
 
