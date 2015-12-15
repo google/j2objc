@@ -272,7 +272,8 @@ $(EMULATION_JAR_DIST): $(EMULATION_JAR) | $(DIST_JAR_DIR)
 $(EMULATION_SRC_JAR_DIST): $(EMULATION_SRC_JAR) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
 
-$(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) | $(BUILD_DIR)
+$(EMULATION_JAR): $(ALL_JAVA_SOURCES) $(STUB_JAVA_SOURCES) $(SOURCE_RETENTION_ANNOTATIONS) \
+	  | $(BUILD_DIR)
 	@echo "building jre_emul.jar"
 	@stage_dir=`mktemp -d -t j2objc-jre_emul`; \
     ../scripts/javac_no_deprecated_warnings.sh $(JAVAC) -bootclasspath $(STUBS_DIR) \
