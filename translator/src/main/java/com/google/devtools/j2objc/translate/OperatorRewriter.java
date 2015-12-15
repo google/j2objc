@@ -354,7 +354,7 @@ public class OperatorRewriter extends TreeVisitor {
 
   private List<Expression> getStringAppendOperands(Assignment node) {
     Expression rhs = node.getRightHandSide();
-    if (rhs instanceof InfixExpression) {
+    if (rhs instanceof InfixExpression && typeEnv.isStringType(rhs.getTypeBinding())) {
       InfixExpression infixExpr = (InfixExpression) rhs;
       if (infixExpr.getOperator() == InfixExpression.Operator.PLUS) {
         List<Expression> operands = infixExpr.getOperands();

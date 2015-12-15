@@ -886,7 +886,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(StringLiteral node) {
-    sb.print(UnicodeUtils.escapeStringLiteral(node.getLiteralValue()));
+    sb.printf("\"%s\"", UnicodeUtils.escapeStringLiteral(node.getLiteralValue()));
     return false;
   }
 

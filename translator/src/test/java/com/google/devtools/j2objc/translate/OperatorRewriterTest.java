@@ -141,4 +141,15 @@ public class OperatorRewriterTest extends GenerationTest {
     // Local variables in ARC have strong semantics.
     assertTranslation(translation, "JreStrAppendStrong(&str, \"$\", @\"bar\")");
   }
+
+  public void testStringAppendInfixExpression() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(int x, int y) { "
+        + "String str = \"foo\"; str += x + y; } }", "Test", "Test.m");
+    assertTranslation(translation, "JreStrAppend(&str, \"I\", x + y);");
+    translation = translateSourceFile(
+        "class Test { void test(int x) { "
+        + "String str = \"foo\"; str += \"bar\" + x; } }", "Test", "Test.m");
+    assertTranslation(translation, "JreStrAppend(&str, \"$I\", @\"bar\", x);");
+  }
 }
