@@ -59,8 +59,7 @@ these files will be converted to Objective-C files and built with the rest of th
 Finally, select the Build Phases tab, open the Link phase and add:
 
 1. The libz.dylib library, needed to support java.util.zip.
-1. The Security Framework, to support secure hash generation.
-1. The icucore library, needed to support java.text.
+1. The Security Framework, to support features like secure hash generation.
 
 ## Debugging Build Problems
 
@@ -77,11 +76,6 @@ If there's a link error where a symbol isn't found that begins with
 `_OBJC_CLASS_$_Java`, the library search path is wrong, as the linker cannot
 find the "libjre_emul.a" file. Expand the link step in the log file to see
 the path created after the environment variables are expanded, and adjust as needed.
-
-If your app fails with runtime errors like `NSString [...](__NSCFConstantString)`,
-the `-ObjC`, and/or `-force_load $distribution-path/lib/libjre_emul.a`
-linker flags need to be set. This is a common issue with Objective-C static
-libraries that have categories.
 
 If you still have problems, ask the
 [j2objc-discuss group](https://groups.google.com/forum/?hl=en#!forum/j2objc-discuss).
