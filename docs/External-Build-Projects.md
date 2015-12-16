@@ -24,10 +24,6 @@ These settings define where build files are created, as well as compiler and
 linker flags.  We use Make's [conditional directives](http://www.gnu.org/software/make/manual/make.html#Conditionals)
 to modify the build when it is invoked by Xcode.
 
-**IMPORTANT**: add -ObjC to each build target's Other Linker Flags.  This is
-necessary because J2ObjC uses categories to add Java Object and String methods
-to NSObject and NSString.
-
 Here's an example, where the variables being set (such as BUILD_DIR) can be
 whatever name you want, while the conditionals use the environment variables
 Xcode set:
@@ -60,6 +56,6 @@ WARNINGS := $(WARNINGS) -Wreturn-type
 endif
 endif
 
-J2OBJCC_FLAGS = -ObjC $(WARNINGS) $(SDKFLAGS) $(ARCHFLAGS) $(DEBUGFLAGS)
+J2OBJCC_FLAGS = $(WARNINGS) $(SDKFLAGS) $(ARCHFLAGS) $(DEBUGFLAGS)
 J2OBJCC = $(J2OBJC_DIST)/j2objcc $(J2OBJCC_FLAGS)
 ```
