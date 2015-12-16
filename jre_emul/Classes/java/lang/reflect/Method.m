@@ -215,6 +215,9 @@
     @catch (JavaLangThrowable *t) {
       exception = t;
     }
+    @catch (NSException *e) {
+      exception = [[JavaLangThrowable alloc] initWithNSString:[e description]];
+    }
     object_setClass(object, originalClass);
   } else {
     @try {
@@ -222,6 +225,9 @@
     }
     @catch (JavaLangThrowable *t) {
       exception = t;
+    }
+    @catch (NSException *e) {
+      exception = [[JavaLangThrowable alloc] initWithNSString:[e description]];
     }
   }
   if (exception) {
