@@ -20,6 +20,7 @@
 //
 
 #include "J2ObjC_source.h"
+#include "IOSArray_PackagePrivate.h"
 #import <XCTest/XCTest.h>
 
 // Unit tests for IOSObjectArray.

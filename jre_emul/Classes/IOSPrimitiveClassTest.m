@@ -40,10 +40,10 @@
 @implementation IOSPrimitiveClassTest
 
 - (void)testBooleanType {
-  NSString *objectTypeName = [[JavaLangBoolean_get_TRUE__() getClass] getName];
+  NSString *objectTypeName = [[JavaLangBoolean_get_TRUE() getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Boolean",
                        @"incorrect object type name");
-  NSString *primitiveTypeName = [JavaLangBoolean_get_TYPE_() getName];
+  NSString *primitiveTypeName = [JavaLangBoolean_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"boolean",
                        @"incorrect primitive type name");
   NSString *arrayTypeName = [[[IOSBooleanArray arrayWithLength:0] getClass] getName];
@@ -55,7 +55,7 @@
   NSString *objectTypeName = [javaByteClass getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Byte",
                        @"incorrect object type name");
-  NSString *primitiveTypeName = [JavaLangByte_get_TYPE_() getName];
+  NSString *primitiveTypeName = [JavaLangByte_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"byte",
                        @"incorrect primitive type name");
   IOSByteArray *byteArray = [IOSByteArray arrayWithLength:0];
@@ -68,7 +68,7 @@
   NSString *objectTypeName = [[javaCharacter getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Character",
                        @"incorrect object type name");
-  NSString *primitiveTypeName = [JavaLangCharacter_get_TYPE_() getName];
+  NSString *primitiveTypeName = [JavaLangCharacter_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"char",
                        @"incorrect primitive type name");
   IOSCharArray *charArray = [IOSCharArray arrayWithLength:0];
@@ -81,7 +81,7 @@
   NSString *objectTypeName = [[javaDouble getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Double",
                        @"incorrect object type name");
-  NSString *primitiveTypeName = [JavaLangDouble_get_TYPE_() getName];
+  NSString *primitiveTypeName = [JavaLangDouble_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"double",
                        @"incorrect primitive type name");
   IOSDoubleArray *doubleArray = [IOSDoubleArray arrayWithLength:0];
@@ -94,7 +94,7 @@
   NSString *objectTypeName = [[javaFloat getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Float",
                        @"incorrect object type name");
-  NSString *primitiveTypeName = [JavaLangFloat_get_TYPE_() getName];
+  NSString *primitiveTypeName = [JavaLangFloat_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"float",
                        @"incorrect primitive type name");
   IOSFloatArray *floatArray = [IOSFloatArray arrayWithLength:0];
@@ -107,7 +107,7 @@
   NSString *objectTypeName = [[javaInteger getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Integer",
                        @"incorrect object type name");
-  NSString *primitiveTypeName = [JavaLangInteger_get_TYPE_() getName];
+  NSString *primitiveTypeName = [JavaLangInteger_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"int",
                        @"incorrect primitive type name");
   IOSIntArray *intArray = [IOSIntArray arrayWithLength:0];
@@ -120,7 +120,7 @@
   NSString *objectTypeName = [[javaLong getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Long",
                        @"incorrect object type name");
-  NSString *primitiveTypeName = [JavaLangLong_get_TYPE_() getName];
+  NSString *primitiveTypeName = [JavaLangLong_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"long",
                        @"incorrect primitive type name");
   IOSLongArray *longArray = [IOSLongArray arrayWithLength:0];
@@ -133,7 +133,7 @@
   NSString *objectTypeName = [[javaShort getClass] getName];
   XCTAssertEqualObjects(objectTypeName, @"java.lang.Short",
                        @"incorrect object type name");
-  NSString *primitiveTypeName = [JavaLangShort_get_TYPE_() getName];
+  NSString *primitiveTypeName = [JavaLangShort_get_TYPE() getName];
   XCTAssertEqualObjects(primitiveTypeName, @"short",
                        @"incorrect primitive type name");
   IOSShortArray *shortArray = [IOSShortArray arrayWithLength:0];

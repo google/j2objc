@@ -169,6 +169,8 @@
 		0696811B1BA8E3D3007AFADF /* First.m in Sources */ = {isa = PBXBuildFile; fileRef = 069681171BA8E3D3007AFADF /* First.m */; };
 		0696811C1BA8E3D3007AFADF /* Fourth.m in Sources */ = {isa = PBXBuildFile; fileRef = 069681181BA8E3D3007AFADF /* Fourth.m */; };
 		0696811D1BA8E3D3007AFADF /* Second.m in Sources */ = {isa = PBXBuildFile; fileRef = 069681191BA8E3D3007AFADF /* Second.m */; };
+		06979BA61C220FFB00803967 /* MethodTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06979BA21C220A0C00803967 /* MethodTest.m */; };
+		06979BA71C220FFB00803967 /* NativeDecimalFormatTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06979BA31C220A0C00803967 /* NativeDecimalFormatTest.m */; };
 		069AA6B71B053B730068A39B /* ChannelsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 069AA6B61B053B730068A39B /* ChannelsTest.m */; };
 		06B390741BB32549004A4099 /* prefixes.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06B390731BB32549004A4099 /* prefixes.properties */; };
 		06C54ACB1A40C0D8004B3ACD /* MathTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54AC81A40C0D8004B3ACD /* MathTest.m */; };
@@ -1788,6 +1790,8 @@
 		069681171BA8E3D3007AFADF /* First.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = First.m; path = foo/bar/First.m; sourceTree = "<group>"; };
 		069681181BA8E3D3007AFADF /* Fourth.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Fourth.m; path = foo/Fourth.m; sourceTree = "<group>"; };
 		069681191BA8E3D3007AFADF /* Second.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Second.m; path = foo/mumble/Second.m; sourceTree = "<group>"; };
+		06979BA21C220A0C00803967 /* MethodTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MethodTest.m; path = reflect/MethodTest.m; sourceTree = "<group>"; };
+		06979BA31C220A0C00803967 /* NativeDecimalFormatTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeDecimalFormatTest.m; path = libcore/icu/NativeDecimalFormatTest.m; sourceTree = "<group>"; };
 		0697F60315D190580027A7E4 /* Array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Array.h; path = build_result/Classes/java/lang/reflect/Array.h; sourceTree = "<group>"; };
 		0697F60415D190580027A7E4 /* Array.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Array.m; path = build_result/Classes/java/lang/reflect/Array.m; sourceTree = "<group>"; };
 		0697F60515D190580027A7E4 /* GenericDeclaration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GenericDeclaration.h; path = build_result/Classes/java/lang/reflect/GenericDeclaration.h; sourceTree = "<group>"; };
@@ -2571,16 +2575,12 @@
 		06E4E3AA197F1D46005DDE69 /* ExecutorsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ExecutorsTest.m; sourceTree = "<group>"; };
 		06E4E3AB197F1D46005DDE69 /* FutureTaskTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FutureTaskTest.h; sourceTree = "<group>"; };
 		06E4E3AC197F1D46005DDE69 /* FutureTaskTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FutureTaskTest.m; sourceTree = "<group>"; };
-		06E4E3AF197F1D46005DDE69 /* ClassTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassTest.h; sourceTree = "<group>"; };
-		06E4E3B0197F1D46005DDE69 /* ClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassTest.m; sourceTree = "<group>"; };
 		06E4E3B2197F1D46005DDE69 /* PhantomReferenceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PhantomReferenceTest.h; sourceTree = "<group>"; };
 		06E4E3B3197F1D46005DDE69 /* PhantomReferenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PhantomReferenceTest.m; sourceTree = "<group>"; };
 		06E4E3B4197F1D46005DDE69 /* SoftReferenceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SoftReferenceTest.h; sourceTree = "<group>"; };
 		06E4E3B5197F1D46005DDE69 /* SoftReferenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SoftReferenceTest.m; sourceTree = "<group>"; };
 		06E4E3B6197F1D46005DDE69 /* WeakReferenceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WeakReferenceTest.h; sourceTree = "<group>"; };
 		06E4E3B7197F1D46005DDE69 /* WeakReferenceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeakReferenceTest.m; sourceTree = "<group>"; };
-		06E4E3B8197F1D46005DDE69 /* ThrowableTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThrowableTest.h; sourceTree = "<group>"; };
-		06E4E3B9197F1D46005DDE69 /* ThrowableTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThrowableTest.m; sourceTree = "<group>"; };
 		06E4E3BC197F1D46005DDE69 /* MatcherTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MatcherTest.h; sourceTree = "<group>"; };
 		06E4E3BD197F1D46005DDE69 /* MatcherTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MatcherTest.m; sourceTree = "<group>"; };
 		06E4E3BE197F1D46005DDE69 /* TreeMapTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TreeMapTest.h; sourceTree = "<group>"; };
@@ -6257,6 +6257,14 @@
 			name = "Transpiled Classes";
 			sourceTree = "<group>";
 		};
+		06979BA91C2210C200803967 /* reflect */ = {
+			isa = PBXGroup;
+			children = (
+				06979BA21C220A0C00803967 /* MethodTest.m */,
+			);
+			name = reflect;
+			sourceTree = "<group>";
+		};
 		06CBF51B1AFBE88800CA582D /* dalvik */ = {
 			isa = PBXGroup;
 			children = (
@@ -6519,6 +6527,7 @@
 				06574A2F1A8EB04A000A3616 /* MyKeyPairGeneratorSpi.m */,
 				06574A301A8EB04A000A3616 /* MyMessageDigest1.m */,
 				06574A311A8EB04A000A3616 /* MySignature1.m */,
+				06979BA31C220A0C00803967 /* NativeDecimalFormatTest.m */,
 				06FADA7C1B3B29B300A9579E /* NoPackageTest.h */,
 				06FADA7D1B3B29B300A9579E /* NoPackageTest.m */,
 				06574A631A8EB150000A3616 /* NormalizerTest.m */,
@@ -6667,11 +6676,8 @@
 		06E4E3AE197F1D46005DDE69 /* lang */ = {
 			isa = PBXGroup;
 			children = (
-				06E4E3AF197F1D46005DDE69 /* ClassTest.h */,
-				06E4E3B0197F1D46005DDE69 /* ClassTest.m */,
+				06979BA91C2210C200803967 /* reflect */,
 				06E4E3B1197F1D46005DDE69 /* ref */,
-				06E4E3B8197F1D46005DDE69 /* ThrowableTest.h */,
-				06E4E3B9197F1D46005DDE69 /* ThrowableTest.m */,
 			);
 			path = lang;
 			sourceTree = "<group>";
@@ -8212,6 +8218,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06C54ADB1A40C9F0004B3ACD /* AnnotationTypeMismatchExceptionTest.m in Sources */,
+				06E4E72F197F1D47005DDE69 /* ConstructorTest.m in Sources */,
+				06979BA61C220FFB00803967 /* MethodTest.m in Sources */,
+				06979BA71C220FFB00803967 /* NativeDecimalFormatTest.m in Sources */,
 				064EDBEF1BF5580900D25A14 /* NSErrorExceptionTest.m in Sources */,
 				0600C0121B715D13005FDEF9 /* CreationReferenceTest.m in Sources */,
 				0600C0131B715D13005FDEF9 /* ExpressionMethodReferenceTest.m in Sources */,
@@ -8589,7 +8599,6 @@
 				06E4E76A197F1D47005DDE69 /* SerializationTester.m in Sources */,
 				06E4E705197F1D47005DDE69 /* OldDataInputOutputStreamTest.m in Sources */,
 				06E4E79B197F1D48005DDE69 /* NoSuchMethodExceptionTest.m in Sources */,
-				06E4E72F197F1D47005DDE69 /* ConstructorTest.m in Sources */,
 				0615D4091BD83E7300132067 /* OtherBean.m in Sources */,
 				06E4E6CC197F1D47005DDE69 /* CopyOnWriteArrayListTest.m in Sources */,
 				06E4E817197F1D48005DDE69 /* Support_OutputStream.m in Sources */,
@@ -8604,7 +8613,6 @@
 				0615D3FD1BD83E7300132067 /* MockFooChild.m in Sources */,
 				06E4E6EB197F1D47005DDE69 /* OldAndroidBufferedReaderTest.m in Sources */,
 				06E4E7E6197F1D48005DDE69 /* BigIntegerDivideTest.m in Sources */,
-				06C54ADB1A40C9F0004B3ACD /* AnnotationTypeMismatchExceptionTest.m in Sources */,
 				06E4E787197F1D47005DDE69 /* ClassNotFoundExceptionTest.m in Sources */,
 				06CBF5791AFBEE2400CA582D /* GenericMethodsTests.m in Sources */,
 				06E4E6B3197F1D47005DDE69 /* AbstractQueuedSynchronizerTest.m in Sources */,
