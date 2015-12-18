@@ -37,7 +37,7 @@ FAT_LIB_XCODE_FLAGS = -arch $(1) -DJ2OBJC_BUILD_ARCH=$(1) -miphoneos-version-min
   -isysroot $(SDKROOT)
 
 # Only iPhone armv7 and arm64 builds need a bitcode marker.
-ifeq ("$(SUPPORTS_BITCODE)", "YES")
+ifeq ("$(XCODE_7_MINIMUM)", "YES")
 FAT_LIB_IPHONE_FLAGS += -fembed-bitcode
 FAT_LIB_IPHONE64_FLAGS += -fembed-bitcode
 endif
