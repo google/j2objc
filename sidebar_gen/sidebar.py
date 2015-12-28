@@ -9,7 +9,7 @@ def processLines(sidebarLines,firstFlag = False):
 		print '<li class="devsite-nav-item devsite-nav-item-section-expandable">'
 		print '<a class="devsite-nav-title devsite-nav-title-no-path " tabindex="0">'
 		print '<span>{}</span></a>'.format(sidebarLines[0])
-		print '<a class="devsite-nav-toggle material-icons devsite-nav-toggle-collapsed"></a>'
+		print '<a class="devsite-nav-toggle devsite-nav-toggle-collapsed material-icons"></a>'
 		print '<ul class="devsite-nav-section devsite-nav-section-collapsed">'
 		processLines(sidebarLines[1:])
 	else:

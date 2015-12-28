@@ -29,7 +29,7 @@ def processTree(data,delimiter = ''):
 			print delimiter + '<li class="devsite-nav-item devsite-nav-item-section-expandable">'
 			print delimiter + '<a class="devsite-nav-title devsite-nav-title-no-path " tabindex="0">'
 			print delimiter + '<span>{}</span></a>'.format(x[0])
-			print delimiter + '<a class="devsite-nav-toggle material-icons devsite-nav-toggle-collapsed"></a>'
+			print delimiter + '<a class="devsite-nav-toggle devsite-nav-toggle-collapsed material-icons"></a>'
 			print delimiter + '<ul class="devsite-nav-section devsite-nav-section-collapsed">'
 			if x[1]:
 				processTree([["Overview", x[1], None]], delimiter + '  ')
