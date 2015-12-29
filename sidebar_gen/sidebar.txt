@@ -8,6 +8,7 @@ User's Guide
   {{site_root}}docs/Using-J2ObjC-with-Make.html Using J2ObjC with Make
   {{site_root}}docs/Using-J2ObjC-with-Eclipse.html Eclipse Plugin
   {{site_root}}docs/Using-J2ObjC-with-Gradle.html Gradle Plugin
+  {{site_root}}docs/Using-J2ObjC-with-Maven.html Maven Plugin
 Developing with J2ObjC
   {{site_root}}docs/Translation-Reference.html Translation Reference
   {{site_root}}docs/Required-Link-Flags.html Required Link Flags
