@@ -185,7 +185,7 @@ public class GeneratedType {
 
     SourceBuilder builder = new SourceBuilder(Options.emitLineDirectives());
     builder.newline();
-    String typeName = unit.getNameTable().getPrefix(pkg.getPackageBinding())
+    String typeName = NameTable.camelCaseQualifiedName(pkg.getPackageBinding().getName())
         + NameTable.PACKAGE_INFO_MAIN_TYPE;
     builder.printf("@interface %s : NSObject\n", typeName);
     builder.printf("@end\n\n");
