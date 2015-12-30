@@ -185,15 +185,8 @@ public class GeneratedType {
 
     SourceBuilder builder = new SourceBuilder(Options.emitLineDirectives());
     builder.newline();
-
-    // Create unique package_info type name. If package prefixes are defined, then
-    // use both the prefix and the camel-cased package name, since prefixes can be
-    // shared by multiple packages.
-    String prefixName = unit.getNameTable().getPrefix(pkg.getPackageBinding());
-    String packageName = NameTable.camelCaseQualifiedName(pkg.getPackageBinding().getName());
-    String packagePrefix = prefixName.equals(packageName) ? prefixName : prefixName + packageName;
-    String typeName = packagePrefix + NameTable.PACKAGE_INFO_MAIN_TYPE;
-
+    String typeName = NameTable.camelCaseQualifiedName(pkg.getPackageBinding().getName())
+        + NameTable.PACKAGE_INFO_MAIN_TYPE;
     builder.printf("@interface %s : NSObject\n", typeName);
     builder.printf("@end\n\n");
     builder.printf("@implementation %s\n", typeName);

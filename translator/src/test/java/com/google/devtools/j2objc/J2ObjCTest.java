@@ -101,8 +101,8 @@ public class J2ObjCTest extends GenerationTest {
     assertTranslation(exampleM, "#include \"com/google/test/Example.h\"");
     assertTranslation(
         packageInfoH, "#pragma push_macro(\"ComGoogleTestPackage_info_INCLUDE_ALL\")");
-    assertTranslation(packageInfoM, "@interface CBTComGoogleTestpackage_info : NSObject");
-    assertTranslation(packageInfoM, "@implementation CBTComGoogleTestpackage_info");
+    assertTranslation(packageInfoM, "@interface ComGoogleTestpackage_info : NSObject");
+    assertTranslation(packageInfoM, "@implementation ComGoogleTestpackage_info");
     // All other assertions
     makeAssertions(exampleH, exampleM, packageInfoM);
   }
@@ -140,10 +140,10 @@ public class J2ObjCTest extends GenerationTest {
     assertTranslation(
         exampleH, "#pragma push_macro(\"ComGoogleDevtoolsJ2objcUtilExample_INCLUDE_ALL\")");
     assertTranslation(
-        packageInfoM, "@interface CBTComGoogleDevtoolsJ2objcUtilpackage_info : NSObject");
+        packageInfoM, "@interface ComGoogleDevtoolsJ2objcUtilpackage_info : NSObject");
     assertTranslation(packageInfoH,
         "#pragma push_macro(\"ComGoogleDevtoolsJ2objcUtilPackage_info_INCLUDE_ALL\")");
-    assertTranslation(packageInfoM, "@implementation CBTComGoogleDevtoolsJ2objcUtilpackage_info");
+    assertTranslation(packageInfoM, "@implementation ComGoogleDevtoolsJ2objcUtilpackage_info");
     // All other assertions
     makeAssertions(exampleH, exampleM, packageInfoM);
   }

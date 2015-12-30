@@ -291,8 +291,8 @@ public class NameTableTest extends GenerationTest {
 
     // Make sure package-info class doesn't use prefix for its own type name.
     translation = translateSourceFile("foo.bar.package-info", "foo/bar/package-info.m");
-    assertTranslation(translation, "@interface FBFooBarpackage_info");
-    assertTranslation(translation, "@implementation FBFooBarpackage_info");
+    assertTranslation(translation, "@interface FooBarpackage_info");
+    assertTranslation(translation, "@implementation FooBarpackage_info");
     assertNotInTranslation(translation, "FBpackage_info");
   }
 }
