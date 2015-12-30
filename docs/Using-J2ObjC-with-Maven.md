@@ -5,7 +5,10 @@ layout: docs
 
 # Maven Plugin for J2ObjC
 
-The [Maven plugin for J2ObjC](https://github.com/smoope/j2objc-maven-plugin)
-adds J2ObjC project support to [Apache Maven](https://maven.apache.org/).
-[Victor Mosin](https://github.com/vicmosin) developed this plug-in, and is
-the best person to check with for help using this plug-in.
+Victor Mosin has developed a [Maven plugin](https://github.com/smoope/j2objc-maven-plugin) 
+that adds J2ObjC project support to [Apache Maven](https://maven.apache.org/).
+
+### Links
+
+- [Installation and Usage instructions](https://github.com/smoope/j2objc-maven-plugin#maven-plugin-for-j2objc-library)
+- [Issues tracker](https://github.com/smoope/j2objc-maven-plugin/issues)
