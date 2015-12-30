@@ -879,6 +879,29 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "}");
   }
 
+  public void testPackageInfoClassWithPrefix() throws IOException {
+    String pkgInfoSource = "@TestAnnotation package foo.bar;";
+    String annotationSource = "package foo.bar; "
+        + "import java.lang.annotation.Retention; "
+        + "import java.lang.annotation.RetentionPolicy; "
+        + "@Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface TestAnnotation {}";
+    Options.addPackagePrefix("foo.*", "FB");
+    addSourceFile(annotationSource, "foo/bar/TestAnnotation.java");
+    String translation =
+        translateSourceFile(pkgInfoSource, "foo.bar.package-info", "foo/bar/package-info.m");
+    assertTranslation(translation, "FBFooBarpackage_info");
+  }
+
+  public void testPackageInfoClassWithPrefixAndAnnotation() throws IOException {
+    String pkgInfoSource = "@ObjectiveCName(\"FB\") package foo.bar; "
+        + "import com.google.j2objc.annotations.ObjectiveCName;";
+    Options.addPackagePrefix("foo.*", "FB");
+    String translation =
+        translateSourceFile(pkgInfoSource, "foo.bar.package-info", "foo/bar/package-info.m");
+    assertTranslation(translation, "FBFooBarpackage_info");
+  }
+
   public void testInitializeNotInClassExtension() throws IOException {
     String translation = translateSourceFile(
         "class Test { static Integer i = new Integer(5); }", "Test", "Test.m");
