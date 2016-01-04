@@ -397,6 +397,10 @@ public class System {
       Runtime.getRuntime().loadLibrary(libName);
   }
 
+  public static void gc() {
+      Runtime.getRuntime().gc();
+  }
+
   /**
    * No-op on iOS, since it doesn't use garbage collection.
    */
