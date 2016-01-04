@@ -18,6 +18,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.types.Import;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -55,6 +56,18 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
       printLocalIncludes(type);
     }
     pushIgnoreDeprecatedDeclarationsPragma();
+
+    // Print OCNI blocks
+    Collection<String> nativeBlocks = getGenerationUnit().getNativeHeaderBlocks();
+    if (!nativeBlocks.isEmpty()) {
+      // Use a normal header guard for OCNI code outside of a type declaration.
+      printf("\n#ifndef %s_H\n", varPrefix);
+      printf("#define %s_H\n", varPrefix);
+      for (String code : nativeBlocks) {
+        print(code);
+      }
+      printf("\n#endif // %s_H\n", varPrefix);
+    }
   }
 
   /**

@@ -702,9 +702,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   @Override
   protected void printNativeDeclaration(NativeDeclaration declaration) {
-    newline();
     String code = declaration.getHeaderCode();
     if (code != null) {
+      newline();
       print(declaration.getHeaderCode());
     }
   }

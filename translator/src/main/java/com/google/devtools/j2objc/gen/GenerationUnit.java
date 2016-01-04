@@ -15,7 +15,6 @@ package com.google.devtools.j2objc.gen;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.MultimapBuilder;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
@@ -49,7 +48,8 @@ public class GenerationUnit {
   // ordering of generated code within this unit should be consistent. For this
   // we map units of generated code keyed by the Java class they come from,
   // using map implementations with ordered keys.
-  private TreeMap<String, String> nativeImplementationBlocks = Maps.newTreeMap();
+  private TreeMap<String, String> nativeHeaderBlocks = new TreeMap<>();
+  private TreeMap<String, String> nativeImplementationBlocks = new TreeMap<>();
   private ListMultimap<String, GeneratedType> generatedTypes =
       MultimapBuilder.treeKeys().arrayListValues().build();
   private final String sourceName;
@@ -105,6 +105,10 @@ public class GenerationUnit {
     return hasIncompleteImplementation;
   }
 
+  public Collection<String> getNativeHeaderBlocks() {
+    return nativeHeaderBlocks.values();
+  }
+
   public Collection<String> getNativeImplementationBlocks() {
     return nativeImplementationBlocks.values();
   }
@@ -132,16 +136,25 @@ public class GenerationUnit {
 
     String qualifiedMainType = TreeUtil.getQualifiedMainTypeName(unit);
 
-    SourceBuilder builder = new SourceBuilder(false);
+    SourceBuilder headerBuilder = new SourceBuilder(false);
+    SourceBuilder implBuilder = new SourceBuilder(false);
     for (NativeDeclaration decl : unit.getNativeBlocks()) {
-      String code = decl.getImplementationCode();
-      if (code != null) {
-        builder.newline();
-        builder.println(builder.reindent(code));
+      String headerCode = decl.getHeaderCode();
+      if (headerCode != null) {
+        headerBuilder.newline();
+        headerBuilder.println(headerBuilder.reindent(headerCode));
+      }
+      String implCode = decl.getImplementationCode();
+      if (implCode != null) {
+        implBuilder.newline();
+        implBuilder.println(implBuilder.reindent(implCode));
       }
     }
-    if (builder.length() > 0) {
-      nativeImplementationBlocks.put(qualifiedMainType, builder.toString());
+    if (headerBuilder.length() > 0) {
+      nativeHeaderBlocks.put(qualifiedMainType, headerBuilder.toString());
+    }
+    if (implBuilder.length() > 0) {
+      nativeImplementationBlocks.put(qualifiedMainType, implBuilder.toString());
     }
 
     generatedTypes.put(qualifiedMainType, GeneratedType.forPackageDeclaration(unit));

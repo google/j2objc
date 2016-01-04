@@ -105,6 +105,11 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
       printf("#include \"%s\"\n", header);
     }
     printForwardDeclarations(forwardDeclarations);
+
+    // Print OCNI blocks
+    for (String code : getGenerationUnit().getNativeHeaderBlocks()) {
+      print(code);
+    }
   }
 
   protected void generateFileFooter() {

@@ -37,4 +37,11 @@ public class OcniExtractorTest extends GenerationTest {
         "  Example_test(self);",
         "}");
   }
+
+  public void testHeaderOcniBlock() throws IOException {
+    String translation = translateSourceFile(
+        "/*-HEADER[ outside OCNI ]-*/ class Test { /*-HEADER[ inside OCNI ]-*/ }",
+        "Test", "Test.h");
+    assertTranslatedSegments(translation, "outside OCNI", "@interface Test", "inside OCNI", "@end");
+  }
 }
