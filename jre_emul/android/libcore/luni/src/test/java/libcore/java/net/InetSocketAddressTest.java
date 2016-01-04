@@ -137,18 +137,6 @@ public class InetSocketAddressTest extends TestCase {
         assertFalse(isa1.hashCode() == isa3.hashCode());
     }
 
-    public void test_isUnresolved() {
-        InetSocketAddress isa1 = new InetSocketAddress("localhost", 80);
-        assertFalse(isa1.isUnresolved());
-
-        if (!System.getProperty("os.name").equals("iPhone")) {
-          // Don't test on iPhone, because sockets are always resolved to avoid
-          // blocking on slow connections.
-          InetSocketAddress sockAddr = new InetSocketAddress("unknown.host", 1000);
-          assertTrue(sockAddr.isUnresolved());
-        }
-    }
-
     public void test_getHostString() throws Exception {
         // When we have a hostname, we'll get it back because that doesn't cost a DNS lookup...
         InetSocketAddress hasHostname = InetSocketAddress.createUnresolved("some host", 1234);
