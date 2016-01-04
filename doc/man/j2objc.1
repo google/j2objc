@@ -148,6 +148,54 @@ and objective\-c++.
 .BI \-Xbootclasspath\fR:\fIpath
 Boot path used by translation (not the tool itself).
 .TP
+.BI \-Xlint
+Enable recommended warnings. In this release, all available warnings are recommended.
+.TP
+.BI \-Xlint:none
+Disable all warnings not mandated by the Java Language Specification.
+.TP
+.BI \-Xlint:- xxx
+Disable warning \f2xxx\fR, where \f2xxx\fR is one of the warning 
+names supported for \f3\-Xlint:\f2xxx\fR, below.
+.TP
+.B \-Xlint:cast 
+Warn about unnecessary and redundant cast expressions.
+.TP
+.B \-Xlint:deprecation
+Warn about the use of deprecated items. 
+.TP
+.B \-Xlint:dep-ann
+Warn about items that are documented with an @deprecated Javadoc comment, 
+but do not have a @Deprecated annotation.
+.TP
+.B \-Xlint:empty
+Warn about empty statements. 
+.TP
+.B \-Xlint:fallthrough 
+Check switch blocks for fall-through cases and provide a 
+warning message for any that are
+found. 
+.TP
+.B \-Xlint:finally
+Warn about finally clauses that cannot complete normally. 
+.TP
+.B \-Xlint:rawtypes
+Warn about unchecked operations on raw types. 
+.TP
+.B \-Xlint:serial
+Warn about missing serialVersionUID definitions on serializable classes. 
+.TP
+.B \-Xlint:static
+Warn about serial methods called on instances. 
+.TP
+.B \-Xlint:unchecked 
+Give more detail for unchecked conversion warnings 
+that are mandated by the Java Language Specification. 
+.TP
+.B \-Xlint:varargs
+Warn about unsafe usages of variable arguments (varargs) methods, 
+in particular, those that contain non-reifiable arguments.
+.TP
 .BI \-Xno\-jsni\-warnings
 Warn if JSNI (GWT) native code delimiters are used instead of OCNI delimiters.
 .TP

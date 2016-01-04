@@ -54,6 +54,9 @@ public class JdtParser {
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, version);
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, version);
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, version);
+    for (Options.LintOption lintOption : Options.lintOptions()) {
+      compilerOptions.put(lintOption.jdtFlag(), "warning");
+    }
     return compilerOptions;
   }
 
@@ -203,6 +206,10 @@ public class JdtParser {
         ErrorUtil.error(String.format(
             "%s:%s: %s", filename, problem.getSourceLineNumber(), problem.getMessage()));
         hasErrors = true;
+      }
+      if (problem.isWarning()) {
+        ErrorUtil.warning(String.format(
+            "%s:%s: warning: %s", filename, problem.getSourceLineNumber(), problem.getMessage()));
       }
     }
     return !hasErrors;

@@ -29,6 +29,8 @@ import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.PackagePrefixes;
 import com.google.devtools.j2objc.util.Version;
 
+import org.eclipse.jdt.core.JavaCore;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -37,6 +39,7 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -90,6 +93,7 @@ public class Options {
   private boolean disallowInheritedConstructors = false;
   private boolean swiftFriendly = false;
   private boolean nullability = false;
+  private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
 
   private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
@@ -190,6 +194,89 @@ public class Options {
 
     public String suffix() {
       return suffix;
+    }
+  }
+
+  /**
+   * Xlint options and their associated JDT parser warnings.
+   */
+  public static enum LintOption {
+    CAST(JavaCore.COMPILER_PB_UNNECESSARY_TYPE_CHECK),
+    DEPRECATION(JavaCore.COMPILER_PB_DEPRECATION),
+    DEP_ANN(JavaCore.COMPILER_PB_MISSING_DEPRECATED_ANNOTATION),
+    EMPTY(JavaCore.COMPILER_PB_EMPTY_STATEMENT),
+    FALLTHROUGH(JavaCore.COMPILER_PB_FALLTHROUGH_CASE),
+    FINALLY(JavaCore.COMPILER_PB_FINALLY_BLOCK_NOT_COMPLETING),
+    RAWTYPES(JavaCore.COMPILER_PB_RAW_TYPE_REFERENCE),
+    SERIAL(JavaCore.COMPILER_PB_MISSING_SERIAL_VERSION),
+    STATIC(JavaCore.COMPILER_PB_STATIC_ACCESS_RECEIVER),
+    UNCHECKED(JavaCore.COMPILER_PB_UNCHECKED_TYPE_OPERATION),
+    VARARGS(JavaCore.COMPILER_PB_VARARGS_ARGUMENT_NEED_CAST);
+
+    private String jdtFlag;
+
+    private LintOption(String jdtFlag) {
+      this.jdtFlag = jdtFlag;
+    }
+
+    public String jdtFlag() {
+      return jdtFlag;
+    }
+
+    static LintOption parseName(String name) {
+      if (name.startsWith("-")) {
+        name = name.substring(1);
+      }
+      for (LintOption option : values()) {
+        if (option.name().toLowerCase().equals(name)) {
+          return option;
+        }
+      }
+      return null;
+    }
+
+    static EnumSet<LintOption> parse(String flag) {
+      if (flag.equals("-Xlint") || flag.equals("-Xlint:all")) {
+        return EnumSet.allOf(LintOption.class);
+      }
+      if (flag.equals("-Xlint:none")) {
+        return EnumSet.noneOf(LintOption.class);
+      }
+      if (!flag.startsWith("-Xlint:")) {
+        ErrorUtil.error("invalid flag: " + flag);
+      }
+      String flagList = flag.substring("-Xlint:".length());
+      String[] flags =
+          flagList.contains(",") ? flagList.split(",") : new String[] { flagList };
+      boolean hasMinusOption = false;
+      for (String f : flags) {
+        if (f.startsWith("-")) {
+          hasMinusOption = true;
+          break;
+        }
+      }
+      EnumSet<LintOption> result =
+          hasMinusOption ? EnumSet.allOf(LintOption.class) : EnumSet.noneOf(LintOption.class);
+      for (String f : flags) {
+        if (f.equals("all")) {
+          result.addAll(EnumSet.allOf(LintOption.class));
+          continue;
+        }
+        if (f.equals("none")) {
+          result.clear();
+          continue;
+        }
+        LintOption option = parseName(f);
+        if (option == null) {
+          ErrorUtil.error("invalid flag: " + flag);
+        }
+        if (f.startsWith("-")) {
+          result.remove(option);
+        } else {
+          result.add(option);
+        }
+      }
+      return result;
     }
   }
 
@@ -374,6 +461,8 @@ public class Options {
         disallowInheritedConstructors = true;
       } else if (arg.equals("--nullability")) {
         nullability = true;
+      } else if (arg.startsWith("-Xlint")) {
+        lintOptions = LintOption.parse(arg);
       } else if (arg.equals("-version")) {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
@@ -858,5 +947,9 @@ public class Options {
   @VisibleForTesting
   public static void setNullability(boolean b) {
     instance.nullability = b;
+  }
+
+  public static EnumSet<LintOption> lintOptions() {
+    return instance.lintOptions;
   }
 }
