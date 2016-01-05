@@ -224,20 +224,20 @@ CF_EXTERN_C_END
 // The remainder of this file is copied from the translation of the types
 // FieldDescriptor.Type and FieldDescriptor.JavaType in Descriptor.java.
 
-@interface ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum () {
+@interface ComGoogleProtobufDescriptors_FieldDescriptor_Type () {
  @public
-  ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum *javaType_;
+  ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *javaType_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum, javaType_, ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum *)
+J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_Type, javaType_, ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *)
 
-@interface ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum () {
+@interface ComGoogleProtobufDescriptors_FieldDescriptor_JavaType () {
  @public
   id defaultDefault_;
 }
 @end
 
-J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum, defaultDefault_, id)
+J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, defaultDefault_, id)
 
 #endif // __ComGoogleProtobufDescriptors_PackagePrivate_H__

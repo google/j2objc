@@ -68,9 +68,9 @@ J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufDescriptors_Descriptor)
 
 @interface ComGoogleProtobufDescriptors_FieldDescriptor : NSObject
 
-- (ComGoogleProtobufDescriptors_FieldDescriptor_TypeEnum *)getType;
+- (ComGoogleProtobufDescriptors_FieldDescriptor_Type *)getType;
 
-- (ComGoogleProtobufDescriptors_FieldDescriptor_JavaTypeEnum *)getJavaType;
+- (ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *)getJavaType;
 
 - (int)getNumber;
 

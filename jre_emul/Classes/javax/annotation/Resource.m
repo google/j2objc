@@ -79,11 +79,11 @@
 + (IOSObjectArray *)__annotations {
   return [IOSObjectArray arrayWithObjects:(id[]) {
     [[[JavaLangAnnotationRetention alloc]
-      initWithValue:JavaLangAnnotationRetentionPolicyEnum_get_RUNTIME()] autorelease],
+      initWithValue:JavaLangAnnotationRetentionPolicy_get_RUNTIME()] autorelease],
     [[[JavaLangAnnotationTarget alloc] initWithValue:[IOSObjectArray arrayWithObjects:(id[]) {
-      JavaLangAnnotationElementTypeEnum_get_TYPE(),
-      JavaLangAnnotationElementTypeEnum_get_METHOD(),
-      JavaLangAnnotationElementTypeEnum_get_FIELD()
+      JavaLangAnnotationElementType_get_TYPE(),
+      JavaLangAnnotationElementType_get_METHOD(),
+      JavaLangAnnotationElementType_get_FIELD()
     } count:3 type:NSObject_class_()]] autorelease]
   } count:2 type:JavaLangAnnotationAnnotation_class_()];
 }
