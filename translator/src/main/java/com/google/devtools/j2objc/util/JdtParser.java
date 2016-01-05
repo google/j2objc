@@ -18,6 +18,7 @@ import com.google.common.base.Splitter;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.Options.LintOption;
 
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.core.dom.AST;
@@ -28,6 +29,7 @@ import org.eclipse.jdt.core.dom.FileASTRequestor;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -54,8 +56,16 @@ public class JdtParser {
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, version);
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, version);
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, version);
-    for (Options.LintOption lintOption : Options.lintOptions()) {
+
+    // Turn on any specified lint warnings.
+    EnumSet<LintOption> lintOptions = Options.lintOptions();
+    for (Options.LintOption lintOption : lintOptions) {
       compilerOptions.put(lintOption.jdtFlag(), "warning");
+    }
+
+    // Turn off any warnings on by default but not requested.
+    for (Options.LintOption lintOption : EnumSet.complementOf(lintOptions)) {
+      compilerOptions.put(lintOption.jdtFlag(), "ignore");
     }
     return compilerOptions;
   }
