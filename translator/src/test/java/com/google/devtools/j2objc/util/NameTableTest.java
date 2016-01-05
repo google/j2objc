@@ -73,7 +73,7 @@ public class NameTableTest extends GenerationTest {
     assertEquals("FooBarSomeClass_Inner", nameTable.getFullName(decl.getTypeBinding()));
     // Inner enum should have "Enum" added to name.
     decl = unit.getTypes().get(2);
-    assertEquals("FooBarSomeClass_Inner2Enum", nameTable.getFullName(decl.getTypeBinding()));
+    assertEquals("FooBarSomeClass_Inner2", nameTable.getFullName(decl.getTypeBinding()));
   }
 
   // Verify local class name.
@@ -277,17 +277,17 @@ public class NameTableTest extends GenerationTest {
         "  FBTest_Enum_FOO = 0,",
         "  FBTest_Enum_BAR = 1,",
         "};");
-    assertTranslation(translation, "@interface FBTestEnum : JavaLangEnum");
-    assertTranslation(translation, "FBTestEnum_values()");
-    assertTranslation(translation, "+ (FBTestEnum *)valueOfWithNSString:(NSString *)name;");
-    assertTranslation(translation, "FBTestEnum *FBTestEnum_valueOfWithNSString_");
-    assertTranslation(translation, "J2OBJC_STATIC_INIT(FBTestEnum");
-    assertTranslation(translation, "@compatibility_alias FooBarTestEnum FBTestEnum;");
+    assertTranslation(translation, "@interface FBTest : JavaLangEnum");
+    assertTranslation(translation, "FBTest_values()");
+    assertTranslation(translation, "+ (FBTest *)valueOfWithNSString:(NSString *)name;");
+    assertTranslation(translation, "FBTest *FBTest_valueOfWithNSString_");
+    assertTranslation(translation, "J2OBJC_STATIC_INIT(FBTest)");
+    assertTranslation(translation, "@compatibility_alias FooBarTest FBTest;");
 
     translation = getTranslatedFile("foo/bar/Test.m");
     assertTranslation(translation, "#include \"foo/bar/Test.h\""); // should be full path.
-    assertTranslation(translation, "@implementation FBTestEnum");
-    assertTranslation(translation, "J2ObjcClassInfo _FBTestEnum = { 2, \"Test\", \"foo.bar\", ");
+    assertTranslation(translation, "@implementation FBTest");
+    assertTranslation(translation, "J2ObjcClassInfo _FBTest = { 2, \"Test\", \"foo.bar\", ");
 
     // Make sure package-info class doesn't use prefix for its own type name.
     translation = translateSourceFile("foo.bar.package-info", "foo/bar/package-info.m");

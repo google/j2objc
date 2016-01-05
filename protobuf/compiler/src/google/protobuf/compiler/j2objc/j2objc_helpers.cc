@@ -262,17 +262,13 @@ string ClassName(const Descriptor *descriptor) {
       + descriptor->name();
 }
 
-string TypeName(const EnumDescriptor *descriptor) {
+string ClassName(const EnumDescriptor *descriptor) {
   return GetClassPrefix(descriptor->file(), descriptor->containing_type())
       + descriptor->name();
 }
 
 string CEnumName(const EnumDescriptor *descriptor) {
-  return TypeName(descriptor) + "_Enum";
-}
-
-string ClassName(const EnumDescriptor *descriptor) {
-  return TypeName(descriptor) + "Enum";
+  return ClassName(descriptor) + "_Enum";
 }
 
 string ClassName(const FileDescriptor *descriptor) {

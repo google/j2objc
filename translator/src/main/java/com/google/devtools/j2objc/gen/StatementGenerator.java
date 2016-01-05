@@ -1120,11 +1120,8 @@ public class StatementGenerator extends TreeVisitor {
       Expression expr = node.getExpression();
       boolean isEnumConstant = expr.getTypeBinding().isEnum();
       if (isEnumConstant) {
-        String typeName = nameTable.getFullName(expr.getTypeBinding());
-        // TODO(kstanger): Add a NameTable method for getting the C enum name.
-        String bareTypeName = typeName.endsWith("Enum")
-            ? typeName.substring(0, typeName.length() - 4) + "_Enum" : typeName;
-        buffer.append(bareTypeName).append("_");
+        String enumName = NameTable.getNativeEnumName(nameTable.getFullName(expr.getTypeBinding()));
+        buffer.append(enumName).append("_");
       }
       if (isEnumConstant && expr instanceof SimpleName) {
         buffer.append(((SimpleName) expr).getIdentifier());

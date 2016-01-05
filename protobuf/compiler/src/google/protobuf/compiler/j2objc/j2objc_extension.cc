@@ -77,14 +77,6 @@ void ExtensionGenerator::GenerateMembersHeader(io::Printer* printer) {
           "ComGoogleProtobufGeneratedMessage_GeneratedExtension *)\n",
       "name", UnderscoresToCamelCase(descriptor_),
       "classname", ContainingClassName(descriptor_));
-  // TODO(kstanger): Remove when users have migrated.
-  printer->Print("#ifdef J2OBJC_RENAME_ALIASES\n");
-  printer->Print(
-      "#define $classname$_$name$_ $classname$_$name$\n"
-      "#define $classname$_get_$name$_ $classname$_get_$name$\n",
-      "name", UnderscoresToCamelCase(descriptor_),
-      "classname", ContainingClassName(descriptor_));
-  printer->Print("#endif // J2OBJC_RENAME_ALIASES\n");
 }
 
 void ExtensionGenerator::GenerateSourceDefinition(io::Printer* printer) {

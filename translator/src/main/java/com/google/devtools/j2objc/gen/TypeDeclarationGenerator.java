@@ -113,9 +113,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     println("\n@end");
     // TODO(kstanger): Remove after users have migrated.
     if (!oldTypeName.equals(typeName)) {
-      println("#ifdef J2OBJC_RENAME_ALIASES");
+      println("#ifdef J2OBJC_RENAME2_ALIASES");
       printf("#define %s %s\n", oldTypeName, typeName);
-      println("#endif // J2OBJC_RENAME_ALIASES");
+      println("#endif // J2OBJC_RENAME2_ALIASES");
     }
 
     printCompanionClassDeclaration();
@@ -151,37 +151,23 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
 
     List<EnumConstantDeclaration> constants = ((EnumDeclaration) typeNode).getEnumConstants();
-
-    // Strip enum type suffix.
-    String bareTypeName = typeName.endsWith("Enum")
-        ? typeName.substring(0, typeName.length() - 4) + "_Enum" : typeName;
+    String nativeName = NameTable.getNativeEnumName(typeName);
 
     // C doesn't allow empty enum declarations.  Java does, so we skip the
     // C enum declaration and generate the type declaration.
     if (!constants.isEmpty()) {
       newline();
-      printf("typedef NS_ENUM(NSUInteger, %s) {\n", bareTypeName);
+      printf("typedef NS_ENUM(NSUInteger, %s) {\n", nativeName);
 
       // Print C enum typedef.
       indent();
       int ordinal = 0;
       for (EnumConstantDeclaration constant : constants) {
         printIndent();
-        printf("%s_%s = %d,\n", bareTypeName, constant.getName().getIdentifier(), ordinal++);
+        printf("%s_%s = %d,\n", nativeName, constant.getName().getIdentifier(), ordinal++);
       }
       unindent();
       print("};\n");
-
-      // TODO(kstanger): Remove after users have migrated.
-      String oldBareTypeName = oldTypeName.endsWith("Enum")
-          ? oldTypeName.substring(0, oldTypeName.length() - 4) : oldTypeName;
-      println("#ifdef J2OBJC_RENAME_ALIASES");
-      printf("#define %s %s\n", oldBareTypeName, bareTypeName);
-      for (EnumConstantDeclaration constant : constants) {
-        String constantName = constant.getName().getIdentifier();
-        printf("#define %s_%s %s_%s\n", oldBareTypeName, constantName, bareTypeName, constantName);
-      }
-      println("#endif // J2OBJC_RENAME_ALIASES");
     }
   }
 
@@ -397,25 +383,36 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     } else {
       printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
     }
+    // TODO(kstanger): Remove after users migrate.
+    if (!oldTypeName.equals(typeName)) {
+      println("#ifdef J2OBJC_RENAME2_ALIASES");
+      printf("#define %s_initialize %s_initialize\n", oldTypeName, typeName);
+      println("#endif // J2OBJC_RENAME2_ALIASES");
+    }
   }
 
   private void printEnumConstants() {
     if (typeNode instanceof EnumDeclaration) {
-      // Strip enum type suffix.
-      String bareTypeName = typeName.endsWith("Enum")
-          ? typeName.substring(0, typeName.length() - 4) + "_Enum" : typeName;
+      String nativeName = NameTable.getNativeEnumName(typeName);
       printf("\nFOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
+      // TODO(kstanger): Remove after users migrate.
+      if (!oldTypeName.equals(typeName)) {
+        println("#ifdef J2OBJC_RENAME2_ALIASES");
+        printf("#define %s_values_ %s_values_\n", oldTypeName, typeName);
+        println("#endif // J2OBJC_RENAME2_ALIASES");
+      }
       for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
         String varName = nameTable.getVariableBaseName(constant.getVariableBinding());
         String valueName = constant.getName().getIdentifier();
         printf("\n#define %s_%s %s_values_[%s_%s]\n",
-            typeName, varName, typeName, bareTypeName, valueName);
+            typeName, varName, typeName, nativeName, valueName);
         printf("J2OBJC_ENUM_CONSTANT_GETTER(%s, %s)\n", typeName, varName);
         // TODO(kstanger): Remove after users migrate.
         if (!oldTypeName.equals(typeName)) {
-          println("#ifdef J2OBJC_RENAME_ALIASES");
+          println("#ifdef J2OBJC_RENAME2_ALIASES");
+          printf("#define %s_%s %s_%s\n", oldTypeName, varName, typeName, varName);
           printf("#define %s_get_%s %s_get_%s\n", oldTypeName, varName, typeName, varName);
-          println("#endif // J2OBJC_RENAME_ALIASES");
+          println("#endif // J2OBJC_RENAME2_ALIASES");
         }
       }
     }
@@ -445,9 +442,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           isVolatile, typeName, fieldName, typeStr));
       // TODO(kstanger): Remove when users have migrated.
       if (!oldTypeName.equals(typeName)) {
-        println("#ifdef J2OBJC_RENAME_ALIASES");
+        println("#ifdef J2OBJC_RENAME2_ALIASES");
         printf("#define %s_set_%s %s_set_%s\n", oldTypeName, fieldName, typeName, fieldName);
-        println("#endif // J2OBJC_RENAME_ALIASES");
+        println("#endif // J2OBJC_RENAME2_ALIASES");
       }
     }
   }
@@ -485,21 +482,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         printf("J2OBJC_STATIC%s_FIELD_SETTER(%s, %s, %s)\n", volatileStr, typeName, name, objcType);
       }
     }
-    // TODO(kstanger): Remove when users have migrated.
-    String oldName = nameTable.getVariableShortName(var, true);
-    if (!oldName.equals(name) || !oldTypeName.equals(typeName)) {
-      println("#ifdef J2OBJC_RENAME_ALIASES");
-      printf("#define %s_%s %s_%s\n", oldTypeName, oldName, typeName, name);
-      printf("#define %s_get_%s %s_get_%s\n", oldTypeName, oldName, typeName, name);
-      if (!isFinal) {
-        if (isPrimitive && !isVolatile) {
-          printf("#define %s_getRef_%s %s_getRef_%s\n", oldTypeName, oldName, typeName, name);
-        } else {
-          printf("#define %s_set_%s %s_set_%s\n", oldTypeName, oldName, typeName, name);
-        }
-      }
-      println("#endif // J2OBJC_RENAME_ALIASES");
-    }
   }
 
   private void printTypeLiteralDeclaration() {
@@ -507,9 +489,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", typeName);
     // TODO(kstanger): Remove when users have migrated.
     if (!oldTypeName.equals(typeName)) {
-      println("#ifdef J2OBJC_RENAME_ALIASES");
+      println("#ifdef J2OBJC_RENAME2_ALIASES");
       printf("#define %s_class_ %s_class_\n", oldTypeName, typeName);
-      println("#endif // J2OBJC_RENAME_ALIASES");
+      println("#endif // J2OBJC_RENAME2_ALIASES");
     }
   }
 
@@ -564,9 +546,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     String pkg = typeBinding.getPackage().getName();
     if (nameTable.hasPrefix(pkg) && typeBinding.isTopLevel()) {
       String unprefixedName = NameTable.camelCaseQualifiedName(typeBinding.getQualifiedName());
-      if (typeBinding.isEnum()) {
-        unprefixedName += "Enum";
-      }
       if (!unprefixedName.equals(typeName)) {
         if (typeBinding.isInterface()) {
           // Protocols can't be used in typedefs.
@@ -668,7 +647,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
     String[] selParts = methodName.split(":");
     String[] oldSelParts = oldMethodName.split(":");
-    println("#ifdef J2OBJC_RENAME_ALIASES");
+    println("#ifdef J2OBJC_RENAME2_ALIASES");
     for (int i = 0; i < selParts.length; i++) {
       String part = selParts[i];
       String oldPart = oldSelParts[i];
@@ -676,7 +655,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         printf("#define %s %s\n", oldPart, part);
       }
     }
-    println("#endif // J2OBJC_RENAME_ALIASES");
+    println("#endif // J2OBJC_RENAME2_ALIASES");
   }
 
   private boolean needsObjcMethodFamilyNoneAttribute(String name) {
@@ -721,9 +700,9 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     String name = function.getName();
     String oldName = function.getOldName();
     if (!oldName.equals(name)) {
-      println("#ifdef J2OBJC_RENAME_ALIASES");
+      println("#ifdef J2OBJC_RENAME2_ALIASES");
       printf("#define %s %s\n", oldName, name);
-      println("#endif // J2OBJC_RENAME_ALIASES");
+      println("#endif // J2OBJC_RENAME2_ALIASES");
     }
   }
 

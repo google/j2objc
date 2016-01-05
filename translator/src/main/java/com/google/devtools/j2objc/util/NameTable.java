@@ -328,16 +328,7 @@ public class NameTable {
    * or suffix attached.
    */
   public String getVariableBaseName(IVariableBinding var) {
-    return getVariableBaseName(var, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param when users have migrated.
-  public String getVariableBaseName(IVariableBinding var, boolean oldStyle) {
-    if (oldStyle) {
-      return getVarBaseName(var, BindingUtil.isPrimitiveConstant(var) || var.isEnumConstant());
-    } else {
-      return getVarBaseName(var, BindingUtil.isGlobalVar(var));
-    }
+    return getVarBaseName(var, BindingUtil.isGlobalVar(var));
   }
 
   /**
@@ -383,15 +374,8 @@ public class NameTable {
    * Gets the non-qualified variable name, with underscore suffix.
    */
   public String getVariableShortName(IVariableBinding var) {
-    return getVariableShortName(var, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param when users have migrated.
-  public String getVariableShortName(IVariableBinding var, boolean oldStyle) {
-    String baseName = getVariableBaseName(var, oldStyle);
-    if (var.isField() && (oldStyle
-        ? (!BindingUtil.isPrimitiveConstant(var) && !var.isEnumConstant())
-        : !BindingUtil.isGlobalVar(var))) {
+    String baseName = getVariableBaseName(var);
+    if (var.isField() && !BindingUtil.isGlobalVar(var)) {
       return baseName + '_';
     }
     return baseName;
@@ -401,12 +385,7 @@ public class NameTable {
    * Gets the name of the variable as it is declared in ObjC, fully qualified.
    */
   public String getVariableQualifiedName(IVariableBinding var) {
-    return getVariableQualifiedName(var, false);
-  }
-
-  // TODO(kstanger): Remove oldStyle param when users have migrated.
-  public String getVariableQualifiedName(IVariableBinding var, boolean oldStyle) {
-    String shortName = getVariableShortName(var, oldStyle);
+    String shortName = getVariableShortName(var);
     if (BindingUtil.isGlobalVar(var)) {
       return getFullName(var.getDeclaringClass()) + '_' + shortName;
     }
@@ -912,6 +891,10 @@ public class NameTable {
     return sb.toString();
   }
 
+  public static String getNativeEnumName(String typeName) {
+    return typeName + "_Enum";
+  }
+
   /**
    * Return the full name of a type, including its package.  For outer types,
    * is the type's full name; for example, java.lang.Object's full name is
@@ -925,12 +908,11 @@ public class NameTable {
 
   // TODO(kstanger): Remove oldStyle param after users migrate.
   public String getFullName(ITypeBinding binding, boolean oldStyle) {
-    String name = getFullNameInner(binding, oldStyle);
-    return binding.isEnum() ? (name + "Enum") : name;
+    String name = getFullNameInner(binding);
+    return binding.isEnum() && oldStyle ? (name + "Enum") : name;
   }
 
-  // TODO(kstanger): Remove oldStyle param after users migrate.
-  private String getFullNameInner(ITypeBinding binding, boolean oldStyle) {
+  private String getFullNameInner(ITypeBinding binding) {
     binding = typeEnv.mapType(binding.getErasure());  // Make sure type variables aren't included.
 
     // Use ObjectiveCType annotation, if it exists.
@@ -941,7 +923,7 @@ public class NameTable {
 
     ITypeBinding outerBinding = binding.getDeclaringClass();
     if (outerBinding != null) {
-      return getFullNameInner(outerBinding, oldStyle) + '_' + getTypeSubName(binding);
+      return getFullNameInner(outerBinding) + '_' + getTypeSubName(binding);
     }
     String name = binding.getQualifiedName();
 

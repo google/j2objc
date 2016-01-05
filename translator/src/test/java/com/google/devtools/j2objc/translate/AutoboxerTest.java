@@ -294,10 +294,10 @@ public class AutoboxerTest extends GenerationTest {
     String translation = translateSourceFile(source, "Test", "Test.m");
 
     assertTranslation(translation,
-        "new_TestEnum_initWithId_withNSString_withInt_("
+        "new_Test_initWithId_withNSString_withInt_("
         + "JavaLangInteger_valueOfWithInt_(0), @\"INT\", 0)");
     assertTranslation(translation,
-        "new_TestEnum_initWithId_withNSString_withInt_("
+        "new_Test_initWithId_withNSString_withInt_("
         + "JavaLangBoolean_valueOfWithBoolean_(false), @\"BOOLEAN\", 1)");
   }
 

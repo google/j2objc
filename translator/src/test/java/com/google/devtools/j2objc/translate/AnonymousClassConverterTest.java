@@ -338,16 +338,16 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "public abstract boolean isUp(); }";
     String impl = translateSourceFile(source, "Test", "Test.m");
 
-    assertTranslation(impl, "@interface Test_$1Enum : TestEnum");
-    assertTranslation(impl, "@interface Test_$2Enum : TestEnum");
+    assertTranslation(impl, "@interface Test_$1 : Test");
+    assertTranslation(impl, "@interface Test_$2 : Test");
     assertTranslatedLines(impl,
         "- (instancetype)initWithNSString:(NSString *)__name",
         "withInt:(jint)__ordinal {");
 
-    assertTranslation(impl, "TestEnum_initWithNSString_withInt_(self, __name, __ordinal);");
-    assertTranslation(impl, "TestEnum_UP = new_Test_$1Enum_initWithNSString_withInt_(@\"UP\", 0);");
+    assertTranslation(impl, "Test_initWithNSString_withInt_(self, __name, __ordinal);");
+    assertTranslation(impl, "Test_UP = new_Test_$1_initWithNSString_withInt_(@\"UP\", 0);");
     assertTranslation(impl,
-        "TestEnum_DOWN = new_Test_$2Enum_initWithNSString_withInt_(@\"DOWN\", 1);");
+        "Test_DOWN = new_Test_$2_initWithNSString_withInt_(@\"DOWN\", 1);");
   }
 
   public void testTwoOutersInAnonymousSubClassOfInner() throws IOException {
@@ -401,22 +401,22 @@ public class AnonymousClassConverterTest extends GenerationTest {
       + "Color(int n) {} public int getRGB() { return 0; }}",
       "Color", "Color.m");
 
-    // Verify ColorEnum constructor.
+    // Verify Color constructor.
     assertTranslatedLines(impl,
-        "void ColorEnum_initWithInt_withNSString_withInt_("
-          + "ColorEnum *self, jint n, NSString *__name, jint __ordinal) {",
+        "void Color_initWithInt_withNSString_withInt_("
+          + "Color *self, jint n, NSString *__name, jint __ordinal) {",
         "  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);",
         "}");
 
-    // Verify ColorEnum$$1 constructor.
+    // Verify Color_$1 constructor.
     assertTranslatedLines(impl,
-        "void Color_$1Enum_initWithInt_withNSString_withInt_("
-          + "Color_$1Enum *self, jint arg$0, NSString *__name, jint __ordinal) {",
-        "  ColorEnum_initWithInt_withNSString_withInt_(self, arg$0, __name, __ordinal);",
+        "void Color_$1_initWithInt_withNSString_withInt_("
+          + "Color_$1 *self, jint arg$0, NSString *__name, jint __ordinal) {",
+        "  Color_initWithInt_withNSString_withInt_(self, arg$0, __name, __ordinal);",
         "}");
 
     // Verify constant initialization.
-    assertTranslation(impl, "new_Color_$1Enum_initWithInt_withNSString_withInt_(42, @\"RED\", 0)");
+    assertTranslation(impl, "new_Color_$1_initWithInt_withNSString_withInt_(42, @\"RED\", 0)");
   }
 
   public void testEnumWithInnerEnum() throws IOException {
@@ -430,11 +430,11 @@ public class AnonymousClassConverterTest extends GenerationTest {
       "OuterValue", "OuterValue.m");
 
     // Verify OuterValue constant initialization.
-    assertTranslation(impl, "new_OuterValueEnum_initWithNSString_withInt_(@\"VALUE1\", 0)");
+    assertTranslation(impl, "new_OuterValue_initWithNSString_withInt_(@\"VALUE1\", 0)");
 
     // Verify InnerValue constant initialization.
     assertTranslation(impl,
-        "new_OuterValue_InnerValueEnum_initWithNSString_withInt_(@\"VALUE1\", 0)");
+        "new_OuterValue_InnerValue_initWithNSString_withInt_(@\"VALUE1\", 0)");
   }
 
   // Tests a field initialized with an anonymous class and multiple

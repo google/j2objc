@@ -34,6 +34,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -141,21 +142,19 @@ public class EnumRewriter extends TreeVisitor {
     // TODO(kstanger): Remove after users have migrated.
     String oldTypeName = nameTable.getFullName(node.getTypeBinding(), true);
     if (!oldTypeName.equals(typeName)) {
-      header.append("#ifdef J2OBJC_RENAME_ALIASES\n");
+      header.append("#ifdef J2OBJC_RENAME2_ALIASES\n");
       header.append(String.format(
           "#define %s_values %s_values\n"
           + "#define %s_valueOfWithNSString_ %s_valueOfWithNSString_\n",
           oldTypeName, typeName, oldTypeName, typeName));
-      header.append("#endif // J2OBJC_RENAME_ALIASES\n");
+      header.append("#endif // J2OBJC_RENAME2_ALIASES\n");
     }
 
     // Append enum type suffix.
-    String bareTypeName = typeName.endsWith("Enum")
-        ? typeName.substring(0, typeName.length() - 4) + "_Enum" : typeName;
+    String nativeName = NameTable.getNativeEnumName(typeName);
 
     if (swiftFriendly) {
-      header.append(String.format(
-            "- (%s)toNSEnum;\n", bareTypeName));
+      header.append(String.format("- (%s)toNSEnum;\n", nativeName));
     }
 
     StringBuilder implementation = new StringBuilder();
@@ -196,7 +195,7 @@ public class EnumRewriter extends TreeVisitor {
       implementation.append(String.format(
           "- (%s)toNSEnum {\n"
               + "  return (%s)[self ordinal];\n"
-              + "}\n\n", bareTypeName, bareTypeName));
+              + "}\n\n", nativeName, nativeName));
     }
 
     // Enum constants needs to implement NSCopying.  Being singletons, they

@@ -92,10 +92,6 @@ J2OBJC_STATIC_INIT(ComGoogleProtobufByteString)
 
 FOUNDATION_EXPORT ComGoogleProtobufByteString *ComGoogleProtobufByteString_EMPTY;
 J2OBJC_STATIC_FIELD_GETTER(ComGoogleProtobufByteString, EMPTY, ComGoogleProtobufByteString *)
-// TODO(kstanger): Remove when users have migrated.
-#ifdef J2OBJC_RENAME_ALIASES
-#define ComGoogleProtobufByteString_get_EMPTY_ ComGoogleProtobufByteString_get_EMPTY
-#endif // J2OBJC_RENAME_ALIASES
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufByteString)
 

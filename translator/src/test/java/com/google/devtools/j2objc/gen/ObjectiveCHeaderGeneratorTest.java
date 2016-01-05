@@ -41,7 +41,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface MypackageExample");
     // enum declaration
     assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MypackageAbcd_Enum) {");
-    assertTranslation(translation, "@interface MypackageAbcdEnum");
+    assertTranslation(translation, "@interface MypackageAbcd");
     assertTranslation(translation, "@interface MypackageMyClass");
     assertTranslation(translation, "MypackageMyClass *myclass_;");
   }
@@ -466,19 +466,19 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "  Color_Enum_WHITE = 1,",
         "  Color_Enum_BLUE = 2,",
         "};");
-    assertTranslation(translation, "@interface ColorEnum : JavaLangEnum < NSCopying >");
+    assertTranslation(translation, "@interface Color : JavaLangEnum < NSCopying >");
     assertTranslation(translation, "+ (IOSObjectArray *)values;");
-    assertTranslation(translation, "+ (ColorEnum *)valueOfWithNSString:(NSString *)name;");
-    assertTranslation(translation, "FOUNDATION_EXPORT ColorEnum *ColorEnum_values_[];");
+    assertTranslation(translation, "+ (Color *)valueOfWithNSString:(NSString *)name;");
+    assertTranslation(translation, "FOUNDATION_EXPORT Color *Color_values_[];");
     assertTranslatedLines(translation,
-        "#define ColorEnum_RED ColorEnum_values_[Color_Enum_RED]",
-        "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, RED)");
+        "#define Color_RED Color_values_[Color_Enum_RED]",
+        "J2OBJC_ENUM_CONSTANT_GETTER(Color, RED)");
     assertTranslatedLines(translation,
-        "#define ColorEnum_WHITE ColorEnum_values_[Color_Enum_WHITE]",
-        "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, WHITE)");
+        "#define Color_WHITE Color_values_[Color_Enum_WHITE]",
+        "J2OBJC_ENUM_CONSTANT_GETTER(Color, WHITE)");
     assertTranslatedLines(translation,
-        "#define ColorEnum_BLUE ColorEnum_values_[Color_Enum_BLUE]",
-        "J2OBJC_ENUM_CONSTANT_GETTER(ColorEnum, BLUE)");
+        "#define Color_BLUE Color_values_[Color_Enum_BLUE]",
+        "J2OBJC_ENUM_CONSTANT_GETTER(Color, BLUE)");
   }
 
   public void testEnumWithParameters() throws IOException {
@@ -487,7 +487,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "private int rgb; private Color(int rgb) { this.rgb = rgb; } "
         + "public int getRgb() { return rgb; }}",
         "Color", "Color.h");
-    assertTranslation(translation, "@interface ColorEnum : JavaLangEnum");
+    assertTranslation(translation, "@interface Color : JavaLangEnum");
     translation = getTranslatedFile("Color.m");
     assertTranslation(translation, "int rgb_;");
     assertTranslatedLines(translation,
@@ -505,7 +505,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       + "public int getRgb() { return rgb; }"
       + "public boolean isPrimaryColor() { return primary; }}",
       "Color", "Color.h");
-    assertTranslation(translation, "@interface ColorEnum : JavaLangEnum");
+    assertTranslation(translation, "@interface Color : JavaLangEnum");
     translation = getTranslatedFile("Color.m");
     assertTranslation(translation, "jboolean primary_;");
     assertTranslatedLines(translation,
@@ -518,11 +518,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "withNSString:(NSString *)__name",
         "withInt:(jint)__ordinal {");
     assertTranslation(translation,
-        "ColorEnum_initWithInt_withBoolean_withNSString_withInt_("
+        "Color_initWithInt_withBoolean_withNSString_withInt_("
         + "self, rgb, true, __name, __ordinal);");
     assertTranslatedLines(translation,
-        "void ColorEnum_initWithInt_withBoolean_withNSString_withInt_("
-          + "ColorEnum *self, jint rgb, jboolean primary, NSString *__name, jint __ordinal) {",
+        "void Color_initWithInt_withBoolean_withNSString_withInt_("
+          + "Color *self, jint rgb, jboolean primary, NSString *__name, jint __ordinal) {",
         "  JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);",
         "  self->rgb_ = rgb;",
         "  self->primary_ = primary;",
@@ -581,9 +581,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public enum MyEnum { ONE, TWO, THREE }",
         "MyEnum", "MyEnum.h");
     assertTranslation(translation, "typedef NS_ENUM(NSUInteger, MyEnum_Enum) {");
-    assertTranslation(translation, "@interface MyEnumEnum : JavaLangEnum");
-    assertTranslation(translation, "FOUNDATION_EXPORT MyEnumEnum *MyEnumEnum_values_[];");
-    assertTranslation(translation, "#define MyEnumEnum_ONE MyEnumEnum_values_[MyEnum_Enum_ONE]");
+    assertTranslation(translation, "@interface MyEnum : JavaLangEnum");
+    assertTranslation(translation, "FOUNDATION_EXPORT MyEnum *MyEnum_values_[];");
+    assertTranslation(translation, "#define MyEnum_ONE MyEnum_values_[MyEnum_Enum_ONE]");
   }
 
   public void testNoImportForMappedTypes() throws IOException {
@@ -613,8 +613,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertFalse(header.contains("typedef enum {\n} A_Foo;"));
 
     // Verify there's still a Java enum type.
-    assertTranslation(header, "@interface A_FooEnum : JavaLangEnum");
-    assertTranslation(impl, "@implementation A_FooEnum");
+    assertTranslation(header, "@interface A_Foo : JavaLangEnum");
+    assertTranslation(impl, "@implementation A_Foo");
   }
 
   public void testEnumWithInterfaces() throws IOException {
@@ -623,7 +623,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         + "enum Foo implements I, Runnable, Cloneable { "
         + "A, B, C; public void run() {}}}", "A", "A.h");
     assertTranslation(translation,
-        "@interface A_FooEnum : JavaLangEnum < NSCopying, A_I, JavaLangRunnable >");
+        "@interface A_Foo : JavaLangEnum < NSCopying, A_I, JavaLangRunnable >");
     assertTranslation(translation, "#include \"java/lang/Runnable.h\"");
   }
 
@@ -713,7 +713,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
       + "private Test(String name, int ordinal) { this.name = name; this.ordinal = ordinal; }"
       + "public String getName() { return name; }}",
       "Test", "Test.h");
-    assertTranslation(translation, "@interface TestEnum : JavaLangEnum");
+    assertTranslation(translation, "@interface Test : JavaLangEnum");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "NSString *name_Test_;");
     assertTranslation(translation, "int ordinal_Test_;");
@@ -728,7 +728,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     Options.enableDeprecatedDeclarations();
     String translation = translateSourceFile(
         "@Deprecated public enum Test { A, B }", "Test", "Test.h");
-    assertTranslation(translation, "__attribute__((deprecated))\n@interface TestEnum");
+    assertTranslation(translation, "__attribute__((deprecated))\n@interface Test");
   }
 
   public void testLongConstants() throws IOException {

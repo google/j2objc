@@ -220,12 +220,12 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
       "public enum Color { RED, WHITE, BLUE }",
       "Color", "Color.m");
-    assertTranslation(translation, "ColorEnum *ColorEnum_values_[3];");
-    assertTranslation(translation, "@implementation ColorEnum");
+    assertTranslation(translation, "Color *Color_values_[3];");
+    assertTranslation(translation, "@implementation Color");
     assertTranslation(translation,
-        "ColorEnum_RED = new_ColorEnum_initWithNSString_withInt_(@\"RED\", 0);");
+        "Color_RED = new_Color_initWithNSString_withInt_(@\"RED\", 0);");
     assertTranslation(translation, "for (int i = 0; i < 3; i++) {");
-    assertTranslation(translation, "ColorEnum *e = ColorEnum_values_[i];");
+    assertTranslation(translation, "Color *e = Color_values_[i];");
   }
 
   public void testEnumWithParameters() throws IOException {
@@ -235,15 +235,15 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "private Color(int rgb) { this.rgb = rgb; } "
         + "public int getRgb() { return rgb; }}";
     String translation = translateSourceFile(sourceContent, "Color", "Color.m");
-    assertTranslation(translation, "@implementation ColorEnum");
+    assertTranslation(translation, "@implementation Color");
     assertTranslation(translation,
-        "ColorEnum_RED = new_ColorEnum_initWithInt_withNSString_withInt_("
+        "Color_RED = new_Color_initWithInt_withNSString_withInt_("
         + "(jint) 0xff0000, @\"RED\", 0);");
     assertTranslation(translation,
-        "ColorEnum_WHITE = new_ColorEnum_initWithInt_withNSString_withInt_("
+        "Color_WHITE = new_Color_initWithInt_withNSString_withInt_("
         + "(jint) 0xffffff, @\"WHITE\", 1);");
     assertTranslation(translation,
-        "ColorEnum_BLUE = new_ColorEnum_initWithInt_withNSString_withInt_("
+        "Color_BLUE = new_Color_initWithInt_withNSString_withInt_("
         + "(jint) 0x0000ff, @\"BLUE\", 2);");
     assertTranslation(translation, "- (jint)getRgb {");
     assertTranslation(translation, "return rgb_;");
@@ -349,7 +349,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         initializeOffset + initializeSignature.length());
     assertTrue(initializeOffset == -1);
 
-    assertTranslation(translation, "int ExampleEnum_foo = 42;");
+    assertTranslation(translation, "int Example_foo = 42;");
   }
 
   public void testNativeCodeBlock() throws IOException {
@@ -395,8 +395,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertFalse(header.contains("isPackableWithTest_TypeEnum"));
     assertFalse(impl.contains("\n  return NO;\n  [super initWithTest_TypeEnum:arg$0]}"));
     assertTranslation(impl,
-        "Test_FieldEnum_STRING = new_Test_Field_$1Enum_initWithTest_TypeEnum_withNSString_withInt_("
-        + "JreLoadStatic(Test_TypeEnum, STRING), @\"STRING\", 2);");
+        "Test_Field_STRING = new_Test_Field_$1_initWithTest_Type_withNSString_withInt_("
+        + "JreLoadStatic(Test_Type, STRING), @\"STRING\", 2);");
   }
 
   public void testAutoreleasePoolMethod() throws IOException {
@@ -634,7 +634,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertOccurrences(translation, "OCNI2", 1);
     assertOccurrences(translation, "OCNI3", 1);
     String testType = "@implementation Test\n";
-    String innerType = "@implementation Test_InnerEnum";
+    String innerType = "@implementation Test_Inner";
     String method1 = "- (void)method1";
     String method2 = "- (void)method2";
     String method3 = "- (void)method3";

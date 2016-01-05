@@ -505,7 +505,7 @@ void FileGenerator::GenerateClassMappings(GeneratorContext* context) {
   PrintProperty(&printer, JavaClassName(file_), ClassName(file_));
   for (int i = 0; i < file_->enum_type_count(); i++) {
     PrintProperty(&printer, JavaClassName(file_->enum_type(i)),
-                  TypeName(file_->enum_type(i)));
+                  ClassName(file_->enum_type(i)));
   }
   for (int i = 0; i < file_->message_type_count(); i++) {
     PrintClassMappings(file_->message_type(i), &printer);

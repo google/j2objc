@@ -72,7 +72,6 @@ string ClassName(const Descriptor *descriptor);
 string ClassName(const EnumDescriptor *descriptor);
 string ClassName(const FileDescriptor *descriptor);
 
-string TypeName(const EnumDescriptor *descriptor);
 string CEnumName(const EnumDescriptor *descriptor);
 
 string EnumValueName(const EnumValueDescriptor *descriptor);

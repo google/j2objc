@@ -34,7 +34,7 @@ public class EnumRewriterTest extends GenerationTest {
         "withNSString:(NSString *)__name",
         "withInt:(jint)__ordinal {");
     assertTranslation(translation,
-        "TestEnum_A = new_TestEnum_initWithId_withNSString_withInt_(@\"foo\", @\"A\", 0);");
+        "Test_A = new_Test_initWithId_withNSString_withInt_(@\"foo\", @\"A\", 0);");
   }
 
   public void testNoDefaultToNsEnumConversion() throws Exception {

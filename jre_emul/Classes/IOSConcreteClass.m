@@ -96,7 +96,7 @@
     return (metadata.modifiers & JavaLangReflectModifier_ENUM) > 0 &&
         [self getSuperclass] == JavaLangEnum_class_();
   } else {
-    return class_ != nil && [NSStringFromClass(class_) hasSuffix:@"Enum"];
+    return class_ != nil && strcmp(class_getName(class_getSuperclass(class_)), "JavaLangEnum") == 0;
   }
 }
 

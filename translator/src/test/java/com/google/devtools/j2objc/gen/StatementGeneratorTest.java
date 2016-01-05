@@ -66,7 +66,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class A { static enum B { ONE, TWO; "
         + "public static B doSomething(boolean b) { return b ? ONE : TWO; }}}",
         "A", "A.m");
-    assertTranslation(translation, "return b ? A_BEnum_ONE : A_BEnum_TWO;");
+    assertTranslation(translation, "return b ? A_B_ONE : A_B_TWO;");
   }
 
   public void testInnerClassFQN() throws IOException {
@@ -450,7 +450,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { enum TicTacToe { X, Y } "
         + "boolean isX(TicTacToe ttt) { return ttt == TicTacToe.X; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "return ttt == JreLoadStatic(Test_TicTacToeEnum, X);");
+    assertTranslation(translation, "return ttt == JreLoadStatic(Test_TicTacToe, X);");
   }
 
   public void testArrayLocalVariable() throws IOException {
@@ -1014,7 +1014,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  private Test() { this(0); }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "TestEnum_initWithInt_withNSString_withInt_(self, 0, __name, __ordinal);");
+        "Test_initWithInt_withNSString_withInt_(self, 0, __name, __ordinal);");
   }
 
   public void testThisCallInInnerConstructor() throws IOException {
@@ -1652,7 +1652,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);");
     // Called from the "this()" call, the method wrapper, and the allocating constructor.
     assertOccurrences(translation,
-        "TestEnum_initWithNSString_withInt_(self, __name, __ordinal);", 3);
+        "Test_initWithNSString_withInt_(self, __name, __ordinal);", 3);
   }
 
   public void testForStatementWithMultipleInitializers() throws IOException {
@@ -1668,7 +1668,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { enum Type { TYPE_BOOL; } Type test() { return Type.TYPE_BOOL; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "return JreLoadStatic(Test_TypeEnum, TYPE_BOOL);");
+    assertTranslation(translation, "return JreLoadStatic(Test_Type, TYPE_BOOL);");
   }
 
   public void testMakeQuotedStringHang() throws IOException {
