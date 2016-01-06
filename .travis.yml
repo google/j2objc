@@ -2,6 +2,7 @@
 language: objective-c
 os: osx
 osx_image: xcode7.1
+sudo: false
 
 env:
   - LATEST_JAVA=true
