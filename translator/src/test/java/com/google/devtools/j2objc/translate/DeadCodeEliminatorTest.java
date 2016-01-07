@@ -250,4 +250,20 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(translation, "self->z_ = x;");
     assertNotInTranslation(translation, "- (jint)f");
   }
+
+  // Verify that annotation bodies aren't stripped when specified in a dead code report.
+  public void testDeadAnnotation() throws IOException {
+    DeadCodeMap map = DeadCodeMap.builder()
+        .addDeadClass("Foo")
+        .build();
+    setDeadCodeMap(map);
+    String source = "import java.lang.annotation.Retention;\n"
+        + "import java.lang.annotation.RetentionPolicy;\n"
+        + "@Retention(RetentionPolicy.RUNTIME)\n"
+        + "public @interface Foo {\n"
+        + "  String value() default \"\";\n"
+        + "}\n";
+    String translation = translateSourceFile(source, "Foo", "Foo.h");
+    assertTranslation(translation, "@property (readonly) NSString *value;");
+  }
 }

@@ -71,7 +71,10 @@ public class DeadCodeEliminator extends TreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
-    eliminateDeadCode(node.getTypeBinding(), node.getBodyDeclarations());
+    ITypeBinding binding = node.getTypeBinding();
+    if (!BindingUtil.isRuntimeAnnotation(binding)) {
+      eliminateDeadCode(binding, node.getBodyDeclarations());
+    }
   }
 
   @Override
