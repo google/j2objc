@@ -125,8 +125,10 @@ public class Options {
   private static final String FILE_HEADER_KEY = "file-header";
   private static String usageMessage;
   private static String helpMessage;
+  private static String xhelpMessage;
   private static final String USAGE_MSG_KEY = "usage-message";
   private static final String HELP_MSG_KEY = "help-message";
+  private static final String X_HELP_MSG_KEY = "x-help-message";
   private static final String XBOOTCLASSPATH = "-Xbootclasspath:";
   private static String bootclasspath = System.getProperty("sun.boot.class.path");
   private static final String BATCH_PROCESSING_MAX_FLAG = "--batch-translate-max=";
@@ -147,6 +149,8 @@ public class Options {
     Preconditions.checkNotNull(usageMessage);
     helpMessage = properties.getProperty(HELP_MSG_KEY);
     Preconditions.checkNotNull(helpMessage);
+    xhelpMessage = properties.getProperty(X_HELP_MSG_KEY);
+    Preconditions.checkNotNull(xhelpMessage);
 
     Logger rootLogger = Logger.getLogger("");
     for (Handler handler : rootLogger.getHandlers()) {
@@ -497,6 +501,8 @@ public class Options {
         version();
       } else if (arg.startsWith("-h") || arg.equals("--help")) {
         help(false);
+      } else if (arg.equals("-X")) {
+        xhelp();
       }
       // TODO(tball): remove obsolete flags once projects stop using them.
       else if (arg.equals("--final-methods-as-functions")
@@ -661,6 +667,11 @@ public class Options {
     System.err.println(helpMessage);
     // javac exits with 2, but any non-zero value works.
     System.exit(errorExit ? 2 : 0);
+  }
+
+  public static void xhelp() {
+    System.err.println(xhelpMessage);
+    System.exit(0);
   }
 
   public static void version() {
