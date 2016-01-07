@@ -392,6 +392,8 @@ static void SetWithRawValue(
     { NULL, "LNSString;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(getName);
   methods[1].selector = @selector(getModifiers);
   methods[2].selector = @selector(getType);
@@ -421,6 +423,7 @@ static void SetWithRawValue(
   methods[26].selector = @selector(isEnumConstant);
   methods[27].selector = @selector(toGenericString);
   methods[28].selector = @selector(init);
+  #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "get", "LNSObject;",
     "LJavaLangIllegalArgumentException;LJavaLangIllegalAccessException;", "getBoolean", "getByte",

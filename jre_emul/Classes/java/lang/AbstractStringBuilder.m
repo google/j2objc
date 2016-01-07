@@ -754,6 +754,8 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     { NULL, "LNSString;", 0x401, 49, -1, -1, -1, -1, -1 },
     { NULL, "[C", 0x10, -1, -1, -1, -1, -1, -1 },
   };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(init);
   methods[1].selector = @selector(initWithInt:);
   methods[2].selector = @selector(length);
@@ -809,6 +811,7 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
   methods[52].selector = @selector(reverse);
   methods[53].selector = @selector(description);
   methods[54].selector = @selector(getValue);
+  #pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
     { "value_", "[C", .constantValue.asLong = 0, 0x0, -1, -1, -1, -1 },
     { "count_", "I", .constantValue.asLong = 0, 0x0, -1, -1, -1, -1 },

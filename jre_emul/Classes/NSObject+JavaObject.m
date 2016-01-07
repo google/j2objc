@@ -184,6 +184,8 @@ static void doWait(id obj, long long timeout) {
     { NULL, "V", 0x11, 8, 11, 10, -1, -1, -1 },
     { NULL, "V", 0x11, -1, -1, 10, -1, -1, -1 },
   };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(init);
   methods[1].selector = @selector(getClass);
   methods[2].selector = @selector(hash);
@@ -196,6 +198,7 @@ static void doWait(id obj, long long timeout) {
   methods[9].selector = @selector(waitWithLong:);
   methods[10].selector = @selector(waitWithLong:withInt:);
   methods[11].selector = @selector(wait);
+  #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "hashCode", "equals", "LNSObject;",
     "LJavaLangCloneNotSupportedException;", "toString", "finalize", "LNSException;", "wait", "J",

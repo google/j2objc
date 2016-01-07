@@ -312,6 +312,14 @@ public class String implements CharSequence, Comparable<String>, Serializable {
     return false;
   }
 
+  public static String join(CharSequence delimiter, CharSequence... elements) {
+    return null;
+  }
+
+  public static String join(CharSequence delimiter, Iterable<? extends CharSequence> elements) {
+    return null;
+  }
+
   private static class CaseInsensitiveComparator
       implements Comparator<String>, java.io.Serializable {
     private static final long serialVersionUID = 8575799808933029326L;

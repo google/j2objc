@@ -45,9 +45,12 @@
     { NULL, "V", 0x1, 1, 2, -1, 3, -1, -1 },
     { NULL, "LJavaUtilSpliterator;", 0x1, -1, -1, -1, 4, -1, -1 },
   };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(iterator);
   methods[1].selector = @selector(forEachWithJavaUtilFunctionConsumer:);
   methods[2].selector = @selector(spliterator);
+  #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "()Ljava/util/Iterator<TT;>;", "forEach", "LJavaUtilFunctionConsumer;",
     "(Ljava/util/function/Consumer<-TT;>;)V", "()Ljava/util/Spliterator<TT;>;",

@@ -33,6 +33,7 @@
 @class JavaLangStringBuilder;
 @class JavaNioCharsetCharset;
 @class JavaUtilLocale;
+@protocol JavaLangIterable;
 @protocol JavaUtilComparator;
 
 // A category that adds java.lang.String-like methods to NSString.  The method
@@ -283,6 +284,14 @@ destinationBegin:(int)dstBegin;
 // String.offsetByCodePoints(int, int)
 - (int)offsetByCodePoints:(int)index codePointOffset:(int)offset;
 
+// String.join(CharSequence, CharSequence...)
++ (NSString *)joinWithJavaLangCharSequence:(id<JavaLangCharSequence>)delimiter
+             withJavaLangCharSequenceArray:(IOSObjectArray *)elements;
+
+// String.join(CharSequence, Iterable<? extends CharSequence>)
++ (NSString *)joinWithJavaLangCharSequence:(id<JavaLangCharSequence>)delimiter
+                      withJavaLangIterable:(id<JavaLangIterable>)elements;
+
 @end
 
 // String.format(Locale, String, Object...)
@@ -312,6 +321,12 @@ FOUNDATION_EXPORT NSString *NSString_valueOfInt_(jint i);
 FOUNDATION_EXPORT NSString *NSString_valueOfLong_(jlong l);
 // String.valueOf(Object)
 FOUNDATION_EXPORT NSString *NSString_valueOf_(id o);
+// String.join(CharSequence, CharSequence...)
+FOUNDATION_EXPORT NSString *NSString_joinWithJavaLangCharSequence_withJavaLangCharSequenceArray_(
+    id<JavaLangCharSequence> delimiter, IOSObjectArray *elements);
+// String.join(CharSequence, Iterable<? extends CharSequence>)
+FOUNDATION_EXPORT NSString *NSString_joinWithJavaLangCharSequence_withJavaLangIterable_(
+    id<JavaLangCharSequence> delimiter, id<JavaLangIterable> elements);
 
 // Empty class to force category to be loaded.
 @interface JreStringCategoryDummy : NSObject

@@ -119,6 +119,8 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
     { NULL, "[LJavaLangAnnotationAnnotation;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(isAccessible);
   methods[1].selector = @selector(setAccessibleWithBoolean:);
   methods[2].selector = @selector(setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:);
@@ -127,6 +129,7 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
   methods[5].selector = @selector(getAnnotations);
   methods[6].selector = @selector(getDeclaredAnnotations);
   methods[7].selector = @selector(init);
+  #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "setAccessible", "Z", "[LJavaLangReflectAccessibleObject;Z", "getAnnotation", "LIOSClass;",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;", "isAnnotationPresent",

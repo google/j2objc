@@ -17,6 +17,7 @@ package com.google.j2objc;
 import junit.framework.TestCase;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 
 /**
  * Additional tests for java.lang.String support.
@@ -76,5 +77,50 @@ public class StringTest extends TestCase {
     } catch (IllegalArgumentException e) {
       // expected.
     }
+  }
+
+  // String.join() tests from libcore.java.lang.StringTest.
+  public void testJoin_CharSequenceArray() {
+      assertEquals("", String.join("-"));
+      assertEquals("", String.join("-", ""));
+      assertEquals("foo", String.join("-", "foo"));
+      assertEquals("foo---bar---boo", String.join("---", "foo", "bar", "boo"));
+      assertEquals("foobarboo", String.join("", "foo", "bar", "boo"));
+      assertEquals("null-null", String.join("-", null, null));
+      assertEquals("¯\\_(ツ)_/¯", String.join("(ツ)", "¯\\_", "_/¯"));
+  }
+
+  public void testJoin_CharSequenceArray_NPE() {
+      try {
+          String.join(null, "foo", "bar");
+          fail();
+      } catch (NullPointerException expected) {}
+  }
+
+  public void testJoin_Iterable() {
+      ArrayList<String> iterable = new ArrayList<>();
+      assertEquals("", String.join("-", iterable));
+
+      iterable.add("foo");
+      assertEquals("foo", String.join("-", iterable));
+
+      iterable.add("bar");
+      assertEquals("foo...bar", String.join("...", iterable));
+
+      iterable.add("foo");
+      assertEquals("foo-bar-foo", String.join("-", iterable));
+      assertEquals("foobarfoo", String.join("", iterable));
+  }
+
+  public void testJoin_Iterable_NPE() {
+      try {
+          String.join(null, new ArrayList<String>());
+          fail();
+      } catch (NullPointerException expected) {}
+
+      try {
+          String.join("-", (Iterable<String>) null);
+          fail();
+      } catch (NullPointerException expected) {}
   }
 }

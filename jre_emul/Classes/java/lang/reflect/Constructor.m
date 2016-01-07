@@ -150,6 +150,8 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
     { NULL, "Z", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(getName);
   methods[1].selector = @selector(getModifiers);
   methods[2].selector = @selector(getDeclaringClass);
@@ -167,6 +169,7 @@ static id NewInstance(JavaLangReflectConstructor *self, void (^fillArgs)(NSInvoc
   methods[14].selector = @selector(isBridge);
   methods[15].selector = @selector(isVarArgs);
   methods[16].selector = @selector(init);
+  #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<TT;>;", "newInstance", "[LNSObject;",
     "LJavaLangInstantiationException;LJavaLangIllegalAccessException;"

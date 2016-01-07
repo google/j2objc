@@ -235,7 +235,10 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
   static J2ObjcMethodInfo methods[] = {
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(init);
+  #pragma clang diagnostic pop
   static const J2ObjcClassInfo _ExecutableMember = {
     "ExecutableMember", "java.lang.reflect", NULL, methods, NULL, 7, 0x401, 1, 0, -1, -1, -1, -1, -1
   };

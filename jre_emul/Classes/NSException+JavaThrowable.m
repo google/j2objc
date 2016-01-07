@@ -419,6 +419,8 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
     { NULL, "LNSString;", 0x1, 11, -1, -1, -1, -1, -1 },
     { NULL, "V", 0x2, 12, 13, -1, -1, -1, -1 },
   };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(init);
   methods[1].selector = @selector(initWithNSString:);
   methods[2].selector = @selector(initWithNSString:withNSException:);
@@ -438,6 +440,7 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
   methods[16].selector = @selector(getSuppressed);
   methods[17].selector = @selector(description);
   methods[18].selector = @selector(readObjectWithJavaIoObjectInputStream:);
+  #pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
     { "detailMessage_", "LNSString;", .constantValue.asLong = 0, 0x2, -1, -1, -1, -1 },
     { "cause_", "LNSException;", .constantValue.asLong = 0, 0x2, -1, -1, -1, -1 },

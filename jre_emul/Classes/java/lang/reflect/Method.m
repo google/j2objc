@@ -270,6 +270,8 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
     { NULL, "LJavaLangReflectAnnotatedType;", 0x1, -1, -1, -1, -1, -1, -1 },
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(getName);
   methods[1].selector = @selector(getModifiers);
   methods[2].selector = @selector(getReturnType);
@@ -292,6 +294,7 @@ static SEL GetPrivatizedMethodSelector(Class cls, SEL sel) {
   methods[19].selector = @selector(isDefault);
   methods[20].selector = @selector(getAnnotatedReturnType);
   methods[21].selector = @selector(init);
+  #pragma clang diagnostic pop
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "invoke", "LNSObject;[LNSObject;",
     "LJavaLangIllegalAccessException;LJavaLangIllegalArgumentException;"

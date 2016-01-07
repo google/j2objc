@@ -1262,6 +1262,8 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     { NULL, "LJavaLangAnnotationAnnotation;", 0x1, 42, 7, -1, 43, -1, -1 },
     { NULL, NULL, 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(forName:);
   methods[1].selector = @selector(forName:initialize:classLoader:);
   methods[2].selector = @selector(asSubclass:);
@@ -1324,6 +1326,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
   methods[59].selector = @selector(getAnnotationsByTypeWithIOSClass:);
   methods[60].selector = @selector(getDeclaredAnnotationWithIOSClass:);
   methods[61].selector = @selector(init);
+  #pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
     { "serialVersionUID", "J", .constantValue.asLong = IOSClass_serialVersionUID, 0x1a, -1, -1, -1,
       -1 },

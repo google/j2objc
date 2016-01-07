@@ -35,6 +35,8 @@
     { NULL, "J", 0x401, 1, -1, -1, -1, -1, -1 },
     { NULL, "S", 0x1, -1, -1, -1, -1, -1, -1 },
   };
+  #pragma clang diagnostic push
+  #pragma clang diagnostic ignored "-Wobjc-multiple-method-names"
   methods[0].selector = @selector(init);
   methods[1].selector = @selector(charValue);
   methods[2].selector = @selector(doubleValue);
@@ -42,6 +44,7 @@
   methods[4].selector = @selector(intValue);
   methods[5].selector = @selector(longLongValue);
   methods[6].selector = @selector(shortValue);
+  #pragma clang diagnostic pop
   static const J2ObjcFieldInfo fields[] = {
     { "serialVersionUID", "J", .constantValue.asLong = NSNumber_serialVersionUID, 0x1a, -1, -1, -1,
       -1 },
