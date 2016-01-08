@@ -539,4 +539,38 @@ public final class BindingUtil {
     }
     return constructors;
   }
+
+  /**
+   * Returns true if there's a SuppressedWarning annotation with the specified warning.
+   * The SuppressWarnings annotation can be inherited from the owning method or class,
+   * but does not have package scope.
+   */
+  public static boolean suppressesWarning(String warning, IBinding binding) {
+    if (binding == null) {
+      return false;
+    }
+    IAnnotationBinding annotation = getAnnotation(binding, SuppressWarnings.class);
+    if (annotation != null) {
+      for (IMemberValuePairBinding valuePair : annotation.getAllMemberValuePairs()) {
+        for (Object suppressedWarning : (Object[]) valuePair.getValue()) {
+          if (suppressedWarning.equals(warning)) {
+            return true;
+          }
+        }
+      }
+    }
+    if (binding instanceof IVariableBinding) {
+      IVariableBinding var = (IVariableBinding) binding;
+      IMethodBinding owningMethod = var.getDeclaringMethod();
+      if (owningMethod != null) {
+        return suppressesWarning(warning, owningMethod);
+      } else {
+        return suppressesWarning(warning, var.getDeclaringClass());
+      }
+    }
+    if (binding instanceof IMethodBinding) {
+      return suppressesWarning(warning, ((IMethodBinding) binding).getDeclaringClass());
+    }
+    return false;
+  }
 }

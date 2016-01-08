@@ -1394,6 +1394,9 @@ public class StatementGenerator extends TreeVisitor {
     List<VariableDeclarationFragment> vars = node.getFragments();
     assert !vars.isEmpty();
     IVariableBinding binding = vars.get(0).getVariableBinding();
+    if (BindingUtil.suppressesWarning("unused", binding)) {
+      buffer.append("__unused ");
+    }
     String objcType = nameTable.getSpecificObjCType(binding);
     String objcTypePointers = " ";
     int idx = objcType.indexOf(" *");

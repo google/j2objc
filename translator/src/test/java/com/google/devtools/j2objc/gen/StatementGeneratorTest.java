@@ -1757,4 +1757,28 @@ public class StatementGeneratorTest extends GenerationTest {
     // node not having a constant value.
     translateSourceFile(source, "A", "A.m");
   }
+
+  public void testSuppressedUnusedVariable() throws IOException {
+    String translation = translateSourceFile(
+        "class Test {"
+        + "void test() { "
+        + "@SuppressWarnings(\"unused\") int foo; }}", "Test", "Test.m");
+    assertTranslation(translation, "__unused jint foo;");
+  }
+
+  public void testSuppressedUnusedVariableFromMethod() throws IOException {
+    String translation = translateSourceFile(
+        "class Test {"
+        + "@SuppressWarnings(\"unused\") void test() { "
+        + "int foo; }}", "Test", "Test.m");
+    assertTranslation(translation, "__unused jint foo;");
+  }
+
+  public void testSuppressedUnusedVariableFromClass() throws IOException {
+    String translation = translateSourceFile(
+        "@SuppressWarnings(\"unused\") class Test {"
+        + "void test() { "
+        + "  int foo; }}", "Test", "Test.m");
+    assertTranslation(translation, "__unused jint foo;");
+  }
 }
