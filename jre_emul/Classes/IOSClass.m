@@ -62,6 +62,11 @@
 
 #define IOSClass_serialVersionUID 3206093459760846163LL
 
+@interface IOSClass () {
+  JavaClassMetadata *metadata_;
+}
+@end
+
 J2OBJC_INITIALIZED_DEFN(IOSClass)
 
 @implementation IOSClass
@@ -133,6 +138,20 @@ static JavaUtilProperties *prefixMapping;
   return IOSClass_voidClass;
 }
 
+- (instancetype)initWithClass:(Class)cls {
+  if ((self = [super init])) {
+    if (cls) {
+      // Can't use respondsToSelector here because that will search superclasses.
+      Method metadataMethod = JreFindClassMethod(cls, "__metadata");
+      if (metadataMethod) {
+        J2ObjcClassInfo *rawData = (ARCBRIDGE J2ObjcClassInfo *) method_invoke(cls, metadataMethod);
+        metadata_ = [[JavaClassMetadata alloc] initWithMetadata:rawData];
+      }
+    }
+  }
+  return self;
+}
+
 - (id)newInstance {
   // Per the JLS spec, throw an InstantiationException if the type is an
   // interface (no class_), array or primitive type (IOSClass types), or void.
@@ -148,7 +167,7 @@ static JavaUtilProperties *prefixMapping;
   if (!result) {
     return nil;
   }
-  NSString *genericSignature = [[self getMetadata] genericSignature];
+  NSString *genericSignature = [metadata_ genericSignature];
   if (!genericSignature) {
     return result;
   }
@@ -196,9 +215,8 @@ static JavaUtilProperties *prefixMapping;
 }
 
 - (int)getModifiers {
-  JavaClassMetadata *metadata = [self getMetadata];
-  if (metadata) {
-    return metadata.modifiers & JavaLangReflectModifier_classModifiers();
+  if (metadata_) {
+    return metadata_.modifiers & JavaLangReflectModifier_classModifiers();
   } else {
     // All Objective-C classes and protocols are public by default.
     return JavaLangReflectModifier_PUBLIC;
@@ -328,19 +346,15 @@ NSString *IOSClass_GetTranslatedMethodName(IOSClass *cls, NSString *name,
                                            IOSObjectArray *parameterTypes) {
   nil_chk(name);
   IOSClass *metaCls = cls;
+  jint nParameters = parameterTypes ? parameterTypes->size_ : 0;
   while (metaCls) {
-    JavaClassMetadata *metadata = [metaCls getMetadata];
-    if (metadata) {
-      JavaMethodMetadata *methodData =
-          [metadata findMethodMetadataWithJavaName:name
-                                          argCount:parameterTypes ? parameterTypes->size_ : 0];
-      if (methodData) {
-        return [methodData objcName];
-      }
+    JavaMethodMetadata *methodData =
+        [metaCls->metadata_ findMethodMetadataWithJavaName:name argCount:nParameters];
+    if (methodData) {
+      return [methodData objcName];
     }
     metaCls = [metaCls getSuperclass];
   }
-  jint nParameters = parameterTypes ? parameterTypes->size_ : 0;
   if (nParameters == 0) {
     return name;
   }
@@ -663,16 +677,15 @@ IOSClass *IOSClass_forName_initialize_classLoader_(
 }
 
 - (IOSClass *)getEnclosingClass {
-  JavaClassMetadata *metadata = [self getMetadata];
-  if (!metadata || !metadata.enclosingName) {
+  if (!metadata_ || !metadata_.enclosingName) {
     return nil;
   }
   NSMutableString *qName = [NSMutableString string];
-  if (metadata.packageName) {
-    [qName appendString:metadata.packageName];
+  if (metadata_.packageName) {
+    [qName appendString:metadata_.packageName];
     [qName appendString:@"."];
   }
-  [qName appendString:metadata.enclosingName];
+  [qName appendString:metadata_.enclosingName];
   return ClassForJavaName(qName);
 }
 
@@ -693,8 +706,7 @@ IOSClass *IOSClass_forName_initialize_classLoader_(
 }
 
 static jboolean hasModifier(IOSClass *cls, int flag) {
-  JavaClassMetadata *metadata = [cls getMetadata];
-  return metadata ? (metadata.modifiers & flag) > 0 : false;
+  return cls->metadata_ ? (cls->metadata_.modifiers & flag) > 0 : false;
 }
 
 - (jboolean)isAnnotation {
@@ -702,8 +714,7 @@ static jboolean hasModifier(IOSClass *cls, int flag) {
 }
 
 - (jboolean)isMemberClass {
-  JavaClassMetadata *metadata = [self getMetadata];
-  return metadata && metadata.enclosingName && ![self isAnonymousClass];
+  return metadata_ && metadata_.enclosingName && ![self isAnonymousClass];
 }
 
 - (jboolean)isLocalClass {
@@ -726,7 +737,7 @@ static jboolean hasModifier(IOSClass *cls, int flag) {
   if ([self isPrimitive]) {
     return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectType_class_()];
   }
-  NSString *genericSignature = [[self getMetadata] genericSignature];
+  NSString *genericSignature = [metadata_ genericSignature];
   if (!genericSignature) {
     // Just return regular interfaces list.
     IOSObjectArray *interfaces = [self getInterfacesInternal];
@@ -760,7 +771,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
 }
 
 - (IOSObjectArray *)getTypeParameters {
-  NSString *genericSignature = [[self getMetadata] genericSignature];
+  NSString *genericSignature = [metadata_ genericSignature];
   if (!genericSignature) {
     return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectTypeVariable_class_()];
   }
@@ -832,24 +843,13 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
   return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
 }
 
-// Returns the metadata structure defined by this class, if it exists.
 - (JavaClassMetadata *)getMetadata {
-  Class cls = [self objcClass];
-  if (cls) {
-    // Can't use respondsToSelector here because that will search superclasses.
-    Method metadataMethod = JreFindClassMethod(cls, "__metadata");
-    if (metadataMethod) {
-      J2ObjcClassInfo *rawData = (ARCBRIDGE J2ObjcClassInfo *) method_invoke(cls, metadataMethod);
-      return AUTORELEASE([[JavaClassMetadata alloc] initWithMetadata:rawData]);
-    }
-  }
-  return nil;
+  return metadata_;
 }
 
 - (id)getPackage {
-  JavaClassMetadata *metadata = [self getMetadata];
-  if (metadata && metadata.packageName) {
-    return AUTORELEASE([[JavaLangPackage alloc] initWithNSString:metadata.packageName
+  if (metadata_ && metadata_.packageName) {
+    return AUTORELEASE([[JavaLangPackage alloc] initWithNSString:metadata_.packageName
                                                     withNSString:nil
                                                     withNSString:nil
                                                     withNSString:nil
@@ -867,7 +867,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
 
 static const char* GetFieldName(NSString *name, IOSClass *clazz) {
   const char *cname = [name UTF8String];
-  JavaFieldMetadata *fieldMetadata = [[clazz getMetadata] findFieldMetadata:cname];
+  JavaFieldMetadata *fieldMetadata = [clazz->metadata_ findFieldMetadata:cname];
   if (fieldMetadata) {
     return [[fieldMetadata name] UTF8String];
   }
@@ -878,7 +878,7 @@ static const char* GetFieldName(NSString *name, IOSClass *clazz) {
 // Adds all the fields for a specified class to a specified dictionary.
 static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
     jboolean publicOnly) {
-  JavaClassMetadata *metadata = [iosClass getMetadata];
+  JavaClassMetadata *metadata = iosClass->metadata_;
   if (metadata) {
     IOSObjectArray *infos = [metadata allFields];
     for (jint i = 0; i < infos->size_; i++) {
@@ -932,7 +932,7 @@ Ivar FindIvar(IOSClass *cls, NSString *name) {
 JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {
   Class cls = iosClass.objcClass;
   if (cls) {
-    JavaClassMetadata *metadata = [iosClass getMetadata];
+    JavaClassMetadata *metadata = iosClass->metadata_;
     if (metadata) {
       JavaFieldMetadata *fieldMeta = [metadata findFieldMetadata:[name UTF8String]];
       if (fieldMeta &&
@@ -1024,7 +1024,7 @@ static jboolean IsConstructorSelector(NSString *selector) {
 }
 
 - (JavaLangReflectMethod *)getEnclosingMethod {
-  JavaEnclosingMethodMetadata *metadata = [[self getMetadata] getEnclosingMethod];
+  JavaEnclosingMethodMetadata *metadata = [metadata_ getEnclosingMethod];
   if (metadata) {
     if (IsConstructorSelector(metadata.selector)) {
       return nil;
@@ -1041,7 +1041,7 @@ static jboolean IsConstructorSelector(NSString *selector) {
 }
 
 - (JavaLangReflectConstructor *)getEnclosingConstructor {
-  JavaEnclosingMethodMetadata *metadata = [[self getMetadata] getEnclosingMethod];
+  JavaEnclosingMethodMetadata *metadata = [metadata_ getEnclosingMethod];
   if (metadata) {
     if (!IsConstructorSelector(metadata.selector)) {
       return nil;
@@ -1061,7 +1061,7 @@ static jboolean IsConstructorSelector(NSString *selector) {
 // Adds all the inner classes for a specified class to a specified dictionary.
 static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
     jboolean publicOnly, jboolean includeInterfaces) {
-  JavaClassMetadata *metadata = [iosClass getMetadata];
+  JavaClassMetadata *metadata = iosClass->metadata_;
   if (metadata) {
     IOSObjectArray *innerClasses = [metadata getInnerClasses];
     if (!innerClasses) {

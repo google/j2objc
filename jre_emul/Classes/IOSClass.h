@@ -54,6 +54,8 @@
 @property (readonly) Class objcClass;
 @property (readonly) Protocol *objcProtocol;
 
+- (instancetype)initWithClass:(Class)cls;
+
 // IOSClass Getters.
 + (IOSClass *)classForIosName:(NSString *)iosName;
 + (IOSClass *)primitiveClassForChar:(unichar)c;

@@ -37,14 +37,9 @@
 @implementation IOSPrimitiveClass
 
 - (instancetype)initWithName:(NSString *)name type:(NSString *)type {
-  if ((self = [super init])) {
-#if __has_feature(objc_arc)
-    name_ = name;
-    type_ = type;
-#else
-    name_ = [name retain];
-    type_ = [type retain];
-#endif
+  if ((self = [super initWithClass:NULL])) {
+    name_ = RETAIN_(name);
+    type_ = RETAIN_(type);
   }
   return self;
 }

@@ -30,7 +30,7 @@
 @implementation IOSArrayClass
 
 - (instancetype)initWithComponentType:(IOSClass *)type {
-  if ((self = [super init])) {
+  if ((self = [super initWithClass:NULL])) {
     componentType_ = RETAIN_(type);
   }
   return self;

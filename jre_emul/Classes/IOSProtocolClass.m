@@ -31,10 +31,14 @@
 
 @implementation IOSProtocolClass
 
+Class GetBackingClass(Protocol *protocol) {
+  return objc_lookUpClass(protocol_getName(protocol));
+}
+
 @synthesize objcProtocol = protocol_;
 
 - (instancetype)initWithProtocol:(Protocol *)protocol {
-  if ((self = [super init])) {
+  if ((self = [super initWithClass:GetBackingClass(protocol)])) {
     protocol_ = RETAIN_(protocol);
   }
   return self;
@@ -81,7 +85,7 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 
 // Returns the class with the same name as the protocol, if it exists.
 - (Class) objcClass {
-  return objc_lookUpClass(protocol_getName(protocol_));
+  return GetBackingClass(protocol_);
 }
 
 - (int)getModifiers {

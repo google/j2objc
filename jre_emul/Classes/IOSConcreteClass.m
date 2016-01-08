@@ -40,7 +40,7 @@
 @synthesize objcClass = class_;
 
 - (instancetype)initWithClass:(Class)cls {
-  if ((self = [super init])) {
+  if ((self = [super initWithClass:cls])) {
     class_ = cls;
   }
   return self;
