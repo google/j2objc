@@ -23,7 +23,7 @@
 
 // TODO(kstanger): Remove after users have migrated.
 #ifndef J2OBJC_NO_RENAME2_ALIASES
-#define J2OBJC_RENAME2_ALIASES 1
+//#define J2OBJC_RENAME2_ALIASES 1
 #endif
 
 #ifndef __has_feature
