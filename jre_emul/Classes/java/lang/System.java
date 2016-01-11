@@ -254,7 +254,20 @@ public class System {
 
       NSString *homeDirectory = NSHomeDirectory();
       [JavaLangSystem_props setPropertyWithNSString:@"user.home" withNSString:homeDirectory];
-      [JavaLangSystem_props setPropertyWithNSString:@"user.name" withNSString:NSUserName()];
+
+      NSString *userName = NSUserName();
+#if TARGET_IPHONE_SIMULATOR
+      // Some simulators don't initialize the user name, so try hacking it from the app's path.
+      if (!userName || userName.length == 0) {
+        NSArray *bundlePathComponents = [NSBundle.mainBundle.bundlePath pathComponents];
+        if (bundlePathComponents.count >= 3
+            && [bundlePathComponents[0] isEqualToString:@"/"]
+            && [bundlePathComponents[1] isEqualToString:@"Users"]) {
+          userName = bundlePathComponents[2];
+        }
+      }
+#endif
+      [JavaLangSystem_props setPropertyWithNSString:@"user.name" withNSString:userName];
 
 #if TARGET_IPHONE_SIMULATOR
       [JavaLangSystem_props setPropertyWithNSString:@"os.name" withNSString:@"iPhone Simulator"];

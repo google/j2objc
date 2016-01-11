@@ -106,7 +106,7 @@ public class SystemTest extends TestCase {
     Map<String, String> variables = System.getenv();
     assertNotNull(variables);
     assertFalse(variables.keySet().isEmpty());
-    
+
     // Verify an immutable map was returned.
     try {
       variables.put("SOME_KEY", "some value");
@@ -118,13 +118,13 @@ public class SystemTest extends TestCase {
 
   public void testSystemProperties() {
     for (String key : NOT_NULL_PROPERTIES) {
-      assertNotNull(System.getProperty(key));
+      assertNotNull("key not found: " + key, System.getProperty(key));
     }
 
-    assertNull(System.getProperty("non.existent.property"));
+    assertNull("non-existent property returned", System.getProperty("non.existent.property"));
 
     for (String key : NOT_EMPTY_PROPERTIES) {
-      assertTrue(System.getProperty(key).length() > 0);
+      assertTrue("empty key returned: " + key, System.getProperty(key).length() > 0);
     }
   }
 }

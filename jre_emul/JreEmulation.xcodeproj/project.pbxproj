@@ -13,6 +13,8 @@
 		0600C0161B715D13005FDEF9 /* SmallTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C00D1B715CB4005FDEF9 /* SmallTests.m */; };
 		0600C0171B715D13005FDEF9 /* SuperMethodReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C00F1B715CB4005FDEF9 /* SuperMethodReferenceTest.m */; };
 		0600C0181B715D13005FDEF9 /* TypeMethodReferenceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0600C0111B715CB4005FDEF9 /* TypeMethodReferenceTest.m */; };
+		060C795D1C4056CD0073084C /* package-info.m in Sources */ = {isa = PBXBuildFile; fileRef = 060C795B1C4056040073084C /* package-info.m */; };
+		060C795E1C4056CD0073084C /* TestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = 060C795C1C4056040073084C /* TestClass.m */; };
 		0615D3DF1BD83E7300132067 /* AllTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B11BD83E7300132067 /* AllTests.m */; };
 		0615D3E01BD83E7300132067 /* BeanDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B21BD83E7300132067 /* BeanDescriptorTest.m */; };
 		0615D3E11BD83E7300132067 /* EventSetDescriptorTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 0615D3B31BD83E7300132067 /* EventSetDescriptorTest.m */; };
@@ -654,6 +656,8 @@
 		0600C0101B715CB4005FDEF9 /* TypeMethodReferenceTest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = TypeMethodReferenceTest.h; path = com/google/j2objc/java8/TypeMethodReferenceTest.h; sourceTree = "<group>"; };
 		0600C0111B715CB4005FDEF9 /* TypeMethodReferenceTest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = TypeMethodReferenceTest.m; path = com/google/j2objc/java8/TypeMethodReferenceTest.m; sourceTree = "<group>"; };
 		0604932C1772407B0047D336 /* IOSClassTest.m */ = {isa = PBXFileReference; fileEncoding = 4; indentWidth = 2; lastKnownFileType = sourcecode.c.objc; name = IOSClassTest.m; path = Classes/IOSClassTest.m; sourceTree = SOURCE_ROOT; tabWidth = 2; wrapsLines = 0; };
+		060C795B1C4056040073084C /* package-info.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "package-info.m"; path = "com/google/j2objc/mappedpkg/package-info.m"; sourceTree = "<group>"; };
+		060C795C1C4056040073084C /* TestClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestClass.m; path = com/google/j2objc/mappedpkg/TestClass.m; sourceTree = "<group>"; };
 		0615D3B11BD83E7300132067 /* AllTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AllTests.m; path = org/apache/harmony/beans/tests/java/beans/AllTests.m; sourceTree = "<group>"; };
 		0615D3B21BD83E7300132067 /* BeanDescriptorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BeanDescriptorTest.m; path = org/apache/harmony/beans/tests/java/beans/BeanDescriptorTest.m; sourceTree = "<group>"; };
 		0615D3B31BD83E7300132067 /* EventSetDescriptorTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EventSetDescriptorTest.m; path = org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.m; sourceTree = "<group>"; };
@@ -700,7 +704,6 @@
 		0615D3DC1BD83E7300132067 /* SampleBean.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SampleBean.m; path = org/apache/harmony/beans/tests/support/SampleBean.m; sourceTree = "<group>"; };
 		0615D3DD1BD83E7300132067 /* SampleEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SampleEvent.m; path = org/apache/harmony/beans/tests/support/SampleEvent.m; sourceTree = "<group>"; };
 		0615D3DE1BD83E7300132067 /* SampleListener.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SampleListener.m; path = org/apache/harmony/beans/tests/support/SampleListener.m; sourceTree = "<group>"; };
-		0615D40D1BD83FF700132067 /* PropertyChangeSupportTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = PropertyChangeSupportTest.m; path = libcore/java/util/beans/PropertyChangeSupportTest.m; sourceTree = "<group>"; };
 		061660891A40DD1400972BBD /* SerializationTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SerializationTest.h; path = libcore/java/io/SerializationTest.h; sourceTree = "<group>"; };
 		0616608A1A40DD1400972BBD /* SerializationTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SerializationTest.m; path = libcore/java/io/SerializationTest.m; sourceTree = "<group>"; };
 		061AA0CC19FEF01800457D2B /* package-info.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "package-info.h"; path = "com/google/j2objc/package-info.h"; sourceTree = "<group>"; };
@@ -6535,6 +6538,7 @@
 				06E4E4F9197F1D46005DDE69 /* org */,
 				0615D3DB1BD83E7300132067 /* OtherBean.m */,
 				061AA0CC19FEF01800457D2B /* package-info.h */,
+				060C795B1C4056040073084C /* package-info.m */,
 				06574A5F1A8EB081000A3616 /* package-info.m */,
 				061AA0CD19FEF01800457D2B /* package-info.m */,
 				069680FE1BA8DC38007AFADF /* PackagePrefixesTest.m */,
@@ -6551,7 +6555,6 @@
 				06574A271A8EB04A000A3616 /* PrivateKeyTest.m */,
 				069680FB1BA8DC38007AFADF /* PropertyChangeEventTest.m */,
 				069680FC1BA8DC38007AFADF /* PropertyChangeListenerProxyTest.m */,
-				0615D40D1BD83FF700132067 /* PropertyChangeSupportTest.m */,
 				069680FD1BA8DC38007AFADF /* PropertyDescriptorTest.m */,
 				0615D3BA1BD83E7300132067 /* PropertyVetoExceptionTest.m */,
 				06574A281A8EB04A000A3616 /* ProviderExceptionTest.m */,
@@ -6608,6 +6611,7 @@
 				06574A5D1A8EB081000A3616 /* SystemTest.m */,
 				06574A3C1A8EB04A000A3616 /* SystemTest.m */,
 				061AA0D219FEF2E700457D2B /* TestAnnotation.m */,
+				060C795C1C4056040073084C /* TestClass.m */,
 				06574A341A8EB04A000A3616 /* TestKeyPair.m */,
 				06E4E63F197F1D47005DDE69 /* tests */,
 				069680F81BA8DC38007AFADF /* TextAttributeTest.m */,
@@ -8218,6 +8222,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				060C795D1C4056CD0073084C /* package-info.m in Sources */,
+				060C795E1C4056CD0073084C /* TestClass.m in Sources */,
 				06C54ADB1A40C9F0004B3ACD /* AnnotationTypeMismatchExceptionTest.m in Sources */,
 				06E4E72F197F1D47005DDE69 /* ConstructorTest.m in Sources */,
 				06979BA61C220FFB00803967 /* MethodTest.m in Sources */,
