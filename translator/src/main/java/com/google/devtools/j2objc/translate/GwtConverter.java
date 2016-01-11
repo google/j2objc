@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
+import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -85,8 +86,9 @@ public class GwtConverter extends TreeVisitor {
     if (isGwtTest(node.getExpression())) {
       if (node.getElseStatement() != null) {
         // Replace this node with the else statement.
-        node.replaceWith(TreeUtil.remove(node.getElseStatement()));
-        node.getElseStatement().accept(this);
+        Statement replacement = TreeUtil.remove(node.getElseStatement());
+        node.replaceWith(replacement);
+        replacement.accept(this);
       } else {
         // No else statement, so remove this if statement or replace it
         // with an empty statement.

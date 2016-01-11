@@ -97,4 +97,17 @@ public class GwtConverterTest extends GenerationTest {
         "Test", "Test.h");
     assertTranslation(translation, "- (jboolean)test;");
   }
+
+  // Regression test: GwtConverter.visit(IfStatement) threw an NPE.
+  public void testGwtIsScriptElseBlock() throws IOException {
+    String translation = translateSourceFile("import com.google.gwt.core.client.GWT;"
+        + "class Test { String test() { "
+        + "  if (GWT.isScript()) { "
+        + "    return \"one\"; "
+        + "  } else { "
+        + "    return \"two\"; "
+        + "  }}}",  "Test", "Test.m");
+    assertNotInTranslation(translation, "return @\"one\";");
+    assertTranslation(translation, "return @\"two\";");
+  }
 }
