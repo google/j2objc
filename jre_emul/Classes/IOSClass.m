@@ -584,10 +584,6 @@ IOSClass *IOSClass_forName_(NSString *className) {
       iosClass = ClassForJavaName(className);
     }
   }
-  if (!iosClass) {
-    // See if it's an enum.
-    iosClass = ClassForJavaName([className stringByAppendingString:@"Enum"]);
-  }
   if (iosClass) {
     return iosClass;
   }

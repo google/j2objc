@@ -353,7 +353,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
  *   inline Foo *FooEnum_BAR();
  *
  * @define J2OBJC_ENUM_CONSTANT_GETTER
- * @param CLASS The enum class (must end in "Enum").
+ * @param CLASS The enum class.
  * @param CONSTANT The name of the enum constant.
  */
 #define J2OBJC_ENUM_CONSTANT_GETTER(CLASS, CONSTANT) \
