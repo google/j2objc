@@ -192,4 +192,13 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         + " @ObjectiveCName(\"Bar\") class Test {}", "foo.Test", "foo/Test.m");
     assertTranslation(translation, "#include \"foo/Test.h\"");
   }
+
+  public void testImportsNativeExpressionType() throws IOException {
+    addSourceFile("class Foo { "
+        + "  static java.util.List list = java.util.Collections.EMPTY_LIST; "
+        + "}", "Foo.java");
+    String translation = translateSourceFile("class Test { void test() { "
+        + "java.util.Collection c = null; c = Foo.list; }}", "Test", "Test.m");
+    assertTranslation(translation, "#include \"java/util/List.h\"");
+  }
 }

@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
+import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -184,6 +185,11 @@ public class ImplementationImportCollector extends TreeVisitor {
     // The return type is needed because the expression might need a cast.
     addImports(node.getTypeBinding());
     addImports(node.getFunctionBinding().getDeclaringClass());
+  }
+
+  @Override
+  public void endVisit(Assignment node) {
+    addImports(node.getRightHandSide().getTypeBinding());
   }
 
   @Override
