@@ -226,14 +226,6 @@ void SingleFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
         "    set$capitalized_name$With$parameter_type$_Builder:\n"
         "    ($parameter_type$_Builder *)value;\n");
   }
-  // TODO(kstanger): Remove after name migration. (b/25973003)
-  if (GetJavaType(descriptor_) == JAVATYPE_ENUM) {
-    printer->Print("#ifdef J2OBJC_RENAME2_ALIASES\n");
-    printer->Print(variables_,
-        "#define set$capitalized_name$With$parameter_type$Enum "
-        "set$capitalized_name$With$parameter_type$\n");
-    printer->Print("#endif // J2OBJC_RENAME2_ALIASES\n");
-  }
 }
 
 void SingleFieldGenerator::GenerateMessageOrBuilderProtocol(io::Printer* printer)
@@ -284,15 +276,6 @@ void RepeatedFieldGenerator::GenerateFieldBuilderHeader(io::Printer* printer)
         "- ($classname$_Builder*)\n"
         "    add$capitalized_name$With$parameter_type$_Builder:\n"
         "    ($parameter_type$_Builder *)value;\n");
-  }
-  // TODO(kstanger): Remove after name migration. (b/25973003)
-  if (GetJavaType(descriptor_) == JAVATYPE_ENUM) {
-    printer->Print("#ifdef J2OBJC_RENAME2_ALIASES\n");
-    printer->Print(variables_,
-        "#define with$parameter_type$Enum with$parameter_type$\n"
-        "#define add$capitalized_name$With$parameter_type$Enum "
-        "add$capitalized_name$With$parameter_type$\n");
-    printer->Print("#endif // J2OBJC_RENAME2_ALIASES\n");
   }
 }
 
