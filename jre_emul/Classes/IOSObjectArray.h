@@ -24,6 +24,9 @@
 
 #import "IOSArray.h"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wzero-length-array"
+
 @class IOSClass;
 @class IOSObjectArray;
 
@@ -151,4 +154,5 @@ __attribute__((always_inline)) inline JreArrayRef IOSObjectArray_GetRef(
 }
 FOUNDATION_EXPORT id IOSObjectArray_SetRef(JreArrayRef ref, id value);
 
+#pragma clang diagnostic pop
 #endif // IOSObjectArray_H

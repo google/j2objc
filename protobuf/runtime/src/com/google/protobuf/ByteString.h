@@ -35,6 +35,9 @@
 
 #include "J2ObjC_header.h"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wzero-length-array"
+
 @class IOSByteArray;
 @class JavaIoInputStream;
 @class JavaIoOutputStream;
@@ -95,4 +98,5 @@ J2OBJC_STATIC_FIELD_GETTER(ComGoogleProtobufByteString, EMPTY, ComGoogleProtobuf
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufByteString)
 
+#pragma clang diagnostic pop
 #endif // __ComGoogleProtobufByteString_H__

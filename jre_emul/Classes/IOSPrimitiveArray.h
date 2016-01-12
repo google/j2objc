@@ -33,6 +33,8 @@
 
 #import "IOSArray.h"
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wzero-length-array"
 
 // ********** IOSBooleanArray **********
 
@@ -767,4 +769,5 @@ __attribute__((always_inline)) inline jdouble *IOSDoubleArray_GetRef(
 #undef PRIMITIVE_ARRAY_INTERFACE
 #undef PRIMITIVE_ARRAY_C_INTERFACE
 
+#pragma clang diagnostic pop
 #endif // IOSPrimitiveArray_H
