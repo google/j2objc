@@ -105,14 +105,5 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
       print(" NS_RETURNS_RETAINED");
     }
     println(";");
-
-    // TODO(kstanger): Remove when users have migrated.
-    String name = function.getName();
-    String oldName = function.getOldName();
-    if (!oldName.equals(name)) {
-      println("#ifdef J2OBJC_RENAME2_ALIASES");
-      printf("#define %s %s\n", oldName, name);
-      println("#endif // J2OBJC_RENAME2_ALIASES");
-    }
   }
 }

@@ -111,12 +111,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printInnerDeclarations();
     printDisallowedConstructors();
     println("\n@end");
-    // TODO(kstanger): Remove after users have migrated.
-    if (!oldTypeName.equals(typeName)) {
-      println("#ifdef J2OBJC_RENAME2_ALIASES");
-      printf("#define %s %s\n", oldTypeName, typeName);
-      println("#endif // J2OBJC_RENAME2_ALIASES");
-    }
 
     printCompanionClassDeclaration();
     printStaticInitFunction();
@@ -383,37 +377,18 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     } else {
       printf("\nJ2OBJC_EMPTY_STATIC_INIT(%s)\n", typeName);
     }
-    // TODO(kstanger): Remove after users migrate.
-    if (!oldTypeName.equals(typeName)) {
-      println("#ifdef J2OBJC_RENAME2_ALIASES");
-      printf("#define %s_initialize %s_initialize\n", oldTypeName, typeName);
-      println("#endif // J2OBJC_RENAME2_ALIASES");
-    }
   }
 
   private void printEnumConstants() {
     if (typeNode instanceof EnumDeclaration) {
       String nativeName = NameTable.getNativeEnumName(typeName);
       printf("\nFOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
-      // TODO(kstanger): Remove after users migrate.
-      if (!oldTypeName.equals(typeName)) {
-        println("#ifdef J2OBJC_RENAME2_ALIASES");
-        printf("#define %s_values_ %s_values_\n", oldTypeName, typeName);
-        println("#endif // J2OBJC_RENAME2_ALIASES");
-      }
       for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
         String varName = nameTable.getVariableBaseName(constant.getVariableBinding());
         String valueName = constant.getName().getIdentifier();
         printf("\n#define %s_%s %s_values_[%s_%s]\n",
             typeName, varName, typeName, nativeName, valueName);
         printf("J2OBJC_ENUM_CONSTANT_GETTER(%s, %s)\n", typeName, varName);
-        // TODO(kstanger): Remove after users migrate.
-        if (!oldTypeName.equals(typeName)) {
-          println("#ifdef J2OBJC_RENAME2_ALIASES");
-          printf("#define %s_%s %s_%s\n", oldTypeName, varName, typeName, varName);
-          printf("#define %s_get_%s %s_get_%s\n", oldTypeName, varName, typeName, varName);
-          println("#endif // J2OBJC_RENAME2_ALIASES");
-        }
       }
     }
   }
@@ -440,12 +415,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       String isVolatile = BindingUtil.isVolatile(var) ? "_VOLATILE" : "";
       println(String.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
           isVolatile, typeName, fieldName, typeStr));
-      // TODO(kstanger): Remove when users have migrated.
-      if (!oldTypeName.equals(typeName)) {
-        println("#ifdef J2OBJC_RENAME2_ALIASES");
-        printf("#define %s_set_%s %s_set_%s\n", oldTypeName, fieldName, typeName, fieldName);
-        println("#endif // J2OBJC_RENAME2_ALIASES");
-      }
     }
   }
 
@@ -487,12 +456,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   private void printTypeLiteralDeclaration() {
     newline();
     printf("J2OBJC_TYPE_LITERAL_HEADER(%s)\n", typeName);
-    // TODO(kstanger): Remove when users have migrated.
-    if (!oldTypeName.equals(typeName)) {
-      println("#ifdef J2OBJC_RENAME2_ALIASES");
-      printf("#define %s_class_ %s_class_\n", oldTypeName, typeName);
-      println("#endif // J2OBJC_RENAME2_ALIASES");
-    }
   }
 
   private void printBoxedOperators() {
@@ -639,23 +602,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print(" " + DEPRECATED_ATTRIBUTE);
     }
     println(";");
-
-    // TODO(kstanger): Remove code below when users have migrated.
-    String oldMethodName = nameTable.getMethodSelector(m.getMethodBinding(), true);
-    if (oldMethodName.equals(methodName)) {
-      return;
-    }
-    String[] selParts = methodName.split(":");
-    String[] oldSelParts = oldMethodName.split(":");
-    println("#ifdef J2OBJC_RENAME2_ALIASES");
-    for (int i = 0; i < selParts.length; i++) {
-      String part = selParts[i];
-      String oldPart = oldSelParts[i];
-      if (!part.equals(oldPart)) {
-        printf("#define %s %s\n", oldPart, part);
-      }
-    }
-    println("#endif // J2OBJC_RENAME2_ALIASES");
   }
 
   private boolean needsObjcMethodFamilyNoneAttribute(String name) {
@@ -695,15 +641,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print(" NS_RETURNS_RETAINED");
     }
     println(";");
-
-    // TODO(kstanger): Remove when users have migrated.
-    String name = function.getName();
-    String oldName = function.getOldName();
-    if (!oldName.equals(name)) {
-      println("#ifdef J2OBJC_RENAME2_ALIASES");
-      printf("#define %s %s\n", oldName, name);
-      println("#endif // J2OBJC_RENAME2_ALIASES");
-    }
   }
 
   /**
