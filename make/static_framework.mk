@@ -60,23 +60,25 @@ FRAMEWORK_HEADER = $(BUILD_DIR)/$(STATIC_FRAMEWORK_NAME).h
 
 # These are warnings that are suppressed for J2ObjC headers and generated code.
 #
+# c++98-compat: NS_ENUM/CF_ENUM fails with this warning.
 # direct-ivar-access: direct access is faster than accessor invocations.
 # documentation: Javadoc formatting is more lenient than clang's.
 # dollar-in-identifier-extension: follows Java inner-class naming.
 # objc-interface-ivars: non-private fields are valid in Java.
 # overriding-method-mismatch: supports parameterized types.
 # reserved-id-macro: external headers (Apple, ICU) have header guards with leading underscores.
-# undef: less noisy header guards.
-# zero-length-array: avoids allocating extra word of memory in arrays, and needing to deallocate it.
+# super-class-method-mismatch: overridden methods with parameters with type variables are valid.
 DISALLOWED_WARNINGS = \
+  -Wno-c++98-compat \
+  -Wno-c++98-compat-pedantic \
   -Wno-direct-ivar-access \
   -Wno-documentation \
+  -Wno-documentation-unknown-command \
   -Wno-dollar-in-identifier-extension \
   -Wno-objc-interface-ivars \
   -Wno-overriding-method-mismatch \
   -Wno-reserved-id-macro \
-  -Wno-undef \
-  -Wno-zero-length-array
+  -Wno-super-class-method-mismatch
 
 # Check that headers compile with most compiler flags.
 VERIFY_FLAGS := -I$(STATIC_FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
