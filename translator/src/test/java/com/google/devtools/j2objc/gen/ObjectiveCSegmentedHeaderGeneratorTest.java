@@ -34,7 +34,7 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
         "class Test { static class Inner {} }", "Test", "Test.h");
     assertTranslatedLines(translation,
         "#pragma push_macro(\"Test_INCLUDE_ALL\")",
-        "#if Test_RESTRICT",
+        "#ifdef Test_RESTRICT",
         "#define Test_INCLUDE_ALL 0",
         "#else",
         "#define Test_INCLUDE_ALL 1",
@@ -42,10 +42,11 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
         "#undef Test_RESTRICT");
     assertTranslation(translation, "#pragma pop_macro(\"Test_INCLUDE_ALL\")");
     assertTranslatedLines(translation,
-        "#if !defined (Test_) && (Test_INCLUDE_ALL || Test_INCLUDE)",
+        "#if !defined (Test_) && (Test_INCLUDE_ALL || defined(Test_INCLUDE))",
         "#define Test_");
     assertTranslatedLines(translation,
-        "#if !defined (Test_Inner_) && (Test_INCLUDE_ALL || Test_Inner_INCLUDE)",
+        "#if !defined (Test_Inner_) && "
+        + "(Test_INCLUDE_ALL || defined(Test_Inner_INCLUDE))",
         "#define Test_Inner_");
   }
 
@@ -62,7 +63,7 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static class Inner extends Test {} }", "Test", "Test.h");
     assertTranslatedLines(translation,
-        "#if Test_Inner_INCLUDE",
+        "#ifdef Test_Inner_INCLUDE",
         "#define Test_INCLUDE 1",
         "#endif");
   }
@@ -71,7 +72,7 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test extends Foo { } class Foo {}", "Test", "Test.h");
     assertTranslatedLines(translation,
-        "#if Test_INCLUDE",
+        "#ifdef Test_INCLUDE",
         "#define Foo_INCLUDE 1",
         "#endif");
   }
@@ -120,7 +121,7 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     // name derived from the jar file path.
     assertTranslatedLines(translation,
         "#pragma push_macro(\"SomePathTest_INCLUDE_ALL\")",
-        "#if SomePathTest_RESTRICT",
+        "#ifdef SomePathTest_RESTRICT",
         "#define SomePathTest_INCLUDE_ALL 0",
         "#else",
         "#define SomePathTest_INCLUDE_ALL 1",

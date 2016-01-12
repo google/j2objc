@@ -17,7 +17,11 @@
 package java.lang;
 
 /*-[
-#if TARGET_OS_IPHONE || TARGET_OS_IPHONE_SIMULATOR
+
+#ifndef TARGET_OS_SIMULATOR
+#define TARGET_OS_SIMULATOR 0
+#endif
+#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
 #import <UIKit/UIKit.h>
 #endif
 
@@ -191,7 +195,7 @@ public class System {
       #undef J2OBJC_BUILD_ARCH_STRINGIFY
 
       NSString *versionString;
-#if !TARGET_OS_IPHONE && !TARGET_OS_IPHONE_SIMULATOR
+#if !TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
       BOOL onSimulator = false;
 #endif
       // During compile time, see if [NSProcessInfo processInfo].operatingSystemVersion is available
@@ -220,7 +224,7 @@ public class System {
       {
 #endif  // #if (defined(...))
 
-#if TARGET_OS_IPHONE || TARGET_OS_IPHONE_SIMULATOR
+#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
         // If [NSProcessInfo processInfo].operatingSystemVersion is not available in the SDK and
         // this is iOS SDK, use [UIDevice currentDevice].
         versionString = [UIDevice currentDevice].systemVersion;
@@ -241,7 +245,7 @@ public class System {
           // doing more than just reporting this back verbatim.
           versionString = [NSProcessInfo processInfo].operatingSystemVersionString;
         }
-#endif  // #if TARGET_OS_IPHONE || TARGET_OS_IPHONE_SIMULATOR
+#endif  // #if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
       }
 
       [JavaLangSystem_props setPropertyWithNSString:@"os.version" withNSString:versionString];
@@ -256,7 +260,7 @@ public class System {
       [JavaLangSystem_props setPropertyWithNSString:@"user.home" withNSString:homeDirectory];
 
       NSString *userName = NSUserName();
-#if TARGET_IPHONE_SIMULATOR
+#if TARGET_OS_SIMULATOR
       // Some simulators don't initialize the user name, so try hacking it from the app's path.
       if (!userName || userName.length == 0) {
         NSArray *bundlePathComponents = [NSBundle.mainBundle.bundlePath pathComponents];
@@ -269,7 +273,7 @@ public class System {
 #endif
       [JavaLangSystem_props setPropertyWithNSString:@"user.name" withNSString:userName];
 
-#if TARGET_IPHONE_SIMULATOR
+#if TARGET_OS_SIMULATOR
       [JavaLangSystem_props setPropertyWithNSString:@"os.name" withNSString:@"iPhone Simulator"];
       [JavaLangSystem_props
           setPropertyWithNSString:@"user.dir"

@@ -45,7 +45,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     println("#include \"J2ObjC_header.h\"");
     newline();
     printf("#pragma push_macro(\"%s_INCLUDE_ALL\")\n", varPrefix);
-    printf("#if %s_RESTRICT\n", varPrefix);
+    printf("#ifdef %s_RESTRICT\n", varPrefix);
     printf("#define %s_INCLUDE_ALL 0\n", varPrefix);
     println("#else");
     printf("#define %s_INCLUDE_ALL 1\n", varPrefix);
@@ -93,7 +93,7 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
       }
     }
     if (!localImports.isEmpty()) {
-      printf("#if %s_INCLUDE\n", typeName);
+      printf("#ifdef %s_INCLUDE\n", typeName);
       for (Import imp : localImports) {
         printf("#define %s_INCLUDE 1\n", imp.getTypeName());
       }
@@ -125,8 +125,8 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     }
 
     newline();
-    printf("#if !defined (%s_) && (%s_INCLUDE_ALL || %s_INCLUDE)\n", typeName, varPrefix,
-           typeName);
+    printf("#if !defined (%s_) && (%s_INCLUDE_ALL || defined(%s_INCLUDE))\n",
+        typeName, varPrefix, typeName);
     printf("#define %s_\n", typeName);
 
     Set<Import> forwardDeclarations = Sets.newHashSet(type.getHeaderForwardDeclarations());

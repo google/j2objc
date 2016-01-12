@@ -148,7 +148,7 @@ static jboolean in_low_memory_cleanup;
     referent_subclass_map = [[NSMutableDictionary alloc] init];
     soft_references = [[NSMutableSet alloc] init];
 
-#if SUPPORTS_SOFT_REFERENCES
+#ifdef SUPPORTS_SOFT_REFERENCES
     // Register for iOS low memory notifications, to clear pending soft references.
     [[NSNotificationCenter defaultCenter]
         addObserver:self
