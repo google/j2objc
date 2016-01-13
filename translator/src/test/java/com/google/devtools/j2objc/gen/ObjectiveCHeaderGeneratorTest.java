@@ -370,9 +370,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today; }",
         "Example", "Example.h");
     assertTranslatedLines(translation,
+        "inline JavaUtilDate *Example_get_today();",
+        "inline JavaUtilDate *Example_set_today(JavaUtilDate *value);",
+        "/*! INTERNAL ONLY - Use accessor function from above. */",
         "FOUNDATION_EXPORT JavaUtilDate *Example_today;",
-        "J2OBJC_STATIC_FIELD_GETTER(Example, today, JavaUtilDate *)",
-        "J2OBJC_STATIC_FIELD_SETTER(Example, today, JavaUtilDate *)");
+        "J2OBJC_STATIC_FIELD_OBJ(Example, today, JavaUtilDate *)");
     assertFalse(translation.contains("initialize"));
     assertFalse(translation.contains("dealloc"));
   }
@@ -382,10 +384,12 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "public class Example { public static java.util.Date today = new java.util.Date(); }",
         "Example", "Example.h");
     assertTranslatedLines(translation,
+        "inline JavaUtilDate *Example_get_today();",
+        "inline JavaUtilDate *Example_set_today(JavaUtilDate *value);",
+        "/*! INTERNAL ONLY - Use accessor function from above. */",
         "FOUNDATION_EXPORT JavaUtilDate *Example_today;",
-        "J2OBJC_STATIC_FIELD_GETTER(Example, today, JavaUtilDate *)",
-        "J2OBJC_STATIC_FIELD_SETTER(Example, today, JavaUtilDate *)");
-    assertFalse(translation.contains("+ (void)initialize;"));
+        "J2OBJC_STATIC_FIELD_OBJ(Example, today, JavaUtilDate *)");
+    assertFalse(translation.contains("initialize;"));
     assertFalse(translation.contains("dealloc"));
   }
 

@@ -268,8 +268,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "id fieldFoo_;");
     assertTranslation(translation, "__weak id fieldJar_;");
     assertTranslation(translation, "int newFieldBar_;");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(FooBar, fieldPhi, jint)");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_REF_GETTER(FooBar, fieldPhi, jint)");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_PRIMITIVE(FooBar, fieldPhi, jint)");
   }
 
   public void testEmptyInterfaceGenerationNoMetadata() throws IOException {
@@ -722,7 +721,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "@interface Test { String FOO = \"foo\"; int I = 5; }", "Test", "Test.h");
     assertTranslation(translation, "#define Test_I 5");
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Test_FOO;");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, FOO, NSString *)");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, FOO, NSString *)");
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "NSString *Test_FOO = @\"foo\";");
     assertTranslation(translation, "@interface Test : NSObject");

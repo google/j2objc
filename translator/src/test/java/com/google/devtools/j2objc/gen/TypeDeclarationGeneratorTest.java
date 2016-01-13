@@ -54,7 +54,7 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static final int FOO = 1; }", "Test", "Test.h");
     assertTranslation(translation, "#define Test_FOO 1");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, FOO, jint)");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_CONSTANT(Test, FOO, jint)");
   }
 
   // Verify that accessor methods for static vars and constants are generated on request.

@@ -177,8 +177,7 @@ public class RewriterTest extends GenerationTest {
   public void testInterfaceFieldsAreStaticFinal() throws IOException {
     String source = "interface Test { String foo = \"bar\"; }";
     String translation = translateSourceFile(source, "Test", "Test.h");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Test, foo, NSString *)");
-    assertFalse(translation.contains("J2OBJC_STATIC_FIELD_SETTER"));
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Test, foo, NSString *)");
   }
 
   // Regression test: the wrong method name used for "f.group()" translation.

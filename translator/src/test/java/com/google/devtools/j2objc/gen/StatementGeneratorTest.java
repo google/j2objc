@@ -210,7 +210,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslation(translation, "NSString *Example_Bar_FOO = @\"Mumble\";");
     translation = getTranslatedFile("Example.h");
     assertTranslation(translation, "FOUNDATION_EXPORT NSString *Example_Bar_FOO;");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_GETTER(Example_Bar, FOO, NSString *)");
+    assertTranslation(translation, "J2OBJC_STATIC_FIELD_OBJ_FINAL(Example_Bar, FOO, NSString *)");
   }
 
   public void testMultipleVariableDeclarations() throws IOException {

@@ -257,6 +257,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
     return JreVolatileStrongAssign(&instance->FIELD, value); \
   }
 
+// TODO(kstanger): Remove these. (b/26515134)
 /*!
  * Defines the getter for a static variable. For class "Foo" and field "bar_"
  * with type "int" the getter will have the following signature:
@@ -285,6 +286,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
     return JreLoadVolatileId(&CLASS##_##FIELD); \
   }
 
+// TODO(kstanger): Remove this. (b/26515134)
 /*!
  * Defines the reference getter for a static variable. For class "Foo" and field
  * "bar_" with type "int" the getter will have the following signature:
@@ -301,6 +303,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
     return &CLASS##_##FIELD; \
   }
 
+// TODO(kstanger): Remove these. (b/26515134)
 /*!
  * Defines the setter for a static variable with an object type. For class "Foo"
  * and field "bar_" with type "NSString *" the getter will have the following
@@ -330,6 +333,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
   }
 #endif
 
+// TODO(kstanger): Remove these. (b/26515134)
 #define J2OBJC_STATIC_VOLATILE_FIELD_SETTER(CLASS, FIELD, TYPE) \
   __attribute__((always_inline)) inline TYPE CLASS##_set_##FIELD(TYPE value) { \
     CLASS##_initialize(); \

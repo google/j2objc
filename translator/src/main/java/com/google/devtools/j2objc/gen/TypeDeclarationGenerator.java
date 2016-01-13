@@ -426,6 +426,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   protected void printStaticFieldDeclaration(
       VariableDeclarationFragment fragment, String baseDeclaration) {
+    println("/*! INTERNAL ONLY - Use accessor function from above. */");
     println("FOUNDATION_EXPORT " + baseDeclaration + ";");
   }
 
@@ -433,24 +434,30 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     IVariableBinding var = fragment.getVariableBinding();
     boolean isVolatile = BindingUtil.isVolatile(var);
     String objcType = nameTable.getSpecificObjCType(var.getType());
+    String objcTypePadded = objcType + (objcType.endsWith("*") ? "" : " ");
     String declType = getDeclarationType(var);
     declType += (declType.endsWith("*") ? "" : " ");
     String name = nameTable.getVariableShortName(var);
     boolean isFinal = Modifier.isFinal(var.getModifiers());
     boolean isPrimitive = var.getType().isPrimitive();
-    String volatileStr = isVolatile ? "_VOLATILE" + (isPrimitive ? "" : "_OBJ") : "";
+    boolean isConstant = BindingUtil.isPrimitiveConstant(var);
+    String qualifiers = isConstant ? "_CONSTANT"
+        : (isPrimitive ? "_PRIMITIVE" : "_OBJ") + (isVolatile ? "_VOLATILE" : "")
+        + (isFinal ? "_FINAL" : "");
     newline();
-    if (!BindingUtil.isPrimitiveConstant(var)) {
-      printStaticFieldDeclaration(fragment, String.format("%s%s_%s", declType, typeName, name));
-    }
-    printf("J2OBJC_STATIC%s_FIELD_GETTER(%s, %s, %s)\n", volatileStr, typeName, name, objcType);
+    FieldDeclaration decl = (FieldDeclaration) fragment.getParent();
+    JavadocGenerator.printDocComment(getBuilder(), decl.getJavadoc());
+    printf("inline %s%s_get_%s();\n", objcTypePadded, typeName, name);
     if (!isFinal) {
+      printf("inline %s%s_set_%s(%svalue);\n", objcTypePadded, typeName, name, objcTypePadded);
       if (isPrimitive && !isVolatile) {
-        printf("J2OBJC_STATIC_FIELD_REF_GETTER(%s, %s, %s)\n", typeName, name, objcType);
-      } else {
-        printf("J2OBJC_STATIC%s_FIELD_SETTER(%s, %s, %s)\n", volatileStr, typeName, name, objcType);
+        printf("inline %s *%s_getRef_%s();\n", objcType, typeName, name);
       }
     }
+    if (!isConstant) {
+      printStaticFieldDeclaration(fragment, String.format("%s%s_%s", declType, typeName, name));
+    }
+    printf("J2OBJC_STATIC_FIELD%s(%s, %s, %s)\n", qualifiers, typeName, name, objcType);
   }
 
   private void printTypeLiteralDeclaration() {
