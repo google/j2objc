@@ -9,15 +9,21 @@ layout: docs
 
 <table>
  <tr><td>
- <img src="http://a4.mzstatic.com/us/r30/Purple1/v4/b3/6f/cc/b36fcc3e-9f18-4f2a-d8a1-34e006f03ea2/mzl.xgotgpmb.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/id905060486">Inbox by Gmail</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <img src="http://a3.mzstatic.com/us/r30/Purple69/v4/f6/64/5a/f6645ab0-33a3-5c5d-cc38-ffeee3848a08/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/idid909319292">Google Calendar</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  </td><td>
  <img src="http://a3.mzstatic.com/us/r30/Purple3/v4/f3/09/1c/f3091c01-8cbc-b0cc-8784-21161b2ae95b/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-docs/id842842640?mt=8">Google&nbsp;Docs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></b>
  </td></tr>
  <tr><td>
- <img src="http://a2.mzstatic.com/us/r30/Purple3/v4/e4/ef/17/e4ef1745-23bb-3090-2260-50287aefa0f0/mzl.vxjekxvy.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-sheets/id842849113?mt=8">Google&nbsp;Sheets</a></b>
+ <img src="http://a3.mzstatic.com/us/r30/Purple7/v4/cf/b3/8c/cfb38c33-d0e0-348d-df63-40899cc04b5e/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/id853371601">Google&nbsp;My&nbsp;Business</a></b>
  </td><td>
- <img src="http://a4.mzstatic.com/us/r30/Purple6/v4/89/80/3b/89803bd9-6933-80bd-4031-9a6a04196518/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-slides/id879478102?mt=8">Google&nbsp;Slides</a></b>
+ <img src="http://a2.mzstatic.com/us/r30/Purple3/v4/e4/ef/17/e4ef1745-23bb-3090-2260-50287aefa0f0/mzl.vxjekxvy.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-sheets/id842849113?mt=8">Google&nbsp;Sheets</a></b>
  </td></tr>
+ <tr><td>
+ <img src="http://a4.mzstatic.com/us/r30/Purple6/v4/89/80/3b/89803bd9-6933-80bd-4031-9a6a04196518/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-slides/id879478102?mt=8">Google&nbsp;Slides</a></b>
+ </td><td>
+ <img src="http://a4.mzstatic.com/us/r30/Purple1/v4/b3/6f/cc/b36fcc3e-9f18-4f2a-d8a1-34e006f03ea2/mzl.xgotgpmb.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/id905060486">Inbox by Gmail</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ </td></tr>
+ <tr>
 </table>
 
 ### App Store Apps
