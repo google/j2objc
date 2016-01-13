@@ -99,11 +99,19 @@ static void ReadRawValue(
     }
   } else {
     nil_chk(object);
-    if (![field->declaringClass_ isInstance:object]) {
-      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]
-                          initWithNSString:@"field type mismatch"]);
+    if (field->ivar_ == NULL) {
+      // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
+      SEL getter = NSSelectorFromString([NSString stringWithFormat:@"__%@", [field getName]]);
+      if (getter && [object respondsToSelector:getter]) {
+        rawValue->asId = [object performSelector:getter];
+      }
+    } else {
+      if (![field->declaringClass_ isInstance:object]) {
+        @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]
+                            initWithNSString:@"field type mismatch"]);
+      }
+      [type __readRawValue:rawValue fromAddress:((char *)object) + ivar_getOffset(field->ivar_)];
     }
-    [type __readRawValue:rawValue fromAddress:((char *)object) + ivar_getOffset(field->ivar_)];
   }
   if (![type __convertRawValue:rawValue toType:toType]) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]
@@ -134,6 +142,14 @@ static void SetWithRawValue(
     if (IsFinal(field) && !field->accessible_) {
       @throw AUTORELEASE([[JavaLangIllegalAccessException alloc] initWithNSString:
                           @"Cannot set final field"]);
+    }
+    if (field->ivar_ == NULL) {
+      // May be a mapped class "virtual" field, call equivalent accessor method if it exists.
+      SEL setter = NSSelectorFromString([NSString stringWithFormat:@"__set%@:", [field getName]]);
+      if (setter && [object respondsToSelector:setter]) {
+        [object performSelector:setter withObject:rawValue->asId];
+        return;
+      }
     }
     [type __writeRawValue:rawValue toAddress:((char *)object) + ivar_getOffset(field->ivar_)];
   }
