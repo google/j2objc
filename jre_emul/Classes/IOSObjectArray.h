@@ -24,8 +24,7 @@
 
 #import "IOSArray.h"
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wzero-length-array"
+#pragma clang system_header
 
 @class IOSClass;
 @class IOSObjectArray;

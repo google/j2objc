@@ -76,6 +76,7 @@ DISALLOWED_WARNINGS = \
   -Wno-documentation-unknown-command \
   -Wno-dollar-in-identifier-extension \
   -Wno-objc-interface-ivars \
+  -Wno-old-style-casts \
   -Wno-overriding-method-mismatch \
   -Wno-reserved-id-macro \
   -Wno-super-class-method-mismatch

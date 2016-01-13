@@ -91,6 +91,12 @@ protobuf_runtime_java: protobuf_compiler_dist
 protobuf_runtime_dist: jre_emul_dist protobuf_compiler_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/protobuf/runtime dist
 
+xalan_dist: translator_dist jre_emul_dist
+	@$(MAKE) -C $(J2OBJC_ROOT)/xalan dist
+
+xalan_java: java_deps_dist jre_emul_jar_dist
+	@$(MAKE) -C $(J2OBJC_ROOT)/xalan java
+
 
 else
 
@@ -116,5 +122,7 @@ mockito_manifest:
 protobuf_compiler_dist:
 protobuf_runtime_java:
 protobuf_runtime_dist:
+xalan_dist:
+xalan_java:
 
 endif

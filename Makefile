@@ -46,12 +46,14 @@ frameworks: dist
 	@cd inject/javax_inject && $(MAKE) framework
 	@cd guava && $(MAKE) framework
 	@cd testing/mockito && $(MAKE) framework
+	@cd xalan && $(MAKE) framework
 
 all_frameworks: frameworks protobuf_dist
 	@cd protobuf/runtime && $(MAKE) framework
 
 dist: print_environment translator_dist jre_emul_dist junit_dist jsr305_dist \
-	  javax_inject_dist guava_dist mockito_dist cycle_finder_dist install-man-pages
+  javax_inject_dist guava_dist mockito_dist cycle_finder_dist \
+  xalan_dist install-man-pages
 
 protobuf_dist: protobuf_compiler_dist protobuf_runtime_dist
 
@@ -73,6 +75,7 @@ clean:
 	@cd protobuf/runtime && $(MAKE) clean
 	@cd protobuf/compiler && $(MAKE) clean
 	@cd protobuf/tests && $(MAKE) clean
+	@cd xalan && $(MAKE) clean
 
 test_translator: annotations_dist java_deps_dist
 	@cd translator && $(MAKE) test

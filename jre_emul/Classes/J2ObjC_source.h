@@ -27,6 +27,8 @@
 #import "NSString+JavaString.h"
 #import "jni.h"
 
+#pragma clang system_header
+
 // "I" is defined in complex.h, which results in errors if that file is also
 // included.
 #pragma push_macro("I")

@@ -19,6 +19,8 @@
 
 package javax.xml.transform;
 
+import com.google.j2objc.LibraryNotLinkedError;
+
 /**
  * <p>A TransformerFactory instance can be used to create
  * {@link javax.xml.transform.Transformer} and
@@ -77,7 +79,8 @@ public abstract class TransformerFactory {
         try {
             return (TransformerFactory) Class.forName(className).newInstance();
         } catch (Exception e) {
-            throw new NoClassDefFoundError(className);
+          throw new LibraryNotLinkedError("Apache Xalan", "xalan",
+              "OrgApacheXalanProcessorTransformerFactoryImpl");
         }
     }
 
