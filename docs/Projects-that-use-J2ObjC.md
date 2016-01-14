@@ -45,9 +45,15 @@ layout: docs
  <tr><td>
  <img src="http://a3.mzstatic.com/us/r30/Purple/v4/69/57/0e/69570e6b-b7a4-3a23-5101-df348c2655e7/mzl.fqjzdfib.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/digital-forms-and-reports/id731851192?ls=1&mt=8">DigitalForms</a></b>&nbsp;&nbsp;<a href="http://digireporting.com">digireporting.com</a>
  </td><td>
- <img src="http://a1.mzstatic.com/us/r30/Purple/v4/66/ef/5b/66ef5bdc-7d87-ab6d-46ee-7f58df0fb72d/mzl.hffwosrc.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/gb/app/hordz-3d/id672852382">Hordz&nbsp;3D</a></b>
+ <img src="http://a4.mzstatic.com/us/r30/Purple6/v4/55/21/38/55213894-03aa-dda1-677b-4f16afa16cec/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/dulwich-picture-gallery/id1050936561?mt=8">Dulwich&nbsp;Picture&nbsp;Gallery</a></b> 
  </td></tr>
 
+ <tr><td>
+ <img src="http://a1.mzstatic.com/us/r30/Purple69/v4/17/c6/fc/17c6fc44-f363-8f27-167c-48d5734ff9d7/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/fine-arts-belgium-brussels/id1036745311?mt=8">Fine&nbsp;Arts&nbsp;Belgium&nbsp;(Brussels)</a></b> 
+ </td><td>
+ <img src="http://a1.mzstatic.com/us/r30/Purple/v4/66/ef/5b/66ef5bdc-7d87-ab6d-46ee-7f58df0fb72d/mzl.hffwosrc.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/gb/app/hordz-3d/id672852382">Hordz&nbsp;3D</a></b>
+ </td></tr>
+ 
  <tr><td>
  <img src="http://a3.mzstatic.com/us/r1000/067/Purple2/v4/28/02/bc/2802bc4e-02ec-2031-cb1f-bcbe353d1f6f/mzl.mkxwwpcj.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/kingdom-builder/id581197776?l=de&ls=1&mt=8">Kingdom&nbsp;Builder</a></b> 
  </td><td>
@@ -102,5 +108,8 @@ layout: docs
 
 - **[CocoaPods](http://cocoapods.org/?q=j2objc)**: J2ObjC libraries for the CocoaPods dependency manager
 - **[GDJson](https://github.com/goodow/realtime-json)**: Minimalistic JSON library for Java/Android/iOS/GWT/J2ObjC
+- **[J2ObjC Gradle Plugin](https://github.com/j2objc-contrib/j2objc-gradle)**: Build J2ObjC projects using Gradle
+- **[J2ObjC Maven Plugin](https://github.com/smoope/j2objc-maven-plugin)**: Build J2ObjC projects using Maven
+- **[j2objc-common-libs-e2e-test](https://github.com/j2objc-contrib/j2objc-common-libs-e2e-test)**: iOS builds for popular Java libraries ([status](https://travis-ci.org/j2objc-contrib/j2objc-common-libs-e2e-test)).
 - **[realtime-store](https://github.com/goodow/realtime-store)**: Google Docs–style collaboration via the use of operational transforms
 - **[sqlighter-4-j2objc](https://github.com/vals-productions/sqlighter)**: Library that provides a cross-platform API for SQLite for J2ObjC and Android
