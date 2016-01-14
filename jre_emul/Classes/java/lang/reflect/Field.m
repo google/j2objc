@@ -213,7 +213,9 @@ static void SetWithRawValue(
 - (void)setWithId:(id)object withId:(id)value {
   // TODO(kstanger): correctly handle @Weak fields.
   IOSClass *fieldType = [self getType];
-  jboolean needsRetain = ![fieldType isPrimitive];
+  // If ivar_ is NULL and the field is not static then the field is a mapped
+  // class "virtual" field.
+  jboolean needsRetain = ![fieldType isPrimitive] && (ivar_ || IsStatic(self));
   if (needsRetain) {
     AUTORELEASE([self getWithId:object]);
   }
