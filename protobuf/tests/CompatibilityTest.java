@@ -536,6 +536,16 @@ public class CompatibilityTest extends ProtobufTest {
     assertEquals(TypicalData.EnumType.VALUE3, TypicalData.EnumType.valueOf(3));
     assertEquals(TypicalData.EnumType.VALUE4, TypicalData.EnumType.valueOf(4));
     assertEquals(TypicalData.EnumType.VALUE9, TypicalData.EnumType.valueOf(9));
+    // TODO(user): Add a test for bad values
+  }
+
+  public void testEnumForNumber() throws Exception {
+    assertEquals(TypicalData.EnumType.VALUE1, TypicalData.EnumType.forNumber(1));
+    assertEquals(TypicalData.EnumType.VALUE2, TypicalData.EnumType.forNumber(2));
+    assertEquals(TypicalData.EnumType.VALUE3, TypicalData.EnumType.forNumber(3));
+    assertEquals(TypicalData.EnumType.VALUE4, TypicalData.EnumType.forNumber(4));
+    assertEquals(TypicalData.EnumType.VALUE9, TypicalData.EnumType.forNumber(9));
+    // TODO(user): Add a test for bad values
   }
 
   public void testEnumValueOfWithString() throws Exception {

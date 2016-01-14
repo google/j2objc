@@ -102,6 +102,7 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       "+ (IOSObjectArray *)values;\n"
       "+ ($classname$ *)valueOfWithNSString:(NSString *)name;\n"
       "+ ($classname$ *)valueOfWithInt:(jint)value;\n"
+      "+ ($classname$ *)forNumberWithInt:(jint)value;\n"
       "- (jint)getNumber;\n"
       "\n"
       "@end\n"
@@ -116,6 +117,8 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       "FOUNDATION_EXPORT $classname$ *$classname$_valueOfWithNSString_("
           "NSString *name);\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_valueOfWithInt_("
+          "jint value);\n"
+      "FOUNDATION_EXPORT $classname$ *$classname$_forNumberWithInt_("
           "jint value);\n\n",
       "classname", ClassName(descriptor_));
 
@@ -196,6 +199,10 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "  return $classname$_valueOfWithInt_(value);\n"
       "}\n"
       "\n"
+      "+ ($classname$ *)forNumberWithInt:(jint)value {\n"
+      "  return $classname$_forNumberWithInt_(value);\n"
+      "}\n"
+      "\n"
       "- (jint)getNumber {\n"
       "  return value_;\n"
       "}\n"
@@ -231,6 +238,10 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "}\n"
       "\n"
       "$classname$ *$classname$_valueOfWithInt_(jint value) {\n"
+      "  return $classname$_forNumberWithInt_(value);\n"
+      "}\n"
+      "\n"
+      "$classname$ *$classname$_forNumberWithInt_(jint value) {\n"
       "  $classname$_initialize();"
       "  for (jint i = 0; i < $count$; i++) {\n"
       "    $classname$ *e = $classname$_values_[i];\n"
@@ -238,6 +249,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "      return e;\n"
       "    }\n"
       "  }\n"
+      // TODO(user): This should return null for true compatibility.
       "  @throw [[[JavaLangIllegalArgumentException alloc]\n"
       "      initWithNSString:[NSString stringWithFormat:@\"%d\", value]] autorelease];\n"
       "}\n\n",
