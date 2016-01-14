@@ -24,7 +24,7 @@
 
 #import "IOSObjectArray.h"
 #import "IOSPrimitiveArray.h"
-#import "J2ObjC_common.h"
+#import "J2ObjC_header.h"
 #import "java/io/Serializable.h"
 #import "java/lang/CharSequence.h"
 #import "java/lang/Comparable.h"
@@ -325,11 +325,15 @@ __attribute__((always_inline)) inline void NSString_initialize() {
   }
 }
 
+inline id<JavaUtilComparator> NSString_get_CASE_INSENSITIVE_ORDER();
+/*! INTERNAL ONLY - Use accessor function from above. */
 FOUNDATION_EXPORT id<JavaUtilComparator> NSString_CASE_INSENSITIVE_ORDER;
-J2OBJC_STATIC_FIELD_GETTER(NSString, CASE_INSENSITIVE_ORDER, id<JavaUtilComparator>)
+J2OBJC_STATIC_FIELD_OBJ_FINAL(NSString, CASE_INSENSITIVE_ORDER, id<JavaUtilComparator>)
 
+inline IOSObjectArray *NSString_get_serialPersistentFields();
+/*! INTERNAL ONLY - Use accessor function from above. */
 FOUNDATION_EXPORT IOSObjectArray *NSString_serialPersistentFields;
-J2OBJC_STATIC_FIELD_GETTER(NSString, serialPersistentFields, IOSObjectArray *)
+J2OBJC_STATIC_FIELD_OBJ_FINAL(NSString, serialPersistentFields, IOSObjectArray *)
 
 J2OBJC_TYPE_LITERAL_HEADER(NSString)
 
