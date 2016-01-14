@@ -92,7 +92,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   protected void generateInitialDeclaration() {
-    printConstantDefines();
     printNativeEnum();
 
     printTypeDocumentation();
@@ -122,21 +121,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printBoxedOperators();
 
     printUnprefixedAlias();
-  }
-
-  protected void printConstantDefines() {
-    Iterable<VariableDeclarationFragment> constants = getPrimitiveConstants();
-    if (Iterables.isEmpty(constants)) {
-      return;
-    }
-    newline();
-    for (VariableDeclarationFragment fragment : getPrimitiveConstants()) {
-      IVariableBinding field = fragment.getVariableBinding();
-      printf("#define %s ", nameTable.getVariableQualifiedName(field));
-      Object value = field.getConstantValue();
-      assert value != null;
-      println(LiteralGenerator.generate(value));
-    }
   }
 
   private void printNativeEnum() {
@@ -424,6 +408,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
+  // Overridden in TypePrivateDeclarationGenerator
   protected void printStaticFieldDeclaration(
       VariableDeclarationFragment fragment, String baseDeclaration) {
     println("/*! INTERNAL ONLY - Use accessor function from above. */");
@@ -454,7 +439,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         printf("inline %s *%s_getRef_%s();\n", objcType, typeName, name);
       }
     }
-    if (!isConstant) {
+    if (isConstant) {
+      Object value = var.getConstantValue();
+      assert value != null;
+      printf("#define %s_%s %s\n", typeName, name, LiteralGenerator.generate(value));
+    } else {
       printStaticFieldDeclaration(fragment, String.format("%s%s_%s", declType, typeName, name));
     }
     printf("J2OBJC_STATIC_FIELD%s(%s, %s, %s)\n", qualifiers, typeName, name, objcType);

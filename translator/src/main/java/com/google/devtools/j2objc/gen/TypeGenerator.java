@@ -109,7 +109,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   private static final Predicate<VariableDeclarationFragment> IS_STATIC_FIELD =
       new Predicate<VariableDeclarationFragment>() {
     public boolean apply(VariableDeclarationFragment frag) {
-      return BindingUtil.isStatic(frag.getVariableBinding());
+      // isGlobalVar includes non-static but final primitives, which are treated
+      // like static fields in J2ObjC.
+      return BindingUtil.isGlobalVar(frag.getVariableBinding());
     }
   };
 
@@ -117,13 +119,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       new Predicate<VariableDeclarationFragment>() {
     public boolean apply(VariableDeclarationFragment frag) {
       return BindingUtil.isInstanceVar(frag.getVariableBinding());
-    }
-  };
-
-  private static final Predicate<VariableDeclarationFragment> IS_PRIMITIVE_CONSTANT =
-      new Predicate<VariableDeclarationFragment>() {
-    public boolean apply(VariableDeclarationFragment frag) {
-      return BindingUtil.isPrimitiveConstant(frag.getVariableBinding());
     }
   };
 
@@ -196,12 +191,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     return Iterables.filter(
         TreeUtil.asFragments(Iterables.filter(declarations, FieldDeclaration.class)),
         IS_STATIC_FIELD);
-  }
-
-  protected Iterable<VariableDeclarationFragment> getPrimitiveConstants() {
-    return Iterables.filter(
-        TreeUtil.asFragments(Iterables.filter(declarations, FieldDeclaration.class)),
-        IS_PRIMITIVE_CONSTANT);
   }
 
   protected Iterable<BodyDeclaration> getInnerDeclarations() {

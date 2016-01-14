@@ -54,7 +54,6 @@ public class TypePrivateDeclarationGenerator extends TypeDeclarationGenerator {
   }
 
   private void generateDeclarationExtension() {
-    printConstantDefines();
     printClassExtension();
     printCompanionClassDeclaration();
     printFieldSetters();
