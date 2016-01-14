@@ -16,6 +16,7 @@
 #   STATIC_FRAMEWORK_NAME
 #
 # The including makefile may define these variables:
+#   STATIC_FRAMEWORK_RESOURCE_FILES
 #   STATIC_FRAMEWORK_HEADERS         (defaults to TRANSLATE_HEADERS)
 #   STATIC_FRAMEWORK_PUBLIC_HEADERS  (defaults to STATIC_FRAMEWORK_HEADERS)
 #   STATIC_LIBRARY_NAME              (defaults to FAT_LIB_NAME)
@@ -23,6 +24,7 @@
 #
 # This file defines the following to be used by the including file:
 #   STATIC_FRAMEWORK_DIR
+#   STATIC_FRAMEWORK_RESOURCES_DIR
 #
 # Author: Tom Ball
 
@@ -58,6 +60,9 @@ STATIC_FRAMEWORK_DIR = $(DIST_FRAMEWORK_DIR)/$(STATIC_FRAMEWORK_NAME).framework
 STATIC_LIBRARY = $(BUILD_DIR)/lib$(STATIC_LIBRARY_NAME).a
 FRAMEWORK_HEADER = $(BUILD_DIR)/$(STATIC_FRAMEWORK_NAME).h
 
+STATIC_FRAMEWORK_RESOURCES_DIR = $(STATIC_FRAMEWORK_DIR)/Versions/A/Resources
+RESOURCE_FILES = $(STATIC_FRAMEWORK_RESOURCE_FILES:%=$(STATIC_FRAMEWORK_RESOURCES_DIR)/%)
+
 # These are warnings that are suppressed for J2ObjC headers and generated code.
 #
 # c++98-compat: NS_ENUM/CF_ENUM fails with this warning.
@@ -85,7 +90,7 @@ DISALLOWED_WARNINGS = \
 VERIFY_FLAGS := -I$(STATIC_FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
   -Werror -Weverything $(DISALLOWED_WARNINGS)
 
-framework: dist $(STATIC_FRAMEWORK_DIR)
+framework: dist $(STATIC_FRAMEWORK_DIR) resources
 	@:
 
 $(STATIC_FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER)
@@ -117,3 +122,14 @@ $(FRAMEWORK_HEADER):
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c++ -std=c++11 \
 	    -fno-objc-arc $@
 	@rm $(FRAMEWORK_HEADER:%.h=%.o)
+
+resources: $(RESOURCE_FILES)
+	@:
+
+$(STATIC_FRAMEWORK_RESOURCES_DIR):
+	@mkdir -p $(STATIC_FRAMEWORK_RESOURCES_DIR)
+	@/bin/ln -sfh Versions/Current/Resources $(STATIC_FRAMEWORK_DIR)/Resources
+
+$(STATIC_FRAMEWORK_RESOURCES_DIR)/%: % | $(STATIC_FRAMEWORK_RESOURCES_DIR)
+	@mkdir -p $$(dirname $@)
+	@install -m 0644 $< $@

@@ -15,6 +15,8 @@
 #ifndef _J2OBJC_COMMON_H_
 #define _J2OBJC_COMMON_H_
 
+#pragma clang system_header
+
 #import <Foundation/Foundation.h>
 
 #import "J2ObjC_types.h"
