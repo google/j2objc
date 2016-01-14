@@ -153,5 +153,4 @@ __attribute__((always_inline)) inline JreArrayRef IOSObjectArray_GetRef(
 }
 FOUNDATION_EXPORT id IOSObjectArray_SetRef(JreArrayRef ref, id value);
 
-#pragma clang diagnostic pop
 #endif // IOSObjectArray_H
