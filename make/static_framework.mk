@@ -59,6 +59,7 @@ endif
 STATIC_FRAMEWORK_DIR = $(DIST_FRAMEWORK_DIR)/$(STATIC_FRAMEWORK_NAME).framework
 STATIC_LIBRARY = $(BUILD_DIR)/lib$(STATIC_LIBRARY_NAME).a
 FRAMEWORK_HEADER = $(BUILD_DIR)/$(STATIC_FRAMEWORK_NAME).h
+MODULE_MAP = $(BUILD_DIR)/module.map
 
 STATIC_FRAMEWORK_RESOURCES_DIR = $(STATIC_FRAMEWORK_DIR)/Versions/A/Resources
 RESOURCE_FILES = $(STATIC_FRAMEWORK_RESOURCE_FILES:%=$(STATIC_FRAMEWORK_RESOURCES_DIR)/%)
@@ -93,7 +94,7 @@ VERIFY_FLAGS := -I$(STATIC_FRAMEWORK_DIR)/Headers -I$(DIST_INCLUDE_DIR) \
 framework: dist $(STATIC_FRAMEWORK_DIR) resources
 	@:
 
-$(STATIC_FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER)
+$(STATIC_FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER) $(MODULE_MAP)
 	@echo building $(STATIC_FRAMEWORK_NAME) framework
 	@mkdir -p $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers
 	@/bin/ln -sfh A $(STATIC_FRAMEWORK_DIR)/Versions/Current
@@ -104,7 +105,8 @@ $(STATIC_FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER)
 	    $(STATIC_FRAMEWORK_HEADERS:$(STATIC_HEADERS_DIR)/%=%)) \
 	    | (cd $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers;tar xfp -)
 	@cp $(STATIC_LIBRARY) $(STATIC_FRAMEWORK_DIR)/Versions/A/$(STATIC_FRAMEWORK_NAME)
-	@cp $(FRAMEWORK_HEADER) $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers
+	@install -m 0644 $(FRAMEWORK_HEADER) $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers
+	@install -m 0644 $(MODULE_MAP) $(STATIC_FRAMEWORK_DIR)
 	@touch $@
 
 # Creates a framework "master" header file that includes all the framework's header files.
@@ -122,6 +124,14 @@ $(FRAMEWORK_HEADER):
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c++ -std=c++11 \
 	    -fno-objc-arc $@
 	@rm $(FRAMEWORK_HEADER:%.h=%.o)
+
+$(MODULE_MAP):
+	@echo "framework module" $(STATIC_FRAMEWORK_NAME) "{" > $(MODULE_MAP)
+	@echo "  umbrella header" '"'$(STATIC_FRAMEWORK_NAME).h'"' >> $(MODULE_MAP)
+	@echo >> $(MODULE_MAP)
+	@echo "  export *" >> $(MODULE_MAP)
+	@echo "  module * { export * }" >> $(MODULE_MAP)
+	@echo "}" >> $(MODULE_MAP)
 
 resources: $(RESOURCE_FILES)
 	@:
