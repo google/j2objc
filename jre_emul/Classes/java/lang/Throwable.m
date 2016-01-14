@@ -373,13 +373,8 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
     nil_chk(stackTraceArg->buffer_[i]);
   }
   @synchronized (self) {
-    IOSObjectArray *stackTrace = GetStackTrace(self);
-    RawStack *rawStack = GetRawStack(self);
-    if (stackTrace || rawStack) {
-      FreeRawStack(self);
-      [stackTrace autorelease];
-    }
     SetStackTrace(self, stackTraceArg);
+    FreeRawStack(self);
   }
 }
 
