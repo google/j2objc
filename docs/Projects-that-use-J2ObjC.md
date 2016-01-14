@@ -9,9 +9,9 @@ layout: docs
 
 <table>
  <tr><td>
- <img src="http://a3.mzstatic.com/us/r30/Purple69/v4/f6/64/5a/f6645ab0-33a3-5c5d-cc38-ffeee3848a08/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/idid909319292">Google Calendar</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <img src="http://a3.mzstatic.com/us/r30/Purple69/v4/f6/64/5a/f6645ab0-33a3-5c5d-cc38-ffeee3848a08/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/idid909319292">Google Calendar</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  </td><td>
- <img src="http://a3.mzstatic.com/us/r30/Purple3/v4/f3/09/1c/f3091c01-8cbc-b0cc-8784-21161b2ae95b/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-docs/id842842640?mt=8">Google&nbsp;Docs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></b>
+ <img src="http://a3.mzstatic.com/us/r30/Purple3/v4/f3/09/1c/f3091c01-8cbc-b0cc-8784-21161b2ae95b/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-docs/id842842640?mt=8">Google&nbsp;Docs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></b>
  </td></tr>
  
  <tr><td>
@@ -33,53 +33,46 @@ layout: docs
  <tr><td>
  <img src="http://a3.mzstatic.com/us/r1000/119/Purple2/v4/27/92/31/27923129-fc90-2cb9-ae52-f588bc2404eb/mzl.vvbluzab.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/balloon-gunner-3d/id650873188?ls=1&mt=8">Balloon&nbsp;Gunner&nbsp;3D</a></b>
  </td><td>
- <img src="http://a4.mzstatic.com/us/r30/Purple5/v4/84/94/59/84945968-3c52-a8f1-fb77-510367c8e10b/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/cn/app/cellular-big-keyboard/id937316998?l=en&mt=8">Cellular&nbsp;Big&nbsp;Keyboard</a></b>
- </td></tr>
-
- <tr><td>
  <img src="http://a2.mzstatic.com/us/r30/Purple2/v4/9e/bb/a1/9ebba197-cd87-dd93-0376-378a5a9947ba/mzl.hruczvda.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/codeword-unlimited-free/id643961117?mt=8">Codeword&nbsp;Unlimited&nbsp;Free</a></b>
- </td><td>
+ </td></tr>
+
+ <tr><td>
  <img src="http://a3.mzstatic.com/us/r30/Purple6/v4/af/a4/ab/afa4ab14-fbca-6c0e-4c3b-d984b4730214/mzl.oqjfevxa.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/crossword-solver-free-version/id668459828?ls=1&mt=8">Crossword&nbsp;Solver&nbsp;Free&nbsp;Version</a></b>
- </td></tr>
-
- <tr><td>
- <img src="http://a3.mzstatic.com/us/r30/Purple/v4/69/57/0e/69570e6b-b7a4-3a23-5101-df348c2655e7/mzl.fqjzdfib.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/digital-forms-and-reports/id731851192?ls=1&mt=8">DigitalForms</a></b>&nbsp;&nbsp;<a href="http://digireporting.com">digireporting.com</a>
  </td><td>
- <img src="http://a4.mzstatic.com/us/r30/Purple6/v4/55/21/38/55213894-03aa-dda1-677b-4f16afa16cec/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/dulwich-picture-gallery/id1050936561?mt=8">Dulwich&nbsp;Picture&nbsp;Gallery</a></b> 
+ <img src="http://a4.mzstatic.com/us/r30/Purple4/v4/a9/e6/ea/a9e6ea42-da69-67e3-50d6-18292e635b79/mzl.mjvsdtme.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/taxistartup-driver/id789688951">DriverApp - Dispatch Booking Driver</a></b>
  </td></tr>
 
  <tr><td>
+ <img src="http://a4.mzstatic.com/us/r30/Purple6/v4/55/21/38/55213894-03aa-dda1-677b-4f16afa16cec/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/dulwich-picture-gallery/id1050936561?mt=8">Dulwich&nbsp;Picture&nbsp;Gallery</a></b>  </td><td>
  <img src="http://a1.mzstatic.com/us/r30/Purple69/v4/17/c6/fc/17c6fc44-f363-8f27-167c-48d5734ff9d7/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/fine-arts-belgium-brussels/id1036745311?mt=8">Fine&nbsp;Arts&nbsp;Belgium&nbsp;(Brussels)</a></b> 
- </td><td>
+ </td></tr>
+
+ <tr><td>
  <img src="http://a1.mzstatic.com/us/r30/Purple/v4/66/ef/5b/66ef5bdc-7d87-ab6d-46ee-7f58df0fb72d/mzl.hffwosrc.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/gb/app/hordz-3d/id672852382">Hordz&nbsp;3D</a></b>
+ </td><td>
+ <img src="http://a3.mzstatic.com/us/r1000/067/Purple2/v4/28/02/bc/2802bc4e-02ec-2031-cb1f-bcbe353d1f6f/mzl.mkxwwpcj.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/kingdom-builder/id581197776?l=de&ls=1&mt=8">Kingdom&nbsp;Builder</a></b> 
  </td></tr>
  
  <tr><td>
- <img src="http://a3.mzstatic.com/us/r1000/067/Purple2/v4/28/02/bc/2802bc4e-02ec-2031-cb1f-bcbe353d1f6f/mzl.mkxwwpcj.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/kingdom-builder/id581197776?l=de&ls=1&mt=8">Kingdom&nbsp;Builder</a></b> 
- </td><td>
  <img src="http://a2.mzstatic.com/us/r30/Purple3/v4/95/54/87/95548735-2447-d15c-31db-070101ab90e2/icon175x175.jpeg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/gb/id911852463?mt=8">Laundrapp</a></b>
- </td></tr>
-
- <tr><td>
+ </td><td>
  <img src="http://a1.mzstatic.com/us/r1000/060/Purple/v4/c2/b4/0d/c2b40dbf-2c34-8994-d86b-9556b1c5595a/mzl.aaxqdidd.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/ligretto/id627380827?mt=8">Ligretto</a></b>
- </td><td>
- <img src="http://a2.mzstatic.com/eu/r30/Purple7/v4/b9/3d/e3/b93de35d-304e-0b4c-8b89-e4c36405f10c/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/gb/app/musee-des-arts-et-metiers/id1005605794?mt=8">Mus&eacute;e des arts et m&eacute;tiers</a></b> 
  </td></tr>
 
  <tr><td>
+ <img src="http://a3.mzstatic.com/us/r30/Purple7/v4/2d/6d/78/2d6d785c-c685-6e17-1234-18353b57af31/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/monnaie-de-paris/id1024977735?mt=8">Monnaie&nbsp;de&nbsp;Paris</a></b> 
+ </td><td>
  <img src="http://a3.mzstatic.com/eu/r30/Purple1/v4/f3/87/7a/f3877a6a-42e8-7d7f-9fc9-e1519f873675/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/gb/app/the-morgan-library-museum/id997116053?mt=8">The Morgan Library &amp; Museum</a></b> 
- </td><td>
- <img src="http://a422.phobos.apple.com/us/r30/Purple6/v4/c0/06/8b/c0068b8e-d46d-5f3a-cc64-6e7fdb5997cb/mzl.frkibrzy.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/pdfreporter/id731936309?mt=8&ign-mpt=uo%3D4">PDFReporter</a></b>&nbsp;&nbsp;<a href="http://sourceforge.net/projects/pdfreporter/">project site</a>
  </td></tr>
 
  <tr><td>
- <img src="http://a4.mzstatic.com/us/r30/Purple/v4/66/be/c9/66bec9a8-fd60-5c07-876c-a8e4acbd3029/mzl.nzvhdrln.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/quadrus/id773251281?mt=8">Quadrus</a></b>
+ <img src="http://a2.mzstatic.com/eu/r30/Purple7/v4/b9/3d/e3/b93de35d-304e-0b4c-8b89-e4c36405f10c/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/gb/app/musee-des-arts-et-metiers/id1005605794?mt=8">Mus&eacute;e des arts et m&eacute;tiers</a></b> 
  </td><td>
+ <img src="http://a4.mzstatic.com/us/r30/Purple/v4/66/be/c9/66bec9a8-fd60-5c07-876c-a8e4acbd3029/mzl.nzvhdrln.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/quadrus/id773251281?mt=8">Quadrus</a></b>
+ </td></tr>
+
+ <tr><td>
  <img src="http://a1.mzstatic.com/us/r30/Purple5/v4/b7/79/4a/b7794ae4-cbd2-59ad-57a0-fd2783ceeec9/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/id921359196">Quando</a></b>
- </td></tr>
-
- <tr><td>
- <img src="http://a4.mzstatic.com/us/r30/Purple4/v4/a9/e6/ea/a9e6ea42-da69-67e3-50d6-18292e635b79/mzl.mjvsdtme.175x175-75.jpg" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/taxistartup-driver/id789688951">TaxiStartup&nbsp;Driver</a></b>
  </td><td>
  <img src="http://info.motionext.com/content/data/2014/08/logo_48x48.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/with-wifi/id741277613?ls=1&mt=8">With WIFI</a></b>&nbsp;&nbsp;<a href="http://www.withwifi.com/">www.withwifi.com</a>
  </td></tr>
@@ -97,10 +90,10 @@ layout: docs
  <tr><td>
  <b><a href="http://www.appnativa.com/">appNativa™</a></b>
  </td><td>
- <img src="https://github.global.ssl.fastly.net/images/modules/logos_page/GitHub-Mark.png" width="48" height="48">&nbsp;<b><a href="https://github.com/galdolber/clojure-objc">clojure&#x2011;objc</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <img src="https://github.global.ssl.fastly.net/images/modules/logos_page/GitHub-Mark.png" width="48" height="48">&nbsp;<b><a href="https://github.com/galdolber/clojure-objc">clojure&#x2011;objc</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  </td></tr>
  <tr><td>
- <img src="http://www.nuvos.com/img/nuvos-logo.png" width="48" height="48">&nbsp;<b><a href="http://www.nuvos.com">Nuvos</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <img src="http://www.nuvos.com/img/nuvos-logo.png" width="48" height="48">&nbsp;<b><a href="http://www.nuvos.com">Nuvos</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  </td></tr>
 </table>
 
