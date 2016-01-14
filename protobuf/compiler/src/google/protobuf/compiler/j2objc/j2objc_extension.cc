@@ -70,10 +70,13 @@ void ExtensionGenerator::CollectSourceImports(set<string> &imports) {
 }
 
 void ExtensionGenerator::GenerateMembersHeader(io::Printer* printer) {
-  printer->Print(
-      "\nFOUNDATION_EXPORT ComGoogleProtobufGeneratedMessage_GeneratedExtension"
+  printer->Print("\n"
+      "inline ComGoogleProtobufGeneratedMessage_GeneratedExtension"
+          " *$classname$_get_$name$();\n"
+      "/*! INTERNAL ONLY - Use accessor function from above. */\n"
+      "FOUNDATION_EXPORT ComGoogleProtobufGeneratedMessage_GeneratedExtension"
           " *$classname$_$name$;\n"
-      "J2OBJC_STATIC_FIELD_GETTER($classname$, $name$, "
+      "J2OBJC_STATIC_FIELD_OBJ_FINAL($classname$, $name$, "
           "ComGoogleProtobufGeneratedMessage_GeneratedExtension *)\n",
       "name", UnderscoresToCamelCase(descriptor_),
       "classname", ContainingClassName(descriptor_));

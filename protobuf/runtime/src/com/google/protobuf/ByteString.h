@@ -93,8 +93,10 @@ CF_EXTERN_C_END
 
 J2OBJC_STATIC_INIT(ComGoogleProtobufByteString)
 
+inline ComGoogleProtobufByteString *ComGoogleProtobufByteString_get_EMPTY();
+/*! INTERNAL ONLY - Use accessor function from above. */
 FOUNDATION_EXPORT ComGoogleProtobufByteString *ComGoogleProtobufByteString_EMPTY;
-J2OBJC_STATIC_FIELD_GETTER(ComGoogleProtobufByteString, EMPTY, ComGoogleProtobufByteString *)
+J2OBJC_STATIC_FIELD_OBJ_FINAL(ComGoogleProtobufByteString, EMPTY, ComGoogleProtobufByteString *)
 
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufByteString)
 
