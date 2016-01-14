@@ -249,9 +249,7 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "      return e;\n"
       "    }\n"
       "  }\n"
-      // TODO(user): This should return null for true compatibility.
-      "  @throw [[[JavaLangIllegalArgumentException alloc]\n"
-      "      initWithNSString:[NSString stringWithFormat:@\"%d\", value]] autorelease];\n"
+      "  return nil;\n"
       "}\n\n",
       "classname", ClassName(descriptor_),
       "count", SimpleItoa(canonical_values_.size()));
