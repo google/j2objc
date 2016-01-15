@@ -20,7 +20,7 @@
 #include "java/lang/annotation/Annotation.h"
 
 @class IOSClass;
-@class JavaxAnnotationResource_AuthenticationTypeEnum;
+@class JavaxAnnotationResource_AuthenticationType;
 
 /**
  * javax.annotation.Resource annotation. No code was referenced,
@@ -31,7 +31,7 @@
  */
 @protocol JavaxAnnotationResource < JavaLangAnnotationAnnotation >
 
-@property (readonly) JavaxAnnotationResource_AuthenticationTypeEnum *authenticationType;
+@property (readonly) JavaxAnnotationResource_AuthenticationType *authenticationType;
 @property (readonly, copy) NSString *description;
 @property (readonly) NSString *mappedName;
 @property (readonly) NSString *name;
@@ -42,7 +42,7 @@
 
 @interface JavaxAnnotationResource : NSObject < JavaxAnnotationResource > {
  @private
-  JavaxAnnotationResource_AuthenticationTypeEnum *authenticationType;
+  JavaxAnnotationResource_AuthenticationType *authenticationType;
   NSString *description;
   NSString *mappedName;
   NSString *name;
@@ -51,14 +51,14 @@
 }
 
 - (instancetype)initWithAuthenticationType:
-    (JavaxAnnotationResource_AuthenticationTypeEnum *)authenticationType_
+    (JavaxAnnotationResource_AuthenticationType *)authenticationType_
                            withDescription:(NSString *)description_
                             withMappedName:(NSString *)mappedName_
                                   withName:(NSString *)name_
                              withShareable:(jboolean)shareable_
                                   withType:(IOSClass *)type_;
 
-+ (JavaxAnnotationResource_AuthenticationTypeEnum *)authenticationTypeDefault;
++ (JavaxAnnotationResource_AuthenticationType *)authenticationTypeDefault;
 + (NSString *)descriptionDefault;
 + (NSString *)mappedNameDefault;
 + (NSString *)nameDefault;
@@ -71,44 +71,46 @@ J2OBJC_EMPTY_STATIC_INIT(JavaxAnnotationResource)
 
 J2OBJC_TYPE_LITERAL_HEADER(JavaxAnnotationResource)
 
-typedef NS_ENUM(NSUInteger, JavaxAnnotationResource_AuthenticationType) {
-  JavaxAnnotationResource_AuthenticationType_APPLICATION = 0,
-  JavaxAnnotationResource_AuthenticationType_CONTAINER = 1,
+typedef NS_ENUM(NSUInteger, JavaxAnnotationResource_AuthenticationType_Enum) {
+  JavaxAnnotationResource_AuthenticationType_Enum_APPLICATION = 0,
+  JavaxAnnotationResource_AuthenticationType_Enum_CONTAINER = 1,
 };
 
-@interface JavaxAnnotationResource_AuthenticationTypeEnum : JavaLangEnum < NSCopying > {
-}
+@interface JavaxAnnotationResource_AuthenticationType : JavaLangEnum < NSCopying >
 
-- (instancetype)initWithNSString:(NSString *)__name
-                         withInt:(jint)__ordinal;
+#pragma mark Package-Private
 
 + (IOSObjectArray *)values;
-FOUNDATION_EXPORT IOSObjectArray *JavaxAnnotationResource_AuthenticationTypeEnum_values();
 
-+ (JavaxAnnotationResource_AuthenticationTypeEnum *)valueOfWithNSString:(NSString *)name;
-
-FOUNDATION_EXPORT JavaxAnnotationResource_AuthenticationTypeEnum *
-    JavaxAnnotationResource_AuthenticationTypeEnum_valueOfWithNSString_(NSString *name);
++ (JavaxAnnotationResource_AuthenticationType *)valueOfWithNSString:(NSString *)name;
 
 - (id)copyWithZone:(NSZone *)zone;
 
 @end
 
-J2OBJC_STATIC_INIT(JavaxAnnotationResource_AuthenticationTypeEnum)
+J2OBJC_STATIC_INIT(JavaxAnnotationResource_AuthenticationType)
 
-FOUNDATION_EXPORT JavaxAnnotationResource_AuthenticationTypeEnum *
-    JavaxAnnotationResource_AuthenticationTypeEnum_values_[];
+/*! INTERNAL ONLY - Use enum accessors declared below. */
+FOUNDATION_EXPORT JavaxAnnotationResource_AuthenticationType *
+    JavaxAnnotationResource_AuthenticationType_values_[];
 
-#define JavaxAnnotationResource_AuthenticationTypeEnum_APPLICATION \
-    JavaxAnnotationResource_AuthenticationTypeEnum_values_\
-    [JavaxAnnotationResource_AuthenticationType_APPLICATION]
-J2OBJC_ENUM_CONSTANT_GETTER(JavaxAnnotationResource_AuthenticationTypeEnum, APPLICATION)
+inline JavaxAnnotationResource_AuthenticationType *
+    JavaxAnnotationResource_AuthenticationType_get_APPLICATION();
+J2OBJC_ENUM_CONSTANT(JavaxAnnotationResource_AuthenticationType, APPLICATION)
 
-#define JavaxAnnotationResource_AuthenticationTypeEnum_CONTAINER \
-    JavaxAnnotationResource_AuthenticationTypeEnum_values_\
-    [JavaxAnnotationResource_AuthenticationType_CONTAINER]
-J2OBJC_ENUM_CONSTANT_GETTER(JavaxAnnotationResource_AuthenticationTypeEnum, CONTAINER)
+inline JavaxAnnotationResource_AuthenticationType *
+    JavaxAnnotationResource_AuthenticationType_get_CONTAINER();
+J2OBJC_ENUM_CONSTANT(JavaxAnnotationResource_AuthenticationType, CONTAINER)
 
-J2OBJC_TYPE_LITERAL_HEADER(JavaxAnnotationResource_AuthenticationTypeEnum)
+FOUNDATION_EXPORT IOSObjectArray *JavaxAnnotationResource_AuthenticationType_values();
+
+FOUNDATION_EXPORT JavaxAnnotationResource_AuthenticationType *
+    JavaxAnnotationResource_AuthenticationType_valueOfWithNSString_(NSString *name);
+
+FOUNDATION_EXPORT JavaxAnnotationResource_AuthenticationType *
+    JavaxAnnotationResource_AuthenticationType_fromNative(
+        JavaxAnnotationResource_AuthenticationType_Enum nativeValue);
+
+J2OBJC_TYPE_LITERAL_HEADER(JavaxAnnotationResource_AuthenticationType)
 
 #endif // _JavaxAnnotationResource_H_
