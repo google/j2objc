@@ -475,14 +475,17 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "+ (Color *)valueOfWithNSString:(NSString *)name;");
     assertTranslation(translation, "FOUNDATION_EXPORT Color *Color_values_[];");
     assertTranslatedLines(translation,
+        "inline Color *Color_get_RED();",
         "#define Color_RED Color_values_[Color_Enum_RED]",
-        "J2OBJC_ENUM_CONSTANT_GETTER(Color, RED)");
+        "J2OBJC_ENUM_CONSTANT(Color, RED)");
     assertTranslatedLines(translation,
+        "inline Color *Color_get_WHITE();",
         "#define Color_WHITE Color_values_[Color_Enum_WHITE]",
-        "J2OBJC_ENUM_CONSTANT_GETTER(Color, WHITE)");
+        "J2OBJC_ENUM_CONSTANT(Color, WHITE)");
     assertTranslatedLines(translation,
+        "inline Color *Color_get_BLUE();",
         "#define Color_BLUE Color_values_[Color_Enum_BLUE]",
-        "J2OBJC_ENUM_CONSTANT_GETTER(Color, BLUE)");
+        "J2OBJC_ENUM_CONSTANT(Color, BLUE)");
   }
 
   public void testEnumWithParameters() throws IOException {

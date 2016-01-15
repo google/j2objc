@@ -142,17 +142,6 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
 #undef J2OBJC_VOLATILE_ACCESS_DEFN
 
 /*!
- * Macros that simplify the syntax for loading of static fields.
- *
- * @define JreLoadStatic
- * @define JreLoadStaticRef
- * @param CLASS The Objective-C class name of the containing class.
- * @param FIELD The name of the static field.
- */
-#define JreLoadStatic(CLASS, FIELD) (CLASS##_initialize(), CLASS##_##FIELD)
-#define JreLoadStaticRef(CLASS, FIELD) (CLASS##_initialize(), &CLASS##_##FIELD)
-
-/*!
  * Defines the initialized flag for a class.
  *
  * @define J2OBJC_INITIALIZED_DEFN
@@ -348,6 +337,7 @@ J2OBJC_VOLATILE_ACCESS_DEFN(Double, jdouble)
     return JreVolatileStrongAssign(&CLASS##_##FIELD, value); \
   }
 
+// TODO(kstanger): Remove this. (b/26515134)
 /*!
  * Defines the getter for an enum constant. For enum class "FooEnum" and constant "BAR"
  * the getter will have the following signature:

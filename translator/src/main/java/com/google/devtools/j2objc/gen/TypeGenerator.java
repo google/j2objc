@@ -124,7 +124,14 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   private static final Predicate<BodyDeclaration> IS_OUTER_DECL = new Predicate<BodyDeclaration>() {
     public boolean apply(BodyDeclaration decl) {
-      return decl instanceof FunctionDeclaration;
+      switch (decl.getKind()) {
+        case FUNCTION_DECLARATION:
+          return true;
+        case NATIVE_DECLARATION:
+          return ((NativeDeclaration) decl).isOuter();
+        default:
+          return false;
+      }
     }
   };
 
@@ -132,8 +139,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     public boolean apply(BodyDeclaration decl) {
       switch (decl.getKind()) {
         case METHOD_DECLARATION:
-        case NATIVE_DECLARATION:
           return true;
+        case NATIVE_DECLARATION:
+          return !((NativeDeclaration) decl).isOuter();
         default:
           return false;
       }

@@ -68,6 +68,32 @@ FOUNDATION_EXPORT void JreThrowAssertionError(id __unsafe_unretained msg);
 FOUNDATION_EXPORT void JreRelease(id obj);
 #endif
 
+/*!
+ * Macros that simplify the syntax for loading of static fields.
+ *
+ * @define JreLoadStatic
+ * @define JreLoadStaticRef
+ * @param CLASS The Objective-C class name of the containing class.
+ * @param FIELD The name of the static field.
+ */
+#define JreLoadStatic(CLASS, FIELD) (CLASS##_initialize(), CLASS##_##FIELD)
+#define JreLoadStaticRef(CLASS, FIELD) (CLASS##_initialize(), &CLASS##_##FIELD)
+
+/*!
+ * Macros for loading enum values.
+ * JreEnum provides direct access to the enum value and should only be used
+ * internal to the enum class.
+ * JreLoadEnum provides the enum value while ensuring the enum class is
+ * initialized.
+ *
+ * @define JreEnum
+ * @define JreLoadEnum
+ * @param CLASS The enum class name.
+ * @param VALUE The enum value name.
+ */
+#define JreEnum(CLASS, VALUE) CLASS##_values_[CLASS##_Enum_##VALUE]
+#define JreLoadEnum(CLASS, VALUE) (CLASS##_initialize(), CLASS##_values_[CLASS##_Enum_##VALUE])
+
 // Defined in JreEmulation.m
 FOUNDATION_EXPORT id GetNonCapturingLambda(Protocol *protocol,
     NSString *blockClassName, SEL methodSelector, id block);

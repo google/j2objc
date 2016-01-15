@@ -133,11 +133,9 @@ public class EnumRewriter extends TreeVisitor {
 
     StringBuilder header = new StringBuilder();
     header.append(String.format(
-        "+ (IOSObjectArray *)values;\n"
-        + "FOUNDATION_EXPORT IOSObjectArray *%s_values();\n\n"
-        + "+ (%s *)valueOfWithNSString:(NSString *)name;\n"
-        + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);\n\n"
-        + "- (id)copyWithZone:(NSZone *)zone;\n", typeName, typeName, typeName, typeName));
+        "+ (IOSObjectArray *)values;\n\n"
+        + "+ (%s *)valueOfWithNSString:(NSString *)name;\n\n"
+        + "- (id)copyWithZone:(NSZone *)zone;\n", typeName));
 
     // Append enum type suffix.
     String nativeName = NameTable.getNativeEnumName(typeName);
@@ -148,37 +146,14 @@ public class EnumRewriter extends TreeVisitor {
 
     StringBuilder implementation = new StringBuilder();
     implementation.append(String.format(
-        "IOSObjectArray *%s_values() {\n"
-        + "  %s_initialize();\n"
-        + "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:%s_class_()];\n"
-        + "}\n\n"
-        + "+ (IOSObjectArray *)values {\n"
+        "+ (IOSObjectArray *)values {\n"
         + "  return %s_values();\n"
-        + "}\n\n", typeName, typeName, typeName, numConstants, typeName, typeName));
+        + "}\n\n", typeName));
 
     implementation.append(String.format(
         "+ (%s *)valueOfWithNSString:(NSString *)name {\n"
         + "  return %s_valueOfWithNSString_(name);\n"
         + "}\n\n", typeName, typeName));
-
-    implementation.append(String.format(
-        "%s *%s_valueOfWithNSString_(NSString *name) {\n"
-            + "  %s_initialize();\n"
-            + "  for (int i = 0; i < %s; i++) {\n"
-            + "    %s *e = %s_values_[i];\n"
-            + "    if ([name isEqual:[e name]]) {\n"
-            + "      return e;\n"
-            + "    }\n"
-            + "  }\n", typeName, typeName, typeName, numConstants, typeName, typeName));
-    if (Options.useReferenceCounting()) {
-      implementation.append(
-          "  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name]"
-          + " autorelease];\n");
-    } else {
-      implementation.append(
-          "  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];\n");
-    }
-    implementation.append("  return nil;\n}\n\n");
 
     if (swiftFriendly) {
       implementation.append(String.format(
@@ -187,13 +162,69 @@ public class EnumRewriter extends TreeVisitor {
               + "}\n\n", nativeName, nativeName));
     }
 
-    // Enum constants needs to implement NSCopying.  Being singletons, they
-    // can just return self, as long the retain count is incremented.
-    String selfString = Options.useReferenceCounting() ? "[self retain]" : "self";
-    implementation.append(
-        String.format("- (id)copyWithZone:(NSZone *)zone {\n  return %s;\n}\n", selfString));
+    // Enum constants needs to implement NSCopying. Being singletons, they can
+    // just return self. No need to increment the retain count because enum
+    // values are never deallocated.
+    implementation.append("- (id)copyWithZone:(NSZone *)zone {\n  return self;\n}\n");
 
-    node.getBodyDeclarations().add(new NativeDeclaration(header.toString(),
-        implementation.toString()));
+    node.getBodyDeclarations().add(NativeDeclaration.newInnerDeclaration(
+        header.toString(), implementation.toString()));
+
+    StringBuilder outerHeader = new StringBuilder();
+    StringBuilder outerImpl = new StringBuilder();
+    outerHeader.append(String.format(
+        "FOUNDATION_EXPORT IOSObjectArray *%s_values();\n\n"
+        + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);\n",
+        typeName, typeName, typeName));
+    // The native type is not declared for an empty enum.
+    if (numConstants > 0) {
+      outerHeader.append(String.format(
+          "\nFOUNDATION_EXPORT %s *%s_fromNative(%s nativeValue);\n",
+          typeName, typeName, nativeName));
+    }
+
+    outerImpl.append(String.format(
+        "IOSObjectArray *%s_values() {\n"
+        + "  %s_initialize();\n"
+        + "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:%s_class_()];\n"
+        + "}\n\n", typeName, typeName, typeName, numConstants, typeName));
+
+    outerImpl.append(String.format(
+        "%s *%s_valueOfWithNSString_(NSString *name) {\n"
+        + "  %s_initialize();\n"
+        + "  for (int i = 0; i < %s; i++) {\n"
+        + "    %s *e = %s_values_[i];\n"
+        + "    if ([name isEqual:[e name]]) {\n"
+        + "      return e;\n"
+        + "    }\n"
+        + "  }\n", typeName, typeName, typeName, numConstants, typeName, typeName));
+    if (Options.useReferenceCounting()) {
+      outerImpl.append(
+          "  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name]"
+          + " autorelease];\n");
+    } else {
+      outerImpl.append(
+          "  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];\n");
+    }
+    outerImpl.append("  return nil;\n}\n\n");
+
+    if (numConstants > 0) {
+      outerImpl.append(String.format(
+          "#pragma clang diagnostic push\n"
+          + "#pragma clang diagnostic ignored \"-Wtautological-constant-out-of-range-compare\"\n"
+          + "%s *%s_fromNative(%s nativeValue) {\n"
+          + "  %s_initialize();\n"
+          // Native enums are unsigned, so don't need to check lower bound.
+          + "  if (nativeValue >= %s) {\n"
+          + "    return nil;\n"
+          + "  }\n"
+          + "  return %s_values_[nativeValue];\n"
+          + "}\n"
+          + "#pragma clang diagnostic pop\n",
+          typeName, typeName, nativeName, typeName, numConstants, typeName));
+    }
+
+    node.getBodyDeclarations().add(NativeDeclaration.newOuterDeclaration(
+        outerHeader.toString(), outerImpl.toString()));
   }
 }

@@ -387,7 +387,13 @@ public class NameTable {
   public String getVariableQualifiedName(IVariableBinding var) {
     String shortName = getVariableShortName(var);
     if (BindingUtil.isGlobalVar(var)) {
-      return getFullName(var.getDeclaringClass()) + '_' + shortName;
+      String className = getFullName(var.getDeclaringClass());
+      if (var.isEnumConstant()) {
+        // Enums are declared in an array, so we use a macro to shorten the
+        // array access expression.
+        return "JreEnum(" + className + ", " + shortName + ")";
+      }
+      return className + '_' + shortName;
     }
     return shortName;
   }

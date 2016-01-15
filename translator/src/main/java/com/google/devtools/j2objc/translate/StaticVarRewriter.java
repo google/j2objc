@@ -56,7 +56,7 @@ public class StaticVarRewriter extends TreeVisitor {
     }
 
     boolean assignable = TranslationUtil.isAssigned(node);
-    StringBuilder code = new StringBuilder("JreLoadStatic");
+    StringBuilder code = new StringBuilder(var.isEnumConstant() ? "JreLoadEnum" : "JreLoadStatic");
     ITypeBinding exprType = var.getType();
     if (assignable) {
       code.append("Ref");

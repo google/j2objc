@@ -152,6 +152,21 @@ CF_EXTERN_C_END
 #define J2OBJC_STATIC_FIELD_OBJ_FINAL(CLASS, FIELD, TYPE) \
   J2OBJC_STATIC_FIELD_BASIC_GETTER(CLASS, _##FIELD, TYPE)
 
+/*!
+ * Defines the getter for an enum constant. For enum class "FooEnum" and constant "BAR"
+ * the getter will have the following signature:
+ *   inline Foo *Color_get_BLUE();
+ *
+ * @define J2OBJC_ENUM_CONSTANT
+ * @param CLASS The enum class.
+ * @param CONSTANT The name of the enum constant.
+ */
+#define J2OBJC_ENUM_CONSTANT(CLASS, CONSTANT) \
+  __attribute__((always_inline)) inline CLASS *CLASS##_get_##CONSTANT() { \
+    CLASS##_initialize(); \
+    return CLASS##_values_[CLASS##_Enum_##CONSTANT]; \
+  }
+
 #define BOXED_INC_AND_DEC_INNER(CNAME, VALUE_METHOD, TYPE, OPNAME, OP) \
   __attribute__((always_inline)) inline TYPE *JreBoxedPre##OPNAME##CNAME(__weak TYPE **value) { \
     nil_chk(*value); \

@@ -66,7 +66,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class A { static enum B { ONE, TWO; "
         + "public static B doSomething(boolean b) { return b ? ONE : TWO; }}}",
         "A", "A.m");
-    assertTranslation(translation, "return b ? A_B_ONE : A_B_TWO;");
+    assertTranslation(translation, "return b ? JreEnum(A_B, ONE) : JreEnum(A_B, TWO);");
   }
 
   public void testInnerClassFQN() throws IOException {
@@ -450,7 +450,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class Test { enum TicTacToe { X, Y } "
         + "boolean isX(TicTacToe ttt) { return ttt == TicTacToe.X; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "return ttt == JreLoadStatic(Test_TicTacToe, X);");
+    assertTranslation(translation, "return ttt == JreLoadEnum(Test_TicTacToe, X);");
   }
 
   public void testArrayLocalVariable() throws IOException {
@@ -1668,7 +1668,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { enum Type { TYPE_BOOL; } Type test() { return Type.TYPE_BOOL; }}",
         "Test", "Test.m");
-    assertTranslation(translation, "return JreLoadStatic(Test_Type, TYPE_BOOL);");
+    assertTranslation(translation, "return JreLoadEnum(Test_Type, TYPE_BOOL);");
   }
 
   public void testMakeQuotedStringHang() throws IOException {

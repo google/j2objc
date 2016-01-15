@@ -20,10 +20,14 @@ package com.google.devtools.j2objc.ast;
  */
 public class NativeDeclaration extends BodyDeclaration {
 
+  // Whether this declaration should be placed inside or outside the @interface
+  // or @implementation block.
+  private boolean isOuter = false;
   private String headerCode = null;
   private String implementationCode = null;
 
   public NativeDeclaration(NativeDeclaration other) {
+    isOuter = other.isOuter();
     headerCode = other.getHeaderCode();
     implementationCode = other.getImplementationCode();
   }
@@ -32,17 +36,34 @@ public class NativeDeclaration extends BodyDeclaration {
    * Creates a new NativeDeclaration. For proper spacing, the convention is
    * that the code snippets end with a newline.
    *
+   * @param isOuter Whether this code should be outside the ObjC class
+   * definition.
    * @param headerCode Code to be printed in the type interface.
    * @param implementationCode Code to be printed in the type implementation.
    */
-  public NativeDeclaration(String headerCode, String implementationCode) {
+  public NativeDeclaration(boolean isOuter, String headerCode, String implementationCode) {
+    this.isOuter = isOuter;
     this.headerCode = headerCode;
     this.implementationCode = implementationCode;
+  }
+
+  public static NativeDeclaration newInnerDeclaration(
+      String headerCode, String implementationCode) {
+    return new NativeDeclaration(false, headerCode, implementationCode);
+  }
+
+  public static NativeDeclaration newOuterDeclaration(
+      String headerCode, String implementationCode) {
+    return new NativeDeclaration(true, headerCode, implementationCode);
   }
 
   @Override
   public Kind getKind() {
     return Kind.NATIVE_DECLARATION;
+  }
+
+  public boolean isOuter() {
+    return isOuter;
   }
 
   public String getHeaderCode() {

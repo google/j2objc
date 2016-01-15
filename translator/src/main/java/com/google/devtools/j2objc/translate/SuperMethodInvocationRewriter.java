@@ -69,8 +69,8 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
       String signature = getSuperFunctionSignature(superMethod.method);
 
       // Add declarations for the function pointers to call.
-      unit.getNativeBlocks().add(new NativeDeclaration(null,
-          "static " + String.format(signature, funcName) + ";"));
+      unit.getNativeBlocks().add(NativeDeclaration.newOuterDeclaration(
+          null, "static " + String.format(signature, funcName) + ";"));
 
       // Look up the implementations in the static initialization.
       AbstractTypeDeclaration typeNode = typeMap.get(superMethod.type.getTypeDeclaration());

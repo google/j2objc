@@ -345,9 +345,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "withInt:(jint)__ordinal {");
 
     assertTranslation(impl, "Test_initWithNSString_withInt_(self, __name, __ordinal);");
-    assertTranslation(impl, "Test_UP = new_Test_$1_initWithNSString_withInt_(@\"UP\", 0);");
     assertTranslation(impl,
-        "Test_DOWN = new_Test_$2_initWithNSString_withInt_(@\"DOWN\", 1);");
+        "JreEnum(Test, UP) = new_Test_$1_initWithNSString_withInt_(@\"UP\", 0);");
+    assertTranslation(impl,
+        "JreEnum(Test, DOWN) = new_Test_$2_initWithNSString_withInt_(@\"DOWN\", 1);");
   }
 
   public void testTwoOutersInAnonymousSubClassOfInner() throws IOException {

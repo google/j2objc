@@ -169,7 +169,7 @@ public class OcniExtractor extends TreeVisitor {
     // implementation.
     if (BindingUtil.findInterface(node.getTypeBinding(), "java.lang.Iterable") != null
         && !methodsPrinted.contains("countByEnumeratingWithState:objects:count:")) {
-      bodyDeclarations.add(new NativeDeclaration(null,
+      bodyDeclarations.add(NativeDeclaration.newInnerDeclaration(null,
           "- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)state "
           + "objects:(__unsafe_unretained id *)stackbuf count:(NSUInteger)len {\n"
           + "  return JreDefaultFastEnumeration(self, state, stackbuf, len);\n}\n"));
@@ -215,11 +215,12 @@ public class OcniExtractor extends TreeVisitor {
       switch (ocniBlock.type) {
         case HEADER:
           {
-            NativeDeclaration decl = new NativeDeclaration(ocniBlock.code + '\n', null);
+            NativeDeclaration decl = NativeDeclaration.newInnerDeclaration(
+                ocniBlock.code + '\n', null);
             decl.addModifiers(Modifier.PUBLIC);
             return decl;
           }
-        case SOURCE: return new NativeDeclaration(null, ocniBlock.code + '\n');
+        case SOURCE: return NativeDeclaration.newInnerDeclaration(null, ocniBlock.code + '\n');
       }
     }
     return null;
