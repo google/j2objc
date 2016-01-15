@@ -75,13 +75,6 @@ CF_EXTERN_C_BEGIN
 void JreThrowNullPointerException() __attribute__((noreturn));
 void JreThrowClassCastException() __attribute__((noreturn));
 
-#ifdef J2OBJC_COUNT_NIL_CHK
-int j2objc_nil_chk_count;
-#endif
-
-void JrePrintNilChkCount();
-void JrePrintNilChkCountAtExit();
-
 id JreStrongAssign(__strong id *pIvar, id value);
 id JreStrongAssignAndConsume(__strong id *pIvar, NS_RELEASES_ARGUMENT id value);
 
@@ -97,14 +90,13 @@ void JreReleaseVolatile(volatile_id *pVar);
 
 NSString *JreStrcat(const char *types, ...);
 
-CF_EXTERN_C_END
+#if defined(J2OBJC_COUNT_NIL_CHK) && !defined(J2OBJC_DISABLE_NIL_CHECKS)
+id nil_chk(id __unsafe_unretained p);
+void JrePrintNilChkCount();
+void JrePrintNilChkCountAtExit();
 
-// Marked as unused to avoid a clang warning when this file is included
-// but NIL_CHK isn't used.
-__attribute__ ((unused)) static inline id nil_chk(id __unsafe_unretained p) {
-#ifdef J2OBJC_COUNT_NIL_CHK
-  j2objc_nil_chk_count++;
-#endif
+#else
+__attribute__((always_inline)) inline id nil_chk(id __unsafe_unretained p) {
 #if !defined(J2OBJC_DISABLE_NIL_CHECKS)
   if (__builtin_expect(!p, 0)) {
     JreThrowNullPointerException();
@@ -112,6 +104,12 @@ __attribute__ ((unused)) static inline id nil_chk(id __unsafe_unretained p) {
 #endif
   return p;
 }
+
+__attribute__((always_inline)) inline void JrePrintNilChkCount() {}
+__attribute__((always_inline)) inline void JrePrintNilChkCountAtExit() {}
+#endif
+
+CF_EXTERN_C_END
 
 #if !__has_feature(objc_arc)
 __attribute__((always_inline)) inline id JreAutoreleasedAssign(

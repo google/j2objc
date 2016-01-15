@@ -39,19 +39,25 @@ void JreThrowAssertionError(id __unsafe_unretained msg) {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:[msg description]]);
 }
 
-#ifdef J2OBJC_COUNT_NIL_CHK
-int j2objc_nil_chk_count = 0;
-#endif
+#if defined(J2OBJC_COUNT_NIL_CHK) && !defined(J2OBJC_DISABLE_NIL_CHECKS)
+static int j2objc_nil_chk_count = 0;
 
 void JrePrintNilChkCount() {
-#ifdef J2OBJC_COUNT_NIL_CHK
   printf("nil_chk count: %d\n", j2objc_nil_chk_count);
-#endif
 }
 
 void JrePrintNilChkCountAtExit() {
   atexit(JrePrintNilChkCount);
 }
+
+id nil_chk(id __unsafe_unretained p) {
+  j2objc_nil_chk_count++;
+  if (__builtin_expect(!p, 0)) {
+    JreThrowNullPointerException();
+  }
+  return p;
+}
+#endif
 
 id JreStrongAssign(__strong id *pIvar, id value) {
   return JreAutoreleasedAssign(pIvar, [value retain]);
