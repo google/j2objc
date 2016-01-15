@@ -29,7 +29,7 @@ ECLIPSE_JARS = \
     org.eclipse.osgi-3.10.2.v20150203-1939.jar \
     org.eclipse.text-3.5.101.jar
 
-GUAVA_JAR = guava-18.0.jar
+GUAVA_JAR = guava-19.0.jar
 
 JSR305_JAR = jsr305-3.0.0.jar
 JSR305_SOURCE_JAR = jsr305-3.0.0.jar
