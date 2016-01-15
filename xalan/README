@@ -1,0 +1,5 @@
+This package creates an Objective-C library of Android's version of the
+Apache Xalan Project.
+
+Project site:       https://xalan.apache.org/
+Android repository: https://android.googlesource.com/platform/external/apache-xml/
