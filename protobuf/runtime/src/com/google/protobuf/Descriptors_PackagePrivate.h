@@ -228,16 +228,26 @@ CF_EXTERN_C_END
  @public
   ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *javaType_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_Type, javaType_, ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *)
+
+__attribute__((unused)) static void ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(ComGoogleProtobufDescriptors_FieldDescriptor_Type *self, ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *javaType, NSString *__name, jint __ordinal);
+
+__attribute__((unused)) static ComGoogleProtobufDescriptors_FieldDescriptor_Type *new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *javaType, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
 @interface ComGoogleProtobufDescriptors_FieldDescriptor_JavaType () {
  @public
   id defaultDefault_;
 }
+
 @end
 
 J2OBJC_FIELD_SETTER(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, defaultDefault_, id)
+
+__attribute__((unused)) static void ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *self, id defaultDefault, NSString *__name, jint __ordinal);
+
+__attribute__((unused)) static ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *new_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(id defaultDefault, NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
 
 #endif // __ComGoogleProtobufDescriptors_PackagePrivate_H__
