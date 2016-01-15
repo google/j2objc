@@ -140,7 +140,8 @@ public class EnumRewriter extends TreeVisitor {
     // Append enum type suffix.
     String nativeName = NameTable.getNativeEnumName(typeName);
 
-    if (swiftFriendly) {
+    // The native type is not declared for an empty enum.
+    if (swiftFriendly && numConstants > 0) {
       header.append(String.format("- (%s)toNSEnum;\n", nativeName));
     }
 
@@ -155,7 +156,7 @@ public class EnumRewriter extends TreeVisitor {
         + "  return %s_valueOfWithNSString_(name);\n"
         + "}\n\n", typeName, typeName));
 
-    if (swiftFriendly) {
+    if (swiftFriendly && numConstants > 0) {
       implementation.append(String.format(
           "- (%s)toNSEnum {\n"
               + "  return (%s)[self ordinal];\n"

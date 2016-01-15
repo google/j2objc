@@ -50,4 +50,13 @@ public class EnumRewriterTest extends GenerationTest {
         "  return (Test_Enum)[self ordinal];",
         "}");
   }
+
+  public void testEmptyEnum() throws Exception {
+    // Add --swift-friendly to test that toNSEnum is not generated.
+    Options.setSwiftFriendly(true);
+    String header = translateSourceFile("enum Test {}", "Test", "Test.h");
+    assertNotInTranslation(header, "Test_Enum");
+    String source = getTranslatedFile("Test.m");
+    assertNotInTranslation(source, "Test_Enum");
+  }
 }
