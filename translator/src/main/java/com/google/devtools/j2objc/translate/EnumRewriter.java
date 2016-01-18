@@ -175,14 +175,9 @@ public class EnumRewriter extends TreeVisitor {
     StringBuilder outerImpl = new StringBuilder();
     outerHeader.append(String.format(
         "FOUNDATION_EXPORT IOSObjectArray *%s_values();\n\n"
-        + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);\n",
-        typeName, typeName, typeName));
-    // The native type is not declared for an empty enum.
-    if (numConstants > 0) {
-      outerHeader.append(String.format(
-          "\nFOUNDATION_EXPORT %s *%s_fromNative(%s nativeValue);\n",
-          typeName, typeName, nativeName));
-    }
+        + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);\n\n"
+        + "FOUNDATION_EXPORT %s *%s_fromOrdinal(NSUInteger ordinal);\n",
+        typeName, typeName, typeName, typeName, typeName));
 
     outerImpl.append(String.format(
         "IOSObjectArray *%s_values() {\n"
@@ -209,21 +204,16 @@ public class EnumRewriter extends TreeVisitor {
     }
     outerImpl.append("  return nil;\n}\n\n");
 
-    if (numConstants > 0) {
-      outerImpl.append(String.format(
-          "#pragma clang diagnostic push\n"
-          + "#pragma clang diagnostic ignored \"-Wtautological-constant-out-of-range-compare\"\n"
-          + "%s *%s_fromNative(%s nativeValue) {\n"
-          + "  %s_initialize();\n"
-          // Native enums are unsigned, so don't need to check lower bound.
-          + "  if (nativeValue >= %s) {\n"
-          + "    return nil;\n"
-          + "  }\n"
-          + "  return %s_values_[nativeValue];\n"
-          + "}\n"
-          + "#pragma clang diagnostic pop\n",
-          typeName, typeName, nativeName, typeName, numConstants, typeName));
-    }
+    outerImpl.append(String.format(
+        "%s *%s_fromOrdinal(NSUInteger ordinal) {\n"
+        + "  %s_initialize();\n"
+        // Param is unsigned, so don't need to check lower bound.
+        + "  if (ordinal >= %s) {\n"
+        + "    return nil;\n"
+        + "  }\n"
+        + "  return %s_values_[ordinal];\n"
+        + "}\n",
+        typeName, typeName, typeName, numConstants, typeName));
 
     node.getBodyDeclarations().add(NativeDeclaration.newOuterDeclaration(
         outerHeader.toString(), outerImpl.toString()));

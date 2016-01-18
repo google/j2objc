@@ -120,7 +120,9 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
       "FOUNDATION_EXPORT $classname$ *$classname$_valueOfWithInt_("
           "jint value);\n"
       "FOUNDATION_EXPORT $classname$ *$classname$_forNumberWithInt_("
-          "jint value);\n\n",
+          "jint value);\n"
+      "FOUNDATION_EXPORT $classname$ *$classname$_fromOrdinal("
+          "NSUInteger ordinal);\n\n",
       "classname", ClassName(descriptor_));
 
   for (int i = 0; i < canonical_values_.size(); i++) {
@@ -254,7 +256,15 @@ void EnumGenerator::GenerateSource(io::Printer* printer) {
       "    }\n"
       "  }\n"
       "  return nil;\n"
-      "}\n\n",
+      "}\n"
+      "\n"
+      "$classname$ *$classname$_fromOrdinal(NSUInteger ordinal) {\n"
+      "  $classname$_initialize();\n"
+      "  if (ordinal >= $count$) {\n"
+      "    return nil;\n"
+      "  }\n"
+      "  return $classname$_values_[ordinal];\n"
+      "}\n",
       "classname", ClassName(descriptor_),
       "count", SimpleItoa(canonical_values_.size()));
 }
