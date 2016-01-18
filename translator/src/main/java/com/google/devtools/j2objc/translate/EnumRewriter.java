@@ -187,13 +187,16 @@ public class EnumRewriter extends TreeVisitor {
 
     outerImpl.append(String.format(
         "%s *%s_valueOfWithNSString_(NSString *name) {\n"
-        + "  %s_initialize();\n"
-        + "  for (int i = 0; i < %s; i++) {\n"
-        + "    %s *e = %s_values_[i];\n"
-        + "    if ([name isEqual:[e name]]) {\n"
-        + "      return e;\n"
-        + "    }\n"
-        + "  }\n", typeName, typeName, typeName, numConstants, typeName, typeName));
+        + "  %s_initialize();\n", typeName, typeName, typeName));
+    if (numConstants > 0) {
+      outerImpl.append(String.format(
+          "  for (int i = 0; i < %s; i++) {\n"
+          + "    %s *e = %s_values_[i];\n"
+          + "    if ([name isEqual:[e name]]) {\n"
+          + "      return e;\n"
+          + "    }\n"
+          + "  }\n", numConstants, typeName, typeName));
+    }
     if (Options.useReferenceCounting()) {
       outerImpl.append(
           "  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name]"
@@ -205,15 +208,21 @@ public class EnumRewriter extends TreeVisitor {
     outerImpl.append("  return nil;\n}\n\n");
 
     outerImpl.append(String.format(
-        "%s *%s_fromOrdinal(NSUInteger ordinal) {\n"
-        + "  %s_initialize();\n"
-        // Param is unsigned, so don't need to check lower bound.
-        + "  if (ordinal >= %s) {\n"
-        + "    return nil;\n"
-        + "  }\n"
-        + "  return %s_values_[ordinal];\n"
-        + "}\n",
-        typeName, typeName, typeName, numConstants, typeName));
+        "%s *%s_fromOrdinal(NSUInteger ordinal) {\n", typeName, typeName));
+    // Avoid "comparison of unsigned expression >= 0 is always true" error.
+    if (numConstants == 0) {
+      outerImpl.append("  return nil;\n}\n");
+    } else {
+      outerImpl.append(String.format(
+          "  %s_initialize();\n"
+          // Param is unsigned, so don't need to check lower bound.
+          + "  if (ordinal >= %s) {\n"
+          + "    return nil;\n"
+          + "  }\n"
+          + "  return %s_values_[ordinal];\n"
+          + "}\n",
+          typeName, numConstants, typeName));
+    }
 
     node.getBodyDeclarations().add(NativeDeclaration.newOuterDeclaration(
         outerHeader.toString(), outerImpl.toString()));
