@@ -13,7 +13,6 @@
 # Builds a J2ObjC translated Guava library.
 #
 # Author: Keith Stanger
-# TODO(kstanger): Build a fat library to distribute.
 
 SUFFIXES:
 
@@ -34,6 +33,14 @@ INCLUDE_DIRS = $(GEN_OBJC_DIR)
 
 J2OBJCC := $(ARCH_BIN_DIR)/j2objcc -c -fobjc-abi-version=2 -fobjc-legacy-dispatch \
   $(INCLUDE_DIRS:%=-I%)
+
+CREATE_JAR_NAME = j2objc_guava
+CREATE_JAR_SOURCES = $(JAVA_SOURCES)
+# TODO(kstanger): Add -Xlint:unchecked once warnings are fixed.
+CREATE_JAR_JAVAC_ARGS = -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) -encoding UTF-8 \
+  -source 1.7 -target 1.7 -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar
+CREATE_JAR_DEPENDENCIES = java_deps_dist annotations_dist
+include ../make/create_jar.mk
 
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(SRC_DIR)/%=%)
@@ -57,7 +64,6 @@ include ../make/static_framework.mk
 
 fat_lib_dependencies: jre_emul_dist jsr305_dist
 
-JAR = $(BUILD_DIR)/j2objc_guava.jar
 DIST_JAR = $(DIST_JAR_DIR)/j2objc_guava.jar
 
 GUAVA_LICENSE = LICENSE
@@ -77,16 +83,7 @@ clean:
 
 java: $(DIST_JAR)
 
-# TODO(kstanger): Add -Xlint:unchecked once warnings are fixed.
-$(JAR): $(JAVA_SOURCES) | $(BUILD_DIR) java_deps_dist annotations_dist
-	@echo "building j2objc_guava.jar"
-	@stage_dir=`mktemp -d -t j2objc-guava`; \
-	$(JAVAC) -sourcepath $(SOURCEPATH) -cp $(CLASSPATH) -encoding UTF-8 \
-	    -d $$stage_dir -source 1.7 -target 1.7 -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar $^; \
-	jar cf $@ -C $$stage_dir .; \
-	rm -rf $$stage_dir
-
-$(DIST_JAR): $(JAR) | $(DIST_JAR_DIR)
+$(DIST_JAR): $(CREATE_JAR_RESULT) | $(DIST_JAR_DIR)
 	@install -m 0644 $< $@
 
 $(GUAVA_LICENSE_DIST): $(GUAVA_LICENSE)
