@@ -35,7 +35,6 @@ import com.google.common.annotations.Beta;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Stopwatch;
-import com.google.common.base.Supplier;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.ImmutableCollection;
 import com.google.common.collect.ImmutableList;
@@ -45,25 +44,22 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ImmutableSetMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.MultimapBuilder;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.Multiset;
 import com.google.common.collect.Ordering;
 import com.google.common.collect.SetMultimap;
-import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.ListenerCallQueue.Callback;
 import com.google.common.util.concurrent.Service.State;
-import com.google.j2objc.annotations.Weak;
 import com.google.j2objc.annotations.WeakOuter;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -404,12 +400,7 @@ public final class ServiceManager {
 
     @GuardedBy("monitor")
     final SetMultimap<State, Service> servicesByState =
-        Multimaps.newSetMultimap(new EnumMap<State, Collection<Service>>(State.class),
-            new Supplier<Set<Service>>() {
-              @Override public Set<Service> get() {
-                return Sets.newLinkedHashSet();
-              }
-            });
+        MultimapBuilder.enumKeys(State.class).linkedHashSetValues().build();
 
     @GuardedBy("monitor")
     final Multiset<State> states = servicesByState.keys();
@@ -440,11 +431,14 @@ public final class ServiceManager {
      * Controls how long to wait for all the services to either become healthy or reach a
      * state from which it is guaranteed that it can never become healthy.
      */
+    final Monitor.Guard awaitHealthGuard = new AwaitHealthGuard();
+
     @WeakOuter
     final class AwaitHealthGuard extends Monitor.Guard {
-      AwaitHealthGuard(Monitor monitor) {
-        super(monitor);
+      AwaitHealthGuard() {
+        super(ServiceManagerState.this.monitor);
       }
+
       @Override public boolean isSatisfied() {
         // All services have started or some service has terminated/failed.
         return states.count(RUNNING) == numberOfServices
@@ -453,21 +447,22 @@ public final class ServiceManager {
             || states.contains(FAILED);
       }
     }
-    final Monitor.Guard awaitHealthGuard = new AwaitHealthGuard(monitor);
 
     /**
      * Controls how long to wait for all services to reach a terminal state.
      */
+    final Monitor.Guard stoppedGuard = new StoppedGuard();
+
     @WeakOuter
     final class StoppedGuard extends Monitor.Guard {
-      StoppedGuard(Monitor monitor) {
-        super(monitor);
+      StoppedGuard() {
+        super(ServiceManagerState.this.monitor);
       }
+
       @Override public boolean isSatisfied() {
         return states.count(TERMINATED) + states.count(FAILED) == numberOfServices;
       }
     }
-    final Monitor.Guard stoppedGuard = new StoppedGuard(monitor);
 
     /** The listeners to notify during a state transition. */
     @GuardedBy("monitor")
@@ -576,7 +571,7 @@ public final class ServiceManager {
           throw new TimeoutException("Timeout waiting for the services to stop. The following "
               + "services have not stopped: "
               + Multimaps.filterKeys(servicesByState,
-                  not(in(ImmutableSet.of(TERMINATED, FAILED)))));
+                  not(in(EnumSet.of(TERMINATED, FAILED)))));
         }
       } finally {
         monitor.leave();
@@ -589,7 +584,7 @@ public final class ServiceManager {
       try {
         for (Entry<State, Service> entry : servicesByState.entries()) {
           if (!(entry.getValue() instanceof NoOpService)) {
-            builder.put(entry.getKey(), entry.getValue());
+            builder.put(entry);
           }
         }
       } finally {
@@ -614,17 +609,13 @@ public final class ServiceManager {
       } finally {
         monitor.leave();
       }
-      Collections.sort(loadTimes, Ordering.<Long>natural()
+      Collections.sort(loadTimes, Ordering.natural()
           .onResultOf(new Function<Entry<Service, Long>, Long>() {
             @Override public Long apply(Map.Entry<Service, Long> input) {
               return input.getValue();
             }
           }));
-      ImmutableMap.Builder<Service, Long> builder = ImmutableMap.builder();
-      for (Entry<Service, Long> entry : loadTimes) {
-        builder.put(entry);
-      }
-      return builder.build();
+      return ImmutableMap.copyOf(loadTimes);
     }
 
     /**
@@ -733,7 +724,7 @@ public final class ServiceManager {
    * to record the state transitions.
    */
   private static final class ServiceListener extends Service.Listener {
-    @Weak final Service service;
+    final Service service;
     // We store the state in a weak reference to ensure that if something went wrong while
     // constructing the ServiceManager we don't pointlessly keep updating the state.
     final WeakReference<ServiceManagerState> state;
@@ -783,7 +774,7 @@ public final class ServiceManager {
       if (state != null) {
         // Log before the transition, so that if the process exits in response to server failure,
         // there is a higher likelihood that the cause will be in the logs.
-        if (!(service instanceof NoOpService)) {
+        if (!(service instanceof NoOpService) ) {
           logger.log(Level.SEVERE, "Service " + service + " has failed in the " + from + " state.",
               failure);
         }

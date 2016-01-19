@@ -93,11 +93,11 @@ import javax.annotation.Nullable;
  * Multimaps#synchronizedListMultimap}.
  *
  * <p>See the Guava User Guide article on <a href=
- * "http://code.google.com/p/guava-libraries/wiki/NewCollectionTypesExplained#Multimap">
+ * "https://github.com/google/guava/wiki/NewCollectionTypesExplained#multimap">
  * {@code Multimap}</a>.
  *
  * @author Mike Bostock
- * @since 2.0 (imported from Google Collections Library)
+ * @since 2.0
  */
 @GwtCompatible(serializable = true, emulated = true)
 public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
@@ -139,12 +139,12 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
       return result;
     }
   }
-  
+
   private static class KeyList<K, V> {
     Node<K, V> head;
     Node<K, V> tail;
     int count;
-    
+
     KeyList(Node<K, V> firstNode) {
       this.head = firstNode;
       this.tail = firstNode;
@@ -158,7 +158,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
   private transient Node<K, V> tail; // the tail for all keys
   private transient Map<K, KeyList<K, V>> keyToKeyList;
   private transient int size;
-  
+
   /*
    * Tracks modifications to keyToKeyList so that addition or removal of keys invalidates
    * preexisting iterators. This does *not* track simple additions and removals of values
@@ -216,8 +216,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
    * nextSibling} is null. Note: if {@code nextSibling} is specified, it MUST be
    * for an node for the same {@code key}!
    */
-  private Node<K, V> addNode(
-      @Nullable K key, @Nullable V value, @Nullable Node<K, V> nextSibling) {
+  private Node<K, V> addNode(@Nullable K key, @Nullable V value, @Nullable Node<K, V> nextSibling) {
     Node<K, V> node = new Node<K, V>(key, value);
     if (head == null) { // empty list
       head = tail = node;
@@ -291,7 +290,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
       } else {
         node.previousSibling.nextSibling = node.nextSibling;
       }
-      
+
       if (node.nextSibling == null) {
         keyList.tail = node.previousSibling;
       } else {
@@ -338,16 +337,19 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
       }
       current = null;
     }
+
     private void checkForConcurrentModification() {
       if (modCount != expectedModCount) {
         throw new ConcurrentModificationException();
       }
     }
+
     @Override
     public boolean hasNext() {
       checkForConcurrentModification();
       return next != null;
     }
+
     @Override
     public Node<K, V> next() {
       checkForConcurrentModification();
@@ -357,6 +359,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
       nextIndex++;
       return current;
     }
+
     @Override
     public void remove() {
       checkForConcurrentModification();
@@ -371,11 +374,13 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
       current = null;
       expectedModCount = modCount;
     }
+
     @Override
     public boolean hasPrevious() {
       checkForConcurrentModification();
       return previous != null;
     }
+
     @Override
     public Node<K, V> previous() {
       checkForConcurrentModification();
@@ -385,22 +390,27 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
       nextIndex--;
       return current;
     }
+
     @Override
     public int nextIndex() {
       return nextIndex;
     }
+
     @Override
     public int previousIndex() {
       return nextIndex - 1;
     }
+
     @Override
     public void set(Entry<K, V> e) {
       throw new UnsupportedOperationException();
     }
+
     @Override
     public void add(Entry<K, V> e) {
       throw new UnsupportedOperationException();
     }
+
     void setValue(V value) {
       checkState(current != null);
       current.value = value;
@@ -413,17 +423,19 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
     Node<K, V> next = head;
     Node<K, V> current;
     int expectedModCount = modCount;
-    
+
     private void checkForConcurrentModification() {
       if (modCount != expectedModCount) {
         throw new ConcurrentModificationException();
       }
     }
+
     @Override
     public boolean hasNext() {
       checkForConcurrentModification();
       return next != null;
     }
+
     @Override
     public K next() {
       checkForConcurrentModification();
@@ -435,6 +447,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
       } while ((next != null) && !seenKeys.add(next.key));
       return current.key;
     }
+
     @Override
     public void remove() {
       checkForConcurrentModification();
@@ -669,36 +682,45 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
    */
   @Override
   public List<V> get(final @Nullable K key) {
-    @WeakOuter
-    class LinkedListMultimapList extends AbstractSequentialList<V> {
-      @Override public int size() {
+    return new AbstractSequentialList<V>() {
+      @Override
+      public int size() {
         KeyList<K, V> keyList = keyToKeyList.get(key);
         return (keyList == null) ? 0 : keyList.count;
       }
-      @Override public ListIterator<V> listIterator(int index) {
+
+      @Override
+      public ListIterator<V> listIterator(int index) {
         return new ValueForKeyIterator(key, index);
       }
-    }
-    return new LinkedListMultimapList();
+    };
   }
 
   @Override
   Set<K> createKeySet() {
-    return new Sets.ImprovedAbstractSet<K>() {
-      @Override public int size() {
+    @WeakOuter
+    class KeySetImpl extends Sets.ImprovedAbstractSet<K> {
+      @Override
+      public int size() {
         return keyToKeyList.size();
       }
-      @Override public Iterator<K> iterator() {
+
+      @Override
+      public Iterator<K> iterator() {
         return new DistinctKeyIterator();
       }
-      @Override public boolean contains(Object key) { // for performance
+
+      @Override
+      public boolean contains(Object key) { // for performance
         return containsKey(key);
       }
+
       @Override
       public boolean remove(Object o) { // for performance
         return !LinkedListMultimap.this.removeAll(o).isEmpty();
       }
-    };
+    }
+    return new KeySetImpl();
   }
 
   /**
@@ -718,12 +740,14 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
   @Override
   List<V> createValues() {
     @WeakOuter
-    class LinkedListMultimapValues extends AbstractSequentialList<V> {
-      @Override public int size() {
+    class ValuesImpl extends AbstractSequentialList<V> {
+      @Override
+      public int size() {
         return size;
       }
 
-      @Override public ListIterator<V> listIterator(int index) {
+      @Override
+      public ListIterator<V> listIterator(int index) {
         final NodeIterator nodeItr = new NodeIterator(index);
         return new TransformedListIterator<Entry<K, V>, V>(nodeItr) {
           @Override
@@ -738,7 +762,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
         };
       }
     }
-    return new LinkedListMultimapValues();
+    return new ValuesImpl();
   }
 
   /**
@@ -766,15 +790,19 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
 
   @Override
   List<Entry<K, V>> createEntries() {
-    return new AbstractSequentialList<Entry<K, V>>() {
-      @Override public int size() {
+    @WeakOuter
+    class EntriesImpl extends AbstractSequentialList<Entry<K, V>> {
+      @Override
+      public int size() {
         return size;
       }
 
-      @Override public ListIterator<Entry<K, V>> listIterator(int index) {
+      @Override
+      public ListIterator<Entry<K, V>> listIterator(int index) {
         return new NodeIterator(index);
       }
-    };
+    }
+    return new EntriesImpl();
   }
 
   @Override
@@ -803,8 +831,7 @@ public class LinkedListMultimap<K, V> extends AbstractMultimap<K, V>
   }
 
   @GwtIncompatible("java.io.ObjectInputStream")
-  private void readObject(ObjectInputStream stream)
-      throws IOException, ClassNotFoundException {
+  private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     keyToKeyList = Maps.newLinkedHashMap();
     int size = stream.readInt();

@@ -55,28 +55,28 @@ import javax.annotation.concurrent.Immutable;
  */
 @Beta
 public abstract class AbstractService implements Service {
-  private static final Callback<Listener> STARTING_CALLBACK =
+  private static final Callback<Listener> STARTING_CALLBACK = 
       new Callback<Listener>("starting()") {
         @Override void call(Listener listener) {
           listener.starting();
         }
       };
-  private static final Callback<Listener> RUNNING_CALLBACK =
+  private static final Callback<Listener> RUNNING_CALLBACK = 
       new Callback<Listener>("running()") {
         @Override void call(Listener listener) {
           listener.running();
         }
       };
-  private static final Callback<Listener> STOPPING_FROM_STARTING_CALLBACK =
+  private static final Callback<Listener> STOPPING_FROM_STARTING_CALLBACK = 
       stoppingCallback(STARTING);
-  private static final Callback<Listener> STOPPING_FROM_RUNNING_CALLBACK =
+  private static final Callback<Listener> STOPPING_FROM_RUNNING_CALLBACK = 
       stoppingCallback(RUNNING);
-
-  private static final Callback<Listener> TERMINATED_FROM_NEW_CALLBACK =
+  
+  private static final Callback<Listener> TERMINATED_FROM_NEW_CALLBACK = 
       terminatedCallback(NEW);
-  private static final Callback<Listener> TERMINATED_FROM_RUNNING_CALLBACK =
+  private static final Callback<Listener> TERMINATED_FROM_RUNNING_CALLBACK = 
       terminatedCallback(RUNNING);
-  private static final Callback<Listener> TERMINATED_FROM_STOPPING_CALLBACK =
+  private static final Callback<Listener> TERMINATED_FROM_STOPPING_CALLBACK = 
       terminatedCallback(STOPPING);
 
   private static Callback<Listener> terminatedCallback(final State from) {
@@ -86,7 +86,7 @@ public abstract class AbstractService implements Service {
       }
     };
   }
-
+  
   private static Callback<Listener> stoppingCallback(final State from) {
     return new Callback<Listener>("stopping({from = " + from + "})") {
       @Override void call(Listener listener) {
@@ -94,7 +94,7 @@ public abstract class AbstractService implements Service {
       }
     };
   }
-
+  
   private final Monitor monitor = new Monitor();
 
   private final Guard isStartable = new IsStartableGuard();
@@ -134,7 +134,7 @@ public abstract class AbstractService implements Service {
     @Override public boolean isSatisfied() {
       return state().compareTo(RUNNING) >= 0;
     }
-  };
+  }
 
   private final Guard isStopped = new IsStoppedGuard();
 
@@ -147,22 +147,22 @@ public abstract class AbstractService implements Service {
     @Override public boolean isSatisfied() {
       return state().isTerminal();
     }
-  };
+  }
 
   /**
    * The listeners to notify during a state transition.
    */
   @GuardedBy("monitor")
-  private final List<ListenerCallQueue<Listener>> listeners =
+  private final List<ListenerCallQueue<Listener>> listeners = 
       Collections.synchronizedList(new ArrayList<ListenerCallQueue<Listener>>());
-
+  
   /**
    * The current state of the service.  This should be written with the lock held but can be read
    * without it because it is an immutable object in a volatile field.  This is desirable so that
    * methods like {@link #state}, {@link #failureCause} and notably {@link #toString} can be run
-   * without grabbing the lock.
-   *
-   * <p>To update this field correctly the lock must be held to guarantee that the state is
+   * without grabbing the lock.  
+   * 
+   * <p>To update this field correctly the lock must be held to guarantee that the state is 
    * consistent.
    */
   @GuardedBy("monitor")
@@ -170,15 +170,15 @@ public abstract class AbstractService implements Service {
 
   /** Constructor for use by subclasses. */
   protected AbstractService() {}
-
+  
   /**
-   * This method is called by {@link #startAsync} to initiate service startup. The invocation of
+   * This method is called by {@link #startAsync} to initiate service startup. The invocation of 
    * this method should cause a call to {@link #notifyStarted()}, either during this method's run,
    * or after it has returned. If startup fails, the invocation should cause a call to
    * {@link #notifyFailed(Throwable)} instead.
    *
    * <p>This method should return promptly; prefer to do work on a different thread where it is
-   * convenient. It is invoked exactly once on service startup, even when {@link #startAsync} is
+   * convenient. It is invoked exactly once on service startup, even when {@link #startAsync} is 
    * called multiple times.
    */
   protected abstract void doStart();
@@ -190,7 +190,7 @@ public abstract class AbstractService implements Service {
    * {@link #notifyFailed(Throwable)} instead.
    *
    * <p> This method should return promptly; prefer to do work on a different thread where it is
-   * convenient. It is invoked exactly once on service shutdown, even when {@link #stopAsync} is
+   * convenient. It is invoked exactly once on service shutdown, even when {@link #stopAsync} is 
    * called multiple times.
    */
   protected abstract void doStop();
@@ -201,7 +201,6 @@ public abstract class AbstractService implements Service {
         snapshot = new StateSnapshot(STARTING);
         starting();
         doStart();
-       // TODO(user): justify why we are catching Throwable and not RuntimeException
       } catch (Throwable startupFailure) {
         notifyFailed(startupFailure);
       } finally {
@@ -240,8 +239,6 @@ public abstract class AbstractService implements Service {
           default:
             throw new AssertionError("Unexpected state: " + previous);
         }
-        // TODO(user): justify why we are catching Throwable and not RuntimeException.  Also, we
-        // may inadvertently catch our AssertionErrors.
       } catch (Throwable shutdownFailure) {
         notifyFailed(shutdownFailure);
       } finally {
@@ -260,7 +257,7 @@ public abstract class AbstractService implements Service {
       monitor.leave();
     }
   }
-
+  
   @Override public final void awaitRunning(long timeout, TimeUnit unit) throws TimeoutException {
     if (monitor.enterWhenUninterruptibly(hasReachedRunning, timeout, unit)) {
       try {
@@ -269,12 +266,11 @@ public abstract class AbstractService implements Service {
         monitor.leave();
       }
     } else {
-      // It is possible due to races the we are currently in the expected state even though we
+      // It is possible due to races the we are currently in the expected state even though we 
       // timed out. e.g. if we weren't event able to grab the lock within the timeout we would never
       // even check the guard.  I don't think we care too much about this use case but it could lead
       // to a confusing error message.
-      throw new TimeoutException("Timed out waiting for " + this + " to reach the RUNNING state. "
-          + "Current state: " + state());
+      throw new TimeoutException("Timed out waiting for " + this + " to reach the RUNNING state.");
     }
   }
 
@@ -286,7 +282,7 @@ public abstract class AbstractService implements Service {
       monitor.leave();
     }
   }
-
+  
   @Override public final void awaitTerminated(long timeout, TimeUnit unit) throws TimeoutException {
     if (monitor.enterWhenUninterruptibly(isStopped, timeout, unit)) {
       try {
@@ -295,7 +291,7 @@ public abstract class AbstractService implements Service {
         monitor.leave();
       }
     } else {
-      // It is possible due to races the we are currently in the expected state even though we
+      // It is possible due to races the we are currently in the expected state even though we 
       // timed out. e.g. if we weren't event able to grab the lock within the timeout we would never
       // even check the guard.  I don't think we care too much about this use case but it could lead
       // to a confusing error message.
@@ -303,7 +299,7 @@ public abstract class AbstractService implements Service {
           + "Current state: " + state());
     }
   }
-
+  
   /** Checks that the current state is equal to the expected state. */
   @GuardedBy("monitor")
   private void checkCurrentState(State expected) {
@@ -311,10 +307,10 @@ public abstract class AbstractService implements Service {
     if (actual != expected) {
       if (actual == FAILED) {
         // Handle this specially so that we can include the failureCause, if there is one.
-        throw new IllegalStateException("Expected the service to be " + expected
+        throw new IllegalStateException("Expected the service to be " + expected 
             + ", but the service has FAILED", failureCause());
       }
-      throw new IllegalStateException("Expected the service to be " + expected + ", but was "
+      throw new IllegalStateException("Expected the service to be " + expected + ", but was " 
           + actual);
     }
   }
@@ -328,7 +324,7 @@ public abstract class AbstractService implements Service {
   protected final void notifyStarted() {
     monitor.enter();
     try {
-      // We have to examine the internal state of the snapshot here to properly handle the stop
+      // We have to examine the internal state of the snapshot here to properly handle the stop 
       // while starting case.
       if (snapshot.state != STARTING) {
         IllegalStateException failure = new IllegalStateException(
@@ -339,7 +335,7 @@ public abstract class AbstractService implements Service {
 
       if (snapshot.shutdownWhenStartupFinishes) {
         snapshot = new StateSnapshot(STOPPING);
-        // We don't call listeners here because we already did that when we set the
+        // We don't call listeners here because we already did that when we set the 
         // shutdownWhenStartupFinishes flag.
         doStop();
       } else {
@@ -421,7 +417,7 @@ public abstract class AbstractService implements Service {
   public final State state() {
     return snapshot.externalState();
   }
-
+  
   /**
    * @since 14.0
    */
@@ -429,7 +425,7 @@ public abstract class AbstractService implements Service {
   public final Throwable failureCause() {
     return snapshot.failureCause();
   }
-
+  
   /**
    * @since 13.0
    */
@@ -451,7 +447,7 @@ public abstract class AbstractService implements Service {
     return getClass().getSimpleName() + " [" + state() + "]";
   }
 
-  /**
+  /** 
    * Attempts to execute all the listeners in {@link #listeners} while not holding the
    * {@link #monitor}.
    */
@@ -514,7 +510,7 @@ public abstract class AbstractService implements Service {
       }
     }.enqueueOn(listeners);
   }
-
+  
   /**
    * An immutable snapshot of the current state of the service. This class represents a consistent
    * snapshot of the state and therefore it can be used to answer simple queries without needing to
@@ -533,22 +529,22 @@ public abstract class AbstractService implements Service {
      * up.
      */
     final boolean shutdownWhenStartupFinishes;
-
+    
     /**
      * The exception that caused this service to fail.  This will be {@code null}
      * unless the service has failed.
      */
     @Nullable
     final Throwable failure;
-
+    
     StateSnapshot(State internalState) {
       this(internalState, false, null);
     }
-
+    
     StateSnapshot(
         State internalState, boolean shutdownWhenStartupFinishes, @Nullable Throwable failure) {
-      checkArgument(!shutdownWhenStartupFinishes || internalState == STARTING,
-          "shudownWhenStartupFinishes can only be set if state is STARTING. Got %s instead.",
+      checkArgument(!shutdownWhenStartupFinishes || internalState == STARTING, 
+          "shudownWhenStartupFinishes can only be set if state is STARTING. Got %s instead.", 
           internalState);
       checkArgument(!(failure != null ^ internalState == FAILED),
           "A failure cause should be set if and only if the state is failed.  Got %s and %s "
@@ -557,7 +553,7 @@ public abstract class AbstractService implements Service {
       this.shutdownWhenStartupFinishes = shutdownWhenStartupFinishes;
       this.failure = failure;
     }
-
+    
     /** @see Service#state() */
     State externalState() {
       if (shutdownWhenStartupFinishes && state == STARTING) {
@@ -566,10 +562,10 @@ public abstract class AbstractService implements Service {
         return state;
       }
     }
-
+    
     /** @see Service#failureCause() */
     Throwable failureCause() {
-      checkState(state == FAILED,
+      checkState(state == FAILED, 
           "failureCause() is only valid if the service has failed, service is %s", state);
       return failure;
     }

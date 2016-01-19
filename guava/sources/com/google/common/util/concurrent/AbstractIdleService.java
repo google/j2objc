@@ -18,7 +18,6 @@ package com.google.common.util.concurrent;
 
 import com.google.common.annotations.Beta;
 import com.google.common.base.Supplier;
-import com.google.common.base.Throwables;
 import com.google.j2objc.annotations.WeakOuter;
 
 import java.util.concurrent.Executor;
@@ -62,7 +61,6 @@ public abstract class AbstractIdleService implements Service {
                 notifyStarted();
               } catch (Throwable t) {
                 notifyFailed(t);
-                throw Throwables.propagate(t);
               }
             }
           });
@@ -77,10 +75,13 @@ public abstract class AbstractIdleService implements Service {
                 notifyStopped();
               } catch (Throwable t) {
                 notifyFailed(t);
-                throw Throwables.propagate(t);
               }
             }
           });
+    }
+
+    @Override public String toString() {
+      return AbstractIdleService.this.toString();
     }
   }
 

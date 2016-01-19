@@ -20,6 +20,7 @@ import static com.google.common.base.Preconditions.checkArgument;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.util.Locale;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicLong;
@@ -66,9 +67,8 @@ public final class ThreadFactoryBuilder {
    *     {@code "rpc-pool-0"}, {@code "rpc-pool-1"}, {@code "rpc-pool-2"}, etc.
    * @return this for the builder pattern
    */
-  @SuppressWarnings("ReturnValueIgnored")
   public ThreadFactoryBuilder setNameFormat(String nameFormat) {
-    String.format(nameFormat, 0); // fail fast if the format is bad or null
+    String unused = format(nameFormat, 0); // fail fast if the format is bad or null
     this.nameFormat = nameFormat;
     return this;
   }
@@ -161,7 +161,7 @@ public final class ThreadFactoryBuilder {
       @Override public Thread newThread(Runnable runnable) {
         Thread thread = backingThreadFactory.newThread(runnable);
         if (nameFormat != null) {
-          thread.setName(String.format(nameFormat, count.getAndIncrement()));
+          thread.setName(format(nameFormat, count.getAndIncrement()));
         }
         if (daemon != null) {
           thread.setDaemon(daemon);
@@ -175,5 +175,9 @@ public final class ThreadFactoryBuilder {
         return thread;
       }
     };
+  }
+
+  private static String format(String format, Object... args) {
+    return String.format(Locale.ROOT, format, args);
   }
 }

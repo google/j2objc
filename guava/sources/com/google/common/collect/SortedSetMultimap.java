@@ -39,13 +39,13 @@ import javax.annotation.Nullable;
  * returns a {@link Set} of map entries. Though the method signature doesn't say
  * so explicitly, the map returned by {@link #asMap} has {@code SortedSet}
  * values.
- * 
+ *
  * <p>See the Guava User Guide article on <a href=
- * "http://code.google.com/p/guava-libraries/wiki/NewCollectionTypesExplained#Multimap">
+ * "https://github.com/google/guava/wiki/NewCollectionTypesExplained#multimap">
  * {@code Multimap}</a>.
  *
  * @author Jared Levy
- * @since 2.0 (imported from Google Collections Library)
+ * @since 2.0
  */
 @GwtCompatible
 public interface SortedSetMultimap<K, V> extends SetMultimap<K, V> {
@@ -105,7 +105,8 @@ public interface SortedSetMultimap<K, V> extends SetMultimap<K, V> {
    * {@code Map<K, SortedSet<V>>}, call
    * {@link Multimaps#asMap(SortedSetMultimap)} instead.
    */
-  @Override Map<K, Collection<V>> asMap();
+  @Override
+  Map<K, Collection<V>> asMap();
 
   /**
    * Returns the comparator that orders the multimap values, with {@code null}

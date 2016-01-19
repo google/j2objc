@@ -51,7 +51,6 @@ import javax.annotation.Nullable;
  * <li>keys or values automatically wrapped in {@linkplain WeakReference weak} or {@linkplain
  *     SoftReference soft} references
  * <li>notification of evicted (or otherwise removed) entries
- * <li>on-demand computation of values for keys not already present
  * </ul>
  *
  * <p>Usage example: <pre>   {@code
@@ -100,7 +99,7 @@ import javax.annotation.Nullable;
  * @author Bob Lee
  * @author Charles Fry
  * @author Kevin Bourrillion
- * @since 2.0 (imported from Google Collections Library)
+ * @since 2.0
  */
 @GwtCompatible(emulated = true)
 public final class MapMaker extends GenericMapMaker<Object, Object> {
@@ -167,7 +166,9 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
    */
   @Override
   public MapMaker initialCapacity(int initialCapacity) {
-    checkState(this.initialCapacity == UNSET_INT, "initial capacity was already set to %s",
+    checkState(
+        this.initialCapacity == UNSET_INT,
+        "initial capacity was already set to %s",
         this.initialCapacity);
     checkArgument(initialCapacity >= 0);
     this.initialCapacity = initialCapacity;
@@ -204,7 +205,9 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
   @Deprecated
   @Override
   MapMaker maximumSize(int size) {
-    checkState(this.maximumSize == UNSET_INT, "maximum size was already set to %s",
+    checkState(
+        this.maximumSize == UNSET_INT,
+        "maximum size was already set to %s",
         this.maximumSize);
     checkArgument(size >= 0, "maximum size must not be negative");
     this.maximumSize = size;
@@ -237,7 +240,9 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
    */
   @Override
   public MapMaker concurrencyLevel(int concurrencyLevel) {
-    checkState(this.concurrencyLevel == UNSET_INT, "concurrency level was already set to %s",
+    checkState(
+        this.concurrencyLevel == UNSET_INT,
+        "concurrency level was already set to %s",
         this.concurrencyLevel);
     checkArgument(concurrencyLevel > 0);
     this.concurrencyLevel = concurrencyLevel;
@@ -325,13 +330,12 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
    * @deprecated Caching functionality in {@code MapMaker} has been moved to {@link
    *     com.google.common.cache.CacheBuilder}, with {@link #softValues} being replaced by {@link
    *     com.google.common.cache.CacheBuilder#softValues}. Note that {@code CacheBuilder} is simply
-   *     an enhanced API for an implementation which was branched from {@code MapMaker}. <b>This
-   *     method is scheduled for removal in March 2015.</b>
+   *     an enhanced API for an implementation which was branched from {@code MapMaker}.
    */
   @Deprecated
   @GwtIncompatible("java.lang.ref.SoftReference")
   @Override
-  public MapMaker softValues() {
+  MapMaker softValues() {
     return setValueStrength(Strength.SOFT);
   }
 
@@ -388,9 +392,13 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
   }
 
   private void checkExpiration(long duration, TimeUnit unit) {
-    checkState(expireAfterWriteNanos == UNSET_INT, "expireAfterWrite was already set to %s ns",
+    checkState(
+        expireAfterWriteNanos == UNSET_INT,
+        "expireAfterWrite was already set to %s ns",
         expireAfterWriteNanos);
-    checkState(expireAfterAccessNanos == UNSET_INT, "expireAfterAccess was already set to %s ns",
+    checkState(
+        expireAfterAccessNanos == UNSET_INT,
+        "expireAfterAccess was already set to %s ns",
         expireAfterAccessNanos);
     checkArgument(duration >= 0, "duration cannot be negative: %s %s", duration, unit);
   }
@@ -440,7 +448,8 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
 
   long getExpireAfterAccessNanos() {
     return (expireAfterAccessNanos == UNSET_INT)
-        ? DEFAULT_EXPIRATION_NANOS : expireAfterAccessNanos;
+        ? DEFAULT_EXPIRATION_NANOS
+        : expireAfterAccessNanos;
   }
 
   Ticker getTicker() {
@@ -490,9 +499,8 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
   }
 
   /**
-   * Builds a thread-safe map, without on-demand computation of values. This method does not alter
-   * the state of this {@code MapMaker} instance, so it can be invoked again to create multiple
-   * independent maps.
+   * Builds a thread-safe map. This method does not alter the state of this {@code MapMaker}
+   * instance, so it can be invoked again to create multiple independent maps.
    *
    * <p>The bulk operations {@code putAll}, {@code equals}, and {@code clear} are not guaranteed to
    * be performed atomically on the returned map. Additionally, {@code size} and {@code
@@ -575,13 +583,12 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
    * @deprecated Caching functionality in {@code MapMaker} has been moved to
    *     {@link com.google.common.cache.CacheBuilder}, with {@link #makeComputingMap} being replaced
    *     by {@link com.google.common.cache.CacheBuilder#build}. See the
-   *     <a href="http://code.google.com/p/guava-libraries/wiki/MapMakerMigration">MapMaker
+   *     <a href="https://github.com/google/guava/wiki/MapMakerMigration">MapMaker
    *     Migration Guide</a> for more details.
    */
   @Deprecated
   @Override
-  <K, V> ConcurrentMap<K, V> makeComputingMap(
-      Function<? super K, ? extends V> computingFunction) {
+  <K, V> ConcurrentMap<K, V> makeComputingMap(Function<? super K, ? extends V> computingFunction) {
     return (nullRemovalCause == null)
         ? new MapMaker.ComputingMapAdapter<K, V>(this, computingFunction)
         : new NullComputingConcurrentMap<K, V>(this, computingFunction);
@@ -868,12 +875,11 @@ public final class MapMaker extends GenericMapMaker<Object, Object> {
    * This might make more sense in ComputingConcurrentHashMap, but it causes a javac crash in some
    * cases there: http://code.google.com/p/guava-libraries/issues/detail?id=950
    */
-  static final class ComputingMapAdapter<K, V>
-      extends ComputingConcurrentHashMap<K, V> implements Serializable {
+  static final class ComputingMapAdapter<K, V> extends ComputingConcurrentHashMap<K, V>
+      implements Serializable {
     private static final long serialVersionUID = 0;
 
-    ComputingMapAdapter(MapMaker mapMaker,
-        Function<? super K, ? extends V> computingFunction) {
+    ComputingMapAdapter(MapMaker mapMaker, Function<? super K, ? extends V> computingFunction) {
       super(mapMaker, computingFunction);
     }
 

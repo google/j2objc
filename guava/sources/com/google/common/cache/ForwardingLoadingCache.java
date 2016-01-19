@@ -16,7 +16,6 @@
 
 package com.google.common.cache;
 
-import com.google.common.annotations.Beta;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
@@ -33,7 +32,6 @@ import java.util.concurrent.ExecutionException;
  * @author Charles Fry
  * @since 11.0
  */
-@Beta
 public abstract class ForwardingLoadingCache<K, V>
     extends ForwardingCache<K, V> implements LoadingCache<K, V> {
 
@@ -70,11 +68,10 @@ public abstract class ForwardingLoadingCache<K, V>
 
   /**
    * A simplified version of {@link ForwardingLoadingCache} where subclasses can pass in an already
-   * constructed {@link LoadingCache} as the delegete.
+   * constructed {@link LoadingCache} as the delegate.
    *
    * @since 10.0
    */
-  @Beta
   public abstract static class SimpleForwardingLoadingCache<K, V>
       extends ForwardingLoadingCache<K, V> {
     private final LoadingCache<K, V> delegate;

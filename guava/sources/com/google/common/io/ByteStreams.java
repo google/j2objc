@@ -34,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.Arrays;
@@ -47,7 +48,46 @@ import java.util.Arrays;
  */
 @Beta
 public final class ByteStreams {
-  private static final int BUF_SIZE = 0x1000; // 4K
+
+  /**
+   * Default size of buffers allocated for copies.
+   */
+  static final int BUF_SIZE = 8192;
+
+  /**
+   * A buffer for skipping bytes in an input stream. Only written to and never read, so actual
+   * contents don't matter.
+   */
+  static final byte[] skipBuffer = new byte[BUF_SIZE];
+
+  /**
+   * There are three methods to implement {@link FileChannel#transferTo(long, long,
+   *  WritableByteChannel)}:
+   *
+   * <ol>
+   * <li> Use sendfile(2) or equivalent. Requires that both the input channel and the output channel
+   *    have their own file descriptors. Generally this only happens when both channels are files or
+   *    sockets. This performs zero copies - the bytes never enter userspace.</li>
+   * <li> Use mmap(2) or equivalent. Requires that either the input channel or the output channel
+   *    have file descriptors. Bytes are copied from the file into a kernel buffer, then directly
+   *    into the other buffer (userspace). Note that if the file is very large, a naive
+   *    implementation will effectively put the whole file in memory. On many systems with paging
+   *    and virtual memory, this is not a problem - because it is mapped read-only, the kernel can
+   *    always page it to disk "for free". However, on systems where killing processes happens all
+   *    the time in normal conditions (i.e., android) the OS must make a tradeoff between paging
+   *    memory and killing other processes - so allocating a gigantic buffer and then sequentially
+   *    accessing it could result in other processes dying. This is solvable via madvise(2), but
+   *    that obviously doesn't exist in java.</li>
+   * <li> Ordinary copy. Kernel copies bytes into a kernel buffer, from a kernel buffer into a
+   *    userspace buffer (byte[] or ByteBuffer), then copies them from that buffer into the
+   *    destination channel.</li>
+   * </ol>
+   *
+   * This value is intended to be large enough to make the overhead of system calls negligible,
+   * without being so large that it causes problems for systems with atypical memory management if
+   * approaches 2 or 3 are used.
+   */
+  private static final int ZERO_COPY_CHUNK_SIZE = 512 * 1024;
 
   private ByteStreams() {}
 
@@ -90,6 +130,19 @@ public final class ByteStreams {
       WritableByteChannel to) throws IOException {
     checkNotNull(from);
     checkNotNull(to);
+    if (from instanceof FileChannel) {
+      FileChannel sourceChannel = (FileChannel) from;
+      long oldPosition = sourceChannel.position();
+      long position = oldPosition;
+      long copied;
+      do {
+        copied = sourceChannel.transferTo(position, ZERO_COPY_CHUNK_SIZE, to);
+        position += copied;
+        sourceChannel.position(position);
+      } while (copied > 0 || position < sourceChannel.size());
+      return position - oldPosition;
+    }
+
     ByteBuffer buf = ByteBuffer.allocate(BUF_SIZE);
     long total = 0;
     while (from.read(buf) != -1) {
@@ -346,7 +399,11 @@ public final class ByteStreams {
    * @throws IllegalArgumentException if {@code size} is negative
    */
   public static ByteArrayDataOutput newDataOutput(int size) {
-    checkArgument(size >= 0, "Invalid size: %s", size);
+    // When called at high frequency, boxing size generates too much garbage,
+    // so avoid doing that if we can.
+    if (size < 0) {
+      throw new IllegalArgumentException(String.format("Invalid size: %s", size));
+    }
     return newDataOutput(new ByteArrayOutputStream(size));
   }
 
@@ -658,21 +715,53 @@ public final class ByteStreams {
    *     support skipping
    */
   public static void skipFully(InputStream in, long n) throws IOException {
-    long toSkip = n;
-    while (n > 0) {
-      long amt = in.skip(n);
-      if (amt == 0) {
-        // Force a blocking read to avoid infinite loop
-        if (in.read() == -1) {
-          long skipped = toSkip - n;
-          throw new EOFException("reached end of stream after skipping "
-              + skipped + " bytes; " + toSkip + " bytes expected");
-        }
-        n--;
-      } else {
-        n -= amt;
-      }
+    long skipped = skipUpTo(in, n);
+    if (skipped < n) {
+      throw new EOFException("reached end of stream after skipping "
+          + skipped + " bytes; " + n + " bytes expected");
     }
+  }
+
+  /**
+   * Discards up to {@code n} bytes of data from the input stream. This method
+   * will block until either the full amount has been skipped or until the end
+   * of the stream is reached, whichever happens first. Returns the total number
+   * of bytes skipped.
+   */
+  static long skipUpTo(InputStream in, final long n) throws IOException {
+    long totalSkipped = 0;
+
+    while (totalSkipped < n) {
+      long remaining = n - totalSkipped;
+
+      long skipped = skipSafely(in, remaining);
+
+      if (skipped == 0) {
+        // Do a buffered read since skipSafely could return 0 repeatedly, for example if
+        // in.available() always returns 0 (the default).
+        int skip = (int) Math.min(remaining, skipBuffer.length);
+        if ((skipped = in.read(skipBuffer, 0, skip)) == -1) {
+          // Reached EOF
+          break;
+        }
+      }
+
+      totalSkipped += skipped;
+    }
+
+    return totalSkipped;
+  }
+
+  /**
+   * Attempts to skip up to {@code n} bytes from the given input stream, but not more than
+   * {@code in.available()} bytes. This prevents {@code FileInputStream} from skipping more bytes
+   * than actually remain in the file, something that it
+   * {@linkplain FileInputStream#skip(long) specifies} it can do in its Javadoc despite the fact
+   * that it is violating the contract of {@code InputStream.skip()}.
+   */
+  private static long skipSafely(InputStream in, long n) throws IOException {
+    int available = in.available();
+    return available == 0 ? 0 : in.skip(Math.min(available, n));
   }
 
   /**

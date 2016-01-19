@@ -19,10 +19,6 @@ package com.google.common.collect;
 import com.google.common.annotations.GwtCompatible;
 import com.google.common.base.Preconditions;
 
-import java.util.Set;
-
-import javax.annotation.Nullable;
-
 /**
  * Implementation of {@link ImmutableSet} with exactly one element.
  *
@@ -58,19 +54,18 @@ final class SingletonImmutableSet<E> extends ImmutableSet<E> {
     return 1;
   }
 
-  @Override public boolean isEmpty() {
-    return false;
-  }
-
-  @Override public boolean contains(Object target) {
+  @Override
+  public boolean contains(Object target) {
     return element.equals(target);
   }
 
-  @Override public UnmodifiableIterator<E> iterator() {
+  @Override
+  public UnmodifiableIterator<E> iterator() {
     return Iterators.singletonIterator(element);
   }
 
-  @Override boolean isPartialView() {
+  @Override
+  boolean isPartialView() {
     return false;
   }
 
@@ -80,18 +75,8 @@ final class SingletonImmutableSet<E> extends ImmutableSet<E> {
     return offset + 1;
   }
 
-  @Override public boolean equals(@Nullable Object object) {
-    if (object == this) {
-      return true;
-    }
-    if (object instanceof Set) {
-      Set<?> that = (Set<?>) object;
-      return that.size() == 1 && element.equals(that.iterator().next());
-    }
-    return false;
-  }
-
-  @Override public final int hashCode() {
+  @Override
+  public final int hashCode() {
     // Racy single-check.
     int code = cachedHashCode;
     if (code == 0) {
@@ -100,11 +85,13 @@ final class SingletonImmutableSet<E> extends ImmutableSet<E> {
     return code;
   }
 
-  @Override boolean isHashCodeFast() {
+  @Override
+  boolean isHashCodeFast() {
     return cachedHashCode != 0;
   }
 
-  @Override public String toString() {
+  @Override
+  public String toString() {
     String elementToString = element.toString();
     return new StringBuilder(elementToString.length() + 2)
         .append('[')

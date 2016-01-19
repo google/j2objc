@@ -5,11 +5,13 @@ TYPE java.lang.Runnable
 # Inverses
 FIELD com.google.common.base.Converter.reverse
 FIELD com.google.common.collect.AbstractBiMap.inverse
+FIELD com.google.common.collect.HashBiMap.inverse
 FIELD com.google.common.collect.ImmutableListMultimap.inverse
 FIELD com.google.common.collect.ImmutableSetMultimap.inverse
 FIELD com.google.common.collect.MapConstraints.ConstrainedBiMap.inverse
 FIELD com.google.common.collect.Maps.FilteredEntryBiMap.inverse
 FIELD com.google.common.collect.Maps.UnmodifiableBiMap.inverse
+FIELD com.google.common.collect.RegularImmutableBiMap.inverse
 FIELD com.google.common.collect.SingletonImmutableBiMap.inverse
 FIELD com.google.common.collect.Synchronized.SynchronizedBiMap.inverse
 
@@ -17,14 +19,23 @@ FIELD com.google.common.collect.Synchronized.SynchronizedBiMap.inverse
 FIELD com.google.common.collect.ImmutableRangeSet.ranges com.google.common.collect.ImmutableRangeSet.ComplementRanges
 
 # *** FALSE POSITIVES ***
+FIELD com.google.common.collect.AbstractBiMap.EntrySet.iterator.$.entry com.google.common.collect.AbstractBiMap.EntrySet.iterator.$.next.$
 FIELD com.google.common.collect.AbstractMapBasedMultimap.KeySet.subMap
 FIELD com.google.common.collect.AbstractMapBasedMultimap.map com.google.common.collect.AbstractMapBasedMultimap.AsMap
+FIELD com.google.common.collect.AbstractMultimap.asMap com.google.common.collect.AbstractMapBasedMultimap.NavigableAsMap
 FIELD com.google.common.collect.AbstractMultimap.keys com.google.common.collect.RegularImmutableMultiset
+FIELD com.google.common.collect.AbstractMultimap.values com.google.common.collect.Multimaps.MapMultimap.get.$
+FIELD com.google.common.collect.AbstractMultiset.entrySet com.google.common.collect.FilteredEntryMultimap.Keys.entrySet.$
 FIELD com.google.common.collect.ImmutableCollection.asList
 FIELD com.google.common.collect.ImmutableMap.multimapView
 OUTER com.google.common.collect.ImmutableRangeMap.subRangeMap.$
 OUTER com.google.common.collect.ImmutableRangeSet.intersectRanges.$
+OUTER com.google.common.collect.StandardTable.Row
+OUTER com.google.common.collect.TreeBasedTable.TreeRow
 
+FIELD java.util.AbstractMap.keySet com.google.common.collect.Maps.FilteredEntryNavigableMap.navigableKeySet.$
+FIELD java.util.AbstractMap.keySet com.google.common.collect.TreeRangeMap.SubRangeMap.SubRangeMapAsMap.keySet.$
+FIELD java.util.AbstractMap.valuesCollection com.google.common.collect.TreeRangeMap.SubRangeMap.SubRangeMapAsMap.values.$
 FIELD java.util.concurrent.LinkedBlockingDeque.lock com.google.common.collect.MapMakerInternalMap.Segment
 FIELD java.util.concurrent.LinkedBlockingQueue.putLock com.google.common.collect.MapMakerInternalMap.Segment
 FIELD java.util.concurrent.SynchronousQueue.qlock com.google.common.collect.MapMakerInternalMap.Segment
