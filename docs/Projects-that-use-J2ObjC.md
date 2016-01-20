@@ -9,7 +9,7 @@ layout: docs
 
 <table>
  <tr><td>
- <img src="http://a3.mzstatic.com/us/r30/Purple69/v4/f6/64/5a/f6645ab0-33a3-5c5d-cc38-ffeee3848a08/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/idid909319292">Google Calendar</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ <img src="http://a3.mzstatic.com/us/r30/Purple69/v4/f6/64/5a/f6645ab0-33a3-5c5d-cc38-ffeee3848a08/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/app/id909319292">Google Calendar</a></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
  </td><td>
  <img src="http://a3.mzstatic.com/us/r30/Purple3/v4/f3/09/1c/f3091c01-8cbc-b0cc-8784-21161b2ae95b/icon175x175.png" width="48" height="48">&nbsp;<b><a href="https://itunes.apple.com/us/app/google-docs/id842842640?mt=8">Google&nbsp;Docs&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</a></b>
  </td></tr>
