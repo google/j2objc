@@ -128,13 +128,9 @@ void EnumGenerator::GenerateHeader(io::Printer* printer) {
   for (int i = 0; i < canonical_values_.size(); i++) {
     printer->Print(
         "inline $classname$ *$classname$_get_$name$();\n"
-        // TODO(kstanger): Remove this define once users no longer rely on it.
-        // (b/26515134)
-        "#define $classname$_$name$ $classname$_values_[$nativeenumname$]\n"
         "J2OBJC_ENUM_CONSTANT($classname$, $name$)\n",
         "classname", ClassName(descriptor_),
-        "name", canonical_values_[i]->name(),
-        "nativeenumname", EnumValueName(canonical_values_[i]));
+        "name", canonical_values_[i]->name());
   }
 }
 

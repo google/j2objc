@@ -365,19 +365,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private void printEnumConstants() {
     if (typeNode instanceof EnumDeclaration) {
-      String nativeName = NameTable.getNativeEnumName(typeName);
       newline();
       println("/*! INTERNAL ONLY - Use enum accessors declared below. */");
       printf("FOUNDATION_EXPORT %s *%s_values_[];\n", typeName, typeName);
       for (EnumConstantDeclaration constant : ((EnumDeclaration) typeNode).getEnumConstants()) {
         String varName = nameTable.getVariableBaseName(constant.getVariableBinding());
-        String valueName = constant.getName().getIdentifier();
         newline();
         JavadocGenerator.printDocComment(getBuilder(), constant.getJavadoc());
         printf("inline %s *%s_get_%s();\n", typeName, typeName, varName);
-        // TODO(kstanger): Remove this define once users no longer rely on them. (b/26515134)
-        printf("#define %s_%s %s_values_[%s_%s]\n",
-            typeName, varName, typeName, nativeName, valueName);
         printf("J2OBJC_ENUM_CONSTANT(%s, %s)\n", typeName, varName);
       }
     }
@@ -385,6 +380,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   private static final Predicate<VariableDeclarationFragment> NEEDS_SETTER =
       new Predicate<VariableDeclarationFragment>() {
+    @Override
     public boolean apply(VariableDeclarationFragment fragment) {
       IVariableBinding var = fragment.getVariableBinding();
       return !var.getType().isPrimitive() && !BindingUtil.isWeakReference(var);
