@@ -32,7 +32,7 @@ SOURCEPATH = $(SRC_DIR)
 INCLUDE_DIRS = $(GEN_OBJC_DIR)
 
 J2OBJCC := $(ARCH_BIN_DIR)/j2objcc -c -fobjc-abi-version=2 -fobjc-legacy-dispatch \
-  $(INCLUDE_DIRS:%=-I%)
+  $(INCLUDE_DIRS:%=-I%) -Wno-nullability -Wno-nonnull
 
 CREATE_JAR_NAME = j2objc_guava
 CREATE_JAR_SOURCES = $(JAVA_SOURCES)

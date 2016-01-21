@@ -116,6 +116,8 @@ $(FRAMEWORK_HEADER):
 	@echo "//\n// $(STATIC_FRAMEWORK_NAME).h\n//\n" > $@
 	@for f in $(STATIC_FRAMEWORK_PUBLIC_HEADERS:$(STATIC_HEADERS_DIR)/%=%); do\
 	    echo '#include <'$${f}'>'; done >> $@
+
+test_warnings: $(FRAMEWORK_HEADER)
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c -std=c11 $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c -std=c11 -fobjc-arc $@
 	@clang -c -o $(FRAMEWORK_HEADER:%.h=%.o) $(VERIFY_FLAGS) -x objective-c -std=c11 -fno-objc-arc $@
