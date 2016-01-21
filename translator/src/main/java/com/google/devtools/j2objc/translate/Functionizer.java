@@ -250,27 +250,29 @@ public class Functionizer extends TreeVisitor {
   @Override
   public void endVisit(MethodDeclaration node) {
     IMethodBinding binding = node.getMethodBinding();
+    boolean isInstanceMethod = !BindingUtil.isStatic(binding) && !binding.isConstructor();
     FunctionDeclaration function = null;
     List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
     List<String> extraSelectors = nameTable.getExtraSelectors(binding);
-    if (BindingUtil.isStatic(binding) || binding.isConstructor()
-        || Modifier.isNative(node.getModifiers()) || functionizableMethods.contains(binding)
-        || !extraSelectors.isEmpty()) {
+    if (!isInstanceMethod || Modifier.isNative(node.getModifiers())
+        || functionizableMethods.contains(binding) || !extraSelectors.isEmpty()) {
       ITypeBinding declaringClass = binding.getDeclaringClass();
+      boolean isEnumConstructor = binding.isConstructor() && declaringClass.isEnum();
       function = makeFunction(node);
       for (String selector : extraSelectors) {
         declarationList.add(makeExtraMethodDeclaration(node, selector));
       }
       declarationList.add(function);
-      if (binding.isConstructor() && !BindingUtil.isAbstract(declaringClass)) {
+      if (binding.isConstructor() && !BindingUtil.isAbstract(declaringClass)
+          && !isEnumConstructor) {
         declarationList.add(makeAllocatingConstructor(node));
       }
-      // Static methods are only needed as an API for hand-written code, or for
-      // reflection. So we can reduce the visibility of private static methods
-      // or remove them if reflection is stripped.
-      boolean keepMethod = !BindingUtil.isStatic(binding)
+      // Instance methods must be kept in case they are invoked using "super".
+      boolean keepMethod = isInstanceMethod
+          // Public methods must be kept for the public API.
           || !(BindingUtil.isPrivateInnerType(declaringClass) || BindingUtil.isPrivate(binding))
-          || TranslationUtil.needsReflection(declaringClass);
+          // Methods must be kept for reflection if enabled.
+          || (TranslationUtil.needsReflection(declaringClass) && !isEnumConstructor);
       if (keepMethod) {
         setFunctionCaller(node, binding);
       } else {

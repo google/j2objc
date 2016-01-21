@@ -495,9 +495,8 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("Color.m");
     assertTranslation(translation, "int rgb_;");
     assertTranslatedLines(translation,
-        "- (instancetype)initWithInt:(jint)rgb",
-        "withNSString:(NSString *)__name",
-        "withInt:(jint)__ordinal {");
+        "void Color_initWithInt_withNSString_withInt_("
+        + "Color *self, jint rgb, NSString *__name, jint __ordinal) {");
   }
 
   public void testEnumWithMultipleConstructors() throws IOException {
@@ -512,15 +511,6 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface Color : JavaLangEnum");
     translation = getTranslatedFile("Color.m");
     assertTranslation(translation, "jboolean primary_;");
-    assertTranslatedLines(translation,
-        "- (instancetype)initWithInt:(jint)rgb",
-        "withNSString:(NSString *)__name",
-        "withInt:(jint)__ordinal {");
-    assertTranslatedLines(translation,
-        "- (instancetype)initWithInt:(jint)rgb",
-        "withBoolean:(jboolean)primary",
-        "withNSString:(NSString *)__name",
-        "withInt:(jint)__ordinal {");
     assertTranslation(translation,
         "Color_initWithInt_withBoolean_withNSString_withInt_("
         + "self, rgb, true, __name, __ordinal);");
@@ -531,6 +521,17 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "  self->rgb_ = rgb;",
         "  self->primary_ = primary;",
         "}");
+    assertTranslatedLines(translation,
+        "void Color_initWithInt_withNSString_withInt_("
+          + "Color *self, jint rgb, NSString *__name, jint __ordinal) {",
+        "  Color_initWithInt_withBoolean_withNSString_withInt_("
+          + "self, rgb, true, __name, __ordinal);",
+        "}");
+    assertTranslation(translation,
+        "Color_initWithInt_withBoolean_withNSString_withInt_("
+          + "e, (jint) 0xffffff, false, @\"WHITE\", 1);");
+    assertTranslation(translation,
+        "Color_initWithInt_withNSString_withInt_(e, (jint) 0x0000ff, @\"BLUE\", 2);");
   }
 
   public void testArrayFieldDeclaration() throws IOException {
@@ -721,11 +722,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("Test.m");
     assertTranslation(translation, "NSString *name_Test_;");
     assertTranslation(translation, "int ordinal_Test_;");
-    assertTranslatedLines(translation,
-        "- (instancetype)initWithNSString:(NSString *)name",
-        "withInt:(jint)ordinal",
-        "withNSString:(NSString *)__name",
-        "withInt:(jint)__ordinal {");
+    assertTranslation(translation,
+        "void Test_initWithNSString_withInt_withNSString_withInt_("
+        + "Test *self, NSString *name, jint ordinal, NSString *__name, jint __ordinal) {");
   }
 
   public void testDeprecatedEnumType() throws IOException {

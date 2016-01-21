@@ -340,15 +340,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     assertTranslation(impl, "@interface Test_$1 : Test");
     assertTranslation(impl, "@interface Test_$2 : Test");
-    assertTranslatedLines(impl,
-        "- (instancetype)initWithNSString:(NSString *)__name",
-        "withInt:(jint)__ordinal {");
 
     assertTranslation(impl, "Test_initWithNSString_withInt_(self, __name, __ordinal);");
-    assertTranslation(impl,
-        "JreEnum(Test, UP) = new_Test_$1_initWithNSString_withInt_(@\"UP\", 0);");
-    assertTranslation(impl,
-        "JreEnum(Test, DOWN) = new_Test_$2_initWithNSString_withInt_(@\"DOWN\", 1);");
+    assertTranslation(impl, "Test_$1_initWithNSString_withInt_(e, @\"UP\", 0);");
+    assertTranslation(impl, "Test_$2_initWithNSString_withInt_(e, @\"DOWN\", 1);");
   }
 
   public void testTwoOutersInAnonymousSubClassOfInner() throws IOException {
@@ -417,7 +412,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "}");
 
     // Verify constant initialization.
-    assertTranslation(impl, "new_Color_$1_initWithInt_withNSString_withInt_(42, @\"RED\", 0)");
+    assertTranslation(impl, "Color_$1_initWithInt_withNSString_withInt_(e, 42, @\"RED\", 0)");
   }
 
   public void testEnumWithInnerEnum() throws IOException {
@@ -431,11 +426,10 @@ public class AnonymousClassConverterTest extends GenerationTest {
       "OuterValue", "OuterValue.m");
 
     // Verify OuterValue constant initialization.
-    assertTranslation(impl, "new_OuterValue_initWithNSString_withInt_(@\"VALUE1\", 0)");
+    assertTranslation(impl, "OuterValue_initWithNSString_withInt_(e, @\"VALUE1\", 0);");
 
     // Verify InnerValue constant initialization.
-    assertTranslation(impl,
-        "new_OuterValue_InnerValue_initWithNSString_withInt_(@\"VALUE1\", 0)");
+    assertTranslation(impl, "OuterValue_InnerValue_initWithNSString_withInt_(e, @\"VALUE1\", 0);");
   }
 
   // Tests a field initialized with an anonymous class and multiple

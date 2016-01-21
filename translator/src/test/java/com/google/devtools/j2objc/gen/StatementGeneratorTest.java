@@ -1650,9 +1650,9 @@ public class StatementGeneratorTest extends GenerationTest {
         "enum Test { A, B; Test() {} Test(int i) { this(); } }", "Test", "Test.m");
     assertTranslation(translation,
         "JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);");
-    // Called from the "this()" call, the method wrapper, and the allocating constructor.
+    // Called from the "this()" call.
     assertOccurrences(translation,
-        "Test_initWithNSString_withInt_(self, __name, __ordinal);", 3);
+        "Test_initWithNSString_withInt_(self, __name, __ordinal);", 1);
   }
 
   public void testForStatementWithMultipleInitializers() throws IOException {

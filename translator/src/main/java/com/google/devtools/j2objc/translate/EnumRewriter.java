@@ -16,13 +16,16 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
+import com.google.devtools.j2objc.ast.NativeExpression;
+import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
@@ -31,6 +34,8 @@ import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.SuperConstructorInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
+import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -41,6 +46,7 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -62,21 +68,71 @@ public class EnumRewriter extends TreeVisitor {
 
   @Override
   public void endVisit(EnumDeclaration node) {
-    List<Statement> stmts = node.getClassInitStatements().subList(0, 0);
+    addEnumInitialization(node);
+    addExtraNativeDecls(node);
+  }
+
+  private void addEnumInitialization(EnumDeclaration node) {
+    if (node.getEnumConstants().isEmpty()) {
+      return;
+    }
+
+    ITypeBinding type = node.getTypeBinding();
+    int baseTypeCount = 0;
+    List<Statement> sizeStatements = new ArrayList<>();
+    List<Statement> initStatements = new ArrayList<>();
+    ITypeBinding idType = typeEnv.resolveIOSType("id");
+    ITypeBinding voidType = typeEnv.resolveJavaType("void");
+    GeneratedVariableBinding localEnum =
+        new GeneratedVariableBinding("e", 0, idType, false, false, null, null);
+
     int i = 0;
     for (EnumConstantDeclaration constant : node.getEnumConstants()) {
       IVariableBinding varBinding = constant.getVariableBinding();
-      IMethodBinding binding =
-          addEnumConstructorParams(constant.getMethodBinding().getMethodDeclaration());
-      ClassInstanceCreation creation = new ClassInstanceCreation(binding);
-      TreeUtil.copyList(constant.getArguments(), creation.getArguments());
-      creation.getArguments().add(new StringLiteral(varBinding.getName(), typeEnv));
-      creation.getArguments().add(new NumberLiteral(i++, typeEnv));
-      creation.setHasRetainedResult(true);
-      stmts.add(new ExpressionStatement(new Assignment(new SimpleName(varBinding), creation)));
+      IMethodBinding methodBinding = constant.getMethodBinding().getMethodDeclaration();
+      ITypeBinding valueType = methodBinding.getDeclaringClass();
+      methodBinding = addEnumConstructorParams(methodBinding);
+      boolean isAnonymous = valueType != type;
+      String classExpr = isAnonymous ? "[" + nameTable.getFullName(valueType) + " class]" : "self";
+      String sizeName = "objSize" + (isAnonymous ? "_" + varBinding.getName() : "");
+
+      if (isAnonymous) {
+        sizeStatements.add(new NativeStatement(String.format(
+            "size_t %s = class_getInstanceSize(%s);", sizeName, classExpr)));
+        sizeStatements.add(new NativeStatement(String.format("allocSize += %s;", sizeName)));
+      } else {
+        baseTypeCount++;
+      }
+
+      initStatements.add(new ExpressionStatement(new CommaExpression(
+          new Assignment(new SimpleName(varBinding), new Assignment(
+          new SimpleName(localEnum), new NativeExpression(String.format(
+              "objc_constructInstance(%s, (void *)ptr)", classExpr), type))),
+          new NativeExpression("ptr += " + sizeName, voidType))));
+      String initName = nameTable.getFullFunctionName(methodBinding);
+      FunctionBinding initBinding = new FunctionBinding(initName, voidType, valueType);
+      initBinding.addParameter(valueType);
+      initBinding.addParameters(methodBinding.getParameterTypes());
+      FunctionInvocation initFunc = new FunctionInvocation(initBinding, type);
+      initFunc.getArguments().add(new SimpleName(localEnum));
+      TreeUtil.copyList(constant.getArguments(), initFunc.getArguments());
+      initFunc.getArguments().add(new StringLiteral(varBinding.getName(), typeEnv));
+      initFunc.getArguments().add(new NumberLiteral(i++, typeEnv));
+      initStatements.add(new ExpressionStatement(initFunc));
     }
 
-    addExtraNativeDecls(node);
+    List<Statement> stmts = node.getClassInitStatements().subList(0, 0);
+    if (baseTypeCount == 0) {
+      stmts.add(new NativeStatement("size_t allocSize = 0;"));
+    } else {
+      stmts.add(new NativeStatement("size_t objSize = class_getInstanceSize(self);"));
+      stmts.add(new NativeStatement(String.format(
+          "size_t allocSize = %s * objSize;", baseTypeCount)));
+    }
+    stmts.addAll(sizeStatements);
+    stmts.add(new NativeStatement("uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);"));
+    stmts.add(new VariableDeclarationStatement(localEnum, null));
+    stmts.addAll(initStatements);
   }
 
   @Override

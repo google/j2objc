@@ -222,8 +222,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
       "Color", "Color.m");
     assertTranslation(translation, "Color *Color_values_[3];");
     assertTranslation(translation, "@implementation Color");
-    assertTranslation(translation,
-        "JreEnum(Color, RED) = new_Color_initWithNSString_withInt_(@\"RED\", 0);");
+    assertTranslation(translation, "Color_initWithNSString_withInt_(e, @\"RED\", 0);");
     assertTranslation(translation, "for (int i = 0; i < 3; i++) {");
     assertTranslation(translation, "Color *e = Color_values_[i];");
   }
@@ -237,14 +236,11 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(sourceContent, "Color", "Color.m");
     assertTranslation(translation, "@implementation Color");
     assertTranslation(translation,
-        "JreEnum(Color, RED) = new_Color_initWithInt_withNSString_withInt_("
-        + "(jint) 0xff0000, @\"RED\", 0);");
+        "Color_initWithInt_withNSString_withInt_(e, (jint) 0xff0000, @\"RED\", 0);");
     assertTranslation(translation,
-        "JreEnum(Color, WHITE) = new_Color_initWithInt_withNSString_withInt_("
-        + "(jint) 0xffffff, @\"WHITE\", 1);");
+        "Color_initWithInt_withNSString_withInt_(e, (jint) 0xffffff, @\"WHITE\", 1);");
     assertTranslation(translation,
-        "JreEnum(Color, BLUE) = new_Color_initWithInt_withNSString_withInt_("
-        + "(jint) 0x0000ff, @\"BLUE\", 2);");
+        "Color_initWithInt_withNSString_withInt_(e, (jint) 0x0000ff, @\"BLUE\", 2);");
     assertTranslation(translation, "- (jint)getRgb {");
     assertTranslation(translation, "return rgb_;");
     assertTranslation(translation, "jint newValue_;");
@@ -394,8 +390,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertFalse(header.contains("isPackableWithTest_TypeEnum"));
     assertFalse(impl.contains("\n  return NO;\n  [super initWithTest_TypeEnum:arg$0]}"));
     assertTranslation(impl,
-        "JreEnum(Test_Field, STRING) = new_Test_Field_$1_initWithTest_Type_withNSString_withInt_("
-        + "JreLoadEnum(Test_Type, STRING), @\"STRING\", 2);");
+        "Test_Field_$1_initWithTest_Type_withNSString_withInt_("
+        + "e, JreLoadEnum(Test_Type, STRING), @\"STRING\", 2);");
   }
 
   public void testAutoreleasePoolMethod() throws IOException {
