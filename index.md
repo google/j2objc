@@ -20,10 +20,6 @@ client-side application developers, including exceptions, inner and
 anonymous classes, generic types, threads and reflection. JUnit test
 translation and execution is also supported.
 
-J2ObjC is currently beta quality. Several Google projects rely on it, but
-when new projects first start working with it, they usually find new bugs
-to be fixed. If you run into issues with your project, please report them!
-
 ## What J2ObjC isn't ##
 J2ObjC does not provide any sort of platform-independent UI toolkit, nor are
 there any plans to do so in the future. We believe that iOS UI code needs to
