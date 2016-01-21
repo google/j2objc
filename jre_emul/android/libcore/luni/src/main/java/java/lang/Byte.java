@@ -305,10 +305,21 @@ public final class Byte extends Number implements Comparable<Byte> {
     private static final Byte[] VALUES = new Byte[256];
 
     static {
-        for (int i = -128; i < 128; i++) {
-            VALUES[i + 128] = new Byte((byte) i);
-        }
+        fillValues(VALUES);
     }
+
+    private static native void fillValues(Byte[] values) /*-[
+      Class self = [JavaLangByte class];
+      size_t objSize = class_getInstanceSize(self);
+      uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
+      id *buf = values->buffer_;
+      for (jint i = -128; i < 128; i++) {
+        id obj = objc_constructInstance(self, (void *)ptr);
+        JavaLangByte_initWithByte_(obj, (jbyte)i);
+        *(buf++) = obj;
+        ptr += objSize;
+      }
+    ]-*/;
 
     /*
      * These ObjC methods are needed to support subclassing of NSNumber.

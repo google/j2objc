@@ -1962,18 +1962,29 @@ public final class Character implements Serializable, Comparable<Character> {
      * @since 1.5
      */
     public static Character valueOf(char c) {
-        return c < 128 ? smallValueOf(c) : new Character(c);
+        return c < 128 ? SMALL_VALUES[c] : new Character(c);
     }
 
-    private static native Character smallValueOf(char c) /*-[
-      static id smallValues[128];
-      static dispatch_once_t once;
-      dispatch_once(&once, ^{
-          for (jchar i = 0; i < 128; i++) {
-            smallValues[i] = RETAIN_([[JavaLangCharacter alloc] initWithChar:i]);
-          }
-      });
-      return smallValues[c];
+    /**
+     * A cache of instances used by {@link #valueOf(char)} and auto-boxing
+     */
+    private static final Character[] SMALL_VALUES = new Character[128];
+
+    static {
+        fillSmallValues(SMALL_VALUES);
+    }
+
+    private static native void fillSmallValues(Character[] values) /*-[
+      Class self = [JavaLangCharacter class];
+      size_t objSize = class_getInstanceSize(self);
+      uintptr_t ptr = (uintptr_t)calloc(objSize, 128);
+      id *buf = values->buffer_;
+      for (jint i = 0; i < 128; i++) {
+        id obj = objc_constructInstance(self, (void *)ptr);
+        JavaLangCharacter_initWithChar_(obj, (jchar)i);
+        *(buf++) = obj;
+        ptr += objSize;
+      }
     ]-*/;
 
     /**

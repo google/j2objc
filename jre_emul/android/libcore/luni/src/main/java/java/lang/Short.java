@@ -313,10 +313,21 @@ public final class Short extends Number implements Comparable<Short> {
     private static final Short[] SMALL_VALUES = new Short[256];
 
     static {
-        for (int i = -128; i < 128; i++) {
-            SMALL_VALUES[i + 128] = new Short((short) i);
-        }
+        fillSmallValues(SMALL_VALUES);
     }
+
+    private static native void fillSmallValues(Short[] values) /*-[
+      Class self = [JavaLangShort class];
+      size_t objSize = class_getInstanceSize(self);
+      uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
+      id *buf = values->buffer_;
+      for (jint i = -128; i < 128; i++) {
+        id obj = objc_constructInstance(self, (void *)ptr);
+        JavaLangShort_initWithShort_(obj, (jshort)i);
+        *(buf++) = obj;
+        ptr += objSize;
+      }
+    ]-*/;
 
     /*
      * These ObjC methods are needed to support subclassing of NSNumber.

@@ -768,10 +768,21 @@ public final class Long extends Number implements Comparable<Long> {
     private static final Long[] SMALL_VALUES = new Long[256];
 
     static {
-        for (int i = -128; i < 128; i++) {
-            SMALL_VALUES[i + 128] = new Long(i);
-        }
+        fillSmallValues(SMALL_VALUES);
     }
+
+    private static native void fillSmallValues(Long[] values) /*-[
+      Class self = [JavaLangLong class];
+      size_t objSize = class_getInstanceSize(self);
+      uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
+      id *buf = values->buffer_;
+      for (jint i = -128; i < 128; i++) {
+        id obj = objc_constructInstance(self, (void *)ptr);
+        JavaLangLong_initWithLong_(obj, i);
+        *(buf++) = obj;
+        ptr += objSize;
+      }
+    ]-*/;
 
     /*
      * These ObjC methods are needed to support subclassing of NSNumber.

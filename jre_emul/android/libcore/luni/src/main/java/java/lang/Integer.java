@@ -712,10 +712,21 @@ public final class Integer extends Number implements Comparable<Integer> {
     private static final Integer[] SMALL_VALUES = new Integer[256];
 
     static {
-        for (int i = -128; i < 128; i++) {
-            SMALL_VALUES[i + 128] = new Integer(i);
-        }
+        fillSmallValues(SMALL_VALUES);
     }
+
+    private static native void fillSmallValues(Integer[] values) /*-[
+      Class self = [JavaLangInteger class];
+      size_t objSize = class_getInstanceSize(self);
+      uintptr_t ptr = (uintptr_t)calloc(objSize, 256);
+      id *buf = values->buffer_;
+      for (jint i = -128; i < 128; i++) {
+        id obj = objc_constructInstance(self, (void *)ptr);
+        JavaLangInteger_initWithInt_(obj, i);
+        *(buf++) = obj;
+        ptr += objSize;
+      }
+    ]-*/;
 
     /*
      * These ObjC methods are needed to support subclassing of NSNumber.
