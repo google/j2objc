@@ -108,8 +108,8 @@
  * Equivalent to booleanAtIndex:.
  */
 __attribute__((always_inline)) inline jboolean IOSBooleanArray_Get(
-    __unsafe_unretained IOSBooleanArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSBooleanArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
@@ -118,8 +118,8 @@ __attribute__((always_inline)) inline jboolean IOSBooleanArray_Get(
  * Equivalent to booleanRefAtIndex:.
  */
 __attribute__((always_inline)) inline jboolean *IOSBooleanArray_GetRef(
-    __unsafe_unretained IOSBooleanArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSBooleanArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
 
@@ -201,8 +201,8 @@ __attribute__((always_inline)) inline jboolean *IOSBooleanArray_GetRef(
  * Equivalent to charAtIndex:.
  */
 __attribute__((always_inline)) inline jchar IOSCharArray_Get(
-    __unsafe_unretained IOSCharArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSCharArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
@@ -211,8 +211,8 @@ __attribute__((always_inline)) inline jchar IOSCharArray_Get(
  * Equivalent to charRefAtIndex:.
  */
 __attribute__((always_inline)) inline jchar *IOSCharArray_GetRef(
-    __unsafe_unretained IOSCharArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSCharArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
 
@@ -308,8 +308,8 @@ __attribute__((always_inline)) inline jchar *IOSCharArray_GetRef(
  * Equivalent to byteAtIndex:.
  */
 __attribute__((always_inline)) inline jbyte IOSByteArray_Get(
-    __unsafe_unretained IOSByteArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSByteArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
@@ -318,8 +318,8 @@ __attribute__((always_inline)) inline jbyte IOSByteArray_Get(
  * Equivalent to byteRefAtIndex:.
  */
 __attribute__((always_inline)) inline jbyte *IOSByteArray_GetRef(
-    __unsafe_unretained IOSByteArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSByteArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
 
@@ -396,8 +396,8 @@ __attribute__((always_inline)) inline jbyte *IOSByteArray_GetRef(
  * Equivalent to shortAtIndex:.
  */
 __attribute__((always_inline)) inline jshort IOSShortArray_Get(
-    __unsafe_unretained IOSShortArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSShortArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
@@ -406,8 +406,8 @@ __attribute__((always_inline)) inline jshort IOSShortArray_Get(
  * Equivalent to shortRefAtIndex:.
  */
 __attribute__((always_inline)) inline jshort *IOSShortArray_GetRef(
-    __unsafe_unretained IOSShortArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSShortArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
 
@@ -485,8 +485,8 @@ __attribute__((always_inline)) inline jshort *IOSShortArray_GetRef(
  * Equivalent to shortAtIndex:.
  */
 __attribute__((always_inline)) inline jint IOSIntArray_Get(
-    __unsafe_unretained IOSIntArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSIntArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
@@ -495,8 +495,8 @@ __attribute__((always_inline)) inline jint IOSIntArray_Get(
  * Equivalent to shortRefAtIndex:.
  */
 __attribute__((always_inline)) inline jint *IOSIntArray_GetRef(
-    __unsafe_unretained IOSIntArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSIntArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
 
@@ -574,8 +574,8 @@ __attribute__((always_inline)) inline jint *IOSIntArray_GetRef(
  * Equivalent to longAtIndex:.
  */
 __attribute__((always_inline)) inline jlong IOSLongArray_Get(
-    __unsafe_unretained IOSLongArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSLongArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
@@ -584,8 +584,8 @@ __attribute__((always_inline)) inline jlong IOSLongArray_Get(
  * Equivalent to longRefAtIndex:.
  */
 __attribute__((always_inline)) inline jlong *IOSLongArray_GetRef(
-    __unsafe_unretained IOSLongArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSLongArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
 
@@ -662,8 +662,8 @@ __attribute__((always_inline)) inline jlong *IOSLongArray_GetRef(
  * Equivalent to floatAtIndex:.
  */
 __attribute__((always_inline)) inline jfloat IOSFloatArray_Get(
-    __unsafe_unretained IOSFloatArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSFloatArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
@@ -672,8 +672,8 @@ __attribute__((always_inline)) inline jfloat IOSFloatArray_Get(
  * Equivalent to floatRefAtIndex:.
  */
 __attribute__((always_inline)) inline jfloat *IOSFloatArray_GetRef(
-    __unsafe_unretained IOSFloatArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSFloatArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
 
@@ -750,8 +750,8 @@ __attribute__((always_inline)) inline jfloat *IOSFloatArray_GetRef(
  * Equivalent to doubleAtIndex:.
  */
 __attribute__((always_inline)) inline jdouble IOSDoubleArray_Get(
-    __unsafe_unretained IOSDoubleArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSDoubleArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return array->buffer_[index];
 }
 
@@ -760,8 +760,8 @@ __attribute__((always_inline)) inline jdouble IOSDoubleArray_Get(
  * Equivalent to doubleRefAtIndex:.
  */
 __attribute__((always_inline)) inline jdouble *IOSDoubleArray_GetRef(
-    __unsafe_unretained IOSDoubleArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSDoubleArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return &array->buffer_[index];
 }
 

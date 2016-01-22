@@ -64,12 +64,6 @@
  #define J2OBJC_DISABLE_ARRAY_TYPE_CHECKS 1
 #endif
 
-#ifdef __cplusplus
-#define J2_STATIC_CAST(T,E) static_cast<T>(E)
-#else
-#define J2_STATIC_CAST(T,E) ((T)(E))
-#endif
-
 CF_EXTERN_C_BEGIN
 
 void JreThrowNullPointerException() __attribute__((noreturn));

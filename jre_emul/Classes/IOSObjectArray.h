@@ -105,6 +105,28 @@
 - (id)replaceObjectAtIndex:(NSUInteger)index withObject:(id)value;
 
 /**
+ * Copies the array contents into a specified buffer, up to the specified
+ * length.
+ * @throws IndexOutOfBoundsException
+ * if the specified length is greater than the array size.
+ */
+- (void)getObjects:(NSObject **)buffer length:(NSUInteger)length;
+
+@end
+
+/**
+ * Gets element at a specified index, functional equivalent to objectAtIndex:.
+ * @throws IndexOutOfBoundsException
+ * if index is out of range
+ * @return the element at index.
+ */
+__attribute__((always_inline)) inline id IOSObjectArray_Get(
+    __unsafe_unretained IOSObjectArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
+  return array->buffer_[index];
+}
+
+/**
  * Sets element at a specified index, functional equivalent to replaceObjectAtIndex:withObject:.
  * @throws IndexOutOfBoundsException
  * if index is out of range
@@ -122,22 +144,6 @@ FOUNDATION_EXPORT id IOSObjectArray_Set(IOSObjectArray *array, NSUInteger index,
 FOUNDATION_EXPORT id IOSObjectArray_SetAndConsume(
     IOSObjectArray *array, NSUInteger index, id __attribute__((ns_consumed)) value);
 
-/**
- * Copies the array contents into a specified buffer, up to the specified
- * length.
- * @throws IndexOutOfBoundsException
- * if the specified length is greater than the array size.
- */
-- (void)getObjects:(NSObject **)buffer length:(NSUInteger)length;
-
-@end
-
-__attribute__((always_inline)) inline id IOSObjectArray_Get(
-    __unsafe_unretained IOSObjectArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
-  return array->buffer_[index];
-}
-
 // Internal only. Provides a pointer to an element with the array itself.
 // Used for translating certain compound expressions.
 typedef struct JreArrayRef {
@@ -147,8 +153,8 @@ typedef struct JreArrayRef {
 
 // Internal only functions.
 __attribute__((always_inline)) inline JreArrayRef IOSObjectArray_GetRef(
-    __unsafe_unretained IOSObjectArray *array, NSUInteger index) {
-  IOSArray_checkIndex(array->size_, J2_STATIC_CAST(jint, index));
+    __unsafe_unretained IOSObjectArray *array, jint index) {
+  IOSArray_checkIndex(array->size_, index);
   return (JreArrayRef){ .arr = array, .pValue = &array->buffer_[index] };
 }
 FOUNDATION_EXPORT id IOSObjectArray_SetRef(JreArrayRef ref, id value);
