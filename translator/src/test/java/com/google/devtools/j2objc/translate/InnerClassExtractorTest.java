@@ -59,7 +59,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String source = "import com.google.j2objc.annotations.WeakOuter; "
         + "public class A { @WeakOuter class B { int test() { return o.hashCode(); }} Object o; }";
     String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation, "__weak A *this$0_;");
+    assertTranslation(translation, "__unsafe_unretained A *this$0_;");
     assertTranslation(translation, "this$0_ = outer$;");
   }
 
@@ -72,7 +72,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "id o_;");
     assertTranslation(translation, "id o2_;");
     translation = getTranslatedFile("A.m");
-    assertTranslation(translation, "__weak A *this$0_;");
+    assertTranslation(translation, "__unsafe_unretained A *this$0_;");
   }
 
   public void testInnerInnerClass() throws IOException {
@@ -93,7 +93,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "  int test() { return o.hashCode(); }}} Object o; }";
     String translation = translateSourceFile(source, "A", "A.m");
     assertTranslation(translation, "A *this$0_;");
-    assertTranslation(translation, "__weak A_B *this$0_;");
+    assertTranslation(translation, "__unsafe_unretained A_B *this$0_;");
     assertTranslation(translation, "[nil_chk(this$0_->this$0_->o_) hash]");
   }
 
@@ -786,7 +786,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     String translation = translateSourceFile(source, "A", "A.h");
     assertWarningCount(1);
     assertErrorCount(0);
-    assertNotInTranslation(translation, "__weak");
+    assertNotInTranslation(translation, "__unsafe_unretained");
   }
 
   public void testInnerClassWithVarargsAndCaptureVariables() throws IOException {

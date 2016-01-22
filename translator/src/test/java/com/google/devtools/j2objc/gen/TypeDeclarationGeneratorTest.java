@@ -220,13 +220,15 @@ public class TypeDeclarationGeneratorTest extends GenerationTest {
         + "}";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
     // Add __weak instance variable
-    assertTranslation(translation, "__weak Foo *barA_;");
+    assertTranslation(translation, "__unsafe_unretained Foo *barA_;");
+    assertTranslation(translation, "@property (weak) Foo *barA;");
     assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Foo, barA_, Foo *)");
     // Add weak property attribute
+    assertTranslation(translation, "__unsafe_unretained Foo *barB_;");
     assertTranslation(translation, "@property (weak, readonly) Foo *barB;");
     assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Foo, barB_, Foo *)");
     // Works with both
-    assertTranslation(translation, "__weak Foo *barC_;");
+    assertTranslation(translation, "__unsafe_unretained Foo *barC_;");
     assertTranslation(translation, "@property (weak, readonly) Foo *barC;");
     assertNotInTranslation(translation, "J2OBJC_FIELD_SETTER(Foo, barC_, Foo *)");
   }

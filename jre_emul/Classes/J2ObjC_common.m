@@ -410,7 +410,7 @@ id JreStrAppendInner(id lhs, const char *types, va_list va) {
   return JreStringBuilder_toStringAndDealloc(&sb);
 }
 
-id JreStrAppend(__weak id *lhs, const char *types, ...) {
+id JreStrAppend(__unsafe_unretained id *lhs, const char *types, ...) {
   va_list va;
   va_start(va, types);
   NSString *result = JreStrAppendInner(*lhs, types, va);

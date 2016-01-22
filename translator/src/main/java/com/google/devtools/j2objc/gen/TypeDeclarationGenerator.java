@@ -251,7 +251,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
         if (BindingUtil.isWeakReference(varBinding) && !BindingUtil.isVolatile(varBinding)) {
           // We must add this even without -use-arc because the header may be
           // included by a file compiled with ARC.
-          print("__weak ");
+          print("__unsafe_unretained ");
         }
         String objcType = getDeclarationType(varBinding);
         needsAsterisk = objcType.endsWith("*");
