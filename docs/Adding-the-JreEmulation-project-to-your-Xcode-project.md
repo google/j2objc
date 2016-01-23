@@ -15,6 +15,19 @@ Either:
 
 The source code can go anywhere on your local system.  For the purposes of this document we'll use `/usr/local/src/j2objc`, but change that path as you prefer.
 
+### Install Build Tools
+
+Xcode's command-line tools and Apache Maven need to be installed to build J2ObjC. Here are some tips:
+
+- [Install Xcode command-line tools](https://www.google.com/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=xcode%20command%20line%20tools)
+- [Install Maven on Mac](https://www.google.com/webhp?sourceid=chrome-instant&ion=1&espv=2&ie=UTF-8#q=how%20to%20install%20maven%20on%20mac)
+
+These are Google searches instead of static pages, because installation can often change with new Mac OS X and Xcode versions.
+
+### Build the Project
+
+Follow the [Building J2ObjC](http://j2objc.org/docs/Building-J2ObjC.html) steps. Command-line builds are optional, but  easier to debug than when invoked inside Xcode.
+
 ### The JreEmulation Xcode project
 
 In Xcode, open `/usr/local/src/j2objc/jre_emul/JreEmulation.xcodeproj`.  Its folders include:
