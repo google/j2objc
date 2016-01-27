@@ -267,7 +267,6 @@ public abstract class AbstractTypeBinding extends AbstractBinding implements ITy
     return null;
   }
 
-  @Override
   public IBinding getDeclaringMember() {
     return null;
   }

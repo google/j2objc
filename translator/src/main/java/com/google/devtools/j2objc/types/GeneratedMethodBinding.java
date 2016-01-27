@@ -293,7 +293,6 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
     return null;
   }
 
-  @Override
   public IBinding getDeclaringMember() {
     return null;
   }
