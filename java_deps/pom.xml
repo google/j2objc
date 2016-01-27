@@ -98,7 +98,7 @@
     <dependency>
       <groupId>org.eclipse.birt.runtime</groupId>
       <artifactId>org.eclipse.core.contenttype</artifactId>
-      <version>3.5.0.v20150421-2214</version>
+      <version>3.4.200.v20140207-1251</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.equinox</groupId>
@@ -110,13 +110,13 @@
     <dependency>
       <groupId>org.eclipse.birt.runtime</groupId>
       <artifactId>org.eclipse.core.jobs</artifactId>
-      <version>3.7.0.v20150330-2103</version>
+      <version>3.6.1.v20141014-1248</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.birt.runtime</groupId>
       <artifactId>org.eclipse.core.resources</artifactId>
-      <version>3.10.0.v20150423-0755</version>
+      <version>3.9.1.v20140825-1431</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.core</groupId>
@@ -132,7 +132,7 @@
     <dependency>
       <groupId>org.eclipse.birt.runtime</groupId>
       <artifactId>org.eclipse.core.runtime</artifactId>
-      <version>3.11.0.v20150405-1723</version>
+      <version>3.10.0.v20140318-2214</version>
       <exclusions>
         <exclusion>
           <groupId>org.eclipse.equinox</groupId>
@@ -158,24 +158,24 @@
     <dependency>
       <groupId>org.eclipse.birt.runtime</groupId>
       <artifactId>org.eclipse.equinox.preferences</artifactId>
-      <version>3.5.300.v20150408-1437</version>
+      <version>3.5.200.v20140224-1527</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.eclipse.tycho</groupId>
       <artifactId>org.eclipse.jdt.compiler.apt</artifactId>
-      <version>1.2.0.v20150514-0146</version>
+      <version>1.1.0.v20140509-1235</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.tycho</groupId>
       <artifactId>org.eclipse.jdt.core</artifactId>
-      <version>3.11.0.v20150602-1242</version>
+      <version>3.10.0.v20140604-1726</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>org.eclipse.scout.sdk.deps</groupId>
+      <groupId>org.eclipse.birt.runtime</groupId>
       <artifactId>org.eclipse.osgi</artifactId>
-      <version>3.10.100.v20150529-1857</version>
+      <version>3.10.2.v20150203-1939</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
