@@ -266,4 +266,9 @@ public abstract class AbstractTypeBinding extends AbstractBinding implements ITy
   public IAnnotationBinding[] getTypeAnnotations() {
     return null;
   }
+
+  @Override
+  public IBinding getDeclaringMember() {
+    return null;
+  }
 }

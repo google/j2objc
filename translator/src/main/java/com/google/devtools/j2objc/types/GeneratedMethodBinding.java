@@ -292,4 +292,9 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
   public ITypeBinding getDeclaredReceiverType() {
     return null;
   }
+
+  @Override
+  public IBinding getDeclaringMember() {
+    return null;
+  }
 }
