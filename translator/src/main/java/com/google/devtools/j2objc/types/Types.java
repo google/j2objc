@@ -77,6 +77,7 @@ public class Types {
   private final IOSMethodBinding retainMethod;
   private final IOSMethodBinding releaseMethod;
   private final IOSMethodBinding autoreleaseMethod;
+  private final IOSMethodBinding allocMethod;
 
   public Types(AST ast) {
     this.ast = ast;
@@ -113,6 +114,8 @@ public class Types {
         NameTable.RELEASE_METHOD, Modifier.PUBLIC, voidType, NSObject);
     autoreleaseMethod = IOSMethodBinding.newMethod(
         NameTable.AUTORELEASE_METHOD, Modifier.PUBLIC, idType, NSObject);
+    allocMethod = IOSMethodBinding.newMethod(
+        NameTable.ALLOC_METHOD, Modifier.PUBLIC, idType, NSObject);
   }
 
   private IOSTypeBinding mapIOSType(IOSTypeBinding type) {
@@ -324,5 +327,9 @@ public class Types {
 
   public IOSMethodBinding getAutoreleaseMethod() {
     return autoreleaseMethod;
+  }
+
+  public IOSMethodBinding getAllocMethod() {
+    return allocMethod;
   }
 }

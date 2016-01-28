@@ -15,6 +15,8 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.Options.MemoryManagementOption;
 
 import java.io.IOException;
 
@@ -481,26 +483,29 @@ public class FunctionizerTest extends GenerationTest {
     assertTranslation(translation, "Test_super$_description(self, @selector(description));");
   }
 
-  public void testFunctionizedConstructors() throws IOException {
+  public String innerTestFunctionizedConstructors() throws IOException {
     String translation = translateSourceFile(
-        "class Test { String s; "
-        + "Test() { this(\"foo\"); } "
-        + "private Test(String s) { this.s = s; } }", "Test", "Test.h");
+        "class Test { int i; "
+        + "Test() { this(0); } "
+        + "private Test(int i) { this.i = i; } }", "Test", "Test.h");
     // Functionized constructor.
     assertTranslation(translation, "FOUNDATION_EXPORT void Test_init(Test *self);");
-    // Allocating constructor.
+    // Retaining allocating constructor.
     assertTranslation(translation, "FOUNDATION_EXPORT Test *new_Test_init() NS_RETURNS_RETAINED;");
+    // Releasing allocating constructor.
+    assertTranslation(translation, "FOUNDATION_EXPORT Test *create_Test_init();");
     translation = getTranslatedFile("Test.m");
     // Declarations for the private constructor.
     assertTranslation(translation,
-        "__attribute__((unused)) static void Test_initWithNSString_(Test *self, NSString *s);");
+        "__attribute__((unused)) static void Test_initWithInt_(Test *self, jint i);");
     assertTranslation(translation,
-        "__attribute__((unused)) static Test *new_Test_initWithNSString_(NSString *s) "
-        + "NS_RETURNS_RETAINED;");
+        "__attribute__((unused)) static Test *new_Test_initWithInt_(jint i) NS_RETURNS_RETAINED;");
+    assertTranslation(translation,
+        "__attribute__((unused)) static Test *create_Test_initWithInt_(jint i);");
     // Implementations.
     assertTranslatedLines(translation,
         "void Test_init(Test *self) {",
-        "  Test_initWithNSString_(self, @\"foo\");",
+        "  Test_initWithInt_(self, 0);",
         "}");
     assertTranslatedLines(translation,
         "Test *new_Test_init() {",
@@ -509,15 +514,45 @@ public class FunctionizerTest extends GenerationTest {
         "  return self;",
         "}");
     assertTranslatedLines(translation,
-        "void Test_initWithNSString_(Test *self, NSString *s) {",
+        "void Test_initWithInt_(Test *self, jint i) {",
         "  NSObject_init(self);",
-        "  JreStrongAssign(&self->s_, s);",
+        "  self->i_ = i;",
         "}");
     assertTranslatedLines(translation,
-        "Test *new_Test_initWithNSString_(NSString *s) {",
+        "Test *new_Test_initWithInt_(jint i) {",
         "  Test *self = [Test alloc];",
-        "  Test_initWithNSString_(self, s);",
+        "  Test_initWithInt_(self, i);",
         "  return self;",
+        "}");
+    return translation;
+  }
+
+  public void testFunctionizedConstructors() throws IOException {
+    String translation = innerTestFunctionizedConstructors();
+    assertTranslatedLines(translation,
+        "Test *create_Test_init() {",
+        "  Test *self = [[Test alloc] autorelease];",
+        "  Test_init(self);",
+        "  return self;",
+        "}");
+    assertTranslatedLines(translation,
+        "Test *create_Test_initWithInt_(jint i) {",
+        "  Test *self = [[Test alloc] autorelease];",
+        "  Test_initWithInt_(self, i);",
+        "  return self;",
+        "}");
+  }
+
+  public void testFunctionizedConstructorsARC() throws IOException {
+    Options.setMemoryManagementOption(MemoryManagementOption.ARC);
+    String translation = innerTestFunctionizedConstructors();
+    assertTranslatedLines(translation,
+        "Test *create_Test_init() {",
+        "  return new_Test_init();",
+        "}");
+    assertTranslatedLines(translation,
+        "Test *create_Test_initWithInt_(jint i) {",
+        "  return new_Test_initWithInt_(i);",
         "}");
   }
 
@@ -525,7 +560,9 @@ public class FunctionizerTest extends GenerationTest {
     String translation = translateSourceFile("abstract class Test {}", "Test", "Test.h");
     assertTranslation(translation, "FOUNDATION_EXPORT void Test_init(Test *self);");
     assertNotInTranslation(translation, "new_Test_init");
+    assertNotInTranslation(translation, "create_Test_init");
     translation = getTranslatedFile("Test.m");
     assertNotInTranslation(translation, "new_Test_init");
+    assertNotInTranslation(translation, "create_Test_init");
   }
 }

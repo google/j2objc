@@ -266,6 +266,7 @@ public class Functionizer extends TreeVisitor {
       if (binding.isConstructor() && !BindingUtil.isAbstract(declaringClass)
           && !isEnumConstructor) {
         declarationList.add(makeAllocatingConstructor(node));
+        declarationList.add(makeReleasingConstructor(node));
       }
       // Instance methods must be kept in case they are invoked using "super".
       boolean keepMethod = isInstanceMethod
@@ -357,11 +358,57 @@ public class Functionizer extends TreeVisitor {
 
     GeneratedVariableBinding selfVar = new GeneratedVariableBinding(
         NameTable.SELF_NAME, 0, declaringClass, false, false, declaringClass, null);
-    IOSMethodBinding allocBinding = IOSMethodBinding.newMethod(
-        NameTable.ALLOC_METHOD, Modifier.PUBLIC, typeEnv.resolveIOSType("id"),
-        typeEnv.resolveIOSType("NSObject"));
     stmts.add(new VariableDeclarationStatement(
-        selfVar, new MethodInvocation(allocBinding, new SimpleName(declaringClass))));
+        selfVar, new MethodInvocation(typeEnv.getAllocMethod(), new SimpleName(declaringClass))));
+
+    FunctionInvocation invocation = new FunctionInvocation(
+        newFunctionBinding(binding), binding.getReturnType());
+    List<Expression> args = invocation.getArguments();
+    args.add(new SimpleName(selfVar));
+    for (SingleVariableDeclaration param : function.getParameters()) {
+      args.add(new SimpleName(param.getVariableBinding()));
+    }
+    stmts.add(new ExpressionStatement(invocation));
+
+    stmts.add(new ReturnStatement(new SimpleName(selfVar)));
+    return function;
+  }
+
+  /**
+   * Create a wrapper for a constructor that does the object allocation.
+   */
+  private FunctionDeclaration makeReleasingConstructor(MethodDeclaration method) {
+    assert method.isConstructor();
+    IMethodBinding binding = method.getMethodBinding();
+    ITypeBinding declaringClass = binding.getDeclaringClass();
+
+    FunctionDeclaration function = new FunctionDeclaration(
+        nameTable.getReleasingConstructorName(binding), declaringClass, declaringClass);
+    function.setLineNumber(method.getName().getLineNumber());
+    function.setModifiers(BindingUtil.isPrivate(binding) ? Modifier.PRIVATE : Modifier.PUBLIC);
+    TreeUtil.copyList(method.getParameters(), function.getParameters());
+    Block body = new Block();
+    function.setBody(body);
+    List<Statement> stmts = body.getStatements();
+
+    // In ARC we can't make the "autorelease" call, so instead delegate to the
+    // retaining constructor and let ARC manage the ref-counting.
+    if (Options.useARC()) {
+      FunctionInvocation delegatingCall =
+          new FunctionInvocation(newAllocatingConstructorBinding(binding), declaringClass);
+      for (SingleVariableDeclaration param : function.getParameters()) {
+        delegatingCall.getArguments().add(new SimpleName(param.getVariableBinding()));
+      }
+      stmts.add(new ReturnStatement(delegatingCall));
+      return function;
+    }
+
+    GeneratedVariableBinding selfVar = new GeneratedVariableBinding(
+        NameTable.SELF_NAME, 0, declaringClass, false, false, declaringClass, null);
+    stmts.add(new VariableDeclarationStatement(
+        selfVar, new MethodInvocation(
+            typeEnv.getAutoreleaseMethod(), new MethodInvocation(
+                typeEnv.getAllocMethod(), new SimpleName(declaringClass)))));
 
     FunctionInvocation invocation = new FunctionInvocation(
         newFunctionBinding(binding), binding.getReturnType());

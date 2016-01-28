@@ -630,11 +630,19 @@ public class NameTable {
   }
 
   /**
-   * Returns the name of the allocating constructor wrapper. The name will take
-   * the form of "new_TypeName_ConstructorName".
+   * Returns the name of the allocating constructor that returns a retained
+   * object. The name will take the form of "new_TypeName_ConstructorName".
    */
   public String getAllocatingConstructorName(IMethodBinding method) {
     return "new_" + getFullFunctionName(method);
+  }
+
+  /**
+   * Returns the name of the allocating constructor that returns a released
+   * object. The name will take the form of "create_TypeName_ConstructorName".
+   */
+  public String getReleasingConstructorName(IMethodBinding method) {
+    return "create_" + getFullFunctionName(method);
   }
 
   /**
