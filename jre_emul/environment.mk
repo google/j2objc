@@ -94,6 +94,10 @@ RELATIVE_TESTS_DIR = $(BUILD_DIR_NAME)/tests
 STUBS_DIR = stub_classes
 ANDROID_NATIVE_DIR = $(LIBCORE_BASE)/luni/src/main/native
 ANDROID_NATIVE_TEST_DIR = $(LIBCORE_BASE)/luni/src/test/native
+ANDROID_JAR = $(BUILD_DIR)/android_util.jar
+ANDROID_JAR_DIST = $(DIST_JAR_DIR)/android_util.jar
+ANDROID_SRC_JAR = $(BUILD_DIR)/android_util-src.jar
+ANDROID_SRC_JAR_DIST = $(DIST_JAR_DIR)/android_util-src.jar
 
 ifndef TRANSLATED_SOURCE_DIR
 TRANSLATED_SOURCE_DIR = $(CLASS_DIR)

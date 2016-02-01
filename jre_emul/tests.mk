@@ -712,7 +712,7 @@ TEST_RESOURCES = \
 JUNIT_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
 TEST_JOCC := ../dist/j2objcc -g -I$(TESTS_DIR) -I$(CLASS_DIR) -I$(EMULATION_CLASS_DIR) \
-    -ljre_emul -l junit -Werror -L$(TESTS_DIR) -l test-support
+    -ljre_emul -landroid_util -l junit -Werror -L$(TESTS_DIR) -l test-support
 ifeq ($(OBJCPP_BUILD), YES)
 TEST_JOCC += -lc++ -ObjC++
 else
@@ -725,9 +725,8 @@ GEN_OBJC_DIR = $(TESTS_DIR)
 TRANSLATE_JAVA_FULL = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
 TRANSLATE_JAVA8 = $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES)
-TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
-    --extract-unsequenced -encoding UTF-8 \
-    --prefixes Tests/resources/prefixes.properties
+TRANSLATE_ARGS = -classpath $(ANDROID_JAR_DIST):$(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
+    --extract-unsequenced -encoding UTF-8 --prefixes Tests/resources/prefixes.properties
 # Translates TRANSLATE_JAVA_FULL .java files into .m files.
 include ../make/translate.mk
 
