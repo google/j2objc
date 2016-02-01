@@ -202,7 +202,7 @@
 
 - (void)invoke:(NSInvocation *)invocation object:(id)object {
   IOSClass *declaringClass = [self getDeclaringClass];
-  NSException *exception = nil;
+  JavaLangThrowable *exception = nil;
   if (object &&
       ([self getModifiers] & JavaLangReflectModifier_PRIVATE) > 0 &&
       declaringClass != [object getClass]) {
@@ -212,21 +212,27 @@
     @try {
       [invocation invoke];
     }
-    @catch (NSException *t) {
+    @catch (JavaLangThrowable *t) {
       exception = t;
+    }
+    @catch (NSException *e) {
+      exception = [[JavaLangThrowable alloc] initWithNSString:[e description]];
     }
     object_setClass(object, originalClass);
   } else {
     @try {
       [invocation invoke];
     }
-    @catch (NSException *t) {
+    @catch (JavaLangThrowable *t) {
       exception = t;
+    }
+    @catch (NSException *e) {
+      exception = [[JavaLangThrowable alloc] initWithNSString:[e description]];
     }
   }
   if (exception) {
     @throw AUTORELEASE([[JavaLangReflectInvocationTargetException alloc]
-                        initWithNSException:exception]);
+                        initWithJavaLangThrowable:exception]);
   }
 }
 

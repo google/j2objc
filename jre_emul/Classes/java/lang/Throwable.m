@@ -22,7 +22,6 @@
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
 #import "J2ObjC_source.h"
-#import "NSException+JavaThrowable.h"
 #import "java/io/PrintStream.h"
 #import "java/io/PrintWriter.h"
 #import "java/lang/AssertionError.h"
@@ -30,6 +29,7 @@
 #import "java/lang/IllegalStateException.h"
 #import "java/lang/StackTraceElement.h"
 #import "java/lang/System.h"
+#import "java/lang/Throwable.h"
 #import "java/util/ArrayList.h"
 #import "libcore/util/EmptyArray.h"
 
@@ -41,7 +41,7 @@
 #define MAX_STACK_FRAMES 128
 #endif
 
-#define NSException_serialVersionUID -3042686055658047285LL
+#define JavaLangThrowable_serialVersionUID -3042686055658047285LL
 
 @interface RawStack : NSObject {
  @public
@@ -69,49 +69,52 @@
 
 @end
 
-// UserInfo dictionary variables.
+// Instance variables. These are defined using Objective C associative references,
+// so that java.lang.Throwable can be mapped directly to NSException using a category.
 
-// NSException *cause_;
-static NSString *CauseTagKey = @"CauseTag";
-static NSException *GetCause(NSException *self) {
-  return (NSException *)[self.userInfo objectForKey:CauseTagKey];
+// JavaLangThrowable *cause_;
+static char const * const CauseTagKey = "CauseTag";
+static JavaLangThrowable *GetCause(id self) {
+  return (JavaLangThrowable *)objc_getAssociatedObject(self, CauseTagKey);
 }
-static void SetCause(NSException *self, NSException *cause) {
+static void SetCause(id self, JavaLangThrowable *cause) {
   if (self != cause) {  // May happen during deserialization.
-    [(NSMutableDictionary *)self.userInfo setValue:cause forKey:CauseTagKey];
+    objc_setAssociatedObject(self, CauseTagKey, cause, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
   }
 }
 
 // IOSObjectArray *stackTrace_;
-static NSString *StackTraceTagKey = @"StackTraceTag";
-static IOSObjectArray *GetStackTrace(NSException *self) {
-  return (IOSObjectArray *)[self.userInfo objectForKey:StackTraceTagKey];
+static char const * const StackTraceTagKey = "StackTraceTag";
+static IOSObjectArray *GetStackTrace(id self) {
+  return (IOSObjectArray *)objc_getAssociatedObject(self, StackTraceTagKey);
 }
-static void SetStackTrace(NSException *self, IOSObjectArray *stackTrace) {
-  [(NSMutableDictionary *)self.userInfo setValue:stackTrace forKey:StackTraceTagKey];
+static void SetStackTrace(id self, IOSObjectArray *stackTrace) {
+  objc_setAssociatedObject(self, StackTraceTagKey, stackTrace, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 // id<JavaUtilList> suppressedExceptions_;
-static NSString *SuppressedExceptionsTagKey = @"SuppressedExceptionsTag";
-static id<JavaUtilList> GetSuppressedExceptions(NSException *self) {
-  return (id<JavaUtilList>)[self.userInfo objectForKey:SuppressedExceptionsTagKey];
+static char const * const SuppressedExceptionsTagKey = "SuppressedExceptionsTag";
+static id<JavaUtilList> GetSuppressedExceptions(id self) {
+  return (id<JavaUtilList>)objc_getAssociatedObject(self, SuppressedExceptionsTagKey);
 }
-static void SetSuppressedExceptions(NSException *self, id<JavaUtilList>list) {
-  [(NSMutableDictionary *)self.userInfo setValue:list forKey:SuppressedExceptionsTagKey];
+static void SetSuppressedExceptions(id self, id<JavaUtilList>list) {
+  objc_setAssociatedObject(self, SuppressedExceptionsTagKey, list,
+      OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 // RawStack *rawStack;
-static NSString *RawStackTagKey = @"RawStackTag";
-static RawStack *GetRawStack(NSException *self) {
-  return (RawStack *)[self.userInfo objectForKey:RawStackTagKey];
+static char const * const RawStackTagKey = "RawStackTag";
+static RawStack *GetRawStack(id self) {
+  return (RawStack *)objc_getAssociatedObject(self, RawStackTagKey);
 }
-static void SetRawStack(NSException *self) {
+static void SetRawStack(id self) {
   RawStack *rawStack = [[RawStack alloc] init];
-  [(NSMutableDictionary *)self.userInfo setValue:rawStack forKey:RawStackTagKey];
+  objc_setAssociatedObject(self, RawStackTagKey, rawStack, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
   [rawStack release];
 }
-static void FreeRawStack(NSException *self) {
-  [(NSMutableDictionary *)self.userInfo removeObjectForKey:RawStackTagKey];
+static void FreeRawStack(id self) {
+  // Setting the associated object to null releases the previous value.
+  objc_setAssociatedObject(self, RawStackTagKey, nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 // NSString *detailMessage_; This is a special case, since by default Throwable's detailMessage
@@ -119,64 +122,65 @@ static void FreeRawStack(NSException *self) {
 // object is necessary to support deserialized exceptions, since serialization always creates
 // objects with the class's default constructor. Normal exceptions (those not created by
 // deserialization) won't set this associated object.
-static NSString *DetailMessageTagKey = @"DetailMessageTag";
-static NSString *GetDetailMessage(NSException *self) {
-  return (NSString *)[self.userInfo objectForKey:DetailMessageTagKey];
+static char const * const DetailMessageTagKey = "DetailMessageTag";
+static NSString *GetDetailMessage(id self) {
+  return (NSString *)objc_getAssociatedObject(self, DetailMessageTagKey);
 }
-static void SetDetailMessage(NSException *self, NSString *message) {
-  [(NSMutableDictionary *)self.userInfo setValue:message forKey:DetailMessageTagKey];
+static void SetDetailMessage(id self, NSString *message) {
+  objc_setAssociatedObject(self, DetailMessageTagKey, message, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-@implementation NSException (JavaLangThrowable)
+@implementation JavaLangThrowable
 
 J2OBJC_IGNORE_DESIGNATED_BEGIN
 - (instancetype)init {
-  return self;
-}
-
-- (instancetype)initWithNSString:(NSString *)detailMessage {
-  NSException_initWithNSString_(self, detailMessage);
-  return self;
-}
-
-- (instancetype)initWithNSString:(NSString *)detailMessage
-           withNSException:(NSException *)cause {
-  NSException_initWithNSString_withNSException_(self, detailMessage, cause);
-  return self;
-}
-
-- (instancetype)initWithNSException:(NSException *)cause {
-  NSException_initWithNSException_(self, cause);
-  return self;
-}
-
-- (instancetype)initWithNSString:(NSString *)detailMessage
- withNSException:(NSException *)cause
-           withBoolean:(jboolean)enableSuppression
-           withBoolean:(jboolean)writeableStackTrace {
-  NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
-      self, detailMessage, cause, enableSuppression, writeableStackTrace);
+  JavaLangThrowable_init(self);
   return self;
 }
 J2OBJC_IGNORE_DESIGNATED_END
 
-void NSException_init(NSException *self) {
-  NSException_initWithNSString_withNSException_(self, nil, nil);
-}
-
-NSException *new_NSException_init() {
-  NSException *self = [NSException alloc];
-  NSException_init(self);
+- (instancetype)initWithNSString:(NSString *)detailMessage {
+  JavaLangThrowable_initWithNSString_(self, detailMessage);
   return self;
 }
 
-void NSException_initWithNSString_(NSException *self, NSString *message) {
-  NSException_initWithNSString_withNSException_(self, message, nil);
+- (instancetype)initWithNSString:(NSString *)detailMessage
+           withJavaLangThrowable:(JavaLangThrowable *)cause {
+  JavaLangThrowable_initWithNSString_withJavaLangThrowable_(self, detailMessage, cause);
+  return self;
 }
 
-NSException *new_NSException_initWithNSString_(NSString *message) {
-  NSException *self = [NSException alloc];
-  NSException_initWithNSString_(self, message);
+- (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)cause {
+  JavaLangThrowable_initWithJavaLangThrowable_(self, cause);
+  return self;
+}
+
+- (instancetype)initWithNSString:(NSString *)detailMessage
+ withJavaLangThrowable:(JavaLangThrowable *)cause
+           withBoolean:(jboolean)enableSuppression
+           withBoolean:(jboolean)writeableStackTrace {
+  JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
+      self, detailMessage, cause, enableSuppression, writeableStackTrace);
+  return self;
+}
+
+void JavaLangThrowable_init(JavaLangThrowable *self) {
+  JavaLangThrowable_initWithNSString_withJavaLangThrowable_(self, nil, nil);
+}
+
+JavaLangThrowable *new_JavaLangThrowable_init() {
+  JavaLangThrowable *self = [JavaLangThrowable alloc];
+  JavaLangThrowable_init(self);
+  return self;
+}
+
+void JavaLangThrowable_initWithNSString_(JavaLangThrowable *self, NSString *message) {
+  JavaLangThrowable_initWithNSString_withJavaLangThrowable_(self, message, nil);
+}
+
+JavaLangThrowable *new_JavaLangThrowable_initWithNSString_(NSString *message) {
+  JavaLangThrowable *self = [JavaLangThrowable alloc];
+  JavaLangThrowable_initWithNSString_(self, message);
   return self;
 }
 
@@ -184,39 +188,38 @@ NSException *new_NSException_initWithNSString_(NSString *message) {
 // invoke NSException.initWithName:reason:userInfo:.  This
 // is necessary so that JRE exceptions can be caught by
 // class name.
-void NSException_initWithNSString_withNSException_(
-    NSException *self, NSString *message, NSException *causeArg) {
-  NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
+void JavaLangThrowable_initWithNSString_withJavaLangThrowable_(
+    JavaLangThrowable *self, NSString *message, JavaLangThrowable *causeArg) {
+  JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
       self, message, causeArg, true, true);
 }
 
-NSException *new_NSException_initWithNSString_withNSException_(
-    NSString *message, NSException *causeArg) {
-  NSException *self = [NSException alloc];
-  NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
+JavaLangThrowable *new_JavaLangThrowable_initWithNSString_withJavaLangThrowable_(
+    NSString *message, JavaLangThrowable *causeArg) {
+  JavaLangThrowable *self = [JavaLangThrowable alloc];
+  JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
       self, message, causeArg, true, true);
   return self;
 }
 
-void NSException_initWithNSException_(
-    NSException *self, NSException *causeArg) {
-  NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
+void JavaLangThrowable_initWithJavaLangThrowable_(
+    JavaLangThrowable *self, JavaLangThrowable *causeArg) {
+  JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
       self, causeArg ? [causeArg description] : nil, causeArg, true, true);
 }
 
-NSException *new_NSException_initWithNSException_(NSException *causeArg) {
-  NSException *self = [NSException alloc];
-  NSException_initWithNSException_(self, causeArg);
+JavaLangThrowable *new_JavaLangThrowable_initWithJavaLangThrowable_(JavaLangThrowable *causeArg) {
+  JavaLangThrowable *self = [JavaLangThrowable alloc];
+  JavaLangThrowable_initWithJavaLangThrowable_(self, causeArg);
   return self;
 }
 
-void NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
-    NSException *self, NSString *message, NSException *causeArg,
+void JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
+    JavaLangThrowable *self, NSString *message, JavaLangThrowable *causeArg,
     jboolean enableSuppression, jboolean writeableStackTrace) {
-  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
-  [self initWithName:[[self class] description] reason:message userInfo:userInfo];
-  if (causeArg && self != causeArg) {
-    [(NSMutableDictionary *)userInfo setValue:causeArg forKey:CauseTagKey];
+  [self initWithName:[[self class] description] reason:message userInfo:nil];
+  if (causeArg) {
+    SetCause(self, causeArg);
   }
   if (enableSuppression) {
     JavaUtilArrayList *newArray = new_JavaUtilArrayList_init();
@@ -225,15 +228,14 @@ void NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
   if (writeableStackTrace) {
     SetRawStack(self);
   }
-  [userInfo release];
 }
 
-NSException *
-    new_NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
-    NSString *message, NSException *causeArg, jboolean enableSuppression,
+JavaLangThrowable *
+    new_JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
+    NSString *message, JavaLangThrowable *causeArg, jboolean enableSuppression,
     jboolean writeableStackTrace) {
-  NSException *self = [NSException alloc];
-  NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
+  JavaLangThrowable *self = [JavaLangThrowable alloc];
+  JavaLangThrowable_initWithNSString_withJavaLangThrowable_withBoolean_withBoolean_(
       self, message, causeArg, enableSuppression, writeableStackTrace);
   return self;
 }
@@ -275,9 +277,8 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
             [[element getMethodName] isEqualToString:@"invoke"]) {
           [frames removeLastObject];
         }
-        SetStackTrace(self,
-                      [IOSObjectArray arrayWithNSArray:frames
-                                                  type:JavaLangStackTraceElement_class_()]);
+        SetStackTrace(self, [IOSObjectArray arrayWithNSArray:frames
+                                                        type:JavaLangStackTraceElement_class_()]);
         FreeRawStack(self);
       }
     }
@@ -285,15 +286,15 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   return GetStackTrace(self);
 }
 
-- (NSException *)fillInStackTrace {
+- (JavaLangThrowable *)fillInStackTrace {
   @synchronized (self) {
     SetRawStack(self);
   }
   return self;
 }
 
-- (NSException *)getCause {
-  NSException *cause = GetCause(self);
+- (JavaLangThrowable *)getCause {
+  JavaLangThrowable *cause = GetCause(self);
   if (cause == self) {
     return nil;
   }
@@ -314,8 +315,9 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   return [self filterStackTrace];
 }
 
-- (NSException *)initCauseWithNSException:(NSException *)causeArg {
-  NSException *cause = GetCause(self);
+- (JavaLangThrowable *)initCauseWithJavaLangThrowable:
+    (JavaLangThrowable *)causeArg {
+  JavaLangThrowable *cause = GetCause(self);
   if (cause) {
     @throw AUTORELEASE([[JavaLangIllegalStateException alloc]
                         initWithNSString:@"Can't overwrite cause"]);
@@ -340,7 +342,7 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
     id frame = trace->buffer_[i];
     [pw printlnWithId:frame];
   }
-  NSException *cause = GetCause(self);
+  JavaLangThrowable *cause = GetCause(self);
   if (cause) {
     [pw printWithNSString:@"Caused by: "];
     [cause printStackTraceWithJavaIoPrintWriter:pw];
@@ -355,7 +357,7 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
     id frame = trace->buffer_[i];
     [ps printlnWithId:frame];
   }
-  NSException *cause = GetCause(self);
+  JavaLangThrowable *cause = GetCause(self);
   if (cause) {
     [ps printWithNSString:@"Caused by: "];
     [cause printStackTraceWithJavaIoPrintStream:ps];
@@ -376,7 +378,7 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   }
 }
 
-- (void)addSuppressedWithNSException:(NSException *)exception {
+- (void)addSuppressedWithJavaLangThrowable:(JavaLangThrowable *)exception {
   // Always check arg whether or not stack trace suppression is enabled.
   nil_chk(exception);
   if (exception == self) {
@@ -395,7 +397,7 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   if (suppressedExceptions && ![suppressedExceptions isEmpty]) {
     return [suppressedExceptions
             toArrayWithNSObjectArray:[IOSObjectArray arrayWithLength:[suppressedExceptions size]
-                                                                type:NSException_class_()]];
+                                                                type:JavaLangThrowable_class_()]];
   } else {
     return JreLoadStatic(LibcoreUtilEmptyArray, THROWABLE);
   }
@@ -412,10 +414,10 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
 }
 
 // Accessor methods for virtual fields, used by reflection.
-- (NSException *)__cause {
+- (JavaLangThrowable *)__cause {
   return GetCause(self);
 }
-- (void)__setcause:(NSException *)cause {
+- (void)__setcause:(JavaLangThrowable *)cause {
   SetCause(self, cause);
 }
 - (NSString *)__detailMessage {
@@ -442,21 +444,21 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   static const J2ObjcMethodInfo methods[] = {
     { "init", "Throwable", NULL, 0x1, NULL, NULL },
     { "initWithNSString:", "Throwable", NULL, 0x1, NULL, NULL },
-    { "initWithNSString:withNSException:", "Throwable", NULL, 0x1, NULL, NULL },
-    { "initWithNSException:", "Throwable", NULL, 0x1, NULL, NULL },
-    { "initWithNSString:withNSException:withBoolean:withBoolean:", "Throwable", NULL, 0x4,
+    { "initWithNSString:withJavaLangThrowable:", "Throwable", NULL, 0x1, NULL, NULL },
+    { "initWithJavaLangThrowable:", "Throwable", NULL, 0x1, NULL, NULL },
+    { "initWithNSString:withJavaLangThrowable:withBoolean:withBoolean:", "Throwable", NULL, 0x4,
         NULL, NULL },
     { "fillInStackTrace", NULL, "Ljava.lang.Throwable;", 0x1, NULL, NULL },
     { "getCause", NULL, "Ljava.lang.Throwable;", 0x1, NULL, NULL },
     { "getLocalizedMessage", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
     { "getMessage", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
     { "getStackTrace", NULL, "[Ljava.lang.StackTraceElement;", 0x1, NULL, NULL },
-    { "initCauseWithNSException:", "initCause", "Ljava.lang.Throwable;", 0x1, NULL, NULL },
+    { "initCauseWithJavaLangThrowable:", "initCause", "Ljava.lang.Throwable;", 0x1, NULL, NULL },
     { "printStackTrace", NULL, "V", 0x1, NULL, NULL },
     { "printStackTraceWithJavaIoPrintWriter:", "printStackTrace", "V", 0x1, NULL, NULL },
     { "printStackTraceWithJavaIoPrintStream:", "printStackTrace", "V", 0x1, NULL, NULL },
     { "setStackTraceWithJavaLangStackTraceElementArray:", "setStackTrace", "V", 0x1, NULL, NULL },
-    { "addSuppressedWithNSException:", "addSuppressed", "V", 0x11, NULL, NULL },
+    { "addSuppressedWithJavaLangThrowable:", "addSuppressed", "V", 0x11, NULL, NULL },
     { "getSuppressed", NULL, "[Ljava.lang.Throwable;", 0x11, NULL, NULL },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL, NULL },
   };
@@ -468,49 +470,13 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
     { "suppressedExceptions_", NULL, 0x2, "Ljava.util.List;", NULL,
         "Ljava/util/List<Ljava/lang/Throwable;>;", .constantValue.asLong = 0 },
     { "serialVersionUID", "serialVersionUID", 0x1a, "J", NULL, NULL,
-        .constantValue.asLong = NSException_serialVersionUID },
+        .constantValue.asLong = JavaLangThrowable_serialVersionUID },
   };
-  static const J2ObjcClassInfo _NSException = { 2, "Throwable", "java.lang", NULL, 0x1,
+  static const J2ObjcClassInfo _JavaLangThrowable = { 2, "Throwable", "java.lang", NULL, 0x1,
       18, methods, 5, fields, 0, NULL, 0, NULL, NULL, NULL };
-  return &_NSException;
+  return &_JavaLangThrowable;
 }
 
 @end
 
-@implementation NSException(OldJavaLangThrowable)
-
-- (instancetype)initWithNSString:(NSString *)detailMessage
-           withJavaLangThrowable:(JavaLangThrowable *)cause {
-  return [self initWithNSString:detailMessage withNSException:cause];
-}
-
-- (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)cause {
-  return [self initWithNSException:cause];
-}
-
-- (void)addSuppressedWithJavaLangThrowable:(JavaLangThrowable *)throwable {
-  [self addSuppressedWithNSException:throwable];
-}
-
-- (JavaLangThrowable *)initCauseWithJavaLangThrowable:(JavaLangThrowable *)throwable
-    OBJC_METHOD_FAMILY_NONE {
-  return [self initCauseWithNSException:throwable];
-}
-
-- (instancetype)initWithNSString:(NSString *)detailMessage
-           withJavaLangThrowable:(JavaLangThrowable *)cause
-                     withBoolean:(jboolean)enableSuppression
-                     withBoolean:(jboolean)writableStackTrace {
-  return [self initWithNSString:detailMessage
-                withNSException:cause
-                    withBoolean:enableSuppression
-                    withBoolean:writableStackTrace];
-}
-
-@end
-
-// Empty class to force category to be loaded.
-@implementation JreThrowableCategoryDummy
-@end
-
-J2OBJC_CLASS_TYPE_LITERAL_SOURCE(NSException)
+J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaLangThrowable)

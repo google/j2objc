@@ -22,7 +22,6 @@
 #import "J2ObjC_common.h"
 #import "JavaObject.h"
 #import "NSCopying+JavaCloneable.h"
-#import "NSException+JavaThrowable.h"
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"

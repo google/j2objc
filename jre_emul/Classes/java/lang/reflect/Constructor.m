@@ -22,10 +22,10 @@
 #import "Constructor.h"
 #import "J2ObjC_source.h"
 #import "JavaMetadata.h"
-#import "NSException+JavaThrowable.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ExceptionInInitializerError.h"
 #import "java/lang/IllegalArgumentException.h"
+#import "java/lang/Throwable.h"
 #import "java/lang/reflect/InvocationTargetException.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
@@ -84,8 +84,8 @@
   @try {
     newInstance = AUTORELEASE([class_.objcClass alloc]);
   }
-  @catch (NSException *e) {
-    @throw AUTORELEASE([[JavaLangExceptionInInitializerError alloc] initWithNSException:e]);
+  @catch (JavaLangThrowable *e) {
+    @throw AUTORELEASE([[JavaLangExceptionInInitializerError alloc] initWithJavaLangThrowable:e]);
   }
   return newInstance;
 }
@@ -102,9 +102,9 @@
   @try {
     [invocation invoke];
   }
-  @catch (NSException *e) {
+  @catch (JavaLangThrowable *e) {
     @throw AUTORELEASE(
-        [[JavaLangReflectInvocationTargetException alloc] initWithNSException:e]);
+        [[JavaLangReflectInvocationTargetException alloc] initWithJavaLangThrowable:e]);
   }
 }
 

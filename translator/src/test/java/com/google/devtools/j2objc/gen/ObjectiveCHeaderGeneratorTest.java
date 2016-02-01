@@ -120,9 +120,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testImportTranslation() throws IOException {
     String translation = translateSourceFile(
-        "public class MyException extends Exception { MyException(RuntimeException t) {super(t);}}",
+        "public class MyException extends Exception { MyException(Throwable t) {super(t);}}",
         "MyException", "MyException.h");
-    assertTranslation(translation, "@class JavaLangRuntimeException;");
+    assertTranslation(translation, "@class JavaLangThrowable;");
     assertTranslation(translation, "#include \"java/lang/Exception.h\"");
   }
 
@@ -306,9 +306,9 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
 
   public void testForwardDeclarationTranslation() throws IOException {
     String translation = translateSourceFile(
-        "public class MyException extends Exception { MyException(RuntimeException t) {super(t);}}",
+        "public class MyException extends Exception { MyException(Throwable t) {super(t);}}",
         "MyException", "MyException.h");
-    assertTranslation(translation, "@class JavaLangRuntimeException;");
+    assertTranslation(translation, "@class JavaLangThrowable;");
   }
 
   public void testInstanceVariableTranslation() throws IOException {
@@ -827,13 +827,13 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)s;");
     assertTranslation(translation, "- (instancetype)init NS_UNAVAILABLE;");
     assertTranslation(translation,
-        "- (instancetype)initWithNSException:(NSException *)arg0 NS_UNAVAILABLE;");
+        "- (instancetype)initWithJavaLangThrowable:(JavaLangThrowable *)arg0 NS_UNAVAILABLE;");
     assertTranslatedLines(translation,
         "- (instancetype)initWithNSString:(NSString *)arg0",
-        "withNSException:(NSException *)arg1 NS_UNAVAILABLE;");
+        "withJavaLangThrowable:(JavaLangThrowable *)arg1 NS_UNAVAILABLE;");
     assertTranslatedLines(translation,
         "- (instancetype)initWithNSString:(NSString *)arg0",
-        "withNSException:(NSException *)arg1",
+        "withJavaLangThrowable:(JavaLangThrowable *)arg1",
         "withBoolean:(jboolean)arg2",
         "withBoolean:(jboolean)arg3 NS_UNAVAILABLE;");
   }

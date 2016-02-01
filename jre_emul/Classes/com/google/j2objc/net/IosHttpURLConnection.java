@@ -440,7 +440,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
         }
         ComGoogleJ2objcNetNSErrorException *cause =
             [[ComGoogleJ2objcNetNSErrorException alloc] initWithId:error];
-        [self->responseException_ initCauseWithNSException:cause];
+        [self->responseException_ initCauseWithJavaLangThrowable:cause];
         [cause release];
         @throw self->responseException_;
       }

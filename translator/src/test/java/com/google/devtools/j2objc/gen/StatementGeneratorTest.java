@@ -100,7 +100,7 @@ public class StatementGeneratorTest extends GenerationTest {
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
     assertEquals(
-        "[new_JavaLangException_initWithNSException_(cause) autorelease];", result);
+        "[new_JavaLangException_initWithJavaLangThrowable_(cause) autorelease];", result);
   }
 
   public void testCastTranslation() throws IOException {
@@ -108,8 +108,8 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(3, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("NSException *t = "
-        + "(NSException *) cast_chk(o, [NSException class]);", result);
+    assertEquals("JavaLangThrowable *t = "
+        + "(JavaLangThrowable *) cast_chk(o, [JavaLangThrowable class]);", result);
     result = generateStatement(stmts.get(2));
     assertEquals("IOSIntArray *i = "
         + "(IOSIntArray *) cast_chk(o, [IOSIntArray class]);", result);
@@ -138,7 +138,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals("if ([e isKindOfClass:[NSException class]]) {\n}", result);
+    assertEquals("if ([e isKindOfClass:[JavaLangThrowable class]]) {\n}", result);
   }
 
   public void testFullyQualifiedTypeTranslation() throws IOException {
@@ -1420,7 +1420,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  new Throwable(); }}",
         "Test", "Test.m");
     assertTranslation(translation, "(void) [sb appendWithNSString:@\"hello, world\"];");
-    assertTranslation(translation, "(void) new_NSException_init();");
+    assertTranslation(translation, "(void) new_JavaLangThrowable_init();");
   }
 
   // Verify Java 7's switch statements with strings.
@@ -1458,11 +1458,11 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
         + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
-        "NSException *__primaryException1 = nil;",
+        "JavaLangThrowable *__primaryException1 = nil;",
         "@try {",
         "  return [br readLine];",
         "}",
-        "@catch (NSException *e) {",
+        "@catch (JavaLangThrowable *e) {",
         "  __primaryException1 = e;",
         "  @throw e;",
         "}",
@@ -1471,8 +1471,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "    if (__primaryException1 != nil) {",
         "      @try {",
         "        [br close];",
-        "      } @catch (NSException *e) {",
-        "        [__primaryException1 addSuppressedWithNSException:e];",
+        "      } @catch (JavaLangThrowable *e) {",
+        "        [__primaryException1 addSuppressedWithJavaLangThrowable:e];",
         "      }",
         "    } else {",
         "      [br close];",
@@ -1492,15 +1492,15 @@ public class StatementGeneratorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
             + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
-        "NSException *__primaryException2 = nil;",
+        "JavaLangThrowable *__primaryException2 = nil;",
         "@try {",
         " JavaIoBufferedReader *br2 = [new_JavaIoBufferedReader_initWithJavaIoReader_("
             + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
-        " NSException *__primaryException1 = nil;",
+        " JavaLangThrowable *__primaryException1 = nil;",
         " @try {",
         "  return [br readLine];",
         " }",
-        " @catch (NSException *e) {",
+        " @catch (JavaLangThrowable *e) {",
         "  __primaryException1 = e;",
         "  @throw e;",
         " }",
@@ -1509,8 +1509,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "    if (__primaryException1 != nil) {",
         "      @try {",
         "        [br2 close];",
-        "      } @catch (NSException *e) {",
-        "        [__primaryException1 addSuppressedWithNSException:e];",
+        "      } @catch (JavaLangThrowable *e) {",
+        "        [__primaryException1 addSuppressedWithJavaLangThrowable:e];",
         "      }",
         "    } else {",
         "      [br2 close];",
@@ -1518,7 +1518,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "  }",
         " }",
         "}",
-        "@catch (NSException *e) {",
+        "@catch (JavaLangThrowable *e) {",
         " __primaryException2 = e;",
         " @throw e;",
         "}",
@@ -1527,8 +1527,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "  if (__primaryException2 != nil) {",
         "   @try {",
         "    [br close];",
-        "   } @catch (NSException *e) {",
-        "    [__primaryException2 addSuppressedWithNSException:e];",
+        "   } @catch (JavaLangThrowable *e) {",
+        "    [__primaryException2 addSuppressedWithJavaLangThrowable:e];",
         "   }",
         "  } else {",
         "   [br close];",
@@ -1552,11 +1552,11 @@ public class StatementGeneratorTest extends GenerationTest {
         "@try {",
         " JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
         + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
-        " NSException *__primaryException1 = nil;",
+        " JavaLangThrowable *__primaryException1 = nil;",
         " @try {",
         "  return [br readLine];",
         " }",
-        " @catch (NSException *e) {",
+        " @catch (JavaLangThrowable *e) {",
         "  __primaryException1 = e;",
         "  @throw e;",
         " }",
@@ -1565,8 +1565,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "   if (__primaryException1 != nil) {",
         "    @try {",
         "     [br close];",
-        "    } @catch (NSException *e) {",
-        "     [__primaryException1 addSuppressedWithNSException:e];",
+        "    } @catch (JavaLangThrowable *e) {",
+        "     [__primaryException1 addSuppressedWithJavaLangThrowable:e];",
         "    }",
         "   } else {",
         "    [br close];",

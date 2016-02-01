@@ -1293,7 +1293,7 @@ public class StatementGenerator extends TreeVisitor {
     buffer.append("{\n");
     resource.accept(this);
     buffer.append(";\n");
-    buffer.append(String.format("NSException *%s = nil;\n", primaryExceptionName));
+    buffer.append(String.format("JavaLangThrowable *%s = nil;\n", primaryExceptionName));
 
     buffer.append("@try ");
     List<VariableDeclarationExpression> tail = resources.subList(1, resources.size());
@@ -1304,7 +1304,7 @@ public class StatementGenerator extends TreeVisitor {
     }
 
     buffer.append(String.format(
-        "@catch (NSException *e) {\n"
+        "@catch (JavaLangThrowable *e) {\n"
         + "%s = e;\n"
         + "@throw e;\n"
         + "}\n", primaryExceptionName));
@@ -1317,8 +1317,8 @@ public class StatementGenerator extends TreeVisitor {
         + "  if (%s != nil) {\n"
         + "   @try {\n"
         + "    [%s close];\n"
-        + "   } @catch (NSException *e) {\n"
-        + "    [%s addSuppressedWithNSException:e];\n"
+        + "   } @catch (JavaLangThrowable *e) {\n"
+        + "    [%s addSuppressedWithJavaLangThrowable:e];\n"
         + "   }\n"
         + "  } else {\n"
         + "   [%s close];\n"

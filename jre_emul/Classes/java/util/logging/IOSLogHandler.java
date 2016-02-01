@@ -18,7 +18,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 
 /*-[
-#import "NSException+JavaThrowable.h"
+#import "java/lang/Throwable.h"
 #import <asl.h>
 
 // Simple value holder, so aslclient is closed when thread dictionary is deallocated.

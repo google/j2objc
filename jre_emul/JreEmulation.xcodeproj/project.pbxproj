@@ -720,10 +720,6 @@
 		062463D31A000CE3006D52C9 /* JRETestsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRETestsTableViewController.m; sourceTree = "<group>"; };
 		062463D81A005995006D52C9 /* JRELogPaneViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JRELogPaneViewController.h; sourceTree = "<group>"; };
 		062463D91A005995006D52C9 /* JRELogPaneViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JRELogPaneViewController.m; sourceTree = "<group>"; };
-		062DEEBB1C5002080048FB10 /* IOSArray_PackagePrivate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSArray_PackagePrivate.h; sourceTree = "<group>"; };
-		062DEEBC1C5002080048FB10 /* NSException+JavaThrowable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSException+JavaThrowable.h"; sourceTree = "<group>"; };
-		062DEEBD1C5002080048FB10 /* NSException+JavaThrowable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSException+JavaThrowable.m"; sourceTree = "<group>"; };
-		062DEEBE1C5056880048FB10 /* Throwable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Throwable.h; path = java/lang/Throwable.h; sourceTree = "<group>"; };
 		06389ACF176BADA20018B4EA /* JavaToIOSInputStreamAdapter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = JavaToIOSInputStreamAdapter.h; sourceTree = "<group>"; };
 		06389AD0176BADA20018B4EA /* JavaToIOSInputStreamAdapter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = JavaToIOSInputStreamAdapter.m; sourceTree = "<group>"; };
 		064914311AC47ED000E98733 /* FastPointerLookup.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FastPointerLookup.h; sourceTree = "<group>"; };
@@ -1690,11 +1686,13 @@
 		06721BA01559DE3800645E1B /* Constructor.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Constructor.m; path = java/lang/reflect/Constructor.m; sourceTree = "<group>"; };
 		06721BA11559DE3800645E1B /* ExecutableMember.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ExecutableMember.m; path = java/lang/reflect/ExecutableMember.m; sourceTree = "<group>"; };
 		06721BA21559DE3800645E1B /* Method.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Method.m; path = java/lang/reflect/Method.m; sourceTree = "<group>"; };
+		06721BA31559DE3800645E1B /* Throwable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Throwable.m; path = java/lang/Throwable.m; sourceTree = "<group>"; };
 		067228E4158FAEBC005318BD /* Field.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Field.h; path = java/lang/reflect/Field.h; sourceTree = "<group>"; };
 		067228E5158FAEBC005318BD /* Field.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Field.m; path = java/lang/reflect/Field.m; sourceTree = "<group>"; };
 		067228EF158FB002005318BD /* Constructor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Constructor.h; path = java/lang/reflect/Constructor.h; sourceTree = "<group>"; };
 		067228F0158FB002005318BD /* ExecutableMember.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ExecutableMember.h; path = java/lang/reflect/ExecutableMember.h; sourceTree = "<group>"; };
 		067228F1158FB002005318BD /* Method.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Method.h; path = java/lang/reflect/Method.h; sourceTree = "<group>"; };
+		067228F2158FB002005318BD /* Throwable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Throwable.h; path = java/lang/Throwable.h; sourceTree = "<group>"; };
 		067228F9158FB0B3005318BD /* AccessibleObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AccessibleObject.h; path = java/lang/reflect/AccessibleObject.h; sourceTree = "<group>"; };
 		067228FA158FB0B3005318BD /* AccessibleObject.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AccessibleObject.m; path = java/lang/reflect/AccessibleObject.m; sourceTree = "<group>"; };
 		067228FD158FD6AF005318BD /* NoSuchFieldException.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = NoSuchFieldException.h; path = build_result/Classes/java/lang/NoSuchFieldException.h; sourceTree = "<group>"; };
@@ -4038,7 +4036,6 @@
 				064914321AC47ED000E98733 /* FastPointerLookup.m */,
 				067228E4158FAEBC005318BD /* Field.h */,
 				067228E5158FAEBC005318BD /* Field.m */,
-				062DEEBB1C5002080048FB10 /* IOSArray_PackagePrivate.h */,
 				06619396155849BB0004DAFE /* IOSArray.h */,
 				06619397155849BB0004DAFE /* IOSArray.m */,
 				06619398155849BB0004DAFE /* IOSArrayClass.h */,
@@ -4098,8 +4095,6 @@
 				2CBD9CBF174ABCF8008A0086 /* NSDataOutputStream.m */,
 				2CBD9CBA174A8BD7008A0086 /* NSDictionaryMap.h */,
 				2CBD9CBB174A8BD7008A0086 /* NSDictionaryMap.m */,
-				062DEEBC1C5002080048FB10 /* NSException+JavaThrowable.h */,
-				062DEEBD1C5002080048FB10 /* NSException+JavaThrowable.m */,
 				0671FC1518529E28005D9D56 /* NSNumber+JavaNumber.h */,
 				0671FC1618529E28005D9D56 /* NSNumber+JavaNumber.m */,
 				066193E4155849F80004DAFE /* NSObject+JavaObject.h */,
@@ -4112,7 +4107,8 @@
 				0667E21F1B866EE9007E0CC2 /* Resource.h */,
 				0667E2201B866EE9007E0CC2 /* Resource.m */,
 				06734320171DF62600F26D4F /* TempFailureRetry.h */,
-				062DEEBE1C5056880048FB10 /* Throwable.h */,
+				067228F2158FB002005318BD /* Throwable.h */,
+				06721BA31559DE3800645E1B /* Throwable.m */,
 				06AFD3DD183E785D001C90C6 /* TypeVariableImpl.h */,
 				06AFD3DE183E785D001C90C6 /* TypeVariableImpl.m */,
 			);

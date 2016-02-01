@@ -21,13 +21,13 @@
 #import "JreEmulation.h"
 #import "IOSClass.h"
 #include "IOSObjectArray.h"
-#include "NSException+JavaThrowable.h"
 #include "java/io/PrintStream.h"
 #include "java/lang/ClassNotFoundException.h"
 #include "java/lang/IllegalAccessException.h"
 #include "java/lang/NoSuchMethodException.h"
 #include "java/lang/System.h"
 #include "java/lang/Thread.h"
+#include "java/lang/Throwable.h"
 #include "java/lang/reflect/InvocationTargetException.h"
 #include "java/lang/reflect/Method.h"
 
@@ -53,10 +53,10 @@ void installSignalHandler() {
   signal(SIGPIPE, signalHandler);
 }
 
-void handleUncaughtException(NSException *e) {
+void handleUncaughtException(JavaLangThrowable *t) {
   JavaLangThread *currentThread = JavaLangThread_currentThread();
   id uncaughtHandler = [currentThread getUncaughtExceptionHandler];
-  [uncaughtHandler uncaughtExceptionWithJavaLangThread:currentThread withNSException:e];
+  [uncaughtHandler uncaughtExceptionWithJavaLangThread:currentThread withJavaLangThrowable:t];
 }
 
 // Converts main() arguments into an IOSObjectArray of NSStrings.  The first
@@ -130,7 +130,7 @@ int main( int argc, const char *argv[] ) {
       handleUncaughtException(e);
       return 1;
     }
-    @catch (NSException *e) {
+    @catch (JavaLangThrowable *e) {
       handleUncaughtException(e);
     }
   }
