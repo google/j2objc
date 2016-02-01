@@ -25,10 +25,6 @@
 static void JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_(
     JavaxAnnotationResource_AuthenticationType *self, NSString *__name, jint __ordinal);
 
-static JavaxAnnotationResource_AuthenticationType *
-    new_JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_(
-        NSString *__name, jint __ordinal) NS_RETURNS_RETAINED;
-
 @implementation JavaxAnnotationResource
 @synthesize authenticationType;
 @synthesize description;
@@ -130,12 +126,6 @@ JavaxAnnotationResource_AuthenticationType *JavaxAnnotationResource_Authenticati
 
 @implementation JavaxAnnotationResource_AuthenticationType
 
-- (instancetype)initWithNSString:(NSString *)__name
-                         withInt:(jint)__ordinal {
-  JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_(self, __name, __ordinal);
-  return self;
-}
-
 + (IOSObjectArray *)values {
   return JavaxAnnotationResource_AuthenticationType_values();
 }
@@ -150,10 +140,18 @@ JavaxAnnotationResource_AuthenticationType *JavaxAnnotationResource_Authenticati
 
 + (void)initialize {
   if (self == [JavaxAnnotationResource_AuthenticationType class]) {
-    JreEnum(JavaxAnnotationResource_AuthenticationType, APPLICATION) =
-        new_JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_(@"APPLICATION", 0);
-    JreEnum(JavaxAnnotationResource_AuthenticationType, CONTAINER) =
-        new_JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_(@"CONTAINER", 1);
+    size_t objSize = class_getInstanceSize(self);
+    size_t allocSize = 2 * objSize;
+    uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);
+    id e;
+    e = objc_constructInstance(self, (void *)ptr);
+    JreEnum(JavaxAnnotationResource_AuthenticationType, APPLICATION) = e;
+    ptr += objSize;
+    JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_(e, @"APPLICATION", 0);
+    e = objc_constructInstance(self, (void *)ptr);
+    JreEnum(JavaxAnnotationResource_AuthenticationType, CONTAINER) = e;
+    ptr += objSize;
+    JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_(e, @"CONTAINER", 1);
     J2OBJC_SET_INITIALIZED(JavaxAnnotationResource_AuthenticationType)
   }
 }
@@ -182,15 +180,6 @@ void JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_(
   JavaLangEnum_initWithNSString_withInt_(self, __name, __ordinal);
 }
 
-JavaxAnnotationResource_AuthenticationType *
-    new_JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_(
-      NSString *__name, jint __ordinal) {
-  JavaxAnnotationResource_AuthenticationType *self =
-      [JavaxAnnotationResource_AuthenticationType alloc];
-  JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_(self, __name, __ordinal);
-  return self;
-}
-
 IOSObjectArray *JavaxAnnotationResource_AuthenticationType_values() {
   JavaxAnnotationResource_AuthenticationType_initialize();
   return [IOSObjectArray arrayWithObjects:JavaxAnnotationResource_AuthenticationType_values_
@@ -212,17 +201,13 @@ JavaxAnnotationResource_AuthenticationType *
   return nil;
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-constant-out-of-range-compare"
-JavaxAnnotationResource_AuthenticationType *
-    JavaxAnnotationResource_AuthenticationType_fromNative(
-        JavaxAnnotationResource_AuthenticationType_Enum nativeValue) {
+JavaxAnnotationResource_AuthenticationType *JavaxAnnotationResource_AuthenticationType_fromOrdinal(
+    NSUInteger ordinal) {
   JavaxAnnotationResource_AuthenticationType_initialize();
-  if (nativeValue >= 2) {
+  if (ordinal >= 2) {
     return nil;
   }
-  return JavaxAnnotationResource_AuthenticationType_values_[nativeValue];
+  return JavaxAnnotationResource_AuthenticationType_values_[ordinal];
 }
-#pragma clang diagnostic pop
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(JavaxAnnotationResource_AuthenticationType)

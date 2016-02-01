@@ -108,8 +108,7 @@ FOUNDATION_EXPORT JavaxAnnotationResource_AuthenticationType *
     JavaxAnnotationResource_AuthenticationType_valueOfWithNSString_(NSString *name);
 
 FOUNDATION_EXPORT JavaxAnnotationResource_AuthenticationType *
-    JavaxAnnotationResource_AuthenticationType_fromNative(
-        JavaxAnnotationResource_AuthenticationType_Enum nativeValue);
+    JavaxAnnotationResource_AuthenticationType_fromOrdinal(NSUInteger ordinal);
 
 J2OBJC_TYPE_LITERAL_HEADER(JavaxAnnotationResource_AuthenticationType)
 
