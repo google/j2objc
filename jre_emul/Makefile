@@ -34,6 +34,7 @@ IOS_PUBLIC_OBJS = \
 	NSDataInputStream.o \
 	NSDataOutputStream.o \
 	NSDictionaryMap.o \
+	NSException+JavaThrowable.o \
 	NSNumber+JavaNumber.o \
 	NSObject+JavaObject.o \
 	NSString+JavaString.o \
@@ -72,7 +73,6 @@ APPLE_SRCS = \
 IOS_JAVA_OBJS = \
 	java/lang/AbstractStringBuilder.o \
 	java/lang/Iterable.o \
-	java/lang/Throwable.o \
 	java/lang/reflect/AccessibleObject.o \
 	java/lang/reflect/Constructor.o \
 	java/lang/reflect/Field.o \
@@ -168,6 +168,7 @@ PUBLIC_EMULATION_HEADERS = \
     J2ObjC_source.h \
     J2ObjC_types.h \
     JavaObject.h \
+    java/lang/Throwable.h \
     JreEmulation.h \
     $(IOS_PUBLIC_OBJS:.o=.h) \
     $(IOS_JAVA_OBJS:.o=.h)

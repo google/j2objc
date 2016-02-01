@@ -47,6 +47,7 @@ public class Types {
   private final ITypeBinding javaCloneableType;
   private final ITypeBinding javaNumberType;
   private final ITypeBinding javaStringType;
+  private final ITypeBinding javaThrowableType;
   private final ITypeBinding javaVoidType;
 
   // Lazily load localRefType, since its initialization requires Types to be fully initialized.
@@ -57,6 +58,7 @@ public class Types {
   private final IOSTypeBinding NSObject;
   private final IOSTypeBinding NSNumber;
   private final IOSTypeBinding NSString;
+  private final IOSTypeBinding NSException;
   private final IOSTypeBinding IOSClass;
 
   private IOSTypeBinding IOSObjectArray;
@@ -88,6 +90,7 @@ public class Types {
     javaClassType = ast.resolveWellKnownType("java.lang.Class");
     javaCloneableType = ast.resolveWellKnownType("java.lang.Cloneable");
     javaStringType = ast.resolveWellKnownType("java.lang.String");
+    javaThrowableType = ast.resolveWellKnownType("java.lang.Throwable");
     javaVoidType = ast.resolveWellKnownType("java.lang.Void");
     ITypeBinding binding = ast.resolveWellKnownType("java.lang.Integer");
     javaNumberType = binding.getSuperclass();
@@ -97,6 +100,7 @@ public class Types {
     NSObject = mapIOSType(IOSTypeBinding.newClass("NSObject", javaObjectType));
     NSNumber = mapIOSType(IOSTypeBinding.newClass("NSNumber", javaNumberType, NSObject));
     NSString = mapIOSType(IOSTypeBinding.newClass("NSString", javaStringType, NSObject));
+    NSException = mapIOSType(IOSTypeBinding.newClass("NSException", javaThrowableType, NSObject));
     IOSClass = mapIOSType(IOSTypeBinding.newUnmappedClass("IOSClass"));
     mapIOSType(IOSTypeBinding.newUnmappedClass("NSZone"));
     idType = mapIOSType(IOSTypeBinding.newUnmappedClass("id"));
@@ -149,8 +153,9 @@ public class Types {
     typeMap.put(javaObjectType, NSObject);
     typeMap.put(javaClassType, IOSClass);
     typeMap.put(javaCloneableType, NSCopying);
-    typeMap.put(javaStringType, NSString);
     typeMap.put(javaNumberType, NSNumber);
+    typeMap.put(javaStringType, NSString);
+    typeMap.put(javaThrowableType, NSException);
   }
 
   private void initializeCommonJavaTypes() {
@@ -158,6 +163,7 @@ public class Types {
     javaBindingMap.put("java.lang.CharSequence", charSequence);
     iosBindingMap.put("JavaLangCharSequence", charSequence);
     javaBindingMap.put("java.lang.Number", javaNumberType);
+    javaBindingMap.put("java.lang.Throwable", javaThrowableType);
   }
 
   private void initializePrimitiveArray(String javaTypeName, String iosTypeName) {

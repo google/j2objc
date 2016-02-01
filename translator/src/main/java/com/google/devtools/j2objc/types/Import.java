@@ -36,8 +36,8 @@ import java.util.Set;
  */
 public class Import implements Comparable<Import> {
 
-  private static final Set<String> FOUNDATION_TYPES =
-      ImmutableSet.of("id", "NSObject", "NSString", "NSNumber", "NSCopying", "NSZone");
+  private static final Set<String> FOUNDATION_TYPES = ImmutableSet.of("id",
+      "NSCopying", "NSException", "NSNumber", "NSObject", "NSString", "NSZone");
 
   private final String typeName;
   private final String importFileName;
