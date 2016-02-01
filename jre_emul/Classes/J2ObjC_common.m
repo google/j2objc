@@ -64,11 +64,11 @@ id nil_chk(id __unsafe_unretained p) {
 void JreFinalize(id self) {
   @try {
     [self javaFinalize];
-  } @catch (NSException *e) {
+  } @catch (JavaLangThrowable *e) {
     [JavaUtilLoggingLogger_getLoggerWithNSString_([[self getClass] getName])
         logWithJavaUtilLoggingLevel:JavaUtilLoggingLevel_get_WARNING()
                        withNSString:@"Uncaught exception in finalizer"
-                    withNSException:e];
+              withJavaLangThrowable:e];
   }
 }
 
