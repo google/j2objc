@@ -46,7 +46,6 @@
 CF_EXTERN_C_BEGIN
 
 void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self);
-JavaLangReflectAccessibleObject *new_JavaLangReflectAccessibleObject_init();
 
 void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
     IOSObjectArray *objects, jboolean b);

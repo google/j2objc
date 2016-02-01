@@ -38,12 +38,6 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
   self->accessible_ = false;
 }
 
-JavaLangReflectAccessibleObject *new_JavaLangReflectAccessibleObject_init() {
-  JavaLangReflectAccessibleObject *self = [JavaLangReflectAccessibleObject alloc];
-  JavaLangReflectAccessibleObject_init(self);
-  return self;
-}
-
 - (jboolean)isAccessible {
   return accessible_;
 }
