@@ -125,8 +125,7 @@ public class Functionizer extends TreeVisitor {
 
     // Never functionize these types of methods.
     if (Modifier.isStatic(modifiers) || Modifier.isAbstract(modifiers)
-        || BindingUtil.isSynthetic(modifiers) || m.isAnnotationMember()
-        || BindingUtil.isDestructor(m)) {
+        || BindingUtil.isSynthetic(modifiers) || m.isAnnotationMember()) {
       return false;
     }
 

@@ -506,16 +506,6 @@ public final class BindingUtil {
   }
 
   /**
-   * Returns true if method is an Objective-C dealloc method.
-   */
-  public static boolean isDestructor(IMethodBinding m) {
-    String methodName = m.getName();
-    return !m.isConstructor() && !isStatic(m) && m.getParameterTypes().length == 0
-        && (methodName.equals(NameTable.FINALIZE_METHOD)
-            || methodName.equals(NameTable.DEALLOC_METHOD));
-  }
-
-  /**
    * Returns the attributes of a Property annotation.
    */
   public static Set<String> parseAttributeString(IAnnotationBinding propertyAnnotation) {

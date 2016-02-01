@@ -20,6 +20,7 @@
 #import "IOSReference.h"
 
 #import "IOSClass.h"
+#import "J2ObjC_source.h"
 #import "java/lang/ref/PhantomReference.h"
 #import "java/lang/ref/Reference.h"
 #import "java/lang/ref/SoftReference.h"
@@ -306,6 +307,9 @@ static void ReferentSubclassDealloc(id self, SEL _cmd) {
         }
       }
 
+      // The class swizzling causes finalize not to be called from the
+      // referent's dealloc, so we call it here.
+      JreFinalize(self);
       // Real dealloc.
       RealReferentDealloc(self);
       // Remove reference associations.

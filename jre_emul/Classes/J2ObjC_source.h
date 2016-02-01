@@ -68,6 +68,14 @@ FOUNDATION_EXPORT void JreThrowAssertionError(id __unsafe_unretained msg);
 FOUNDATION_EXPORT void JreRelease(id obj);
 #endif
 
+FOUNDATION_EXPORT void JreFinalize(id self);
+
+__attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) {
+  if ([self class] == cls) {
+    JreFinalize(self);
+  }
+}
+
 /*!
  * Macros that simplify the syntax for loading of static fields.
  *

@@ -23,13 +23,13 @@ import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.ast.TryStatement;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.FunctionBinding;
@@ -55,64 +55,49 @@ import java.util.List;
 public class DestructorGenerator extends TreeVisitor {
 
   @Override
-  public boolean visit(TypeDeclaration node) {
+  public void endVisit(TypeDeclaration node) {
     if (node.isInterface()) {
-      return true;
+      return;
     }
-    MethodDeclaration destructor = findDestructor(node);
-    if (destructor != null && Options.useARC()) {
-      removeSuperFinalizeStatement(destructor.getBody());
-    }
+
+    ITypeBinding type = node.getTypeBinding();
+    boolean hasFinalize = hasFinalizeMethod(type);
     List<Statement> releaseStatements = createReleaseStatements(node);
-    if (destructor == null && !releaseStatements.isEmpty()) {
-      // No destructor, so create a new one if there are releasable fields.
-      destructor = buildFinalizeMethod(node.getTypeBinding());
-      node.getBodyDeclarations().add(destructor);
+    if (releaseStatements.isEmpty() && !hasFinalize) {
+      return;
     }
-    if (destructor != null) {
-      addReleaseStatements(destructor, releaseStatements);
+
+    ITypeBinding voidType = typeEnv.resolveJavaType("void");
+    int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
+    GeneratedMethodBinding deallocBinding = GeneratedMethodBinding.newMethod(
+        NameTable.DEALLOC_METHOD, modifiers, voidType, type);
+    MethodDeclaration deallocDecl = new MethodDeclaration(deallocBinding);
+    Block block = new Block();
+    deallocDecl.setBody(block);
+    List<Statement> stmts = block.getStatements();
+    if (hasFinalize) {
+      String clsName = nameTable.getFullName(type);
+      stmts.add(new NativeStatement("JreCheckFinalize(self, [" + clsName + " class]);"));
     }
-    return true;
+    stmts.addAll(releaseStatements);
+    if (Options.useReferenceCounting()) {
+      stmts.add(new ExpressionStatement(new SuperMethodInvocation(typeEnv.getDeallocMethod())));
+    }
+
+    node.getBodyDeclarations().add(deallocDecl);
   }
 
-  private MethodDeclaration findDestructor(TypeDeclaration node) {
-    for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
-      if (BindingUtil.isDestructor(method.getMethodBinding())) {
-        return method;
-      }
+  private boolean hasFinalizeMethod(ITypeBinding type) {
+    if (type == null || typeEnv.isJavaObjectType(type)) {
+      return false;
     }
-    return null;
-  }
-
-  private void removeSuperFinalizeStatement(Block body) {
-    body.accept(new TreeVisitor() {
-      @Override
-      public boolean visit(final ExpressionStatement node) {
-        Expression e = node.getExpression();
-        if (e instanceof SuperMethodInvocation) {
-          IMethodBinding m = ((SuperMethodInvocation) e).getMethodBinding();
-          if (BindingUtil.isDestructor(m)) {
-            node.remove();
-            return false;
-          }
-        }
+    for (IMethodBinding method : type.getDeclaredMethods()) {
+      if (method.getName().equals(NameTable.FINALIZE_METHOD)
+          && method.getParameterTypes().length == 0) {
         return true;
       }
-    });
-  }
-
-  private SuperMethodInvocation findSuperFinalizeInvocation(MethodDeclaration node) {
-    // Find existing super.finalize(), if any.
-    final SuperMethodInvocation[] superFinalize = new SuperMethodInvocation[1];
-    node.accept(new TreeVisitor() {
-      @Override
-      public void endVisit(SuperMethodInvocation node) {
-        if (BindingUtil.isDestructor(node.getMethodBinding())) {
-          superFinalize[0] = node;
-        }
-      }
-    });
-    return superFinalize[0];
+    }
+    return hasFinalizeMethod(type.getSuperclass());
   }
 
   private List<Statement> createReleaseStatements(TypeDeclaration node) {
@@ -144,43 +129,5 @@ public class DestructorGenerator extends TreeVisitor {
     }
     releaseInvocation.getArguments().add(arg);
     return new ExpressionStatement(releaseInvocation);
-  }
-
-  private void addReleaseStatements(MethodDeclaration method, List<Statement> releaseStatements) {
-    SuperMethodInvocation superFinalize = findSuperFinalizeInvocation(method);
-
-    List<Statement> statements = method.getBody().getStatements();
-    if (superFinalize != null) {
-      // Release statements must be inserted before the [super dealloc] call.
-      statements =
-          TreeUtil.asStatementList(TreeUtil.getOwningStatement(superFinalize)).subList(0, 0);
-    } else if (!statements.isEmpty() && statements.get(0) instanceof TryStatement) {
-      TryStatement tryStatement = ((TryStatement) statements.get(0));
-      if (tryStatement.getBody() != null) {
-        statements = tryStatement.getBody().getStatements();
-      }
-    }
-
-    statements.addAll(releaseStatements);
-
-    if (Options.useReferenceCounting() && superFinalize == null) {
-      IMethodBinding methodBinding = method.getMethodBinding();
-      GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
-          NameTable.DEALLOC_METHOD, Modifier.PUBLIC, typeEnv.mapTypeName("void"),
-          methodBinding.getDeclaringClass());
-      SuperMethodInvocation call = new SuperMethodInvocation(binding);
-      ExpressionStatement stmt = new ExpressionStatement(call);
-      statements.add(stmt);
-    }
-  }
-
-  private MethodDeclaration buildFinalizeMethod(ITypeBinding declaringClass) {
-    ITypeBinding voidType = typeEnv.mapTypeName("void");
-    int modifiers = Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC;
-    GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
-        NameTable.DEALLOC_METHOD, modifiers, voidType, declaringClass);
-    MethodDeclaration method = new MethodDeclaration(binding);
-    method.setBody(new Block());
-    return method;
   }
 }

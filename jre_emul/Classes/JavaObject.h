@@ -44,6 +44,9 @@
 - (void)waitWithLong:(long long)timeout;
 - (void)waitWithLong:(long long)timeout withInt:(int)nanos;
 
+// Called upon deallocation of the object.
+- (void)javaFinalize;
+
 @end
 
 #endif // _JavaObject_H_

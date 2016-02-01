@@ -43,6 +43,7 @@ java.lang.Object.equals(Ljava/lang/Object;)Z = isEqual:
 java.lang.Object.getClass()Ljava/lang/Class; = getClass
 java.lang.Object.hashCode()I = hash
 java.lang.Object.toString()Ljava/lang/String; = description
+java.lang.Object.finalize()V = javaFinalize
 
 # java.lang.Class
 java.lang.Class.asSubclass(Ljava/lang/Class;)Ljava/lang/Class; = asSubclass:

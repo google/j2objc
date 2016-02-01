@@ -160,6 +160,9 @@ static void doWait(id obj, long long timeout) {
   doWait(self, timeout + (nanos == 0 ? 0 : 1));
 }
 
+- (void)javaFinalize {
+}
+
 - (void)__javaClone:(id)original {
 }
 
@@ -171,7 +174,7 @@ static void doWait(id obj, long long timeout) {
     { "isEqual:", "equals", "Z", 0x1, NULL, NULL },
     { "clone", NULL, "Ljava.lang.Object;", 0x4, "Ljava.lang.CloneNotSupportedException;", NULL },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL, NULL },
-    { "dealloc", "finalize", "V", 0x4, "Ljava.lang.Throwable;", NULL },
+    { "javaFinalize", "finalize", "V", 0x4, "Ljava.lang.Throwable;", NULL },
     { "notify", NULL, "V", 0x11, NULL, NULL },
     { "notifyAll", NULL, "V", 0x11, NULL, NULL },
     { "waitWithLong:", "wait", "V", 0x11, "Ljava.lang.InterruptedException;", NULL },

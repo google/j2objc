@@ -496,7 +496,7 @@ public class NameTable {
       return "init";
     }
     String name = method.getName();
-    if (isReservedName(name)) {
+    if (!BindingUtil.isSynthetic(method) && isReservedName(name)) {
       name += "__";
     }
     return name;
@@ -519,9 +519,6 @@ public class NameTable {
   public String getMethodSelector(IMethodBinding method) {
     if (method instanceof IOSMethodBinding) {
       return ((IOSMethodBinding) method).getSelector();
-    }
-    if (BindingUtil.isDestructor(method)) {
-      return DEALLOC_METHOD;
     }
     if (method.isConstructor() || BindingUtil.isStatic(method)) {
       return selectorForOriginalBinding(method);
@@ -560,8 +557,8 @@ public class NameTable {
    * not returned by getMethodSelector().
    */
   public List<String> getExtraSelectors(IMethodBinding method) {
-    if (method instanceof IOSMethodBinding || method.isConstructor() || BindingUtil.isStatic(method)
-        || BindingUtil.isDestructor(method)) {
+    if (method instanceof IOSMethodBinding || method.isConstructor()
+        || BindingUtil.isStatic(method)) {
       return Collections.emptyList();
     }
     List<IMethodBinding> originalMethods = getOriginalMethodBindings(method);

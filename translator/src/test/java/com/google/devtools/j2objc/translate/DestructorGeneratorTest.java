@@ -32,12 +32,15 @@ public class DestructorGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "public class Test { public void finalize() { "
         + "  try { super.finalize(); } catch (Throwable t) {} }}", "Test", "Test.h");
-    assertTranslation(translation, "- (void)dealloc;");
-    assertFalse(translation.contains("finalize"));
+    assertTranslation(translation, "- (void)javaFinalize;");
+    assertFalse(translation.contains("dealloc"));
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "- (void)dealloc ");
-    assertTranslation(translation, "[super dealloc];");
-    assertFalse(translation.contains("- (void)finalize "));
+    assertTranslation(translation, "- (void)javaFinalize {");
+    assertTranslatedLines(translation,
+        "- (void)dealloc {",
+        "  JreCheckFinalize(self, [Test class]);",
+        "  [super dealloc];",
+        "}");
   }
 
   public void testFinalizeMethodRenamedWithReleasableFields() throws IOException {
@@ -46,12 +49,16 @@ public class DestructorGeneratorTest extends GenerationTest {
         + "  private Object o = new Object();"
         + "  public void finalize() { "
         + "    try { super.finalize(); } catch (Throwable t) {} }}", "Test", "Test.h");
-    assertTranslation(translation, "- (void)dealloc;");
-    assertFalse(translation.contains("finalize"));
+    assertTranslation(translation, "- (void)javaFinalize;");
+    assertFalse(translation.contains("dealloc"));
     translation = getTranslatedFile("Test.m");
-    assertTranslation(translation, "- (void)dealloc ");
-    assertTranslation(translation, "[super dealloc];");
-    assertFalse(translation.contains("- (void)finalize "));
+    assertTranslation(translation, "- (void)javaFinalize {");
+    assertTranslatedLines(translation,
+        "- (void)dealloc {",
+        "  JreCheckFinalize(self, [Test class]);",
+        "  RELEASE_(o_);",
+        "  [super dealloc];",
+        "}");
   }
 
   public void testReleaseStatementsBeforeSuperDealloc() throws IOException {
@@ -97,12 +104,16 @@ public class DestructorGeneratorTest extends GenerationTest {
         + "public void finalize() throws Throwable { System.out.println(this); }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (void)dealloc {",
-        "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
+        "- (void)javaFinalize {",
+        "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
           + "printlnWithId:self];",
-        "RELEASE_(o_);",
-        "RELEASE_(r_);",
-        "[super dealloc];",
+        "}");
+    assertTranslatedLines(translation,
+        "- (void)dealloc {",
+        "  JreCheckFinalize(self, [Test class]);",
+        "  RELEASE_(o_);",
+        "  RELEASE_(r_);",
+        "  [super dealloc];",
         "}");
   }
 
@@ -115,9 +126,13 @@ public class DestructorGeneratorTest extends GenerationTest {
         + "public void finalize() throws Throwable { System.out.println(this); }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "- (void)dealloc {",
-        "[((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
+        "- (void)javaFinalize {",
+        "  [((JavaIoPrintStream *) nil_chk(JreLoadStatic(JavaLangSystem, out))) "
           + "printlnWithId:self];",
+        "}");
+    assertTranslatedLines(translation,
+        "- (void)dealloc {",
+        "  JreCheckFinalize(self, [Test class]);",
         "}");
   }
 }

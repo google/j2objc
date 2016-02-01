@@ -78,6 +78,7 @@ public class Types {
   private final IOSMethodBinding releaseMethod;
   private final IOSMethodBinding autoreleaseMethod;
   private final IOSMethodBinding allocMethod;
+  private final IOSMethodBinding deallocMethod;
 
   public Types(AST ast) {
     this.ast = ast;
@@ -116,6 +117,8 @@ public class Types {
         NameTable.AUTORELEASE_METHOD, Modifier.PUBLIC, idType, NSObject);
     allocMethod = IOSMethodBinding.newMethod(
         NameTable.ALLOC_METHOD, Modifier.PUBLIC, idType, NSObject);
+    deallocMethod = IOSMethodBinding.newMethod(
+        NameTable.DEALLOC_METHOD, Modifier.PUBLIC, idType, NSObject);
   }
 
   private IOSTypeBinding mapIOSType(IOSTypeBinding type) {
@@ -331,5 +334,9 @@ public class Types {
 
   public IOSMethodBinding getAllocMethod() {
     return allocMethod;
+  }
+
+  public IOSMethodBinding getDeallocMethod() {
+    return deallocMethod;
   }
 }
