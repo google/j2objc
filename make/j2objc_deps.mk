@@ -67,9 +67,6 @@ guava_dist: translator_dist jre_emul_dist jsr305_dist
 guava_java: java_deps_dist jre_emul_jar_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/guava java
 
-guava_manifest:
-	@$(MAKE) -C $(J2OBJC_ROOT)/guava java_sources_manifest
-
 cycle_finder_dist: annotations_dist java_deps_dist translator_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/cycle_finder dist
 
@@ -114,7 +111,6 @@ jsr305_dist:
 javax_inject dist:
 guava_dist:
 guava_java:
-guava_manifest:
 cycle_finder_dist:
 mockito_dist:
 mockito_java:
