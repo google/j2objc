@@ -647,6 +647,7 @@ TEST_OBJS = \
     $(SUITE_SOURCES:%.java=$(TESTS_DIR)/%.o)
 
 TEST_RESOURCES_SRCS = \
+    lib/logging.properties \
     prefixes.properties
 HARMONY_TEST_RESOURCES_SRCS = \
     org/apache/harmony/luni/tests/test_resource.txt \
