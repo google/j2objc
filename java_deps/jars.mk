@@ -30,6 +30,7 @@ ECLIPSE_JARS = \
     org.eclipse.text-3.5.101.jar
 
 GUAVA_JAR = guava-19.0.jar
+GUAVA_SOURCE_JAR = guava-19.0-sources.jar
 
 JSR305_JAR = jsr305-3.0.0.jar
 JSR305_SOURCE_JAR = jsr305-3.0.0.jar

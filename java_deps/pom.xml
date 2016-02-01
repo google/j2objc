@@ -53,6 +53,11 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
+                  <groupId>com.google.guava</groupId>
+                  <artifactId>guava</artifactId>
+                  <classifier>sources</classifier>
+                </artifactItem>
+                <artifactItem>
                   <groupId>javax.inject</groupId>
                   <artifactId>javax.inject</artifactId>
                   <classifier>sources</classifier>

@@ -20,13 +20,5 @@ include ../make/common.mk
 include ../make/j2objc_deps.mk
 include ../java_deps/jars.mk
 
-SRC_DIR = $(abspath sources)
+SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(GUAVA_SOURCE_JAR)
 OBJS_DIR = $(BUILD_DIR)/objs
-
-vpath %.java $(SRC_DIR)
-
-force:
-	@:
-
-$(sort $(BUILD_DIR) $(ARCH_BUILD_DIR) $(ARCH_LIB_DIR) $(DIST_JAR_DIR)):
-	@mkdir -p $@

@@ -89,14 +89,11 @@ test_jre_cycles: cycle_finder_dist
 test_junit_cycles: cycle_finder_dist
 	@cd junit && $(MAKE) find_cycles
 
-test_guava_cycles: cycle_finder_dist jre_emul_java_manifest
-	@cd guava && $(MAKE) find_cycles
-
 test_cycle_finder: cycle_finder_dist
 	@cd cycle_finder && $(MAKE) test
 
 test: test_translator test_jre_emul \
-   test_cycle_finder test_jre_cycles test_guava_cycles test_junit_cycles
+   test_cycle_finder test_jre_cycles test_junit_cycles
 
 test_protobuf: junit_dist protobuf_compiler_dist protobuf_runtime_dist
 	@cd protobuf/tests && $(MAKE) test
