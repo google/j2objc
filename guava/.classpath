@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<classpath>
-	<classpathentry kind="src" path="sources"/>
-	<classpathentry kind="lib" path="build_result/j2objc_guava.jar"/>
-	<classpathentry kind="lib" path="../dist/lib/jsr305.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/J2ObjC annotations"/>
-  <classpathentry kind="output" path="build_result/eclipse"/>
-</classpath>
