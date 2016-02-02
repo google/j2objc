@@ -1110,7 +1110,12 @@ JAVA_PUBLIC_SOURCES_XML = \
   org/xml/sax/helpers/ParserFactory.java \
   org/xml/sax/helpers/XMLFilterImpl.java \
   org/xml/sax/helpers/XMLReaderAdapter.java \
-  org/xml/sax/helpers/XMLReaderFactory.java
+  org/xml/sax/helpers/XMLReaderFactory.java \
+  org/xmlpull/v1/XmlPullParser.java \
+  org/xmlpull/v1/XmlPullParserException.java \
+  org/xmlpull/v1/XmlPullParserFactory.java \
+  org/xmlpull/v1/XmlSerializer.java \
+  org/xmlpull/v1/sax2/Driver.java
 
 JAVA_PRIVATE_SOURCES_XML = \
   libcore/internal/StringPool.java \
@@ -1139,12 +1144,7 @@ JAVA_PRIVATE_SOURCES_XML = \
   org/apache/harmony/xml/parsers/SAXParserFactoryImpl.java \
   org/apache/harmony/xml/parsers/SAXParserImpl.java \
   org/kxml2/io/KXmlParser.java \
-  org/kxml2/io/KXmlSerializer.java \
-  org/xmlpull/v1/XmlPullParser.java \
-  org/xmlpull/v1/XmlPullParserException.java \
-  org/xmlpull/v1/XmlPullParserFactory.java \
-  org/xmlpull/v1/XmlSerializer.java \
-  org/xmlpull/v1/sax2/Driver.java
+  org/kxml2/io/KXmlSerializer.java
 
 JAVA_PUBLIC_SOURCES_ZIP = \
   java/util/jar/Attributes.java \
