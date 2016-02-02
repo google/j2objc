@@ -119,8 +119,9 @@ public class AnnotationPreProcessor {
    * in case any might have annotations that should be processed.
    */
   private boolean hasAnnotationProcessors() {
-    ServiceLoader<Processor> serviceLoader = ServiceLoader.load(
-        Processor.class, new PathClassLoader(Options.getClassPathEntries()));
+    PathClassLoader loader = new PathClassLoader(Options.getClassPathEntries());
+    loader.addPaths(Options.getProcessorPathEntries());
+    ServiceLoader<Processor> serviceLoader = ServiceLoader.load(Processor.class, loader);
     Iterator<Processor> iterator = serviceLoader.iterator();
     return iterator.hasNext();
   }
