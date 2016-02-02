@@ -25,7 +25,6 @@ ifneq ($(findstring clean,$(notdir $(MAKECMDGOALS))),clean)
 -include $(JAVA_SOURCES_INCLUDE)
 endif
 
-JAVA_SOURCES_MANIFEST = $(BUILD_DIR)/java_sources.mf
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 CLASSPATH = $(DIST_JAR_DIR)/$(JSR305_JAR):$(DIST_JAR_DIR)/j2objc_annotations.jar
@@ -59,14 +58,10 @@ fat_lib_dependencies: jre_emul_dist jsr305_dist
 
 DIST_JAR = $(DIST_JAR_DIR)/j2objc_guava.jar
 
-GUAVA_LICENSE = LICENSE
-GUAVA_LICENSE_DIST = $(DIST_LICENSE_DIR)/guava_license.txt
-
-dist: $(FAT_LIBS_DIST) $(DIST_JAR) $(GUAVA_LICENSE_DIST) $(DIST_HEADERS)
+dist: $(FAT_LIBS_DIST) $(DIST_JAR) $(DIST_HEADERS)
 
 clean:
 	@rm -rf $(BUILD_DIR) $(FAT_LIBS_DIST) $(DIST_GUAVA_INCLUDE_DIR) $(DIST_JAR)
-	@rm -rf $(GUAVA_LICENSE_DIST)
 	@rm -rf $(STATIC_FRAMEWORK_DIR)
 
 java: $(DIST_JAR)
@@ -101,10 +96,6 @@ $(DIST_JAR): $(SRC_JAR)
 	@install -m 0644 $< $@
 
 $(DIST_GUAVA_INCLUDE_DIR)/%.h: $(GEN_OBJC_DIR)/%.h
-	@mkdir -p $(@D)
-	@install -m 0644 $< $@
-
-$(GUAVA_LICENSE_DIST): $(GUAVA_LICENSE)
 	@mkdir -p $(@D)
 	@install -m 0644 $< $@
 
