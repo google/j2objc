@@ -49,6 +49,7 @@ declare SYSROOT_PATH="none"
 declare EMUL_LIB="-ljre_emul"
 declare LINK_FLAGS=""
 declare DO_LINK="yes"
+declare USE_ARC="no"
 declare CORE_LIB_WARNING="warning: linking the core runtime to reduce binary \
 size. Use -ljre_emul to link the full Java runtime."
 
@@ -56,6 +57,7 @@ for arg; do
   case $arg in
     # Check whether linking is disabled by a -c, -S, or -E option.
     -[cSE]) DO_LINK="no" ;;
+    -fobjc-arc) USE_ARC="yes" ;;
     # Check whether we need to build for C++ instead of C.
     objective-c\+\+) CC_FLAGS="${CC_FLAGS} -std=c++98" OBJC= ;;
     # Save sysroot path for later inspection.
@@ -63,6 +65,10 @@ for arg; do
     -ObjC) EMUL_LIB="-ljre_core" ;;
   esac
 done
+
+if [[ "$USE_ARC" == "yes" ]]; then
+  CC_FLAGS="$CC_FLAGS -fobjc-arc-exceptions"
+fi
 
 if [[ $@ =~ .*-l(\ )*jre_emul\ .* ]]; then
   EMUL_LIB=""
