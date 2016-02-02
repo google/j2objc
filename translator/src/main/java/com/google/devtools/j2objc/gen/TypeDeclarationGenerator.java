@@ -600,6 +600,23 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print(" " + DEPRECATED_ATTRIBUTE);
     }
     println(";");
+
+    // TODO(kstanger): Remove code below when users have migrated.
+    String oldMethodName = nameTable.getMethodSelector(m.getMethodBinding(), true);
+    if (oldMethodName.equals(methodName)) {
+      return;
+    }
+    String[] selParts = methodName.split(":");
+    String[] oldSelParts = oldMethodName.split(":");
+    println("#ifdef J2OBJC_RENAME_ALIASES");
+    for (int i = 0; i < selParts.length; i++) {
+      String part = selParts[i];
+      String oldPart = oldSelParts[i];
+      if (!part.equals(oldPart)) {
+        printf("#define %s %s\n", oldPart, part);
+      }
+    }
+    println("#endif // J2OBJC_RENAME_ALIASES");
   }
 
   private boolean needsObjcMethodFamilyNoneAttribute(String name) {

@@ -33,6 +33,7 @@
 #import "J2ObjC_icu.h"
 #import "JavaMetadata.h"
 #import "NSCopying+JavaCloneable.h"
+#import "NSException+JavaThrowable.h"
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
@@ -1265,11 +1266,12 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     // Explicitly mapped classes are defined in Types.initializeTypeMap().
     // If types are added to that method (it's rare) they need to be added here.
     IOSClass_mappedClasses = [[NSDictionary alloc] initWithObjectsAndKeys:
-         @"NSObject",  @"java.lang.Object",
-         @"IOSClass",  @"java.lang.Class",
-         @"NSNumber",  @"java.lang.Number",
-         @"NSString",  @"java.lang.String",
-         @"NSCopying", @"java.lang.Cloneable", nil];
+         @"NSObject",    @"java.lang.Object",
+         @"IOSClass",    @"java.lang.Class",
+         @"NSNumber",    @"java.lang.Number",
+         @"NSString",    @"java.lang.String",
+         @"NSException", @"java.lang.Throwable",
+         @"NSCopying",   @"java.lang.Cloneable", nil];
 
     IOSClass_byteClass = [[IOSPrimitiveClass alloc] initWithName:@"byte" type:@"B"];
     IOSClass_charClass = [[IOSPrimitiveClass alloc] initWithName:@"char" type:@"C"];
@@ -1289,6 +1291,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     [JreObjectCategoryDummy class];
     [JreStringCategoryDummy class];
     [JreNumberCategoryDummy class];
+    [JreThrowableCategoryDummy class];
     [NSCopying class];
 
     // Verify that these categories successfully loaded.

@@ -26,8 +26,8 @@
 #include "IOSClass.h"
 #include "IOSObjectArray.h"
 #include "IOSPrimitiveArray.h"
+#include "NSException+JavaThrowable.h"
 #include "java/lang/ClassNotFoundException.h"
-#include "java/lang/Throwable.h"
 #include "java/lang/reflect/Constructor.h"
 #include "java/lang/reflect/Field.h"
 #include "java/lang/reflect/Method.h"
@@ -445,7 +445,7 @@ static jint Throw(JNIEnv *env, jthrowable obj) {
 static jint ThrowNew(JNIEnv *env, jclass clazz, const char *message) {
   nil_chk(clazz);
   NSString *msg = [NSString stringWithUTF8String:message];
-  id exc = [(JavaLangThrowable *) [((IOSClass *) clazz).objcClass alloc] initWithNSString:msg];
+  id exc = [(NSException *) [((IOSClass *) clazz).objcClass alloc] initWithNSString:msg];
   @throw AUTORELEASE(exc);
   return 0;
 }
