@@ -38,7 +38,7 @@ def processTree(data,delimiter = ''):
 		else:
 			print delimiter + '<li class="devsite-nav-item">'
 			if(x[1]):
-				print delimiter + '<a href="{{site_root}}%s" class="devsite-nav-title gc-analytics-event">'% x[1]
+				print delimiter + '<a href="{{site.github.url}}/%s" class="devsite-nav-title gc-analytics-event">'% x[1]
 			print delimiter + '<span>{}</span>'.format(x[0]),
 			if(x[1]):
 				print '</a></li>'

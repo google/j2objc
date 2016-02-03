@@ -10,3 +10,4 @@ paginate: 5
 gems:
   - jekyll-sitemap
   - jekyll-redirect-from
+  - jekyll-paginate

@@ -16,11 +16,11 @@
       <meta name="viewport" content="width=device-width, initial-scale=1">
       <link href="//fonts.googleapis.com/css?family=Roboto:300,400,400italic,500,500italic,700,700italic|Roboto+Mono:400,700|Material+Icons" rel="stylesheet">
       <link href="https://developers.google.com/_static/758e0d6560/css/devsite-green.css" rel="stylesheet">
-      <link rel="stylesheet" href="{{site_root}}styles/main.css">
-      <link rel="icon" type="image/png" href="{{site_root}}images/favicon-16x16.png" sizes="16x16">
-      <link rel="icon" type="image/png" href="{{site_root}}images/favicon-32x32.png" sizes="32x32">
-      <link rel="icon" type="image/png" href="{{site_root}}images/favicon-192x192.png" sizes="192x192">
-      <link rel="apple-touch-icon" href="{{site_root}}images/favicon-180x180.png">
+      <link rel="stylesheet" href="{{site.github.url}}/styles/main.css">
+      <link rel="icon" type="image/png" href="{{site.github.url}}/images/favicon-16x16.png" sizes="16x16">
+      <link rel="icon" type="image/png" href="{{site.github.url}}/images/favicon-32x32.png" sizes="32x32">
+      <link rel="icon" type="image/png" href="{{site.github.url}}/images/favicon-192x192.png" sizes="192x192">
+      <link rel="apple-touch-icon" href="{{site.github.url}}/images/favicon-180x180.png">
       <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
       <style></style>
       <script>devsite.timing.tick('cl');</script>
@@ -56,7 +56,7 @@
                  <div class="devsite-top-logo-row devsite-full-site-width">
                    <div class="float-right">
                      <div class="devsite-search-wrapper devsite-history-enabled">
-                         <form class="devsite-search-form" action="{{site_root}}search" method="GET" id="top-search">
+                         <form class="devsite-search-form" action="{{site.github.url}}/search" method="GET" id="top-search">
 
                              <div id="searchbox" class="devsite-searchbox">
                                  <input placeholder="Search" type="text" class="devsite-search-field devsite-search-query" name="q" value="" autocomplete="off">
@@ -68,10 +68,10 @@
                  </div>
                   <div class="devsite-product-id-row devsite-full-site-width" style="visibility: visible;">
                      <div class="devsite-product-id-row-links-container">
-                        <a class="devsite-product-logo-link" href="{{site_root}}" data-label="Project logo (header)">
-                           <div class="devsite-product-logo-container"><img class="devsite-product-logo" src="{{site_root}}images/j2objc-logo.png" alt="J2ObjC"></div>
+                        <a class="devsite-product-logo-link" href="{{site.github.url}}/" data-label="Project logo (header)">
+                           <div class="devsite-product-logo-container"><img class="devsite-product-logo" src="{{site.github.url}}/images/j2objc-logo.png" alt="J2ObjC"></div>
                         </a>
-                        <a class="devsite-product-name" href="{{site_root}}"  data-label="Project name (header)">
+                        <a class="devsite-product-name" href="{{site.github.url}}/"  data-label="Project name (header)">
                         J2ObjC
                         </a>
                         <br>
@@ -83,26 +83,26 @@
                   <div class="devsite-doc-set-nav-row devsite-full-site-width">
                      <nav class="devsite-doc-set-nav devsite-nav">
                         <ul class="devsite-doc-set-nav-tab-list">
-                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}" class="{{page.root_nav}}
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site.github.url}}/" class="{{page.root_nav}}
                               devsite-doc-set-nav-tab"  data-label="Tab: Home">
                               Home
                               </a>
                            </li>
-                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}docs/" class="{{page.doc_nav}}
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site.github.url}}/docs/" class="{{page.doc_nav}}
                               devsite-doc-set-nav-tab"  data-label="Tab: Guides">
                               Guides
                               </a>
                            </li>
-                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}reference/" class="{{page.api_nav}}
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site.github.url}}/reference/" class="{{page.api_nav}}
                               devsite-doc-set-nav-tab"  data-label="Tab: Reference">
                               Reference
                               </a>
                            </li>
-                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}blog/" class="{{page.blog_nav}} devsite-doc-set-nav-tab"  data-label="Tab: Blog">
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site.github.url}}/blog/" class="{{page.blog_nav}} devsite-doc-set-nav-tab"  data-label="Tab: Blog">
                               Blog
                               </a>
                            </li>
-                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site_root}}contact/" class="{{page.contact_nav}}
+                           <li class="devsite-doc-set-nav-tab-container"><a href="{{site.github.url}}/contact/" class="{{page.contact_nav}}
                               devsite-doc-set-nav-tab"  data-label="Tab: Contact">
                               Support
                               </a>
@@ -111,11 +111,11 @@
                      </nav>
                      <a href="https://github.com/google/j2objc" target="blank" class="button github-button-big button-raised button-text-black">
                       <span class="github-text">View On Github</span>
-                      <img class="github-logo" src="{{site_root}}images/github.png" alt="Github">
+                      <img class="github-logo" src="{{site.github.url}}/images/github.png" alt="Github">
                      </a>
                      <a href="https://github.com/google/j2objc" target="blank" class="button github-button-small button-raised button-text-black">
                       <span class="github-text">Github</span>
-                      <img class="github-logo" src="{{site_root}}images/github.png" alt="Github">
+                      <img class="github-logo" src="{{site.github.url}}/images/github.png" alt="Github">
                      </a>
                    </div>
                  </div>
