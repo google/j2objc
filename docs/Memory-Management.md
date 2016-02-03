@@ -25,7 +25,11 @@ There is also runtime and tool support to detect memory leaks.  The Objective-C 
 
 [ARC](http://developer.apple.com/library/mac/#releasenotes/ObjectiveC/RN-TransitioningToARC/_index.html#//apple_ref/doc/uid/TP40011226) is Apple's recommended memory management method. It moves the responsibility for reference counting to the compiler, which adds the appropriate retain, release and autorelease methods during compilation.  ARC supports weak references for devices running iOS 5 and later. 
 
-Not all projects use ARC, though, as can sometimes be slower than hand-written code. This is the case with translated code. Since J2ObjC translated output is not intended to be modified, there is no benefit to translating into ARC code, there is only a potential performance cost. We therefore recommend that projects avoid using ARC for translated code. Note that we do support the option to generate ARC code with the "-use-arc" flag for projects that prefer to build their entire apps with ARC.
+Not all projects use ARC, though, as it can sometimes be slower than hand-written code. This is the case with translated code. Since J2ObjC translated output is not intended to be modified, there is no benefit to translating into ARC code, there is only a potential performance cost.
+
+By default, [ARC is not exception-safe](http://clang.llvm.org/docs/AutomaticReferenceCounting.html#exceptions). Specifically, it leaks memory when exceptions are thrown. Since exceptions are more common in Java and are usually recoverable, this can be problematic. Using -fobjc-arc-exceptions when compiling with arc will fix the leaks but adds a performance cost.
+
+**We recommend that projects avoid using ARC for translated code.** Note that we do support the option to generate ARC code with the "-use-arc" flag for projects that prefer to build their entire apps with ARC.
 
 We recommend that new projects use ARC for their hand-written Objective-C code, and only fall-back to manual reference counting if profiling data shows a real performance issue. Both ARC and non-ARC code can be compiled and linked into the same app without issue.
 
