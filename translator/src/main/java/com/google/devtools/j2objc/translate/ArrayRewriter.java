@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.IOSTypeBinding;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
@@ -133,7 +134,7 @@ public class ArrayRewriter extends TreeVisitor {
       paramName = "Objects";
       selectorFmt += "type:";
     }
-    return String.format(selectorFmt, paramName);
+    return UnicodeUtils.format(selectorFmt, paramName);
   }
 
   private MethodInvocation newSingleDimensionArrayInvocation(

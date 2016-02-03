@@ -29,6 +29,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -169,11 +170,11 @@ public class MetadataGenerator {
       for (AnnotationTypeMemberDeclaration decl : TreeUtil.getAnnotationMembers(typeNode)) {
         String name = decl.getName().getIdentifier();
         String returnType = getTypeName(decl.getMethodBinding().getReturnType());
-        String metadata = String.format("    { \"%s\", %s, %s, 0x%x, NULL, NULL },\n",
+        String metadata = UnicodeUtils.format("    { \"%s\", %s, %s, 0x%x, NULL, NULL },\n",
             name, cStr(name), cStr(returnType),
             java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT);
         methodMetadata.add(metadata);
-        metadata = String.format("    { \"%s\", %s, %s, 0x%x, NULL, NULL },\n",
+        metadata = UnicodeUtils.format("    { \"%s\", %s, %s, 0x%x, NULL, NULL },\n",
             name + "Default", cStr(name), cStr(returnType),
             java.lang.reflect.Modifier.PRIVATE | java.lang.reflect.Modifier.STATIC
                 | BindingUtil.ACC_SYNTHETIC);
@@ -221,7 +222,7 @@ public class MetadataGenerator {
     String staticRef = "NULL";
     String constantValue;
     if (BindingUtil.isPrimitiveConstant(var)) {
-      constantValue = String.format(".constantValue.%s = %s",
+      constantValue = UnicodeUtils.format(".constantValue.%s = %s",
           getRawValueField(var), nameTable.getVariableQualifiedName(var));
     } else {
       // Explicit 0-initializer to avoid Clang warning.
@@ -230,7 +231,7 @@ public class MetadataGenerator {
         staticRef = '&' + nameTable.getVariableQualifiedName(var);
       }
     }
-    return String.format(
+    return UnicodeUtils.format(
         "    { \"%s\", %s, 0x%x, \"%s\", %s, %s, %s },\n",
         objcName, cStr(javaName), modifiers, getTypeName(var.getType()), staticRef,
         cStr(SignatureGenerator.createFieldTypeSignature(var)), constantValue);
@@ -265,7 +266,7 @@ public class MetadataGenerator {
 
     int modifiers = getMethodModifiers(method);
     String returnTypeStr = method.isConstructor() ? null : getTypeName(method.getReturnType());
-    return String.format("    { \"%s\", %s, %s, 0x%x, %s, %s },\n",
+    return UnicodeUtils.format("    { \"%s\", %s, %s, 0x%x, %s, %s },\n",
         selector, cStr(methodName), cStr(returnTypeStr), modifiers,
         cStr(getThrownExceptions(method)),
         cStr(SignatureGenerator.createMethodTypeSignature(method)));
@@ -394,7 +395,7 @@ public class MetadataGenerator {
   }
 
   private void printf(String format, Object... args) {
-    builder.append(String.format(format, args));
+    builder.append(UnicodeUtils.format(format, args));
   }
 
   private void println(String s) {

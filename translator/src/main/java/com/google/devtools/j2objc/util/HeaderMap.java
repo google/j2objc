@@ -114,7 +114,7 @@ public class HeaderMap {
     String[] parts = className.split("\\.");
     String pkg = null;
     for (int i = 0; i < parts.length; i++) {
-      pkg = i == 0 ? parts[0] : String.format("%s.%s", pkg, parts[i]);
+      pkg = i == 0 ? parts[0] : UnicodeUtils.format("%s.%s", pkg, parts[i]);
       if (PLATFORM_PACKAGES.contains(pkg)) {
         return true;
       }
@@ -164,7 +164,7 @@ public class HeaderMap {
       PrintWriter writer = new PrintWriter(outputFile);
 
       for (Map.Entry<String, String> entry : map.entrySet()) {
-        writer.println(String.format("%s=%s", entry.getKey(), entry.getValue()));
+        writer.println(UnicodeUtils.format("%s=%s", entry.getKey(), entry.getValue()));
       }
 
       writer.close();

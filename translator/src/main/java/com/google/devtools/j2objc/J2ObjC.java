@@ -29,6 +29,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.JdtParser;
 import com.google.devtools.j2objc.util.ProGuardUsageParser;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +57,7 @@ public class J2ObjC {
   }
 
   public static String getFileHeader(String sourceFileName) {
-    return String.format(Options.getFileHeader(), sourceFileName);
+    return UnicodeUtils.format(Options.getFileHeader(), sourceFileName);
   }
 
   private static void checkErrors() {

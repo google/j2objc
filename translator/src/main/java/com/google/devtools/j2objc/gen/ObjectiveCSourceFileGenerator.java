@@ -23,6 +23,7 @@ import com.google.common.io.Files;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.types.Import;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -146,7 +147,7 @@ public abstract class ObjectiveCSourceFileGenerator extends AbstractSourceGenera
   }
 
   private String createForwardDeclaration(String typeName, boolean isInterface) {
-    return String.format("@%s %s;", isInterface ? "protocol" : "class", typeName);
+    return UnicodeUtils.format("@%s %s;", isInterface ? "protocol" : "class", typeName);
   }
 
   private static List<GeneratedType> getOrderedGeneratedTypes(GenerationUnit generationUnit) {

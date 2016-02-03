@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.util;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Locale;
 
 /**
  * Utility methods for translating Unicode strings to Objective-C.
@@ -40,7 +41,7 @@ public final class UnicodeUtils {
       }
       return "'" + c + "'";
     } else {
-      return String.format("0x%04x", (int) c);
+      return UnicodeUtils.format("0x%04x", (int) c);
     }
   }
 
@@ -95,7 +96,7 @@ public final class UnicodeUtils {
         ErrorUtil.error(String.format(
             "Illegal C/C++ Unicode character \\u%4x in \"%s\"", (int) c, s));
       }
-      return "\\u" + String.format("%04x", (int) c);
+      return "\\u" + UnicodeUtils.format("%04x", (int) c);
     }
   }
 
@@ -201,5 +202,17 @@ public final class UnicodeUtils {
     }
 
     return objcWord.toString();
+  }
+
+  /**
+   * Invokes String.format() using Locale.ROOT, so that local locale
+   * settings don't cause generated code to have characters the C compiler
+   * can't manage. This method shouldn't be called for error messages or
+   * other text displayed to the developer invoking j2objc, however.
+   *
+   * {@link https://github.com/google/j2objc/issues/698}
+   */
+  public static String format(String format, Object... args) {
+    return String.format(Locale.ROOT, format, args);
   }
 }

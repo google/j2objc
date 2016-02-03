@@ -40,6 +40,7 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -97,16 +98,16 @@ public class EnumRewriter extends TreeVisitor {
       String sizeName = "objSize" + (isAnonymous ? "_" + varBinding.getName() : "");
 
       if (isAnonymous) {
-        sizeStatements.add(new NativeStatement(String.format(
+        sizeStatements.add(new NativeStatement(UnicodeUtils.format(
             "size_t %s = class_getInstanceSize(%s);", sizeName, classExpr)));
-        sizeStatements.add(new NativeStatement(String.format("allocSize += %s;", sizeName)));
+        sizeStatements.add(new NativeStatement(UnicodeUtils.format("allocSize += %s;", sizeName)));
       } else {
         baseTypeCount++;
       }
 
       initStatements.add(new ExpressionStatement(new CommaExpression(
           new Assignment(new SimpleName(varBinding), new Assignment(
-          new SimpleName(localEnum), new NativeExpression(String.format(
+          new SimpleName(localEnum), new NativeExpression(UnicodeUtils.format(
               "objc_constructInstance(%s, (void *)ptr)", classExpr), type))),
           new NativeExpression("ptr += " + sizeName, voidType))));
       String initName = nameTable.getFullFunctionName(methodBinding);
@@ -126,7 +127,7 @@ public class EnumRewriter extends TreeVisitor {
       stmts.add(new NativeStatement("size_t allocSize = 0;"));
     } else {
       stmts.add(new NativeStatement("size_t objSize = class_getInstanceSize(self);"));
-      stmts.add(new NativeStatement(String.format(
+      stmts.add(new NativeStatement(UnicodeUtils.format(
           "size_t allocSize = %s * objSize;", baseTypeCount)));
     }
     stmts.addAll(sizeStatements);
@@ -188,7 +189,7 @@ public class EnumRewriter extends TreeVisitor {
     boolean swiftFriendly = Options.swiftFriendly();
 
     StringBuilder header = new StringBuilder();
-    header.append(String.format(
+    header.append(UnicodeUtils.format(
         "+ (IOSObjectArray *)values;\n\n"
         + "+ (%s *)valueOfWithNSString:(NSString *)name;\n\n"
         + "- (id)copyWithZone:(NSZone *)zone;\n", typeName));
@@ -198,22 +199,22 @@ public class EnumRewriter extends TreeVisitor {
 
     // The native type is not declared for an empty enum.
     if (swiftFriendly && numConstants > 0) {
-      header.append(String.format("- (%s)toNSEnum;\n", nativeName));
+      header.append(UnicodeUtils.format("- (%s)toNSEnum;\n", nativeName));
     }
 
     StringBuilder implementation = new StringBuilder();
-    implementation.append(String.format(
+    implementation.append(UnicodeUtils.format(
         "+ (IOSObjectArray *)values {\n"
         + "  return %s_values();\n"
         + "}\n\n", typeName));
 
-    implementation.append(String.format(
+    implementation.append(UnicodeUtils.format(
         "+ (%s *)valueOfWithNSString:(NSString *)name {\n"
         + "  return %s_valueOfWithNSString_(name);\n"
         + "}\n\n", typeName, typeName));
 
     if (swiftFriendly && numConstants > 0) {
-      implementation.append(String.format(
+      implementation.append(UnicodeUtils.format(
           "- (%s)toNSEnum {\n"
               + "  return (%s)[self ordinal];\n"
               + "}\n\n", nativeName, nativeName));
@@ -229,23 +230,23 @@ public class EnumRewriter extends TreeVisitor {
 
     StringBuilder outerHeader = new StringBuilder();
     StringBuilder outerImpl = new StringBuilder();
-    outerHeader.append(String.format(
+    outerHeader.append(UnicodeUtils.format(
         "FOUNDATION_EXPORT IOSObjectArray *%s_values();\n\n"
         + "FOUNDATION_EXPORT %s *%s_valueOfWithNSString_(NSString *name);\n\n"
         + "FOUNDATION_EXPORT %s *%s_fromOrdinal(NSUInteger ordinal);\n",
         typeName, typeName, typeName, typeName, typeName));
 
-    outerImpl.append(String.format(
+    outerImpl.append(UnicodeUtils.format(
         "IOSObjectArray *%s_values() {\n"
         + "  %s_initialize();\n"
         + "  return [IOSObjectArray arrayWithObjects:%s_values_ count:%s type:%s_class_()];\n"
         + "}\n\n", typeName, typeName, typeName, numConstants, typeName));
 
-    outerImpl.append(String.format(
+    outerImpl.append(UnicodeUtils.format(
         "%s *%s_valueOfWithNSString_(NSString *name) {\n"
         + "  %s_initialize();\n", typeName, typeName, typeName));
     if (numConstants > 0) {
-      outerImpl.append(String.format(
+      outerImpl.append(UnicodeUtils.format(
           "  for (int i = 0; i < %s; i++) {\n"
           + "    %s *e = %s_values_[i];\n"
           + "    if ([name isEqual:[e name]]) {\n"
@@ -263,13 +264,13 @@ public class EnumRewriter extends TreeVisitor {
     }
     outerImpl.append("  return nil;\n}\n\n");
 
-    outerImpl.append(String.format(
+    outerImpl.append(UnicodeUtils.format(
         "%s *%s_fromOrdinal(NSUInteger ordinal) {\n", typeName, typeName));
     // Avoid "comparison of unsigned expression >= 0 is always true" error.
     if (numConstants == 0) {
       outerImpl.append("  return nil;\n}\n");
     } else {
-      outerImpl.append(String.format(
+      outerImpl.append(UnicodeUtils.format(
           "  %s_initialize();\n"
           // Param is unsigned, so don't need to check lower bound.
           + "  if (ordinal >= %s) {\n"

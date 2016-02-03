@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.base.CharMatcher;
 import com.google.common.io.LineReader;
 import com.google.devtools.j2objc.ast.TreeNode;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.io.IOException;
 import java.io.StringReader;
@@ -97,7 +98,7 @@ public class SourceBuilder {
   }
 
   public void printf(String format, Object... args) {
-    print(String.format(format, args));
+    print(UnicodeUtils.format(format, args));
   }
 
   public void println(String s) {
@@ -186,7 +187,7 @@ public class SourceBuilder {
     if (emitLineDirectives) {
       int sourceLine = node.getLineNumber();
       if (sourceLine > 0 && currentLine != sourceLine) {
-        buffer.append(String.format("\n#line %d\n", sourceLine));
+        buffer.append(UnicodeUtils.format("\n#line %d\n", sourceLine));
         currentLine = sourceLine;
       }
     }
@@ -201,7 +202,7 @@ public class SourceBuilder {
       if (!fileName.equals(currentFile)) {
         currentLine = BEGINNING_OF_FILE;
         // C11 spec. (6.10.4) requires a line number between 1 and 2147483647.
-        buffer.append(String.format("\n#line 1 \"%s\"\n", fileName));
+        buffer.append(UnicodeUtils.format("\n#line 1 \"%s\"\n", fileName));
       }
     }
     currentFile = fileName;

@@ -36,6 +36,7 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -268,7 +269,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       // Explicitly test hashCode() because of NSObject's hash return value.
       returnType = "NSUInteger";
     }
-    sb.append(String.format("%c (%s%s)", prefix, returnType, nullability(binding, false)));
+    sb.append(UnicodeUtils.format("%c (%s%s)", prefix, returnType, nullability(binding, false)));
 
     List<SingleVariableDeclaration> params = m.getParameters();
     String[] selParts = selector.split(":");
@@ -286,7 +287,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         }
         IVariableBinding var = params.get(i).getVariableBinding();
         String typeName = nameTable.getSpecificObjCType(var.getType());
-        sb.append(String.format("%s:(%s%s)%s", selParts[i], typeName, nullability(var, true),
+        sb.append(UnicodeUtils.format("%s:(%s%s)%s", selParts[i], typeName, nullability(var, true),
             nameTable.getVariableShortName(var)));
       }
     }

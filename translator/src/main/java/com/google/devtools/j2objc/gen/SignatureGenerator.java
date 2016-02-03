@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc.gen;
 
+import com.google.devtools.j2objc.util.UnicodeUtils;
+
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -156,7 +158,7 @@ public class SignatureGenerator {
         default: {
           Character.UnicodeBlock block = Character.UnicodeBlock.of(c);
           if (block != Character.UnicodeBlock.BASIC_LATIN) {
-            sb.append(String.format("_%05x", (int) c));
+            sb.append(UnicodeUtils.format("_%05x", (int) c));
           } else {
             sb.append(c);
           }

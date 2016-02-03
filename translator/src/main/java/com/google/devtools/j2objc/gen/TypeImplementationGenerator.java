@@ -33,6 +33,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.Property;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -408,7 +409,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
     }
     for (AnnotationTypeMemberDeclaration member : members) {
       IMethodBinding memberBinding = member.getMethodBinding();
-      println(String.format("@synthesize %s = %s;",
+      println(UnicodeUtils.format("@synthesize %s = %s;",
           NameTable.getAnnotationPropertyName(memberBinding),
           NameTable.getAnnotationPropertyVariableName(memberBinding)));
     }

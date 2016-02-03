@@ -34,6 +34,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.Property;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -399,7 +400,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       String typeStr = nameTable.getObjCType(var.getType());
       String fieldName = nameTable.getVariableShortName(var);
       String isVolatile = BindingUtil.isVolatile(var) ? "_VOLATILE" : "";
-      println(String.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
+      println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",
           isVolatile, typeName, fieldName, typeStr));
     }
   }
@@ -446,7 +447,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       assert value != null;
       printf("#define %s_%s %s\n", typeName, name, LiteralGenerator.generate(value));
     } else {
-      printStaticFieldDeclaration(fragment, String.format("%s%s_%s", declType, typeName, name));
+      printStaticFieldDeclaration(
+          fragment, UnicodeUtils.format("%s%s_%s", declType, typeName, name));
     }
     printf("J2OBJC_STATIC_FIELD%s(%s, %s, %s)\n", qualifiers, typeName, name, objcType);
   }
@@ -531,10 +533,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print("@property (readonly) ");
       String typeString = nameTable.getSpecificObjCType(type);
       String propertyName = NameTable.getAnnotationPropertyName(member.getMethodBinding());
-      println(String.format("%s%s%s;", typeString, typeString.endsWith("*") ? "" : " ",
+      println(UnicodeUtils.format("%s%s%s;", typeString, typeString.endsWith("*") ? "" : " ",
           propertyName));
       if (needsObjcMethodFamilyNoneAttribute(propertyName)) {
-        println(String.format("- (%s)%s OBJC_METHOD_FAMILY_NONE;", typeString, propertyName));
+        println(UnicodeUtils.format("- (%s)%s OBJC_METHOD_FAMILY_NONE;", typeString, propertyName));
       }
     }
   }
@@ -775,7 +777,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           sb.append(pad(baseLength - selParts[i].length()));
         }
         String typeName = nameTable.getSpecificObjCType(params[i]);
-        sb.append(String.format("%s:(%s)arg%d", selParts[i], typeName, i));
+        sb.append(UnicodeUtils.format("%s:(%s)arg%d", selParts[i], typeName, i));
       }
     }
     return sb.toString();

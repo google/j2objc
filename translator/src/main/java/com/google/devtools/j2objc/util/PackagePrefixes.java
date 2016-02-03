@@ -214,8 +214,8 @@ public final class PackagePrefixes {
         // Include root package in regex. For example, foo.bar.* needs to match
         // foo.bar, foo.bar.mumble, etc.
         String root = s.substring(0, s.length() - 2).replace(".",  "\\.");
-        return String.format("^(%s|%s\\..*)$", root, root);
+        return UnicodeUtils.format("^(%s|%s\\..*)$", root, root);
       }
-      return String.format("^%s$", s.replace(".", "\\.").replace("\\*", ".*"));
+      return UnicodeUtils.format("^%s$", s.replace(".", "\\.").replace("\\*", ".*"));
     }
 }

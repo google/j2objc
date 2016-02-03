@@ -213,7 +213,7 @@ public class StatementGenerator extends TreeVisitor {
     ITypeBinding type = node.getTypeBinding();
     assert type.isArray();
     ITypeBinding componentType = type.getComponentType();
-    buffer.append(String.format("(%s[]){ ", NameTable.getPrimitiveObjCType(componentType)));
+    buffer.append(UnicodeUtils.format("(%s[]){ ", NameTable.getPrimitiveObjCType(componentType)));
     for (Iterator<Expression> it = node.getExpressions().iterator(); it.hasNext(); ) {
       it.next().accept(this);
       if (it.hasNext()) {
@@ -691,7 +691,8 @@ public class StatementGenerator extends TreeVisitor {
     ITypeBinding rightBinding = node.getRightOperand().getTypeBinding();
     if (rightBinding.isInterface()) {
       // Our version of "isInstance" is faster than "conformsToProtocol".
-      buffer.append(String.format("[%s_class_() isInstance:", nameTable.getFullName(rightBinding)));
+      buffer.append(
+          UnicodeUtils.format("[%s_class_() isInstance:", nameTable.getFullName(rightBinding)));
       node.getLeftOperand().accept(this);
       buffer.append(']');
     } else {
@@ -1288,12 +1289,12 @@ public class StatementGenerator extends TreeVisitor {
     VariableDeclarationExpression resource = resources.get(0);
     // Resource declaration can only have one fragment.
     String resourceName = resource.getFragments().get(0).getName().getFullyQualifiedName();
-    String primaryExceptionName = String.format("__primaryException%d", resources.size());
+    String primaryExceptionName = UnicodeUtils.format("__primaryException%d", resources.size());
 
     buffer.append("{\n");
     resource.accept(this);
     buffer.append(";\n");
-    buffer.append(String.format("NSException *%s = nil;\n", primaryExceptionName));
+    buffer.append(UnicodeUtils.format("NSException *%s = nil;\n", primaryExceptionName));
 
     buffer.append("@try ");
     List<VariableDeclarationExpression> tail = resources.subList(1, resources.size());
@@ -1303,13 +1304,13 @@ public class StatementGenerator extends TreeVisitor {
       printBasicTryWithResources(body, tail);
     }
 
-    buffer.append(String.format(
+    buffer.append(UnicodeUtils.format(
         "@catch (NSException *e) {\n"
         + "%s = e;\n"
         + "@throw e;\n"
         + "}\n", primaryExceptionName));
 
-    buffer.append(String.format(
+    buffer.append(UnicodeUtils.format(
         // Including !=nil in the tests isn't necessary, but makes it easier
         // to compare to the JLS spec.
         "@finally {\n"
@@ -1333,7 +1334,7 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(TypeLiteral node) {
     ITypeBinding type = node.getType().getTypeBinding();
     if (type.isPrimitive()) {
-      buffer.append(String.format("[IOSClass %sClass]", type.getName()));
+      buffer.append(UnicodeUtils.format("[IOSClass %sClass]", type.getName()));
     } else if (type.isArray()) {
       ITypeBinding elementType = type.getElementType();
       if (elementType.isPrimitive()) {

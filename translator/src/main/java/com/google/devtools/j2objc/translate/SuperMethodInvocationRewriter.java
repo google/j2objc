@@ -32,6 +32,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -70,15 +71,15 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
 
       // Add declarations for the function pointers to call.
       unit.getNativeBlocks().add(NativeDeclaration.newOuterDeclaration(
-          null, "static " + String.format(signature, funcName) + ";"));
+          null, "static " + UnicodeUtils.format(signature, funcName) + ";"));
 
       // Look up the implementations in the static initialization.
       AbstractTypeDeclaration typeNode = typeMap.get(superMethod.type.getTypeDeclaration());
       assert typeNode != null : "Type is expected to be in this compilation unit";
       String superclassName = nameTable.getFullName(superMethod.type.getSuperclass());
-      typeNode.getClassInitStatements().add(0, new NativeStatement(String.format(
+      typeNode.getClassInitStatements().add(0, new NativeStatement(UnicodeUtils.format(
           "%s = (%s)[%s instanceMethodForSelector:@selector(%s)];",
-          funcName, String.format(signature, ""), superclassName,
+          funcName, UnicodeUtils.format(signature, ""), superclassName,
           nameTable.getMethodSelector(superMethod.method))));
     }
   }
@@ -95,7 +96,7 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
   }
 
   private String getSuperFunctionName(SuperMethodBindingPair superMethod) {
-    return String.format("%s_super$_%s", nameTable.getFullName(superMethod.type),
+    return UnicodeUtils.format("%s_super$_%s", nameTable.getFullName(superMethod.type),
                          nameTable.getFunctionName(superMethod.method));
   }
 
@@ -121,7 +122,7 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
     FunctionInvocation invocation = new FunctionInvocation(binding, exprType);
     List<Expression> args = invocation.getArguments();
     args.add(TreeUtil.remove(qualifier));
-    String selectorExpr = String.format("@selector(%s)", nameTable.getMethodSelector(method));
+    String selectorExpr = UnicodeUtils.format("@selector(%s)", nameTable.getMethodSelector(method));
     args.add(new NativeExpression(selectorExpr, typeEnv.getIdType()));
     TreeUtil.copyList(node.getArguments(), args);
     node.replaceWith(invocation);

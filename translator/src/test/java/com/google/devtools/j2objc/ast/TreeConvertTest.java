@@ -15,6 +15,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import java.io.IOException;
 
@@ -60,7 +61,7 @@ public class TreeConvertTest extends GenerationTest {
     }
     sb.append(";");
     String exprStr = sb.toString();
-    String translation = translateSourceFile(String.format(
+    String translation = translateSourceFile(UnicodeUtils.format(
         "class Test { boolean test(int i) { %s } }", exprStr), "Test", "Test.m");
     assertTranslation(translation, exprStr);
   }

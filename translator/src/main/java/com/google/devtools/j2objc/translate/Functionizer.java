@@ -51,6 +51,7 @@ import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -323,7 +324,7 @@ public class Functionizer extends TreeVisitor {
 
     if (BindingUtil.isStatic(m)) {
       // Add class initialization invocation, since this may be the first use of this class.
-      String initName = String.format("%s_initialize", nameTable.getFullName(declaringClass));
+      String initName = UnicodeUtils.format("%s_initialize", nameTable.getFullName(declaringClass));
       ITypeBinding voidType = typeEnv.resolveJavaType("void");
       FunctionBinding initBinding = new FunctionBinding(initName, voidType, declaringClass);
       FunctionInvocation initCall = new FunctionInvocation(initBinding, voidType);
