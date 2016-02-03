@@ -206,9 +206,9 @@ dist_includes: $(BUILD_DIR)/.jre_dist_includes
 $(BUILD_DIR)/.jre_dist_includes: $(PUBLIC_TRANSLATED_HEADERS:%=$(GEN_OBJC_DIR)/%) \
     $(PUBLIC_EMULATION_HEADERS:%=$(EMULATION_CLASS_DIR)/%) | $(DIST_INCLUDE_DIR)
 	@echo copying jre_emul header files
-	@(cd $(EMULATION_CLASS_DIR) && tar cf - \
+	@cd $(EMULATION_CLASS_DIR) && tar cf - \
 	    $(PUBLIC_EMULATION_HEADERS:$(EMULATION_CLASS_DIR)/%=%) \
-	    | (cd $(realpath $(DIST_INCLUDE_DIR)); tar xfp -))
+	    | (cd $(realpath $(DIST_INCLUDE_DIR)); tar xfp -)
 	@(cd $(GEN_OBJC_DIR) && tar cf - \
 	    $(PUBLIC_TRANSLATED_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
 	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
