@@ -37,13 +37,15 @@ public class BeansFactory {
 
   private static final FactoryInterface IMPL = findImplementation();
 
-  private static FactoryInterface findImplementation() {
-    try {
-      return (FactoryInterface) Class.forName("java.beans.BeansFactoryImpl").newInstance();
-    } catch (Exception e) {
-      return null;
+  // Uses a native implementation to avoid the exception thrown by Class.forName().
+  private static native FactoryInterface findImplementation() /*-[
+    Class cls = objc_getClass("JavaBeansBeansFactoryImpl");
+    if (cls) {
+      return [[[cls alloc] init] autorelease];
+    } else {
+      return nil;
     }
-  }
+  ]-*/;
 
   interface FactoryInterface {
 
