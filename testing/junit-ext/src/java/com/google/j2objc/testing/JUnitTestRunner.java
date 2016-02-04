@@ -227,7 +227,7 @@ public class JUnitTestRunner {
           }
         }
       }
-      @catch (JavaLangThrowable *t) {
+      @catch (NSException *e) {
         // Ignore any exceptions thrown by class initialization.
       }
     }
