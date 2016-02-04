@@ -66,8 +66,8 @@ XALAN_LICENSE = NOTICE
 XALAN_LICENSE_DIST = $(DIST_LICENSE_DIR)/apache_xalan_license.txt
 
 dist: $(FAT_LIBS_DIST) $(DIST_JAR) $(XALAN_LICENSE_DIST)
-	@(cd $(GEN_OBJC_DIR) && tar cf - $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
-	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
+	@tar cf - -C $(GEN_OBJC_DIR) $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%) \
+	    | tar xfp - -C $(ARCH_INCLUDE_DIR)
 
 test: $(FAT_LIBS)
 	@$(MAKE) -f tests.mk test

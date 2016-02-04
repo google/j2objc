@@ -142,7 +142,6 @@ $(DIST_JAR): $(CREATE_JAR_RESULT)
 
 $(ARCH_BUILD_DIR)/.dist_headers: $(HEADERS)
 	@mkdir -p $(ARCH_INCLUDE_DIR)
-	(cd src && tar cf - $(SOURCE_HEADERS)) | ( cd $(ARCH_INCLUDE_DIR); tar xfpm - )
-	(cd $(GEN_OBJC_DIR) && tar cf - $(GENERATED_HEADERS)) | \
-	  ( cd $(ARCH_INCLUDE_DIR); tar xfpm - )
+	tar cf - -C src $(SOURCE_HEADERS) | tar xfpm - -C $(ARCH_INCLUDE_DIR)
+	tar cf - -C $(GEN_OBJC_DIR) $(GENERATED_HEADERS) | tar xfpm - -C $(ARCH_INCLUDE_DIR)
 	@touch $@

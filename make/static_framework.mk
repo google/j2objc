@@ -101,9 +101,8 @@ $(STATIC_FRAMEWORK_DIR): $(STATIC_LIBRARY) $(FRAMEWORK_HEADER) $(MODULE_MAP)
 	@/bin/ln -sfh Versions/Current/Headers $(STATIC_FRAMEWORK_DIR)/Headers
 	@/bin/ln -sfh Versions/Current/$(STATIC_FRAMEWORK_NAME) \
 	    $(STATIC_FRAMEWORK_DIR)/$(STATIC_FRAMEWORK_NAME)
-	@(cd $(STATIC_HEADERS_DIR) && tar cf - \
-	    $(STATIC_FRAMEWORK_HEADERS:$(STATIC_HEADERS_DIR)/%=%)) \
-	    | (cd $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers;tar xfp -)
+	@tar cf - -C $(STATIC_HEADERS_DIR) $(STATIC_FRAMEWORK_HEADERS:$(STATIC_HEADERS_DIR)/%=%) \
+	    | tar xfp - -C $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers
 	@cp $(STATIC_LIBRARY) $(STATIC_FRAMEWORK_DIR)/Versions/A/$(STATIC_FRAMEWORK_NAME)
 	@install -m 0644 $(FRAMEWORK_HEADER) $(STATIC_FRAMEWORK_DIR)/Versions/A/Headers
 	@install -m 0644 $(MODULE_MAP) $(STATIC_FRAMEWORK_DIR)

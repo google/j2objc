@@ -207,21 +207,18 @@ dist_includes: $(BUILD_DIR)/.jre_dist_includes
 $(BUILD_DIR)/.jre_dist_includes: $(PUBLIC_TRANSLATED_HEADERS:%=$(GEN_OBJC_DIR)/%) \
     $(PUBLIC_EMULATION_HEADERS:%=$(EMULATION_CLASS_DIR)/%) | $(DIST_INCLUDE_DIR)
 	@echo copying jre_emul header files
-	@(cd $(EMULATION_CLASS_DIR) && tar cf - \
-	    $(PUBLIC_EMULATION_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
-	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
-	@(cd $(GEN_OBJC_DIR) && tar cf - \
-	    $(PUBLIC_TRANSLATED_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
-	    | (cd $(DIST_INCLUDE_DIR); tar xfp -)
+	@tar cf - -C $(EMULATION_CLASS_DIR) $(PUBLIC_EMULATION_HEADERS:$(EMULATION_CLASS_DIR)/%=%) \
+	    | tar xfp - -C $(DIST_INCLUDE_DIR)
+	@tar cf - -C $(GEN_OBJC_DIR) $(PUBLIC_TRANSLATED_HEADERS:$(GEN_OBJC_DIR)/%=%) \
+	    | tar xfp - -C $(DIST_INCLUDE_DIR)
 	@touch $@
 
 $(ARCH_BUILD_DIR)/.includes: $(TRANSLATE_HEADERS) $(EMULATION_HEADERS) | \
     $(ARCH_BUILD_DIR) $(ARCH_INCLUDE_DIR)
-	@(cd $(EMULATION_CLASS_DIR) && tar cf - $(EMULATION_HEADERS:$(EMULATION_CLASS_DIR)/%=%)) \
-	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
-	@(cd $(GEN_OBJC_DIR) && tar cf - \
-	    $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%)) \
-	    | (cd $(ARCH_INCLUDE_DIR); tar xfp -)
+	@tar cf - -C $(EMULATION_CLASS_DIR) $(EMULATION_HEADERS:$(EMULATION_CLASS_DIR)/%=%) \
+	    | tar xfp - -C $(ARCH_INCLUDE_DIR)
+	@tar cf - -C $(GEN_OBJC_DIR) $(TRANSLATE_HEADERS:$(GEN_OBJC_DIR)/%=%) \
+	    | tar xfp - -C $(ARCH_INCLUDE_DIR)
 	@touch $@
 
 %/j2objcc: $(J2OBJC_ROOT)/scripts/j2objcc.sh
