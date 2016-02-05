@@ -641,10 +641,15 @@ FAILING_MATH_TESTS = \
 TESTS_TO_RUN = $(filter-out $(TESTS_TO_SKIP),$(TEST_SOURCES))
 TESTS_TO_RUN := $(subst /,.,$(TESTS_TO_RUN:%.java=%))
 
+ALL_TESTS_CLASS = AllJreTests
+# Creates a test suit that includes all classes in TEST_SOURCES.
+ALL_TESTS_SOURCE = $(RELATIVE_TESTS_DIR)/AllJreTests.java
+
 SUPPORT_OBJS = $(SUPPORT_SOURCES:%.java=$(TESTS_DIR)/%.o) $(NATIVE_SOURCES:%.cpp=$(TESTS_DIR)/%.o)
 TEST_OBJS = \
     $(TEST_SOURCES:%.java=$(TESTS_DIR)/%.o) \
-    $(SUITE_SOURCES:%.java=$(TESTS_DIR)/%.o)
+    $(SUITE_SOURCES:%.java=$(TESTS_DIR)/%.o) \
+    $(TESTS_DIR)/$(ALL_TESTS_CLASS).o
 
 TEST_RESOURCES_SRCS = \
     lib/logging.properties \
@@ -723,18 +728,15 @@ SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
 GEN_OBJC_DIR = $(TESTS_DIR)
-TRANSLATE_JAVA_FULL = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
-TRANSLATE_JAVA_RELATIVE = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES)
+TRANSLATE_JAVA_FULL = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_SOURCE)
+TRANSLATE_JAVA_RELATIVE = \
+    $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_CLASS).java
 TRANSLATE_JAVA8 = $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES)
 TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
     --extract-unsequenced -encoding UTF-8 \
     --prefixes Tests/resources/prefixes.properties
 # Translates TRANSLATE_JAVA_FULL .java files into .m files.
 include ../make/translate.mk
-
-ALL_TESTS_CLASS = AllJreTests
-# Creathes a test suit that includes all classes in TEST_SOURCES.
-ALL_TESTS_SOURCE = $(RELATIVE_TESTS_DIR)/AllJreTests.java
 
 ifdef GENERATE_TEST_COVERAGE
 GCOV_FLAGS = -ftest-coverage -fprofile-arcs
@@ -747,10 +749,10 @@ test: run-tests
 
 support-lib: $(SUPPORT_LIB)
 
-build: support-lib $(TEST_OBJS) $(ALL_TESTS_SOURCE:%.java=%.o)
+build: support-lib $(TEST_OBJS)
 	@:
 
-translate-all: translate $(ALL_TESTS_SOURCE:%.java=%.m)
+translate-all: translate
 	@:
 
 link: build $(TEST_BIN)
@@ -868,21 +870,14 @@ $(TESTS_DIR)/%.o: $(ANDROID_NATIVE_TEST_DIR)/%.cpp | $(TESTS_DIR)
 	cc -g -I$(EMULATION_CLASS_DIR) -x objective-c++ -c $? -o $@ \
 	  -Werror -Wno-parentheses $(GCOV_FLAGS)
 
-$(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) $(ALL_TESTS_SOURCE:%.java=%.o) \
+$(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) \
         ../dist/lib/macosx/libjre_emul.a ../dist/lib/macosx/libjunit.a
 	@echo Building test executable...
-	@$(TEST_JOCC) -o $@ $(TEST_OBJS) $(ALL_TESTS_SOURCE:%.java=%.o)
+	@$(TEST_JOCC) -o $@ $(TEST_OBJS)
 
-$(ALL_TESTS_SOURCE): | $(TESTS_DIR)
+$(ALL_TESTS_SOURCE): tests.mk
+	@mkdir -p $(@D)
 	@xcrun awk -f gen_all_tests.sh $(TESTS_TO_RUN) > $@
-
-$(ALL_TESTS_SOURCE:%.java=%.m): $(ALL_TESTS_SOURCE)
-	@$(TRANSLATE_CMD) $?
-
-$(ALL_TESTS_SOURCE:%.java=%.o): $(ALL_TESTS_SOURCE:%.java=%.m) $(TEST_OBJS:%.o=%.h)
-	@echo j2objcc -c $(ALL_TESTS_SOURCE:%.java=%.m)
-	@../dist/j2objcc -g -I$(TESTS_DIR) -I$(CLASS_DIR) -I$(EMULATION_CLASS_DIR) \
-	    -c $(ALL_TESTS_SOURCE:%.java=%.m) -o $(ALL_TESTS_SOURCE:%.java=%.o)
 
 $(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m
 	@../dist/j2objcc -o $@ -ljre_emul -ObjC -Os $?
