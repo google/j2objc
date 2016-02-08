@@ -18,6 +18,7 @@ package com.google.mockwebserver;
 import java.net.HttpURLConnection;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Logger;
 
 /**
  * Default dispatcher that processes a script of responses.  Populate the script by calling
@@ -28,11 +29,13 @@ public class QueueDispatcher extends Dispatcher {
             = new LinkedBlockingQueue<MockResponse>();
     private MockResponse failFastResponse;
 
+    private static final Logger logger = Logger.getLogger(QueueDispatcher.class.getName());
+
     @Override public MockResponse dispatch(RecordedRequest request) throws InterruptedException {
         // to permit interactive/browser testing, ignore requests for favicons
         final String requestLine = request.getRequestLine();
         if (requestLine != null && requestLine.equals("GET /favicon.ico HTTP/1.1")) {
-            System.out.println("served " + requestLine);
+            logger.info("served " + requestLine);
             return new MockResponse()
                     .setResponseCode(HttpURLConnection.HTTP_NOT_FOUND);
         }
