@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
@@ -77,7 +78,14 @@ public class EnumRewriter extends TreeVisitor {
     if (node.getEnumConstants().isEmpty()) {
       return;
     }
+    if (Options.useARC()) {
+      addArcInitialization(node);
+    } else {
+      addNonArcInitialization(node);
+    }
+  }
 
+  private void addNonArcInitialization(EnumDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     int baseTypeCount = 0;
     List<Statement> sizeStatements = new ArrayList<>();
@@ -134,6 +142,24 @@ public class EnumRewriter extends TreeVisitor {
     stmts.add(new NativeStatement("uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);"));
     stmts.add(new VariableDeclarationStatement(localEnum, null));
     stmts.addAll(initStatements);
+  }
+
+  // ARC does not allow using "objc_constructInstance" so ARC code doesn't get
+  // the shared allocation optimization.
+  private void addArcInitialization(EnumDeclaration node) {
+    List<Statement> stmts = node.getClassInitStatements().subList(0, 0);
+    int i = 0;
+    for (EnumConstantDeclaration constant : node.getEnumConstants()) {
+      IVariableBinding varBinding = constant.getVariableBinding();
+      IMethodBinding binding =
+          addEnumConstructorParams(constant.getMethodBinding().getMethodDeclaration());
+      ClassInstanceCreation creation = new ClassInstanceCreation(binding);
+      TreeUtil.copyList(constant.getArguments(), creation.getArguments());
+      creation.getArguments().add(new StringLiteral(varBinding.getName(), typeEnv));
+      creation.getArguments().add(new NumberLiteral(i++, typeEnv));
+      creation.setHasRetainedResult(true);
+      stmts.add(new ExpressionStatement(new Assignment(new SimpleName(varBinding), creation)));
+    }
   }
 
   @Override

@@ -14,6 +14,8 @@
 
 package com.google.j2objc.arc;
 
+import com.google.j2objc.NativeUtil;
+
 import junit.framework.TestCase;
 
 /**
@@ -23,11 +25,16 @@ import junit.framework.TestCase;
  */
 public class EnumTest extends TestCase {
 
-  // TODO(kstanger): Fix enum compilation under ARC.
-  /*enum Color {
+  // The existence of this enum type serves as a regression test for enum
+  // compilation with ARC.
+  enum Color {
     RED, GREEN, BLUE
-  }*/
+  }
 
-  public void testFoo() {
+  // All enum values should always have a retain count of 1.
+  public void testEnumRetainCount() {
+    assertEquals(1, NativeUtil.getRetainCount(Color.RED));
+    assertEquals(1, NativeUtil.getRetainCount(Color.GREEN));
+    assertEquals(1, NativeUtil.getRetainCount(Color.BLUE));
   }
 }

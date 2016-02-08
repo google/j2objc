@@ -28,11 +28,12 @@ SUPPORT_SOURCES = \
     android/test/MoreAsserts.java \
     android/text/SpannableTest.java \
     bar/Third.java \
+    com/google/j2objc/NativeUtil.java \
+    com/google/j2objc/TestAnnotation.java \
     com/google/j2objc/java8/Lambdas.java \
     com/google/j2objc/mappedpkg/TestClass.java \
     com/google/j2objc/mappedpkg/package-info.java \
     com/google/j2objc/package-info.java \
-    com/google/j2objc/TestAnnotation.java \
     com/google/mockwebserver/Dispatcher.java \
     com/google/mockwebserver/MockResponse.java \
     com/google/mockwebserver/MockWebServer.java \

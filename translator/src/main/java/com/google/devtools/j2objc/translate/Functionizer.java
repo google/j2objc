@@ -267,6 +267,9 @@ public class Functionizer extends TreeVisitor {
           && !isEnumConstructor) {
         declarationList.add(makeAllocatingConstructor(node));
         declarationList.add(makeReleasingConstructor(node));
+      } else if (isEnumConstructor && Options.useARC()) {
+        // Enums with ARC need the retaining constructor.
+        declarationList.add(makeAllocatingConstructor(node));
       }
       // Instance methods must be kept in case they are invoked using "super".
       boolean keepMethod = isInstanceMethod
