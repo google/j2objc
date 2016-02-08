@@ -15,7 +15,6 @@
 # The including makefile may define the variables:
 #   TRANSLATE_JAVA_FULL
 #   TRANSLATE_JAVA_RELATIVE
-#   TRANSLATE_JAVA8
 # And optional variables:
 #   TRANSLATE_NAME
 #   TRANSLATE_ARGS
@@ -50,26 +49,15 @@ TRANSLATE_SOURCES = $(TRANSLATE_HEADERS:.h=.mm)
 TRANSLATE_ARGS += -x objective-c++
 endif
 
-JAVA8_WILDCARDS := $(foreach file,$(TRANSLATE_JAVA8),%$(file))
-
-TRANSLATE_ARTIFACTS := $(call emit_translate_rule,\
+TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   $(TRANSLATE_NAME),\
   $(GEN_OBJC_DIR),\
-  $(filter-out $(JAVA8_WILDCARDS),$(TRANSLATE_JAVA_FULL)),\
+  $(TRANSLATE_JAVA_FULL),\
   $(TRANSLATE_DEPENDENCIES),\
   $(TRANSLATE_ARGS))
 
-ifdef TRANSLATE_JAVA8
-TRANSLATE_ARTIFACTS += $(call emit_translate_rule,\
-  $(TRANSLATE_NAME)_java8,\
-  $(GEN_OBJC_DIR),\
-  $(filter $(JAVA8_WILDCARDS),$(TRANSLATE_JAVA_FULL)),\
-  $(TRANSLATE_DEPENDENCIES),\
-  $(TRANSLATE_ARGS) -source 8 -Xforce-incomplete-java8)
-endif
-
-translate: $(TRANSLATE_ARTIFACTS)
+translate: $(TRANSLATE_ARTIFACT)
 	@:
 
-$(TRANSLATE_OBJC): $(TRANSLATE_ARTIFACTS)
+$(TRANSLATE_OBJC): $(TRANSLATE_ARTIFACT)
 	@:

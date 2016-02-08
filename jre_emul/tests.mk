@@ -741,14 +741,14 @@ TRANSLATE_SOURCES_JAVA8 = $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES)
 TRANSLATED_OBJC = $(TRANSLATE_SOURCES:%.java=$(TESTS_DIR)/%.m)
 TRANSLATED_OBJC_JAVA8 = $(TRANSLATE_SOURCES_JAVA8:%.java=$(TESTS_DIR)/%.m)
 
-TRANSLATE_ARTIFACT = $(call emit_translate_rule,\
+TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   jre_emul_tests,\
   $(TESTS_DIR),\
   $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_SOURCE),\
   ,\
   $(TRANSLATE_ARGS))
 
-TRANSLATE_ARTIFACT_JAVA8 = $(call emit_translate_rule,\
+TRANSLATE_ARTIFACT_JAVA8 := $(call emit_translate_rule,\
   jre_emul_tests_java8,\
   $(TESTS_DIR),\
   $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES),\
