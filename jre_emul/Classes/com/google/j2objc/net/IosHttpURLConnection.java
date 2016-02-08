@@ -22,8 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
+import java.net.CookieHandler;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -303,7 +306,56 @@ public class IosHttpURLConnection extends HttpURLConnection {
       // Request already made.
       return;
     }
+    loadRequestCookies();
     makeSynchronousRequest();
+    saveResponseCookies();
+  }
+
+  /**
+   * Add any cookies for this URI to the request headers.
+   */
+  private void loadRequestCookies() throws IOException {
+    CookieHandler cookieHandler = CookieHandler.getDefault();
+    if (cookieHandler != null) {
+      try {
+        URI uri = getURL().toURI();
+        Map<String, List<String>> cookieHeaders =
+            cookieHandler.get(uri, getHeaderFieldsDoNotForceResponse());
+        for (Map.Entry<String, List<String>> entry : cookieHeaders.entrySet()) {
+          String key = entry.getKey();
+          if (("Cookie".equalsIgnoreCase(key)
+              || "Cookie2".equalsIgnoreCase(key))
+              && !entry.getValue().isEmpty()) {
+            List<String> cookies = entry.getValue();
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0, size = cookies.size(); i < size; i++) {
+              if (i > 0) {
+                sb.append("; ");
+              }
+              sb.append(cookies.get(i));
+            }
+            setHeader(key, sb.toString());
+          }
+        }
+      } catch (URISyntaxException e) {
+        throw new IOException(e);
+      }
+    }
+  }
+
+  /**
+   * Store any returned cookies.
+   */
+  private void saveResponseCookies() throws IOException {
+    CookieHandler cookieHandler = CookieHandler.getDefault();
+    if (cookieHandler != null) {
+      try {
+        URI uri = getURL().toURI();
+        cookieHandler.put(uri, getHeaderFieldsDoNotForceResponse());
+      } catch (URISyntaxException e) {
+        throw new IOException(e);
+      }
+    }
   }
 
   @Override

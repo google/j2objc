@@ -33,6 +33,12 @@ SUPPORT_SOURCES = \
     com/google/j2objc/mappedpkg/package-info.java \
     com/google/j2objc/package-info.java \
     com/google/j2objc/TestAnnotation.java \
+    com/google/mockwebserver/Dispatcher.java \
+    com/google/mockwebserver/MockResponse.java \
+    com/google/mockwebserver/MockWebServer.java \
+    com/google/mockwebserver/QueueDispatcher.java \
+    com/google/mockwebserver/RecordedRequest.java \
+    com/google/mockwebserver/SocketPolicy.java \
     foo/Fourth.java \
     foo/bar/First.java \
     foo/mumble/Second.java \
@@ -306,6 +312,7 @@ TEST_SOURCES := \
     libcore/java/lang/reflect/FieldTest.java \
     libcore/java/lang/reflect/MethodTest.java \
     libcore/java/lang/reflect/ReflectionTest.java \
+    libcore/java/net/CookiesTest.java \
     libcore/java/net/DatagramSocketTest.java \
     libcore/java/net/NetworkInterfaceTest.java \
     libcore/java/net/OldAuthenticatorTest.java \

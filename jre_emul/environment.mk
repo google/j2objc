@@ -55,6 +55,7 @@ ICU4C_COMMON_ROOT = icu4c/common
 J2OBJC_ANNOTATIONS_ROOT = ../annotations/src/main/java
 
 ANDROID_BASE = android
+ANDROID_PLATFORM = android/platform
 ANDROID_CORE_ROOT = $(ANDROID_BASE)/frameworks/base/core/java
 ANDROID_CORE_TESTS_ROOT = $(ANDROID_BASE)/frameworks/base/core/tests/coretests/src
 LIBCORE_BASE = $(ANDROID_BASE)/libcore
@@ -68,6 +69,7 @@ ANDROID_XML_ROOT = $(LIBCORE_BASE)/xml/src/main/java
 ANDROID_APACHE_TEST_ROOT = $(LIBCORE_BASE)/harmony-tests/src/test/java
 ANDROID_TESTS_RUNNER_ROOT = $(ANDROID_BASE)/frameworks/base/tests-runner/src
 ANDROID_JSR166_TEST_ROOT = $(LIBCORE_BASE)/jsr166-tests/src/test/java
+MOCKWEBSERVER_ROOT = $(ANDROID_PLATFORM)/external/mockwebserver/src/main/java
 
 APPLE_ROOT = apple_apsl
 
@@ -118,7 +120,7 @@ TEST_SRC_ROOTS = $(JRE_TEST_ROOT) $(JRE_MATH_TEST_ROOT) \
     $(ANDROID_APACHE_TEST_ROOT) $(LOGGING_TEST_ROOT) \
     $(ANDROID_CORE_TESTS_ROOT) $(ANDROID_TESTS_RUNNER_ROOT) \
     $(ANDROID_JSON_TEST_ROOT) $(BEANS_TEST_ROOT) $(BEANS_TEST_SUPPORT_ROOT) \
-    $(ANDROID_JSR166_TEST_ROOT)
+    $(ANDROID_JSR166_TEST_ROOT) $(MOCKWEBSERVER_ROOT)
 TEST_SRC = $(subst $(eval) ,:,$(TEST_SRC_ROOTS))
 vpath %.java $(JRE_SRC):$(TEST_SRC):$(STUBS_DIR)
 
