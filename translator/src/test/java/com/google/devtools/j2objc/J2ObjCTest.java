@@ -31,6 +31,14 @@ public class J2ObjCTest extends GenerationTest {
   String exampleJavaPath;
   String packageInfoPath;
 
+  private static final String EXAMPLE_JAVA_SOURCE =
+      "package com.google.devtools.j2objc.annotations;\n\n"
+      + "import com.google.j2objc.annotations.ObjectiveCName;\n\n"
+      + "@ObjectiveCName(\"foo\")\n"
+      + "public class Example {\n"
+      + "}\n";
+
+  @Override
   public void setUp() throws IOException {
     super.setUp();
 
@@ -50,6 +58,7 @@ public class J2ObjCTest extends GenerationTest {
         + "import com.google.j2objc.annotations.ObjectiveCName;", packageInfoPath);
   }
 
+  @Override
   public void tearDown() throws Exception {
     Options.getClassPathEntries().clear();
     Options.setBatchTranslateMaximum(0);
@@ -183,14 +192,10 @@ public class J2ObjCTest extends GenerationTest {
 
   // Test a simple annotation processor on the classpath.
   public void testAnnotationProcessing() throws Exception {
-    if (runningInEclipse()) {
-      // Eclipse doesn't copy resources ending in .java into its build.
-      return;
-    }
     String processorPath = getResourceAsFile("annotations/Processor.jar");
     Options.getClassPathEntries().add(processorPath);
 
-    String examplePath = getResourceAsFile("annotations/Example.java");
+    String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
     J2ObjC.run(Collections.singletonList(examplePath));
     assertErrorCount(0);
 
@@ -208,36 +213,22 @@ public class J2ObjCTest extends GenerationTest {
 
   // Test a simple annotation processor on the processor path.
   public void testAnnotationProcessingWithProcessorPath() throws Exception {
-    if (runningInEclipse()) {
-      // Eclipse doesn't copy resources ending in .java into its build.
-      return;
-    }
     String processorPath = getResourceAsFile("annotations/Processor.jar");
     Options.getProcessorPathEntries().add(processorPath);
 
-    String examplePath = getResourceAsFile("annotations/Example.java");
+    String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
     J2ObjC.run(Collections.singletonList(examplePath));
     assertErrorCount(0);
   }
 
   // Test a specified annotation processor.
   public void testSpecifiedAnnotationProcessing() throws Exception {
-    if (runningInEclipse()) {
-      // Eclipse doesn't copy resources ending in .java into its build.
-      return;
-    }
     String processorPath = getResourceAsFile("annotations/Processor.jar");
     Options.getClassPathEntries().add(processorPath);
     Options.setProcessors("com.google.devtools.j2objc.annotations.J2ObjCTestProcessor");
 
-    String examplePath = getResourceAsFile("annotations/Example.java");
+    String examplePath = addSourceFile(EXAMPLE_JAVA_SOURCE, "annotations/Example.java");
     J2ObjC.run(Collections.singletonList(examplePath));
     assertErrorCount(0);
-  }
-
-  private boolean runningInEclipse() {
-    Throwable t = new Throwable();
-    StackTraceElement[] trace = t.getStackTrace();
-    return trace[trace.length - 1].getClassName().startsWith("org.eclipse");
   }
 }

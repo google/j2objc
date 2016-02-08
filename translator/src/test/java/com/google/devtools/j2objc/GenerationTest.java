@@ -391,10 +391,11 @@ public class GenerationTest extends TestCase {
     new InputFilePreprocessor(parser).processInputs(batch.getInputs());
   }
 
-  protected void addSourceFile(String source, String fileName) throws IOException {
+  protected String addSourceFile(String source, String fileName) throws IOException {
     File file = new File(tempDir, fileName);
     file.getParentFile().mkdirs();
     Files.write(source, file, Options.getCharset());
+    return file.getPath();
   }
 
   /**
