@@ -35,70 +35,41 @@
 #
 # Author: Keith Stanger
 
+include $(J2OBJC_ROOT)/make/translate_macros.mk
+
+ifndef TRANSLATE_NAME
+TRANSLATE_NAME = default
+endif
+
 TRANSLATE_HEADERS = $(TRANSLATE_JAVA_RELATIVE:%.java=$(GEN_OBJC_DIR)/%.h)
 TRANSLATE_SOURCES = $(TRANSLATE_HEADERS:.h=.m)
 TRANSLATE_OBJC = $(TRANSLATE_SOURCES) $(TRANSLATE_HEADERS)
-TRANSLATE_TARGET = $(GEN_OBJC_DIR)/.translate_mark
-TRANSLATE_LIST = $(GEN_OBJC_DIR)/.translate_list
-TRANSLATE_JAVA8_LIST = $(GEN_OBJC_DIR)/.translate_java8_list
-TRANSLATE_EXE = $(DIST_DIR)/j2objc
-TRANSLATE_CMD = $(TRANSLATE_EXE) -d $(GEN_OBJC_DIR) $(TRANSLATE_ARGS) \
-  $(subst ;, ,$(TRANSLATE_GLOBAL_FLAGS))
-TRANSLATE_EXE_DEP = translator_dist
-
-ifdef TRANSLATE_USE_SYSTEM_BOOT_PATH
-TRANSLATE_CMD := USE_SYSTEM_BOOT_PATH=TRUE $(TRANSLATE_CMD)
-TRANSLATE_EXE_DEP = translator
-endif
 
 ifdef TRANSLATE_OBJCPP
 TRANSLATE_SOURCES = $(TRANSLATE_HEADERS:.h=.mm)
-TRANSLATE_CMD += -x objective-c++
+TRANSLATE_ARGS += -x objective-c++
 endif
-
-$(TRANSLATE_EXE): $(TRANSLATE_EXE_DEP)
-	@:
-
-translate: $(TRANSLATE_TARGET)
-	@:
-
-translate_dependencies:
-	@:
-
-TRANSLATE_NON_JAVA_PREREQ = $(TRANSLATE_EXE) $(TRANSLATE_DEPENDENCIES) translate_force
-
-# Resolved sources within the translate target.
-TRANSLATE_JAVA_PREREQ = $(filter-out $(TRANSLATE_NON_JAVA_PREREQ) translate_force,$^)
-
-# Find any files that may have been added to the list since the last translation
-TRANSLATE_LAST_FILES := $(shell if [ -e $(TRANSLATE_TARGET) ]; then cat $(TRANSLATE_TARGET); fi)
-TRANSLATE_NEW_FILES = $(filter-out $(TRANSLATE_LAST_FILES),$(TRANSLATE_JAVA_PREREQ))
-
-TRANSLATE_MAKE_FULL_LIST = $(if $(filter $(TRANSLATE_NON_JAVA_PREREQ),$?),\
-    $(TRANSLATE_JAVA_PREREQ),$(filter $? $(TRANSLATE_NEW_FILES),$(TRANSLATE_JAVA_PREREQ)))
 
 JAVA8_WILDCARDS := $(foreach file,$(TRANSLATE_JAVA8),%$(file))
 
-TRANSLATE_MAKE_LIST = $(filter-out $(JAVA8_WILDCARDS),$(TRANSLATE_MAKE_FULL_LIST))
-TRANSLATE_JAVA8_MAKE_LIST = $(filter $(JAVA8_WILDCARDS),$(TRANSLATE_MAKE_FULL_LIST))
+TRANSLATE_ARTIFACTS := $(call emit_translate_rule,\
+  $(TRANSLATE_NAME),\
+  $(GEN_OBJC_DIR),\
+  $(filter-out $(JAVA8_WILDCARDS),$(TRANSLATE_JAVA_FULL)),\
+  $(TRANSLATE_DEPENDENCIES),\
+  $(TRANSLATE_ARGS))
 
-$(TRANSLATE_TARGET): $(TRANSLATE_JAVA_FULL) $(TRANSLATE_NON_JAVA_PREREQ) | translate_dependencies
-	@mkdir -p $(GEN_OBJC_DIR)
-	$(call long_list_to_file,$(TRANSLATE_LIST),$(TRANSLATE_MAKE_LIST))
-	@if [ -s $(TRANSLATE_LIST) ]; then \
-	  echo translating $(TRANSLATE_NAME) sources; \
-	  $(TRANSLATE_CMD) @$(TRANSLATE_LIST); \
-	fi
-	$(call long_list_to_file,$(TRANSLATE_JAVA8_LIST),$(TRANSLATE_JAVA8_MAKE_LIST))
-	@if [ -s $(TRANSLATE_JAVA8_LIST) ]; then \
-	  echo translating $(TRANSLATE_NAME) java8 sources; \
-	  echo translating $(TRANSLATE_JAVA8_LIST); \
-	  $(TRANSLATE_CMD) -source 8 -Xforce-incomplete-java8 @$(TRANSLATE_JAVA8_LIST); \
-	fi
-	$(call long_list_to_file,$@,$(TRANSLATE_JAVA_PREREQ))
+ifdef TRANSLATE_JAVA8
+TRANSLATE_ARTIFACTS += $(call emit_translate_rule,\
+  $(TRANSLATE_NAME)_java8,\
+  $(GEN_OBJC_DIR),\
+  $(filter $(JAVA8_WILDCARDS),$(TRANSLATE_JAVA_FULL)),\
+  $(TRANSLATE_DEPENDENCIES),\
+  $(TRANSLATE_ARGS) -source 8 -Xforce-incomplete-java8)
+endif
 
-translate_force:
+translate: $(TRANSLATE_ARTIFACTS)
 	@:
 
-$(TRANSLATE_OBJC): $(TRANSLATE_TARGET)
+$(TRANSLATE_OBJC): $(TRANSLATE_ARTIFACTS)
 	@:
