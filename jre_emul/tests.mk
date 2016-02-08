@@ -599,6 +599,9 @@ SUITE_SOURCES = \
     org/apache/harmony/logging/tests/java/util/logging/AllTests.java \
     org/json/SmallTests.java \
 
+ARC_TEST_SOURCES = \
+    com/google/j2objc/arc/EnumTest.java
+
 JAVA8_TEST_SOURCES := \
     com/google/j2objc/java8/CreationReferenceTest.java \
     com/google/j2objc/java8/ExpressionMethodReferenceTest.java \
@@ -610,7 +613,7 @@ JAVA8_TEST_SOURCES := \
 JAVA8_SUITE_SOURCES = \
     com/google/j2objc/java8/SmallTests.java \
 
-ALL_TEST_SOURCES = $(TEST_SOURCES) $(JAVA8_TEST_SOURCES)
+ALL_TEST_SOURCES = $(TEST_SOURCES) $(JAVA8_TEST_SOURCES) $(ARC_TEST_SOURCES)
 ALL_SUITE_SOURCES = $(SUITE_SOURCES) $(JAVA8_SUITE_SOURCES)
 
 # These tests fail when run on Travis-CI continuous build, probably due to VM sandbox restrictions.
@@ -723,13 +726,20 @@ TEST_RESOURCES = \
 
 JUNIT_DIST_JAR = $(DIST_JAR_DIR)/$(JUNIT_JAR)
 
-TEST_JOCC := ../dist/j2objcc -g -I$(TESTS_DIR) -I$(CLASS_DIR) -I$(EMULATION_CLASS_DIR) \
-    -ljre_emul -l junit -Werror -L$(TESTS_DIR) -l test-support
+INCLUDE_DIRS = $(TESTS_DIR) $(TESTS_DIR)/arc $(CLASS_DIR) $(EMULATION_CLASS_DIR)
+INCLUDE_ARGS = $(INCLUDE_DIRS:%=-I%)
+
+TEST_JOCC := ../dist/j2objcc -g
+LINK_FLAGS := -ljre_emul -l junit -L$(TESTS_DIR) -l test-support
+COMPILE_FLAGS := $(INCLUDE_ARGS) -c -Wno-objc-redundant-literal-use -Wno-format -Werror \
+  -Wno-parentheses
+
 ifeq ($(OBJCPP_BUILD), YES)
-TEST_JOCC += -lc++ -ObjC++
+LINK_FLAGS += -lc++ -ObjC++
 else
-TEST_JOCC += -ObjC
+LINK_FLAGS += -ObjC
 endif
+
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
@@ -738,8 +748,10 @@ TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
     --prefixes Tests/resources/prefixes.properties
 TRANSLATE_SOURCES = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_CLASS).java
 TRANSLATE_SOURCES_JAVA8 = $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES)
+TRANSLATE_SOURCES_ARC = $(ARC_TEST_SOURCES)
 TRANSLATED_OBJC = $(TRANSLATE_SOURCES:%.java=$(TESTS_DIR)/%.m)
 TRANSLATED_OBJC_JAVA8 = $(TRANSLATE_SOURCES_JAVA8:%.java=$(TESTS_DIR)/%.m)
+TRANSLATED_OBJC_ARC = $(TRANSLATE_SOURCES_ARC:%.java=$(TESTS_DIR)/arc/%.m)
 
 TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   jre_emul_tests,\
@@ -755,7 +767,14 @@ TRANSLATE_ARTIFACT_JAVA8 := $(call emit_translate_rule,\
   ,\
   $(TRANSLATE_ARGS) -source 8 -Xforce-incomplete-java8)
 
-TRANSLATE_ARTIFACTS = $(TRANSLATE_ARTIFACT) $(TRANSLATE_ARTIFACT_JAVA8)
+TRANSLATE_ARTIFACT_ARC := $(call emit_translate_rule,\
+  jre_emul_tests_arc,\
+  $(TESTS_DIR)/arc,\
+  $(ARC_TEST_SOURCES),\
+  ,\
+  $(TRANSLATE_ARGS) -use-arc)
+
+TRANSLATE_ARTIFACTS = $(TRANSLATE_ARTIFACT) $(TRANSLATE_ARTIFACT_JAVA8) $(TRANSLATE_ARTIFACT_ARC)
 
 $(TRANSLATED_OBJC): $(TRANSLATE_ARTIFACT)
 	@:
@@ -763,9 +782,11 @@ $(TRANSLATED_OBJC): $(TRANSLATE_ARTIFACT)
 $(TRANSLATED_OBJC_JAVA8): $(TRANSLATE_ARTIFACT_JAVA8)
 	@:
 
+$(TRANSLATED_OBJC_ARC): $(TRANSLATE_ARTIFACT_ARC)
+	@:
+
 ifdef GENERATE_TEST_COVERAGE
-GCOV_FLAGS = -ftest-coverage -fprofile-arcs
-TEST_JOCC += $(GCOV_FLAGS)
+TEST_JOCC += -ftest-coverage -fprofile-arcs
 endif
 
 all-tests: test run-xctests
@@ -885,11 +906,14 @@ $(TESTS_DIR):
 	@mkdir -p $@
 
 $(TESTS_DIR)/%.o: $(TESTS_DIR)/%.m | $(TRANSLATE_ARTIFACTS)
-	@mkdir -p `dirname $@`
+	@mkdir -p $(@D)
 	@echo j2objcc -c $?
-	@../dist/j2objcc -g -I$(TESTS_DIR) -I$(CLASS_DIR) -I$(EMULATION_CLASS_DIR) -c $? -o $@ \
-	  -Wno-objc-redundant-literal-use -Wno-format \
-	  -Werror -Wno-parentheses $(GCOV_FLAGS)
+	@$(TEST_JOCC) $(COMPILE_FLAGS) -o $@ $<
+
+$(TESTS_DIR)/%.o: $(TESTS_DIR)/arc/%.m | $(TRANSLATE_ARTIFACTS)
+	@mkdir -p $(@D)
+	@echo j2objcc -c $?
+	@$(TEST_JOCC) $(COMPILE_FLAGS) -fobjc-arc -o $@ $<
 
 $(TESTS_DIR)/%.o: $(ANDROID_NATIVE_TEST_DIR)/%.cpp | $(TESTS_DIR)
 	cc -g -I$(EMULATION_CLASS_DIR) -x objective-c++ -c $? -o $@ \
@@ -898,7 +922,7 @@ $(TESTS_DIR)/%.o: $(ANDROID_NATIVE_TEST_DIR)/%.cpp | $(TESTS_DIR)
 $(TEST_BIN): $(TEST_OBJS) $(SUPPORT_LIB) \
         ../dist/lib/macosx/libjre_emul.a ../dist/lib/macosx/libjunit.a
 	@echo Building test executable...
-	@$(TEST_JOCC) -o $@ $(TEST_OBJS)
+	@$(TEST_JOCC) $(LINK_FLAGS) -o $@ $(TEST_OBJS)
 
 $(ALL_TESTS_SOURCE): tests.mk
 	@mkdir -p $(@D)
