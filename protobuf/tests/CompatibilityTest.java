@@ -530,23 +530,15 @@ public class CompatibilityTest extends ProtobufTest {
     assertEquals(9, TypicalData.EnumType.VALUE9.getNumber());
   }
 
-  public void testEnumValueOf() throws Exception {
-    assertEquals(TypicalData.EnumType.VALUE1, TypicalData.EnumType.forNumber(1));
-    assertEquals(TypicalData.EnumType.VALUE2, TypicalData.EnumType.forNumber(2));
-    assertEquals(TypicalData.EnumType.VALUE3, TypicalData.EnumType.forNumber(3));
-    assertEquals(TypicalData.EnumType.VALUE4, TypicalData.EnumType.forNumber(4));
-    assertEquals(TypicalData.EnumType.VALUE9, TypicalData.EnumType.forNumber(9));
-    assertNull(TypicalData.EnumType.forNumber(5));
-  }
 
-  public void testEnumForNumber() throws Exception {
-    assertEquals(TypicalData.EnumType.VALUE1, TypicalData.EnumType.forNumber(1));
-    assertEquals(TypicalData.EnumType.VALUE2, TypicalData.EnumType.forNumber(2));
-    assertEquals(TypicalData.EnumType.VALUE3, TypicalData.EnumType.forNumber(3));
-    assertEquals(TypicalData.EnumType.VALUE4, TypicalData.EnumType.forNumber(4));
-    assertEquals(TypicalData.EnumType.VALUE9, TypicalData.EnumType.forNumber(9));
-    assertNull(TypicalData.EnumType.forNumber(5));
-  }
+ public void testEnumValueOf() throws Exception {
+   assertEquals(TypicalData.EnumType.VALUE1, TypicalData.EnumType.valueOf(1));
+   assertEquals(TypicalData.EnumType.VALUE2, TypicalData.EnumType.valueOf(2));
+   assertEquals(TypicalData.EnumType.VALUE3, TypicalData.EnumType.valueOf(3));
+   assertEquals(TypicalData.EnumType.VALUE4, TypicalData.EnumType.valueOf(4));
+   assertEquals(TypicalData.EnumType.VALUE9, TypicalData.EnumType.valueOf(9));
+   assertNull(TypicalData.EnumType.valueOf(5));
+ }
 
   public void testEnumValueOfWithString() throws Exception {
     assertEquals(TypicalData.EnumType.VALUE1, TypicalData.EnumType.valueOf("VALUE1"));
