@@ -23,10 +23,6 @@
 
 @class IOSClass;
 
-// TODO(kstanger): Remove this after users have migrated
-#define J2OBJC_RENAME_ALIASES 1
-@compatibility_alias JavaLangThrowable NSException;
-
 #ifndef __has_feature
 #define __has_feature(x) 0  // Compatibility with non-clang compilers.
 #endif

@@ -29,10 +29,6 @@
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
-
-// TODO(tball): remove when clients have updated to NSException mapping.
-#import "java/lang/Throwable.h"
-
 #endif // __OBJC__
 
 #endif // _JreEmulation_H_

@@ -168,7 +168,6 @@ PUBLIC_EMULATION_HEADERS = \
     J2ObjC_source.h \
     J2ObjC_types.h \
     JavaObject.h \
-    java/lang/Throwable.h \
     JreEmulation.h \
     $(IOS_PUBLIC_OBJS:.o=.h) \
     $(IOS_JAVA_OBJS:.o=.h)
