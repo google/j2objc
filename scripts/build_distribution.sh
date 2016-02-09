@@ -44,4 +44,4 @@ if [ ${ERR} -ne 0 ]; then
 fi
 
 mv dist ${DISTRIBUTION_NAME}
-zip -r ${DISTRIBUTION_NAME}.zip ${DISTRIBUTION_NAME}
+zip -ry ${DISTRIBUTION_NAME}.zip ${DISTRIBUTION_NAME}
