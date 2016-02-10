@@ -257,13 +257,5 @@ J2OBJC_TYPE_LITERAL_HEADER(NSException)
 @interface JreThrowableCategoryDummy : NSObject
 @end
 
-//TODO(tball): remove when clients have updated to new mapping.
-#ifdef J2OBJC_RENAME_ALIASES
-#define withJavaLangThrowable withNSException
-#define initWithJavaLangThrowable initWithNSException
-#define addSuppressedWithJavaLangThrowable addSuppressedWithNSException
-#define initCauseWithJavaLangThrowable initCauseWithNSException
-#endif // J2OBJC_RENAME_ALIASES
-
 #pragma clang diagnostic pop
 #endif // _NSException_JavaThrowable_H_

@@ -444,9 +444,7 @@ public class NameTable {
 
   // TODO(kstanger): See whether the logic in this method can be simplified.
   //     Also, what about type variables?
-  // TODO(kstanger): Remove alias param.
-  private String getArrayTypeParameterKeyword(
-      ITypeBinding elementType, int dimensions, boolean alias) {
+  private String getArrayTypeParameterKeyword(ITypeBinding elementType, int dimensions) {
     if (elementType.isParameterizedType()) {
       elementType = elementType.getErasure();
     }
@@ -459,36 +457,30 @@ public class NameTable {
         elementType = bound;
       }
     }
-    String name = getFullName(elementType, alias) + "Array";
+    String name = getFullName(elementType) + "Array";
     if (dimensions > 1) {
       name += dimensions;
     }
     return name;
   }
 
-  // TODO(kstanger): Remove alias param.
-  private String getParameterTypeKeyword(ITypeBinding type, boolean alias) {
+  private String getParameterTypeKeyword(ITypeBinding type) {
     if (typeEnv.isIdType(type) || type.isTypeVariable()) {
       ITypeBinding[] bounds = type.getTypeBounds();
       if (bounds.length > 0) {
-        return getParameterTypeKeyword(bounds[0], alias);
+        return getParameterTypeKeyword(bounds[0]);
       }
       return ID_TYPE;
     } else if (type.isPrimitive()) {
       return type.getName();
     } else if (type.isArray()) {
-      return getArrayTypeParameterKeyword(type.getElementType(), type.getDimensions(), alias);
+      return getArrayTypeParameterKeyword(type.getElementType(), type.getDimensions());
     }
-    return getFullName(type, alias);
+    return getFullName(type);
   }
 
   public String parameterKeyword(ITypeBinding type) {
-    return parameterKeyword(type, false);
-  }
-
-  // TODO(kstanger): Remove alias param.
-  public String parameterKeyword(ITypeBinding type, boolean alias) {
-    return "with" + capitalize(getParameterTypeKeyword(type, alias));
+    return "with" + capitalize(getParameterTypeKeyword(type));
   }
 
   private static final Pattern SELECTOR_VALIDATOR = Pattern.compile("\\w+|(\\w+\\:)+");
@@ -510,13 +502,12 @@ public class NameTable {
     return name;
   }
 
-  // TODO(kstanger): Remove alias param.
-  private String addParamNames(IMethodBinding method, String name, char delim, boolean alias) {
+  private String addParamNames(IMethodBinding method, String name, char delim) {
     method = method.getMethodDeclaration();
     StringBuilder sb = new StringBuilder(name);
     ITypeBinding[] paramTypes = method.getParameterTypes();
     for (int i = 0; i < paramTypes.length; i++) {
-      String keyword = parameterKeyword(paramTypes[i], alias);
+      String keyword = parameterKeyword(paramTypes[i]);
       if (i == 0) {
         keyword = capitalize(keyword);
       }
@@ -526,18 +517,13 @@ public class NameTable {
   }
 
   public String getMethodSelector(IMethodBinding method) {
-    return getMethodSelector(method, false);
-  }
-
-  // TODO(kstanger): Remove alias param
-  public String getMethodSelector(IMethodBinding method, boolean alias) {
     if (method instanceof IOSMethodBinding) {
       return ((IOSMethodBinding) method).getSelector();
     }
     if (method.isConstructor() || BindingUtil.isStatic(method)) {
-      return selectorForOriginalBinding(method, alias);
+      return selectorForOriginalBinding(method);
     }
-    return selectorForOriginalBinding(getOriginalMethodBindings(method).get(0), alias);
+    return selectorForOriginalBinding(getOriginalMethodBindings(method).get(0));
   }
 
   private String getRenamedMethodName(IMethodBinding method) {
@@ -554,22 +540,16 @@ public class NameTable {
   }
 
   public String selectorForMethodName(IMethodBinding method, String name) {
-    return selectorForMethodName(method, name, false);
-  }
-
-  // TODO(kstanger): Remove alias param.
-  public String selectorForMethodName(IMethodBinding method, String name, boolean alias) {
     if (name.contains(":")) {
       return name;
     }
-    return addParamNames(method, name, ':', alias);
+    return addParamNames(method, name, ':');
   }
 
-  // TODO(kstanger): Remove alias param
-  private String selectorForOriginalBinding(IMethodBinding method, boolean alias) {
+  private String selectorForOriginalBinding(IMethodBinding method) {
     String selector = getRenamedMethodName(method);
     return selectorForMethodName(
-        method, selector != null ? selector : getMethodName(method), alias);
+        method, selector != null ? selector : getMethodName(method));
   }
 
   /**
@@ -584,9 +564,9 @@ public class NameTable {
     }
     List<IMethodBinding> originalMethods = getOriginalMethodBindings(method);
     List<String> extraSelectors = Lists.newArrayList();
-    String actualSelector = selectorForOriginalBinding(originalMethods.get(0), false);
+    String actualSelector = selectorForOriginalBinding(originalMethods.get(0));
     for (int i = 1; i < originalMethods.size(); i++) {
-      String selector = selectorForOriginalBinding(originalMethods.get(i), false);
+      String selector = selectorForOriginalBinding(originalMethods.get(i));
       if (!selector.equals(actualSelector)) {
         extraSelectors.add(selector);
       }
@@ -612,8 +592,7 @@ public class NameTable {
   public String getMethodReferenceName(IMethodBinding method, IMethodBinding functionalInterface) {
     if (method.isVarargs()) {
       return getFullName(method.getDeclaringClass()) + '_'
-          + addParamNames(functionalInterface.getMethodDeclaration(), getMethodName(method), '_',
-                          false);
+          + addParamNames(functionalInterface.getMethodDeclaration(), getMethodName(method), '_');
     } else {
       return getFullFunctionName(method);
     }
@@ -676,7 +655,7 @@ public class NameTable {
     if (name != null) {
       return name.replaceAll(":", "_");
     } else {
-      return addParamNames(method, getMethodName(method), '_', false);
+      return addParamNames(method, getMethodName(method), '_');
     }
   }
 
@@ -899,16 +878,7 @@ public class NameTable {
    * name is "JavaUtilArrayList_ListItr".
    */
   public String getFullName(ITypeBinding binding) {
-    return getFullName(binding, false);
-  }
-
-  // TODO(kstanger): Remove alias param.
-  public String getFullName(ITypeBinding binding, boolean alias) {
     binding = typeEnv.mapType(binding.getErasure());  // Make sure type variables aren't included.
-
-    if (alias && binding.getName().equals("NSException")) {
-      return "JavaLangThrowable";
-    }
 
     // Use ObjectiveCType annotation, if it exists.
     IAnnotationBinding annotation = BindingUtil.getAnnotation(binding, ObjectiveCName.class);
