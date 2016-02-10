@@ -204,7 +204,7 @@ getConstructorWithClasses:(IOSClass *)firstClass, ... {
     rawValue->asInt = [(JavaLangInteger *) value intValue];
     fromType = [IOSClass intClass];
   } else if ([value isKindOfClass:[JavaLangLong class]]) {
-    rawValue->asLong = [(JavaLangLong *) value longValue];
+    rawValue->asLong = [(JavaLangLong *) value longLongValue];
     fromType = [IOSClass longClass];
   } else if ([value isKindOfClass:[JavaLangShort class]]) {
     rawValue->asShort = [(JavaLangShort *) value shortValue];

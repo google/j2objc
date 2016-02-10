@@ -63,6 +63,10 @@ public class ReflectionTest extends TestCase {
     }
   }
 
+  static class TestFields {
+    public long longField;
+  }
+
   // Assert equals method can be found using reflection. Because it's a mapped
   // method with a parameter, reflection was trying to find "equalsWithId:"
   // instead of "isEqual:".
@@ -103,5 +107,13 @@ public class ReflectionTest extends TestCase {
     Method method = ParameterizedReturnTest.class.getMethod("getStringList");
     Type returnType = method.getGenericReturnType();
     assertTrue(returnType instanceof ParameterizedType);
+  }
+
+  // Regression for Issue 705.
+  public void testAssignLong() throws Exception {
+    TestFields o = new TestFields();
+    Field field = TestFields.class.getField("longField");
+    field.set(o, 3000000000L);
+    assertEquals(3000000000L, o.longField);
   }
 }
