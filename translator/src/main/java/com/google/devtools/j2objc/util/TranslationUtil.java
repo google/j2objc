@@ -25,6 +25,7 @@ import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
+import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
@@ -120,7 +121,15 @@ public final class TranslationUtil {
       case CLASS_INSTANCE_CREATION:
         ((ClassInstanceCreation) node).setHasRetainedResult(true);
         return TreeUtil.remove(node);
-      case METHOD_INVOCATION:
+      case FUNCTION_INVOCATION: {
+        FunctionInvocation invocation = (FunctionInvocation) node;
+        if (invocation.getFunctionBinding().getRetainedResultName() != null) {
+          invocation.setHasRetainedResult(true);
+          return TreeUtil.remove(node);
+        }
+        return null;
+      }
+      case METHOD_INVOCATION: {
         MethodInvocation invocation = (MethodInvocation) node;
         Expression expr = invocation.getExpression();
         IMethodBinding method = invocation.getMethodBinding();
@@ -128,7 +137,8 @@ public final class TranslationUtil {
             && ((IOSMethodBinding) method).getSelector().equals(NameTable.AUTORELEASE_METHOD)) {
           return TreeUtil.remove(expr);
         }
-        // else fall-through
+        return null;
+      }
       default:
         return null;
     }

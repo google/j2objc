@@ -235,8 +235,8 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "- (void)bar {\n  [this$1_ foo]");
     assertTranslation(translation,
         "- (Test_Bar_Inner *)makeInner {\n"
-        + "  return [new_Test_Bar_Inner_initWithTest_Bar_(self) autorelease]");
-    assertTranslation(translation, "[new_Test_Bar_Inner_initWithTest_Bar_(bar) autorelease];");
+        + "  return create_Test_Bar_Inner_initWithTest_Bar_(self);");
+    assertTranslation(translation, "create_Test_Bar_Inner_initWithTest_Bar_(bar);");
   }
 
   public void testMultipleThisReferences() throws IOException {
@@ -253,7 +253,7 @@ public class InnerClassExtractorTest extends GenerationTest {
 
     String translation = translateSourceFile(source, "A", "A.m");
     // Anonymous class constructor in Inner.blah()
-    assertTranslation(translation, "new_A_Inner_$1_initWithA_Inner_(self)");
+    assertTranslation(translation, "create_A_Inner_$1_initWithA_Inner_(self)");
     // A.Inner.x referred to in anonymous Foo
     assertTranslation(translation, "this$0_->x_ = 2");
     // A.x referred to in anonymous Foo
@@ -281,7 +281,7 @@ public class InnerClassExtractorTest extends GenerationTest {
 
     String translation = translateSourceFile(source, "A", "A.m");
     // Anonymous class constructor in Inner.blah()
-    assertTranslation(translation, "new_A_Inner_$1_initWithA_Inner_(self)");
+    assertTranslation(translation, "create_A_Inner_$1_initWithA_Inner_(self)");
     // A.x referred to in A.Inner.
     assertTranslation(translation, "this$0_->x_ = 2");
     // A.Inner.x referred to in anonymous Foo.
@@ -424,7 +424,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void Test_mainWithNSStringArray_(IOSObjectArray *args) {",
         "Test_initialize();",
-        "Test_B *b = [new_Test_B_initWithTest_([new_Test_init() autorelease]) autorelease];");
+        "Test_B *b = create_Test_B_initWithTest_(create_Test_init());");
 
     // Verify that BInner's constructor takes a B instance and correctly calls
     // the super constructor.
@@ -464,7 +464,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslatedLines(translation,
         "void Test_mainWithNSStringArray_(IOSObjectArray *args) {",
         "Test_initialize();",
-        "Test_B *b = [new_Test_B_initWithTest_([new_Test_init() autorelease]) autorelease];");
+        "Test_B *b = create_Test_B_initWithTest_(create_Test_init());");
 
     // Verify that BInner's constructor takes a B instance and correctly calls
     // the super constructor.
@@ -518,7 +518,7 @@ public class InnerClassExtractorTest extends GenerationTest {
   public void testInnerClassConstructor() throws IOException {
     String source = "public class A { class B { Object test() { return new B(); }}}";
     String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation, "return [new_A_B_initWithA_(this$0_) autorelease];");
+    assertTranslation(translation, "return create_A_B_initWithA_(this$0_);");
   }
 
   public void testMethodInnerClassWithSameName() throws IOException {
@@ -535,8 +535,8 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "  class Inner { Inner(int i) { } Inner foo() { return new Inner(1); } } "
         + "  public Inner bar() { return new Inner(2); } }",
         "Test", "Test.m");
-    assertTranslation(translation, "new_Test_Inner_initWithTest_withInt_(this$0_, 1)");
-    assertTranslation(translation, "new_Test_Inner_initWithTest_withInt_(self, 2)");
+    assertTranslation(translation, "create_Test_Inner_initWithTest_withInt_(this$0_, 1)");
+    assertTranslation(translation, "create_Test_Inner_initWithTest_withInt_(self, 2)");
   }
 
   public void testInnerThisReferenceInInnerAsFieldAccess() throws IOException {
@@ -568,7 +568,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertNotInTranslation(translation, "this$0_");
     translation = getTranslatedFile("A.m");
     assertNotInTranslation(translation, "this$0_");
-    assertTranslation(translation, "A_fooWithId_([new_A_$1_init() autorelease])");
+    assertTranslation(translation, "A_fooWithId_(create_A_$1_init())");
   }
 
   // Verify that an anonymous class assigned to a static field does not
@@ -603,7 +603,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     assertTranslation(translation, "id<JavaUtilCollection> val$c_;");
     assertFalse(translation.contains("this$0_"));
     assertTranslation(translation,
-        "return [new_A_$1_initWithJavaUtilCollection_(c) autorelease];");
+        "return create_A_$1_initWithJavaUtilCollection_(c);");
     assertTranslation(translation,
         "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0 {");
   }
@@ -628,7 +628,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "  void foo() { new C(); }\n"
         + "}\n";
     String translation = translateSourceFile(source, "A", "A.m");
-    assertTranslation(translation, "new_B_C_initWithB_(self)");
+    assertTranslation(translation, "create_B_C_initWithB_(self)");
   }
 
   public void testCallInnerConstructorOfParameterizedOuterClass() throws IOException {
@@ -638,8 +638,7 @@ public class InnerClassExtractorTest extends GenerationTest {
     addSourceFile(outerSource, "Outer.java");
     addSourceFile(callerSource, "A.java");
     String translation = translateSourceFile("A", "A.m");
-    assertTranslation(translation,
-        "[new_Outer_Inner_initWithOuter_withId_(self, @\"test\") autorelease];");
+    assertTranslation(translation, "create_Outer_Inner_initWithOuter_withId_(self, @\"test\");");
   }
 
   public void testNoOuterFieldAssignmentWhenCallingOtherConstructor() throws IOException {
@@ -672,7 +671,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "class Test { class Inner { Inner(int... i) {} } void test() { new Inner(1, 2, 3); } }",
         "Test", "Test.m");
     assertTranslation(translation,
-        "new_Test_Inner_initWithTest_withIntArray_(self, "
+        "create_Test_Inner_initWithTest_withIntArray_(self, "
         + "[IOSIntArray arrayWithInts:(jint[]){ 1, 2, 3 } count:3])");
   }
 
@@ -688,7 +687,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "  } "
         + "}", "Outer", "Outer.m");
 
-    assertTranslation(translation, "new_Outer_Inner1_initWithOuter_(outer$)");
+    assertTranslation(translation, "create_Outer_Inner1_initWithOuter_(outer$)");
   }
 
   public void testOuterReferenceInSuperConstructorInvocation() throws IOException {
@@ -767,7 +766,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         + "  } "
         + "  new Inner(); } }",
         "Test", "Test.m");
-    assertTranslation(translation, "new_Test_1Inner_initWithNSString_(s)");
+    assertTranslation(translation, "create_Test_1Inner_initWithNSString_(s)");
     assertTranslatedLines(translation,
         "void Test_1Inner_initWithNSString_(Test_1Inner *self, NSString *capture$0) {",
         "  Test_1Inner_initWithNSString_withInt_(self, capture$0, 0);",
@@ -794,7 +793,7 @@ public class InnerClassExtractorTest extends GenerationTest {
         "class Test { int test(final int i, Object o) { class Inner { Inner(Object... o) {} "
         + "int foo() { return i; } } return new Inner(o).foo(); } }", "Test", "Test.m");
     assertTranslation(translation,
-        "new_Test_1Inner_initWithInt_withNSObjectArray_(i, "
+        "create_Test_1Inner_initWithInt_withNSObjectArray_(i, "
         + "[IOSObjectArray arrayWithObjects:(id[]){ o } count:1 type:NSObject_class_()])");
     assertTranslation(translation,
         "void Test_1Inner_initWithInt_withNSObjectArray_("

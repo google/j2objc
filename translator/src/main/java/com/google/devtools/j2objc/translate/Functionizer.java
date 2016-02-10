@@ -170,6 +170,7 @@ public class Functionizer extends TreeVisitor {
   private FunctionBinding newAllocatingConstructorBinding(IMethodBinding method) {
     ITypeBinding declaringClass = method.getDeclaringClass();
     FunctionBinding binding = new FunctionBinding(
+        nameTable.getReleasingConstructorName(method),
         nameTable.getAllocatingConstructorName(method), declaringClass, declaringClass);
     binding.addParameters(method.getParameterTypes());
     return binding;
@@ -236,15 +237,11 @@ public class Functionizer extends TreeVisitor {
   public void endVisit(ClassInstanceCreation node) {
     IMethodBinding binding = node.getMethodBinding();
     ITypeBinding type = binding.getDeclaringClass();
-    FunctionInvocation invocation = new FunctionInvocation(
-        newAllocatingConstructorBinding(binding), type);
+    FunctionInvocation invocation =
+        new FunctionInvocation(newAllocatingConstructorBinding(binding), type);
+    invocation.setHasRetainedResult(node.hasRetainedResult() || Options.useARC());
     TreeUtil.moveList(node.getArguments(), invocation.getArguments());
-    Expression expression = invocation;
-    if (Options.useReferenceCounting() && !node.hasRetainedResult()) {
-      expression = new MethodInvocation(
-          IOSMethodBinding.newTypedInvocation(typeEnv.getAutoreleaseMethod(), type), expression);
-    }
-    node.replaceWith(expression);
+    node.replaceWith(invocation);
   }
 
   @Override
@@ -399,6 +396,7 @@ public class Functionizer extends TreeVisitor {
     if (Options.useARC()) {
       FunctionInvocation delegatingCall =
           new FunctionInvocation(newAllocatingConstructorBinding(binding), declaringClass);
+      delegatingCall.setHasRetainedResult(true);
       for (SingleVariableDeclaration param : function.getParameters()) {
         delegatingCall.getArguments().add(new SimpleName(param.getVariableBinding()));
       }

@@ -50,8 +50,7 @@ public class CastResolverTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("jint i = ((jint) [((NSException *) "
-        + "[new_NSException_init() autorelease]) hash]);", result);
+    assertEquals("jint i = ((jint) [create_NSException_init() hash]);", result);
   }
 
   // b/5872710: generic return type needs to be cast if chaining invocations.
@@ -160,11 +159,10 @@ public class CastResolverTest extends GenerationTest {
     assertTranslatedLines(translation,
         "- (id<Test_I>)test {",
         // Type cast must contain both "Test_C" and "Test_I".
-        "  [((Test_C<Test_I> *) nil_chk([self genericMethodWithId:[new_Test_Bar_init() autorelease]"
-          + " withId:[new_Test_Baz_init() autorelease]])) foo];",
+        "  [((Test_C<Test_I> *) nil_chk([self genericMethodWithId:create_Test_Bar_init()"
+          + " withId:create_Test_Baz_init()])) foo];",
         // No need for a cast because genericMethodWithId:withId: is declared to return "id".
-        "  return [self genericMethodWithId:[new_Test_Bar_init() autorelease]"
-          + " withId:[new_Test_Baz_init() autorelease]];",
+        "  return [self genericMethodWithId:create_Test_Bar_init() withId:create_Test_Baz_init()];",
         "}");
   }
 

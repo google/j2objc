@@ -28,6 +28,7 @@ public class FunctionInvocation extends Expression {
   private FunctionBinding functionBinding = null;
   // The context-specific known type of this expression.
   private ITypeBinding typeBinding = null;
+  private boolean hasRetainedResult = false;
   private final ChildList<Expression> arguments = ChildList.create(Expression.class, this);
 
   public FunctionInvocation(FunctionInvocation other) {
@@ -52,12 +53,20 @@ public class FunctionInvocation extends Expression {
   }
 
   public String getName() {
-    return functionBinding.getName();
+    return hasRetainedResult ? functionBinding.getRetainedResultName() : functionBinding.getName();
   }
 
   @Override
   public ITypeBinding getTypeBinding() {
     return typeBinding;
+  }
+
+  public boolean hasRetainedResult() {
+    return hasRetainedResult;
+  }
+
+  public void setHasRetainedResult(boolean hasRetainedResult) {
+    this.hasRetainedResult = hasRetainedResult;
   }
 
   public List<Expression> getArguments() {

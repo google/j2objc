@@ -36,13 +36,13 @@ public class OuterReferenceFixerTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test<T> { void test() { final Object o = null; class Inner { "
         + "public void foo() { o.toString(); } } new Inner(); } }", "Test", "Test.m");
-    assertTranslation(translation, "new_Test_1Inner_initWithId_(o)");
+    assertTranslation(translation, "create_Test_1Inner_initWithId_(o)");
   }
 
   public void testRecursiveConstructionOfLocalClass() throws IOException {
     String translation = translateSourceFile(
         "public class Test { void test(final Object bar) { "
         + "class Foo { void foo() { bar.toString(); new Foo(); } } } }", "Test", "Test.m");
-    assertTranslation(translation, "new_Test_1Foo_initWithTest_withId_(this$0_, val$bar_)");
+    assertTranslation(translation, "create_Test_1Foo_initWithTest_withId_(this$0_, val$bar_)");
   }
 }

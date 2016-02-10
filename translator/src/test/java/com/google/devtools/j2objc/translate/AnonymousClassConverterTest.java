@@ -73,7 +73,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     assertTranslation(impl,
         "- (instancetype)initWithBooleanArray:(IOSBooleanArray *)capture$0;");
     assertTranslation(impl, "IOSBooleanArray *bar = [IOSBooleanArray arrayWithLength:1];");
-    assertTranslation(impl, "new_Test_$1_initWithBooleanArray_(bar)");
+    assertTranslation(impl, "create_Test_$1_initWithBooleanArray_(bar)");
     assertTranslation(impl, "*IOSBooleanArray_GetRef(nil_chk(val$bar_), 0) = true;");
   }
 
@@ -114,7 +114,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "      System.out.println(test.toString());"
         + "    } }; } }", "Test", "Test.m");
     assertTranslation(translation,
-        "id<JavaLangRunnable> r = [new_Test_$1_initWithId_(test) autorelease];");
+        "id<JavaLangRunnable> r = create_Test_$1_initWithId_(test);");
     assertTranslatedLines(translation,
         "void Test_$1_initWithId_(Test_$1 *self, id capture$0) {",
         "  JreStrongAssign(&self->val$test_, capture$0);",
@@ -132,7 +132,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "      System.out.println(foo.toString());"
         + "    } }; } }", "Test", "Test.m");
     assertTranslation(translation,
-        "id<JavaLangRunnable> r = [new_Test_$1_initWithId_(foo) autorelease];");
+        "id<JavaLangRunnable> r = create_Test_$1_initWithId_(foo);");
     assertTranslatedLines(translation,
         "void Test_$1_initWithId_(Test_$1 *self, id capture$0) {",
         "  JreStrongAssign(&self->val$foo_, capture$0);",
@@ -256,7 +256,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify constructor takes both outer field and var.
     String translation = generateFromUnit(unit, "Test.m");
-    assertTranslation(translation, "r2 = [new_Test_$1_$1_initWithJavaLangInteger_(i) autorelease]");
+    assertTranslation(translation, "r2 = create_Test_$1_$1_initWithJavaLangInteger_(i)");
   }
 
   public void testMethodVarInAnonymousClass() throws IOException {
@@ -285,7 +285,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var is passed to constructor.
     String translation = generateFromUnit(unit, "Test.m");
-    assertTranslation(translation, "r = [new_Test_$1_initWithJavaLangInteger_(i) autorelease]");
+    assertTranslation(translation, "r = create_Test_$1_initWithJavaLangInteger_(i)");
   }
 
   public void testMethodVarInSwitch() throws IOException {
@@ -314,7 +314,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
 
     // Verify method var is passed to constructor.
     String translation = generateFromUnit(unit, "Test.m");
-    assertTranslation(translation, "r = [new_Test_$1_initWithJavaLangInteger_(i) autorelease]");
+    assertTranslation(translation, "r = create_Test_$1_initWithJavaLangInteger_(i)");
   }
 
   public void testAnonymousClassField() throws IOException {
@@ -356,7 +356,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
         + "}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "new_Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_(self, b, b, 1)");
+        "create_Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_(self, b, b, 1)");
     assertTranslatedLines(translation,
         "void Test_A_$1_initWithTest_A_withTest_B_withTest_B_withInt_("
           + "Test_A_$1 *self, Test_A *outer$, Test_B *capture$0, Test_B *superOuter$, "
@@ -471,7 +471,7 @@ public class AnonymousClassConverterTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test<T> { Test(T t) {} void test() { new Test<String>(\"foo\") {}; } }",
         "Test", "Test.m");
-    assertTranslation(translation, "new_Test_$1_initWithNSString_(@\"foo\")");
+    assertTranslation(translation, "create_Test_$1_initWithNSString_(@\"foo\")");
     assertTranslation(translation, "- (instancetype)initWithNSString:(NSString *)arg$0 {");
     assertTranslatedLines(translation,
         "void Test_$1_initWithNSString_(Test_$1 *self, NSString *arg$0) {",
@@ -487,12 +487,12 @@ public class AnonymousClassConverterTest extends GenerationTest {
         "Test", "Test.m");
     // check the invocations.
     assertTranslation(translation,
-        "[new_Test_$1_initWithNSString_withNSObjectArray_(@\"%s %s\", "
+        "create_Test_$1_initWithNSString_withNSObjectArray_(@\"%s %s\", "
         + "[IOSObjectArray arrayWithObjects:(id[]){ @\"1\", @\"2\" } count:2 "
-        + "type:NSObject_class_()]) autorelease];");
+        + "type:NSObject_class_()]);");
     assertTranslation(translation,
-        "[new_Test_$2_initWithNSString_withNSObjectArray_(@\"foo\", "
-        + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]) autorelease];");
+        "create_Test_$2_initWithNSString_withNSObjectArray_(@\"foo\", "
+        + "[IOSObjectArray arrayWithLength:0 type:NSObject_class_()]);");
     // check the generated constructors.
     assertTranslatedLines(translation,
         "void Test_$1_initWithNSString_withNSObjectArray_("

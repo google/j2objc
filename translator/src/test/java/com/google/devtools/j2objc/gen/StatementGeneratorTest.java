@@ -91,7 +91,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(1, stmts.size());
     String result = generateStatement(stmts.get(0));
-    assertEquals("[new_JavaLangException_initWithNSString_(@\"test\") autorelease];", result);
+    assertEquals("create_JavaLangException_initWithNSString_(@\"test\");", result);
   }
 
   public void testParameterTranslation() throws IOException {
@@ -99,8 +99,7 @@ public class StatementGeneratorTest extends GenerationTest {
     List<Statement> stmts = translateStatements(source);
     assertEquals(2, stmts.size());
     String result = generateStatement(stmts.get(1));
-    assertEquals(
-        "[new_JavaLangException_initWithNSException_(cause) autorelease];", result);
+    assertEquals("create_JavaLangException_initWithNSException_(cause);", result);
   }
 
   public void testCastTranslation() throws IOException {
@@ -437,7 +436,7 @@ public class StatementGeneratorTest extends GenerationTest {
         + "  public T nextElement() { return it.next(); }}; }}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "return [new_Test_$1_initWithJavaUtilCollection_(collection) autorelease];");
+        "return create_Test_$1_initWithJavaUtilCollection_(collection);");
     assertTranslation(translation,
         "- (instancetype)initWithJavaUtilCollection:(id<JavaUtilCollection>)capture$0;");
     assertTranslation(translation,
@@ -627,7 +626,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "public class A { int x; class Inner { int y; Inner(int i) { y = i + x; }}"
         + "public Inner test() { return this.new Inner(3); }}",
         "A", "A.m");
-    assertTranslation(translation, "return [new_A_Inner_initWithA_withInt_(self, 3) autorelease];");
+    assertTranslation(translation, "return create_A_Inner_initWithA_withInt_(self, 3);");
   }
 
   public void testNewFieldNotRetained() throws IOException {
@@ -747,7 +746,7 @@ public class StatementGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class A { class B {} static B test() { return new A().new B(); }}",
         "A", "A.m");
-    assertTranslation(translation, "[new_A_B_initWithA_([new_A_init() autorelease]) autorelease]");
+    assertTranslation(translation, "create_A_B_initWithA_(create_A_init())");
   }
 
   public void testSuperFieldAccess() throws IOException {
@@ -1456,8 +1455,8 @@ public class StatementGeneratorTest extends GenerationTest {
         + "    return br.readLine(); } }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
-        + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
+        "JavaIoBufferedReader *br = create_JavaIoBufferedReader_initWithJavaIoReader_("
+        + "create_JavaIoFileReader_initWithNSString_(path));",
         "NSException *__primaryException1 = nil;",
         "@try {",
         "  return [br readLine];",
@@ -1490,12 +1489,12 @@ public class StatementGeneratorTest extends GenerationTest {
         + "    return br.readLine(); } }}",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
-            + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
+        "JavaIoBufferedReader *br = create_JavaIoBufferedReader_initWithJavaIoReader_("
+            + "create_JavaIoFileReader_initWithNSString_(path));",
         "NSException *__primaryException2 = nil;",
         "@try {",
-        " JavaIoBufferedReader *br2 = [new_JavaIoBufferedReader_initWithJavaIoReader_("
-            + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
+        " JavaIoBufferedReader *br2 = create_JavaIoBufferedReader_initWithJavaIoReader_("
+            + "create_JavaIoFileReader_initWithNSString_(path));",
         " NSException *__primaryException1 = nil;",
         " @try {",
         "  return [br readLine];",
@@ -1550,8 +1549,8 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "@try {",
-        " JavaIoBufferedReader *br = [new_JavaIoBufferedReader_initWithJavaIoReader_("
-        + "[new_JavaIoFileReader_initWithNSString_(path) autorelease]) autorelease];",
+        " JavaIoBufferedReader *br = create_JavaIoBufferedReader_initWithJavaIoReader_("
+        + "create_JavaIoFileReader_initWithNSString_(path));",
         " NSException *__primaryException1 = nil;",
         " @try {",
         "  return [br readLine];",

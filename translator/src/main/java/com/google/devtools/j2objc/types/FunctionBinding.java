@@ -27,19 +27,33 @@ import java.util.List;
 public class FunctionBinding {
 
   private final String name;
+  // Some functions (eg. constructors) have an equivalent function that returns
+  // a retained result.
+  private final String retainedResultName;
   private final ITypeBinding returnType;
   private final ITypeBinding declaringClass;
   private List<ITypeBinding> parameterTypes = new ArrayList<>();
   private boolean isVarargs = false;
 
-  public FunctionBinding(String name, ITypeBinding returnType, ITypeBinding declaringClass) {
+  public FunctionBinding(
+      String name, String retainedResultName, ITypeBinding returnType,
+      ITypeBinding declaringClass) {
     this.name = name;
+    this.retainedResultName = retainedResultName;
     this.returnType = returnType;
     this.declaringClass = declaringClass;
   }
 
+  public FunctionBinding(String name, ITypeBinding returnType, ITypeBinding declaringClass) {
+    this(name, null, returnType, declaringClass);
+  }
+
   public String getName() {
     return name;
+  }
+
+  public String getRetainedResultName() {
+    return retainedResultName;
   }
 
   public ITypeBinding getReturnType() {

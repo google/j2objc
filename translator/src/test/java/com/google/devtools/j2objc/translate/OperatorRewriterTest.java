@@ -34,7 +34,7 @@ public class OperatorRewriterTest extends GenerationTest {
         "class Test { String s; static Test getTest() { return null; } "
         + "void test(boolean b) { (b ? new Test() : getTest()).s = \"foo\"; } }", "Test", "Test.m");
     assertTranslation(translation,
-        "JreStrongAssign(&(b ? [new_Test_init() autorelease] : Test_getTest())->s_, @\"foo\");");
+        "JreStrongAssign(&(b ? create_Test_init() : Test_getTest())->s_, @\"foo\");");
   }
 
   public void testModAssignOperator() throws IOException {

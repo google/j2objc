@@ -49,18 +49,17 @@ public class MethodReferenceTest extends GenerationTest {
         creationReferenceHeader + "class Test { Call<I> iInit = I::new; }",
         "Test", "Test.m");
     assertTranslatedSegments(noArgumentTranslation, "GetNonCapturingLambda(@protocol(Call)",
-        "@\"I_init\"", "^I *(id _self) {", "return [new_I_init() autorelease];");
+        "@\"I_init\"", "^I *(id _self) {", "return create_I_init();");
     String oneArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt<I> iInit2 = I::new; }", "Test", "Test.m");
     assertTranslatedSegments(oneArgumentTranslation, "GetNonCapturingLambda(@protocol(FunInt)",
-        "@\"I_initWithInt_\"", "^I *(id _self, jint a) {",
-        "return [new_I_initWithInt_(a) autorelease];");
+        "@\"I_initWithInt_\"", "^I *(id _self, jint a) {", "return create_I_initWithInt_(a);");
     String mixedArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt4<I> iInit3 = I::new; }", "Test", "Test.m");
     assertTranslatedSegments(mixedArgumentTranslation, "GetNonCapturingLambda(@protocol(FunInt4)",
         "@\"I_initWithInt_withI_withNSString_withId_\"",
         "^I *(id _self, jint a, I * b, NSString * c, id d) {",
-        "return [new_I_initWithInt_withI_withNSString_withId_(a, b, c, d) autorelease];");
+        "return create_I_initWithInt_withI_withNSString_withId_(a, b, c, d);");
   }
 
   // Test that expression method references resolve correctly for static and non-static methods.
@@ -76,7 +75,7 @@ public class MethodReferenceTest extends GenerationTest {
         expressionReferenceHeader + "class Test { F fun = new Q()::o2; }",
         "Test", "Test.m");
     assertTranslatedSegments(instanceTranslation, "GetNonCapturingLambda", "@\"Q_o2WithId_\"",
-        "@selector(fWithId:)", "return [((Q *) [new_Q_init() autorelease]) o2WithId:a];");
+        "@selector(fWithId:)", "return [create_Q_init() o2WithId:a];");
   }
 
   public void testTypeReference() throws IOException {
@@ -138,12 +137,12 @@ public class MethodReferenceTest extends GenerationTest {
         "return JavaLangInteger_valueOfWithInt_([self size]);", "^jint(id _self) {",
         "return [((JavaLangInteger *) nil_chk([self size2])) intValue];");
   }
-  
+
   // Creation references can be initialized only for side effects, and have a void return.
   public void testCreationReferenceVoidReturn() throws IOException {
     String header = "interface V { void f(); }";
     String translation = translateSourceFile(header + "class Test { V v = Test::new; }", "Test",
         "Test.m");
-    assertTranslatedLines(translation, "^void(id _self) {", "[new_Test_init() autorelease];");
+    assertTranslatedLines(translation, "^void(id _self) {", "create_Test_init();");
   }
 }
