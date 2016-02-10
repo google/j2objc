@@ -56,8 +56,5 @@ TRANSLATE_ARTIFACT := $(call emit_translate_rule,\
   $(TRANSLATE_DEPENDENCIES),\
   $(TRANSLATE_ARGS))
 
-translate: $(TRANSLATE_ARTIFACT)
-	@:
-
 $(TRANSLATE_OBJC): $(TRANSLATE_ARTIFACT)
 	@:

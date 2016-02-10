@@ -57,6 +57,9 @@ translate_force:
 translate_dependencies:
 	@:
 
+translate:
+	@:
+
 # Generates the rule to translate Java to Objective-C
 # Args:
 #   1: The name of this translate rule.
@@ -75,6 +78,8 @@ $(TRANSLATE_TARGET): $(subst $$,$$$$,$(3)) $(TRANSLATE_EXE) $4 translate_force \
 	  $(TRANSLATE_CMD) -d $(2) $(5) @$(TRANSLATE_LIST); \
 	fi
 	$$(call long_list_to_file,$$@,$$(TRANSLATE_JAVA_PREREQ))
+
+translate: $(TRANSLATE_TARGET)
 endef
 
 # Generates the rule to translate Java to Objective-C
