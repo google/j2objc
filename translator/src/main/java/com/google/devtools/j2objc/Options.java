@@ -585,9 +585,7 @@ public class Options {
    */
   private static void addPrefixOption(String arg) {
     int i = arg.indexOf('=');
-
-    // Make sure key and value are at least 1 character.
-    if (i < 1 || i >= arg.length() - 1) {
+    if (i < 1) {
       usage("invalid prefix format");
     }
     String pkg = arg.substring(0, i);
