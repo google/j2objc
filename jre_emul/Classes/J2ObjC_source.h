@@ -103,6 +103,29 @@ __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) 
 #define JreEnum(CLASS, VALUE) CLASS##_values_[CLASS##_Enum_##VALUE]
 #define JreLoadEnum(CLASS, VALUE) (CLASS##_initialize(), CLASS##_values_[CLASS##_Enum_##VALUE])
 
+/*!
+ * The implementations for retaining and releasing constructors.
+ *
+ * @define J2OBJC_NEW_IMPL
+ * @define J2OBJC_CREATE_IMPL
+ * @param CLASS The declaring class
+ * @param NAME The constructor name. (eg. initWithInt_)
+ * @param ... Parameters to be passed to the initializer.
+ */
+#define J2OBJC_NEW_IMPL(CLASS, NAME, ...) \
+  CLASS *self = [CLASS alloc]; \
+  CLASS##_##NAME(self, ##__VA_ARGS__); \
+  return self;
+#if __has_feature(objc_arc)
+#define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
+  return new_##CLASS##_##NAME(__VA_ARGS__);
+#else
+#define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
+  CLASS *self = [CLASS alloc]; \
+  CLASS##_##NAME(self, ##__VA_ARGS__); \
+  return self;
+#endif
+
 // Defined in JreEmulation.m
 FOUNDATION_EXPORT id GetNonCapturingLambda(Protocol *protocol,
     NSString *blockClassName, SEL methodSelector, id block);

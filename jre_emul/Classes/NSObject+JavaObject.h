@@ -57,6 +57,9 @@ __attribute__((always_inline)) inline void NSObject_init(NSObject *self) {
 __attribute__((always_inline)) NS_RETURNS_RETAINED inline NSObject *new_NSObject_init() {
   return [NSObject alloc];
 }
+__attribute__((always_inline)) inline NSObject *create_NSObject_init() {
+  return AUTORELEASE([NSObject alloc]);
+}
 
 // Empty class to force category to be loaded.
 @interface JreObjectCategoryDummy : NSObject

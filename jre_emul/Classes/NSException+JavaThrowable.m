@@ -160,84 +160,6 @@ J2OBJC_IGNORE_DESIGNATED_BEGIN
 }
 J2OBJC_IGNORE_DESIGNATED_END
 
-void NSException_init(NSException *self) {
-  NSException_initWithNSString_withNSException_(self, nil, nil);
-}
-
-NSException *new_NSException_init() {
-  NSException *self = [NSException alloc];
-  NSException_init(self);
-  return self;
-}
-
-void NSException_initWithNSString_(NSException *self, NSString *message) {
-  NSException_initWithNSString_withNSException_(self, message, nil);
-}
-
-NSException *new_NSException_initWithNSString_(NSString *message) {
-  NSException *self = [NSException alloc];
-  NSException_initWithNSString_(self, message);
-  return self;
-}
-
-// This init message implementation is hand-modified to
-// invoke NSException.initWithName:reason:userInfo:.  This
-// is necessary so that JRE exceptions can be caught by
-// class name.
-void NSException_initWithNSString_withNSException_(
-    NSException *self, NSString *message, NSException *causeArg) {
-  NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
-      self, message, causeArg, true, true);
-}
-
-NSException *new_NSException_initWithNSString_withNSException_(
-    NSString *message, NSException *causeArg) {
-  NSException *self = [NSException alloc];
-  NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
-      self, message, causeArg, true, true);
-  return self;
-}
-
-void NSException_initWithNSException_(
-    NSException *self, NSException *causeArg) {
-  NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
-      self, causeArg ? [causeArg description] : nil, causeArg, true, true);
-}
-
-NSException *new_NSException_initWithNSException_(NSException *causeArg) {
-  NSException *self = [NSException alloc];
-  NSException_initWithNSException_(self, causeArg);
-  return self;
-}
-
-void NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
-    NSException *self, NSString *message, NSException *causeArg,
-    jboolean enableSuppression, jboolean writeableStackTrace) {
-  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
-  [self initWithName:[[self class] description] reason:message userInfo:userInfo];
-  if (causeArg && self != causeArg) {
-    [(NSMutableDictionary *)userInfo setValue:causeArg forKey:CauseTagKey];
-  }
-  if (enableSuppression) {
-    JavaUtilArrayList *newArray = new_JavaUtilArrayList_init();
-    SetSuppressedExceptions(self, newArray);
-  }
-  if (writeableStackTrace) {
-    SetRawStack(self);
-  }
-  [userInfo release];
-}
-
-NSException *
-    new_NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
-    NSString *message, NSException *causeArg, jboolean enableSuppression,
-    jboolean writeableStackTrace) {
-  NSException *self = [NSException alloc];
-  NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
-      self, message, causeArg, enableSuppression, writeableStackTrace);
-  return self;
-}
-
 // Filter out native functions (no class), NSInvocation methods, and internal constructor.
 static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   NSString *className = [element getClassName];
@@ -476,6 +398,100 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
 }
 
 @end
+
+void NSException_init(NSException *self) {
+  NSException_initWithNSString_withNSException_(self, nil, nil);
+}
+
+NSException *new_NSException_init() {
+  J2OBJC_NEW_IMPL(NSException, init)
+}
+
+NSException *create_NSException_init() {
+  J2OBJC_CREATE_IMPL(NSException, init)
+}
+
+void NSException_initWithNSString_(NSException *self, NSString *message) {
+  NSException_initWithNSString_withNSException_(self, message, nil);
+}
+
+NSException *new_NSException_initWithNSString_(NSString *message) {
+  J2OBJC_NEW_IMPL(NSException, initWithNSString_, message)
+}
+
+NSException *create_NSException_initWithNSString_(NSString *message) {
+  J2OBJC_CREATE_IMPL(NSException, initWithNSString_, message)
+}
+
+void NSException_initWithNSString_withNSException_(
+    NSException *self, NSString *message, NSException *causeArg) {
+  NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
+      self, message, causeArg, true, true);
+}
+
+NSException *new_NSException_initWithNSString_withNSException_(
+    NSString *message, NSException *causeArg) {
+  J2OBJC_NEW_IMPL(
+    NSException, initWithNSString_withNSException_withBoolean_withBoolean_, message, causeArg, true,
+    true)
+}
+
+NSException *create_NSException_initWithNSString_withNSException_(
+    NSString *message, NSException *causeArg) {
+  J2OBJC_CREATE_IMPL(
+    NSException, initWithNSString_withNSException_withBoolean_withBoolean_, message, causeArg, true,
+    true)
+}
+
+void NSException_initWithNSException_(NSException *self, NSException *causeArg) {
+  NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
+      self, causeArg ? [causeArg description] : nil, causeArg, true, true);
+}
+
+NSException *new_NSException_initWithNSException_(NSException *causeArg) {
+  J2OBJC_NEW_IMPL(NSException, initWithNSException_, causeArg)
+}
+
+NSException *create_NSException_initWithNSException_(NSException *causeArg) {
+  J2OBJC_CREATE_IMPL(NSException, initWithNSException_, causeArg)
+}
+
+// This init message implementation is modified to invoke
+// NSException.initWithName:reason:userInfo:. This is necessary so that JRE
+// exceptions can be caught by class name.
+void NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
+    NSException *self, NSString *message, NSException *causeArg, jboolean enableSuppression,
+    jboolean writeableStackTrace) {
+  NSMutableDictionary *userInfo = [[NSMutableDictionary alloc] init];
+  [self initWithName:[[self class] description] reason:message userInfo:userInfo];
+  if (causeArg && self != causeArg) {
+    [(NSMutableDictionary *)userInfo setValue:causeArg forKey:CauseTagKey];
+  }
+  [userInfo release];
+  if (enableSuppression) {
+    JavaUtilArrayList *newArray = new_JavaUtilArrayList_init();
+    SetSuppressedExceptions(self, newArray);
+  }
+  if (writeableStackTrace) {
+    SetRawStack(self);
+  }
+}
+
+NSException *new_NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
+    NSString *message, NSException *causeArg, jboolean enableSuppression,
+    jboolean writeableStackTrace) {
+  J2OBJC_NEW_IMPL(
+      NSException, initWithNSString_withNSException_withBoolean_withBoolean_, message, causeArg,
+      enableSuppression, writeableStackTrace)
+}
+
+NSException *create_NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
+    NSString *message, NSException *causeArg, jboolean enableSuppression,
+    jboolean writeableStackTrace) {
+  J2OBJC_CREATE_IMPL(
+      NSException, initWithNSString_withNSException_withBoolean_withBoolean_, message, causeArg,
+      enableSuppression, writeableStackTrace)
+}
 
 // Empty class to force category to be loaded.
 @implementation JreThrowableCategoryDummy
