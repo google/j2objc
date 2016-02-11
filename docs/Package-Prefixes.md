@@ -28,10 +28,16 @@ on the command line using "`--prefix `*package*=*prefix*.  To shorten all the cl
 `Beta`'s package, the "`--prefix com.google.common.annotations=GG`"" would be used. A separate 
 prefix declaration is needed for each package.
 
+## Defining a Single Prefix for Multiple Packages
+
+Smaller libraries often have Java class names that don't conflict, and so can share a single
+prefix with a wildcarded package specification. For example, all of the
+[Joda-Time](http://www.joda.org/joda-time/) packages can share the same *JT* prefix, using
+"`--prefix 'org.joda.time.*=JT'`". The only wildcard character supported is '*', which matches
+the same way the command-line shell does with filenames.
+
 ## Defining Multiple Package Prefixes
 
-Google Guava has multiple packages, and each package that should be shortened would need its 
-own prefix argument (packages can share the same prefix text, but need separate declarations).  
 To simplify specifying several prefix definitions, a properties file can be used with the 
 "`--prefixes` *file*" argument:
 
