@@ -737,8 +737,8 @@ class SystemClassLoader extends ClassLoader {
     if (!path) {
       return nil;
     }
-    return [new_JavaIoBufferedInputStream_initWithJavaIoInputStream_(
-        [new_JavaIoFileInputStream_initWithNSString_(path) autorelease]) autorelease];
+    return create_JavaIoBufferedInputStream_initWithJavaIoInputStream_(
+        create_JavaIoFileInputStream_initWithNSString_(path));
   ]-*/;
 
   @Override

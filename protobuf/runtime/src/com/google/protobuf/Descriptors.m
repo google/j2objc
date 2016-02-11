@@ -417,13 +417,6 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
 
 @implementation ComGoogleProtobufDescriptors_FieldDescriptor_Type
 
-- (instancetype)initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType:(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *)javaType
-                                                                 withNSString:(NSString *)__name
-                                                                      withInt:(jint)__ordinal {
-  ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(self, javaType, __name, __ordinal);
-  return self;
-}
-
 - (ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type *)toProto {
   return ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type_valueOfWithInt_([self ordinal] + 1);
 }
@@ -450,24 +443,46 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
 
 + (void)initialize {
   if (self == [ComGoogleProtobufDescriptors_FieldDescriptor_Type class]) {
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, DOUBLE) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, DOUBLE), @"DOUBLE", 0);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, FLOAT) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, FLOAT), @"FLOAT", 1);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, INT64) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG), @"INT64", 2);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, UINT64) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG), @"UINT64", 3);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, INT32) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT), @"INT32", 4);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, FIXED64) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG), @"FIXED64", 5);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, FIXED32) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT), @"FIXED32", 6);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, BOOL) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, BOOLEAN), @"BOOL", 7);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, STRING) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, STRING), @"STRING", 8);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, GROUP) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, MESSAGE), @"GROUP", 9);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, MESSAGE) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, MESSAGE), @"MESSAGE", 10);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, BYTES) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, BYTE_STRING), @"BYTES", 11);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, UINT32) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT), @"UINT32", 12);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, ENUM) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, ENUM), @"ENUM", 13);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SFIXED32) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT), @"SFIXED32", 14);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SFIXED64) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG), @"SFIXED64", 15);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SINT32) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT), @"SINT32", 16);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SINT64) = new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG), @"SINT64", 17);
+    size_t objSize = class_getInstanceSize(self);
+    size_t allocSize = 18 * objSize;
+    uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);
+    id e;
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, DOUBLE) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, DOUBLE), @"DOUBLE", 0);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, FLOAT) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, FLOAT), @"FLOAT", 1);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, INT64) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG), @"INT64", 2);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, UINT64) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG), @"UINT64", 3);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, INT32) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT), @"INT32", 4);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, FIXED64) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG), @"FIXED64", 5);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, FIXED32) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT), @"FIXED32", 6);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, BOOL) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, BOOLEAN), @"BOOL", 7);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, STRING) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, STRING), @"STRING", 8);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, GROUP) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, MESSAGE), @"GROUP", 9);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, MESSAGE) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, MESSAGE), @"MESSAGE", 10);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, BYTES) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, BYTE_STRING), @"BYTES", 11);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, UINT32) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT), @"UINT32", 12);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, ENUM) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, ENUM), @"ENUM", 13);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SFIXED32) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT), @"SFIXED32", 14);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SFIXED64) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG), @"SFIXED64", 15);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SINT32) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT), @"SINT32", 16);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SINT64) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(e, JreLoadEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG), @"SINT64", 17);
     J2OBJC_SET_INITIALIZED(ComGoogleProtobufDescriptors_FieldDescriptor_Type)
   }
 }
@@ -511,12 +526,6 @@ void ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobuf
   JreStrongAssign(&self->javaType_, javaType);
 }
 
-ComGoogleProtobufDescriptors_FieldDescriptor_Type *new_ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *javaType, NSString *__name, jint __ordinal) {
-  ComGoogleProtobufDescriptors_FieldDescriptor_Type *self = [ComGoogleProtobufDescriptors_FieldDescriptor_Type alloc];
-  ComGoogleProtobufDescriptors_FieldDescriptor_Type_initWithComGoogleProtobufDescriptors_FieldDescriptor_JavaType_withNSString_withInt_(self, javaType, __name, __ordinal);
-  return self;
-}
-
 ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_FieldDescriptor_Type_valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type_(ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type *type) {
   ComGoogleProtobufDescriptors_FieldDescriptor_Type_initialize();
   return IOSObjectArray_Get(nil_chk(ComGoogleProtobufDescriptors_FieldDescriptor_Type_values()), [((ComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type *) nil_chk(type)) getNumber] - 1);
@@ -539,16 +548,13 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
   return nil;
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-constant-out-of-range-compare"
-ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_FieldDescriptor_Type_fromNative(ComGoogleProtobufDescriptors_FieldDescriptor_Type_Enum nativeValue) {
+ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_FieldDescriptor_Type_fromOrdinal(NSUInteger ordinal) {
   ComGoogleProtobufDescriptors_FieldDescriptor_Type_initialize();
-  if (nativeValue >= 18) {
+  if (ordinal >= 18) {
     return nil;
   }
-  return ComGoogleProtobufDescriptors_FieldDescriptor_Type_values_[nativeValue];
+  return ComGoogleProtobufDescriptors_FieldDescriptor_Type_values_[ordinal];
 }
-#pragma clang diagnostic pop
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_FieldDescriptor_Type)
 
@@ -557,13 +563,6 @@ J2OBJC_INITIALIZED_DEFN(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType)
 ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_values_[9];
 
 @implementation ComGoogleProtobufDescriptors_FieldDescriptor_JavaType
-
-- (instancetype)initWithId:(id)defaultDefault
-              withNSString:(NSString *)__name
-                   withInt:(jint)__ordinal {
-  ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(self, defaultDefault, __name, __ordinal);
-  return self;
-}
 
 + (IOSObjectArray *)values {
   return ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_values();
@@ -579,15 +578,28 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
 
 + (void)initialize {
   if (self == [ComGoogleProtobufDescriptors_FieldDescriptor_JavaType class]) {
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT) = new_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(JavaLangInteger_valueOfWithInt_(0), @"INT", 0);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG) = new_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(JavaLangLong_valueOfWithLong_(0LL), @"LONG", 1);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, FLOAT) = new_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(JavaLangFloat_valueOfWithFloat_(0.0f), @"FLOAT", 2);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, DOUBLE) = new_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(JavaLangDouble_valueOfWithDouble_(0.0), @"DOUBLE", 3);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, BOOLEAN) = new_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(JavaLangBoolean_valueOfWithBoolean_(false), @"BOOLEAN", 4);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, STRING) = new_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(@"", @"STRING", 5);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, BYTE_STRING) = new_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(JreLoadStatic(ComGoogleProtobufByteString, EMPTY), @"BYTE_STRING", 6);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, ENUM) = new_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(nil, @"ENUM", 7);
-    JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, MESSAGE) = new_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(nil, @"MESSAGE", 8);
+    size_t objSize = class_getInstanceSize(self);
+    size_t allocSize = 9 * objSize;
+    uintptr_t ptr = (uintptr_t)calloc(allocSize, 1);
+    id e;
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, INT) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(e, JavaLangInteger_valueOfWithInt_(0), @"INT", 0);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, LONG) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(e, JavaLangLong_valueOfWithLong_(0LL), @"LONG", 1);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, FLOAT) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(e, JavaLangFloat_valueOfWithFloat_(0.0f), @"FLOAT", 2);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, DOUBLE) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(e, JavaLangDouble_valueOfWithDouble_(0.0), @"DOUBLE", 3);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, BOOLEAN) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(e, JavaLangBoolean_valueOfWithBoolean_(false), @"BOOLEAN", 4);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, STRING) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(e, @"", @"STRING", 5);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, BYTE_STRING) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(e, JreLoadStatic(ComGoogleProtobufByteString, EMPTY), @"BYTE_STRING", 6);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, ENUM) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(e, nil, @"ENUM", 7);
+    (JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, MESSAGE) = e = objc_constructInstance(self, (void *)ptr), ptr += objSize);
+    ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(e, nil, @"MESSAGE", 8);
     J2OBJC_SET_INITIALIZED(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType)
   }
 }
@@ -617,12 +629,6 @@ void ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSStri
   JreStrongAssign(&self->defaultDefault_, defaultDefault);
 }
 
-ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *new_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(id defaultDefault, NSString *__name, jint __ordinal) {
-  ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *self = [ComGoogleProtobufDescriptors_FieldDescriptor_JavaType alloc];
-  ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initWithId_withNSString_withInt_(self, defaultDefault, __name, __ordinal);
-  return self;
-}
-
 IOSObjectArray *ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_values() {
   ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initialize();
   return [IOSObjectArray arrayWithObjects:ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_values_ count:9 type:ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_class_()];
@@ -640,15 +646,12 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
   return nil;
 }
 
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wtautological-constant-out-of-range-compare"
-ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_fromNative(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_Enum nativeValue) {
+ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_fromOrdinal(NSUInteger ordinal) {
   ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_initialize();
-  if (nativeValue >= 9) {
+  if (ordinal >= 9) {
     return nil;
   }
-  return ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_values_[nativeValue];
+  return ComGoogleProtobufDescriptors_FieldDescriptor_JavaType_values_[ordinal];
 }
-#pragma clang diagnostic pop
 
 J2OBJC_CLASS_TYPE_LITERAL_SOURCE(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType)

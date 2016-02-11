@@ -74,8 +74,8 @@ public class AtomicReferenceArray<E> implements java.io.Serializable {
     /*-[
     static void CheckIdx(JavaUtilConcurrentAtomicAtomicReferenceArray *self, jint i) {
       if (i < 0 || i >= self->array_->size_) {
-        @throw [new_JavaLangIndexOutOfBoundsException_initWithNSString_(
-            JreStrcat("$I", @"index ", i)) autorelease];
+        @throw create_JavaLangIndexOutOfBoundsException_initWithNSString_(
+            JreStrcat("$I", @"index ", i));
       }
     }
 

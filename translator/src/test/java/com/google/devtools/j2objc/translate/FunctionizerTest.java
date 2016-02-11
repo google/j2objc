@@ -509,9 +509,7 @@ public class FunctionizerTest extends GenerationTest {
         "}");
     assertTranslatedLines(translation,
         "Test *new_Test_init() {",
-        "  Test *self = [Test alloc];",
-        "  Test_init(self);",
-        "  return self;",
+        "  J2OBJC_NEW_IMPL(Test, init)",
         "}");
     assertTranslatedLines(translation,
         "void Test_initWithInt_(Test *self, jint i) {",
@@ -520,40 +518,26 @@ public class FunctionizerTest extends GenerationTest {
         "}");
     assertTranslatedLines(translation,
         "Test *new_Test_initWithInt_(jint i) {",
-        "  Test *self = [Test alloc];",
-        "  Test_initWithInt_(self, i);",
-        "  return self;",
+        "  J2OBJC_NEW_IMPL(Test, initWithInt_, i)",
+        "}");
+    assertTranslatedLines(translation,
+        "Test *create_Test_init() {",
+        "  J2OBJC_CREATE_IMPL(Test, init)",
+        "}");
+    assertTranslatedLines(translation,
+        "Test *create_Test_initWithInt_(jint i) {",
+        "  J2OBJC_CREATE_IMPL(Test, initWithInt_, i)",
         "}");
     return translation;
   }
 
   public void testFunctionizedConstructors() throws IOException {
-    String translation = innerTestFunctionizedConstructors();
-    assertTranslatedLines(translation,
-        "Test *create_Test_init() {",
-        "  Test *self = [[Test alloc] autorelease];",
-        "  Test_init(self);",
-        "  return self;",
-        "}");
-    assertTranslatedLines(translation,
-        "Test *create_Test_initWithInt_(jint i) {",
-        "  Test *self = [[Test alloc] autorelease];",
-        "  Test_initWithInt_(self, i);",
-        "  return self;",
-        "}");
+    innerTestFunctionizedConstructors();
   }
 
   public void testFunctionizedConstructorsARC() throws IOException {
     Options.setMemoryManagementOption(MemoryManagementOption.ARC);
-    String translation = innerTestFunctionizedConstructors();
-    assertTranslatedLines(translation,
-        "Test *create_Test_init() {",
-        "  return new_Test_init();",
-        "}");
-    assertTranslatedLines(translation,
-        "Test *create_Test_initWithInt_(jint i) {",
-        "  return new_Test_initWithInt_(i);",
-        "}");
+    innerTestFunctionizedConstructors();
   }
 
   public void testNoAllocatingConstructorsForAbstractClass() throws IOException {

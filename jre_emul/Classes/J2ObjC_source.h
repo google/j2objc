@@ -121,7 +121,7 @@ __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) 
   return new_##CLASS##_##NAME(__VA_ARGS__);
 #else
 #define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
-  CLASS *self = [CLASS alloc]; \
+  CLASS *self = [[CLASS alloc] autorelease]; \
   CLASS##_##NAME(self, ##__VA_ARGS__); \
   return self;
 #endif

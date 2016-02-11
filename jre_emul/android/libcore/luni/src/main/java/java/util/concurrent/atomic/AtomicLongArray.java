@@ -56,8 +56,8 @@ public class AtomicLongArray implements java.io.Serializable {
     /*-[
     static void CheckIdx(JavaUtilConcurrentAtomicAtomicLongArray *self, jint i) {
       if (i < 0 || i >= self->array_->size_) {
-        @throw [new_JavaLangIndexOutOfBoundsException_initWithNSString_(
-            JreStrcat("$I", @"index ", i)) autorelease];
+        @throw create_JavaLangIndexOutOfBoundsException_initWithNSString_(
+            JreStrcat("$I", @"index ", i));
       }
     }
 

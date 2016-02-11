@@ -29,6 +29,7 @@ import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.ReturnStatement;
@@ -42,7 +43,6 @@ import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
-import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.gen.SignatureGenerator;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
@@ -262,11 +262,11 @@ public class Functionizer extends TreeVisitor {
       declarationList.add(function);
       if (binding.isConstructor() && !BindingUtil.isAbstract(declaringClass)
           && !isEnumConstructor) {
-        declarationList.add(makeAllocatingConstructor(node));
-        declarationList.add(makeReleasingConstructor(node));
+        declarationList.add(makeAllocatingConstructor(node, false));
+        declarationList.add(makeAllocatingConstructor(node, true));
       } else if (isEnumConstructor && Options.useARC()) {
         // Enums with ARC need the retaining constructor.
-        declarationList.add(makeAllocatingConstructor(node));
+        declarationList.add(makeAllocatingConstructor(node, false));
       }
       // Instance methods must be kept in case they are invoked using "super".
       boolean keepMethod = isInstanceMethod
@@ -341,86 +341,31 @@ public class Functionizer extends TreeVisitor {
   /**
    * Create a wrapper for a constructor that does the object allocation.
    */
-  private FunctionDeclaration makeAllocatingConstructor(MethodDeclaration method) {
+  private FunctionDeclaration makeAllocatingConstructor(
+      MethodDeclaration method, boolean releasing) {
     assert method.isConstructor();
     IMethodBinding binding = method.getMethodBinding();
     ITypeBinding declaringClass = binding.getDeclaringClass();
 
-    FunctionDeclaration function = new FunctionDeclaration(
-        nameTable.getAllocatingConstructorName(binding), declaringClass, declaringClass);
+    String name = releasing ? nameTable.getReleasingConstructorName(binding)
+        : nameTable.getAllocatingConstructorName(binding);
+    FunctionDeclaration function = new FunctionDeclaration(name, declaringClass, declaringClass);
     function.setLineNumber(method.getName().getLineNumber());
     function.setModifiers(BindingUtil.isPrivate(binding) ? Modifier.PRIVATE : Modifier.PUBLIC);
-    function.setReturnsRetained(true);
+    function.setReturnsRetained(!releasing);
     TreeUtil.copyList(method.getParameters(), function.getParameters());
     Block body = new Block();
     function.setBody(body);
-    List<Statement> stmts = body.getStatements();
 
-    GeneratedVariableBinding selfVar = new GeneratedVariableBinding(
-        NameTable.SELF_NAME, 0, declaringClass, false, false, declaringClass, null);
-    stmts.add(new VariableDeclarationStatement(
-        selfVar, new MethodInvocation(typeEnv.getAllocMethod(), new SimpleName(declaringClass))));
-
-    FunctionInvocation invocation = new FunctionInvocation(
-        newFunctionBinding(binding), binding.getReturnType());
-    List<Expression> args = invocation.getArguments();
-    args.add(new SimpleName(selfVar));
+    StringBuilder sb = new StringBuilder(releasing ? "J2OBJC_CREATE_IMPL(" : "J2OBJC_NEW_IMPL(");
+    sb.append(nameTable.getFullName(declaringClass));
+    sb.append(", ").append(nameTable.getFunctionName(binding));
     for (SingleVariableDeclaration param : function.getParameters()) {
-      args.add(new SimpleName(param.getVariableBinding()));
+      sb.append(", ").append(nameTable.getVariableQualifiedName(param.getVariableBinding()));
     }
-    stmts.add(new ExpressionStatement(invocation));
+    sb.append(")");
+    body.getStatements().add(new NativeStatement(sb.toString()));
 
-    stmts.add(new ReturnStatement(new SimpleName(selfVar)));
-    return function;
-  }
-
-  /**
-   * Create a wrapper for a constructor that does the object allocation.
-   */
-  private FunctionDeclaration makeReleasingConstructor(MethodDeclaration method) {
-    assert method.isConstructor();
-    IMethodBinding binding = method.getMethodBinding();
-    ITypeBinding declaringClass = binding.getDeclaringClass();
-
-    FunctionDeclaration function = new FunctionDeclaration(
-        nameTable.getReleasingConstructorName(binding), declaringClass, declaringClass);
-    function.setLineNumber(method.getName().getLineNumber());
-    function.setModifiers(BindingUtil.isPrivate(binding) ? Modifier.PRIVATE : Modifier.PUBLIC);
-    TreeUtil.copyList(method.getParameters(), function.getParameters());
-    Block body = new Block();
-    function.setBody(body);
-    List<Statement> stmts = body.getStatements();
-
-    // In ARC we can't make the "autorelease" call, so instead delegate to the
-    // retaining constructor and let ARC manage the ref-counting.
-    if (Options.useARC()) {
-      FunctionInvocation delegatingCall =
-          new FunctionInvocation(newAllocatingConstructorBinding(binding), declaringClass);
-      delegatingCall.setHasRetainedResult(true);
-      for (SingleVariableDeclaration param : function.getParameters()) {
-        delegatingCall.getArguments().add(new SimpleName(param.getVariableBinding()));
-      }
-      stmts.add(new ReturnStatement(delegatingCall));
-      return function;
-    }
-
-    GeneratedVariableBinding selfVar = new GeneratedVariableBinding(
-        NameTable.SELF_NAME, 0, declaringClass, false, false, declaringClass, null);
-    stmts.add(new VariableDeclarationStatement(
-        selfVar, new MethodInvocation(
-            typeEnv.getAutoreleaseMethod(), new MethodInvocation(
-                typeEnv.getAllocMethod(), new SimpleName(declaringClass)))));
-
-    FunctionInvocation invocation = new FunctionInvocation(
-        newFunctionBinding(binding), binding.getReturnType());
-    List<Expression> args = invocation.getArguments();
-    args.add(new SimpleName(selfVar));
-    for (SingleVariableDeclaration param : function.getParameters()) {
-      args.add(new SimpleName(param.getVariableBinding()));
-    }
-    stmts.add(new ExpressionStatement(invocation));
-
-    stmts.add(new ReturnStatement(new SimpleName(selfVar)));
     return function;
   }
 
