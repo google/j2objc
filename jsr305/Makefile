@@ -20,7 +20,7 @@
 include environment.mk
 
 # Python command to convert sources list in constants.bzl
-BZL_CMD = 'execfile("constants.bzl"); print " ".join(CONSTANTS_JSR_305_PATHS)'
+BZL_CMD = 'exec(open("constants.bzl").read()); print(" ".join(CONSTANTS_JSR_305_PATHS))'
 JAVA_SOURCES = $(shell python -c $(BZL_CMD))
 
 EXTRACTED_JAVA = $(JAVA_SOURCES:%=$(JAVA_SRC_DIR)/%)
