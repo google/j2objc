@@ -43,9 +43,12 @@ DIST_JAR = $(DIST_JAR_DIR)/protobuf_runtime.jar
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 
-ifneq "$(findstring clean,$(MAKECMDGOALS))" "clean"
 ifndef PROTOBUF_ROOT_DIR
+ifneq "$(findstring clean,$(MAKECMDGOALS))" "clean"
 $(error PROTOBUF_ROOT_DIR not defined)
+else
+# So that the CREATE_JAR_SOURCES expansion below will not be evaluated.
+CREATE_JAR_SOURCES = ""
 endif
 endif
 
@@ -57,7 +60,9 @@ DESCRIPTOR_PROTO_H = $(DESCRIPTOR_PROTO_M:.m=.h)
 DESCRIPTOR_PROTO_JAVA = $(DESCRIPTOR_PROTO_M:$(GEN_OBJC_DIR)/%.m=$(GEN_JAVA_DIR)/%.java)
 
 CREATE_JAR_NAME = protobuf_runtime
+ifndef CREATE_JAR_SOURCES
 CREATE_JAR_SOURCES := $(shell find $(PROTOBUF_JAVA_DIR) -name *.java) $(DESCRIPTOR_PROTO_JAVA)
+endif
 CREATE_JAR_JAVAC_ARGS = -nowarn
 include $(J2OBJC_ROOT)/make/create_jar.mk
 
