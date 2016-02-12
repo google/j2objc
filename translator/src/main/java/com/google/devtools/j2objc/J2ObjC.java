@@ -113,8 +113,8 @@ public class J2ObjC {
       }
 
       AnnotationPreProcessor preProcessor = new AnnotationPreProcessor();
-      preProcessor.process(fileArgs);
-      preProcessor.collectInputs(inputs);
+      List<ProcessingContext> generatedInputs = preProcessor.process(fileArgs, inputs);
+      inputs.addAll(generatedInputs); // Ensure all generatedInputs are at end of input list.
       preProcessorTempDir = preProcessor.getTemporaryDirectory();
       if (ErrorUtil.errorCount() > 0) {
         return;

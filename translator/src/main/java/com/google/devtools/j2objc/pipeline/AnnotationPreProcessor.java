@@ -19,22 +19,32 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.file.RegularInputFile;
+import com.google.devtools.j2objc.gen.GenerationUnit;
 import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.PathClassLoader;
 
+import org.eclipse.jdt.internal.compiler.AbstractAnnotationProcessorManager;
+import org.eclipse.jdt.internal.compiler.apt.dispatch.BaseAnnotationProcessorManager;
+import org.eclipse.jdt.internal.compiler.apt.dispatch.BatchAnnotationProcessorManager;
+import org.eclipse.jdt.internal.compiler.apt.dispatch.BatchFilerImpl;
+import org.eclipse.jdt.internal.compiler.apt.dispatch.BatchProcessingEnvImpl;
+import org.eclipse.jdt.internal.compiler.batch.Main;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
+import org.eclipse.jdt.internal.compiler.lookup.ReferenceBinding;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 
 import javax.annotation.processing.Processor;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
+import javax.tools.JavaFileObject;
 
 /**
  * Preprocesses all input with annotation processors, if any,
@@ -44,6 +54,7 @@ import javax.annotation.processing.Processor;
 public class AnnotationPreProcessor {
 
   private File tmpDirectory;
+  private final List<ProcessingContext> generatedInputs = Lists.newArrayList();
 
   public File getTemporaryDirectory() {
     return tmpDirectory;
@@ -51,19 +62,22 @@ public class AnnotationPreProcessor {
 
   /**
    * Process the given input files, given in the same format as J2ObjC command line args.
+   *
+   * @return the list of processor-generated sources
    */
-  public void process(Iterable<String> fileArgs) {
+  public List<ProcessingContext> process(Iterable<String> fileArgs,
+      List<ProcessingContext> inputs) {
     assert tmpDirectory == null;  // Shouldn't run an instance more than once.
 
     if (!hasAnnotationProcessors()) {
-      return;
+      return generatedInputs;
     }
 
     try {
       tmpDirectory = FileUtil.createTempDir("annotations");
     } catch (IOException e) {
       ErrorUtil.error("failed creating temporary directory: " + e);
-      return;
+      return generatedInputs;
     }
     String tmpDirPath = tmpDirectory.getAbsolutePath();
     List<String> compileArgs = Lists.newArrayList();
@@ -103,13 +117,30 @@ public class AnnotationPreProcessor {
     Map<String, String> batchOptions = Maps.newHashMap();
     batchOptions.put(CompilerOptions.OPTION_Process_Annotations, CompilerOptions.ENABLED);
     batchOptions.put(CompilerOptions.OPTION_GenerateClassFiles, CompilerOptions.DISABLED);
-    // Fully qualified name used since "Main" isn't unique.
-    org.eclipse.jdt.internal.compiler.batch.Main batchCompiler =
-        new org.eclipse.jdt.internal.compiler.batch.Main(
-            new PrintWriter(System.out), new PrintWriter(System.err), false, batchOptions, null);
+    AnnotationCompiler batchCompiler = new AnnotationCompiler(compileArgs, batchOptions,
+        new PrintWriter(System.out), new PrintWriter(System.err), inputs);
     if (!batchCompiler.compile(compileArgs.toArray(new String[0]))) {
       // Any compilation errors will already by displayed.
       ErrorUtil.error("failed batch processing sources");
+    }
+    if (!Options.includeGeneratedSources() && tmpDirectory != null) {
+      collectGeneratedInputs(tmpDirectory, "", inputs);
+    }
+    return generatedInputs;
+  }
+
+  private void collectGeneratedInputs(
+      File dir, String currentRelativePath, List<ProcessingContext> inputs) {
+    assert dir.exists() && dir.isDirectory();
+    for (File f : dir.listFiles()) {
+      String relativeName = currentRelativePath + File.separatorChar + f.getName();
+      if (f.isDirectory()) {
+        collectGeneratedInputs(f, relativeName, inputs);
+      } else {
+        if (f.getName().endsWith(".java")) {
+          inputs.add(ProcessingContext.fromFile(new RegularInputFile(f.getPath(), relativeName)));
+        }
+      }
     }
   }
 
@@ -126,24 +157,101 @@ public class AnnotationPreProcessor {
     return iterator.hasNext();
   }
 
-  public void collectInputs(Collection<ProcessingContext> inputs) {
-    if (tmpDirectory != null) {
-      collectGeneratedInputs(tmpDirectory, "", inputs);
+  // Custom javax.annotation.processing.Filer implementation, used to filter new files
+  // created by annotation processors.
+  private static class AnnotationProcessorFiler extends BatchFilerImpl {
+    private final List<ProcessingContext> inputs;
+
+    AnnotationProcessorFiler(BaseAnnotationProcessorManager dispatchManager,
+        BatchProcessingEnvImpl env, List<ProcessingContext> inputs) {
+      super(dispatchManager, env);
+      this.inputs = inputs;
+    }
+
+    @Override
+    public JavaFileObject createSourceFile(CharSequence name, Element... originatingElements)
+        throws IOException {
+      if (!Options.includeGeneratedSources()) {
+        return super.createSourceFile(name, originatingElements);
+      }
+      String referenceFile = null;
+      TypeElement outerType = null;
+      for (Element e : originatingElements) {
+        while (e instanceof TypeElement) {
+          outerType = (TypeElement) e;
+          e = outerType.getEnclosingElement();
+        }
+        if (outerType instanceof ReferenceBinding) {
+          referenceFile = new String(((ReferenceBinding) outerType).getFileName());
+          break;
+        }
+      }
+      if (referenceFile == null && outerType != null) {
+        referenceFile = outerType.getQualifiedName().toString().replace('.', '/') + ".java";
+      }
+      JavaFileObject newSourceFile = super.createSourceFile(name, originatingElements);
+      ProcessingContext generatedSource = null;
+      if (referenceFile != null) {
+        for (ProcessingContext context : inputs) {
+          if (context.getFile().getUnitName().endsWith(referenceFile)) {
+            GenerationUnit unit = context.getGenerationUnit();
+            generatedSource = new ProcessingContext(
+                new RegularInputFile(newSourceFile.toUri().getPath()), unit);
+            unit.incrementInputs();
+            break;
+          }
+        }
+      }
+      if (generatedSource == null) {
+        String relativePath = name.toString().replace('.', '/') + ".java";
+        generatedSource = ProcessingContext.fromFile(
+            new RegularInputFile(newSourceFile.toUri().getPath(), relativePath));
+      }
+      inputs.add(generatedSource);
+      return newSourceFile;
     }
   }
 
-  private void collectGeneratedInputs(
-      File dir, String currentRelativePath, Collection<ProcessingContext> inputs) {
-    assert dir.exists() && dir.isDirectory();
-    for (File f : dir.listFiles()) {
-      String relativeName = currentRelativePath + File.separatorChar + f.getName();
-      if (f.isDirectory()) {
-        collectGeneratedInputs(f, relativeName, inputs);
-      } else {
-        if (f.getName().endsWith(".java")) {
-          inputs.add(ProcessingContext.fromFile(new RegularInputFile(f.getPath(), relativeName)));
+  // Override batch compiler classes to use custom Filer.
+
+  private static class AnnotationCompiler extends org.eclipse.jdt.internal.compiler.batch.Main {
+    private final String[] commandLine;
+    private final PrintWriter out;
+    private final PrintWriter err;
+    private final List<ProcessingContext> inputs;
+
+    AnnotationCompiler(List<String> compileArgs, Map<String, String> batchOptions,
+        PrintWriter stdOut, PrintWriter stdErr, List<ProcessingContext> inputs) {
+      super(stdOut, stdErr, false, batchOptions, null);
+      commandLine = compileArgs.toArray(new String[0]);
+      out = stdOut;
+      err = stdErr;
+      this.inputs = inputs;
+    }
+
+    @Override
+    protected void initializeAnnotationProcessorManager() {
+      AbstractAnnotationProcessorManager annotationManager = new BatchAnnotationProcessorManager() {
+        @Override
+        public void configure(Object batchCompiler, String[] commandLineArguments) {
+          super.configure(batchCompiler, commandLineArguments);
+          BatchProcessingEnvImpl processingEnv =
+              new AnnotationProcessingEnv(this, (Main) batchCompiler, commandLineArguments, inputs);
+          _processingEnv = processingEnv;
         }
-      }
+      };
+      annotationManager.configure(this, commandLine);
+      annotationManager.setErr(this.err);
+      annotationManager.setOut(this.out);
+      batchCompiler.annotationProcessorManager = annotationManager;
+    }
+  }
+
+  private static class AnnotationProcessingEnv extends BatchProcessingEnvImpl {
+    private AnnotationProcessingEnv(BaseAnnotationProcessorManager dispatchManager,
+        Main batchCompiler, String[] commandLineArguments, List<ProcessingContext> inputs) {
+      super(dispatchManager, batchCompiler, commandLineArguments);
+      _filer = new AnnotationProcessorFiler(_dispatchManager, this, inputs);
     }
   }
 }

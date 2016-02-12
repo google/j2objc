@@ -94,6 +94,7 @@ public class Options {
   private boolean swiftFriendly = false;
   private boolean nullability = false;
   private EnumSet<LintOption> lintOptions = EnumSet.noneOf(LintOption.class);
+  private boolean includeGeneratedSources = false;
 
   private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
@@ -434,6 +435,8 @@ public class Options {
         outputStyle = OutputStyleOption.SOURCE;
       } else if (arg.equals("-XcombineJars")) {
         outputStyle = OutputStyleOption.SOURCE_COMBINED;
+      } else if (arg.equals("-XincludeGeneratedSources")) {
+        includeGeneratedSources = true;
       } else if (arg.equals("-use-arc")) {
         checkMemoryManagementOption(MemoryManagementOption.ARC);
       } else if (arg.equals("-g")) {
@@ -929,7 +932,7 @@ public class Options {
   }
 
   public static boolean shouldMapHeaders() {
-    return useSourceDirectories() || combineSourceJars();
+    return useSourceDirectories() || combineSourceJars() || includeGeneratedSources();
   }
 
   public static String getSourceVersion(){
@@ -990,5 +993,9 @@ public class Options {
 
   public static EnumSet<LintOption> lintOptions() {
     return instance.lintOptions;
+  }
+
+  public static boolean includeGeneratedSources() {
+    return instance.includeGeneratedSources;
   }
 }

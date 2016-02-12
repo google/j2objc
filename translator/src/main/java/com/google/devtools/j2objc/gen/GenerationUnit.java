@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
 public class GenerationUnit {
 
   private String outputPath;
-  private final int numUnits;
+  private int numUnits;
   private int receivedUnits = 0;
   // It is useful for the generated code to be consistent. Therefore, the
   // ordering of generated code within this unit should be consistent. For this
@@ -117,6 +117,15 @@ public class GenerationUnit {
     return generatedTypes.values();
   }
 
+  /**
+   * Increments the number of inputs for this GenerationUnit. This is called
+   * from the annotation preprocessor when an annotation processor has created
+   * a new source file.
+   */
+  public void incrementInputs() {
+    numUnits++;
+  }
+
   public void addCompilationUnit(CompilationUnit unit) {
     assert state != State.FINISHED : "Adding to a finished GenerationUnit.";
     if (state != State.ACTIVE) {
@@ -126,8 +135,17 @@ public class GenerationUnit {
     receivedUnits++;
 
     if (outputPath == null) {
-      // We can only infer the output path if there's one compilation unit.
-      assert numUnits == 1;
+      // The outputPath is only null for units derived from Java source files,
+      // not source jars. Since a Java source can contain annotations that
+      // generate other sources associated with it, the output path must be
+      // determined from the initial source file. Since processor-generated
+      // sources are appended to the list of source files, their units are
+      // returned after the initial sources have been compiled.
+      //
+      // NOTE: THIS IS NOT THREADSAFE! It requires that all files in a batch
+      // be compiled and translated as a single task. When we support
+      // parallelization, each parallel task needs to be constrained this way.
+      assert receivedUnits == 1;
       outputPath = getDefaultOutputPath(unit);
     }
 
