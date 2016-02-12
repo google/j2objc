@@ -206,6 +206,7 @@ TEST_SOURCES := \
     com/google/j2objc/ArrayTest.java \
     com/google/j2objc/AssertTest.java \
     com/google/j2objc/ClassTest.java \
+    com/google/j2objc/MemoryTest.java \
     com/google/j2objc/PackageTest.java \
     com/google/j2objc/ThrowableTest.java \
     com/google/j2objc/net/NSErrorExceptionTest.java \
@@ -603,6 +604,11 @@ SUITE_SOURCES = \
 ARC_TEST_SOURCES = \
     com/google/j2objc/arc/EnumTest.java
 
+# Lists tests that should be copied from Tests/com/google/j2objc to be
+# translated and compiled with ARC.
+COPIED_ARC_TEST_SOURCES = \
+    com/google/j2objc/arc/MemoryTest.java
+
 JAVA8_TEST_SOURCES := \
     com/google/j2objc/java8/CreationReferenceTest.java \
     com/google/j2objc/java8/ExpressionMethodReferenceTest.java \
@@ -614,7 +620,8 @@ JAVA8_TEST_SOURCES := \
 JAVA8_SUITE_SOURCES = \
     com/google/j2objc/java8/SmallTests.java \
 
-ALL_TEST_SOURCES = $(TEST_SOURCES) $(JAVA8_TEST_SOURCES) $(ARC_TEST_SOURCES)
+ALL_TEST_SOURCES = $(TEST_SOURCES) $(JAVA8_TEST_SOURCES) $(ARC_TEST_SOURCES) \
+  $(COPIED_ARC_TEST_SOURCES)
 ALL_SUITE_SOURCES = $(SUITE_SOURCES) $(JAVA8_SUITE_SOURCES)
 
 # These tests fail when run on Travis-CI continuous build, probably due to VM sandbox restrictions.
@@ -744,12 +751,12 @@ endif
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
-TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC) \
+TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC):$(GEN_JAVA_DIR) \
     --extract-unsequenced -encoding UTF-8 \
     --prefixes Tests/resources/prefixes.properties
 TRANSLATE_SOURCES = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_CLASS).java
 TRANSLATE_SOURCES_JAVA8 = $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES)
-TRANSLATE_SOURCES_ARC = $(ARC_TEST_SOURCES)
+TRANSLATE_SOURCES_ARC = $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES)
 TRANSLATED_OBJC = $(TRANSLATE_SOURCES:%.java=$(TESTS_DIR)/%.m)
 TRANSLATED_OBJC_JAVA8 = $(TRANSLATE_SOURCES_JAVA8:%.java=$(TESTS_DIR)/%.m)
 TRANSLATED_OBJC_ARC = $(TRANSLATE_SOURCES_ARC:%.java=$(TESTS_DIR)/arc/%.m)
@@ -771,7 +778,7 @@ TRANSLATE_ARTIFACT_JAVA8 := $(call emit_translate_rule,\
 TRANSLATE_ARTIFACT_ARC := $(call emit_translate_rule,\
   jre_emul_tests_arc,\
   $(TESTS_DIR)/arc,\
-  $(ARC_TEST_SOURCES),\
+  $(ARC_TEST_SOURCES) $(COPIED_ARC_TEST_SOURCES:%=$(GEN_JAVA_DIR)/%),\
   ,\
   $(TRANSLATE_ARGS) -use-arc)
 
@@ -931,6 +938,11 @@ $(ALL_TESTS_SOURCE): tests.mk
 
 $(TESTS_DIR)/jreinitialization: Tests/JreInitialization.m
 	@../dist/j2objcc -o $@ -ljre_emul -ObjC -Os $?
+
+$(GEN_JAVA_DIR)/com/google/j2objc/arc/%.java: $(MISC_TEST_ROOT)/com/google/j2objc/%.java
+	@mkdir -p $(@D)
+	@echo $<
+	@sed 's/^package com\.google\.j2objc;$$/package com.google.j2objc.arc;/' $< > $@
 
 $(TESTS_DIR)/core_size:
 	@mkdir -p $(@D)

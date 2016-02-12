@@ -112,14 +112,26 @@ __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) 
  * @param NAME The constructor name. (eg. initWithInt_)
  * @param ... Parameters to be passed to the initializer.
  */
+#if __has_feature(objc_arc)
 #define J2OBJC_NEW_IMPL(CLASS, NAME, ...) \
   CLASS *self = [CLASS alloc]; \
   CLASS##_##NAME(self, ##__VA_ARGS__); \
   return self;
-#if __has_feature(objc_arc)
 #define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
   return new_##CLASS##_##NAME(__VA_ARGS__);
 #else
+#define J2OBJC_NEW_IMPL(CLASS, NAME, ...) \
+  CLASS *self = [CLASS alloc]; \
+  bool needsRelease = true; \
+  @try { \
+    CLASS##_##NAME(self, ##__VA_ARGS__); \
+    needsRelease = false; \
+  } @finally { \
+    if (__builtin_expect(needsRelease, 0)) { \
+      [self autorelease]; \
+    } \
+  } \
+  return self;
 #define J2OBJC_CREATE_IMPL(CLASS, NAME, ...) \
   CLASS *self = [[CLASS alloc] autorelease]; \
   CLASS##_##NAME(self, ##__VA_ARGS__); \
