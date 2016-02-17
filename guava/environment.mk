@@ -21,4 +21,5 @@ include ../make/j2objc_deps.mk
 include ../java_deps/jars.mk
 
 SRC_JAR = $(JAVA_DEPS_JAR_DIR)/$(GUAVA_SOURCE_JAR)
+JAR = $(JAVA_DEPS_JAR_DIR)/$(GUAVA_JAR)
 OBJS_DIR = $(BUILD_DIR)/objs
