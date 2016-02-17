@@ -238,10 +238,9 @@ public class GenerationTest extends TestCase {
         if (nextLine == null) {
           return i;
         }
-        index += nextLine.length() + 1;  // Also skip trailing newline.
         if (!nextLine.trim().equals(lines[i].trim())) {
           // Check if there is a subsequent match.
-          int subsequentMatch = unmatchedLineIndex(s.substring(index), lines);
+          int subsequentMatch = unmatchedLineIndex(s.substring(index + 1), lines);
           if (subsequentMatch == -1) {
             return -1;
           }
