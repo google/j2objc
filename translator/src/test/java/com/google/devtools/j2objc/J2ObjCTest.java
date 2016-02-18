@@ -106,10 +106,10 @@ public class J2ObjCTest extends GenerationTest {
     assertTranslation(packageInfoH, "com/google/test/package-info.java");
     assertTranslation(packageInfoM, "com/google/test/package-info.java");
     // Test the includes
-    assertTranslation(exampleH, "#pragma push_macro(\"ComGoogleTestExample_INCLUDE_ALL\")");
+    assertTranslation(exampleH, "#pragma push_macro(\"INCLUDE_ALL_ComGoogleTestExample\")");
     assertTranslation(exampleM, "#include \"com/google/test/Example.h\"");
     assertTranslation(
-        packageInfoH, "#pragma push_macro(\"ComGoogleTestPackage_info_INCLUDE_ALL\")");
+        packageInfoH, "#pragma push_macro(\"INCLUDE_ALL_ComGoogleTestPackage_info\")");
     assertTranslation(packageInfoM, "@interface ComGoogleTestpackage_info : NSObject");
     assertTranslation(packageInfoM, "@implementation ComGoogleTestpackage_info");
     // All other assertions
@@ -147,11 +147,11 @@ public class J2ObjCTest extends GenerationTest {
     assertTranslation(packageInfoM, packageInfoPath);
     // Test the includes
     assertTranslation(
-        exampleH, "#pragma push_macro(\"ComGoogleDevtoolsJ2objcUtilExample_INCLUDE_ALL\")");
+        exampleH, "#pragma push_macro(\"INCLUDE_ALL_ComGoogleDevtoolsJ2objcUtilExample\")");
     assertTranslation(
         packageInfoM, "@interface ComGoogleDevtoolsJ2objcUtilpackage_info : NSObject");
     assertTranslation(packageInfoH,
-        "#pragma push_macro(\"ComGoogleDevtoolsJ2objcUtilPackage_info_INCLUDE_ALL\")");
+        "#pragma push_macro(\"INCLUDE_ALL_ComGoogleDevtoolsJ2objcUtilPackage_info\")");
     assertTranslation(packageInfoM, "@implementation ComGoogleDevtoolsJ2objcUtilpackage_info");
     // All other assertions
     makeAssertions(exampleH, exampleM, packageInfoM);
