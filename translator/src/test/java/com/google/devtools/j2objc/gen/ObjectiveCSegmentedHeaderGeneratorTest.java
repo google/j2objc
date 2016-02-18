@@ -33,20 +33,20 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static class Inner {} }", "Test", "Test.h");
     assertTranslatedLines(translation,
-        "#pragma push_macro(\"Test_INCLUDE_ALL\")",
-        "#ifdef Test_RESTRICT",
-        "#define Test_INCLUDE_ALL 0",
+        "#pragma push_macro(\"INCLUDE_ALL_Test\")",
+        "#ifdef RESTRICT_Test",
+        "#define INCLUDE_ALL_Test 0",
         "#else",
-        "#define Test_INCLUDE_ALL 1",
+        "#define INCLUDE_ALL_Test 1",
         "#endif",
-        "#undef Test_RESTRICT");
-    assertTranslation(translation, "#pragma pop_macro(\"Test_INCLUDE_ALL\")");
+        "#undef RESTRICT_Test");
+    assertTranslation(translation, "#pragma pop_macro(\"INCLUDE_ALL_Test\")");
     assertTranslatedLines(translation,
-        "#if !defined (Test_) && (Test_INCLUDE_ALL || defined(Test_INCLUDE))",
+        "#if !defined (Test_) && (INCLUDE_ALL_Test || defined(INCLUDE_Test))",
         "#define Test_");
     assertTranslatedLines(translation,
         "#if !defined (Test_Inner_) && "
-        + "(Test_INCLUDE_ALL || defined(Test_Inner_INCLUDE))",
+        + "(INCLUDE_ALL_Test || defined(INCLUDE_Test_Inner))",
         "#define Test_Inner_");
   }
 
@@ -54,8 +54,8 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test implements Runnable { public void run() {} }", "Test", "Test.h");
     assertTranslatedLines(translation,
-        "#define JavaLangRunnable_RESTRICT 1",
-        "#define JavaLangRunnable_INCLUDE 1",
+        "#define RESTRICT_JavaLangRunnable 1",
+        "#define INCLUDE_JavaLangRunnable 1",
         "#include \"java/lang/Runnable.h\"");
   }
 
@@ -63,8 +63,8 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test { static class Inner extends Test {} }", "Test", "Test.h");
     assertTranslatedLines(translation,
-        "#ifdef Test_Inner_INCLUDE",
-        "#define Test_INCLUDE 1",
+        "#ifdef INCLUDE_Test_Inner",
+        "#define INCLUDE_Test 1",
         "#endif");
   }
 
@@ -72,8 +72,8 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test extends Foo { } class Foo {}", "Test", "Test.h");
     assertTranslatedLines(translation,
-        "#ifdef Test_INCLUDE",
-        "#define Foo_INCLUDE 1",
+        "#ifdef INCLUDE_Test",
+        "#define INCLUDE_Foo 1",
         "#endif");
   }
 
@@ -102,8 +102,8 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     String translation = translateSourceFile(
         "class Test extends Foo { Foo.Bar bar; }", "Test", "Test.h");
     assertTranslatedLines(translation,
-        "#define Foo_RESTRICT 1",
-        "#define Foo_INCLUDE 1",
+        "#define RESTRICT_Foo 1",
+        "#define INCLUDE_Foo 1",
         "#include \"Foo.h\"");
     // Forward declaration for Foo_Bar is needed because the include of Foo.h
     // is restricted to only the Foo type.
@@ -120,18 +120,39 @@ public class ObjectiveCSegmentedHeaderGeneratorTest extends GenerationTest {
     // Check that the RESTRICT and INCLUDE_ALL variables are prefixed with a
     // name derived from the jar file path.
     assertTranslatedLines(translation,
-        "#pragma push_macro(\"SomePathTest_INCLUDE_ALL\")",
-        "#ifdef SomePathTest_RESTRICT",
-        "#define SomePathTest_INCLUDE_ALL 0",
+        "#pragma push_macro(\"INCLUDE_ALL_SomePathTest\")",
+        "#ifdef RESTRICT_SomePathTest",
+        "#define INCLUDE_ALL_SomePathTest 0",
         "#else",
-        "#define SomePathTest_INCLUDE_ALL 1",
+        "#define INCLUDE_ALL_SomePathTest 1",
         "#endif",
-        "#undef SomePathTest_RESTRICT");
+        "#undef RESTRICT_SomePathTest");
     // Check that the include of "Bar" uses the correct prefix on it's RESTRICT
     // variable.
     assertTranslatedLines(translation,
-        "#define OtherPathTest2_RESTRICT 1",
-        "#define AbcBar_INCLUDE 1",
+        "#define RESTRICT_OtherPathTest2 1",
+        "#define INCLUDE_AbcBar 1",
         "#include \"other/path/test2.h\"");
+  }
+
+  // Verify INCLUDE, INCLUDE_ALL, and RESTRICT can still be used as static variables.
+  public void testReservedNames() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { "
+        + "public static final int INCLUDE = 1; "
+        + "public static final int INCLUDE_ALL = 2;"
+        + "static class Inner { public static final int RESTRICT = 3; } }", "Test", "Test.h");
+    assertTranslatedLines(translation,
+        "inline jint Test_get_INCLUDE();",
+        "#define Test_INCLUDE 1",
+        "J2OBJC_STATIC_FIELD_CONSTANT(Test, INCLUDE, jint)");
+    assertTranslatedLines(translation,
+        "inline jint Test_get_INCLUDE_ALL();",
+        "#define Test_INCLUDE_ALL 2",
+        "J2OBJC_STATIC_FIELD_CONSTANT(Test, INCLUDE_ALL, jint)");
+    assertTranslatedLines(translation,
+        "inline jint Test_Inner_get_RESTRICT();",
+        "#define Test_Inner_RESTRICT 3",
+        "J2OBJC_STATIC_FIELD_CONSTANT(Test_Inner, RESTRICT, jint)");
   }
 }
