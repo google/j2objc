@@ -32,7 +32,7 @@ public class StaticVarRewriterTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "[nil_chk(((Test *) nil_chk(JreLoadStatic(Test, test)))->obj_) description];",
-        "[JreLoadStatic(Test, test)->obj_ description];");
+        "[nil_chk(((Test *) nil_chk(JreLoadStatic(Test, test)))->obj_) description];");
   }
 
   public void testAssinmentToNewObject() throws IOException {

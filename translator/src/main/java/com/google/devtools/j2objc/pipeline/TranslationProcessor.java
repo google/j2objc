@@ -38,6 +38,7 @@ import com.google.devtools.j2objc.translate.InitializationNormalizer;
 import com.google.devtools.j2objc.translate.InnerClassExtractor;
 import com.google.devtools.j2objc.translate.JavaCloneWriter;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
+import com.google.devtools.j2objc.translate.LabelRewriter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.translate.OperatorRewriter;
@@ -178,8 +179,14 @@ public class TranslationProcessor extends FileProcessor {
     }
 
     // Adds nil_chk calls wherever an expression is dereferenced.
+    // Before: LabelRewriter - Control flow analysis requires original Java
+    //   labels.
     new NilCheckResolver().run(unit);
     ticker.tick("NilCheckResolver");
+
+    // Rewrites labeled break and continue statements.
+    new LabelRewriter().run(unit);
+    ticker.tick("LabelRewriter");
 
     // Before: ArrayRewriter - Adds ArrayCreation nodes.
     // Before: Functionizer - Can't rewrite function arguments.
@@ -282,6 +289,7 @@ public class TranslationProcessor extends FileProcessor {
     ticker.printResults(System.out);
   }
 
+  @Override
   protected void handleError(ProcessingContext input) {
     // Causes the generation unit to release any trees it was holding.
     input.getGenerationUnit().failed();

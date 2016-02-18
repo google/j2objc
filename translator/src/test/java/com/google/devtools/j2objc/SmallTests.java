@@ -65,7 +65,6 @@ import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriterTest;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriterTest;
 import com.google.devtools.j2objc.translate.VarargsRewriterTest;
 import com.google.devtools.j2objc.translate.VariableRenamerTest;
-import com.google.devtools.j2objc.types.BindingMapBuilderTest;
 import com.google.devtools.j2objc.types.HeaderImportCollectorTest;
 import com.google.devtools.j2objc.types.ImplementationImportCollectorTest;
 import com.google.devtools.j2objc.util.BindingUtilTest;
@@ -92,7 +91,6 @@ public class SmallTests {
     ArrayCreationTest.class,
     ArrayRewriterTest.class,
     AutoboxerTest.class,
-    BindingMapBuilderTest.class,
     BindingUtilTest.class,
     CastResolverTest.class,
     ComplexExpressionExtractorTest.class,

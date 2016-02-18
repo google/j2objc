@@ -22,14 +22,9 @@ import com.google.common.collect.Maps;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
-import com.google.devtools.j2objc.ast.BreakStatement;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
-import com.google.devtools.j2objc.ast.ContinueStatement;
 import com.google.devtools.j2objc.ast.CreationReference;
-import com.google.devtools.j2objc.ast.DoStatement;
-import com.google.devtools.j2objc.ast.EmptyStatement;
-import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
@@ -37,7 +32,6 @@ import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
-import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
@@ -60,7 +54,6 @@ import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
-import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -98,7 +91,6 @@ public class Rewriter extends TreeVisitor {
   @Override
   public boolean visit(MethodDeclaration node) {
     IMethodBinding binding = node.getMethodBinding();
-
     if (BindingUtil.hasAnnotation(binding, AutoreleasePool.class)) {
       if (!binding.getReturnType().isPrimitive()) {
         ErrorUtil.warning(
@@ -107,99 +99,7 @@ public class Rewriter extends TreeVisitor {
         node.getBody().setHasAutoreleasePool(true);
       }
     }
-
-    // Rename any labels that have the same names; legal in Java but not C.
-    final Map<String, Integer> labelCounts = Maps.newHashMap();
-    node.accept(new TreeVisitor() {
-      @Override
-      public void endVisit(LabeledStatement labeledStatement) {
-        final String name = labeledStatement.getLabel().getIdentifier();
-        int value = labelCounts.containsKey(name) ? labelCounts.get(name) + 1 : 1;
-        labelCounts.put(name, value);
-        if (value > 1) {
-          final String newName = name + '_' + value;
-          labeledStatement.setLabel(new SimpleName(newName));
-          // Update references to this label.
-          labeledStatement.accept(new TreeVisitor() {
-            @Override
-            public void endVisit(ContinueStatement node) {
-              if (node.getLabel() != null && node.getLabel().getIdentifier().equals(name)) {
-                node.setLabel(new SimpleName(newName));
-              }
-            }
-            @Override
-            public void endVisit(BreakStatement node) {
-              if (node.getLabel() != null && node.getLabel().getIdentifier().equals(name)) {
-                node.setLabel(new SimpleName(newName));
-              }
-            }
-          });
-
-        }
-      }
-    });
     return true;
-  }
-
-  private static Statement getLoopBody(Statement s) {
-    if (s instanceof DoStatement) {
-      return ((DoStatement) s).getBody();
-    } else if (s instanceof EnhancedForStatement) {
-      return ((EnhancedForStatement) s).getBody();
-    } else if (s instanceof ForStatement) {
-      return ((ForStatement) s).getBody();
-    } else if (s instanceof WhileStatement) {
-      return ((WhileStatement) s).getBody();
-    }
-    return null;
-  }
-
-  @Override
-  public void endVisit(LabeledStatement node) {
-    Statement loopBody = getLoopBody(node.getBody());
-
-    final String labelIdentifier = node.getLabel().getIdentifier();
-
-    final boolean[] hasContinue = new boolean[1];
-    final boolean[] hasBreak = new boolean[1];
-    node.accept(new TreeVisitor() {
-      @Override
-      public void endVisit(ContinueStatement node) {
-        if (node.getLabel() != null && node.getLabel().getIdentifier().equals(labelIdentifier)) {
-          hasContinue[0] = true;
-          node.setLabel(new SimpleName("continue_" + labelIdentifier));
-        }
-      }
-      @Override
-      public void endVisit(BreakStatement node) {
-        if (node.getLabel() != null && node.getLabel().getIdentifier().equals(labelIdentifier)) {
-          hasBreak[0] = true;
-          node.setLabel(new SimpleName("break_" + labelIdentifier));
-        }
-      }
-    });
-
-    if (hasContinue[0]) {
-      assert loopBody != null : "Continue statements must be inside a loop.";
-      LabeledStatement newLabelStmt = new LabeledStatement("continue_" + labelIdentifier);
-      newLabelStmt.setBody(new EmptyStatement());
-      // Put the loop body into an inner block so the continue label is outside
-      // the scope of any variable initializations.
-      Block newBlock = new Block();
-      loopBody.replaceWith(newBlock);
-      newBlock.getStatements().add(loopBody);
-      newBlock.getStatements().add(newLabelStmt);
-    }
-    if (hasBreak[0]) {
-      LabeledStatement newLabelStmt = new LabeledStatement("break_" + labelIdentifier);
-      newLabelStmt.setBody(new EmptyStatement());
-      TreeUtil.insertAfter(node, newLabelStmt);
-    }
-
-    if (hasContinue[0] || hasBreak[0]) {
-      // Replace this node with its statement, thus deleting the label.
-      node.replaceWith(TreeUtil.remove(node.getBody()));
-    }
   }
 
   @Override

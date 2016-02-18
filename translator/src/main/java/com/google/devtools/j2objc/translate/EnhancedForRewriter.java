@@ -19,12 +19,14 @@ import com.google.devtools.j2objc.ast.EnhancedForStatement;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.InfixExpression;
+import com.google.devtools.j2objc.ast.LabeledStatement;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
@@ -61,10 +63,9 @@ public class EnhancedForRewriter extends TreeVisitor {
     }
 
     if (expressionType.isArray()) {
-      node.replaceWith(makeArrayIterationBlock(
-          expression, expressionType, loopVariable, node.getBody()));
+      handleArrayIteration(node);
     } else if (emitJavaIteratorLoop(loopVariable)) {
-      node.replaceWith(makeIterableBlock(expression, expressionType, loopVariable, node.getBody()));
+      convertToJavaIteratorLoop(node);
     } else if (loopVariable.getType().isPrimitive()) {
       boxLoopVariable(node, expressionType, loopVariable);
     } else {
@@ -74,9 +75,10 @@ public class EnhancedForRewriter extends TreeVisitor {
     }
   }
 
-  private Block makeArrayIterationBlock(
-      Expression expression, ITypeBinding expressionType, IVariableBinding loopVariable,
-      Statement loopBody) {
+  private void handleArrayIteration(EnhancedForStatement node) {
+    Expression expression = node.getExpression();
+    ITypeBinding expressionType = expression.getTypeBinding();
+    IVariableBinding loopVariable = node.getParameter().getVariableBinding();
     ITypeBinding componentType = expressionType.getComponentType();
     ITypeBinding iosArrayType = typeEnv.resolveArrayType(componentType);
     PointerTypeBinding bufferType = typeEnv.getPointerType(componentType);
@@ -94,7 +96,7 @@ public class EnhancedForRewriter extends TreeVisitor {
         "size", Modifier.PUBLIC, typeEnv.resolveJavaType("int"), true, false, iosArrayType, null);
 
     VariableDeclarationStatement arrayDecl =
-        new VariableDeclarationStatement(arrayVariable, expression.copy());
+        new VariableDeclarationStatement(arrayVariable, TreeUtil.remove(expression));
     FieldAccess bufferAccess = new FieldAccess(bufferField, new SimpleName(arrayVariable));
     VariableDeclarationStatement bufferDecl =
         new VariableDeclarationStatement(bufferVariable, bufferAccess);
@@ -107,7 +109,7 @@ public class EnhancedForRewriter extends TreeVisitor {
     loop.setExpression(new InfixExpression(
         typeEnv.resolveJavaType("boolean"), InfixExpression.Operator.LESS,
         new SimpleName(bufferVariable), new SimpleName(endVariable)));
-    Block newLoopBody = makeBlock(loopBody.copy());
+    Block newLoopBody = makeBlock(TreeUtil.remove(node.getBody()));
     loop.setBody(newLoopBody);
     newLoopBody.getStatements().add(0, new VariableDeclarationStatement(
         loopVariable, new PrefixExpression(
@@ -120,8 +122,7 @@ public class EnhancedForRewriter extends TreeVisitor {
     stmts.add(bufferDecl);
     stmts.add(endDecl);
     stmts.add(loop);
-
-    return block;
+    replaceLoop(node, block, loop);
   }
 
   private boolean emitJavaIteratorLoop(IVariableBinding loopVariable) {
@@ -138,9 +139,10 @@ public class EnhancedForRewriter extends TreeVisitor {
     return false;
   }
 
-  private Block makeIterableBlock(
-      Expression expression, ITypeBinding expressionType, IVariableBinding loopVariable,
-      Statement loopBody) {
+  private void convertToJavaIteratorLoop(EnhancedForStatement node) {
+    Expression expression = node.getExpression();
+    ITypeBinding expressionType = expression.getTypeBinding();
+    IVariableBinding loopVariable = node.getParameter().getVariableBinding();
     ITypeBinding iterableType = BindingUtil.findInterface(expressionType, "java.lang.Iterable");
     IMethodBinding iteratorMethod = BindingUtil.findDeclaredMethod(iterableType, "iterator");
     ITypeBinding iteratorType = iteratorMethod.getReturnType();
@@ -151,7 +153,8 @@ public class EnhancedForRewriter extends TreeVisitor {
     IVariableBinding iteratorVariable = new GeneratedVariableBinding(
         "iter__", 0, iteratorType, false, false, null, null);
 
-    MethodInvocation iteratorInvocation = new MethodInvocation(iteratorMethod, expression.copy());
+    MethodInvocation iteratorInvocation =
+        new MethodInvocation(iteratorMethod, TreeUtil.remove(expression));
     VariableDeclarationStatement iteratorDecl =
         new VariableDeclarationStatement(iteratorVariable, iteratorInvocation);
     MethodInvocation hasNextInvocation =
@@ -159,7 +162,7 @@ public class EnhancedForRewriter extends TreeVisitor {
     MethodInvocation nextInvocation =
         new MethodInvocation(nextMethod, new SimpleName(iteratorVariable));
 
-    Block newLoopBody = makeBlock(loopBody.copy());
+    Block newLoopBody = makeBlock(TreeUtil.remove(node.getBody()));
     newLoopBody.getStatements().add(
         0, new VariableDeclarationStatement(loopVariable, nextInvocation));
 
@@ -171,8 +174,18 @@ public class EnhancedForRewriter extends TreeVisitor {
     List<Statement> stmts = block.getStatements();
     stmts.add(iteratorDecl);
     stmts.add(whileLoop);
+    replaceLoop(node, block, whileLoop);
+  }
 
-    return block;
+  private void replaceLoop(EnhancedForStatement oldLoop, Statement replacement, Statement newLoop) {
+    if (oldLoop.getParent() instanceof LabeledStatement) {
+      LabeledStatement labeledStmt = (LabeledStatement) oldLoop.getParent();
+      labeledStmt.replaceWith(replacement);
+      newLoop.replaceWith(labeledStmt);
+      labeledStmt.setBody(newLoop);
+    } else {
+      oldLoop.replaceWith(replacement);
+    }
   }
 
   private void boxLoopVariable(

@@ -211,6 +211,7 @@ JAVA_SOURCES = \
 	translate/InnerClassExtractor.java \
 	translate/JavaCloneWriter.java \
 	translate/JavaToIOSMethodTranslator.java \
+	translate/LabelRewriter.java \
 	translate/NilCheckResolver.java \
 	translate/OcniExtractor.java \
 	translate/OperatorRewriter.java \

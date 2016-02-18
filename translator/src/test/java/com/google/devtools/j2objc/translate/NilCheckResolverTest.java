@@ -49,11 +49,13 @@ public class NilCheckResolverTest extends GenerationTest {
 
   public void testNilCheckAfterReassignment() throws IOException {
     String translation = translateSourceFile(
-        "class Test { void test(Object o) { o.toString(); o = null; o.toString(); "
-        + "o = new Object(); o.toString(); } }", "Test", "Test.m");
+        "class Test { void test(Object o, boolean b) { o.toString(); if (b) { o = null; } "
+        + "o.toString(); o = new Object(); o.toString(); } }", "Test", "Test.m");
     assertTranslatedLines(translation,
         "nil_chk(o) description];",
-        "o = nil;",
+        "if (b) {",
+        "  o = nil;",
+        "}",
         "[nil_chk(o) description];",
         "o = create_NSObject_init();",
         "[o description];");
@@ -136,5 +138,199 @@ public class NilCheckResolverTest extends GenerationTest {
         + "  }}",
         "Test", "Test.m");
     assertTranslation(translation, "nil_chk(strings)");
+  }
+
+  // Method invocations can have side-effects
+  public void testFieldsNeedCheckAfterInvocation() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { class Foo { int i; } Foo foo;"
+        + " void test() { int i; i = foo.i; i = foo.i; System.gc(); i = foo.i; super.toString();"
+        + " i = foo.i; new Test(); i = foo.i; } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "i = ((Test_Foo *) nil_chk(foo_))->i_;",
+        "i = foo_->i_;",
+        "JavaLangSystem_gc();",
+        "i = ((Test_Foo *) nil_chk(foo_))->i_;",
+        "[super description];",
+        "i = ((Test_Foo *) nil_chk(foo_))->i_;",
+        "create_Test_init();",
+        "i = ((Test_Foo *) nil_chk(foo_))->i_;");
+  }
+
+  public void testReassignedVariableInLoop() throws IOException {
+    String translation = translateSourceFile(
+        "public abstract class Test { abstract boolean getB();"
+        + " void test(Object o, Iterable<Integer> ints) {"
+        + " o.toString(); do { o.toString(); o = null; } while(getB());"
+        + " o.toString(); while(getB()) { o.toString(); o = null; }"
+        + " o.toString(); for(; getB();) { o.toString(); o = null; }"
+        + " o.toString(); for(Integer i : ints) { o.toString(); o = null; } } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "[nil_chk(o) description];",
+        "do {",
+        "  [nil_chk(o) description];",
+        "  o = nil;",
+        "}",
+        "while ([self getB]);",
+        "[nil_chk(o) description];",
+        "while ([self getB]) {",
+        "  [nil_chk(o) description];",
+        "  o = nil;",
+        "}",
+        "[nil_chk(o) description];",
+        "for (; [self getB]; ) {",
+        "  [nil_chk(o) description];",
+        "  o = nil;",
+        "}",
+        "[nil_chk(o) description];",
+        "for (JavaLangInteger * __strong i in nil_chk(ints)) {",
+        "  [nil_chk(o) description];",
+        "  o = nil;",
+        "}");
+  }
+
+  public void testBreakAndContinue() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test(Object o, boolean b, boolean b2) { o.toString();"
+        + " dummy: do { o.toString(); if (b) { o = null; break; } if (b2) { o = null; continue; }"
+        + " o.toString(); } while(Math.random() < 0.5); o.toString(); } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "[nil_chk(o) description];",
+        "dummy: do {",
+        "  [nil_chk(o) description];",  // Needs nil_chk because of continue statement.
+        "  if (b) {",
+        "    o = nil;",
+        "    break;",
+        "  }",
+        "  if (b2) {",
+        "    o = nil;",
+        "    continue;",
+        "  }",
+        // No nil_chk because of reassignments of "o" are followed by control
+        // flow breaking statements.
+        "  [o description];",
+        "}",
+        "while (JavaLangMath_random() < 0.5);",
+        "[nil_chk(o) description];");  // Needs nil_chk because of break statement.
+  }
+
+  public void testTryCatch() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { class Foo { int i; } void test(Foo f) { int i; i = f.i; try {"
+        + " f = null; System.gc(); i = f.i; } catch (Throwable t) { i = f.i; }"
+        + " finally { i = f.i; } i = f.i; } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "i = ((Test_Foo *) nil_chk(f))->i_;",
+        "@try {",
+        "  f = nil;",
+        "  JavaLangSystem_gc();",
+        "  i = ((Test_Foo *) nil_chk(f))->i_;",
+        "}",
+        "@catch (NSException *t) {",
+        "  i = ((Test_Foo *) nil_chk(f))->i_;",
+        "}",
+        "@finally {",
+        "  i = ((Test_Foo *) nil_chk(f))->i_;",
+        "}",
+        "i = f->i_;");
+  }
+
+  public void testScopeTermination() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { void test(Object o1, Object o2, boolean b) {"
+        + " if (o1 == null) { return; } o1.toString();"
+        + " if (o2 != null) System.gc(); else if (b) throw new RuntimeException(); else return;"
+        + " o2.toString(); } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "if (o1 == nil) {",
+        "  return;",
+        "}",
+        "[o1 description];",
+        "if (o2 != nil) JavaLangSystem_gc();",
+        "else if (b) @throw create_JavaLangRuntimeException_init();",
+        "else return;",
+        "[o2 description];");
+  }
+
+  public void testTrickyEqualsNullChecks() throws IOException {
+    // Try to trick the translator into thinking that "o" is safe.
+    String translation = translateSourceFile(
+        "class Test { boolean foo(boolean b) { return true; } void test(Object o) {"
+        + " if (o != null ? false : true) { o.toString(); }"
+        + " if (foo(o != null)) { o.toString(); } } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "if (o != nil ? false : true) {",
+        "  [nil_chk(o) description];",
+        "}",
+        "if ([self fooWithBoolean:o != nil]) {",
+        "  [nil_chk(o) description];",
+        "}");
+  }
+
+  public void testNullCheckInLoopContition() throws IOException {
+    String translation = translateSourceFile(
+        "abstract class Test { abstract Object getObj(); void test(Object o) {"
+        + " while (o == null) { o = getObj(); } o.toString();"
+        + " for (; o != null; ) { o.toString(); o = getObj(); } o.toString(); } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "while (o == nil) {",
+        "  o = [self getObj];",
+        "}",
+        "[o description];",
+        "for (; o != nil; ) {",
+        "  [o description];",
+        "  o = [self getObj];",
+        "}",
+        "[nil_chk(o) description];");
+  }
+
+  public void testSwitchStatement() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(Object o1, Object o2, int i) { o2.toString(); switch(i) {"
+        + " case 1: o1.toString(); case 2: o1.toString(); break;"
+        + " case 3: o2 = null; case 4: o2.toString(); } } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "[nil_chk(o2) description];",
+        "switch (i) {",
+        "  case 1:",
+        "  [nil_chk(o1) description];",
+        "  case 2:",
+        "  [nil_chk(o1) description];",
+        "  break;",
+        "  case 3:",
+        "  o2 = nil;",
+        "  case 4:",
+        "  [nil_chk(o2) description];",
+        "}");
+  }
+
+  // Volatile fields should always nil_chk'ed.
+  public void testVolatileField() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { static class Foo { int i; } volatile Foo f;"
+        + " void test() { int i; i = f.i; i = f.i; } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "i = ((Test_Foo *) nil_chk(JreLoadVolatileId(&f_)))->i_;",
+        "i = ((Test_Foo *) nil_chk(JreLoadVolatileId(&f_)))->i_;");
+  }
+
+  public void testLabeledBlock() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { void test(Object o, boolean b) { test_label: { o.toString();"
+        + " if (b) { o = null; break test_label; } o.toString(); } o.toString(); } }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "{",
+        "  [nil_chk(o) description];",
+        "  if (b) {",
+        "    o = nil;",
+        "    goto break_test_label;",
+        "  }",
+        "  [o description];",
+        "}",
+        "break_test_label: ;",
+        "[nil_chk(o) description];");
   }
 }

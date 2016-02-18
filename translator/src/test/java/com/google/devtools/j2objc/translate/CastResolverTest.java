@@ -107,9 +107,9 @@ public class CastResolverTest extends GenerationTest {
         + "  }"
         + "}", "Test", "Test.m");
     // Verify foo.derivedMethod() has cast of appropriate type variable.
-    assertTranslation(translation, "[((Test_DerivedFoo *) foo_) derivedMethod];");
+    assertTranslation(translation, "[((Test_DerivedFoo *) nil_chk(foo_)) derivedMethod];");
     // Verify that a cast can be added to a QualifiedName node.
-    assertTranslation(translation, "return ((Test_DerivedFoo *) foo_)->myInt_;");
+    assertTranslation(translation, "return ((Test_DerivedFoo *) nil_chk(foo_))->myInt_;");
   }
 
   public void testCapturedType() throws IOException {

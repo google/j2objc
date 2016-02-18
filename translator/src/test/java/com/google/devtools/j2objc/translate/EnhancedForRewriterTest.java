@@ -59,4 +59,47 @@ public class EnhancedForRewriterTest extends GenerationTest {
           "}",
         "}");
   }
+
+  public void testLabeledEnhancedForLoop() throws IOException {
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.LoopTranslation;"
+        + "import com.google.j2objc.annotations.LoopTranslation.LoopStyle;"
+        + " class Test { public void foo(boolean b, java.util.List<Object> list) {"
+        + " testLabel1: for (Object o: new Object[] { }) {"
+        + " if (b) { break testLabel1; } continue testLabel1; }"
+        + " testLabel2: for (@LoopTranslation(LoopStyle.JAVA_ITERATOR) Object o: list) {"
+        + " if (b) { break testLabel2; } continue testLabel2; } } }", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "{",
+        "  IOSObjectArray *a__ = [IOSObjectArray arrayWithObjects:"
+          + "(id[]){  } count:0 type:NSObject_class_()];",
+        "  id const *b__ = a__->buffer_;",
+        "  id const *e__ = b__ + a__->size_;",
+        "  while (b__ < e__) {",
+        "    {",
+        "      id o = *b__++;",
+        "      if (b) {",
+        "        goto break_testLabel1;",
+        "      }",
+        "      goto continue_testLabel1;",
+        "    }",
+        "    continue_testLabel1: ;",
+        "  }",
+        "  break_testLabel1: ;",
+        "}",
+        "{",
+        "  id<JavaUtilIterator> iter__ = [((id<JavaUtilList>) nil_chk(list)) iterator];",
+        "  while ([((id<JavaUtilIterator>) nil_chk(iter__)) hasNext]) {",
+        "    {",
+        "      id o = [iter__ next];",
+        "      if (b) {",
+        "        goto break_testLabel2;",
+        "      }",
+        "      goto continue_testLabel2;",
+        "    }",
+        "    continue_testLabel2: ;",
+        "  }",
+        "  break_testLabel2: ;",
+        "}");
+  }
 }
