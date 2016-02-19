@@ -176,7 +176,7 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   return false;
 }
 
-- (IOSObjectArray *)filterStackTrace {
+IOSObjectArray *FilterStackTrace(NSException *self) {
   RawStack *rawStack = GetRawStack(self);
   if (rawStack) {
     @synchronized (self) {
@@ -233,7 +233,7 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
 }
 
 - (IOSObjectArray *)getStackTrace {
-  return [self filterStackTrace];
+  return FilterStackTrace(self);
 }
 
 - (NSException *)initCauseWithNSException:(NSException *)causeArg {
@@ -256,7 +256,7 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
 
 - (void)printStackTraceWithJavaIoPrintWriter:(JavaIoPrintWriter *)pw {
   [pw printlnWithNSString:[self description]];
-  IOSObjectArray *trace = [self filterStackTrace];
+  IOSObjectArray *trace = FilterStackTrace(self);
   for (jint i = 0; i < trace->size_; i++) {
     [pw printWithNSString:@"\tat "];
     id frame = trace->buffer_[i];
@@ -271,7 +271,7 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
 
 - (void)printStackTraceWithJavaIoPrintStream:(JavaIoPrintStream *)ps {
   [ps printlnWithNSString:[self description]];
-  IOSObjectArray *trace = [self filterStackTrace];
+  IOSObjectArray *trace = FilterStackTrace(self);
   for (jint i = 0; i < trace->size_; i++) {
     [ps printWithNSString:@"\tat "];
     id frame = trace->buffer_[i];
