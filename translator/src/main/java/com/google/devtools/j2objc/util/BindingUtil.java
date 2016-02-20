@@ -53,6 +53,9 @@ public final class BindingUtil {
   // Not defined in JVM spec, but used by reflection support.
   public static final int ACC_ANONYMOUS = 0x8000;
 
+  // Class files can only use the lower 16 bits.
+  public static final int ACC_FLAG_MASK = 0xFFFF;
+
   public static boolean isStatic(IBinding binding) {
     return Modifier.isStatic(binding.getModifiers());
   }

@@ -264,7 +264,7 @@ public class MetadataGenerator {
       methodName = null;  // Reduce redundant data.
     }
 
-    int modifiers = getMethodModifiers(method);
+    int modifiers = getMethodModifiers(method) & BindingUtil.ACC_FLAG_MASK;
     String returnTypeStr = method.isConstructor() ? null : getTypeName(method.getReturnType());
     return UnicodeUtils.format("    { \"%s\", %s, %s, 0x%x, %s, %s },\n",
         selector, cStr(methodName), cStr(returnTypeStr), modifiers,
