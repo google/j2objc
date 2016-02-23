@@ -59,12 +59,17 @@ public class VariableRenamerTest extends GenerationTest {
   }
 
   public void testStaticFieldAndMethodCollision() throws IOException {
-    String translation = translateSourceFile(
-        "public class Test { static final int foo = 3; static void foo() {}}", "Test", "Test.h");
+    String header = translateSourceFile(
+        "public class Test { static final int foo = 3; static int bar;"
+        + " static void foo() { new Test().bar(); } private void bar() {} }", "Test", "Test.h");
+    String impl = getTranslatedFile("Test.m");
     // The variable is renamed.
-    assertTranslation(translation, "#define Test_foo_ 3");
-    assertTranslation(translation, "J2OBJC_STATIC_FIELD_CONSTANT(Test, foo_, jint)");
+    assertTranslation(header, "#define Test_foo_ 3");
+    assertTranslation(header, "J2OBJC_STATIC_FIELD_CONSTANT(Test, foo_, jint)");
     // The functionized static method is unchanged.
-    assertTranslation(translation, "void Test_foo();");
+    assertTranslation(header, "void Test_foo();");
+    // Test static field and non-static method collision.
+    assertTranslation(impl, "jint Test_bar_");
+    assertTranslation(impl, "void Test_bar(Test *self)");
   }
 }

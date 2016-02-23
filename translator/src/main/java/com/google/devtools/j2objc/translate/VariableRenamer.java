@@ -55,10 +55,10 @@ public class VariableRenamer extends TreeVisitor {
       for (IVariableBinding superField : fields) {
         superFieldNames.add(superField.getName());
       }
-      // Look for static methods that might conflict with a static variable when functionized.
+      // Look for methods that might conflict with a static variable when functionized.
       Set<String> staticMethodNames = new HashSet<>();
       for (IMethodBinding method : type.getDeclaredMethods()) {
-        if (BindingUtil.isStatic(method) && method.getParameterTypes().length == 0) {
+        if (method.getParameterTypes().length == 0) {
           staticMethodNames.add(nameTable.getFunctionName(method));
         }
       }
