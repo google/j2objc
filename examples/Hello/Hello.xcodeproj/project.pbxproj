@@ -15,6 +15,13 @@
 		069A97B41C6A86AD00A00560 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 069A97B21C6A86AD00A00560 /* LaunchScreen.storyboard */; };
 		069A97D51C6A897900A00560 /* Hello.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 069A97D41C6A897900A00560 /* Hello.xcconfig */; };
 		069A97DC1C6AB52A00A00560 /* Status.java in Sources */ = {isa = PBXBuildFile; fileRef = 069A97DB1C6AB52A00A00560 /* Status.java */; };
+		06CCF1371C77E42800CDF952 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 069A97A81C6A86AD00A00560 /* AppDelegate.m */; };
+		06CCF1381C77E42800CDF952 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 069A97A51C6A86AD00A00560 /* main.m */; };
+		06CCF13C1C77E42800CDF952 /* Hello.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 069A97D41C6A897900A00560 /* Hello.xcconfig */; };
+		06CCF13D1C77E42800CDF952 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 069A97B21C6A86AD00A00560 /* LaunchScreen.storyboard */; };
+		06CCF13E1C77E42800CDF952 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 069A97B01C6A86AD00A00560 /* Assets.xcassets */; };
+		06CCF13F1C77E42800CDF952 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 069A97AD1C6A86AD00A00560 /* Main.storyboard */; };
+		06CCF1471C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CCF1461C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -29,10 +36,21 @@
 			);
 			script = "if [ ! -f \"${J2OBJC_DIST}/j2objc\" ]; then echo \"J2OBJC_DIST not correctly defined in Hello.xcconfig, currently set to '${J2OBJC_DIST}'\"; exit 1; fi;\n\"${J2OBJC_DIST}/j2objc\" --quiet -g -d ${DERIVED_FILES_DIR} -use-arc ${INPUT_FILE_PATH};";
 		};
+		06CCF1401C77E42800CDF952 /* PBXBuildRule */ = {
+			isa = PBXBuildRule;
+			compilerSpec = com.apple.compilers.proxy.script;
+			fileType = sourcecode.java;
+			isEditable = 1;
+			outputFiles = (
+				"${DERIVED_FILES_DIR}/org/j2objc/${INPUT_FILE_BASE}.m",
+				"${DERIVED_FILES_DIR}/org/j2objc/${INPUT_FILE_BASE}.h",
+			);
+			script = "if [ ! -f \"${J2OBJC_DIST}/j2objc\" ]; then echo \"J2OBJC_DIST not correctly defined in Hello.xcconfig, currently set to '${J2OBJC_DIST}'\"; exit 1; fi;\n\"${J2OBJC_DIST}/j2objc\" --quiet -g -d ${DERIVED_FILES_DIR} -use-arc ${INPUT_FILE_PATH};";
+		};
 /* End PBXBuildRule section */
 
 /* Begin PBXFileReference section */
-		069A97A11C6A86AD00A00560 /* Hello.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hello.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		069A97A11C6A86AD00A00560 /* HelloJ2ObjC.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloJ2ObjC.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		069A97A51C6A86AD00A00560 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		069A97A71C6A86AD00A00560 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		069A97A81C6A86AD00A00560 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
@@ -44,10 +62,19 @@
 		069A97B51C6A86AD00A00560 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		069A97D41C6A897900A00560 /* Hello.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = Hello.xcconfig; sourceTree = "<group>"; };
 		069A97DB1C6AB52A00A00560 /* Status.java */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.java; name = Status.java; path = org/j2objc/Status.java; sourceTree = "<group>"; };
+		06CCF1441C77E42800CDF952 /* Hello.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Hello.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		06CCF1461C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ViewControllerNoJ2ObjC.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		069A979E1C6A86AD00A00560 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06CCF13A1C77E42800CDF952 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -69,7 +96,8 @@
 		069A97A21C6A86AD00A00560 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				069A97A11C6A86AD00A00560 /* Hello.app */,
+				069A97A11C6A86AD00A00560 /* HelloJ2ObjC.app */,
+				06CCF1441C77E42800CDF952 /* Hello.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -87,6 +115,7 @@
 				069A97B21C6A86AD00A00560 /* LaunchScreen.storyboard */,
 				069A97B51C6A86AD00A00560 /* Info.plist */,
 				069A97A41C6A86AD00A00560 /* Supporting Files */,
+				06CCF1461C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m */,
 			);
 			path = Hello;
 			sourceTree = "<group>";
@@ -102,9 +131,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		069A97A01C6A86AD00A00560 /* Hello */ = {
+		069A97A01C6A86AD00A00560 /* HelloJ2ObjC */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 069A97B81C6A86AD00A00560 /* Build configuration list for PBXNativeTarget "Hello" */;
+			buildConfigurationList = 069A97B81C6A86AD00A00560 /* Build configuration list for PBXNativeTarget "HelloJ2ObjC" */;
 			buildPhases = (
 				069A979D1C6A86AD00A00560 /* Sources */,
 				069A979E1C6A86AD00A00560 /* Frameworks */,
@@ -115,9 +144,27 @@
 			);
 			dependencies = (
 			);
+			name = HelloJ2ObjC;
+			productName = Hello;
+			productReference = 069A97A11C6A86AD00A00560 /* HelloJ2ObjC.app */;
+			productType = "com.apple.product-type.application";
+		};
+		06CCF1341C77E42800CDF952 /* Hello */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 06CCF1411C77E42800CDF952 /* Build configuration list for PBXNativeTarget "Hello" */;
+			buildPhases = (
+				06CCF1351C77E42800CDF952 /* Sources */,
+				06CCF13A1C77E42800CDF952 /* Frameworks */,
+				06CCF13B1C77E42800CDF952 /* Resources */,
+			);
+			buildRules = (
+				06CCF1401C77E42800CDF952 /* PBXBuildRule */,
+			);
+			dependencies = (
+			);
 			name = Hello;
 			productName = Hello;
-			productReference = 069A97A11C6A86AD00A00560 /* Hello.app */;
+			productReference = 06CCF1441C77E42800CDF952 /* Hello.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -147,7 +194,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				069A97A01C6A86AD00A00560 /* Hello */,
+				069A97A01C6A86AD00A00560 /* HelloJ2ObjC */,
+				06CCF1341C77E42800CDF952 /* Hello */,
 			);
 		};
 /* End PBXProject section */
@@ -164,6 +212,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		06CCF13B1C77E42800CDF952 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06CCF13C1C77E42800CDF952 /* Hello.xcconfig in Resources */,
+				06CCF13D1C77E42800CDF952 /* LaunchScreen.storyboard in Resources */,
+				06CCF13E1C77E42800CDF952 /* Assets.xcassets in Resources */,
+				06CCF13F1C77E42800CDF952 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -175,6 +234,16 @@
 				069A97A91C6A86AD00A00560 /* AppDelegate.m in Sources */,
 				069A97A61C6A86AD00A00560 /* main.m in Sources */,
 				069A97DC1C6AB52A00A00560 /* Status.java in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		06CCF1351C77E42800CDF952 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				06CCF1471C77E5EB00CDF952 /* ViewControllerNoJ2ObjC.m in Sources */,
+				06CCF1371C77E42800CDF952 /* AppDelegate.m in Sources */,
+				06CCF1381C77E42800CDF952 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -308,6 +377,30 @@
 			};
 			name = Release;
 		};
+		06CCF1421C77E42800CDF952 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 069A97D41C6A897900A00560 /* Hello.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = Hello/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.Hello;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		06CCF1431C77E42800CDF952 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 069A97D41C6A897900A00560 /* Hello.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				INFOPLIST_FILE = Hello/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.google.j2objc.Hello;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -320,11 +413,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		069A97B81C6A86AD00A00560 /* Build configuration list for PBXNativeTarget "Hello" */ = {
+		069A97B81C6A86AD00A00560 /* Build configuration list for PBXNativeTarget "HelloJ2ObjC" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				069A97B91C6A86AD00A00560 /* Debug */,
 				069A97BA1C6A86AD00A00560 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		06CCF1411C77E42800CDF952 /* Build configuration list for PBXNativeTarget "Hello" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				06CCF1421C77E42800CDF952 /* Debug */,
+				06CCF1431C77E42800CDF952 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -17,8 +17,6 @@
 
 #import "ViewController.h"
 
-#import "org/j2objc/Status.h"
-
 @interface ViewController ()
 
 @end
@@ -28,14 +26,9 @@
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
 
-#ifdef NO_J2OBJC
-  NSString *message = @"Hello";
-#else
-  NSString *message = [OrgJ2objcStatus hello];
-#endif
   UIAlertController *alert =
-      [UIAlertController alertControllerWithTitle:@"J2ObjC"
-                                          message:message
+      [UIAlertController alertControllerWithTitle:@"Hello"
+                                          message:@"Hello"
                                    preferredStyle:UIAlertControllerStyleAlert];
   UIAlertAction *actionOk = [UIAlertAction actionWithTitle:@"OK"
                                                      style:UIAlertActionStyleDefault
