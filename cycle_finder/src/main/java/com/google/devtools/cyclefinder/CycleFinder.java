@@ -51,7 +51,10 @@ public class CycleFinder {
 
   public CycleFinder(Options options) throws IOException {
     this.options = options;
-    com.google.devtools.j2objc.Options.load(new String[] { "-encoding", options.fileEncoding() });
+    com.google.devtools.j2objc.Options.load(new String[] {
+      "-encoding", options.fileEncoding(),
+      "-source",   options.sourceVersion().flag()
+    });
   }
 
   private static JdtParser createParser(Options options) {
@@ -141,7 +144,7 @@ public class CycleFinder {
         outerResolver.run(unit);
       }
     };
-    parser.parseFiles(sourceFiles, handler);
+    parser.parseFiles(sourceFiles, handler, options.sourceVersion());
 
     FileUtil.deleteTempDir(strippedDir);
 

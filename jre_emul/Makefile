@@ -328,7 +328,7 @@ objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 all_objc_sources_manifests: $(OBJC_SOURCES_MANIFESTS)
 
 find_cycles: cycle_finder_dist $(JAVA_SOURCES_MANIFEST)
-	$(DIST_DIR)/cycle_finder -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
+	$(DIST_DIR)/cycle_finder -source 1.8 -w cycle_whitelist.txt `cat $(JAVA_SOURCES_MANIFEST)`
 
 licenses: $(JRE_EMUL_LICENSES)
 	@:

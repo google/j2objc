@@ -44,15 +44,15 @@ public class JdtParser {
 
   private static final Logger logger = Logger.getLogger(JdtParser.class.getName());
 
-  private Map<String, String> compilerOptions = initCompilerOptions();
+  private Map<String, String> compilerOptions = initCompilerOptions(Options.getSourceVersion());
   private List<String> classpathEntries = Lists.newArrayList();
   private List<String> sourcepathEntries = Lists.newArrayList();
   private String encoding = null;
   private boolean includeRunningVMBootclasspath = true;
 
-  private static Map<String, String> initCompilerOptions() {
+  private static Map<String, String> initCompilerOptions(SourceVersion sourceVersion) {
     Map<String, String> compilerOptions = Maps.newHashMap();
-    String version = Options.getSourceVersion();
+    String version = sourceVersion.flag();
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_SOURCE, version);
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_CODEGEN_TARGET_PLATFORM, version);
     compilerOptions.put(org.eclipse.jdt.core.JavaCore.COMPILER_COMPLIANCE, version);
@@ -135,7 +135,7 @@ public class JdtParser {
   }
 
   private CompilationUnit parse(String unitName, String source, boolean resolveBindings) {
-    ASTParser parser = newASTParser(resolveBindings);
+    ASTParser parser = newASTParser(resolveBindings, Options.getSourceVersion());
     parser.setUnitName(unitName);
     parser.setSource(source.toCharArray());
     CompilationUnit unit = (CompilationUnit) parser.createAST(null);
@@ -154,8 +154,9 @@ public class JdtParser {
     public void handleParsedUnit(String path, CompilationUnit unit);
   }
 
-  public void parseFiles(Collection<String> paths, final Handler handler) {
-    ASTParser parser = newASTParser(true);
+  public void parseFiles(Collection<String> paths, final Handler handler,
+      SourceVersion sourceVersion) {
+    ASTParser parser = newASTParser(true, sourceVersion);
     FileASTRequestor astRequestor = new FileASTRequestor() {
       @Override
       public void acceptAST(String sourceFilePath, CompilationUnit ast) {
@@ -174,9 +175,9 @@ public class JdtParser {
   }
 
   @SuppressWarnings("deprecation")
-  private ASTParser newASTParser(boolean resolveBindings) {
+  private ASTParser newASTParser(boolean resolveBindings, SourceVersion sourceVersion) {
     ASTParser parser;
-    if (Options.isJava8Translator()) {
+    if (SourceVersion.java8Minimum(sourceVersion)) {
       parser = ASTParser.newParser(AST.JLS8);
     } else {
       parser = ASTParser.newParser(AST.JLS4); // Java 7

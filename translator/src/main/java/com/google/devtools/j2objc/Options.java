@@ -19,7 +19,6 @@ package com.google.devtools.j2objc;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Splitter;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.io.Resources;
@@ -27,6 +26,7 @@ import com.google.devtools.j2objc.util.ErrorUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
 import com.google.devtools.j2objc.util.PackagePrefixes;
+import com.google.devtools.j2objc.util.SourceVersion;
 import com.google.devtools.j2objc.util.Version;
 
 import org.eclipse.jdt.core.JavaCore;
@@ -44,7 +44,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -98,14 +97,11 @@ public class Options {
 
   private PackagePrefixes packagePrefixes = new PackagePrefixes();
 
-  private static final Set<String> VALID_JAVA_VERSIONS = ImmutableSet.of("1.8", "1.7", "1.6",
-      "1.5");
-
   // TODO(kirbs): Uncomment following lines and lines in OptionsTest when we enable automatic
   // version detection. Currently this is breaking pulse builds using 64 bit Java 8, and upgrading
   // to Eclipse 4.5 is gated by bytecode errors in compiling junit. I won't have time to do a
   // more in depth root cause analysis on this.
-  private String sourceVersion = "1.7";
+  private SourceVersion sourceVersion = SourceVersion.JAVA_7;
   // // The default source version number if not passed with -source is determined from the system
   // // properties of the running java version after parsing the argument list.
   // private String sourceVersion = null;
@@ -519,13 +515,9 @@ public class Options {
           usage("-source requires an argument");
         }
         // Handle aliasing of version numbers as supported by javac.
-        if (args[nArg].length() == 1){
-          sourceVersion = "1." + args[nArg];
-        } else {
-          sourceVersion = args[nArg];
-        }
-        // Make sure that we were passed a valid release version.
-        if (!VALID_JAVA_VERSIONS.contains(sourceVersion)) {
+        try {
+          sourceVersion = SourceVersion.parse(args[nArg]);
+        } catch (IllegalArgumentException e) {
           usage("invalid source release: " + args[nArg]);
         }
       } else if (arg.equals("-target")) {
@@ -562,13 +554,12 @@ public class Options {
 
     // Pull source version from system properties if it is not passed with -source flag.
     if (sourceVersion == null) {
-      sourceVersion = System.getProperty("java.version").substring(0, 3);
+      sourceVersion = SourceVersion.parse(System.getProperty("java.version").substring(0, 3));
     }
 
     // Java 6 had a 1G max heap limit, removed in Java 7.
-    boolean java7orHigher = sourceVersion.charAt(2) >= '7';
     if (batchTranslateMaximum == -1) {  // Not set by flag.
-      batchTranslateMaximum = java7orHigher ? 300 : 0;
+      batchTranslateMaximum = SourceVersion.java7Minimum(sourceVersion) ? 300 : 0;
     }
 
     int nFiles = args.length - nArg;
@@ -935,13 +926,14 @@ public class Options {
     return useSourceDirectories() || combineSourceJars() || includeGeneratedSources();
   }
 
-  public static String getSourceVersion(){
+  public static SourceVersion getSourceVersion(){
     return instance.sourceVersion;
   }
 
   // TODO(kirbs): Remove when Java 8 is fully supported.
   public static boolean isJava8Translator() {
-    return instance.forceIncompleteJava8Support && instance.sourceVersion.equals("1.8");
+    return instance.forceIncompleteJava8Support
+        && SourceVersion.java8Minimum(instance.sourceVersion);
   }
 
   public static boolean staticAccessorMethods() {

@@ -14,6 +14,8 @@
 
 package com.google.devtools.j2objc;
 
+import com.google.devtools.j2objc.util.SourceVersion;
+
 import java.io.IOException;
 
 /**
@@ -38,39 +40,39 @@ public class OptionsTest extends GenerationTest {
     // System.setProperty("java.version", "1.8.0_45");
     // Options.reset();
     // Options.load(new String[] {});
-    // assertEquals("1.8", Options.getSourceVersion());
+    // assertEquals(SourceVersion.JAVA_8, Options.getSourceVersion());
     //
     // System.setProperty("java.version", "1.6.0");
     // Options.reset();
     // Options.load(new String[] {});
-    // assertEquals("1.6", Options.getSourceVersion());
+    // assertEquals(SourceVersion.JAVA_6, Options.getSourceVersion());
     //
     // System.setProperty("java.version", "1.7");
     // Options.reset();
     // Options.load(new String[] {});
-    // assertEquals("1.7", Options.getSourceVersion());
+    // assertEquals(SourceVersion.JAVA_7, Options.getSourceVersion());
     //
     // // Reset the java.version property to prevent any unexpected jvm behavior after testing.
     // System.setProperty("java.version", javaVersion);
 
     String[] argsJavaSource = "-source 1.6".split(" ");
     Options.load(argsJavaSource);
-    assertEquals("1.6", Options.getSourceVersion());
+    assertEquals(SourceVersion.JAVA_6, Options.getSourceVersion());
 
     argsJavaSource = "-source 1.7".split(" ");
     Options.load(argsJavaSource);
-    assertEquals("1.7", Options.getSourceVersion());
+    assertEquals(SourceVersion.JAVA_7, Options.getSourceVersion());
 
     argsJavaSource = "-source 1.8".split(" ");
     Options.load(argsJavaSource);
-    assertEquals("1.8", Options.getSourceVersion());
+    assertEquals(SourceVersion.JAVA_8, Options.getSourceVersion());
   }
 
   public void testSourceVersionFlagAliases() throws IOException {
     // Check that version aliases work correctly.
     String[] argsJavaSource = "-source 8".split(" ");
     Options.load(argsJavaSource);
-    assertEquals("1.8", Options.getSourceVersion());
+    assertEquals(SourceVersion.JAVA_8, Options.getSourceVersion());
   }
 
   public void testTargetVersionFlags() throws IOException {

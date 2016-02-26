@@ -149,7 +149,7 @@ abstract class FileProcessor {
       }
     };
     logger.finest("Processing batch of size " + batchInputs.size());
-    parser.parseFiles(paths, handler);
+    parser.parseFiles(paths, handler, Options.getSourceVersion());
 
     // Any remaining files in batchFiles has some kind of error.
     for (ProcessingContext input : batchInputs) {

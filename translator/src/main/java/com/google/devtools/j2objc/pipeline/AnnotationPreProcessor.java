@@ -92,7 +92,7 @@ public class AnnotationPreProcessor {
     compileArgs.add("-encoding");
     compileArgs.add(Options.getCharset().name());
     compileArgs.add("-source");
-    compileArgs.add(Options.getSourceVersion());
+    compileArgs.add(Options.getSourceVersion().flag());
     compileArgs.add("-s");
     compileArgs.add(tmpDirPath);
     compileArgs.add("-d");
