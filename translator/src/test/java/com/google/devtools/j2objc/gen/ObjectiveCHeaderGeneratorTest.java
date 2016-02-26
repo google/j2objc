@@ -534,6 +534,14 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "Color_initWithInt_withNSString_withInt_(e, (jint) 0x0000ff, @\"BLUE\", 2);");
   }
 
+  // Verify that the "init" enum constant name is properly declared: b/27352834
+  public void testInitEnumConstant() throws IOException {
+    String translation = translateSourceFile(
+      "public enum Test { init }", "Test", "Test.h");
+    assertTranslation(translation, "Test_Enum_init_ = 0,");
+    assertNotInTranslation(translation, "Test_Enum_init ");
+  }
+
   public void testArrayFieldDeclaration() throws IOException {
     String translation = translateSourceFile(
       "public class Example { char[] before; char after[]; }",

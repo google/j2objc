@@ -143,7 +143,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       int ordinal = 0;
       for (EnumConstantDeclaration constant : constants) {
         printIndent();
-        printf("%s_%s = %d,\n", nativeName, constant.getName().getIdentifier(), ordinal++);
+        printf("%s_%s = %d,\n",
+            nativeName, nameTable.getVariableBaseName(constant.getVariableBinding()), ordinal++);
       }
       unindent();
       print("};\n");
