@@ -45,8 +45,23 @@ public class IOSCollator extends Collator {
 
   @Override
   public native int compare(String string1, String string2) /*-[
+    int compareOptions;
+    switch (self->strength_) {
+      case JavaTextCollator_PRIMARY:
+        compareOptions = NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch;
+        break;
+      case JavaTextCollator_SECONDARY:
+        compareOptions = NSCaseInsensitiveSearch;
+        break;
+      case JavaTextCollator_TERTIARY:
+        compareOptions = 0;
+        break;
+      case JavaTextCollator_IDENTICAL:
+        compareOptions = NSLiteralSearch;
+        break;
+    }
     return (jint) [string1 compare:string2
-                           options:NSLiteralSearch
+                           options:compareOptions
                              range:NSMakeRange(0, [string1 length])
                             locale:self->nsLocale_];
   ]-*/;

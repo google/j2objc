@@ -78,6 +78,9 @@ public class CollatorTest extends junit.framework.TestCase {
 		o = "e";
 		o2 = "\u00e9";
 		assertTrue("c) Failed on secondary difference", c.compare(o, o2) < 0);
+		o = "e";
+		o2 = "E";
+		assertEquals("c) Failed on tertiary difference", 0, c.compare(o, o2));
 		o = "\u0001";
 		o2 = "\u0002";
 		assertEquals("c) Failed on identical", 0, c.compare(o, o2));
@@ -89,6 +92,12 @@ public class CollatorTest extends junit.framework.TestCase {
 		o = "E";
 		o2 = "F";
 		assertTrue("d) Failed on primary difference", c.compare(o, o2) < 0);
+		o = "e";
+		o2 = "\u00e9";
+		assertEquals("d) Failed on secondary difference", 0, c.compare(o, o2));
+		o = "e";
+		o2 = "E";
+		assertEquals("d) Failed on tertiary difference", 0, c.compare(o, o2));
 		o = "\u0001";
 		o2 = "\u0002";
 		assertEquals("d) Failed on identical", 0, c.compare(o, o2));
@@ -141,19 +150,22 @@ public class CollatorTest extends junit.framework.TestCase {
 		assertTrue("c) Failed on primary difference", !c.equals("E", "F"));
 		assertTrue("c) Failed on secondary difference", !c
 				.equals("e", "\u00e9"));
+		assertTrue("c) Failed on tertiary difference", c.equals("e", "E"));
 		assertTrue("c) Failed on identical", c.equals("\u0001", "\u0002"));
 		assertTrue("c) Failed on equivalence", c.equals("e", "e"));
 
 		c.setStrength(Collator.PRIMARY);
 		assertTrue("d) Failed on primary difference", !c.equals("E", "F"));
+		assertTrue("d) Failed on secondary difference", c.equals("e", "\u00e9"));
+		assertTrue("d) Failed on tertiary difference", c.equals("e", "E"));
 		assertTrue("d) Failed on identical", c.equals("\u0001", "\u0002"));
 		assertTrue("d) Failed on equivalence", c.equals("e", "e"));
 	}
 
-	/**
-	 * @tests java.text.Collator#getAvailableLocales()
-	 */
-	//FIXME This test fails on Harmony ClassLibrary
+    /**
+     * @tests java.text.Collator#getAvailableLocales()
+     */
+    //FIXME This test fails on Harmony ClassLibrary
 	public void failing_test_getAvailableLocales() {
 		Locale[] locales = Collator.getAvailableLocales();
 		assertTrue("No locales", locales.length > 0);
