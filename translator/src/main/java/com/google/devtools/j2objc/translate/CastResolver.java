@@ -16,8 +16,10 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
@@ -147,6 +149,12 @@ public class CastResolver extends TreeVisitor {
   }
 
   private void maybeAddCast(Expression expr, ITypeBinding expectedType, boolean shouldCastFromId) {
+    if (expr instanceof ConditionalExpression) {
+      ConditionalExpression condExpr = (ConditionalExpression) expr;
+      maybeAddCast(condExpr.getThenExpression(), expectedType, shouldCastFromId);
+      maybeAddCast(condExpr.getElseExpression(), expectedType, shouldCastFromId);
+      return;
+    }
     if (needsCast(expr, expectedType, shouldCastFromId)) {
       addCast(expr);
     }
@@ -369,6 +377,11 @@ public class CastResolver extends TreeVisitor {
     if (returnValueNeedsIntCast(node)) {
       addCast(node);
     }
+  }
+
+  @Override
+  public void endVisit(Assignment node) {
+    maybeAddCast(node.getRightHandSide(), node.getTypeBinding(), false);
   }
 
   @Override

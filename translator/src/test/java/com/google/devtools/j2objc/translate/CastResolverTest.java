@@ -233,4 +233,22 @@ public class CastResolverTest extends GenerationTest {
     assertTranslation(translation,
         "return (IOSObjectArray *) cast_check(o, IOSClass_arrayType(NSString_class_(), 1));");
   }
+
+  public void testAssignmentCast() throws IOException {
+    String translation = translateSourceFile(
+        "class Test implements java.io.Serializable {"
+        + " static class A<T extends java.io.Serializable> { T foo; }"
+        + " void test (A<Test> a, Test t) { if (a != null) { t = a.foo; } } }", "Test", "Test.m");
+    assertTranslation(translation, "t = ((Test *) a->foo_);");
+  }
+
+  public void testCastInConditionalExpression() throws IOException {
+    String translation = translateSourceFile(
+        "class Test implements java.io.Serializable {"
+        + " static class A<T extends java.io.Serializable> { T foo; }"
+        + " Test test (A<Test> a1, A<Test> a2, boolean b) {"
+        + " if (a1 == null || a2 == null) return null; return b ? a1.foo : a2.foo; } }",
+        "Test", "Test.m");
+    assertTranslation(translation, "return b ? ((Test *) a1->foo_) : ((Test *) a2->foo_);");
+  }
 }
