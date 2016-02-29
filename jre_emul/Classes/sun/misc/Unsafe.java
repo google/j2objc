@@ -79,11 +79,21 @@ public final class Unsafe {
       }
 
     #define GET_IMPL(TYPE, MEM_ORDER) \
+      uintptr_t ptr = ((uintptr_t)address); \
+      CHECK_ADDR(TYPE, ptr) \
+      return __c11_atomic_load((volatile_##TYPE *)ptr, __ATOMIC_##MEM_ORDER);
+
+    #define GET_IMPL_OFFSET(TYPE, MEM_ORDER) \
       uintptr_t ptr = PTR(obj, offset); \
       CHECK_ADDR(TYPE, ptr) \
       return __c11_atomic_load((volatile_##TYPE *)ptr, __ATOMIC_##MEM_ORDER);
 
     #define PUT_IMPL(TYPE, MEM_ORDER) \
+      uintptr_t ptr = ((uintptr_t)address); \
+      CHECK_ADDR(TYPE, ptr) \
+      __c11_atomic_store((volatile_##TYPE *)ptr, newValue, __ATOMIC_##MEM_ORDER);
+
+    #define PUT_IMPL_OFFSET(TYPE, MEM_ORDER) \
       uintptr_t ptr = PTR(obj, offset); \
       CHECK_ADDR(TYPE, ptr) \
       __c11_atomic_store((volatile_##TYPE *)ptr, newValue, __ATOMIC_##MEM_ORDER);
@@ -117,7 +127,7 @@ public final class Unsafe {
      * @param clazz non-null; class in question; must be an array class
      * @return the offset to the initial element
      */
-    public int arrayBaseOffset(Class clazz) {
+    public int arrayBaseOffset(Class<?> clazz) {
         Class<?> component = clazz.getComponentType();
         if (component == null) {
             throw new IllegalArgumentException("Valid for array classes only: " + clazz);
@@ -125,7 +135,7 @@ public final class Unsafe {
         return getArrayBaseOffsetForComponentType(component);
     }
 
-    private static native int getArrayBaseOffsetForComponentType(Class component_class) /*-[
+    private static native int getArrayBaseOffsetForComponentType(Class<?> component_class) /*-[
       Class arrayCls = [component_class objcArrayClass];
       Ivar ivar = class_getInstanceVariable(arrayCls, "buffer_");
       if (!ivar) {
@@ -140,7 +150,7 @@ public final class Unsafe {
      * @param clazz non-null; class in question; must be an array class
      * @return &gt; 0; the size of each element of the array
      */
-    public int arrayIndexScale(Class clazz) {
+    public int arrayIndexScale(Class<?> clazz) {
       Class<?> component = clazz.getComponentType();
       if (component == null) {
           throw new IllegalArgumentException("Valid for array classes only: " + clazz);
@@ -148,7 +158,7 @@ public final class Unsafe {
       return getArrayIndexScaleForComponentType(component);
     }
 
-    private static native int getArrayIndexScaleForComponentType(Class component_class) /*-[
+    private static native int getArrayIndexScaleForComponentType(Class<?> component_class) /*-[
       return (jint)[component_class getSizeof];
     ]-*/;
 
@@ -212,6 +222,126 @@ public final class Unsafe {
     ]-*/;
 
     /**
+     * Gets a <code>boolean</code> field from the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native boolean getBooleanVolatile(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jboolean, SEQ_CST)
+    ]-*/;
+
+    /**
+     * Stores a <code>boolean</code> field into the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putBooleanVolatile(Object obj, long offset, boolean newValue) /*-[
+      PUT_IMPL_OFFSET(jboolean, SEQ_CST)
+    ]-*/;
+
+    /**
+     * Gets a <code>byte</code> field from the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native byte getByteVolatile(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jbyte, SEQ_CST)
+    ]-*/;
+
+    /**
+     * Stores a <code>byte</code> field into the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putByteVolatile(Object obj, long offset, byte newValue) /*-[
+      PUT_IMPL_OFFSET(jbyte, SEQ_CST)
+    ]-*/;
+
+    /**
+     * Gets a <code>char</code> field from the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native char getCharVolatile(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jchar, SEQ_CST)
+    ]-*/;
+
+    /**
+     * Stores a <code>char</code> field into the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putCharVolatile(Object obj, long offset, char newValue) /*-[
+      PUT_IMPL_OFFSET(jchar, SEQ_CST)
+    ]-*/;
+
+    /**
+     * Gets a <code>double</code> field from the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native double getDoubleVolatile(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jdouble, SEQ_CST)
+    ]-*/;
+
+    /**
+     * Stores a <code>double</code> field into the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putDoubleVolatile(Object obj, long offset, double newValue) /*-[
+      PUT_IMPL_OFFSET(jdouble, SEQ_CST)
+    ]-*/;
+
+    /**
+     * Gets a <code>float</code> field from the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native float getFloatVolatile(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jfloat, SEQ_CST)
+    ]-*/;
+
+    /**
+     * Stores a <code>float</code> field into the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putFloatVolatile(Object obj, long offset, float newValue) /*-[
+      PUT_IMPL_OFFSET(jfloat, SEQ_CST)
+    ]-*/;
+
+    /**
      * Gets an <code>int</code> field from the given object,
      * using <code>volatile</code> semantics.
      *
@@ -220,7 +350,7 @@ public final class Unsafe {
      * @return the retrieved value
      */
     public native int getIntVolatile(Object obj, long offset) /*-[
-      GET_IMPL(jint, SEQ_CST)
+      GET_IMPL_OFFSET(jint, SEQ_CST)
     ]-*/;
 
     /**
@@ -232,9 +362,8 @@ public final class Unsafe {
      * @param newValue the value to store
      */
     public native void putIntVolatile(Object obj, long offset, int newValue) /*-[
-      PUT_IMPL(jint, SEQ_CST)
+      PUT_IMPL_OFFSET(jint, SEQ_CST)
     ]-*/;
-
 
     /**
      * Gets a <code>long</code> field from the given object,
@@ -245,7 +374,7 @@ public final class Unsafe {
      * @return the retrieved value
      */
     public native long getLongVolatile(Object obj, long offset) /*-[
-      GET_IMPL(jlong, SEQ_CST)
+      GET_IMPL_OFFSET(jlong, SEQ_CST)
     ]-*/;
 
     /**
@@ -257,7 +386,7 @@ public final class Unsafe {
      * @param newValue the value to store
      */
     public native void putLongVolatile(Object obj, long offset, long newValue) /*-[
-      PUT_IMPL(jlong, SEQ_CST)
+      PUT_IMPL_OFFSET(jlong, SEQ_CST)
     ]-*/;
 
     /**
@@ -286,6 +415,230 @@ public final class Unsafe {
     ]-*/;
 
     /**
+     * Gets a <code>short</code> field from the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native short getShortVolatile(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jshort, SEQ_CST)
+    ]-*/;
+
+    /**
+     * Stores a <code>short</code> field into the given object,
+     * using <code>volatile</code> semantics.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putShortVolatile(Object obj, long offset, short newValue) /*-[
+      PUT_IMPL_OFFSET(jshort, SEQ_CST)
+    ]-*/;
+
+    /**
+     * Gets a <code>boolean</code> field from the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native boolean getBoolean(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jboolean, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>boolean</code> field into the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putBoolean(Object obj, long offset, boolean newValue) /*-[
+      PUT_IMPL_OFFSET(jboolean, RELAXED)
+    ]-*/;
+
+    /**
+     * Gets a <code>byte</code> field from the given address.
+     *
+     * @param address the pointer address of the field
+     * @return the retrieved value
+     */
+    public native byte getByte(long address) /*-[
+      GET_IMPL(jbyte, RELAXED)
+    ]-*/;
+
+    /**
+     * Gets a <code>byte</code> field from the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native byte getByte(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jbyte, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>byte</code> field into the given address.
+     *
+     * @param address the pointer address of the field
+     * @param newValue the value to store
+     */
+    public native void putByte(long address, byte newValue) /*-[
+      PUT_IMPL(jbyte, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>byte</code> field into the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putByte(Object obj, long offset, byte newValue) /*-[
+      PUT_IMPL_OFFSET(jbyte, RELAXED)
+    ]-*/;
+
+    /**
+     * Gets a <code>char</code> field from the given address.
+     *
+     * @param address the pointer address of the field
+     * @return the retrieved value
+     */
+    public native char getChar(long address) /*-[
+      GET_IMPL(jchar, RELAXED)
+    ]-*/;
+
+    /**
+     * Gets a <code>char</code> field from the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native char getChar(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jchar, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>char</code> field into the given address.
+     *
+     * @param address the pointer address of the field
+     * @param newValue the value to store
+     */
+    public native void putChar(long address, char newValue) /*-[
+      PUT_IMPL(jchar, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>char</code> field into the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putChar(Object obj, long offset, char newValue) /*-[
+      PUT_IMPL_OFFSET(jchar, RELAXED)
+    ]-*/;
+
+    /**
+     * Gets a <code>double</code> field from the given address.
+     *
+     * @param address the pointer address of the field
+     * @return the retrieved value
+     */
+    public native double getDouble(long address) /*-[
+      GET_IMPL(jdouble, RELAXED)
+    ]-*/;
+
+    /**
+     * Gets a <code>double</code> field from the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native double getDouble(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jdouble, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>double</code> field into the given address.
+     *
+     * @param address the pointer address of the field
+     * @param newValue the value to store
+     */
+    public native void putDouble(long address, double newValue) /*-[
+      PUT_IMPL(jdouble, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>double</code> field into the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putDouble(Object obj, long offset, double newValue) /*-[
+      PUT_IMPL_OFFSET(jdouble, RELAXED)
+    ]-*/;
+
+    /**
+     * Gets a <code>float</code> field from the given address.
+     *
+     * @param address the pointer address of the field
+     * @return the retrieved value
+     */
+    public native float getFloat(long address) /*-[
+      GET_IMPL(jfloat, RELAXED)
+    ]-*/;
+
+    /**
+     * Gets a <code>float</code> field from the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native float getFloat(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jfloat, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>float</code> field into the given address.
+     *
+     * @param address the pointer address of the field
+     * @param newValue the value to store
+     */
+    public native void putFloat(long address, float newValue) /*-[
+      PUT_IMPL(jfloat, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>float</code> field into the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putFloat(Object obj, long offset, float newValue) /*-[
+      PUT_IMPL_OFFSET(jfloat, RELAXED)
+    ]-*/;
+
+    /**
+     * Gets an <code>int</code> field from the given address.
+     *
+     * @param address the pointer address of the field
+     * @return the retrieved value
+     */
+    public native int getInt(long address) /*-[
+      GET_IMPL(jint, RELAXED)
+    ]-*/;
+
+    /**
      * Gets an <code>int</code> field from the given object.
      *
      * @param obj non-null; object containing the field
@@ -293,7 +646,17 @@ public final class Unsafe {
      * @return the retrieved value
      */
     public native int getInt(Object obj, long offset) /*-[
-      GET_IMPL(jint, RELAXED)
+      GET_IMPL_OFFSET(jint, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores an <code>int</code> field into the given address.
+     *
+     * @param address the pointer address of the field
+     * @param newValue the value to store
+     */
+    public native void putInt(long address, int newValue) /*-[
+      PUT_IMPL(jint, RELAXED)
     ]-*/;
 
     /**
@@ -304,14 +667,24 @@ public final class Unsafe {
      * @param newValue the value to store
      */
     public native void putInt(Object obj, long offset, int newValue) /*-[
-      PUT_IMPL(jint, RELAXED)
+      PUT_IMPL_OFFSET(jint, RELAXED)
     ]-*/;
 
     /**
      * Lazy set an int field.
      */
     public native void putOrderedInt(Object obj, long offset, int newValue) /*-[
-      PUT_IMPL(jint, RELEASE)
+      PUT_IMPL_OFFSET(jint, RELEASE)
+    ]-*/;
+
+    /**
+     * Gets a <code>long</code> field from the given address.
+     *
+     * @param address the pointer address of the field
+     * @return the retrieved value
+     */
+    public native long getLong(long address) /*-[
+      GET_IMPL(jlong, RELAXED)
     ]-*/;
 
     /**
@@ -322,7 +695,17 @@ public final class Unsafe {
      * @return the retrieved value
      */
     public native long getLong(Object obj, long offset) /*-[
-      GET_IMPL(jlong, RELAXED)
+      GET_IMPL_OFFSET(jlong, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>long</code> field into the given address.
+     *
+     * @param address the pointer address of the field
+     * @param newValue the value to store
+     */
+    public native void putLong(long address, long newValue) /*-[
+      PUT_IMPL(jlong, RELAXED)
     ]-*/;
 
     /**
@@ -333,14 +716,14 @@ public final class Unsafe {
      * @param newValue the value to store
      */
     public native void putLong(Object obj, long offset, long newValue) /*-[
-      PUT_IMPL(jlong, RELAXED)
+      PUT_IMPL_OFFSET(jlong, RELAXED)
     ]-*/;
 
     /**
      * Lazy set a long field.
      */
     public native void putOrderedLong(Object obj, long offset, long newValue) /*-[
-      PUT_IMPL(jlong, RELEASE)
+      PUT_IMPL_OFFSET(jlong, RELEASE)
     ]-*/;
 
     /**
@@ -370,6 +753,48 @@ public final class Unsafe {
      */
     public native void putOrderedObject(Object obj, long offset, Object newValue) /*-[
       PUT_OBJECT_IMPL()
+    ]-*/;
+
+    /**
+     * Gets a <code>short</code> field from the given address.
+     *
+     * @param address the pointer address of the field
+     * @return the retrieved value
+     */
+    public native short getShort(long address) /*-[
+      GET_IMPL(jshort, RELAXED)
+    ]-*/;
+
+    /**
+     * Gets a <code>short</code> field from the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @return the retrieved value
+     */
+    public native short getShort(Object obj, long offset) /*-[
+      GET_IMPL_OFFSET(jshort, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>short</code> field into the given address.
+     *
+     * @param address the pointer address of the field
+     * @param newValue the value to store
+     */
+    public native void putShort(long address, short newValue) /*-[
+      PUT_IMPL(jshort, RELAXED)
+    ]-*/;
+
+    /**
+     * Stores a <code>short</code> field into the given object.
+     *
+     * @param obj non-null; object containing the field
+     * @param offset offset to the field within <code>obj</code>
+     * @param newValue the value to store
+     */
+    public native void putShort(Object obj, long offset, short newValue) /*-[
+      PUT_IMPL_OFFSET(jshort, RELAXED)
     ]-*/;
 
     /**
