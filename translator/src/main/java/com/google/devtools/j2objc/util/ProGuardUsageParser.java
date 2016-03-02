@@ -17,11 +17,9 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.common.io.CharSource;
-import com.google.common.io.Closer;
 import com.google.common.io.Files;
 import com.google.common.io.LineProcessor;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -170,21 +168,7 @@ public class ProGuardUsageParser {
       }
     };
 
-    // TODO(cgdecker): Just use listing.readLines(processor) once guava_jdk5 is upgraded to a newer
-    // version.
-    Closer closer = Closer.create();
-    try {
-      BufferedReader reader = closer.register(listing.openBufferedStream());
-      String line;
-      while ((line = reader.readLine()) != null) {
-        processor.processLine(line);
-      }
-      return processor.getResult();
-    } catch (Throwable e) {
-      throw closer.rethrow(e);
-    } finally {
-      closer.close();
-    }
+    return listing.readLines(processor);
   }
 
   // Used for testing.
