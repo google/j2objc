@@ -17,9 +17,6 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
@@ -49,6 +46,8 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -70,11 +69,11 @@ public class OuterReferenceResolver extends TreeVisitor {
   // parameter in a constructor.
   public static final IVariableBinding OUTER_PARAMETER = GeneratedVariableBinding.newPlaceholder();
 
-  private Map<ITypeBinding, IVariableBinding> outerVars = Maps.newHashMap();
-  private Set<ITypeBinding> usesOuterParam = Sets.newHashSet();
+  private Map<ITypeBinding, IVariableBinding> outerVars = new HashMap<>();
+  private Set<ITypeBinding> usesOuterParam = new HashSet<>();
   private ListMultimap<ITypeBinding, Capture> captures = ArrayListMultimap.create();
-  private Map<TreeNode.Key, List<IVariableBinding>> outerPaths = Maps.newHashMap();
-  private ArrayList<Scope> scopeStack = Lists.newArrayList();
+  private Map<TreeNode.Key, List<IVariableBinding>> outerPaths = new HashMap<>();
+  private ArrayList<Scope> scopeStack = new ArrayList<>();
 
   @Override
   public void run(TreeNode node) {
@@ -96,7 +95,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   public List<IVariableBinding> getCapturedVars(ITypeBinding type) {
     List<Capture> capturesForType = captures.get(type);
-    List<IVariableBinding> capturedVars = Lists.newArrayListWithCapacity(capturesForType.size());
+    List<IVariableBinding> capturedVars = new ArrayList<>(capturesForType.size());
     for (Capture capture : capturesForType) {
       capturedVars.add(capture.var);
     }
@@ -105,7 +104,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   public List<IVariableBinding> getInnerFields(ITypeBinding type) {
     List<Capture> capturesForType = captures.get(type);
-    List<IVariableBinding> innerFields = Lists.newArrayListWithCapacity(capturesForType.size());
+    List<IVariableBinding> innerFields = new ArrayList<>(capturesForType.size());
     for (Capture capture : capturesForType) {
       innerFields.add(capture.field);
     }
@@ -132,13 +131,12 @@ public class OuterReferenceResolver extends TreeVisitor {
     private final ITypeBinding type;
     private final Set<ITypeBinding> inheritedScope;
     private boolean initializingContext = true;
-    private Set<IVariableBinding> declaredVars = Sets.newHashSet();
+    private Set<IVariableBinding> declaredVars = new HashSet<>();
 
     private Scope(ITypeBinding type) {
       this.type = type;
       ImmutableSet.Builder<ITypeBinding> inheritedScopeBuilder = ImmutableSet.builder();
-      inheritedScopeBuilder.add(type.getTypeDeclaration());
-      for (ITypeBinding inheritedType : BindingUtil.getAllInheritedTypes(type)) {
+      for (ITypeBinding inheritedType : BindingUtil.getInheritedTypesInclusive(type)) {
         inheritedScopeBuilder.add(inheritedType.getTypeDeclaration());
       }
       this.inheritedScope = inheritedScopeBuilder.build();
@@ -206,7 +204,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private List<IVariableBinding> getOuterPath(ITypeBinding type) {
     type = type.getTypeDeclaration();
-    List<IVariableBinding> path = Lists.newArrayList();
+    List<IVariableBinding> path = new ArrayList<>();
     for (int i = scopeStack.size() - 1; i >= 0; i--) {
       Scope scope = scopeStack.get(i);
       if (type.equals(scope.type)) {
@@ -221,7 +219,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private List<IVariableBinding> getOuterPathInherited(ITypeBinding type) {
     type = type.getTypeDeclaration();
-    List<IVariableBinding> path = Lists.newArrayList();
+    List<IVariableBinding> path = new ArrayList<>();
     for (int i = scopeStack.size() - 1; i >= 0; i--) {
       Scope scope = scopeStack.get(i);
       if (scope.inheritedScope.contains(type)) {
@@ -244,7 +242,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   private List<IVariableBinding> getPathForLocalVar(IVariableBinding var) {
     boolean isConstant = var.getConstantValue() != null;
-    List<IVariableBinding> path = Lists.newArrayList();
+    List<IVariableBinding> path = new ArrayList<>();
     Scope lastScope = null;
     for (int i = scopeStack.size() - 1; i >= 0; i--) {
       Scope scope = scopeStack.get(i);
@@ -283,7 +281,7 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
   }
 
-  private void popType(ITypeBinding type) {
+  private void popType() {
     scopeStack.remove(scopeStack.size() - 1);
   }
 
@@ -295,7 +293,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    popType(node.getTypeBinding());
+    popType();
   }
 
   @Override
@@ -306,7 +304,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
-    popType(node.getTypeBinding());
+    popType();
   }
 
   @Override
@@ -317,7 +315,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(EnumDeclaration node) {
-    popType(node.getTypeBinding());
+    popType();
   }
 
   @Override
@@ -328,7 +326,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
-    popType(node.getTypeBinding());
+    popType();
   }
 
   @Override
@@ -339,7 +337,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(LambdaExpression node) {
-    popType(node.getTypeBinding());
+    popType();
   }
 
   @Override

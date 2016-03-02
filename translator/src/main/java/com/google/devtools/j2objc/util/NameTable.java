@@ -19,7 +19,6 @@ package com.google.devtools.j2objc.util;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.CompilationUnit;
@@ -37,10 +36,13 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,7 +57,7 @@ import java.util.regex.Pattern;
 public class NameTable {
 
   private final Types typeEnv;
-  private final Map<IVariableBinding, String> variableNames = Maps.newHashMap();
+  private final Map<IVariableBinding, String> variableNames = new HashMap<>();
 
   public static final String INIT_NAME = "init";
   public static final String ALLOC_METHOD = "alloc";
@@ -563,7 +565,7 @@ public class NameTable {
       return Collections.emptyList();
     }
     List<IMethodBinding> originalMethods = getOriginalMethodBindings(method);
-    List<String> extraSelectors = Lists.newArrayList();
+    List<String> extraSelectors = new ArrayList<>();
     String actualSelector = selectorForOriginalBinding(originalMethods.get(0));
     for (int i = 1; i < originalMethods.size(); i++) {
       String selector = selectorForOriginalBinding(originalMethods.get(i));
@@ -679,16 +681,16 @@ public class NameTable {
   private List<IMethodBinding> getOriginalMethodBindings(IMethodBinding method) {
     method = method.getMethodDeclaration();
     if (method.isConstructor() || BindingUtil.isStatic(method)) {
-      return Lists.newArrayList(method);
+      return Collections.singletonList(method);
     }
     ITypeBinding declaringClass = method.getDeclaringClass();
-    List<IMethodBinding> originalBindings = Lists.newArrayList();
+    List<IMethodBinding> originalBindings = new ArrayList<>();
     originalBindings.add(method);
 
     // Collect all the inherited types.
     // Predictable ordering is important, so we use a LinkedHashSet.
-    Set<ITypeBinding> inheritedTypes = Sets.newLinkedHashSet();
-    BindingUtil.collectAllInheritedTypes(declaringClass, inheritedTypes);
+    LinkedHashSet<ITypeBinding> inheritedTypes =
+        BindingUtil.getOrderedInheritedTypes(declaringClass);
     if (declaringClass.isInterface()) {
       inheritedTypes.add(typeEnv.resolveJavaType("java.lang.Object"));
     }
@@ -787,7 +789,7 @@ public class NameTable {
       objCType = objCType.endsWith("*") ? objCType + "*" : objCType + " *";
     } else if (type.isTypeVariable() || type.isCapture() || type.isWildcardType()) {
       if (expandBounds) {
-        List<ITypeBinding> bounds = Lists.newArrayList();
+        List<ITypeBinding> bounds = new ArrayList<>();
         collectBounds(type, bounds);
         objCType = constructObjCType(bounds);
       } else {
@@ -824,7 +826,7 @@ public class NameTable {
 
   private String constructObjCType(Iterable<ITypeBinding> types) {
     String classType = null;
-    List<String> interfaces = Lists.newArrayList();
+    List<String> interfaces = new ArrayList<>();
     for (ITypeBinding type : types) {
       type = type.getErasure();
       if (typeEnv.isIdType(type) || typeEnv.isJavaVoidType(type)) {

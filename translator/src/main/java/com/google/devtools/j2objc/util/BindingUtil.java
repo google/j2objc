@@ -14,8 +14,6 @@
 
 package com.google.devtools.j2objc.util;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import com.google.j2objc.annotations.Property;
 
@@ -31,6 +29,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Deque;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -192,21 +193,45 @@ public final class BindingUtil {
    * Returns a set containing the bindings of all classes and interfaces that
    * are inherited by the given type.
    */
-  public static Set<ITypeBinding> getAllInheritedTypes(ITypeBinding type) {
-    Set<ITypeBinding> inheritedTypes = Sets.newHashSet();
-    collectAllInheritedTypes(type, inheritedTypes);
+  public static Set<ITypeBinding> getInheritedTypes(ITypeBinding type) {
+    Set<ITypeBinding> inheritedTypes = getInheritedTypesInclusive(type);
+    inheritedTypes.remove(type);
     return inheritedTypes;
   }
 
-  public static void collectAllInheritedTypes(ITypeBinding type, Set<ITypeBinding> inheritedTypes) {
-    collectAllInterfaces(type, inheritedTypes);
-    while (true) {
-      type = type.getSuperclass();
-      if (type == null) {
-        break;
-      }
-      inheritedTypes.add(type);
+  public static Set<ITypeBinding> getInheritedTypesInclusive(ITypeBinding type) {
+    Set<ITypeBinding> inheritedTypes = new HashSet<>();
+    collectInheritedTypesInclusive(type, inheritedTypes);
+    return inheritedTypes;
+  }
+
+  /**
+   * Returns a set containing the bindings of all classes and interfaces that
+   * are inherited by the given type in the same order that they would be
+   * searched by the ObjC compiler.
+   */
+  public static LinkedHashSet<ITypeBinding> getOrderedInheritedTypes(ITypeBinding type) {
+    LinkedHashSet<ITypeBinding> inheritedTypes = getOrderedInheritedTypesInclusive(type);
+    inheritedTypes.remove(type);
+    return inheritedTypes;
+  }
+
+  public static LinkedHashSet<ITypeBinding> getOrderedInheritedTypesInclusive(ITypeBinding type) {
+    LinkedHashSet<ITypeBinding> inheritedTypes = new LinkedHashSet<>();
+    collectInheritedTypesInclusive(type, inheritedTypes);
+    return inheritedTypes;
+  }
+
+  private static void collectInheritedTypesInclusive(
+      ITypeBinding type, Set<ITypeBinding> inheritedTypes) {
+    if (type == null) {
+      return;
     }
+    inheritedTypes.add(type);
+    for (ITypeBinding interfaze : type.getInterfaces()) {
+      collectInheritedTypesInclusive(interfaze, inheritedTypes);
+    }
+    collectInheritedTypesInclusive(type.getSuperclass(), inheritedTypes);
   }
 
   /**
@@ -214,13 +239,13 @@ public final class BindingUtil {
    * given class, and all super-interfaces of those.
    */
   public static Set<ITypeBinding> getAllInterfaces(ITypeBinding type) {
-    Set<ITypeBinding> interfaces = Sets.newHashSet();
+    Set<ITypeBinding> interfaces = new HashSet<>();
     collectAllInterfaces(type, interfaces);
     return interfaces;
   }
 
   public static void collectAllInterfaces(ITypeBinding type, Set<ITypeBinding> interfaces) {
-    Deque<ITypeBinding> typeQueue = Lists.newLinkedList();
+    Deque<ITypeBinding> typeQueue = new LinkedList<>();
 
     while (type != null) {
       typeQueue.add(type);
@@ -514,7 +539,7 @@ public final class BindingUtil {
   public static Set<String> parseAttributeString(IAnnotationBinding propertyAnnotation) {
     assert propertyAnnotation.getName().equals("Property");
     String attributesStr = (String) getAnnotationValue(propertyAnnotation, "value");
-    Set<String> attributes = Sets.newHashSet();
+    Set<String> attributes = new HashSet<>();
     attributes.addAll(Arrays.asList(attributesStr.split(",\\s*")));
     attributes.remove(""); // Clear any empty strings.
     return attributes;
@@ -524,7 +549,7 @@ public final class BindingUtil {
    * Returns all declared constructors for a specified type.
    */
   public static Set<IMethodBinding> getDeclaredConstructors(ITypeBinding type) {
-    Set<IMethodBinding> constructors = Sets.newHashSet();
+    Set<IMethodBinding> constructors = new HashSet<>();
     for (IMethodBinding m : type.getDeclaredMethods()) {
       if (m.isConstructor()) {
         constructors.add(m);
