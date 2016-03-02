@@ -44,6 +44,7 @@ import com.google.devtools.j2objc.translate.CastResolverTest;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractorTest;
 import com.google.devtools.j2objc.translate.ConstantBranchPrunerTest;
 import com.google.devtools.j2objc.translate.DeadCodeEliminatorTest;
+import com.google.devtools.j2objc.translate.DefaultMethodsTest;
 import com.google.devtools.j2objc.translate.DestructorGeneratorTest;
 import com.google.devtools.j2objc.translate.EnhancedForRewriterTest;
 import com.google.devtools.j2objc.translate.EnumRewriterTest;
@@ -154,6 +155,7 @@ public class SmallTests {
       // Running with Java 8 JRE, add test classes that depend on it.
       testSuite.addTestSuite(MethodReferenceTest.class);
       testSuite.addTestSuite(LambdaExpressionTest.class);
+      testSuite.addTestSuite(DefaultMethodsTest.class);
     } catch (ClassNotFoundException e) {
       // Running on pre-Java 8 JRE.
     }

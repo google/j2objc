@@ -248,10 +248,12 @@ public class Functionizer extends TreeVisitor {
   public void endVisit(MethodDeclaration node) {
     IMethodBinding binding = node.getMethodBinding();
     boolean isInstanceMethod = !BindingUtil.isStatic(binding) && !binding.isConstructor();
+    boolean isInterface = binding.getDeclaringClass().isInterface();
+    boolean isDefaultMethod = BindingUtil.isDefault(binding) && isInterface;
     FunctionDeclaration function = null;
     List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
     List<String> extraSelectors = nameTable.getExtraSelectors(binding);
-    if (!isInstanceMethod || Modifier.isNative(node.getModifiers())
+    if (!isInstanceMethod || isDefaultMethod || Modifier.isNative(node.getModifiers())
         || functionizableMethods.contains(binding) || !extraSelectors.isEmpty()) {
       ITypeBinding declaringClass = binding.getDeclaringClass();
       boolean isEnumConstructor = binding.isConstructor() && declaringClass.isEnum();
@@ -312,8 +314,13 @@ public class Functionizer extends TreeVisitor {
       function.getParameters().add(new SingleVariableDeclaration(var));
     }
     TreeUtil.copyList(method.getParameters(), function.getParameters());
-    function.setModifiers((method.getModifiers() & Modifier.STATIC) |
-        (BindingUtil.isPrivate(m) || isInstanceMethod ? Modifier.PRIVATE : Modifier.PUBLIC));
+
+    function.setModifiers(method.getModifiers() & Modifier.STATIC);
+    if (BindingUtil.isPrivate(m) || (isInstanceMethod && !BindingUtil.isDefault(m))) {
+      function.addModifiers(Modifier.PRIVATE);
+    } else {
+      function.addModifiers(Modifier.PUBLIC);
+    }
 
     if (Modifier.isNative(method.getModifiers())) {
       function.addModifiers(Modifier.NATIVE);

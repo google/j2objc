@@ -61,6 +61,10 @@ public final class BindingUtil {
     return Modifier.isStatic(binding.getModifiers());
   }
 
+  public static boolean isDefault(IBinding binding) {
+    return Modifier.isDefault(binding.getModifiers());
+  }
+
   public static boolean isFinal(IBinding binding) {
     return Modifier.isFinal(binding.getModifiers());
   }
@@ -343,6 +347,21 @@ public final class BindingUtil {
     appendParametersSignature(binding, sb);
     sb.append(')');
     appendReturnTypeSignature(binding, sb);
+    return sb.toString();
+  }
+
+  /**
+   * Return a signature string for the purpose of discovering default methods.
+   *
+   * To test if a class overrides or redeclares a default method, we just need the method name and
+   * its parameters signature. We don't need to test the return type -- the compiler frontend does
+   * not allow incompatible return types, and so we don't have to deal with malformed code.
+   */
+  public static String getDefaultMethodSignature(IMethodBinding method) {
+    StringBuilder sb = new StringBuilder(method.getName());
+    sb.append('(');
+    appendParametersSignature(method, sb);
+    sb.append(')');
     return sb.toString();
   }
 

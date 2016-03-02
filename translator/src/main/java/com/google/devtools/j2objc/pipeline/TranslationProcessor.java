@@ -29,6 +29,7 @@ import com.google.devtools.j2objc.translate.CastResolver;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractor;
 import com.google.devtools.j2objc.translate.ConstantBranchPruner;
 import com.google.devtools.j2objc.translate.DeadCodeEliminator;
+import com.google.devtools.j2objc.translate.DefaultMethodShimGenerator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
 import com.google.devtools.j2objc.translate.EnumRewriter;
@@ -163,6 +164,12 @@ public class TranslationProcessor extends FileProcessor {
 
     new InnerClassExtractor(outerResolver, unit).run(unit);
     ticker.tick("InnerClassExtractor");
+
+    // Generate method shims for classes implementing interfaces that have default methods
+    if (Options.isJava8Translator()) {
+      new DefaultMethodShimGenerator().run(unit);
+      ticker.tick("DefaultMethodShimGenerator");
+    }
 
     // Normalize init statements
     new InitializationNormalizer(deadCodeMap).run(unit);

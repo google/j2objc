@@ -15,9 +15,13 @@
 package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.GenerationTest;
+import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
+import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.MethodDeclaration;
+import org.eclipse.jdt.core.dom.IMethodBinding;
 
 import java.io.IOException;
 
@@ -27,6 +31,18 @@ import java.io.IOException;
  * @author Keith Stanger
  */
 public class BindingUtilTest extends GenerationTest {
+  @Override
+  protected void setUp() throws IOException {
+    tempDir = FileUtil.createTempDir("testout");
+    Options.load(new String[]{
+        "-d", tempDir.getAbsolutePath(),
+        "-sourcepath", tempDir.getAbsolutePath(),
+        "-q", // Suppress console output.
+        "-encoding", "UTF-8", // Translate strings correctly when encodings are nonstandard.
+        "-source", "8", // Treat as Java 8 source.
+    });
+    parser = initializeParser(tempDir);
+  }
 
   public void testIsRuntimeAnnotation() throws IOException {
     // SuppressWarnings is a source-level annotation.
@@ -40,5 +56,25 @@ public class BindingUtilTest extends GenerationTest {
     decl = unit.getTypes().get(0);
     annotation = decl.getAnnotations().get(0);
     assertTrue(BindingUtil.isRuntimeAnnotation(annotation.getAnnotationBinding()));
+  }
+
+  public void testGetDefaultMethodSignature() throws Exception {
+    String source = "interface A {"
+        + "  default void f() {}"
+        + "  default String g(int x, Object y) { return Integer.toString(x) + y; }"
+        + "}";
+
+    CompilationUnit unit = translateType("A", source);
+    AbstractTypeDeclaration decl = unit.getTypes().get(0);
+    for (BodyDeclaration body : decl.getBodyDeclarations()) {
+      if (body instanceof MethodDeclaration) {
+        MethodDeclaration method = (MethodDeclaration) body;
+        if (method.getName().getIdentifier().equals("g")) {
+          IMethodBinding binding = method.getMethodBinding();
+          String sig = BindingUtil.getDefaultMethodSignature(binding);
+          assertEquals("g(ILjava/lang/Object;)", sig);
+        }
+      }
+    }
   }
 }

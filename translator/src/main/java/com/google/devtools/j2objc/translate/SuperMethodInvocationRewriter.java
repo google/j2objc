@@ -27,10 +27,12 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -108,6 +110,22 @@ public class SuperMethodInvocationRewriter extends TreeVisitor {
     }
     IMethodBinding method = node.getMethodBinding();
     ITypeBinding exprType = node.getTypeBinding();
+
+    // Handle default method invocation: SomeInterface.super.method(...)
+    if (BindingUtil.isDefault(method)) {
+      FunctionBinding binding = new FunctionBinding(
+              nameTable.getFullFunctionName(method), exprType, typeEnv.getIdType());
+      binding.addParameters(typeEnv.getIdType());
+      binding.addParameters(method.getParameterTypes());
+      FunctionInvocation invocation = new FunctionInvocation(binding, exprType);
+      List<Expression> args = invocation.getArguments();
+      ITypeBinding thisClass = TreeUtil.getOwningType(node).getTypeBinding();
+      args.add(new ThisExpression(thisClass));
+      TreeUtil.copyList(node.getArguments(), args);
+      node.replaceWith(invocation);
+      return;
+    }
+
     IVariableBinding var = TreeUtil.getVariableBinding(qualifier);
     assert var != null : "Expected qualifier to be a variable";
     ITypeBinding qualifierType = var.getType();
