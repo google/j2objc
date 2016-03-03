@@ -78,6 +78,7 @@ J2OBJC_ROOT = ..
 
 ANDROID_INCLUDE = $(LIBCORE_BASE)/include
 
+
 include ../make/common.mk
 include ../make/j2objc_deps.mk
 include ../java_deps/jars.mk

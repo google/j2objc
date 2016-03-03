@@ -609,6 +609,7 @@ ARC_TEST_SOURCES = \
 COPIED_ARC_TEST_SOURCES = \
     com/google/j2objc/arc/MemoryTest.java
 
+
 JAVA8_TEST_SOURCES := \
     com/google/j2objc/java8/CreationReferenceTest.java \
     com/google/j2objc/java8/ExpressionMethodReferenceTest.java \
@@ -619,6 +620,7 @@ JAVA8_TEST_SOURCES := \
 
 JAVA8_SUITE_SOURCES = \
     com/google/j2objc/java8/SmallTests.java \
+
 
 ALL_TEST_SOURCES = $(TEST_SOURCES) $(JAVA8_TEST_SOURCES) $(ARC_TEST_SOURCES) \
   $(COPIED_ARC_TEST_SOURCES)
