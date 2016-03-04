@@ -28,6 +28,8 @@
 	<classpathentry kind="src" path="stub_classes"/>
 	<classpathentry kind="src" path="Tests"/>
 	<classpathentry kind="src" path="android/platform/external/mockwebserver/src/main/java"/>
+	<classpathentry kind="src" path="android/platform/libcore/ojluni/src/main/java"/>
+	<classpathentry kind="src" path="android/platform/libcore/ojluni/src/main/test"/>
 	<classpathentry kind="lib" path="build_result/jre_emul.jar" sourcepath="build_result/jre_emul-src.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="../dist/lib/j2objc_junit.jar"/>
