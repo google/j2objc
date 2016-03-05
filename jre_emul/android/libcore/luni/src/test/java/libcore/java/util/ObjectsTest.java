@@ -18,7 +18,6 @@ package libcore.java.util;
 
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 public class ObjectsTest extends junit.framework.TestCase {
   public static final class Hello {
@@ -98,33 +97,7 @@ public class ObjectsTest extends junit.framework.TestCase {
       assertEquals("message", expected.getMessage());
     }
     try {
-      Objects.requireNonNull(null, (String) null);
-      fail();
-    } catch (NullPointerException expected) {
-      assertEquals(null, expected.getMessage());
-    }
-  }
-
-  public void test_requireNonNull_T_Supplier() throws Exception {
-    Hello h = new Hello();
-    assertEquals(h, Objects.requireNonNull(h, () -> "test"));
-    try {
-      Objects.requireNonNull(null, () -> "message");
-      fail();
-    } catch (NullPointerException expected) {
-      assertEquals("message", expected.getMessage());
-    }
-
-    // The supplier is unexpectedly null.
-    try {
-      Objects.requireNonNull(null, (Supplier<String>) null);
-      fail();
-    } catch (NullPointerException expected) {
-    }
-
-    // The message returned by the supplier is null.
-    try {
-      Objects.requireNonNull(null, () -> null);
+      Objects.requireNonNull(null, null);
       fail();
     } catch (NullPointerException expected) {
       assertEquals(null, expected.getMessage());
@@ -140,15 +113,5 @@ public class ObjectsTest extends junit.framework.TestCase {
     assertEquals("hello", Objects.toString(new Hello(), "world"));
     assertEquals("world", Objects.toString(null, "world"));
     assertEquals(null, Objects.toString(null, null));
-  }
-
-  public void test_isNull() throws Exception {
-    assertTrue(Objects.isNull(null));
-    assertFalse(Objects.isNull(new Hello()));
-  }
-
-  public void test_nonNull() throws Exception {
-    assertFalse(Objects.nonNull(null));
-    assertTrue(Objects.nonNull(new Hello()));
   }
 }
