@@ -345,7 +345,6 @@ TEST_SOURCES := \
     libcore/java/util/CalendarTest.java \
     libcore/java/util/EventObjectTest.java \
     libcore/java/util/FormatterTest.java \
-    libcore/java/util/ObjectsTest.java \
     libcore/java/util/OldAndroidArrayListTest.java \
     libcore/java/util/OldTimeZoneTest.java \
     libcore/java/util/ServiceLoaderTest.java \
@@ -616,7 +615,26 @@ JAVA8_TEST_SOURCES := \
     com/google/j2objc/java8/LambdaTest.java \
     com/google/j2objc/java8/SuperMethodReferenceTest.java \
     com/google/j2objc/java8/TypeMethodReferenceTest.java \
+    libcore/java/util/ObjectsTest.java \
+    libcore/java/util/function/UnaryOperatorTest.java \
 
+FAILING_JAVA8_TESTS = \
+    libcore/java/util/function/BiConsumerTest.java \
+    libcore/java/util/function/BiFunctionTest.java \
+    libcore/java/util/function/BinaryOperatorTest.java \
+    libcore/java/util/function/BiPredicateTest.java \
+    libcore/java/util/function/ConsumerTest.java \
+    libcore/java/util/function/DoubleConsumerTest.java \
+    libcore/java/util/function/DoublePredicateTest.java \
+    libcore/java/util/function/DoubleUnaryOperatorTest.java \
+    libcore/java/util/function/FunctionTest.java \
+    libcore/java/util/function/IntConsumerTest.java \
+    libcore/java/util/function/IntPredicateTest.java \
+    libcore/java/util/function/IntUnaryOperatorTest.java \
+    libcore/java/util/function/LongConsumerTest.java \
+    libcore/java/util/function/LongPredicateTest.java \
+    libcore/java/util/function/LongUnaryOperatorTest.java \
+    libcore/java/util/function/PredicateTest.java \
 
 JAVA8_SUITE_SOURCES = \
     com/google/j2objc/java8/SmallTests.java \

@@ -101,6 +101,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/lang/Exception.java \
   java/lang/ExceptionInInitializerError.java \
   java/lang/Float.java \
+  java/lang/FunctionalInterface.java \
   java/lang/IllegalAccessError.java \
   java/lang/IllegalAccessException.java \
   java/lang/IllegalArgumentException.java \
@@ -326,6 +327,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/concurrent/locks/AbstractQueuedSynchronizer.java \
   java/util/concurrent/locks/Condition.java \
   java/util/concurrent/locks/LockSupport.java \
+  java/util/function/Supplier.java \
   java/util/logging/ErrorManager.java \
   java/util/logging/Filter.java \
   java/util/logging/Formatter.java \
@@ -562,6 +564,48 @@ JAVA_PUBLIC_SOURCES_UTIL = \
   java/util/Timer.java \
   java/util/TimerTask.java \
   java/util/UnknownFormatFlagsException.java \
+  java/util/function/BiConsumer.java \
+  java/util/function/BiFunction.java \
+  java/util/function/BinaryOperator.java \
+  java/util/function/BiPredicate.java \
+  java/util/function/BooleanSupplier.java \
+  java/util/function/Consumer.java \
+  java/util/function/DoubleBinaryOperator.java \
+  java/util/function/DoubleConsumer.java \
+  java/util/function/DoubleFunction.java \
+  java/util/function/DoublePredicate.java \
+  java/util/function/DoubleSupplier.java \
+  java/util/function/DoubleToIntFunction.java \
+  java/util/function/DoubleToLongFunction.java \
+  java/util/function/DoubleUnaryOperator.java \
+  java/util/function/Function.java \
+  java/util/function/IntBinaryOperator.java \
+  java/util/function/IntConsumer.java \
+  java/util/function/IntFunction.java \
+  java/util/function/IntPredicate.java \
+  java/util/function/IntSupplier.java \
+  java/util/function/IntToDoubleFunction.java \
+  java/util/function/IntToLongFunction.java \
+  java/util/function/IntUnaryOperator.java \
+  java/util/function/LongBinaryOperator.java \
+  java/util/function/LongConsumer.java \
+  java/util/function/LongFunction.java \
+  java/util/function/LongPredicate.java \
+  java/util/function/LongSupplier.java \
+  java/util/function/LongToDoubleFunction.java \
+  java/util/function/LongToIntFunction.java \
+  java/util/function/LongUnaryOperator.java \
+  java/util/function/ObjDoubleConsumer.java \
+  java/util/function/ObjIntConsumer.java \
+  java/util/function/ObjLongConsumer.java \
+  java/util/function/Predicate.java \
+  java/util/function/ToDoubleBiFunction.java \
+  java/util/function/ToDoubleFunction.java \
+  java/util/function/ToIntBiFunction.java \
+  java/util/function/ToIntFunction.java \
+  java/util/function/ToLongBiFunction.java \
+  java/util/function/ToLongFunction.java \
+  java/util/function/UnaryOperator.java \
   java/util/logging/ConsoleHandler.java \
   java/util/logging/MemoryHandler.java \
   java/util/logging/SimpleFormatter.java \

@@ -25,7 +25,7 @@
 
 package java.util;
 
-//import java.util.function.Supplier;
+import java.util.function.Supplier;
 
 /**
  * This class consists of {@code static} utility methods for operating
@@ -285,10 +285,9 @@ public final class Objects {
      * @throws NullPointerException if {@code obj} is {@code null}
      * @since 1.8
      */
-    // TODO(tball): uncomment when java.util.function is added.
-    // public static <T> T requireNonNull(T obj, Supplier<String> messageSupplier) {
-    //     if (obj == null)
-    //         throw new NullPointerException(messageSupplier.get());
-    //     return obj;
-    // }
+    public static <T> T requireNonNull(T obj, Supplier<String> messageSupplier) {
+        if (obj == null)
+            throw new NullPointerException(messageSupplier.get());
+        return obj;
+    }
 }
