@@ -138,10 +138,10 @@ __attribute__((always_inline)) inline void JreCheckFinalize(id self, Class cls) 
   return self;
 #endif
 
-// Defined in JreEmulation.m
-FOUNDATION_EXPORT id GetNonCapturingLambda(Protocol *protocol,
+// Defined in J2ObjC_common.m
+FOUNDATION_EXPORT id GetNonCapturingLambda(Class clazz, Protocol *protocol,
     NSString *blockClassName, SEL methodSelector, id block);
-FOUNDATION_EXPORT id GetCapturingLambda(Protocol *protocol,
+FOUNDATION_EXPORT id GetCapturingLambda(Class clazz, Protocol *protocol,
     NSString *blockClassName, SEL methodSelector, id wrapperBlock, id block);
 
 #define J2OBJC_IGNORE_DESIGNATED_BEGIN \

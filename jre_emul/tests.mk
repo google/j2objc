@@ -612,6 +612,7 @@ COPIED_ARC_TEST_SOURCES = \
 
 JAVA8_TEST_SOURCES := \
     com/google/j2objc/java8/CreationReferenceTest.java \
+    com/google/j2objc/java8/DefaultMethodsTest.java \
     com/google/j2objc/java8/ExpressionMethodReferenceTest.java \
     com/google/j2objc/java8/LambdaTest.java \
     com/google/j2objc/java8/SuperMethodReferenceTest.java \

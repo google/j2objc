@@ -54,6 +54,9 @@ public final class BindingUtil {
   // Not defined in JVM spec, but used by reflection support.
   public static final int ACC_ANONYMOUS = 0x8000;
 
+  // Used by JDT to mark default methods.
+  public static final int ACC_DEFAULT = 0x10000;
+
   // Class files can only use the lower 16 bits.
   public static final int ACC_FLAG_MASK = 0xFFFF;
 
@@ -104,6 +107,23 @@ public final class BindingUtil {
     return binding.isField() && !isGlobalVar(binding);
   }
 
+  /**
+   * Return if a class or a method in a class or in an interface is abstract.
+   *
+   * The following cases are true:
+   * - if binding is an abstract class;
+   * - if binding is an abstract method in a class; or
+   * - if binding is a non-default method in an interface.
+   *
+   * If your code is run before AbstractMethodRewriter, a MethodDeclaration's modifiers may not be
+   * identical to its method binding's. This is because JDT only marks a MethodDeclaration node
+   * abstract when the "abstract" modifier is present in the code (and therefore the method must be
+   * from a class), whereas a binding's modifier reflects the method's abstract nature (and
+   * therefore a non-default method from an interface is abstract).
+   *
+   * Code past AbstractMethodRewriter can safely assume Modifier.isAbstract(decl.getModifiers())
+   * is the same as BindingUtil.isAbstract(decl.getMethodBinding()).
+   */
   public static boolean isAbstract(IBinding binding) {
     return Modifier.isAbstract(binding.getModifiers());
   }
@@ -608,6 +628,28 @@ public final class BindingUtil {
     if (binding instanceof IMethodBinding) {
       return suppressesWarning(warning, ((IMethodBinding) binding).getDeclaringClass());
     }
+    return false;
+  }
+
+
+  /**
+   * Returns true if any of the declared methods in the interface or its supers is default.
+   */
+  public static boolean hasDefaultMethodsInFamily(ITypeBinding type) {
+    assert type.isInterface();
+
+    for (IMethodBinding method : type.getDeclaredMethods()) {
+      if (isDefault(method)) {
+        return true;
+      }
+    }
+
+    for (ITypeBinding parent : type.getInterfaces()) {
+      if (hasDefaultMethodsInFamily(parent)) {
+        return true;
+      }
+    }
+
     return false;
   }
 }

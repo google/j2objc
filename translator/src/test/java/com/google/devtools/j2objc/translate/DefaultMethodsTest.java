@@ -46,8 +46,42 @@ public class DefaultMethodsTest extends GenerationTest {
 
     assertTranslation(header, "- (void)f;");
     assertTranslation(header, "- (void)g;");
+    assertTranslation(header, "@interface Foo : NSObject < Foo >");
     assertTranslation(header, "void Foo_g(id<Foo> self);");
+    assertTranslatedLines(impl, "- (void)g {", "Foo_g(self);", "}");
     assertTranslatedLines(impl, "void Foo_g(id<Foo> self) {", "[self f];", "}");
+  }
+
+  public void testDefaultMethodFunctionalizationWithReflectionsStripped() throws IOException {
+    Options.setStripReflection(true);
+
+    String source = "interface Foo { void f(); default void g() { f(); } }";
+    String header = translateSourceFile(source, "Test", "Test.h");
+    String impl =  getTranslatedFile("Test.m");
+
+    // Even when reflection info is stripped, the companion class should still be generated.
+    assertTranslation(header, "- (void)f;");
+    assertTranslation(header, "- (void)g;");
+    assertTranslation(header, "@interface Foo : NSObject < Foo >");
+    assertTranslation(header, "void Foo_g(id<Foo> self);");
+    assertTranslatedLines(impl, "- (void)g {", "Foo_g(self);", "}");
+    assertTranslatedLines(impl, "void Foo_g(id<Foo> self) {", "[self f];", "}");
+  }
+
+  public void testCompanionClassDefaultMethodImplementation() throws IOException {
+    String source = "interface A { void f(); default void a() { f(); } }"
+        + "interface B extends A { default void f() {} }"
+        + "interface C extends B { void f(); }"
+        + "interface D { default void d() {} }"
+        + "interface E extends A, C, D {}";
+
+    String header = translateSourceFile(source, "Test", "Test.h");
+    String impl =  getTranslatedFile("Test.m");
+
+    assertTranslation(header, "@interface E : NSObject < E >");
+    assertOccurrences(impl, "A_a(self)", 4); // From -[A a], -[B a], -[C a], and -[E a].
+    assertOccurrences(impl, "B_f(self)", 1); // From -[B f].
+    assertOccurrences(impl, "D_d(self)", 2); // From -[D d] and -[E d].
   }
 
   public void testSuperDefaultMethodInvocation() throws IOException {
@@ -102,10 +136,6 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslatedLines(impl, "- (void)f {", "I_f(self);", "}");
   }
 
-  // TODO(user): The generated code is correct but will crash, see #714.
-  //
-  // This is because Get(Non)CapturingLambda does not yet have the ability to provide default
-  // method shims to runtime-generated lambda classes like we do to a normal class.
   public void testDefaultMethodWithLambda() throws IOException {
     String source = "interface A {"
         + "  String op(String a, String b);"
@@ -124,6 +154,10 @@ public class DefaultMethodsTest extends GenerationTest {
         "NSString *A_underscorePrefixWithNSString_(id<A> self, NSString *a) {",
         "  return [self opWithNSString:@\"_\" withNSString:a];",
         "}");
+
+    // Make sure we base the non-capturing lambda on interface A's companion class that has the
+    // default method shim.
+    assertTranslation(impl, "GetNonCapturingLambda([A class], NULL");
   }
 
   public void testDefaultMethodsInInterfaceExtensions() throws IOException {
@@ -157,7 +191,7 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(impl, "void B_f(id<B> self)");
     assertNotInTranslation(impl, "void B_g(id<A> self)");
     assertTranslatedLines(impl, "- (void)f {", "B_f(self);", "}");
-    assertNotInTranslation(impl, "A_g(self);");
+    assertOccurrences(impl, "A_g(self);", 1); // From @implementation A.
     assertNotInTranslation(impl, "B_g(self);");
   }
 
@@ -169,8 +203,9 @@ public class DefaultMethodsTest extends GenerationTest {
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
 
-    assertOccurrences(header, "- (void)f;", 2); // Declared once by A and another by P.
-    assertOccurrences(impl, "A_f(self);", 1);
+    assertOccurrences(header, "- (void)f;", 3); // Declared once by A, once by B, and once by P.
+    assertOccurrences(impl, "A_f(self);", 3); // Called by -[A f], -[B f], and -[P f].
+    assertOccurrences(impl, "B_g(self);", 2); // Called by -[B g] and -[Q g].
   }
 
   public void testConcreteMethodPrecedence() throws Exception {
@@ -181,7 +216,7 @@ public class DefaultMethodsTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
 
     assertOccurrences(header, "- (void)f;", 2); // Declared once by A and another by P.
-    assertNotInTranslation(impl, "A_f(self);");
+    assertOccurrences(impl, "A_f(self);", 1); // Used only once in @implementation A.
   }
 
   public void testAnonymousClass() throws IOException {
@@ -210,8 +245,8 @@ public class DefaultMethodsTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
     assertTranslation(header, "void A_P_f(id<A_P> self);");
 
-    // This is called by the shims -[A_B f], -[A_B_C f], and -[A_D f].
-    assertOccurrences(impl, "A_P_f(self);", 3);
+    // This is called by the shims -[A_P f], -[A_B f], -[A_B_C f], and -[A_D f].
+    assertOccurrences(impl, "A_P_f(self);", 4);
   }
 
   public void testFunctionizedMethodRenaming() throws Exception {
@@ -237,7 +272,7 @@ public class DefaultMethodsTest extends GenerationTest {
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
     assertOccurrences(header, "- (void)f;", 2); // From P and A, but not C
-    assertOccurrences(impl, "P_f(self);", 1); // From -[A f] only
+    assertOccurrences(impl, "P_f(self);", 2); // From -[P f] and -[A f], but not from B or C.
   }
 
   public void testInterfaceTraversalOrder() throws Exception {
@@ -261,8 +296,8 @@ public class DefaultMethodsTest extends GenerationTest {
         + "interface C extends B { default void f() {} }"
         + "class D implements A, C {}";
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(impl, "C_f(self);");
-    assertNotInTranslation(impl, "A_f(self);");
+    assertOccurrences(impl, "A_f(self);", 2); // From -[A f] and -[B f]
+    assertOccurrences(impl, "C_f(self);", 2); // From -[C f] and -[D f]
   }
 
   public void testGenericDefaultMethods() throws Exception {
@@ -317,14 +352,22 @@ public class DefaultMethodsTest extends GenerationTest {
 
   public void testNarrowedReturnType() throws IOException {
     String source = "interface A { default Object f() { return null; } }"
-        + "class B implements A { public String f() { return null; } }";
+        + "class B implements A { public String f() { return \"\"; } }";
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
 
-    // No shim should be generated as -[B f]
+    // No shim should be generated as -[B f].
     assertOccurrences(header, "- (id)f", 1);
     assertTranslation(header, "- (NSString *)f");
-    assertTranslatedLines(impl, "- (NSString *)f {", "return nil;", "}");
-    assertNotInTranslation(impl, "return A_f(self);");
+
+    // From the default method of A.
+    assertTranslatedLines(impl, "id A_f(id<A> self) {", "return nil;", "}");
+
+    // From @implementation A.
+    assertTranslatedLines(impl, "- (id)f {", "return A_f(self);", "}");
+    assertOccurrences(impl, "return A_f(self)", 1);
+
+    // From @implementation B.
+    assertTranslatedLines(impl, "- (NSString *)f {", "return @\"\";", "}");
   }
 }

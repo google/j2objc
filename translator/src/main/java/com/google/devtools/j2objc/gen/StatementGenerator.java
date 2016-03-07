@@ -785,14 +785,28 @@ public class StatementGenerator extends TreeVisitor {
       boolean isCapturing) {
     String functionalClassName = nameTable.getFullName(functionalTypeBinding);
     IMethodBinding functionalInterface = functionalTypeBinding.getFunctionalInterfaceMethod();
+    boolean hasDefaultMethods = BindingUtil.hasDefaultMethodsInFamily(functionalTypeBinding);
     if (isCapturing) {
       buffer.append("GetCapturingLambda(");
     } else {
       buffer.append("GetNonCapturingLambda(");
     }
-    buffer.append("@protocol(");
-    buffer.append(functionalClassName);
-    buffer.append("), @\"");
+    if (hasDefaultMethods) {
+      buffer.append("[");
+      buffer.append(functionalClassName);
+      buffer.append(" class]");
+    } else {
+      buffer.append("NULL");
+    }
+    buffer.append(", ");
+    if (hasDefaultMethods) {
+      buffer.append("NULL");
+    } else {
+      buffer.append("@protocol(");
+      buffer.append(functionalClassName);
+      buffer.append(")");
+    }
+    buffer.append(", @\"");
     buffer.append(newClassName);
     buffer.append("\", @selector(");
     buffer.append(nameTable.getMethodSelector(functionalInterface));

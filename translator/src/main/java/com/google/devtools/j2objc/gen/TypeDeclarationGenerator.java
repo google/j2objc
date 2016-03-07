@@ -350,6 +350,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       } else {
         newline();
       }
+    } else if (BindingUtil.hasDefaultMethodsInFamily(typeBinding)) {
+      printf(" < %s >", typeName);
     } else {
       newline();
     }

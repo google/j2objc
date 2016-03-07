@@ -37,8 +37,9 @@ import java.util.Queue;
 import java.util.Set;
 
 /**
- * Checks for missing methods that would cause an ObjC compilation error.
- * Adds stubs for existing abstract methods.
+ * Checks for missing methods that would cause an ObjC compilation error. Adds stubs for existing
+ * abstract methods. Adds the ABSTRACT bit to a MethodDeclaration node if the method is a
+ * non-default one from an interface.
  *
  * @author Tom Ball, Keith Stanger
  */
@@ -52,12 +53,28 @@ public class AbstractMethodRewriter extends TreeVisitor {
 
   @Override
   public void endVisit(MethodDeclaration node) {
-    if (Modifier.isAbstract(node.getModifiers())) {
-      if (!TranslationUtil.needsReflection(node.getMethodBinding().getDeclaringClass())) {
+    IMethodBinding methodBinding = node.getMethodBinding();
+
+    if (BindingUtil.isAbstract(methodBinding)) {
+      // JDT only adds the abstract bit to a MethodDeclaration node's modifiers if the abstract
+      // method is from a class. Since we want our code generator to go over an interface's
+      // method nodes for default method support and skip abstract methods, we add the bit if the
+      // method is from an interface.
+      ITypeBinding declaringClass = methodBinding.getDeclaringClass();
+      boolean isInterface = declaringClass.isInterface();
+      if (isInterface) {
+        node.addModifiers(Modifier.ABSTRACT);
+      }
+
+      // There's no need to stub out an abstract method for an interface's companion class.
+      // Similarly, if this is an abstract method in a class and there's no need for reflection,
+      // we skip the stubbing out.
+      if (isInterface || !TranslationUtil.needsReflection(declaringClass)) {
         unit.setHasIncompleteProtocol();
         unit.setHasIncompleteImplementation();
         return;
       }
+
       Block body = new Block();
       // Generate a body which throws a NSInvalidArgumentException.
       String bodyCode = "// can't call an abstract method\n"

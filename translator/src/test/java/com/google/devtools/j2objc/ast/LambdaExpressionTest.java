@@ -113,7 +113,7 @@ public class LambdaExpressionTest extends GenerationTest {
     String translation = translateSourceFile(
         functionHeader + "class Test { Function f = (Function) (x) -> x;}", "Test", "Test.m");
     assertTranslatedSegments(translation,
-        "(id<Function>) cast_check(GetNonCapturingLambda(@protocol(Function), ",
+        "(id<Function>) cast_check(GetNonCapturingLambda(NULL, @protocol(Function), ",
         "Function_class_()");
   }
 

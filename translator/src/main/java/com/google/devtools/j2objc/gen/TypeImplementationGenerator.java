@@ -248,9 +248,10 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   @Override
   protected void printMethodDeclaration(MethodDeclaration m) {
-    if (typeBinding.isInterface() || Modifier.isAbstract(m.getModifiers())) {
+    if (Modifier.isAbstract(m.getModifiers())) {
       return;
     }
+
     newline();
     boolean isDesignatedInitializer = isDesignatedInitializer(m.getMethodBinding());
     if (isDesignatedInitializer) {

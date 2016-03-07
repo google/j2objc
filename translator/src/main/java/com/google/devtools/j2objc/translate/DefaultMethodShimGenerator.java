@@ -75,17 +75,21 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
    * that implements I2 can only be an abstract class. If C is not abstract, it results in a
    * compiler error. Of course, if C is an abstract class because of the abstract M, we should never
    * generate a shim for M.
+   *
+   * Note that the node parameter here can be a class or an interface. If node is an interface,
+   * the shim methods added here will go into its companion class. We need the shims so that lambdas
+   * based on the interface will also carry the default methods.
    */
   private void addDefaultMethodShims(AbstractTypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
-    if (type.isInterface() || type.isAnnotation()) {
+    if (type.isAnnotation()) {
       return;
     }
 
     // First, collect all interfaces that are implemented by this type.
     Set<ITypeBinding> interfaces = BindingUtil.getAllInterfaces(type);
 
-    // Now, collect those implemented by the super.
+    // Now, collect those implemented by the super. This gets an empty set if type is an interface.
     Set<ITypeBinding> implementedBySuper = BindingUtil.getAllInterfaces(type.getSuperclass());
 
     // Remove those already implemented by super. These are the interfaces we care about. This
@@ -131,6 +135,10 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
 
       // Create the method binding and declaration.
       GeneratedMethodBinding binding = new GeneratedMethodBinding(method);
+
+      // Don't carry over the default method flag from the original binding.
+      binding.setModifiers(binding.getModifiers() & ~BindingUtil.ACC_DEFAULT);
+
       binding.setDeclaringClass(type);
       MethodDeclaration methodDecl = new MethodDeclaration(binding);
 

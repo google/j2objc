@@ -47,15 +47,17 @@ public class MethodReferenceTest extends GenerationTest {
     String noArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { Call<I> iInit = I::new; }",
         "Test", "Test.m");
-    assertTranslatedSegments(noArgumentTranslation, "GetNonCapturingLambda(@protocol(Call)",
+    assertTranslatedSegments(noArgumentTranslation, "GetNonCapturingLambda(NULL, @protocol(Call)",
         "@\"I_init\"", "^I *(id _self) {", "return create_I_init();");
     String oneArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt<I> iInit2 = I::new; }", "Test", "Test.m");
-    assertTranslatedSegments(oneArgumentTranslation, "GetNonCapturingLambda(@protocol(FunInt)",
+    assertTranslatedSegments(oneArgumentTranslation,
+        "GetNonCapturingLambda(NULL, @protocol(FunInt)",
         "@\"I_initWithInt_\"", "^I *(id _self, jint a) {", "return create_I_initWithInt_(a);");
     String mixedArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt4<I> iInit3 = I::new; }", "Test", "Test.m");
-    assertTranslatedSegments(mixedArgumentTranslation, "GetNonCapturingLambda(@protocol(FunInt4)",
+    assertTranslatedSegments(mixedArgumentTranslation,
+        "GetNonCapturingLambda(NULL, @protocol(FunInt4)",
         "@\"I_initWithInt_withI_withNSString_withId_\"",
         "^I *(id _self, jint a, I * b, NSString * c, id d) {",
         "return create_I_initWithInt_withI_withNSString_withId_(a, b, c, d);");
@@ -99,14 +101,14 @@ public class MethodReferenceTest extends GenerationTest {
         varArgsHeader + "class Test { I i = Y::m; I2 i2 = Y::m; }",
         "Test", "Test.m");
     assertTranslatedLines(translation,
-        "JreStrongAssign(&self->i_, GetNonCapturingLambda(@protocol(I), "
+        "JreStrongAssign(&self->i_, GetNonCapturingLambda(NULL, @protocol(I), "
         + "@\"Y_mWithInt_withNSString_withNSString_\", "
         + "@selector(fooWithInt:withNSString:withNSString:),",
         "^void(id _self, jint a, NSString * b, NSString * c) {",
         "Y_mWithInt_withNSStringArray_(a, [IOSObjectArray arrayWithObjects:(id[]){ b, c } "
         + "count:2 type:NSString_class_()]);",
         "}));",
-        "JreStrongAssign(&self->i2_, GetNonCapturingLambda(@protocol(I2), "
+        "JreStrongAssign(&self->i2_, GetNonCapturingLambda(NULL, @protocol(I2), "
         + "@\"Y_mWithInt_withNSString_withNSString_withNSString_\", "
         + "@selector(fooWithInt:withNSString:withNSString:withNSString:),",
         "^void(id _self, jint a, NSString * b, NSString * c, NSString * d) {",

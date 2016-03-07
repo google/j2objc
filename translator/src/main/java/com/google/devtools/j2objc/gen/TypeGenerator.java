@@ -232,9 +232,10 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected boolean needsPublicCompanionClass() {
-    return !typeNode.hasPrivateDeclaration()
-        && (hasInitializeMethod() || BindingUtil.isRuntimeAnnotation(typeBinding)
-            || hasStaticAccessorMethods());
+    return BindingUtil.hasDefaultMethodsInFamily(typeBinding)
+        || (!typeNode.hasPrivateDeclaration()
+            && (hasInitializeMethod() || BindingUtil.isRuntimeAnnotation(typeBinding)
+                || hasStaticAccessorMethods()));
   }
 
   protected boolean needsCompanionClass() {
