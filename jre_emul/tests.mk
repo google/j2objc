@@ -775,7 +775,7 @@ TRANSLATE_ARTIFACT_JAVA8 := $(call emit_translate_rule,\
   $(TESTS_DIR),\
   $(JAVA8_TEST_SOURCES) $(JAVA8_SUITE_SOURCES),\
   ,\
-  $(TRANSLATE_ARGS) -source 8 -Xforce-incomplete-java8)
+  $(TRANSLATE_ARGS) -source 8)
 
 TRANSLATE_ARTIFACT_ARC := $(call emit_translate_rule,\
   jre_emul_tests_arc,\

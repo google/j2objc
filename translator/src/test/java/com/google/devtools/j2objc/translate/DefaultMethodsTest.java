@@ -34,8 +34,7 @@ public class DefaultMethodsTest extends GenerationTest {
         "-sourcepath", tempDir.getAbsolutePath(),
         "-q", // Suppress console output.
         "-encoding", "UTF-8", // Translate strings correctly when encodings are nonstandard.
-        "-source", "8", // Treat as Java 8 source.
-        "-Xforce-incomplete-java8" // Internal flag to force Java 8 support.
+        "-source", "8" // Treat as Java 8 source.
     });
     parser = initializeParser(tempDir);
   }

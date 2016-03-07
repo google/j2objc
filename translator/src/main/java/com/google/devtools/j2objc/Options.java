@@ -106,11 +106,6 @@ public class Options {
   // // properties of the running java version after parsing the argument list.
   // private String sourceVersion = null;
 
-  // TODO(kirbs): Remove when Java 8 is fully supported, or when we remove the
-  // -Xforce-incomplete-java8 flag.
-  // Force JLS8 and conversion of JLS8 nodes.
-  private boolean forceIncompleteJava8Support = false;
-
   private static File proGuardUsageFile = null;
 
   public static final String DEFAULT_HEADER_MAPPING_FILE = "mappings.j2objc";
@@ -508,7 +503,8 @@ public class Options {
           || arg.equals("--no-final-methods-functions")
           || arg.equals("--hide-private-members")
           || arg.equals("--no-hide-private-members")
-          || arg.equals("--segmented-headers")) {
+          || arg.equals("--segmented-headers")
+          || arg.equals("-Xforce-incomplete-java8")) {
         // ignore
       }  else if (arg.equals("-source")) {
         if (++nArg == args.length) {
@@ -526,10 +522,6 @@ public class Options {
           usage("-target requires an argument");
         }
         // ignore
-      } else if (arg.equals("-Xforce-incomplete-java8")) {
-        // Override to allow usage of incomplete features, without breaking any builds that might
-        // blindly be passing in a -source 1.8 from javac.
-        forceIncompleteJava8Support = true;
       } else if (arg.startsWith("-")) {
         usage("invalid flag: " + arg);
       } else {
@@ -930,10 +922,8 @@ public class Options {
     return instance.sourceVersion;
   }
 
-  // TODO(kirbs): Remove when Java 8 is fully supported.
   public static boolean isJava8Translator() {
-    return instance.forceIncompleteJava8Support
-        && SourceVersion.java8Minimum(instance.sourceVersion);
+    return SourceVersion.java8Minimum(instance.sourceVersion);
   }
 
   public static boolean staticAccessorMethods() {
