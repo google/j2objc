@@ -230,9 +230,9 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
       } else {
         throw new AssertionError();
       }
-      if (node != condition && access.isModification) {
-        // We only need to extract an if-statement if there is a modification
-        // that executes conditionally.
+      if (node != condition) {
+        // We need to extract an if-statement if there is an access that
+        // executes conditionally.
         needsExtraction = true;
       }
     }
@@ -293,8 +293,8 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
       }
       lastBranch = branch;
 
-      // If there's a new modification in a new branch, then we extract an if-statement.
-      if (access.isModification && branch != branches.get(lastIfExtractIdx)) {
+      // If there's a new access in a new branch, then we extract an if-statement.
+      if (branch != branches.get(lastIfExtractIdx)) {
         ITypeBinding boolType = typeEnv.resolveJavaType("boolean");
         if (conditionalVar == null) {
           conditionalVar = new GeneratedVariableBinding(

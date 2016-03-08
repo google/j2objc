@@ -215,4 +215,33 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
         "jint unseq$1 = i;",
         "*IOSIntArray_GetRef(nil_chk(arr), unseq$1) = i++;");
   }
+
+  // Make sure that a conditional access remains conditional. Even if the access
+  // is not a modification, it might be a volatile load that should still be
+  // executed conditionally.
+  public void testConditionalAccess() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { volatile int i; boolean foo(int i, int j) { return i < j; }"
+        + " boolean test1(boolean b) { return b || foo(i, i++); }"
+        + " boolean test2(boolean b) { return b ? foo(i, i++) : false; } }", "Test", "Test.m");
+    // test1
+    assertTranslatedLines(translation,
+        "jboolean unseq$1;",
+        "if (!(unseq$1 = b)) {",
+        "  jint unseq$2 = JreLoadVolatileInt(&i_);",
+        "  unseq$1 = (unseq$1 || [self fooWithInt:unseq$2 withInt:i_++]);",
+        "}",
+        "return unseq$1;");
+    // test2
+    assertTranslatedLines(translation,
+        "jboolean unseq$1;",
+        "if (b) {",
+        "  jint unseq$2 = JreLoadVolatileInt(&i_);",
+        "  unseq$1 = [self fooWithInt:unseq$2 withInt:i_++];",
+        "}",
+        "else {",
+        "  unseq$1 = false;",
+        "}",
+        "return unseq$1;");
+  }
 }
