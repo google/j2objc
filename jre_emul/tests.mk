@@ -337,10 +337,11 @@ TEST_SOURCES := \
     libcore/java/nio/charset/CharsetEncoderTest.java \
     libcore/java/text/AttributedCharacterIteratorAttributeTest.java \
     libcore/java/text/CollatorTest.java \
-    libcore/java/text/DecimalFormatTest.java \
     libcore/java/text/DecimalFormatSymbolsTest.java \
+    libcore/java/text/DecimalFormatTest.java \
     libcore/java/text/NormalizerTest.java \
     libcore/java/text/NumberFormatTest.java \
+    libcore/java/text/SimpleDateFormatTest.java \
     libcore/java/util/BitSetTest.java \
     libcore/java/util/CalendarTest.java \
     libcore/java/util/EventObjectTest.java \
@@ -595,6 +596,8 @@ TEST_SOURCES := \
 SUITE_SOURCES = \
     ConcurrencyTests.java \
     libcore/java/io/SmallTests.java \
+    libcore/java/text/LargeTests.java \
+    libcore/java/text/SmallTests.java \
     libcore/java/util/zip/LargeTests.java \
     libcore/java/util/zip/SmallTests.java \
     org/apache/harmony/beans/tests/java/beans/AllTests.java \
@@ -884,6 +887,9 @@ run-logging-tests: link resources $(TEST_BIN)
 
 run-net-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.net.SmallTests
+
+run-text-tests: link resources $(TEST_BIN)
+	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.text.SmallTests libcore.java.text.LargeTests
 
 run-zip-tests: link resources $(TEST_BIN)
 	@$(TEST_BIN) org.junit.runner.JUnitCore libcore.java.util.zip.SmallTests

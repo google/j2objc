@@ -17,6 +17,7 @@
 package libcore.java.text;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -310,10 +311,10 @@ public class DecimalFormatTest extends junit.framework.TestCase {
 //            Locale.setDefault(originalLocale);
 //        }
 //    }
-
-    private String formatArbitraryCurrencyAmountInLocale(Currency currency, Locale locale) {
-        NumberFormat localeCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
-        localeCurrencyFormat.setCurrency(currency);
-        return localeCurrencyFormat.format(1000);
-    }
+//
+//    private String formatArbitraryCurrencyAmountInLocale(Currency currency, Locale locale) {
+//        NumberFormat localeCurrencyFormat = NumberFormat.getCurrencyInstance(locale);
+//        localeCurrencyFormat.setCurrency(currency);
+//        return localeCurrencyFormat.format(1000);
+//    }
 }
