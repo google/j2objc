@@ -210,6 +210,19 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public boolean visit(MethodDeclaration node) {
+    if (Modifier.isAbstract(node.getModifiers())) {
+      // TODO(kstanger): Move metadata generation to a translation step because
+      // it will simplify import collection and code generation.
+      for (Annotation annotation : node.getAnnotations()) {
+        annotation.accept(this);
+      }
+      for (SingleVariableDeclaration param : node.getParameters()) {
+        for (Annotation annotation : param.getAnnotations()) {
+          annotation.accept(this);
+        }
+      }
+      return false;
+    }
     addImports(node.getReturnType());
     IMethodBinding binding = node.getMethodBinding();
     for (ITypeBinding exceptionType : binding.getExceptionTypes()) {

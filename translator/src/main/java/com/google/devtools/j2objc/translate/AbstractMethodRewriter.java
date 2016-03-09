@@ -54,38 +54,40 @@ public class AbstractMethodRewriter extends TreeVisitor {
   @Override
   public void endVisit(MethodDeclaration node) {
     IMethodBinding methodBinding = node.getMethodBinding();
-
-    if (BindingUtil.isAbstract(methodBinding)) {
-      // JDT only adds the abstract bit to a MethodDeclaration node's modifiers if the abstract
-      // method is from a class. Since we want our code generator to go over an interface's
-      // method nodes for default method support and skip abstract methods, we add the bit if the
-      // method is from an interface.
-      ITypeBinding declaringClass = methodBinding.getDeclaringClass();
-      boolean isInterface = declaringClass.isInterface();
-      if (isInterface) {
-        node.addModifiers(Modifier.ABSTRACT);
-      }
-
-      // There's no need to stub out an abstract method for an interface's companion class.
-      // Similarly, if this is an abstract method in a class and there's no need for reflection,
-      // we skip the stubbing out.
-      if (isInterface || !TranslationUtil.needsReflection(declaringClass)) {
-        unit.setHasIncompleteProtocol();
-        unit.setHasIncompleteImplementation();
-        return;
-      }
-
-      Block body = new Block();
-      // Generate a body which throws a NSInvalidArgumentException.
-      String bodyCode = "// can't call an abstract method\n"
-          + "[self doesNotRecognizeSelector:_cmd];";
-      if (!BindingUtil.isVoid(node.getReturnType().getTypeBinding())) {
-        bodyCode += "\nreturn 0;"; // Never executes, but avoids a gcc warning.
-      }
-      body.getStatements().add(new NativeStatement(bodyCode));
-      node.setBody(body);
-      node.removeModifiers(Modifier.ABSTRACT);
+    if (!BindingUtil.isAbstract(methodBinding)) {
+      return;
     }
+
+    // JDT only adds the abstract bit to a MethodDeclaration node's modifiers if the abstract
+    // method is from a class. Since we want our code generator to go over an interface's
+    // method nodes for default method support and skip abstract methods, we add the bit if the
+    // method is from an interface.
+    ITypeBinding declaringClass = methodBinding.getDeclaringClass();
+    boolean isInterface = declaringClass.isInterface();
+    if (isInterface) {
+      node.addModifiers(Modifier.ABSTRACT);
+      return;
+    }
+
+    // There's no need to stub out an abstract method for an interface's companion class.
+    // Similarly, if this is an abstract method in a class and there's no need for reflection,
+    // we skip the stubbing out.
+    if (!TranslationUtil.needsReflection(declaringClass)) {
+      unit.setHasIncompleteProtocol();
+      unit.setHasIncompleteImplementation();
+      return;
+    }
+
+    Block body = new Block();
+    // Generate a body which throws a NSInvalidArgumentException.
+    String bodyCode = "// can't call an abstract method\n"
+        + "[self doesNotRecognizeSelector:_cmd];";
+    if (!BindingUtil.isVoid(node.getReturnType().getTypeBinding())) {
+      bodyCode += "\nreturn 0;"; // Never executes, but avoids a gcc warning.
+    }
+    body.getStatements().add(new NativeStatement(bodyCode));
+    node.setBody(body);
+    node.removeModifiers(Modifier.ABSTRACT);
   }
 
   @Override
@@ -105,6 +107,12 @@ public class AbstractMethodRewriter extends TreeVisitor {
 
   private void visitType(AbstractTypeDeclaration node) {
     ITypeBinding typeBinding = node.getTypeBinding();
+    if (typeBinding.isInterface() && BindingUtil.hasDefaultMethodsInFamily(typeBinding)) {
+      // If there are default methods, then the interface's companion class will
+      // be declared to conform to the protocol.
+      unit.setHasIncompleteProtocol();
+      return;
+    }
     if (!Modifier.isAbstract(node.getModifiers()) && !typeBinding.isEnum()) {
       return;
     }

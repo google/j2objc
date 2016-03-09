@@ -201,4 +201,11 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         + "java.util.Collection c = null; c = Foo.list; }}", "Test", "Test.m");
     assertTranslation(translation, "#include \"java/util/List.h\"");
   }
+
+  public void testNoImportsForAbstractMethod() throws IOException {
+    String translation = translateSourceFile(
+        "interface Test { java.util.Map foo(java.util.List l); }", "Test", "Test.m");
+    assertNotInTranslation(translation, "Map.h");
+    assertNotInTranslation(translation, "List.h");
+  }
 }
