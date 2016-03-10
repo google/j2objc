@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.gen;
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.HeaderMap;
 
 import java.io.File;
@@ -31,6 +32,19 @@ import java.util.Collections;
  * @author Tom Ball
  */
 public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
+
+  @Override
+  protected void setUp() throws IOException {
+    tempDir = FileUtil.createTempDir("testout");
+    Options.load(new String[]{
+        "-d", tempDir.getAbsolutePath(),
+        "-sourcepath", tempDir.getAbsolutePath(),
+        "-q", // Suppress console output.
+        "-encoding", "UTF-8", // Translate strings correctly when encodings are nonstandard.
+        "-source", "8" // Treat as Java 8 source.
+    });
+    parser = initializeParser(tempDir);
+  }
 
   public void testInnerEnumWithPackage() throws IOException {
     String translation = translateSourceFile(
@@ -844,5 +858,20 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "withNSException:(NSException *)arg1",
         "withBoolean:(jboolean)arg2",
         "withBoolean:(jboolean)arg3 NS_UNAVAILABLE;");
+  }
+
+  public void testStaticInterfaceMethodDeclaredInCompanionClass() throws IOException {
+    String source = "interface Foo { static void f() {} }"
+        + "class Bar implements Foo { void g() { Foo.f(); } }";
+    String header = translateSourceFile(source, "Test", "Test.h");
+    String impl =  getTranslatedFile("Test.m");
+
+    assertTranslation(header, "@protocol Foo < NSObject, JavaObject >");
+    assertTranslatedSegments(header, "@interface Foo : NSObject", "+ (void)f;", "@end");
+    // Should only have one occurrence from the companion class.
+    assertOccurrences(header, "+ (void)f;", 1);
+
+    // The companion class of Foo still has the class method +[Foo f].
+    assertTranslatedLines(impl, "+ (void)f {", "Foo_f();", "}");
   }
 }

@@ -109,6 +109,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   private static final Predicate<VariableDeclarationFragment> IS_STATIC_FIELD =
       new Predicate<VariableDeclarationFragment>() {
+    @Override
     public boolean apply(VariableDeclarationFragment frag) {
       // isGlobalVar includes non-static but final primitives, which are treated
       // like static fields in J2ObjC.
@@ -118,12 +119,14 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   private static final Predicate<VariableDeclarationFragment> IS_INSTANCE_FIELD =
       new Predicate<VariableDeclarationFragment>() {
+    @Override
     public boolean apply(VariableDeclarationFragment frag) {
       return BindingUtil.isInstanceVar(frag.getVariableBinding());
     }
   };
 
   private static final Predicate<BodyDeclaration> IS_OUTER_DECL = new Predicate<BodyDeclaration>() {
+    @Override
     public boolean apply(BodyDeclaration decl) {
       switch (decl.getKind()) {
         case FUNCTION_DECLARATION:
@@ -137,6 +140,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   };
 
   private static final Predicate<BodyDeclaration> IS_INNER_DECL = new Predicate<BodyDeclaration>() {
+    @Override
     public boolean apply(BodyDeclaration decl) {
       switch (decl.getKind()) {
         case METHOD_DECLARATION:
@@ -233,6 +237,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   protected boolean needsPublicCompanionClass() {
     return BindingUtil.hasDefaultMethodsInFamily(typeBinding)
+        || BindingUtil.hasStaticInterfaceMethods(typeBinding)
         || (!typeNode.hasPrivateDeclaration()
             && (hasInitializeMethod() || BindingUtil.isRuntimeAnnotation(typeBinding)
                 || hasStaticAccessorMethods()));

@@ -652,4 +652,19 @@ public final class BindingUtil {
 
     return false;
   }
+
+  /**
+   * Returns true if any of the declared methods in the interface is static.
+   */
+  public static boolean hasStaticInterfaceMethods(ITypeBinding type) {
+    assert type.isInterface();
+
+    for (IMethodBinding method : type.getDeclaredMethods()) {
+      if (isStatic(method)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 }

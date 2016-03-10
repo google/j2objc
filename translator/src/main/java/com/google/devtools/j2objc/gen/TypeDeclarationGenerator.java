@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
@@ -201,6 +202,14 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
+  protected void printStaticInterfaceMethods() {
+    for (BodyDeclaration declaration : getInnerDeclarations()) {
+      if (declaration.getKind().equals(TreeNode.Kind.METHOD_DECLARATION)) {
+        printMethodDeclaration((MethodDeclaration) declaration, true);
+      }
+    }
+  }
+
   /**
    * Prints the list of static variable and/or enum constant accessor methods.
    */
@@ -355,6 +364,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     } else {
       newline();
     }
+    printStaticInterfaceMethods();
     printStaticAccessors();
     println("\n@end");
   }
@@ -582,12 +592,29 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
-  @Override
-  protected void printMethodDeclaration(MethodDeclaration m) {
+  /**
+   * Emit method declaration.
+   *
+   * @param m The method.
+   * @param isCompanionClass If true, emit only if m is a static interface method.
+   */
+  private void printMethodDeclaration(MethodDeclaration m, boolean isCompanionClass) {
+    IMethodBinding methodBinding = m.getMethodBinding();
+    ITypeBinding typeBinding = methodBinding.getDeclaringClass();
+
+    if (typeBinding.isInterface()) {
+      // isCompanion and isStatic must be both false (i.e. this prints a non-static method decl
+      // in @protocol) or must both be true (i.e. this prints a static method decl in the
+      // companion class' @interface).
+      if (isCompanionClass != BindingUtil.isStatic(methodBinding)) {
+        return;
+      }
+    }
+
     newline();
     JavadocGenerator.printDocComment(getBuilder(), m.getJavadoc());
     print(getMethodSignature(m));
-    String methodName = nameTable.getMethodSelector(m.getMethodBinding());
+    String methodName = nameTable.getMethodSelector(methodBinding);
     if (!m.isConstructor() && !BindingUtil.isSynthetic(m.getModifiers())
         && needsObjcMethodFamilyNoneAttribute(methodName)) {
       // Getting around a clang warning.
@@ -605,6 +632,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       print(" " + DEPRECATED_ATTRIBUTE);
     }
     println(";");
+  }
+
+  @Override
+  protected void printMethodDeclaration(MethodDeclaration m) {
+    printMethodDeclaration(m, false);
   }
 
   private boolean needsObjcMethodFamilyNoneAttribute(String name) {
