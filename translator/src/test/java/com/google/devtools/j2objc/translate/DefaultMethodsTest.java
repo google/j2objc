@@ -370,4 +370,38 @@ public class DefaultMethodsTest extends GenerationTest {
     // From @implementation B.
     assertTranslatedLines(impl, "- (NSString *)f {", "return @\"\";", "}");
   }
+
+  public void testIncompleteImplPragmasInCompanionClasses() throws IOException {
+    addSourceFile("interface A { void f(); } ", "A.java");
+    addSourceFile("interface B extends A {}", "B.java");
+    addSourceFile("interface C extends A { default void g() {} }", "C.java");
+    addSourceFile("interface D extends C { }", "D.java");
+    String implA = translateSourceFile("A", "A.m");
+    String implB = translateSourceFile("B", "B.m");
+    String implC = translateSourceFile("C", "C.m");
+    String implD = translateSourceFile("D", "D.m");
+    String ignoreProtocol = "#pragma clang diagnostic ignored \"-Wprotocol\"";
+    assertNotInTranslation(implA, ignoreProtocol);
+    assertNotInTranslation(implB, ignoreProtocol);
+    assertTranslation(implC, ignoreProtocol);
+    assertTranslation(implD, ignoreProtocol);
+  }
+
+  public void testIncompleteImplPragmasInCompanionClassesWithNoReflection() throws IOException {
+    Options.setStripReflection(true);
+
+    addSourceFile("interface A { void f(); } ", "A.java");
+    addSourceFile("interface B extends A {}", "B.java");
+    addSourceFile("interface C extends A { default void g() {} }", "C.java");
+    addSourceFile("interface D extends C { }", "D.java");
+    String implA = translateSourceFile("A", "A.m");
+    String implB = translateSourceFile("B", "B.m");
+    String implC = translateSourceFile("C", "C.m");
+    String implD = translateSourceFile("D", "D.m");
+    String ignoreProtocol = "#pragma clang diagnostic ignored \"-Wprotocol\"";
+    assertNotInTranslation(implA, ignoreProtocol);
+    assertNotInTranslation(implB, ignoreProtocol);
+    assertTranslation(implC, ignoreProtocol);
+    assertTranslation(implD, ignoreProtocol);
+  }
 }

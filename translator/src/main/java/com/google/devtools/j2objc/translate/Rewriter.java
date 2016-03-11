@@ -395,10 +395,12 @@ public class Rewriter extends TreeVisitor {
       node.setBody(block);
     }
     // Resolve whether a lambda captures variables from the enclosing scope.
-    node.setIsCapturing(!outerResolver.getCapturedVars(node.getTypeBinding()).isEmpty());
+    ITypeBinding binding = node.getTypeBinding();
+    node.setIsCapturing(outerResolver.hasImplicitCaptures(binding));
     return true;
   }
 
+  @Override
   public boolean visit(CreationReference node) {
     IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
     IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
@@ -416,6 +418,7 @@ public class Rewriter extends TreeVisitor {
     return true;
   }
 
+  @Override
   public boolean visit(ExpressionMethodReference node) {
     IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
     Expression expression = node.getExpression().copy();
@@ -430,6 +433,7 @@ public class Rewriter extends TreeVisitor {
     return true;
   }
 
+  @Override
   public boolean visit(SuperMethodReference node) {
     IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
     Name qualifier = node.getQualifier() == null ? null : node.getQualifier().copy();
@@ -451,6 +455,7 @@ public class Rewriter extends TreeVisitor {
    * for the MethodInvocation, so we are duplicating code from
    * buildMethodReferenceInvocationArguments.
    */
+  @Override
   public boolean visit(TypeMethodReference node) {
     IMethodBinding oldMethodBinding = node.getMethodBinding();
     GeneratedMethodBinding methodBinding = GeneratedMethodBinding.newNamedMethod(

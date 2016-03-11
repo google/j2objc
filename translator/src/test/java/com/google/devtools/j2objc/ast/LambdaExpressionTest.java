@@ -51,13 +51,13 @@ public class LambdaExpressionTest extends GenerationTest {
   public void testCaptureDetection() throws IOException {
     String nonCaptureTranslation = translateSourceFile(
         functionHeader + "class Test { Function f = x -> x;}", "Test", "Test.m");
-    String nonCaptureTranslationOuter = translateSourceFile(
+    String captureTranslationOuter = translateSourceFile(
         functionHeader + "class Test { int y; Function f = x -> y;}", "Test", "Test.m");
     String captureTranslation = translateSourceFile(
         functionHeader + "class Test { Function<Function, Function> f = y -> x -> y;}", "Test",
         "Test.m");
     assertTranslation(nonCaptureTranslation, "GetNonCapturingLambda");
-    assertTranslation(nonCaptureTranslationOuter, "GetNonCapturingLambda");
+    assertTranslation(captureTranslationOuter, "GetCapturingLambda");
     assertTranslatedSegments(captureTranslation, "GetNonCapturingLambda", "GetCapturingLambda");
   }
 

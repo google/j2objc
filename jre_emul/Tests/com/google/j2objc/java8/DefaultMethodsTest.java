@@ -50,7 +50,6 @@ public class DefaultMethodsTest extends TestCase {
   interface B extends A {
     boolean f();
 
-    // TODO: This should return a capturing lambda to capture the implicit this/self.
     default B not() {
       return () -> !f();
     }
@@ -114,13 +113,12 @@ public class DefaultMethodsTest extends TestCase {
     B b1 = () -> true;
     assertTrue(b1.f());
     assertFalse(b1.notF());
-    // TODO: Enable this assertion once the non-capturing lambda bug is fixed.
-    // assertFalse(b1.not().f());
+    assertFalse(b1.not().f());
 
     B b2 = () -> false;
     assertFalse(b2.f());
     assertTrue(b2.notF());
-    // assertTrue(b2.not().f());
+    assertTrue(b2.not().f());
 
     D d = (name) -> D.getDPrefix() + name;
     assertEquals("static-default", d.getDefaultTag());
