@@ -247,7 +247,7 @@ public class StatementGenerator extends TreeVisitor {
       int startPos = node.getStartPosition();
       String assertStatementString =
           unit.getSource().substring(startPos, startPos + node.getLength());
-      assertStatementString = CharMatcher.WHITESPACE.trimFrom(assertStatementString);
+      assertStatementString = CharMatcher.whitespace().trimFrom(assertStatementString);
       // Generates the following string:
       // filename.java:456 condition failed: foobar != fish.
       String msg = TreeUtil.getSourceFileName(unit) + ":" + node.getLineNumber()

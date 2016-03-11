@@ -97,7 +97,7 @@ public class NameList {
   }
 
   private static final Splitter ENTRY_SPLITTER =
-      Splitter.on(CharMatcher.WHITESPACE).trimResults().omitEmptyStrings();
+      Splitter.on(CharMatcher.whitespace()).trimResults().omitEmptyStrings();
 
   public void addEntry(String entry) {
     String[] tokens = Iterables.toArray(ENTRY_SPLITTER.split(entry), String.class);
