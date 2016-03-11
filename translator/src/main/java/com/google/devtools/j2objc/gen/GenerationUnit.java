@@ -19,6 +19,7 @@ import com.google.common.collect.MultimapBuilder;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
+import com.google.devtools.j2objc.ast.Javadoc;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
@@ -48,6 +49,7 @@ public class GenerationUnit {
   // ordering of generated code within this unit should be consistent. For this
   // we map units of generated code keyed by the Java class they come from,
   // using map implementations with ordered keys.
+  private TreeMap<String, String> javadocBlocks = new TreeMap<>();
   private TreeMap<String, String> nativeHeaderBlocks = new TreeMap<>();
   private TreeMap<String, String> nativeImplementationBlocks = new TreeMap<>();
   private ListMultimap<String, GeneratedType> generatedTypes =
@@ -105,6 +107,10 @@ public class GenerationUnit {
     return hasIncompleteImplementation;
   }
 
+  public Collection<String> getJavadocBlocks() {
+    return javadocBlocks.values();
+  }
+
   public Collection<String> getNativeHeaderBlocks() {
     return nativeHeaderBlocks.values();
   }
@@ -154,6 +160,26 @@ public class GenerationUnit {
 
     String qualifiedMainType = TreeUtil.getQualifiedMainTypeName(unit);
 
+    addPackageJavadoc(unit, qualifiedMainType);
+    addNativeBlocks(unit, qualifiedMainType);
+
+    for (AbstractTypeDeclaration type : unit.getTypes()) {
+      generatedTypes.put(qualifiedMainType, GeneratedType.fromTypeDeclaration(type));
+    }
+  }
+
+  // Collect javadoc from the package declarations to display in the header.
+  private void addPackageJavadoc(CompilationUnit unit, String qualifiedMainType) {
+    Javadoc javadoc = unit.getPackage().getJavadoc();
+    if (javadoc == null) {
+      return;
+    }
+    SourceBuilder builder = new SourceBuilder(false);
+    JavadocGenerator.printDocComment(builder, javadoc);
+    javadocBlocks.put(qualifiedMainType, builder.toString());
+  }
+
+  private void addNativeBlocks(CompilationUnit unit, String qualifiedMainType) {
     SourceBuilder headerBuilder = new SourceBuilder(false);
     SourceBuilder implBuilder = new SourceBuilder(false);
     for (NativeDeclaration decl : unit.getNativeBlocks()) {
@@ -173,12 +199,6 @@ public class GenerationUnit {
     }
     if (implBuilder.length() > 0) {
       nativeImplementationBlocks.put(qualifiedMainType, implBuilder.toString());
-    }
-
-    generatedTypes.put(qualifiedMainType, GeneratedType.forPackageDeclaration(unit));
-
-    for (AbstractTypeDeclaration type : unit.getTypes()) {
-      generatedTypes.put(qualifiedMainType, GeneratedType.fromTypeDeclaration(type));
     }
   }
 

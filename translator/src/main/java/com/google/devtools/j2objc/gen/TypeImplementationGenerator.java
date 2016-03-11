@@ -97,6 +97,10 @@ public class TypeImplementationGenerator extends TypeGenerator {
       println("\n@end");
     }
 
+    // Package-info type, skip all outer declarations.
+    if (BindingUtil.isSynthetic(typeBinding)) {
+      return;
+    }
     printOuterDeclarations();
     printTypeLiteralImplementation();
   }

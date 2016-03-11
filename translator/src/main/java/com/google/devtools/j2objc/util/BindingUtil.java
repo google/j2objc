@@ -140,8 +140,8 @@ public final class BindingUtil {
     return (modifiers & ACC_SYNTHETIC) > 0;
   }
 
-  public static boolean isSynthetic(IMethodBinding m) {
-    return isSynthetic(m.getModifiers());
+  public static boolean isSynthetic(IBinding binding) {
+    return isSynthetic(binding.getModifiers());
   }
 
   public static boolean isVoid(ITypeBinding type) {

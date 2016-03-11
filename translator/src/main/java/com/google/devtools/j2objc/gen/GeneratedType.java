@@ -19,18 +19,12 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
-import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
-import com.google.devtools.j2objc.ast.Javadoc;
-import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.types.HeaderImportCollector;
 import com.google.devtools.j2objc.types.ImplementationImportCollector;
 import com.google.devtools.j2objc.types.Import;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.TranslationUtil;
-import com.google.j2objc.annotations.ObjectiveCName;
 
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
@@ -44,8 +38,6 @@ import java.util.Set;
  * those to be cleaned up by the garbage collector.
  */
 public class GeneratedType {
-
-  private static final Set<Import> EMPTY_IMPORTS = Collections.<Import>emptySet();
 
   private final String typeName;
   private final boolean isPrivate;
@@ -69,7 +61,7 @@ public class GeneratedType {
       String publicDeclarationCode,
       String privateDeclarationCode,
       String implementationCode) {
-    this.typeName = typeName;
+    this.typeName = Preconditions.checkNotNull(typeName);
     this.isPrivate = isPrivate;
     this.superTypes = Preconditions.checkNotNull(superTypes);
     this.headerForwardDeclarations = Preconditions.checkNotNull(headerForwardDeclarations);
@@ -136,72 +128,8 @@ public class GeneratedType {
         implementationCode);
   }
 
-  public static GeneratedType forPackageDeclaration(CompilationUnit unit) {
-    PackageDeclaration packageDecl = unit.getPackage();
-
-    ImplementationImportCollector importCollector = new ImplementationImportCollector();
-    importCollector.collect(packageDecl);
-
-    String publicDeclarationCode = "";
-    Javadoc javadoc = packageDecl.getJavadoc();
-    if (javadoc != null) {
-      SourceBuilder builder = new SourceBuilder(Options.emitLineDirectives());
-      builder.newline();
-      JavadocGenerator.printDocComment(builder, javadoc);
-      publicDeclarationCode = builder.toString();
-    }
-
-    return new GeneratedType(
-        null,
-        false,
-        Collections.<String>emptyList(),
-        EMPTY_IMPORTS,
-        EMPTY_IMPORTS,
-        EMPTY_IMPORTS,
-        ImmutableSet.copyOf(importCollector.getImports()),
-        publicDeclarationCode,
-        "",
-        generatePackageInfo(unit));
-  }
-
-  private static String getPackagePrefix(PackageDeclaration pkg) {
-    Annotation objcName = TreeUtil.getAnnotation(ObjectiveCName.class, pkg.getAnnotations());
-    if (objcName != null) {
-      return (String) BindingUtil.getAnnotationValue(objcName.getAnnotationBinding(), "value");
-    }
-    return null;
-  }
-
-  private static String generatePackageInfo(CompilationUnit unit) {
-    if (!unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_MAIN_TYPE)) {
-      return "";
-    }
-    PackageDeclaration pkg = unit.getPackage();
-    String prefix = getPackagePrefix(pkg);
-    if ((TreeUtil.getRuntimeAnnotationsList(pkg.getAnnotations()).isEmpty() && prefix == null)
-        || !TranslationUtil.needsReflection(pkg)) {
-      return "";
-    }
-
-    SourceBuilder builder = new SourceBuilder(Options.emitLineDirectives());
-    builder.newline();
-    String typeName = NameTable.camelCaseQualifiedName(pkg.getPackageBinding().getName())
-        + NameTable.PACKAGE_INFO_MAIN_TYPE;
-    builder.printf("@interface %s : NSObject\n", typeName);
-    builder.printf("@end\n\n");
-    builder.printf("@implementation %s\n", typeName);
-    if (prefix != null) {
-      builder.printf("\n+ (NSString *)__prefix {\n  return @\"%s\";\n}\n", prefix);
-    }
-    RuntimeAnnotationGenerator.printPackageAnnotationMethod(builder, pkg);
-    builder.println("\n@end");
-
-    return builder.toString();
-  }
-
   /**
-   * The name of the ObjC type declared by this GeneratedType, or null if no
-   * type is declared. (package declarations don't declare a type)
+   * The name of the ObjC type declared by this GeneratedType.
    */
   public String getTypeName() {
     return typeName;

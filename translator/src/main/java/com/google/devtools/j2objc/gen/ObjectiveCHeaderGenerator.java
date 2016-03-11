@@ -55,6 +55,9 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
   public void generate() {
     println(J2ObjC.getFileHeader(getGenerationUnit().getSourceName()));
+    for (String javadoc : getGenerationUnit().getJavadocBlocks()) {
+      print(javadoc);
+    }
     generateFileHeader();
 
     for (GeneratedType generatedType : getOrderedTypes()) {
@@ -82,7 +85,7 @@ public class ObjectiveCHeaderGenerator extends ObjectiveCSourceFileGenerator {
 
     for (GeneratedType type : getOrderedTypes()) {
       String name = type.getTypeName();
-      if (!type.isPrivate() && name != null) {
+      if (!type.isPrivate()) {
         seenTypes.add(name);
       }
       for (Import imp : type.getHeaderIncludes()) {

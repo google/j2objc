@@ -75,6 +75,9 @@ public class MetadataGenerator {
   }
 
   private void generateMetadata() {
+    if (BindingUtil.isSynthetic(type)) {
+      return;
+    }
     String fullName = nameTable.getFullName(type);
     println("\n+ (const J2ObjcClassInfo *)__metadata {");
     generateMethodsMetadata();

@@ -82,6 +82,10 @@ public abstract class BodyDeclaration extends TreeNode {
     return javadoc.get();
   }
 
+  public void setJavadoc(Javadoc newJavadoc) {
+    javadoc.set(newJavadoc);
+  }
+
   public List<Annotation> getAnnotations() {
     return annotations;
   }

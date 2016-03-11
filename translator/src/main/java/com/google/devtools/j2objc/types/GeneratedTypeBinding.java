@@ -17,6 +17,7 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -35,6 +36,7 @@ import java.util.Set;
 public class GeneratedTypeBinding extends AbstractTypeBinding {
 
   protected final String name;
+  private int modifiers;
   private final IPackageBinding packageBinding;
   private final ITypeBinding superClass;
   private final boolean isInterface;
@@ -58,11 +60,9 @@ public class GeneratedTypeBinding extends AbstractTypeBinding {
   public static GeneratedTypeBinding newTypeBinding(
       String name, ITypeBinding superClass, boolean isInterface) {
     int idx = name.lastIndexOf('.');
-    IPackageBinding packageBinding = null;
-    if (idx >= 0) {
-      packageBinding = new GeneratedPackageBinding(name.substring(0, idx));
-      name = name.substring(idx + 1);
-    }
+    String packageName = idx < 0 ? "" : name.substring(0, idx);
+    IPackageBinding packageBinding = new GeneratedPackageBinding(packageName);
+    name = name.substring(idx + 1);
     return new GeneratedTypeBinding(name, packageBinding, superClass, isInterface, null);
   }
 
@@ -95,6 +95,19 @@ public class GeneratedTypeBinding extends AbstractTypeBinding {
   @Override
   public String getName() {
     return name;
+  }
+
+  @Override
+  public int getModifiers() {
+    return modifiers;
+  }
+
+  public void setModifiers(int newModifiers) {
+    modifiers = newModifiers;
+  }
+
+  public void addModifiers(int modifiersToAdd) {
+    modifiers |= modifiersToAdd;
   }
 
   @Override
@@ -191,5 +204,10 @@ public class GeneratedTypeBinding extends AbstractTypeBinding {
   @Override
   public String toString() {
     return name;
+  }
+
+  @Override
+  public boolean isSynthetic() {
+    return BindingUtil.isSynthetic(this);
   }
 }

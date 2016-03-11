@@ -105,9 +105,7 @@ public class ObjectiveCImplementationGenerator extends ObjectiveCSourceFileGener
     Set<Import> forwardDecls = Sets.newHashSet();
     for (GeneratedType generatedType : getOrderedTypes()) {
       String name = generatedType.getTypeName();
-      if (name != null) {
-        seenTypes.add(name);
-      }
+      seenTypes.add(name);
       for (Import imp : generatedType.getImplementationForwardDeclarations()) {
         // Only need to forward declare private local types. All else is handled
         // by imports.

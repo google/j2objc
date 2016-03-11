@@ -80,12 +80,6 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
   private void printLocalIncludes(GeneratedType type) {
     String typeName = type.getTypeName();
     Set<Import> includes = type.getHeaderIncludes();
-    if (typeName == null) {
-      // Our type doesn't have a name, it's probably a package declaration.
-      // Our nameless type shouldn't have any includes.
-      assert includes.isEmpty();
-      return;
-    }
     List<Import> localImports = Lists.newArrayList();
     for (Import imp : includes) {
       if (isLocalType(imp.getTypeName())) {
@@ -114,13 +108,6 @@ public class ObjectiveCSegmentedHeaderGenerator extends ObjectiveCHeaderGenerato
     String typeName = type.getTypeName();
     String code = type.getPublicDeclarationCode();
     if (code.length() == 0) {
-      return;
-    }
-    if (typeName == null) {
-      // Must be generated code for a package-info.java file. The header code
-      // will only contain doc-comments, so we skip the header guards.
-      assert type.getHeaderIncludes().isEmpty() && type.getHeaderForwardDeclarations().isEmpty();
-      print(code);
       return;
     }
 

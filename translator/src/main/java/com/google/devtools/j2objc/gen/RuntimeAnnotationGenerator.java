@@ -20,7 +20,6 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -50,11 +49,6 @@ public class RuntimeAnnotationGenerator extends AbstractSourceGenerator {
     this.nameTable = nameTable;
   }
 
-  public static void printPackageAnnotationMethod(SourceBuilder builder, PackageDeclaration node) {
-    new RuntimeAnnotationGenerator(builder, TreeUtil.getCompilationUnit(node).getNameTable())
-        .printPackageAnnotationMethod(node);
-  }
-
   public static void printTypeAnnotationMethods(
       SourceBuilder builder, AbstractTypeDeclaration node) {
     RuntimeAnnotationGenerator annotationGen = new RuntimeAnnotationGenerator(
@@ -62,14 +56,6 @@ public class RuntimeAnnotationGenerator extends AbstractSourceGenerator {
     annotationGen.printTypeAnnotationsMethod(node);
     annotationGen.printMethodAnnotationMethods(TreeUtil.getMethodDeclarations(node));
     annotationGen.printFieldAnnotationMethods(node);
-  }
-
-  public void printPackageAnnotationMethod(PackageDeclaration node) {
-    List<Annotation> runtimeAnnotations = TreeUtil.getRuntimeAnnotationsList(node.getAnnotations());
-    if (runtimeAnnotations.size() > 0) {
-      println("\n+ (IOSObjectArray *)__annotations {");
-      printAnnotationCreate(runtimeAnnotations);
-    }
   }
 
   public void printTypeAnnotationsMethod(AbstractTypeDeclaration decl) {
