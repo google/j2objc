@@ -37,7 +37,9 @@ package java.lang;
 #include "mach/mach_time.h"
 #include "TargetConditionals.h"
 
-extern char **environ;
+#if !TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
+#include <crt_externs.h>
+#endif
 ]-*/
 
 import java.io.BufferedInputStream;
@@ -369,15 +371,22 @@ public class System {
 
   public static native Map<String,String> getenv() /*-[
     NSMutableDictionary *dict = [NSMutableDictionary dictionary];
-    for (int i = 0; environ[i]; i++) {
-      NSString *var = [NSString stringWithUTF8String:environ[i]];
-      NSRange range = [var rangeOfString:@"="];
-      if (range.location != NSNotFound) {
-        NSString *key = [var substringToIndex:range.location];
-        NSString *value = [var substringFromIndex:(range.location + 1)];
-        [dict setObject:value forKey:key];
+#if !TARGET_OS_IPHONE && !TARGET_OS_SIMULATOR
+    // TODO(tball): move to libcore.io.Posix.
+    char ***nsEnviron = _NSGetEnviron();
+    if (nsEnviron && *nsEnviron) {
+      char **environ = *nsEnviron;
+      for (int i = 0; environ[i]; i++) {
+        NSString *var = [NSString stringWithUTF8String:environ[i]];
+        NSRange range = [var rangeOfString:@"="];
+        if (range.location != NSNotFound) {
+          NSString *key = [var substringToIndex:range.location];
+          NSString *value = [var substringFromIndex:(range.location + 1)];
+          [dict setObject:value forKey:key];
+        }
       }
     }
+#endif
     return [JavaUtilCollections unmodifiableMapWithJavaUtilMap:
             [NSDictionaryMap mapWithDictionary:dict]];
   ]-*/;
