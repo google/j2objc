@@ -81,13 +81,8 @@ public class GenerationTest extends TestCase {
   @Override
   protected void setUp() throws IOException {
     tempDir = FileUtil.createTempDir("testout");
-    Options.load(new String[]{
-        "-d", tempDir.getAbsolutePath(),
-        "-sourcepath", tempDir.getAbsolutePath(),
-        "-q", // Suppress console output.
-        "-encoding", "UTF-8" // Translate strings correctly when encodings are nonstandard.
-    });
-    parser = initializeParser(tempDir);
+    loadOptions();
+    createParser();
   }
 
   @Override
@@ -95,6 +90,19 @@ public class GenerationTest extends TestCase {
     Options.reset();
     FileUtil.deleteTempDir(tempDir);
     ErrorUtil.reset();
+  }
+
+  protected void loadOptions() throws IOException {
+    Options.load(new String[]{
+        "-d", tempDir.getAbsolutePath(),
+        "-sourcepath", tempDir.getAbsolutePath(),
+        "-q", // Suppress console output.
+        "-encoding", "UTF-8" // Translate strings correctly when encodings are nonstandard.
+    });
+  }
+
+  protected void createParser() {
+    parser = initializeParser(tempDir);
   }
 
   protected static JdtParser initializeParser(File tempDir) {

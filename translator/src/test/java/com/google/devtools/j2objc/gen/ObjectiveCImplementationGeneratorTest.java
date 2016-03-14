@@ -839,7 +839,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     compileArgs.add("-encoding");
     compileArgs.add(Options.getCharset().name());
     compileArgs.add("-source");
-    compileArgs.add("1.6");
+    compileArgs.add("1.7");
     compileArgs.add(tempDir.getAbsolutePath() + "/src/foo/bar/mumble/package-info.java");
     org.eclipse.jdt.internal.compiler.batch.Main batchCompiler =
         new org.eclipse.jdt.internal.compiler.batch.Main(

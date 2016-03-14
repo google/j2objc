@@ -15,7 +15,7 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.util.FileUtil;
+import com.google.devtools.j2objc.util.SourceVersion;
 
 import java.io.IOException;
 
@@ -26,14 +26,9 @@ import java.io.IOException;
  */
 public class MethodReferenceTest extends GenerationTest {
   @Override
-  protected void setUp() throws IOException {
-    tempDir = FileUtil.createTempDir("testout");
-    Options.load(new String[] { "-d", tempDir.getAbsolutePath(), "-sourcepath",
-        tempDir.getAbsolutePath(), "-q", // Suppress console output.
-        "-encoding", "UTF-8", // Translate strings correctly when encodings are nonstandard.
-        "-source", "8" // Treat as Java 8 source.
-    });
-    parser = GenerationTest.initializeParser(tempDir);
+  protected void loadOptions() throws IOException {
+    super.loadOptions();
+    Options.setSourceVersion(SourceVersion.JAVA_8);
   }
 
   // Test the creation of explicit blocks for lambdas with expression bodies.

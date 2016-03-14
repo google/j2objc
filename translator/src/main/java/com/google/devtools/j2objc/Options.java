@@ -922,6 +922,11 @@ public class Options {
     return instance.sourceVersion;
   }
 
+  @VisibleForTesting
+  public static void setSourceVersion(SourceVersion version) {
+    instance.sourceVersion = version;
+  }
+
   public static boolean isJava8Translator() {
     return SourceVersion.java8Minimum(instance.sourceVersion);
   }

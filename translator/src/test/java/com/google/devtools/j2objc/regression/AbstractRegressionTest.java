@@ -16,10 +16,10 @@ package com.google.devtools.j2objc.regression;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import com.google.common.io.Files;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.J2ObjC;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.util.SourceVersion;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -52,25 +52,11 @@ public abstract class AbstractRegressionTest extends GenerationTest {
   public static int testCount = 0;
 
   static final String j2objccLocation = System.getProperty("j2objcc.path", "j2objcc");
-  String oldUserDir = null;
-  
-  @Override
-  protected void setUp() throws IOException {
-    tempDir = Files.createTempDir();
-    tempDir.mkdirs();
-    oldUserDir = System.setProperty("user.dir", tempDir.getAbsolutePath());
-    Options.load(new String[] { "-d", tempDir.getAbsolutePath(), "-sourcepath",
-        tempDir.getAbsolutePath(), "-q", "-encoding", "UTF-8",
-        "-source", "8", // Treat as Java 8 source.
-        "-Xforce-incomplete-java8" // Internal flag to force Java 8 support.
-    });
-    parser = GenerationTest.initializeParser(tempDir);
-  }
 
   @Override
-  protected void tearDown() throws Exception {
-    super.tearDown();
-    System.setProperty("user.dir", oldUserDir);
+  protected void loadOptions() throws IOException {
+    super.loadOptions();
+    Options.setSourceVersion(SourceVersion.JAVA_8);
   }
 
   public String writeFileFromString(String filename, String content) {

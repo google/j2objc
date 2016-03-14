@@ -31,18 +31,6 @@ import java.io.IOException;
  * @author Keith Stanger
  */
 public class BindingUtilTest extends GenerationTest {
-  @Override
-  protected void setUp() throws IOException {
-    tempDir = FileUtil.createTempDir("testout");
-    Options.load(new String[]{
-        "-d", tempDir.getAbsolutePath(),
-        "-sourcepath", tempDir.getAbsolutePath(),
-        "-q", // Suppress console output.
-        "-encoding", "UTF-8", // Translate strings correctly when encodings are nonstandard.
-        "-source", "8", // Treat as Java 8 source.
-    });
-    parser = initializeParser(tempDir);
-  }
 
   public void testIsRuntimeAnnotation() throws IOException {
     // SuppressWarnings is a source-level annotation.
@@ -59,6 +47,9 @@ public class BindingUtilTest extends GenerationTest {
   }
 
   public void testGetDefaultMethodSignature() throws Exception {
+    Options.setSourceVersion(SourceVersion.JAVA_8);
+    createParser();
+
     String source = "interface A {"
         + "  default void f() {}"
         + "  default String g(int x, Object y) { return Integer.toString(x) + y; }"
