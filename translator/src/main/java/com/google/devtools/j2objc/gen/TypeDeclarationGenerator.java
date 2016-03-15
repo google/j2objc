@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
-import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
@@ -48,7 +47,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 /**
  * Base class for generating type declarations, either public or private.
@@ -58,9 +56,6 @@ import java.util.regex.Pattern;
 public class TypeDeclarationGenerator extends TypeGenerator {
 
   private static final String DEPRECATED_ATTRIBUTE = "__attribute__((deprecated))";
-
-  private static final Pattern FAMILY_METHOD_REGEX =
-      Pattern.compile("^[_]*(new|copy|alloc|init|mutableCopy).*");
 
   protected TypeDeclarationGenerator(SourceBuilder builder, AbstractTypeDeclaration node) {
     super(builder, node);
@@ -76,8 +71,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   @Override
   protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
-    // Don't print declarations for any synthetic members.
-    if (BindingUtil.isSynthetic(decl.getModifiers())) {
+    // Don't print declarations for any synthetic methods.
+    if (decl instanceof MethodDeclaration && BindingUtil.isSynthetic(decl.getModifiers())) {
       return false;
     }
     return decl.hasPrivateDeclaration() == printPrivateDeclarations();
@@ -103,12 +98,15 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       printf("@interface %s : %s", typeName, getSuperTypeName());
     }
     printImplementedProtocols();
-    printInstanceVariables();
+    if (!typeBinding.isInterface()) {
+      printInstanceVariables();
+    } else {
+      newline();
+    }
     printProperties();
     if (!typeBinding.isInterface()) {
       printStaticAccessors();
     }
-    printAnnotationProperties();
     printInnerDeclarations();
     printDisallowedConstructors();
     println("\n@end");
@@ -350,24 +348,12 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return;
     }
     printf("\n@interface %s : NSObject", typeName);
-    if (BindingUtil.isRuntimeAnnotation(typeBinding)) {
+    if (BindingUtil.isRuntimeAnnotation(typeBinding)
+        || BindingUtil.hasDefaultMethodsInFamily(typeBinding)) {
       // Print annotation implementation interface.
       printf(" < %s >", typeName);
-      List<AnnotationTypeMemberDeclaration> members = TreeUtil.getAnnotationMembers(typeNode);
-      if (!members.isEmpty()) {
-        println(" {\n @private");
-        printAnnotationVariables(members);
-        println("}");
-        printAnnotationConstructor(typeBinding);
-        printAnnotationAccessors(members);
-      } else {
-        newline();
-      }
-    } else if (BindingUtil.hasDefaultMethodsInFamily(typeBinding)) {
-      printf(" < %s >", typeName);
-    } else {
-      newline();
     }
+    printInstanceVariables();
     printStaticInterfaceMethods();
     printStaticAccessors();
     println("\n@end");
@@ -401,7 +387,8 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     @Override
     public boolean apply(VariableDeclarationFragment fragment) {
       IVariableBinding var = fragment.getVariableBinding();
-      return !var.getType().isPrimitive() && !BindingUtil.isWeakReference(var);
+      return !var.getType().isPrimitive() && !BindingUtil.isSynthetic(var)
+          && !BindingUtil.isWeakReference(var);
     }
   };
 
@@ -537,65 +524,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     }
   }
 
-  private void printAnnotationProperties() {
-    if (!BindingUtil.isRuntimeAnnotation(typeBinding)) {
-      return;
-    }
-    List<AnnotationTypeMemberDeclaration> members = TreeUtil.getAnnotationMembers(typeNode);
-    if (!members.isEmpty()) {
-      newline();
-    }
-    for (AnnotationTypeMemberDeclaration member : members) {
-      ITypeBinding type = member.getType().getTypeBinding();
-      print("@property (readonly) ");
-      String typeString = nameTable.getSpecificObjCType(type);
-      String propertyName = NameTable.getAnnotationPropertyName(member.getMethodBinding());
-      println(UnicodeUtils.format("%s%s%s;", typeString, typeString.endsWith("*") ? "" : " ",
-          propertyName));
-      if (needsObjcMethodFamilyNoneAttribute(propertyName)) {
-        println(UnicodeUtils.format("- (%s)%s OBJC_METHOD_FAMILY_NONE;", typeString, propertyName));
-      }
-    }
-  }
-
-  private void printAnnotationVariables(List<AnnotationTypeMemberDeclaration> members) {
-    indent();
-    for (AnnotationTypeMemberDeclaration member : members) {
-      printIndent();
-      ITypeBinding type = member.getMethodBinding().getReturnType();
-      print(nameTable.getObjCType(type));
-      if (type.isPrimitive() || type.isInterface()) {
-        print(' ');
-      }
-      print(NameTable.getAnnotationPropertyVariableName(member.getMethodBinding()));
-      println(";");
-    }
-    unindent();
-  }
-
-  private void printAnnotationConstructor(ITypeBinding annotation) {
-    newline();
-    print(getAnnotationConstructorSignature(annotation));
-    println(";");
-  }
-
-  private void printAnnotationAccessors(List<AnnotationTypeMemberDeclaration> members) {
-    boolean printedNewline = false;
-    for (AnnotationTypeMemberDeclaration member : members) {
-      if (member.getDefault() != null) {
-        if (!printedNewline) {
-          newline();
-          printedNewline = true;
-        }
-        ITypeBinding type = member.getType().getTypeBinding();
-        String typeString = nameTable.getSpecificObjCType(type);
-        String propertyName =
-            NameTable.getAnnotationPropertyName(member.getMethodBinding());
-        printf("+ (%s)%sDefault;\n", typeString, propertyName);
-      }
-    }
-  }
-
   /**
    * Emit method declaration.
    *
@@ -620,7 +548,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     print(getMethodSignature(m));
     String methodName = nameTable.getMethodSelector(methodBinding);
     if (!m.isConstructor() && !BindingUtil.isSynthetic(m.getModifiers())
-        && needsObjcMethodFamilyNoneAttribute(methodName)) {
+        && NameTable.needsObjcMethodFamilyNoneAttribute(methodName)) {
       // Getting around a clang warning.
       // clang assumes that methods with names starting with new, alloc or copy
       // return objects of the same type as the receiving class, regardless of
@@ -641,10 +569,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   @Override
   protected void printMethodDeclaration(MethodDeclaration m) {
     printMethodDeclaration(m, false);
-  }
-
-  private boolean needsObjcMethodFamilyNoneAttribute(String name) {
-     return FAMILY_METHOD_REGEX.matcher(name).matches();
   }
 
   private boolean needsDeprecatedAttribute(List<Annotation> annotations) {

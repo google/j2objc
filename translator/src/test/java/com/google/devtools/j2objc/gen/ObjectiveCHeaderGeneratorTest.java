@@ -570,14 +570,16 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@interface FooCompatible : NSObject < FooCompatible >");
 
     // Verify that the value is defined as a property instead of a method.
-    assertTranslation(translation, "@private\n  jboolean fooable_;");
+    assertTranslation(translation, "@public\n  jboolean fooable_;");
     assertTranslation(translation, "@property (readonly) jboolean fooable;");
 
-    // Verify default value accessor is generated for property.
-    assertTranslation(translation, "+ (jboolean)fooableDefault;");
-
     // Check that constructor was created with the property as parameter.
-    assertTranslation(translation, "- (instancetype)initWithFooable:(jboolean)fooable__;");
+    assertTranslation(translation,
+        "FOUNDATION_EXPORT id<FooCompatible> create_FooCompatible(jboolean fooable);");
+
+    translation = getTranslatedFile("foo/Compatible.m");
+    // Verify default value accessor is generated for property.
+    assertTranslation(translation, "+ (jboolean)fooableDefault {");
   }
 
   public void testCharacterEdgeValues() throws IOException {
@@ -767,10 +769,11 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "Bar", "foo/Bar.h");
     assertTranslation(translation, "@property (readonly) NSString *namespace__;");
     assertTranslatedLines(translation,
-        "@interface FooBar : NSObject < FooBar > {", "@private", "NSString *namespace___;", "}");
+        "@interface FooBar : NSObject < FooBar > {", "@public", "NSString *namespace___;", "}");
     assertTranslation(translation,
-        "- (instancetype)initWithNamespace__:(NSString *)namespace____;");
-    assertTranslation(translation, "+ (NSString *)namespace__Default;");
+        "FOUNDATION_EXPORT id<FooBar> create_FooBar(NSString *namespace__);");
+    translation = getTranslatedFile("foo/Bar.m");
+    assertTranslation(translation, "+ (NSString *)namespace__Default {");
   }
 
   public void testMethodSorting() throws IOException {

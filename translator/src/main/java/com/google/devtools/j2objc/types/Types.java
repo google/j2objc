@@ -299,6 +299,10 @@ public class Types {
     return idType;
   }
 
+  public ITypeBinding getIOSObjectArray() {
+    return IOSObjectArray;
+  }
+
   public PointerTypeBinding getPointerType(ITypeBinding type) {
     PointerTypeBinding result = pointerTypeMap.get(type);
     if (result == null) {

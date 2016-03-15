@@ -22,6 +22,7 @@ import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriter;
+import com.google.devtools.j2objc.translate.AnnotationRewriter;
 import com.google.devtools.j2objc.translate.AnonymousClassConverter;
 import com.google.devtools.j2objc.translate.ArrayRewriter;
 import com.google.devtools.j2objc.translate.Autoboxer;
@@ -235,6 +236,15 @@ public class TranslationProcessor extends FileProcessor {
     new SuperMethodInvocationRewriter().run(unit);
     ticker.tick("SuperMethodInvocationRewriter");
 
+    // Before: AnnotationRewriter - Needs AnnotationRewriter to add the
+    //   annotation metadata to the generated package-info type.
+    PackageInfoRewriter.run(unit);
+    ticker.tick("PackageInfoRewriter");
+
+    // Before: StaticVarRewriter - Generates static variable access expressions.
+    new AnnotationRewriter().run(unit);
+    ticker.tick("AnnotationRewriter");
+
     new OperatorRewriter().run(unit);
     ticker.tick("OperatorRewriter");
 
@@ -258,9 +268,6 @@ public class TranslationProcessor extends FileProcessor {
     // added in other phases may need added casts.
     new CastResolver().run(unit);
     ticker.tick("CastResolver");
-
-    PackageInfoRewriter.run(unit);
-    ticker.tick("PackageInfoRewriter");
 
     // After: InnerClassExtractor, Functionizer - Expects all types to be
     //   top-level and functionizing to have occured.

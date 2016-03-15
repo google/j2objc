@@ -303,8 +303,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     assertTranslation(translation, "@synthesize fooable = fooable_;");
 
     // Verify constructor generated.
-    assertTranslation(translation, "- (instancetype)initWithFooable:(jboolean)fooable__ {");
-    assertTranslation(translation, "fooable_ = fooable__;");
+    assertTranslation(translation, "id<FooCompatible> create_FooCompatible(jboolean fooable) {");
+    assertTranslation(translation, "fooable_ = fooable;");
 
     // Verify default value accessor.
     assertTranslatedLines(translation,
@@ -556,8 +556,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations_foo {",
-        "return [IOSObjectArray arrayWithObjects:(id[]) "
-        + "{ [[[OrgJunitAfter alloc] init] autorelease] } "
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_OrgJunitAfter() } "
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
@@ -568,8 +567,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations_fooWithInt_ {",
-        "return [IOSObjectArray arrayWithObjects:(id[]) "
-        + "{ [[[OrgJunitAfter alloc] init] autorelease] } "
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_OrgJunitAfter() } "
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
@@ -579,8 +577,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations_init {",
-        "return [IOSObjectArray arrayWithObjects:(id[]) "
-        + "{ [[[JavaLangDeprecated alloc] init] autorelease] } "
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_JavaLangDeprecated() } "
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
@@ -590,8 +587,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations_initWithInt_ {",
-        "return [IOSObjectArray arrayWithObjects:(id[]) "
-        + "{ [[[JavaLangDeprecated alloc] init] autorelease] } "
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_JavaLangDeprecated() } "
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
@@ -602,8 +598,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations {",
-        "return [IOSObjectArray arrayWithObjects:(id[]) "
-        + "{ [[[OrgJunitIgnore alloc] initWithValue:@\"\"] autorelease] } "
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_OrgJunitIgnore(@\"\") } "
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
@@ -614,9 +609,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "+ (IOSObjectArray *)__annotations {",
-        "return [IOSObjectArray arrayWithObjects:(id[]) "
-        + "{ [[[OrgJunitIgnore alloc] initWithValue:"
-        + "@\"some \\\"escaped\\n comment\"] autorelease] } "
+        "return [IOSObjectArray arrayWithObjects:(id[])"
+        + "{ create_OrgJunitIgnore(@\"some \\\"escaped\\n comment\") } "
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
@@ -756,7 +750,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/package-info.m");
     assertTranslation(translation, "@implementation FooBarMumblepackage_info");
     assertTranslation(translation, "+ (IOSObjectArray *)__annotations");
-    assertTranslation(translation, "[FooAnnotationsTest alloc]");
+    assertTranslation(translation, "create_FooAnnotationsTest()");
   }
 
   public void testPackageInfoAnnotationNoDoc() throws IOException {
@@ -776,7 +770,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
     translation = getTranslatedFile("foo/bar/mumble/package-info.m");
     assertTranslation(translation, "@implementation FooBarMumblepackage_info");
     assertTranslation(translation, "+ (IOSObjectArray *)__annotations");
-    assertTranslation(translation, "[FooAnnotationsTest alloc]");
+    assertTranslation(translation, "create_FooAnnotationsTest()");
   }
 
   public void testPackageInfoDocNoAnnotation() throws IOException {
@@ -905,9 +899,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "class Test { Bar ann; String namespace() { return ann.namespace(); }}",
         "Bar", "foo/Bar.m");
     assertTranslation(translation, "@synthesize namespace__ = namespace___;");
-    assertTranslation(translation,
-        "- (instancetype)initWithNamespace__:(NSString *)namespace____ {");
-    assertTranslation(translation, "self->namespace___ = RETAIN_(namespace____);");
+    assertTranslation(translation, "id<FooBar> create_FooBar(NSString *namespace__) {");
+    assertTranslation(translation, "self->namespace___ = RETAIN_(namespace__);");
     assertTranslation(translation, "+ (NSString *)namespace__Default {");
   }
 
@@ -945,8 +938,8 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "{ \"fooDefault\", \"foo\", \"Ljava.lang.String;\", 0x100a, NULL, NULL },");
-    assertTranslation(translation, "{ \"numDefault\", \"num\", \"I\", 0x100a, NULL, NULL },");
+        "{ \"foo\", \"foo\", \"Ljava.lang.String;\", 0x401, NULL, NULL },");
+    assertTranslation(translation, "{ \"num\", \"num\", \"I\", 0x401, NULL, NULL },");
   }
 
   // Verify that a class with an annotation with a reserved name property is
@@ -959,8 +952,7 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "@Bar(namespace=\"mynames\") class Test {}",
         "Bar", "foo/Bar.m");
     assertTranslatedLines(translation, "+ (IOSObjectArray *)__annotations {",
-        "return [IOSObjectArray arrayWithObjects:(id[]) "
-        + "{ [[[FooBar alloc] initWithNamespace__:@\"mynames\"] autorelease] } "
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_FooBar(@\"mynames\") } "
         + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 
@@ -1012,7 +1004,6 @@ public class ObjectiveCImplementationGeneratorTest extends GenerationTest {
         + "@Retention(RetentionPolicy.RUNTIME) @interface Inner { String name(); }"
         + "@Outer(innerAnnotation=@Inner(name=\"Bar\")) class Foo {}}",
         "A", "A.m");
-    assertTranslation(translation,
-        "[[[A_Outer alloc] initWithInnerAnnotation:[[[A_Inner alloc] initWithName:@\"Bar\"]");
+    assertTranslation(translation, "create_A_Outer(create_A_Inner(@\"Bar\"))");
   }
 }

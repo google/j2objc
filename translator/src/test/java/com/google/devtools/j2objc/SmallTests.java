@@ -37,6 +37,7 @@ import com.google.devtools.j2objc.gen.TypeImplementationGeneratorTest;
 import com.google.devtools.j2objc.pipeline.J2ObjCIncompatibleStripperTest;
 import com.google.devtools.j2objc.pipeline.TranslationProcessorTest;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriterTest;
+import com.google.devtools.j2objc.translate.AnnotationRewriterTest;
 import com.google.devtools.j2objc.translate.AnonymousClassConverterTest;
 import com.google.devtools.j2objc.translate.ArrayRewriterTest;
 import com.google.devtools.j2objc.translate.AutoboxerTest;
@@ -87,6 +88,7 @@ public class SmallTests {
 
   private static final Class<?>[] smallTestClasses = new Class[] {
     AbstractMethodRewriterTest.class,
+    AnnotationRewriterTest.class,
     AnonymousClassConverterTest.class,
     ArrayAccessTest.class,
     ArrayCreationTest.class,
