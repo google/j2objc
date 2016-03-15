@@ -177,11 +177,6 @@ public class MetadataGenerator {
             name, cStr(name), cStr(returnType),
             java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT);
         methodMetadata.add(metadata);
-        metadata = UnicodeUtils.format("    { \"%s\", %s, %s, 0x%x, NULL, NULL },\n",
-            name + "Default", cStr(name), cStr(returnType),
-            java.lang.reflect.Modifier.PRIVATE | java.lang.reflect.Modifier.STATIC
-                | BindingUtil.ACC_SYNTHETIC);
-        methodMetadata.add(metadata);
       }
     }
     if (methodMetadata.size() > 0) {
@@ -202,7 +197,10 @@ public class MetadataGenerator {
       }
     }
     for (VariableDeclarationFragment f : TreeUtil.getAllFields(typeNode)) {
-      fieldMetadata.add(generateFieldMetadata(f.getVariableBinding(), f.getName()));
+      String metadata = generateFieldMetadata(f.getVariableBinding(), f.getName());
+      if (metadata != null) {
+        fieldMetadata.add(metadata);
+      }
     }
     if (fieldMetadata.size() > 0) {
       builder.append("  static const J2ObjcFieldInfo fields[] = {\n");
@@ -215,6 +213,9 @@ public class MetadataGenerator {
   }
 
   private String generateFieldMetadata(IVariableBinding var, SimpleName name) {
+    if (BindingUtil.isSynthetic(var)) {
+      return null;
+    }
     int modifiers = getFieldModifiers(var);
     String javaName = name.getIdentifier();
     String objcName = nameTable.getVariableShortName(var);

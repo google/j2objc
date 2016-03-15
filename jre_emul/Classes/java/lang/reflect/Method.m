@@ -259,20 +259,19 @@
 - (id)getDefaultValue {
   if ([self->class_ isAnnotation]) {
     // Invoke the class method for this method name plus "Default". For example, if this
-    // method is named "foo", then return the result from "fooDefault()".
+    // method is named "foo", then return the result from "fooDefault".
     NSString *defaultName = [[self getName] stringByAppendingString:@"Default"];
-    @try {
-      JavaLangReflectMethod *defaultMethod =
-          [self->class_ getDeclaredMethod:defaultName
-                   parameterTypes:[IOSObjectArray arrayWithLength:0 type:IOSClass_class_()]];
-      if (defaultMethod) {
-        return [defaultMethod invokeWithId:self->class_
-                         withNSObjectArray:[IOSObjectArray arrayWithLength:0
-                                                                      type:NSObject_class_()]];
-      }
-    }
-    @catch (JavaLangNoSuchMethodException *exception) {
-      // Fall-through.
+    Class cls = class_.objcClass;
+    Method defaultValueMethod = JreFindClassMethod(cls, [defaultName UTF8String]);
+    if (defaultValueMethod) {
+      struct objc_method_description *methodDesc = method_getDescription(defaultValueMethod);
+      NSInvocation *invocation = [NSInvocation invocationWithMethodSignature:
+          [NSMethodSignature signatureWithObjCTypes:methodDesc->types]];
+      [invocation setSelector:methodDesc->name];
+      [invocation invokeWithTarget:cls];
+      J2ObjcRawValue returnValue;
+      [invocation getReturnValue:&returnValue];
+      return [[self getReturnType] __boxValue:&returnValue];
     }
   }
   return nil;

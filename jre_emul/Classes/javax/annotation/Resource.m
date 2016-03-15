@@ -81,13 +81,12 @@ static void JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_
 
 + (IOSObjectArray *)__annotations {
   return [IOSObjectArray arrayWithObjects:(id[]) {
-    [[[JavaLangAnnotationRetention alloc]
-      initWithValue:JavaLangAnnotationRetentionPolicy_get_RUNTIME()] autorelease],
-    [[[JavaLangAnnotationTarget alloc] initWithValue:[IOSObjectArray arrayWithObjects:(id[]) {
+    create_JavaLangAnnotationRetention(JavaLangAnnotationRetentionPolicy_get_RUNTIME()),
+    create_JavaLangAnnotationTarget([IOSObjectArray arrayWithObjects:(id[]) {
       JavaLangAnnotationElementType_get_TYPE(),
       JavaLangAnnotationElementType_get_METHOD(),
       JavaLangAnnotationElementType_get_FIELD()
-    } count:3 type:NSObject_class_()]] autorelease]
+    } count:3 type:NSObject_class_()])
   } count:2 type:JavaLangAnnotationAnnotation_class_()];
 }
 
