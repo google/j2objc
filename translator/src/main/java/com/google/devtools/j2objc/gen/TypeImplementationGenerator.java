@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
@@ -28,9 +29,11 @@ import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.Property;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -88,6 +91,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       printProperties();
       printStaticAccessors();
       printInnerDeclarations();
+      printAnnotationImplementation();
       printInitializeMethod();
       printReflectionMethods();
       println("\n@end");
@@ -109,7 +113,6 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   private static final Predicate<VariableDeclarationFragment> PROPERTIES =
       new Predicate<VariableDeclarationFragment>() {
-    @Override
     public boolean apply(VariableDeclarationFragment fragment) {
       IVariableBinding varBinding = fragment.getVariableBinding();
       return BindingUtil.hasAnnotation(varBinding, Property.class)
@@ -359,7 +362,75 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   private void printReflectionMethods() {
     if (typeNeedsReflection) {
+      RuntimeAnnotationGenerator.printTypeAnnotationMethods(getBuilder(), typeNode);
       printMetadata();
+    }
+  }
+
+  private void printAnnotationImplementation() {
+    if (BindingUtil.isRuntimeAnnotation(typeBinding)) {
+      List<AnnotationTypeMemberDeclaration> members = TreeUtil.getAnnotationMembers(typeNode);
+      printAnnotationProperties(members);
+      if (!members.isEmpty()) {
+        printAnnotationConstructor(typeBinding);
+      }
+      printAnnotationAccessors(members);
+      println("\n- (IOSClass *)annotationType {");
+      printf("  return %s_class_();\n", typeName);
+      println("}");
+      println("\n- (NSString *)description {");
+      printf("  return @\"@%s()\";\n", typeBinding.getBinaryName());
+      println("}");
+    }
+  }
+
+  private void printAnnotationConstructor(ITypeBinding annotation) {
+    newline();
+    print(getAnnotationConstructorSignature(annotation));
+    println(" {");
+    println("  if ((self = [super init])) {");
+    for (IMethodBinding member : annotation.getDeclaredMethods()) {
+      String name = NameTable.getAnnotationPropertyVariableName(member);
+      printf("    self->%s = ", name);
+      ITypeBinding type = member.getReturnType();
+      boolean needsRetain = !type.isPrimitive();
+      if (needsRetain) {
+        print("RETAIN_(");
+      }
+      printf("%s__", NameTable.getAnnotationPropertyName(member));
+      if (needsRetain) {
+        print(')');
+      }
+      println(";");
+    }
+    println("  }");
+    println("  return self;");
+    println("}");
+  }
+
+  private void printAnnotationProperties(List<AnnotationTypeMemberDeclaration> members) {
+    if (!members.isEmpty()) {
+      newline();
+    }
+    for (AnnotationTypeMemberDeclaration member : members) {
+      IMethodBinding memberBinding = member.getMethodBinding();
+      println(UnicodeUtils.format("@synthesize %s = %s;",
+          NameTable.getAnnotationPropertyName(memberBinding),
+          NameTable.getAnnotationPropertyVariableName(memberBinding)));
+    }
+  }
+
+  private void printAnnotationAccessors(List<AnnotationTypeMemberDeclaration> members) {
+    for (AnnotationTypeMemberDeclaration member : members) {
+      Expression deflt = member.getDefault();
+      if (deflt != null) {
+        ITypeBinding type = member.getType().getTypeBinding();
+        String typeString = nameTable.getSpecificObjCType(type);
+        String propertyName = NameTable.getAnnotationPropertyName(member.getMethodBinding());
+        printf("\n+ (%s)%sDefault {\n", typeString, propertyName);
+        printf("  return %s;\n", generateExpression(deflt));
+        println("}");
+      }
     }
   }
 

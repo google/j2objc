@@ -444,13 +444,6 @@ public class NameTable {
     return sb.toString();
   }
 
-  private static final Pattern FAMILY_METHOD_REGEX =
-      Pattern.compile("^[_]*(new|copy|alloc|init|mutableCopy).*");
-
-  public static boolean needsObjcMethodFamilyNoneAttribute(String name) {
-     return FAMILY_METHOD_REGEX.matcher(name).matches();
-  }
-
   // TODO(kstanger): See whether the logic in this method can be simplified.
   //     Also, what about type variables?
   private String getArrayTypeParameterKeyword(ITypeBinding elementType, int dimensions) {

@@ -178,6 +178,7 @@ JAVA_SOURCES = \
 	gen/ObjectiveCImplementationGenerator.java \
 	gen/ObjectiveCSegmentedHeaderGenerator.java \
 	gen/ObjectiveCSourceFileGenerator.java \
+	gen/RuntimeAnnotationGenerator.java \
 	gen/SignatureGenerator.java \
 	gen/SourceBuilder.java \
 	gen/StatementGenerator.java \
@@ -194,7 +195,6 @@ JAVA_SOURCES = \
 	pipeline/ProcessingContext.java \
 	pipeline/TranslationProcessor.java \
 	translate/AbstractMethodRewriter.java \
-	translate/AnnotationRewriter.java \
 	translate/AnonymousClassConverter.java \
 	translate/ArrayRewriter.java \
 	translate/Autoboxer.java \

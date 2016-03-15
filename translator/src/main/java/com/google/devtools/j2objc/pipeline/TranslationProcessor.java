@@ -22,7 +22,6 @@ import com.google.devtools.j2objc.gen.ObjectiveCHeaderGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCImplementationGenerator;
 import com.google.devtools.j2objc.gen.ObjectiveCSegmentedHeaderGenerator;
 import com.google.devtools.j2objc.translate.AbstractMethodRewriter;
-import com.google.devtools.j2objc.translate.AnnotationRewriter;
 import com.google.devtools.j2objc.translate.AnonymousClassConverter;
 import com.google.devtools.j2objc.translate.ArrayRewriter;
 import com.google.devtools.j2objc.translate.Autoboxer;
@@ -267,9 +266,6 @@ public class TranslationProcessor extends FileProcessor {
     //   top-level and functionizing to have occured.
     new PrivateDeclarationResolver().run(unit);
     ticker.tick("PrivateDeclarationResolver");
-
-    new AnnotationRewriter().run(unit);
-    ticker.tick("AnnotationRewriter");
 
     // Make sure we still have a valid AST.
     unit.validate();

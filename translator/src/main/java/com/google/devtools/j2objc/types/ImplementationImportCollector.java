@@ -17,7 +17,10 @@
 package com.google.devtools.j2objc.types;
 
 import com.google.common.collect.Sets;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
@@ -35,6 +38,7 @@ import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
+import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleMemberAnnotation;
@@ -49,8 +53,12 @@ import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnionType;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.util.BindingUtil;
+import com.google.devtools.j2objc.util.TranslationUtil;
 
+import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
+import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -99,7 +107,15 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
-    addImports(node.getTypeBinding());
+    ITypeBinding type = node.getTypeBinding();
+    addImports(type);
+    addImports(typeEnv.resolveIOSType("IOSClass"));
+    return true;
+  }
+
+  @Override
+  public boolean visit(AnnotationTypeMemberDeclaration node) {
+    addImports(node.getType());
     return true;
   }
 
@@ -189,12 +205,22 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public boolean visit(MarkerAnnotation node) {
-    return false;
+    return visitAnnotation(node);
   }
 
   @Override
   public boolean visit(MethodDeclaration node) {
     if (Modifier.isAbstract(node.getModifiers())) {
+      // TODO(kstanger): Move metadata generation to a translation step because
+      // it will simplify import collection and code generation.
+      for (Annotation annotation : node.getAnnotations()) {
+        annotation.accept(this);
+      }
+      for (SingleVariableDeclaration param : node.getParameters()) {
+        for (Annotation annotation : param.getAnnotations()) {
+          annotation.accept(this);
+        }
+      }
       return false;
     }
     addImports(node.getReturnType());
@@ -273,7 +299,7 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public boolean visit(NormalAnnotation node) {
-    return false;
+    return visitAnnotation(node);
   }
 
   @Override
@@ -292,12 +318,17 @@ public class ImplementationImportCollector extends TreeVisitor {
       ITypeBinding declaringClass = var.getDeclaringClass();
       addImports(declaringClass);
     }
+    ITypeBinding type = node.getTypeBinding();
+    if (BindingUtil.isRuntimeAnnotation(type)) {
+      addImports(type);
+      addImports(typeEnv.resolveIOSType("IOSClass"));
+    }
     return true;
   }
 
   @Override
   public boolean visit(SingleMemberAnnotation node) {
-    return false;
+    return visitAnnotation(node);
   }
 
   @Override
@@ -345,6 +376,32 @@ public class ImplementationImportCollector extends TreeVisitor {
   @Override
   public boolean visit(VariableDeclarationStatement node) {
     addImports(node.getType());
+    return true;
+  }
+
+  private boolean visitAnnotation(Annotation node) {
+    IAnnotationBinding binding = node.getAnnotationBinding();
+    boolean needsReflection = false;
+    AbstractTypeDeclaration owningType = TreeUtil.getOwningType(node);
+    if (owningType != null) {
+      needsReflection = TranslationUtil.needsReflection(owningType);
+    } else {
+      needsReflection = TranslationUtil.needsReflection(
+          TreeUtil.getNearestAncestorWithType(PackageDeclaration.class, node));
+    }
+    if (!BindingUtil.isRuntimeAnnotation(binding) || !needsReflection) {
+      return false;
+    }
+    for (IMemberValuePairBinding memberValuePair : binding.getAllMemberValuePairs()) {
+      if (memberValuePair.isDefault()) {
+        Object value = memberValuePair.getValue();
+        if (value instanceof IVariableBinding) {
+          addImports(((IVariableBinding) value).getType());
+        } else if (value instanceof ITypeBinding) {
+          addImports((ITypeBinding) value);
+        }
+      }
+    }
     return true;
   }
 }

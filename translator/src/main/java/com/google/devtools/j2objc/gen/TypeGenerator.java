@@ -50,6 +50,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Opcodes;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -191,6 +192,9 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   private Iterable<VariableDeclarationFragment> getInstanceFields(List<BodyDeclaration> decls) {
+    if (isInterfaceType()) {
+      return Collections.emptyList();
+    }
     return Iterables.filter(
         TreeUtil.asFragments(Iterables.filter(decls, FieldDeclaration.class)),
         IS_INSTANCE_FIELD);
@@ -397,6 +401,32 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
       }
     }
     sb.append(')');
+    return sb.toString();
+  }
+
+  /**
+   * Create an Objective-C constructor from a list of annotation member
+   * declarations.
+   */
+  protected String getAnnotationConstructorSignature(ITypeBinding annotation) {
+    StringBuffer sb = new StringBuffer();
+    sb.append("- (instancetype)init");
+    IMethodBinding[] members = BindingUtil.getSortedAnnotationMembers(annotation);
+    for (int i = 0; i < members.length; i++) {
+      if (i == 0) {
+        sb.append("With");
+      } else {
+        sb.append(" with");
+      }
+      IMethodBinding member = members[i];
+      String name = NameTable.getAnnotationPropertyName(member);
+      sb.append(NameTable.capitalize(name));
+      sb.append(":(");
+      sb.append(nameTable.getSpecificObjCType(member.getReturnType()));
+      sb.append(')');
+      sb.append(name);
+      sb.append("__");
+    }
     return sb.toString();
   }
 
