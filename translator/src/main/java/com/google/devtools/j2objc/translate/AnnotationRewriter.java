@@ -19,6 +19,7 @@ import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
+import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ArrayInitializer;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -28,11 +29,9 @@ import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.NullLiteral;
-import com.google.devtools.j2objc.ast.NumberLiteral;
 import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
@@ -47,7 +46,6 @@ import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -284,7 +282,8 @@ public class AnnotationRewriter extends TreeVisitor {
       List<Annotation> runtimeAnnotations =
           TreeUtil.getRuntimeAnnotationsList(param.getAnnotations());
       if (runtimeAnnotations.isEmpty()) {
-        subArrays.add(createEmptyArray());
+        subArrays.add(new ArrayCreation(
+            GeneratedTypeBinding.newArrayType(ANNOTATION_TYPE), typeEnv, 0));
       } else {
         subArrays.add(createAnnotations(runtimeAnnotations));
       }
@@ -315,33 +314,12 @@ public class AnnotationRewriter extends TreeVisitor {
   }
 
   private Expression createObjectArray(List<Expression> expressions, ITypeBinding componentType) {
-    ITypeBinding iosArrayType = typeEnv.getIOSObjectArray();
-    ITypeBinding javaArrayType = GeneratedTypeBinding.newArrayType(typeEnv.getIdType());
-    IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
-        "arrayWithObjects:count:type:", Modifier.PUBLIC | Modifier.STATIC, iosArrayType,
-        iosArrayType);
-    methodBinding.addParameter(javaArrayType);
-    methodBinding.addParameter(typeEnv.resolveJavaType("int"));
-    methodBinding.addParameter(typeEnv.getIOSClass());
-    ArrayInitializer initializer = new ArrayInitializer(javaArrayType);
+    ITypeBinding arrayType = GeneratedTypeBinding.newArrayType(componentType);
+    ArrayCreation creation = new ArrayCreation(arrayType, typeEnv);
+    ArrayInitializer initializer = new ArrayInitializer(arrayType);
     initializer.getExpressions().addAll(expressions);
-    MethodInvocation invocation = new MethodInvocation(methodBinding, null);
-    invocation.getArguments().add(initializer);
-    invocation.getArguments().add(NumberLiteral.newIntLiteral(expressions.size(), typeEnv));
-    invocation.getArguments().add(new TypeLiteral(componentType, typeEnv));
-    return invocation;
-  }
-
-  private Expression createEmptyArray() {
-    ITypeBinding iosArrayType = typeEnv.getIOSObjectArray();
-    IOSMethodBinding methodBinding = IOSMethodBinding.newMethod(
-        "arrayWithLength:type:", Modifier.PUBLIC | Modifier.STATIC, iosArrayType, iosArrayType);
-    methodBinding.addParameter(typeEnv.resolveJavaType("int"));
-    methodBinding.addParameter(typeEnv.getIOSClass());
-    MethodInvocation invocation = new MethodInvocation(methodBinding, null);
-    invocation.getArguments().add(NumberLiteral.newIntLiteral(0, typeEnv));
-    invocation.getArguments().add(new TypeLiteral(ANNOTATION_TYPE, typeEnv));
-    return invocation;
+    creation.setInitializer(initializer);
+    return creation;
   }
 
   private Expression createAnnotation(IAnnotationBinding annotationBinding) {

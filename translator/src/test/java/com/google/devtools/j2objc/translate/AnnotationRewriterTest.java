@@ -34,4 +34,15 @@ public class AnnotationRewriterTest extends GenerationTest {
         "create_JavaLangAnnotationRetention("
         + "JreLoadEnum(JavaLangAnnotationRetentionPolicy, RUNTIME))");
   }
+
+  public void testDeallocMethodAdded() throws IOException {
+    String translation = translateSourceFile(
+        "import java.lang.annotation.*;\n"
+        + "@Retention(RetentionPolicy.RUNTIME) @interface Test { String value(); }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "- (void)dealloc {",
+        "  RELEASE_(value_);",
+        "  [super dealloc];");
+  }
 }

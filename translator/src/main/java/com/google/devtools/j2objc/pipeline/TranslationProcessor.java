@@ -202,22 +202,33 @@ public class TranslationProcessor extends FileProcessor {
     new VarargsRewriter().run(unit);
     ticker.tick("VarargsRewriter");
 
-    // Add dealloc/finalize method(s), if necessary.  This is done
-    // after inner class extraction, so that each class releases
-    // only its own instance variables.
-    new DestructorGenerator().run(unit);
-    ticker.tick("DestructorGenerator");
-
     new JavaCloneWriter().run(unit);
     ticker.tick("JavaCloneWriter");
 
     new OcniExtractor(unit).run(unit);
     ticker.tick("OcniExtractor");
 
+    // Before: AnnotationRewriter - Needs AnnotationRewriter to add the
+    //   annotation metadata to the generated package-info type.
+    PackageInfoRewriter.run(unit);
+    ticker.tick("PackageInfoRewriter");
+
+    // Before: StaticVarRewriter - Generates static variable access expressions.
+    // Before: DestructorGenerator - Annotation types need a destructor to
+    //   release the added fields.
+    new AnnotationRewriter().run(unit);
+    ticker.tick("AnnotationRewriter");
+
     // Before: Functionizer - Edits constructor invocations before they are
     //   functionized.
     new EnumRewriter().run(unit);
     ticker.tick("EnumRewriter");
+
+    // Add dealloc/finalize method(s), if necessary.  This is done
+    // after inner class extraction, so that each class releases
+    // only its own instance variables.
+    new DestructorGenerator().run(unit);
+    ticker.tick("DestructorGenerator");
 
     // Before: Functionizer - Needs to rewrite some ClassInstanceCreation nodes
     //   before Functionizer does.
@@ -235,15 +246,6 @@ public class TranslationProcessor extends FileProcessor {
     //   qualifier on SuperMethodInvocation nodes.
     new SuperMethodInvocationRewriter().run(unit);
     ticker.tick("SuperMethodInvocationRewriter");
-
-    // Before: AnnotationRewriter - Needs AnnotationRewriter to add the
-    //   annotation metadata to the generated package-info type.
-    PackageInfoRewriter.run(unit);
-    ticker.tick("PackageInfoRewriter");
-
-    // Before: StaticVarRewriter - Generates static variable access expressions.
-    new AnnotationRewriter().run(unit);
-    ticker.tick("AnnotationRewriter");
 
     new OperatorRewriter().run(unit);
     ticker.tick("OperatorRewriter");

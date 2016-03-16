@@ -247,6 +247,11 @@ public class Functionizer extends TreeVisitor {
   @Override
   public void endVisit(MethodDeclaration node) {
     IMethodBinding binding = node.getMethodBinding();
+    // Don't functionize synthetic methods like dealloc or __annotations, since
+    // they are added by the translator and need to remain in method form.
+    if (BindingUtil.isSynthetic(binding)) {
+      return;
+    }
     boolean isInstanceMethod = !BindingUtil.isStatic(binding) && !binding.isConstructor();
     boolean isDefaultMethod = BindingUtil.isDefault(binding);
     FunctionDeclaration function = null;

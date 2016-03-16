@@ -39,7 +39,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -172,13 +171,10 @@ public class EnumRewriter extends TreeVisitor {
     }
     GeneratedMethodBinding newBinding = addEnumConstructorParams(node.getMethodBinding());
     node.setMethodBinding(newBinding);
-    // Enum constructors can't be called other than to create the enum values,
-    // so mark as synthetic to avoid writing the declaration.
-    node.addModifiers(BindingUtil.ACC_SYNTHETIC);
     node.removeModifiers(Modifier.PUBLIC | Modifier.PROTECTED);
     node.addModifiers(Modifier.PRIVATE);
     newBinding.setModifiers((newBinding.getModifiers() & ~(Modifier.PUBLIC | Modifier.PROTECTED))
-        | Modifier.PRIVATE | BindingUtil.ACC_SYNTHETIC);
+        | Modifier.PRIVATE);
     nameVar = new GeneratedVariableBinding(
         "__name", 0, typeEnv.resolveIOSType("NSString"), false, true, declaringClass, newBinding);
     ordinalVar = new GeneratedVariableBinding(

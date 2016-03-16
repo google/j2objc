@@ -18,6 +18,8 @@ package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
+import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
+import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
@@ -55,11 +57,18 @@ import java.util.List;
 public class DestructorGenerator extends TreeVisitor {
 
   @Override
-  public void endVisit(TypeDeclaration node) {
-    if (node.isInterface()) {
-      return;
-    }
+  public void endVisit(AnnotationTypeDeclaration node) {
+    addDeallocMethod(node);
+  }
 
+  @Override
+  public void endVisit(TypeDeclaration node) {
+    if (!node.isInterface()) {
+      addDeallocMethod(node);
+    }
+  }
+
+  private void addDeallocMethod(AbstractTypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
     boolean hasFinalize = hasFinalizeMethod(type);
     List<Statement> releaseStatements = createReleaseStatements(node);
@@ -100,7 +109,7 @@ public class DestructorGenerator extends TreeVisitor {
     return hasFinalizeMethod(type.getSuperclass());
   }
 
-  private List<Statement> createReleaseStatements(TypeDeclaration node) {
+  private List<Statement> createReleaseStatements(AbstractTypeDeclaration node) {
     List<Statement> statements = Lists.newArrayList();
     for (VariableDeclarationFragment fragment : TreeUtil.getAllFields(node)) {
       IVariableBinding var = fragment.getVariableBinding();
