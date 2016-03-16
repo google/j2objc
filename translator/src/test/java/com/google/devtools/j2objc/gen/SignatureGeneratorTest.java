@@ -208,4 +208,12 @@ public class SignatureGeneratorTest extends GenerationTest {
     // Verify a signature is created for add(String), even though it isn't itself generic.
     assertEquals("(Ljava/lang/String;)Z", SignatureGenerator.createMethodTypeSignature(methods[1]));
   }
+
+  public void testGenericClassWithArrayTypeVariable() throws IOException {
+    String translation = translateSourceFile(
+        "abstract class Test extends java.util.AbstractList<String[]> {}", "Test", "Test.m");
+
+    // Assert array signature is valid in class signature.
+    assertTranslation(translation, "Ljava/util/AbstractList<[Ljava/lang/String;>;");
+  }
 }

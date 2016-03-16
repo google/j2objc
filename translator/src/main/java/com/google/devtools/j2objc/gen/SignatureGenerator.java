@@ -301,10 +301,15 @@ public class SignatureGenerator {
    */
   private void genClassTypeSignature(ITypeBinding type) {
     if (type != null) {
-      sb.append('L');
-      sb.append(type.getBinaryName().replace('.', '/'));
-      genOptTypeArguments(type.getTypeArguments());
-      sb.append(';');
+      if (type.isArray()) {
+        sb.append('[');
+        genClassTypeSignature(type.getComponentType());
+      } else {
+        sb.append('L');
+        sb.append(type.getBinaryName().replace('.', '/'));
+        genOptTypeArguments(type.getTypeArguments());
+        sb.append(';');
+      }
     }
   }
 
