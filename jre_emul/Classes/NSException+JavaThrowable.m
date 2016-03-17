@@ -176,50 +176,64 @@ static jboolean ShouldFilterStackElement(JavaLangStackTraceElement *element) {
   return false;
 }
 
-IOSObjectArray *FilterStackTrace(NSException *self) {
-  RawStack *rawStack = GetRawStack(self);
+IOSObjectArray *FilterStackTrace(RawStack *rawStack) {
+  NSMutableArray *frames = [NSMutableArray array];
   if (rawStack) {
-    @synchronized (self) {
-      rawStack = GetRawStack(self);
-      if (rawStack) {
-        NSMutableArray *frames = [NSMutableArray array];
-        for (unsigned i = 0; i < rawStack->count_; i++) {
-          JavaLangStackTraceElement *element =
-              [[JavaLangStackTraceElement alloc] initWithLong:(jlong)rawStack->frames_[i]];
-          if (!ShouldFilterStackElement(element)) {
-            [frames addObject:element];
-          }
-          [element release];
-        }
-        JavaLangStackTraceElement *element = [frames lastObject];
-        // Remove initial Method.invoke(), so app's main method is last.
-        if ([[element getClassName] isEqualToString:@"JavaLangReflectMethod"] &&
-            [[element getMethodName] isEqualToString:@"invoke"]) {
-          [frames removeLastObject];
-        }
-        SetStackTrace(self,
-                      [IOSObjectArray arrayWithNSArray:frames
-                                                  type:JavaLangStackTraceElement_class_()]);
-        FreeRawStack(self);
+    for (unsigned i = 0; i < rawStack->count_; i++) {
+      JavaLangStackTraceElement *element =
+          [[JavaLangStackTraceElement alloc] initWithLong:(jlong)rawStack->frames_[i]];
+      if (!ShouldFilterStackElement(element)) {
+        [frames addObject:element];
       }
+      [element release];
+    }
+    JavaLangStackTraceElement *element = [frames lastObject];
+    // Remove initial Method.invoke(), so app's main method is last.
+    if ([[element getClassName] isEqualToString:@"JavaLangReflectMethod"] &&
+        [[element getMethodName] isEqualToString:@"invoke"]) {
+      [frames removeLastObject];
     }
   }
-  return GetStackTrace(self);
+  return [IOSObjectArray arrayWithNSArray:frames type:JavaLangStackTraceElement_class_()];
+}
+
+IOSObjectArray *InternalGetStackTrace(NSException *self) {
+  @synchronized (self) {
+    IOSObjectArray *stackTrace = GetStackTrace(self);
+    IOSObjectArray *emptyTrace = JreLoadStatic(LibcoreUtilEmptyArray, STACK_TRACE_ELEMENT);
+    if (stackTrace == emptyTrace) {
+      stackTrace = FilterStackTrace(GetRawStack(self));
+      SetStackTrace(self, stackTrace);
+      FreeRawStack(self);
+      return stackTrace;
+    } else if (stackTrace) {
+      return stackTrace;
+    } else {
+      return emptyTrace;
+    }
+  }
 }
 
 - (NSException *)fillInStackTrace {
   @synchronized (self) {
+    IOSObjectArray *stackTrace = GetStackTrace(self);
+    if (!stackTrace) {
+      return self;  // writableStackTrace was false.
+    }
     SetRawStack(self);
+    SetStackTrace(self, JreLoadStatic(LibcoreUtilEmptyArray, STACK_TRACE_ELEMENT));
   }
   return self;
 }
 
 - (NSException *)getCause {
-  NSException *cause = GetCause(self);
-  if (cause == self) {
-    return nil;
+  @synchronized (self) {
+    NSException *cause = GetCause(self);
+    if (cause == self) {
+      return nil;
+    }
+    return cause;
   }
-  return cause;
 }
 
 - (NSString *)getLocalizedMessage {
@@ -227,27 +241,31 @@ IOSObjectArray *FilterStackTrace(NSException *self) {
 }
 
 - (NSString *)getMessage {
-  // Return an associated message if it exists, otherwise NSException's read-only reason.
-  NSString *associatedMessage = GetDetailMessage(self);
-  return associatedMessage ? associatedMessage : self.reason;
+  @synchronized (self) {
+    // Return an associated message if it exists, otherwise NSException's read-only reason.
+    NSString *associatedMessage = GetDetailMessage(self);
+    return associatedMessage ? associatedMessage : self.reason;
+  }
 }
 
 - (IOSObjectArray *)getStackTrace {
-  return FilterStackTrace(self);
+  return [InternalGetStackTrace(self) clone];
 }
 
 - (NSException *)initCauseWithNSException:(NSException *)causeArg {
-  NSException *cause = GetCause(self);
-  if (cause) {
-    @throw AUTORELEASE([[JavaLangIllegalStateException alloc]
-                        initWithNSString:@"Can't overwrite cause"]);
+  @synchronized (self) {
+    NSException *cause = GetCause(self);
+    if (cause) {
+      @throw AUTORELEASE([[JavaLangIllegalStateException alloc]
+                          initWithNSString:@"Can't overwrite cause"]);
+    }
+    if (causeArg == self) {
+      @throw AUTORELEASE([[JavaLangIllegalStateException alloc]
+                          initWithNSString:@"Self-causation not permitted"]);
+    }
+    SetCause(self, causeArg);
+    return self;
   }
-  if (causeArg == self) {
-    @throw AUTORELEASE([[JavaLangIllegalStateException alloc]
-                        initWithNSString:@"Self-causation not permitted"]);
-  }
-  SetCause(self, causeArg);
-  return self;
 }
 
 - (void)printStackTrace {
@@ -256,13 +274,13 @@ IOSObjectArray *FilterStackTrace(NSException *self) {
 
 - (void)printStackTraceWithJavaIoPrintWriter:(JavaIoPrintWriter *)pw {
   [pw printlnWithNSString:[self description]];
-  IOSObjectArray *trace = FilterStackTrace(self);
+  IOSObjectArray *trace = InternalGetStackTrace(self);
   for (jint i = 0; i < trace->size_; i++) {
     [pw printWithNSString:@"\tat "];
     id frame = trace->buffer_[i];
     [pw printlnWithId:frame];
   }
-  NSException *cause = GetCause(self);
+  NSException *cause = [self getCause];
   if (cause) {
     [pw printWithNSString:@"Caused by: "];
     [cause printStackTraceWithJavaIoPrintWriter:pw];
@@ -271,13 +289,13 @@ IOSObjectArray *FilterStackTrace(NSException *self) {
 
 - (void)printStackTraceWithJavaIoPrintStream:(JavaIoPrintStream *)ps {
   [ps printlnWithNSString:[self description]];
-  IOSObjectArray *trace = FilterStackTrace(self);
+  IOSObjectArray *trace = InternalGetStackTrace(self);
   for (jint i = 0; i < trace->size_; i++) {
     [ps printWithNSString:@"\tat "];
     id frame = trace->buffer_[i];
     [ps printlnWithId:frame];
   }
-  NSException *cause = GetCause(self);
+  NSException *cause = [self getCause];
   if (cause) {
     [ps printWithNSString:@"Caused by: "];
     [cause printStackTraceWithJavaIoPrintStream:ps];
@@ -286,14 +304,18 @@ IOSObjectArray *FilterStackTrace(NSException *self) {
 
 - (void)setStackTraceWithJavaLangStackTraceElementArray:
     (IOSObjectArray *)stackTraceArg {
-  // Always check args whether or not stack trace is writeable (not nil).
-  nil_chk(stackTraceArg);
-  jint count = stackTraceArg->size_;
-  for (jint i = 0; i < count; i++) {
-    nil_chk(stackTraceArg->buffer_[i]);
-  }
   @synchronized (self) {
-    SetStackTrace(self, stackTraceArg);
+    IOSObjectArray *stackTrace = GetStackTrace(self);
+    if (!stackTrace) {
+      return;  // writableStackTrace was false.
+    }
+    IOSObjectArray *newTrace = [stackTraceArg clone];
+    // Always check args whether or not stack trace is writeable (not nil).
+    jint count = newTrace->size_;
+    for (jint i = 0; i < count; i++) {
+      nil_chk(newTrace->buffer_[i]);
+    }
+    SetStackTrace(self, newTrace);
     FreeRawStack(self);
   }
 }
@@ -304,22 +326,24 @@ IOSObjectArray *FilterStackTrace(NSException *self) {
   if (exception == self) {
     @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] init]);
   }
-  id<JavaUtilList> suppressedExceptions = GetSuppressedExceptions(self);
-  if (suppressedExceptions) {
-    @synchronized (self) {
+  @synchronized (self) {
+    id<JavaUtilList> suppressedExceptions = GetSuppressedExceptions(self);
+    if (suppressedExceptions) {
       [suppressedExceptions addWithId:exception];
     }
   }
 }
 
 - (IOSObjectArray *)getSuppressed {
-  id<JavaUtilList> suppressedExceptions = GetSuppressedExceptions(self);
-  if (suppressedExceptions && ![suppressedExceptions isEmpty]) {
-    return [suppressedExceptions
-            toArrayWithNSObjectArray:[IOSObjectArray arrayWithLength:[suppressedExceptions size]
-                                                                type:NSException_class_()]];
-  } else {
-    return JreLoadStatic(LibcoreUtilEmptyArray, THROWABLE);
+  @synchronized (self) {
+    id<JavaUtilList> suppressedExceptions = GetSuppressedExceptions(self);
+    if (suppressedExceptions && ![suppressedExceptions isEmpty]) {
+      return [suppressedExceptions
+          toArrayWithNSObjectArray:[IOSObjectArray arrayWithLength:[suppressedExceptions size]
+                                                              type:NSException_class_()]];
+    } else {
+      return JreLoadStatic(LibcoreUtilEmptyArray, THROWABLE);
+    }
   }
 }
 
@@ -344,28 +368,42 @@ IOSObjectArray *FilterStackTrace(NSException *self) {
 
 // Accessor methods for virtual fields, used by reflection.
 - (NSException *)__cause {
-  return GetCause(self);
+  @synchronized (self) {
+    return GetCause(self);
+  }
 }
 - (void)__setcause:(NSException *)cause {
-  SetCause(self, cause);
+  @synchronized (self) {
+    SetCause(self, cause);
+  }
 }
 - (NSString *)__detailMessage {
   return [self getMessage];
 }
 - (void)__setdetailMessage:(NSString *)message {
-  SetDetailMessage(self, message);
+  @synchronized (self) {
+    SetDetailMessage(self, message);
+  }
 }
 - (IOSObjectArray *)__stackTrace {
-  return GetStackTrace(self);
+  @synchronized (self) {
+    return GetStackTrace(self);
+  }
 }
 - (void)__setstackTrace:(IOSObjectArray *)trace {
-  SetStackTrace(self, trace);
+  @synchronized (self) {
+    SetStackTrace(self, trace);
+  }
 }
 - (id<JavaUtilList>)__suppressedExceptions {
-  return GetSuppressedExceptions(self);
+  @synchronized (self) {
+    return GetSuppressedExceptions(self);
+  }
 }
 - (void)__setsuppressedExceptions:(id<JavaUtilList>)list {
-  SetSuppressedExceptions(self, list);
+  @synchronized (self) {
+    SetSuppressedExceptions(self, list);
+  }
 }
 
 // Generated by running the translator over the java.lang.Throwable stub file.
@@ -483,6 +521,7 @@ void NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
   }
   if (writeableStackTrace) {
     SetRawStack(self);
+    SetStackTrace(self, JreLoadStatic(LibcoreUtilEmptyArray, STACK_TRACE_ELEMENT));
   }
 }
 

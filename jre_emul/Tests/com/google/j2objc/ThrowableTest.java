@@ -91,4 +91,36 @@ public class ThrowableTest extends TestCase {
     Throwable t2 = new Throwable();
     assertFalse(t1.hashCode() == t2.hashCode());
   }
+
+  public void testNotWritableStackTrace() throws Exception {
+    Throwable t = new Throwable("test", null, true, false) {};
+    StackTraceElement[] stackTrace = t.getStackTrace();
+    assertNotNull(stackTrace);
+    assertEquals(0, stackTrace.length);
+
+    // Should be a no-op.
+    t.fillInStackTrace();
+    stackTrace = t.getStackTrace();
+    assertNotNull(stackTrace);
+    assertEquals(0, stackTrace.length);
+
+    // Also should be a no-op.
+    StackTraceElement[] newTrace = new Throwable().getStackTrace();
+    assertTrue(newTrace.length > 0);
+    t.setStackTrace(newTrace);
+    stackTrace = t.getStackTrace();
+    assertNotNull(stackTrace);
+    assertEquals(0, stackTrace.length);
+  }
+
+  /* TODO(kstanger): Make this test pass.
+  public void testOverwriteNullCause() throws Exception {
+    Throwable t = new Throwable((Throwable) null);
+    try {
+      t.initCause(new Throwable());
+      fail("Expected IllegalStateException");
+    } catch (IllegalStateException e) {
+      // Expected.
+    }
+  }*/
 }
