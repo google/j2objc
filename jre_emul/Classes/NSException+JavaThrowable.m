@@ -333,6 +333,15 @@ IOSObjectArray *FilterStackTrace(NSException *self) {
   }
 }
 
+- (BOOL)isEqual:(id)object {
+  // java.lang.Throwable doesn't define equals(), so use object equivalence.
+  return self == object;
+}
+
+- (NSUInteger)hash {
+  return (NSUInteger)self;
+}
+
 // Accessor methods for virtual fields, used by reflection.
 - (NSException *)__cause {
   return GetCause(self);

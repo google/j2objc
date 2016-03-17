@@ -79,4 +79,16 @@ public class ThrowableTest extends TestCase {
     String trace = sw.toString();
     assertTrue(trace.contains("com.google.j2objc.ThrowableTest.testStackTraceWithPrintWriter("));
   }
+
+  public void testEquals() {
+    Throwable t1 = new Throwable();
+    Throwable t2 = new Throwable();
+    assertFalse(t1.equals(t2));
+  }
+
+  public void testHashCode() {
+    Throwable t1 = new Throwable();
+    Throwable t2 = new Throwable();
+    assertFalse(t1.hashCode() == t2.hashCode());
+  }
 }
