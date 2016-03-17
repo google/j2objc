@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.translate.CastResolver;
 import com.google.devtools.j2objc.translate.ComplexExpressionExtractor;
 import com.google.devtools.j2objc.translate.ConstantBranchPruner;
 import com.google.devtools.j2objc.translate.DeadCodeEliminator;
+import com.google.devtools.j2objc.translate.DefaultConstructorAdder;
 import com.google.devtools.j2objc.translate.DefaultMethodShimGenerator;
 import com.google.devtools.j2objc.translate.DestructorGenerator;
 import com.google.devtools.j2objc.translate.EnhancedForRewriter;
@@ -122,6 +123,10 @@ public class TranslationProcessor extends FileProcessor {
       CompilationUnit unit, DeadCodeMap deadCodeMap, TimeTracker ticker) {
     ticker.push();
 
+    // Adds implicit default constructors, like javac does.
+    new DefaultConstructorAdder().run(unit);
+    ticker.tick("DefaultConstructorAdder");
+
     if (deadCodeMap != null) {
       new DeadCodeEliminator(unit, deadCodeMap).run(unit);
       ticker.tick("DeadCodeEliminator");
@@ -174,7 +179,7 @@ public class TranslationProcessor extends FileProcessor {
     }
 
     // Normalize init statements
-    new InitializationNormalizer(deadCodeMap).run(unit);
+    new InitializationNormalizer().run(unit);
     ticker.tick("InitializationNormalizer");
 
     // Fix references to outer scope and captured variables.

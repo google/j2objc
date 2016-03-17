@@ -36,9 +36,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.DeadCodeMap;
 import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -58,11 +56,6 @@ import java.util.List;
  * @author Tom Ball
  */
 public class InitializationNormalizer extends TreeVisitor {
-  private final DeadCodeMap deadCodeMap;
-
-  public InitializationNormalizer(DeadCodeMap deadCodeMap) {
-    this.deadCodeMap = deadCodeMap;
-  }
 
   @Override
   public void endVisit(TypeDeclaration node) {
@@ -95,19 +88,15 @@ public class InitializationNormalizer extends TreeVisitor {
     while (iterator.hasNext()) {
       BodyDeclaration member = iterator.next();
       switch (member.getKind()) {
-        case ENUM_DECLARATION:
-        case TYPE_DECLARATION:
-          normalizeMembers((AbstractTypeDeclaration) member);
-          break;
         case METHOD_DECLARATION:
           methods.add((MethodDeclaration) member);
           break;
         case INITIALIZER:
-          addInitializer(member, initStatements, classInitStatements);
+          addInitializer((Initializer) member, initStatements, classInitStatements);
           iterator.remove();
           break;
         case FIELD_DECLARATION:
-          addFieldInitializer(member, initStatements, classInitStatements);
+          addFieldInitializer((FieldDeclaration) member, initStatements, classInitStatements);
           break;
         default:
           // Fall-through.
@@ -116,15 +105,8 @@ public class InitializationNormalizer extends TreeVisitor {
 
     // Update any primary constructors with init statements.
     if (!binding.isInterface()) {
-      boolean needsConstructor = true;
       for (MethodDeclaration md : methods) {
-        if (md.isConstructor()) {
-          needsConstructor = false;
-        }
         normalizeMethod(md, initStatements);
-      }
-      if (needsConstructor) {
-        addDefaultConstructor(binding, members, initStatements);
       }
     }
   }
@@ -133,12 +115,11 @@ public class InitializationNormalizer extends TreeVisitor {
    * Add a static or instance init block's statements to the appropriate list
    * of initialization statements.
    */
-  private void addInitializer(BodyDeclaration member, List<Statement> initStatements,
+  private void addInitializer(Initializer initializer, List<Statement> initStatements,
       List<Statement> classInitStatements) {
-    Initializer initializer = (Initializer) member;
-    List<Statement> l =
+    List<Statement> list =
         Modifier.isStatic(initializer.getModifiers()) ? classInitStatements : initStatements;
-    l.add(TreeUtil.remove(initializer.getBody()));
+    list.add(TreeUtil.remove(initializer.getBody()));
   }
 
   /**
@@ -146,8 +127,7 @@ public class InitializationNormalizer extends TreeVisitor {
    * add them to the appropriate list of initialization statements.
    */
   private void addFieldInitializer(
-      BodyDeclaration member, List<Statement> initStatements, List<Statement> classInitStatements) {
-    FieldDeclaration field = (FieldDeclaration) member;
+      FieldDeclaration field, List<Statement> initStatements, List<Statement> classInitStatements) {
     for (VariableDeclarationFragment frag : field.getFragments()) {
       if (frag.getInitializer() != null) {
         if (BindingUtil.isInstanceVar(frag.getVariableBinding())) {
@@ -248,35 +228,5 @@ public class InitializationNormalizer extends TreeVisitor {
     }
     Statement firstStmt = stmts.get(0);
     return !(firstStmt instanceof ConstructorInvocation);
-  }
-
-  private void addDefaultConstructor(
-      ITypeBinding type, List<BodyDeclaration> members, List<Statement> initStatements) {
-    int constructorModifier =
-        type.getModifiers() & (Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
-    MethodDeclaration method = new MethodDeclaration(
-        GeneratedMethodBinding.newConstructor(type, constructorModifier, typeEnv));
-    Block body = new Block();
-    method.setBody(body);
-    TreeUtil.copyList(initStatements, body.getStatements());
-
-    boolean callSuper = true;
-    if (deadCodeMap != null) {
-      if (deadCodeMap.isDeadClass(type.getBinaryName()) && !type.isEnum()) {
-        callSuper = false;
-      } else if (deadCodeMap.classHasConstructorRemoved(type.getBinaryName())) {
-        // If we get here, this means all declared constructors are dead, which implies that no
-        // instances will ever be created for the class. It's therefore meaningless to call super --
-        // if super does not have a zero-argument constructor, we don't have the information to call
-        // it anyway.
-        callSuper = false;
-      }
-    }
-
-    if (callSuper) {
-      body.getStatements().add(0, new SuperConstructorInvocation(
-          TranslationUtil.findDefaultConstructorBinding(type.getSuperclass(), typeEnv)));
-    }
-    members.add(method);
   }
 }

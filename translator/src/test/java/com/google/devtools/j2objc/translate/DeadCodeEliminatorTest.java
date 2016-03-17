@@ -217,7 +217,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertTranslation(translation, "@interface Foo_Baz");
     assertNotInTranslation(translation, "- (void)g");
     translation = getTranslatedFile("Foo.m");
-    assertTranslation(translation, "Foo_Bar_init");
+    assertNotInTranslation(translation, "Foo_Bar_init");
     assertNotInTranslation(translation, "- (void)f");
     assertTranslation(translation, "Foo_Baz_init");
     assertNotInTranslation(translation, "- (void)g");
@@ -265,5 +265,15 @@ public class DeadCodeEliminatorTest extends GenerationTest {
         + "}\n";
     String translation = translateSourceFile(source, "Foo", "Foo.h");
     assertTranslation(translation, "@property (readonly) NSString *value;");
+  }
+
+  public void testDeadDefaultConstructor() throws IOException {
+    DeadCodeMap map = DeadCodeMap.builder()
+        .addDeadMethod("Test", "Test", "()V")
+        .build();
+    setDeadCodeMap(map);
+    String translation = translateSourceFile("class Test {}", "Test", "Test.h");
+    // Make sure the default constructor is not added.
+    assertNotInTranslation(translation, "init");
   }
 }

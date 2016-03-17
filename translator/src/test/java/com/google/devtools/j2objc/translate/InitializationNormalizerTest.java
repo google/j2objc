@@ -17,7 +17,6 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.GenerationTest;
-import com.google.devtools.j2objc.util.DeadCodeMap;
 
 import java.io.IOException;
 
@@ -35,7 +34,7 @@ public class InitializationNormalizerTest extends GenerationTest {
   @Override
   protected void setUp() throws IOException {
     super.setUp();
-    instance = new InitializationNormalizer(new DeadCodeMap.Builder().build());
+    instance = new InitializationNormalizer();
   }
 
   /**

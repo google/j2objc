@@ -20,7 +20,6 @@ import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.ast.AbstractTypeDeclaration;
 import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
-import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.ConstructorInvocation;
@@ -153,21 +152,10 @@ public class InnerClassExtractor extends TreeVisitor {
 
   private void updateConstructors(AbstractTypeDeclaration node) {
     // Insert new parameters for each constructor in class.
-    boolean needsConstructor = true;
     for (MethodDeclaration method : TreeUtil.getMethodDeclarations(node)) {
       if (method.isConstructor()) {
-        needsConstructor = false;
         addOuterParameters(node, method);
       }
-    }
-
-    if (needsConstructor) {
-      GeneratedMethodBinding binding =
-          GeneratedMethodBinding.newConstructor(node.getTypeBinding(), 0, typeEnv);
-      MethodDeclaration constructor = new MethodDeclaration(binding);
-      constructor.setBody(new Block());
-      addOuterParameters(node, constructor);
-      node.getBodyDeclarations().add(constructor);
     }
   }
 

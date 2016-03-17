@@ -202,6 +202,8 @@ JAVA_SOURCES = \
 	translate/ComplexExpressionExtractor.java \
 	translate/ConstantBranchPruner.java \
 	translate/DeadCodeEliminator.java \
+	translate/DefaultConstructorAdder.java \
+	translate/DefaultMethodShimGenerator.java \
 	translate/DestructorGenerator.java \
 	translate/EnhancedForRewriter.java \
 	translate/EnumRewriter.java \
