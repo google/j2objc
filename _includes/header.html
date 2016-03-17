@@ -126,9 +126,15 @@
             if (window.jQuery) {
               $(document).ready(function() {
                 if (window.devsite && window.devsite.search) {
-
                   window.devsite.search.init('en', false, null)
                 }
+
+                // Mark code and pre elements as non-translatable by Google Translate.
+                f = function(element, index) {
+                  element.className += " notranslate";
+                }
+                Array.prototype.forEach.call(document.querySelectorAll('code'), f);
+                Array.prototype.forEach.call(document.querySelectorAll('pre'), f);
               });
             }
          </script>
