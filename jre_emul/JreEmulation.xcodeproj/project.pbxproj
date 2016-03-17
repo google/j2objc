@@ -215,6 +215,12 @@
 		06CBF58B1AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5681AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m */; };
 		06CBF58D1AFBEE2400CA582D /* WildcardTypeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF56B1AFBEE2400CA582D /* WildcardTypeTest.m */; };
 		06DCF2621BD008BA00615BD2 /* DatagramChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DCF2611BD008BA00615BD2 /* DatagramChannelTest.m */; };
+		06E484521C99EDF300ABD06B /* DefaultMethodsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4844C1C99EB1B00ABD06B /* DefaultMethodsTest.m */; };
+		06E484531C99EDF300ABD06B /* EnumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4844A1C99EAD600ABD06B /* EnumTest.m */; };
+		06E484541C99EDF300ABD06B /* MemoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4844D1C99EB1B00ABD06B /* MemoryTest.m */; };
+		06E484551C99EDF300ABD06B /* MemoryTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4844B1C99EAD600ABD06B /* MemoryTest.m */; };
+		06E484561C99EDF300ABD06B /* NativeUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4844E1C99EB1B00ABD06B /* NativeUtil.m */; };
+		06E484581C99EEAB00ABD06B /* SimpleDateFormatTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E484571C99EE6B00ABD06B /* SimpleDateFormatTest.m */; };
 		06E4E6B2197F1D47005DDE69 /* AbstractExecutorServiceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */; };
 		06E4E6B3197F1D47005DDE69 /* AbstractQueuedSynchronizerTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E368197F1D46005DDE69 /* AbstractQueuedSynchronizerTest.m */; };
 		06E4E6B4197F1D47005DDE69 /* AbstractQueueTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4E36A197F1D46005DDE69 /* AbstractQueueTest.m */; };
@@ -2532,6 +2538,15 @@
 		06DD334516A1406A00AD7ACE /* TimeZone.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TimeZone.m; path = build_result/Classes/java/util/TimeZone.m; sourceTree = "<group>"; };
 		06DDF48516E83FF800A08BE0 /* BasicLruCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BasicLruCache.h; path = build_result/Classes/libcore/util/BasicLruCache.h; sourceTree = "<group>"; };
 		06DDF48616E83FF800A08BE0 /* BasicLruCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BasicLruCache.m; path = build_result/Classes/libcore/util/BasicLruCache.m; sourceTree = "<group>"; };
+		06E4844A1C99EAD600ABD06B /* EnumTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = EnumTest.m; path = arc/com/google/j2objc/arc/EnumTest.m; sourceTree = "<group>"; };
+		06E4844B1C99EAD600ABD06B /* MemoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MemoryTest.m; path = arc/com/google/j2objc/arc/MemoryTest.m; sourceTree = "<group>"; };
+		06E4844C1C99EB1B00ABD06B /* DefaultMethodsTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DefaultMethodsTest.m; path = com/google/j2objc/java8/DefaultMethodsTest.m; sourceTree = "<group>"; };
+		06E4844D1C99EB1B00ABD06B /* MemoryTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MemoryTest.m; path = com/google/j2objc/MemoryTest.m; sourceTree = "<group>"; };
+		06E4844E1C99EB1B00ABD06B /* NativeUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = NativeUtil.m; path = com/google/j2objc/NativeUtil.m; sourceTree = "<group>"; };
+		06E4844F1C99EBCA00ABD06B /* EnumTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = EnumTest.h; path = arc/com/google/j2objc/arc/EnumTest.h; sourceTree = "<group>"; };
+		06E484501C99EBCA00ABD06B /* MemoryTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MemoryTest.h; path = arc/com/google/j2objc/arc/MemoryTest.h; sourceTree = "<group>"; };
+		06E484511C99EBCA00ABD06B /* DefaultMethodsTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DefaultMethodsTest.h; path = com/google/j2objc/java8/DefaultMethodsTest.h; sourceTree = "<group>"; };
+		06E484571C99EE6B00ABD06B /* SimpleDateFormatTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SimpleDateFormatTest.m; path = libcore/java/text/SimpleDateFormatTest.m; sourceTree = "<group>"; };
 		06E4E365197F1D46005DDE69 /* AbstractExecutorServiceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractExecutorServiceTest.h; sourceTree = "<group>"; };
 		06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AbstractExecutorServiceTest.m; sourceTree = "<group>"; };
 		06E4E367197F1D46005DDE69 /* AbstractQueuedSynchronizerTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AbstractQueuedSynchronizerTest.h; sourceTree = "<group>"; };
@@ -6364,6 +6379,7 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				06E484571C99EE6B00ABD06B /* SimpleDateFormatTest.m */,
 				06E4E365197F1D46005DDE69 /* AbstractExecutorServiceTest.h */,
 				06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */,
 				06E4E367197F1D46005DDE69 /* AbstractQueuedSynchronizerTest.h */,
@@ -6438,6 +6454,8 @@
 				06E4E3A2197F1D46005DDE69 /* CyclicBarrierTest.m */,
 				06CBF51B1AFBE88800CA582D /* dalvik */,
 				06DCF2611BD008BA00615BD2 /* DatagramChannelTest.m */,
+				06E484511C99EBCA00ABD06B /* DefaultMethodsTest.h */,
+				06E4844C1C99EB1B00ABD06B /* DefaultMethodsTest.m */,
 				06E4E3A3197F1D46005DDE69 /* DelayQueueTest.h */,
 				06E4E3A4197F1D46005DDE69 /* DelayQueueTest.m */,
 				061D76241C641CD20054D51B /* Dispatcher.h */,
@@ -6452,7 +6470,9 @@
 				06574A6E1A8EB150000A3616 /* ECPrivateKeySpecTest.m */,
 				06574A6F1A8EB150000A3616 /* ECPublicKeySpecTest.m */,
 				06574A701A8EB150000A3616 /* EllipticCurveTest.m */,
+				06E4844F1C99EBCA00ABD06B /* EnumTest.h */,
 				06C54ADC1A40CA0F004B3ACD /* EnumTest.h */,
+				06E4844A1C99EAD600ABD06B /* EnumTest.m */,
 				06C54ADD1A40CA0F004B3ACD /* EnumTest.m */,
 				06934A0F1A40CE6400D2CD07 /* EventObjectTest.h */,
 				06934A101A40CE6400D2CD07 /* EventObjectTest.m */,
@@ -6519,6 +6539,9 @@
 				06C54AC81A40C0D8004B3ACD /* MathTest.m */,
 				06E4E4F7197F1D46005DDE69 /* MaxFloatingPointTest.h */,
 				06E4E4F8197F1D46005DDE69 /* MaxFloatingPointTest.m */,
+				06E484501C99EBCA00ABD06B /* MemoryTest.h */,
+				06E4844D1C99EB1B00ABD06B /* MemoryTest.m */,
+				06E4844B1C99EAD600ABD06B /* MemoryTest.m */,
 				06574A241A8EB04A000A3616 /* MessageDigest1Test.m */,
 				06574A251A8EB04A000A3616 /* MessageDigest2Test.m */,
 				06574A261A8EB04A000A3616 /* MessageDigestSpiTest.m */,
@@ -6564,6 +6587,7 @@
 				06574A301A8EB04A000A3616 /* MyMessageDigest1.m */,
 				06574A311A8EB04A000A3616 /* MySignature1.m */,
 				06979BA31C220A0C00803967 /* NativeDecimalFormatTest.m */,
+				06E4844E1C99EB1B00ABD06B /* NativeUtil.m */,
 				06FADA7C1B3B29B300A9579E /* NoPackageTest.h */,
 				06FADA7D1B3B29B300A9579E /* NoPackageTest.m */,
 				06574A631A8EB150000A3616 /* NormalizerTest.m */,
@@ -8261,11 +8285,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				06E484581C99EEAB00ABD06B /* SimpleDateFormatTest.m in Sources */,
+				06E484521C99EDF300ABD06B /* DefaultMethodsTest.m in Sources */,
+				06E484531C99EDF300ABD06B /* EnumTest.m in Sources */,
+				06CBF5351AFBED6500CA582D /* EnumTest.m in Sources */,
+				06C54ADB1A40C9F0004B3ACD /* AnnotationTypeMismatchExceptionTest.m in Sources */,
+				06E4E72F197F1D47005DDE69 /* ConstructorTest.m in Sources */,
+				06E484541C99EDF300ABD06B /* MemoryTest.m in Sources */,
+				06E484551C99EDF300ABD06B /* MemoryTest.m in Sources */,
+				06E484561C99EDF300ABD06B /* NativeUtil.m in Sources */,
 				061D76221C6416540054D51B /* CookiesTest.m in Sources */,
 				060C795D1C4056CD0073084C /* package-info.m in Sources */,
 				060C795E1C4056CD0073084C /* TestClass.m in Sources */,
-				06C54ADB1A40C9F0004B3ACD /* AnnotationTypeMismatchExceptionTest.m in Sources */,
-				06E4E72F197F1D47005DDE69 /* ConstructorTest.m in Sources */,
 				06979BA61C220FFB00803967 /* MethodTest.m in Sources */,
 				06979BA71C220FFB00803967 /* NativeDecimalFormatTest.m in Sources */,
 				064EDBEF1BF5580900D25A14 /* NSErrorExceptionTest.m in Sources */,
@@ -8457,7 +8488,6 @@
 				06CBF57F1AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTests.m in Sources */,
 				06E4E80F197F1D48005DDE69 /* Support_CollectionTest.m in Sources */,
 				06E4E831197F1D48005DDE69 /* TimeUnitTest.m in Sources */,
-				06CBF5351AFBED6500CA582D /* EnumTest.m in Sources */,
 				06DCF2621BD008BA00615BD2 /* DatagramChannelTest.m in Sources */,
 				06934A1B1A40D02B00D2CD07 /* HashMapTest.m in Sources */,
 				06E4E7BA197F1D48005DDE69 /* EnumSetTest.m in Sources */,
@@ -9184,7 +9214,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Google.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation Classes build_result/Classes ../dist/include build_result/tests";
+				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation Classes build_result/Classes ../dist/include build_result/tests build_result/tests/arc";
 				VALID_ARCHS = "armv7 armv7s i386 x86_64 arm64";
 				WRAPPER_EXTENSION = app;
 			};
@@ -9241,7 +9271,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Google.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation Classes build_result/Classes ../dist/include build_result/tests";
+				USER_HEADER_SEARCH_PATHS = "$(TARGET_TEMP_DIR)/Classes JreEmulation Classes build_result/Classes ../dist/include build_result/tests build_result/tests/arc";
 				VALID_ARCHS = "armv7 armv7s i386 x86_64 arm64";
 				WRAPPER_EXTENSION = app;
 			};
