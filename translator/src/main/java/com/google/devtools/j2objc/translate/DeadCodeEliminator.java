@@ -56,7 +56,13 @@ public class DeadCodeEliminator extends TreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    eliminateDeadCode(node.getTypeBinding(), node.getBodyDeclarations());
+    ITypeBinding type = node.getTypeBinding();
+    eliminateDeadCode(type, node.getBodyDeclarations());
+    // Also strip supertypes.
+    if (deadCodeMap.isDeadClass(type.getBinaryName())) {
+      node.setSuperclassType(null);
+      node.getSuperInterfaceTypes().clear();
+    }
   }
 
   @Override
@@ -66,6 +72,7 @@ public class DeadCodeEliminator extends TreeVisitor {
     if (deadCodeMap.isDeadClass(binding.getBinaryName())) {
       // Dead enum means none of the constants are ever used, so they can all be deleted.
       node.getEnumConstants().clear();
+      node.getSuperInterfaceTypes().clear();
     }
   }
 

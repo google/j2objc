@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.util.TranslationUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -158,8 +159,8 @@ public class HeaderImportCollector extends TreeVisitor {
     if (filter.include(node)) {
       ITypeBinding binding = node.getTypeBinding();
       addDeclaredType(binding);
-      addSuperType(binding.getSuperclass());
-      for (ITypeBinding interfaze : binding.getInterfaces()) {
+      addSuperType(TranslationUtil.getSuperType(node));
+      for (ITypeBinding interfaze : TranslationUtil.getInterfaceTypes(node)) {
         addSuperType(interfaze);
       }
     }

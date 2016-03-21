@@ -129,7 +129,7 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     setDeadCodeMap(map);
     String source = "class A {\n"
         + "  private static void foo() {}\n"
-        + "  public enum Thing {\n"
+        + "  public enum Thing implements java.io.Serializable {\n"
         + "    THING1(27),\n"
         + "    THING2(89) { void bar() {} },\n"
         + "    THING3 { void bar() { foo(); } };\n"
@@ -142,6 +142,8 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(translation, "THING1");
     assertNotInTranslation(translation, "THING2");
     assertNotInTranslation(translation, "THING3");
+    String header = getTranslatedFile("A.h");
+    assertNotInTranslation(header, "Serializable");
   }
 
   public void testConstructorGeneration() throws IOException {
@@ -249,6 +251,21 @@ public class DeadCodeEliminatorTest extends GenerationTest {
     assertNotInTranslation(translation, "JreStrongAssign(&self->this$0_, outer$");
     assertNotInTranslation(translation, "self->z_ = x;");
     assertNotInTranslation(translation, "- (jint)f");
+  }
+
+  public void testDeadClass_SupertypeRemoval() throws IOException {
+    DeadCodeMap map = DeadCodeMap.builder()
+        .addDeadClass("Foo")
+        .build();
+    setDeadCodeMap(map);
+    addSourceFile("class SuperClass {}", "SuperClass.java");
+    addSourceFile("interface SuperI { void f(); }", "SuperI.java");
+    String source = "class Foo extends SuperClass implements SuperI {\n"
+        + "  public void f() {}\n"
+        + "}\n";
+    String translation = translateSourceFile(source, "Foo", "Foo.h");
+    assertNotInTranslation(translation, "SuperClass");
+    assertNotInTranslation(translation, "SuperI");
   }
 
   // Verify that annotation bodies aren't stripped when specified in a dead code report.

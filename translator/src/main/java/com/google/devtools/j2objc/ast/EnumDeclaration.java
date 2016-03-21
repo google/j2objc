@@ -21,11 +21,15 @@ import java.util.List;
  */
 public class EnumDeclaration extends AbstractTypeDeclaration {
 
+  private ChildList<Type> superInterfaceTypes = ChildList.create(Type.class, this);
   private ChildList<EnumConstantDeclaration> enumConstants =
       ChildList.create(EnumConstantDeclaration.class, this);
 
   public EnumDeclaration(org.eclipse.jdt.core.dom.EnumDeclaration jdtNode) {
     super(jdtNode);
+    for (Object superInterface : jdtNode.superInterfaceTypes()) {
+      superInterfaceTypes.add((Type) TreeConverter.convert(superInterface));
+    }
     for (Object enumConstant : jdtNode.enumConstants()) {
       enumConstants.add((EnumConstantDeclaration) TreeConverter.convert(enumConstant));
     }
@@ -33,12 +37,17 @@ public class EnumDeclaration extends AbstractTypeDeclaration {
 
   public EnumDeclaration(EnumDeclaration other) {
     super(other);
+    superInterfaceTypes.copyFrom(other.getSuperInterfaceTypes());
     enumConstants.copyFrom(other.getEnumConstants());
   }
 
   @Override
   public Kind getKind() {
     return Kind.ENUM_DECLARATION;
+  }
+
+  public List<Type> getSuperInterfaceTypes() {
+    return superInterfaceTypes;
   }
 
   public List<EnumConstantDeclaration> getEnumConstants() {
@@ -51,6 +60,7 @@ public class EnumDeclaration extends AbstractTypeDeclaration {
       javadoc.accept(visitor);
       annotations.accept(visitor);
       name.accept(visitor);
+      superInterfaceTypes.accept(visitor);
       enumConstants.accept(visitor);
       bodyDeclarations.accept(visitor);
       classInitStatements.accept(visitor);

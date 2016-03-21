@@ -23,6 +23,7 @@ import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.ConditionalExpression;
+import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
@@ -34,6 +35,8 @@ import com.google.devtools.j2objc.ast.PostfixExpression;
 import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
+import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.types.Types;
@@ -44,12 +47,47 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * General collection of utility methods.
  *
  * @author Keith Stanger
  */
 public final class TranslationUtil {
+
+  public static ITypeBinding getSuperType(AbstractTypeDeclaration node) {
+    // Use the AST as the source of truth where possible.
+    if (node instanceof TypeDeclaration) {
+      Type superType = ((TypeDeclaration) node).getSuperclassType();
+      if (superType != null) {
+        return superType.getTypeBinding();
+      }
+      return null;
+    } else {
+      return node.getTypeBinding().getSuperclass();
+    }
+  }
+
+  public static List<ITypeBinding> getInterfaceTypes(AbstractTypeDeclaration node) {
+    // Use the AST as the source of truth where possible.
+    List<Type> astInterfaces = null;
+    if (node instanceof TypeDeclaration) {
+      astInterfaces = ((TypeDeclaration) node).getSuperInterfaceTypes();
+    } else if (node instanceof EnumDeclaration) {
+      astInterfaces = ((EnumDeclaration) node).getSuperInterfaceTypes();
+    }
+    if (astInterfaces == null) {  // AnnotationTypeDeclaration
+      return Arrays.asList(node.getTypeBinding().getInterfaces());
+    }
+    List<ITypeBinding> result = new ArrayList<>();
+    for (Type type : astInterfaces) {
+      result.add(type.getTypeBinding());
+    }
+    return result;
+  }
 
   public static boolean needsReflection(AbstractTypeDeclaration node) {
     return needsReflection(node.getTypeBinding());

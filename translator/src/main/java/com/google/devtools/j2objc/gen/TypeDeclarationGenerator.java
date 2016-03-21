@@ -34,6 +34,7 @@ import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 import com.google.j2objc.annotations.Property;
 
@@ -163,11 +164,11 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   }
 
   private String getSuperTypeName() {
-    ITypeBinding superclass = typeBinding.getSuperclass();
-    if (superclass == null) {
-      return null;
+    ITypeBinding supertype = TranslationUtil.getSuperType(typeNode);
+    if (supertype != null) {
+      return nameTable.getFullName(supertype);
     }
-    return nameTable.getFullName(superclass);
+    return "NSObject";
   }
 
   private List<String> getInterfaceNames() {
@@ -175,7 +176,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       return Lists.newArrayList("JavaLangAnnotationAnnotation");
     }
     List<String> names = Lists.newArrayList();
-    for (ITypeBinding intrface : typeBinding.getInterfaces()) {
+    for (ITypeBinding intrface : TranslationUtil.getInterfaceTypes(typeNode)) {
       names.add(nameTable.getFullName(intrface));
     }
     if (typeBinding.isEnum()) {
