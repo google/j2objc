@@ -20,12 +20,12 @@ Lambdas_](http://shop.oreilly.com/product/0636920030713.do). Here we give three
 short examples to show why this language feature is useful.
 
 
-## Providing New Features that Build Upon Essential Methods
+### Providing New Features that Build Upon Essential Methods
 
-Default methods enable us to keep the requirements of an interface minimal while
-still providing good "default" implementations that build upon those essential
-methods. Imagine you have an interface for objects (for example, appliances)
-whose date and time can be set:
+Default methods enable us to keep the requirements of an interface minimal
+while still providing good *default* implementations that build upon those
+essential methods. Imagine you have an interface for objects (for example,
+appliances) whose date and time can be set:
 
 ```java
 interface DateTimeSettable {
@@ -66,9 +66,9 @@ Every class that implements `DateTimeSettable` now gets a new default method,
 to provide a more specific implementation.
 
 
-## Adding Utility Methods to an Interface
+### Adding Utility Methods to an Interface
 
-Static methods in a interface serve the same purposes as those in a class. We
+Static methods in an interface serve the same purposes as those in a class. We
 can use them to provide utility or factory methods. Before this, we had to
 create another utility class for an interface. Now we can just add them to the
 same interface. For example, let's design a helper method that applies the same
@@ -88,7 +88,7 @@ interface DateTimeSettable {
 ```
 
 
-## Pairing Functional Interfaces with Default Methods
+### Pairing Functional Interfaces with Default Methods
 
 Default methods really shine when you pair them with functional interfaces.
 Imagine you have a `Predicate<T>` that tells you something about the object of
@@ -160,19 +160,19 @@ Predicate<Student> objCIntern = knowsObjC.and(graduated.negate());
 ```
 
 
-## Enabling Default Methods in J2ObjC
+### Enabling Default Methods in J2ObjC
 
 In previous J2ObjC versions, supplying `-source 8` did nothing for default method
 or static method declarations in an interface. The compiler now handles them
 when the proper language level is set.
 
 
-## How J2ObjC Translates Default Methods
+### How J2ObjC Translates Default Methods
 
 Objective-C does not have the notion of default methods. Since default methods
 can only call methods in the declaring interface or in its super-interfaces, we
-first turn a default method into a C function that takes a self parameter. So if
-our interface looks like this:
+first turn a default method into a C function that takes a `self` parameter. So
+if our interface looks like this:
 
 ```java
 interface P {
@@ -203,8 +203,8 @@ class Q implements P {
 }
 ```
 
-The Objective-C method `-[Q fWithNSString:]` (the default method that Q gets
-from P) is implemented as:
+The Objective-C method `-[Q fWithNSString:]` (the default method that `Q` gets
+from `P`) is implemented as:
 
 ```objc
 @implementation Q
@@ -222,7 +222,7 @@ Of course, if `Q` overrides `f`, the overriding method takes precedence, and no
 shim will be generated in such case.
 
 
-## Making Use of the Companion Class
+### Making Use of the Companion Class
 
 When we added reflection support to interfaces, we decided to generate one
 companion class for each interface. In Objective-C terms, this means for each
@@ -260,7 +260,7 @@ And the implementation of `+[P fWithNSString:]` is just a wrapper class method
 that calls the actual C function that implements the original `P.f()`.
 
 
-## Default Methods in Lambdas
+### Default Methods in Lambdas
 
 When a lambda is created from a functional interface such as the `Predicate<T>`
 example above, the lambda will also get the default methods from that functional
