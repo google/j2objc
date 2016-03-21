@@ -130,7 +130,7 @@
                 }
 
                 // Mark code and pre elements as non-translatable by Google Translate.
-                f = function(element, index) {
+                var f = function(element, index) {
                   element.className += " notranslate";
                 }
                 Array.prototype.forEach.call(document.querySelectorAll('code'), f);
