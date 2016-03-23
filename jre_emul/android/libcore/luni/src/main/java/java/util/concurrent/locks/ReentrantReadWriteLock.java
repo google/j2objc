@@ -5,6 +5,9 @@
  */
 
 package java.util.concurrent.locks;
+
+import com.google.j2objc.annotations.Weak;
+
 import java.util.concurrent.*;
 import java.util.*;
 
@@ -283,8 +286,13 @@ public class ReentrantReadWriteLock
          *
          * <p>Accessed via a benign data race; relies on the memory
          * model's final field and out-of-thin-air guarantees.
+         *
+         * J2ObjC modification: Added @Weak to avoid ref counting races. We rely
+         * on the ThreadLocal readHolds to hold strong references to the
+         * counters, and a modification is made below int tryReleaseShared to
+         * assign this field to null when it is removed from it's ThreadLocal.
          */
-        private transient HoldCounter cachedHoldCounter;
+        @Weak private transient HoldCounter cachedHoldCounter;
 
         /**
          * firstReader is the first thread to have acquired the read lock.
@@ -303,8 +311,12 @@ public class ReentrantReadWriteLock
          *
          * <p>This allows tracking of read holds for uncontended read
          * locks to be very cheap.
+         *
+         * J2ObjC modification: Added @Weak to avoid ref counting races. This is
+         * safe because firstReader is only ever used for object comparison with
+         * the current thread, and is never dereferenced.
          */
-        private transient Thread firstReader = null;
+        @Weak private transient Thread firstReader = null;
         private transient int firstReaderHoldCount;
 
         Sync() {
@@ -392,10 +404,18 @@ public class ReentrantReadWriteLock
                     firstReaderHoldCount--;
             } else {
                 HoldCounter rh = cachedHoldCounter;
-                if (rh == null || rh.tid != current.getId())
+                boolean cachedCounterIsLocal = true;
+                if (rh == null || rh.tid != current.getId()) {
                     rh = readHolds.get();
+                    cachedCounterIsLocal = false;
+                }
                 int count = rh.count;
                 if (count <= 1) {
+                    // J2ObjC modification: cachedHoldCounter is @Weak, so it
+                    // must be cleared when removing from readHolds.
+                    if (cachedCounterIsLocal) {
+                      cachedHoldCounter = null;
+                    }
                     readHolds.remove();
                     if (count <= 0)
                         throw unmatchedUnlockException();
