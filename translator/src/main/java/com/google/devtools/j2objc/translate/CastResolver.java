@@ -142,7 +142,7 @@ public class CastResolver extends TreeVisitor {
   }
 
   private void addCast(Expression expr) {
-    ITypeBinding exprType = typeEnv.mapType(expr.getTypeBinding().getTypeDeclaration());
+    ITypeBinding exprType = typeEnv.mapType(expr.getTypeBinding());
     CastExpression castExpr = new CastExpression(exprType, null);
     expr.replaceWith(ParenthesizedExpression.parenthesize(castExpr));
     castExpr.setExpression(expr);
@@ -165,8 +165,8 @@ public class CastResolver extends TreeVisitor {
     if (declaredType == null) {
       return false;
     }
-    ITypeBinding exprType = typeEnv.mapType(expr.getTypeBinding().getTypeDeclaration());
-    declaredType = typeEnv.mapType(declaredType.getTypeDeclaration());
+    ITypeBinding exprType = typeEnv.mapType(expr.getTypeBinding());
+    declaredType = typeEnv.mapType(declaredType);
     if (
         // In general we do not need to cast primitive types.
         exprType.isPrimitive()

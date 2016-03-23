@@ -200,6 +200,10 @@ public class Types {
     if (binding == null) {  // happens when mapping a primitive type
       return null;
     }
+    // getTypeDeclaration will return the canonical binding for the type with
+    // type parameters and type annotations removed. Note that getErasure() does
+    // not strip type annotations.
+    binding = binding.getTypeDeclaration();
     if (binding.isArray()) {
       return resolveArrayType(binding.getComponentType());
     }
