@@ -62,6 +62,8 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/io/OptionalDataException.java \
   java/io/OutputStream.java \
   java/io/OutputStreamWriter.java \
+  java/io/PipedInputStream.java \
+  java/io/PipedOutputStream.java \
   java/io/PrintStream.java \
   java/io/PrintWriter.java \
   java/io/PushbackInputStream.java \
@@ -446,8 +448,6 @@ JAVA_PUBLIC_SOURCES_IO = \
   java/io/FilterWriter.java \
   java/io/LineNumberInputStream.java \
   java/io/LineNumberReader.java \
-  java/io/PipedInputStream.java \
-  java/io/PipedOutputStream.java \
   java/io/PipedReader.java \
   java/io/PipedWriter.java \
   java/io/PushbackReader.java \
