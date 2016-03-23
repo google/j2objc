@@ -17,12 +17,12 @@
 package libcore.java.net;
 
 import junit.framework.Test;
-import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
 public class SmallTests extends TestSuite {
 
   private static final Class<?>[] smallTestClasses = new Class[] {
+    CookiesTest.class,
     DatagramSocketTest.class,
     InetAddressTest.class,
     InetSocketAddressTest.class,
