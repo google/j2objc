@@ -12,19 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# Generates a JUnit TestSuite of all classes specified as arguments.
+# Generates a JUnit 4 Suite of all classes specified as arguments.
 # This script is normally invoked by Make, ensuring that the list of
 # test classes is up-to-date.
 
 BEGIN {
+  print("import org.junit.runner.RunWith;")
+  print("import org.junit.runners.Suite;\n")
+  print("@RunWith(Suite.class)")
+  print("@Suite.SuiteClasses({")
+  for (i = 1; i < ARGC; i++) {
+    printf("  %s.class,\n", ARGV[i])
+  }
+  print("})")
   print("public class AllJreTests {\n")
-  print("  private static final Class<?>[] testClasses = new Class[] {");
-  for (i = 1; i < ARGC; i++)
-    printf("    %s.class,\n", ARGV[i])
-  print("  };\n")
-  print("  public static junit.framework.Test suite() {")
-  print("    return new junit.framework.TestSuite(testClasses);")
-  print("  }")
   print("}")
   exit(0)
 }
