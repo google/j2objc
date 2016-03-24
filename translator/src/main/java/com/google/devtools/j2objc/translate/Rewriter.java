@@ -62,6 +62,7 @@ import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.RetainedLocalRef;
 import com.google.j2objc.annotations.Weak;
 
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
@@ -407,7 +408,7 @@ public class Rewriter extends TreeVisitor {
     Type type = node.getType().copy();
     ClassInstanceCreation invocation = new ClassInstanceCreation(methodBinding, type);
     List<Expression> invocationArguments = invocation.getArguments();
-    buildMethodReferenceInvocationArguments(invocationArguments, node);
+    buildMethodReferenceInvocationArguments(invocationArguments, node, null);
     // The functional interface may return void, in which case the initialization is only being used
     // for side effects, and we don't need a return.
     if (BindingUtil.isVoid(functionalInterface.getReturnType())) {
@@ -424,7 +425,7 @@ public class Rewriter extends TreeVisitor {
     Expression expression = node.getExpression().copy();
     MethodInvocation invocation = new MethodInvocation(methodBinding, expression);
     List<Expression> invocationArguments = invocation.getArguments();
-    buildMethodReferenceInvocationArguments(invocationArguments, node);
+    buildMethodReferenceInvocationArguments(invocationArguments, node, invocation);
     if (BindingUtil.isVoid(methodBinding.getReturnType())) {
       node.setInvocation(new ExpressionStatement(invocation));
     } else {
@@ -440,7 +441,7 @@ public class Rewriter extends TreeVisitor {
     SuperMethodInvocation invocation = new SuperMethodInvocation(methodBinding);
     invocation.setQualifier(qualifier);
     List<Expression> invocationArguments = invocation.getArguments();
-    buildMethodReferenceInvocationArguments(invocationArguments, node);
+    buildMethodReferenceInvocationArguments(invocationArguments, node, null);
     if (BindingUtil.isVoid(methodBinding.getReturnType())) {
       node.setInvocation(new ExpressionStatement(invocation));
     } else {
@@ -500,11 +501,10 @@ public class Rewriter extends TreeVisitor {
   }
 
   /**
-   * Method references which reference varargs have two very different method signatures attached to
-   * their bindings. The method binding for the method reference is vararg, while the underlying
-   * functional interface matches the actual argument count of the call, and is enforced at runtime.
-   * We create a list of expressions for the method invocation, handling varargs by passing the
-   * remaining arguments from the functional interface binding as an array in the block invocation.
+   * Fill in the arguments in a method reference invocation. The argument list must come from the
+   * functional interface's method, not the invoked method: this is because it is possible to
+   * make a reference to a method with varargs, but the actual number of arguments is determined
+   * during compile time by the matching functional interface's method.
    */
   // TODO(kirbs): In the case that we have a referenced method with an int arg, a functional
   // interface method with an Integer arg, and an invocation with an int arg, we will end up
@@ -512,29 +512,47 @@ public class Rewriter extends TreeVisitor {
   // referenced method and the functional interface method the same, but this requires a rewrite of
   // the selectors that target the method reference on invocation.
   public void buildMethodReferenceInvocationArguments(List<Expression> invocationArguments,
-      MethodReference node) {
+                                                      MethodReference node,
+                                                      MethodInvocation invocation) {
     IMethodBinding methodBinding = node.getMethodBinding();
     IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
-    ITypeBinding[] methodParams = methodBinding.getParameterTypes();
     ITypeBinding[] functionalParams = functionalInterface.getParameterTypes();
     char[] var = nameTable.incrementVariable(null);
-    int methodParamStopIndex = methodBinding.isVarargs() ? methodParams.length - 1
-        : methodParams.length;
-    for (int i = 0; i < methodParamStopIndex; i++) {
-      ITypeBinding functionalParam = functionalParams[i];
+    int paramIdx = 0;
+
+    // If this is an ExpressionMethodReference EXP::METHOD, and if EXP is a type binding and
+    // METHOD is an instance method, then EXP should be replaced with the first parameter in
+    // functionalParams. For example, String::compareTo matches the functional interface
+    // int Comparator<T>::compare(T a, T b), but the JDT method invocation node is actually
+    // String.compareTo() at this point. We need to fix that to a.compareTo(), so that in the
+    // code that follows the second functional parameter b will be filled correctly into the
+    // the invocation, resulting in the invocation a.compareTo(b).
+    if (node instanceof ExpressionMethodReference) {
+      Expression expression = ((ExpressionMethodReference) node).getExpression();
+      if (expression instanceof Name) {
+        IBinding binding = ((Name) expression).getBinding();
+        if (binding.getKind() == IBinding.TYPE) {
+          // Only ExpressionMethodReference needs this potential invocation fix.
+          assert invocation != null;
+          if (!BindingUtil.isStatic(methodBinding)) {
+            ITypeBinding functionalParam = functionalParams[paramIdx];
+            IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
+                functionalParam, false, true, null, null);
+            invocation.setExpression(new SimpleName(variableBinding));
+            var = nameTable.incrementVariable(var);
+            paramIdx++;
+          }
+        }
+      }
+    }
+
+    // Fill in the invocation parameters.
+    for (; paramIdx < functionalParams.length; paramIdx++) {
+      ITypeBinding functionalParam = functionalParams[paramIdx];
       IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
           functionalParam, false, true, null, null);
       invocationArguments.add(new SimpleName(variableBinding));
       var = nameTable.incrementVariable(var);
-    }
-    if (methodBinding.isVarargs()) {
-      for (int i = methodParamStopIndex; i < functionalInterface.getParameterTypes().length; i++) {
-        ITypeBinding functionalParam = functionalParams[i];
-        IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
-            functionalParam, false, true, null, null);
-        invocationArguments.add(new SimpleName(variableBinding));
-        var = nameTable.incrementVariable(var);
-      }
     }
   }
 

@@ -88,6 +88,14 @@ public class MethodReferenceTest extends GenerationTest {
         "return [((IOSIntArray *) nil_chk(a)) clone];");
   }
 
+  public void testReferenceToInstanceMethodOfType() throws IOException {
+    String source = "import java.util.Comparator;"
+        + "class Test { void f() { Comparator<String> s = String::compareTo; } }";
+
+    String impl = translateSourceFile(source, "Test", "Test.m");
+    assertTranslation(impl, "return [((NSString *) nil_chk(a)) compareToWithId:b];");
+  }
+
   public void testVarArgs() throws IOException {
     String varArgsHeader = "interface I { void foo(int a1, String a2, String a3); }"
         + "interface I2 { void foo(int a1, String a2, String a3, String a4); }"
@@ -109,6 +117,33 @@ public class MethodReferenceTest extends GenerationTest {
         "^void(id _self, jint a, NSString * b, NSString * c, NSString * d) {",
         "Y_mWithInt_withNSStringArray_(a, [IOSObjectArray arrayWithObjects:(id[]){ b, c, d } "
         + "count:3 type:NSString_class_()]);");
+  }
+
+  public void testReferenceToInstanceMethodOfTypeWithVarArgs() throws IOException {
+    String p = "interface P<T> { void f(T t); }";
+    String q = "interface Q<T> { void f(T t, String a, String b); }";
+    String r = "interface R<T> { void f(T t, String... rest); }";
+    String x1 = p + "class X { void g(String... rest) {} void h() { P<X> ff = X::g; } }";
+    String x2 = q + "class X { void g(String... rest) {} void h() { Q<X> ff = X::g; } }";
+    String x3 = r + "class X { void g(String... rest) {} void h() { R<X> ff = X::g; } }";
+    String impl1 = translateSourceFile(x1, "X", "X.m");
+    String impl2 = translateSourceFile(x2, "X", "X.m");
+    String impl3 = translateSourceFile(x3, "X", "X.m");
+
+    // Pass an empty array to the referenced method.
+    assertTranslation(impl1, "^void(id _self, X * a) {");
+    assertTranslation(impl1, "[((X *) nil_chk(a)) "
+        + "gWithNSStringArray:[IOSObjectArray arrayWithLength:0 type:NSString_class_()]];");
+
+    // Pass an array of the arguments b and c to the referenced method.
+    assertTranslation(impl2, "^void(id _self, X * a, NSString * b, NSString * c) {");
+    assertTranslation(impl2, "[((X *) nil_chk(a)) "
+        + "gWithNSStringArray:"
+        + "[IOSObjectArray arrayWithObjects:(id[]){ b, c } count:2 type:NSString_class_()]];");
+
+    // Pass the varargs array to the referenced method.
+    assertTranslation(impl3, "^void(id _self, X * a, IOSObjectArray * b) {");
+    assertTranslation(impl3, "[((X *) nil_chk(a)) gWithNSStringArray:b];");
   }
 
   public void testArgumentBoxingAndUnboxing() throws IOException {
