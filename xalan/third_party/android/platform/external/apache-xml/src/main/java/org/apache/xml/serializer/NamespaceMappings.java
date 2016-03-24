@@ -25,6 +25,7 @@ import java.util.Hashtable;
 
 import org.xml.sax.ContentHandler;
 import org.xml.sax.SAXException;
+import com.google.j2objc.annotations.Weak;
 
 /**
  * This class keeps track of the currently defined namespaces. Conceptually the
@@ -77,6 +78,7 @@ public class NamespaceMappings
      * mappings at deeper depths push later on such a stack.  Mappings pushed
      * earlier on the stack will have smaller values for MappingRecord.m_declarationDepth.
      */
+    @Weak
     private Hashtable m_namespaces = new Hashtable();
 
     /** 
@@ -92,6 +94,7 @@ public class NamespaceMappings
      * removed at the same time by using this stack to
      * ensure prefix/uri map scopes are closed correctly.
      */
+    @Weak
     private Stack m_nodeStack = new Stack();
 
     private static final String EMPTYSTRING = "";

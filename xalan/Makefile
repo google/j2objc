@@ -31,7 +31,7 @@ J2OBJCC := $(ARCH_BIN_DIR)/j2objcc -c $(INCLUDE_DIRS:%=-I%)
 TRANSLATE_JAVA_FULL = $(JAVA_SOURCES)
 TRANSLATE_JAVA_RELATIVE = $(JAVA_SOURCES:$(SRC_DIR)/%=%)
 TRANSLATE_ARGS = -q --batch-translate-max=300 \
-    -sourcepath $(SOURCEPATH) -encoding UTF-8 -J-Xmx2G
+    -sourcepath $(SOURCEPATH) -classpath $(DIST_JAR_DIR)/j2objc_annotations.jar -encoding UTF-8 -J-Xmx2G
 include $(J2OBJC_ROOT)/make/translate.mk
 
 FAT_LIB_NAME = xalan
@@ -82,7 +82,7 @@ java: $(DIST_JAR)
 $(JAR): $(JAVA_SOURCES) | $(BUILD_DIR) java_deps_dist annotations_dist
 	@echo "building j2objc_xalan.jar"
 	@stage_dir=`mktemp -d -t j2objc-xalan`; \
-	$(JAVAC) -sourcepath $(SOURCEPATH) -encoding UTF-8 \
+	$(JAVAC) -sourcepath $(SOURCEPATH) -classpath $(DIST_JAR_DIR)/j2objc_annotations.jar -encoding UTF-8 \
 	    -d $$stage_dir -source 1.7 -target 1.7 -bootclasspath $(DIST_JAR_DIR)/jre_emul.jar $^; \
 	jar cf $@ -C $$stage_dir .; \
 	rm -rf $$stage_dir
@@ -113,6 +113,6 @@ objc_sources_manifest: $(OBJC_SOURCES_MANIFEST)
 	@:
 
 find_cycles: $(JAVA_SOURCES_MANIFEST) | cycle_finder_dist jre_emul_java_manifest
-	$(DIST_DIR)/cycle_finder -sourcepath $(SOURCEPATH) \
+	$(DIST_DIR)/cycle_finder -sourcepath $(SOURCEPATH) -classpath $(DIST_JAR_DIR)/j2objc_annotations.jar \
 	  -w ../jre_emul/cycle_whitelist.txt -w cycle_whitelist \
 	  -s ../jre_emul/$(BUILD_DIR_NAME)/java_sources.mf -s $(JAVA_SOURCES_MANIFEST)
