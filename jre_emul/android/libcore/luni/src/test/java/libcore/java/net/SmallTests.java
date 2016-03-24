@@ -22,7 +22,6 @@ import junit.framework.TestSuite;
 public class SmallTests extends TestSuite {
 
   private static final Class<?>[] smallTestClasses = new Class[] {
-    CookiesTest.class,
     DatagramSocketTest.class,
     InetAddressTest.class,
     InetSocketAddressTest.class,
