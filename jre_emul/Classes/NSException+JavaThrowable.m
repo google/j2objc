@@ -518,6 +518,7 @@ void NSException_initWithNSString_withNSException_withBoolean_withBoolean_(
   if (enableSuppression) {
     JavaUtilArrayList *newArray = new_JavaUtilArrayList_init();
     SetSuppressedExceptions(self, newArray);
+    [newArray release];
   }
   if (writeableStackTrace) {
     SetRawStack(self);
