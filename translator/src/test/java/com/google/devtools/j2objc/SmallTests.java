@@ -64,6 +64,7 @@ import com.google.devtools.j2objc.translate.PrivateDeclarationResolverTest;
 import com.google.devtools.j2objc.translate.RewriterTest;
 import com.google.devtools.j2objc.translate.StaticVarRewriterTest;
 import com.google.devtools.j2objc.translate.SuperMethodInvocationRewriterTest;
+import com.google.devtools.j2objc.translate.TypeUseAnnotationTest;
 import com.google.devtools.j2objc.translate.UnsequencedExpressionRewriterTest;
 import com.google.devtools.j2objc.translate.VarargsRewriterTest;
 import com.google.devtools.j2objc.translate.VariableRenamerTest;
@@ -155,9 +156,10 @@ public class SmallTests {
       Class.forName("java.lang.invoke.LambdaMetafactory");
 
       // Running with Java 8 JRE, add test classes that depend on it.
-      testSuite.addTestSuite(MethodReferenceTest.class);
-      testSuite.addTestSuite(LambdaExpressionTest.class);
       testSuite.addTestSuite(DefaultMethodsTest.class);
+      testSuite.addTestSuite(LambdaExpressionTest.class);
+      testSuite.addTestSuite(MethodReferenceTest.class);
+      testSuite.addTestSuite(TypeUseAnnotationTest.class);
     } catch (ClassNotFoundException e) {
       // Running on pre-Java 8 JRE.
     }

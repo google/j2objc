@@ -18,7 +18,6 @@ package com.google.devtools.j2objc.types;
 
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.Options;
-import com.google.devtools.j2objc.util.SourceVersion;
 
 import java.io.IOException;
 
@@ -208,19 +207,5 @@ public class ImplementationImportCollectorTest extends GenerationTest {
         "interface Test { java.util.Map foo(java.util.List l); }", "Test", "Test.m");
     assertNotInTranslation(translation, "Map.h");
     assertNotInTranslation(translation, "List.h");
-  }
-
-  // Regression for Issue #730.
-  public void testAnnotatedStringType() throws IOException {
-    Options.setSourceVersion(SourceVersion.JAVA_8);
-    createParser();
-    addSourceFile(
-        "import java.lang.annotation.*;\n"
-        + "@Target(ElementType.TYPE_USE) @public @interface A {}", "A.java");
-    String translation = translateSourceFile(
-        "class Test { @A String str; @A String foo() { return null; } }",
-        "Test", "Test.m");
-    assertNotInTranslation(translation, "java/lang/String.h");
-    assertNotInTranslation(translation, "JavaLangString");
   }
 }
