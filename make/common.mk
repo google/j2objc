@@ -50,7 +50,7 @@ GEN_JAVA_DIR = $(BUILD_DIR)/java
 endif
 
 ifndef J2OBJC_ARCHS
-J2OBJC_ARCHS = macosx iphone iphone64 iphonev7s simulator simulator64
+J2OBJC_ARCHS = macosx iphone iphone64 watchv7k simulator simulator64
 endif
 
 # xcrun finds a specified tool in the current SDK /usr/bin directory.

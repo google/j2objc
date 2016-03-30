@@ -19,6 +19,7 @@ FAT_LIB_PLIST_DIR = $(BUILD_DIR)/plists
 FAT_LIB_MACOSX_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh)
 FAT_LIB_IPHONE_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphoneos)
 FAT_LIB_SIMULATOR_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --iphonesimulator)
+FAT_LIB_WATCH_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --watchos)
 
 FAT_LIB_MACOSX_FLAGS = $(FAT_LIB_OSX_FLAGS) -DJ2OBJC_BUILD_ARCH=x86_64 \
   -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
@@ -27,8 +28,8 @@ FAT_LIB_IPHONE_FLAGS = -arch armv7 -DJ2OBJC_BUILD_ARCH=armv7 -miphoneos-version-
   -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
 FAT_LIB_IPHONE64_FLAGS = -arch arm64 -DJ2OBJC_BUILD_ARCH=arm64 -miphoneos-version-min=5.0 \
   -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
-FAT_LIB_IPHONEV7S_FLAGS = -arch armv7s -DJ2OBJC_BUILD_ARCH=armv7s -miphoneos-version-min=5.0 \
-  -isysroot $(FAT_LIB_IPHONE_SDK_DIR)
+FAT_LIB_WATCHV7K_FLAGS = -arch armv7k -DJ2OBJC_BUILD_ARCH=armv7k -mwatchos-version-min=2.0 \
+  -isysroot $(FAT_LIB_WATCH_SDK_DIR)
 FAT_LIB_SIMULATOR_FLAGS = -arch i386 -DJ2OBJC_BUILD_ARCH=i386 -miphoneos-version-min=5.0 \
   -isysroot $(FAT_LIB_SIMULATOR_SDK_DIR)
 FAT_LIB_SIMULATOR64_FLAGS = -arch x86_64 -DJ2OBJC_BUILD_ARCH=x86_64 -miphoneos-version-min=5.0 \
@@ -40,6 +41,7 @@ FAT_LIB_XCODE_FLAGS = -arch $(1) -DJ2OBJC_BUILD_ARCH=$(1) -miphoneos-version-min
 ifeq ("$(XCODE_7_MINIMUM)", "YES")
 FAT_LIB_IPHONE_FLAGS += -fembed-bitcode
 FAT_LIB_IPHONE64_FLAGS += -fembed-bitcode
+FAT_LIB_WATCHV7K_FLAGS += -fembed-bitcode
 endif
 
 # Command-line pattern for calling libtool and filtering the "same member name"
@@ -51,7 +53,7 @@ arch_flags = $(strip \
   $(patsubst macosx,$(FAT_LIB_MACOSX_FLAGS),\
   $(patsubst iphone,$(FAT_LIB_IPHONE_FLAGS),\
   $(patsubst iphone64,$(FAT_LIB_IPHONE64_FLAGS),\
-  $(patsubst iphonev7s,$(FAT_LIB_IPHONEV7S_FLAGS),\
+  $(patsubst watchv7k,$(FAT_LIB_WATCHV7K_FLAGS),\
   $(patsubst simulator,$(FAT_LIB_SIMULATOR_FLAGS),\
   $(patsubst simulator64,$(FAT_LIB_SIMULATOR64_FLAGS),$(1))))))))
 

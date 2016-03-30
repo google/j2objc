@@ -23,7 +23,8 @@ if [ $# -gt 0 ]; then
   case $1 in
     --iphoneos ) SDK_TYPE=iPhoneOS ;;
     --iphonesimulator ) SDK_TYPE=iPhoneSimulator ;;
-    * ) echo "usage: $0 [--iphoneos | --iphonesimulator]" && exit 1 ;;
+    --watchos ) SDK_TYPE=WatchOS ;;
+    * ) echo "usage: $0 [--iphoneos | --iphonesimulator | --watchos]" && exit 1 ;;
   esac
 fi
 
@@ -58,6 +59,8 @@ if [ "x${SDK_PATH}" = "x" ]; then
     SDK_TYPE=iphoneos
   elif [ ${SDK_TYPE} == "iphonesimulator" ]; then
     SDK_TYPE=iphonesimulator
+  elif [ ${SDK_TYPE} == "watchos" ]; then
+    SDK_TYPE=watchos
   else
     SDK_TYPE=macosx
   fi

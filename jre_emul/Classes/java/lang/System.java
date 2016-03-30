@@ -226,10 +226,14 @@ public class System {
       {
 #endif  // #if (defined(...))
 
-#if TARGET_OS_IPHONE || TARGET_OS_SIMULATOR
+#if (TARGET_OS_IPHONE || TARGET_OS_SIMULATOR)
         // If [NSProcessInfo processInfo].operatingSystemVersion is not available in the SDK and
         // this is iOS SDK, use [UIDevice currentDevice].
+    #if TARGET_OS_WATCH
+        versionString = [NSProcessInfo processInfo].operatingSystemVersionString;
+    #else
         versionString = [UIDevice currentDevice].systemVersion;
+    #endif // #if TARGET_OS_WATCH
 #else
         // If we arrive here, we want to try again to see if [UIDevice currentDevice] is
         // available. This is because the code may be running in a 64-bit iOS Simulator, but
