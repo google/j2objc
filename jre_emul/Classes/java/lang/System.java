@@ -228,7 +228,7 @@ public class System {
         // If [NSProcessInfo processInfo].operatingSystemVersion is not available in the SDK and
         // this is iOS SDK, use [UIDevice currentDevice].
     #if TARGET_OS_WATCH
-        versionString = @"2.2";
+        versionString = [NSProcessInfo processInfo].operatingSystemVersionString;
     #else
         versionString = [UIDevice currentDevice].systemVersion;
     #endif // #if TARGET_OS_WATCH
