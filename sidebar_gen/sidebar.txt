@@ -24,6 +24,7 @@ Developing with J2ObjC
   {{site.github.url}}/docs/FAQ.html FAQ
   {{site.github.url}}/docs/Reporting-Issues.html Reporting Issues
   {{site.github.url}}/docs/Building-J2ObjC.html Building J2ObjC
+  {{site.github.url}}/docs/Segmented-Headers.html Segmented Headers
   {{site.github.url}}/docs/Using-Protocol-Buffers.html Using Protocol Buffers
   {{site.github.url}}/docs/Java-Resources.html Java Resources
 Reference Docs
