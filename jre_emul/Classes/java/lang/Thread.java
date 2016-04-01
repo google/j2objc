@@ -798,10 +798,30 @@ public class Thread implements Runnable {
   }
 
   public static void sleep(long millis, int nanos) throws InterruptedException {
-    Object lock = currentThread().vmThread;
-    synchronized(lock) {
-      lock.wait(millis, nanos);
-    }
+      if (millis < 0) {
+          throw new IllegalArgumentException("millis < 0: " + millis);
+      }
+      if (nanos < 0) {
+          throw new IllegalArgumentException("nanos < 0: " + nanos);
+      }
+      if (nanos > 999999) {
+          throw new IllegalArgumentException("nanos > 999999: " + nanos);
+      }
+
+      // The JLS 3rd edition, section 17.9 says: "...sleep for zero
+      // time...need not have observable effects."
+      if (millis == 0 && nanos == 0) {
+          // ...but we still have to handle being interrupted.
+          if (Thread.interrupted()) {
+            throw new InterruptedException();
+          }
+          return;
+      }
+
+      Object lock = currentThread().vmThread;
+      synchronized(lock) {
+          lock.wait(millis, nanos);
+      }
   }
 
   /**
