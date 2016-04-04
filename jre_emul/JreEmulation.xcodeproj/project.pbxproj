@@ -182,6 +182,18 @@
 		06979BA71C220FFB00803967 /* NativeDecimalFormatTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06979BA31C220A0C00803967 /* NativeDecimalFormatTest.m */; };
 		069AA6B71B053B730068A39B /* ChannelsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 069AA6B61B053B730068A39B /* ChannelsTest.m */; };
 		06B390741BB32549004A4099 /* prefixes.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06B390731BB32549004A4099 /* prefixes.properties */; };
+		06C49CD11CA48F330018E08D /* AsyncTimeoutTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CBA1CA48F330018E08D /* AsyncTimeoutTest.m */; };
+		06C49CD21CA48F330018E08D /* BufferedSinkTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CBC1CA48F330018E08D /* BufferedSinkTest.m */; };
+		06C49CD31CA48F330018E08D /* BufferedSourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CBE1CA48F330018E08D /* BufferedSourceTest.m */; };
+		06C49CD41CA48F330018E08D /* BufferTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CC01CA48F330018E08D /* BufferTest.m */; };
+		06C49CD51CA48F330018E08D /* ByteStringTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CC21CA48F330018E08D /* ByteStringTest.m */; };
+		06C49CD61CA48F330018E08D /* MockSink.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CC41CA48F330018E08D /* MockSink.m */; };
+		06C49CD71CA48F330018E08D /* OkioTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CC61CA48F330018E08D /* OkioTest.m */; };
+		06C49CD81CA48F330018E08D /* RealBufferedSinkTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CC81CA48F330018E08D /* RealBufferedSinkTest.m */; };
+		06C49CD91CA48F330018E08D /* RealBufferedSourceTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CCA1CA48F330018E08D /* RealBufferedSourceTest.m */; };
+		06C49CDA1CA48F330018E08D /* SegmentSharingTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CCC1CA48F330018E08D /* SegmentSharingTest.m */; };
+		06C49CDB1CA48F330018E08D /* TestUtil.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CCE1CA48F330018E08D /* TestUtil.m */; };
+		06C49CDC1CA48F330018E08D /* Utf8Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CD01CA48F330018E08D /* Utf8Test.m */; };
 		06C54ACB1A40C0D8004B3ACD /* MathTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54AC81A40C0D8004B3ACD /* MathTest.m */; };
 		06C54ACC1A40C0D8004B3ACD /* StrictMathTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54ACA1A40C0D8004B3ACD /* StrictMathTest.m */; };
 		06C54ACF1A40C67A004B3ACD /* Base64Test.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C54ACE1A40C67A004B3ACD /* Base64Test.m */; };
@@ -1910,6 +1922,66 @@
 		06B6D20517C7D67400624B3C /* LocaleData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LocaleData.h; path = build_result/Classes/libcore/icu/LocaleData.h; sourceTree = "<group>"; };
 		06B6D20617C7D67400624B3C /* LocaleData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LocaleData.m; path = build_result/Classes/libcore/icu/LocaleData.m; sourceTree = "<group>"; };
 		06BED66A18EDE33F004EA17D /* J2ObjC_common.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_common.h; sourceTree = "<group>"; };
+		06C49CB91CA48F330018E08D /* AsyncTimeoutTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AsyncTimeoutTest.h; path = okio/AsyncTimeoutTest.h; sourceTree = "<group>"; };
+		06C49CBA1CA48F330018E08D /* AsyncTimeoutTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AsyncTimeoutTest.m; path = okio/AsyncTimeoutTest.m; sourceTree = "<group>"; };
+		06C49CBB1CA48F330018E08D /* BufferedSinkTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BufferedSinkTest.h; path = okio/BufferedSinkTest.h; sourceTree = "<group>"; };
+		06C49CBC1CA48F330018E08D /* BufferedSinkTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BufferedSinkTest.m; path = okio/BufferedSinkTest.m; sourceTree = "<group>"; };
+		06C49CBD1CA48F330018E08D /* BufferedSourceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BufferedSourceTest.h; path = okio/BufferedSourceTest.h; sourceTree = "<group>"; };
+		06C49CBE1CA48F330018E08D /* BufferedSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BufferedSourceTest.m; path = okio/BufferedSourceTest.m; sourceTree = "<group>"; };
+		06C49CBF1CA48F330018E08D /* BufferTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BufferTest.h; path = okio/BufferTest.h; sourceTree = "<group>"; };
+		06C49CC01CA48F330018E08D /* BufferTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BufferTest.m; path = okio/BufferTest.m; sourceTree = "<group>"; };
+		06C49CC11CA48F330018E08D /* ByteStringTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ByteStringTest.h; path = okio/ByteStringTest.h; sourceTree = "<group>"; };
+		06C49CC21CA48F330018E08D /* ByteStringTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ByteStringTest.m; path = okio/ByteStringTest.m; sourceTree = "<group>"; };
+		06C49CC31CA48F330018E08D /* MockSink.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MockSink.h; path = okio/MockSink.h; sourceTree = "<group>"; };
+		06C49CC41CA48F330018E08D /* MockSink.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockSink.m; path = okio/MockSink.m; sourceTree = "<group>"; };
+		06C49CC51CA48F330018E08D /* OkioTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = OkioTest.h; path = okio/OkioTest.h; sourceTree = "<group>"; };
+		06C49CC61CA48F330018E08D /* OkioTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = OkioTest.m; path = okio/OkioTest.m; sourceTree = "<group>"; };
+		06C49CC71CA48F330018E08D /* RealBufferedSinkTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RealBufferedSinkTest.h; path = okio/RealBufferedSinkTest.h; sourceTree = "<group>"; };
+		06C49CC81CA48F330018E08D /* RealBufferedSinkTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RealBufferedSinkTest.m; path = okio/RealBufferedSinkTest.m; sourceTree = "<group>"; };
+		06C49CC91CA48F330018E08D /* RealBufferedSourceTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RealBufferedSourceTest.h; path = okio/RealBufferedSourceTest.h; sourceTree = "<group>"; };
+		06C49CCA1CA48F330018E08D /* RealBufferedSourceTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RealBufferedSourceTest.m; path = okio/RealBufferedSourceTest.m; sourceTree = "<group>"; };
+		06C49CCB1CA48F330018E08D /* SegmentSharingTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SegmentSharingTest.h; path = okio/SegmentSharingTest.h; sourceTree = "<group>"; };
+		06C49CCC1CA48F330018E08D /* SegmentSharingTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SegmentSharingTest.m; path = okio/SegmentSharingTest.m; sourceTree = "<group>"; };
+		06C49CCD1CA48F330018E08D /* TestUtil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestUtil.h; path = okio/TestUtil.h; sourceTree = "<group>"; };
+		06C49CCE1CA48F330018E08D /* TestUtil.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestUtil.m; path = okio/TestUtil.m; sourceTree = "<group>"; };
+		06C49CCF1CA48F330018E08D /* Utf8Test.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Utf8Test.h; path = okio/Utf8Test.h; sourceTree = "<group>"; };
+		06C49CD01CA48F330018E08D /* Utf8Test.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Utf8Test.m; path = okio/Utf8Test.m; sourceTree = "<group>"; };
+		06C49CDD1CA49C850018E08D /* AsyncTimeout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = AsyncTimeout.h; path = build_result/Classes/okio/AsyncTimeout.h; sourceTree = SOURCE_ROOT; };
+		06C49CDE1CA49C850018E08D /* AsyncTimeout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = AsyncTimeout.m; path = build_result/Classes/okio/AsyncTimeout.m; sourceTree = SOURCE_ROOT; };
+		06C49CDF1CA49C850018E08D /* Base64.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Base64.h; path = build_result/Classes/okio/Base64.h; sourceTree = SOURCE_ROOT; };
+		06C49CE01CA49C850018E08D /* Base64.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Base64.m; path = build_result/Classes/okio/Base64.m; sourceTree = SOURCE_ROOT; };
+		06C49CE11CA49C850018E08D /* Buffer.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Buffer.h; path = build_result/Classes/okio/Buffer.h; sourceTree = SOURCE_ROOT; };
+		06C49CE21CA49C850018E08D /* Buffer.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Buffer.m; path = build_result/Classes/okio/Buffer.m; sourceTree = SOURCE_ROOT; };
+		06C49CE31CA49C850018E08D /* BufferedSink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BufferedSink.h; path = build_result/Classes/okio/BufferedSink.h; sourceTree = SOURCE_ROOT; };
+		06C49CE41CA49C850018E08D /* BufferedSink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BufferedSink.m; path = build_result/Classes/okio/BufferedSink.m; sourceTree = SOURCE_ROOT; };
+		06C49CE51CA49C850018E08D /* BufferedSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = BufferedSource.h; path = build_result/Classes/okio/BufferedSource.h; sourceTree = SOURCE_ROOT; };
+		06C49CE61CA49C850018E08D /* BufferedSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = BufferedSource.m; path = build_result/Classes/okio/BufferedSource.m; sourceTree = SOURCE_ROOT; };
+		06C49CE71CA49C850018E08D /* ByteString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ByteString.h; path = build_result/Classes/okio/ByteString.h; sourceTree = SOURCE_ROOT; };
+		06C49CE81CA49C850018E08D /* ByteString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ByteString.m; path = build_result/Classes/okio/ByteString.m; sourceTree = SOURCE_ROOT; };
+		06C49CE91CA49C850018E08D /* ForwardingSink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ForwardingSink.h; path = build_result/Classes/okio/ForwardingSink.h; sourceTree = SOURCE_ROOT; };
+		06C49CEA1CA49C850018E08D /* ForwardingSink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ForwardingSink.m; path = build_result/Classes/okio/ForwardingSink.m; sourceTree = SOURCE_ROOT; };
+		06C49CEB1CA49C850018E08D /* ForwardingSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ForwardingSource.h; path = build_result/Classes/okio/ForwardingSource.h; sourceTree = SOURCE_ROOT; };
+		06C49CEC1CA49C850018E08D /* ForwardingSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ForwardingSource.m; path = build_result/Classes/okio/ForwardingSource.m; sourceTree = SOURCE_ROOT; };
+		06C49CED1CA49C850018E08D /* Okio.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Okio.h; path = build_result/Classes/okio/Okio.h; sourceTree = SOURCE_ROOT; };
+		06C49CEE1CA49C850018E08D /* Okio.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Okio.m; path = build_result/Classes/okio/Okio.m; sourceTree = SOURCE_ROOT; };
+		06C49CEF1CA49C850018E08D /* RealBufferedSink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RealBufferedSink.h; path = build_result/Classes/okio/RealBufferedSink.h; sourceTree = SOURCE_ROOT; };
+		06C49CF01CA49C850018E08D /* RealBufferedSink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RealBufferedSink.m; path = build_result/Classes/okio/RealBufferedSink.m; sourceTree = SOURCE_ROOT; };
+		06C49CF11CA49C850018E08D /* RealBufferedSource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = RealBufferedSource.h; path = build_result/Classes/okio/RealBufferedSource.h; sourceTree = SOURCE_ROOT; };
+		06C49CF21CA49C850018E08D /* RealBufferedSource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = RealBufferedSource.m; path = build_result/Classes/okio/RealBufferedSource.m; sourceTree = SOURCE_ROOT; };
+		06C49CF31CA49C850018E08D /* Segment.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Segment.h; path = build_result/Classes/okio/Segment.h; sourceTree = SOURCE_ROOT; };
+		06C49CF41CA49C850018E08D /* Segment.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Segment.m; path = build_result/Classes/okio/Segment.m; sourceTree = SOURCE_ROOT; };
+		06C49CF51CA49C850018E08D /* SegmentedByteString.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SegmentedByteString.h; path = build_result/Classes/okio/SegmentedByteString.h; sourceTree = SOURCE_ROOT; };
+		06C49CF61CA49C850018E08D /* SegmentedByteString.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SegmentedByteString.m; path = build_result/Classes/okio/SegmentedByteString.m; sourceTree = SOURCE_ROOT; };
+		06C49CF71CA49C850018E08D /* SegmentPool.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SegmentPool.h; path = build_result/Classes/okio/SegmentPool.h; sourceTree = SOURCE_ROOT; };
+		06C49CF81CA49C850018E08D /* SegmentPool.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = SegmentPool.m; path = build_result/Classes/okio/SegmentPool.m; sourceTree = SOURCE_ROOT; };
+		06C49CF91CA49C850018E08D /* Sink.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Sink.h; path = build_result/Classes/okio/Sink.h; sourceTree = SOURCE_ROOT; };
+		06C49CFA1CA49C850018E08D /* Sink.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Sink.m; path = build_result/Classes/okio/Sink.m; sourceTree = SOURCE_ROOT; };
+		06C49CFB1CA49C850018E08D /* Source.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Source.h; path = build_result/Classes/okio/Source.h; sourceTree = SOURCE_ROOT; };
+		06C49CFC1CA49C850018E08D /* Source.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Source.m; path = build_result/Classes/okio/Source.m; sourceTree = SOURCE_ROOT; };
+		06C49CFD1CA49C850018E08D /* Timeout.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Timeout.h; path = build_result/Classes/okio/Timeout.h; sourceTree = SOURCE_ROOT; };
+		06C49CFE1CA49C850018E08D /* Timeout.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Timeout.m; path = build_result/Classes/okio/Timeout.m; sourceTree = SOURCE_ROOT; };
+		06C49CFF1CA49C850018E08D /* Util.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Util.h; path = build_result/Classes/okio/Util.h; sourceTree = SOURCE_ROOT; };
+		06C49D001CA49C850018E08D /* Util.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = Util.m; path = build_result/Classes/okio/Util.m; sourceTree = SOURCE_ROOT; };
 		06C54AC71A40C0D8004B3ACD /* MathTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = MathTest.h; path = org/apache/harmony/tests/java/lang/MathTest.h; sourceTree = "<group>"; };
 		06C54AC81A40C0D8004B3ACD /* MathTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MathTest.m; path = org/apache/harmony/tests/java/lang/MathTest.m; sourceTree = "<group>"; };
 		06C54AC91A40C0D8004B3ACD /* StrictMathTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StrictMathTest.h; path = org/apache/harmony/tests/java/lang/StrictMathTest.h; sourceTree = "<group>"; };
@@ -4061,7 +4133,19 @@
 				0661AA7F19F848C800EFD1F5 /* AbstractStringBuilder.m */,
 				067228F9158FB0B3005318BD /* AccessibleObject.h */,
 				067228FA158FB0B3005318BD /* AccessibleObject.m */,
+				06C49CDD1CA49C850018E08D /* AsyncTimeout.h */,
+				06C49CDE1CA49C850018E08D /* AsyncTimeout.m */,
+				06C49CDF1CA49C850018E08D /* Base64.h */,
+				06C49CE01CA49C850018E08D /* Base64.m */,
+				06C49CE11CA49C850018E08D /* Buffer.h */,
+				06C49CE21CA49C850018E08D /* Buffer.m */,
+				06C49CE31CA49C850018E08D /* BufferedSink.h */,
+				06C49CE41CA49C850018E08D /* BufferedSink.m */,
+				06C49CE51CA49C850018E08D /* BufferedSource.h */,
+				06C49CE61CA49C850018E08D /* BufferedSource.m */,
 				06FACA1118AD34B8008501DD /* BufferUtils.h */,
+				06C49CE71CA49C850018E08D /* ByteString.h */,
+				06C49CE81CA49C850018E08D /* ByteString.m */,
 				068BA721180F5C270087BAF4 /* cbigint.h */,
 				068BA722180F5C270087BAF4 /* cbigint.m */,
 				067228EF158FB002005318BD /* Constructor.h */,
@@ -4074,6 +4158,10 @@
 				064914321AC47ED000E98733 /* FastPointerLookup.m */,
 				067228E4158FAEBC005318BD /* Field.h */,
 				067228E5158FAEBC005318BD /* Field.m */,
+				06C49CE91CA49C850018E08D /* ForwardingSink.h */,
+				06C49CEA1CA49C850018E08D /* ForwardingSink.m */,
+				06C49CEB1CA49C850018E08D /* ForwardingSource.h */,
+				06C49CEC1CA49C850018E08D /* ForwardingSource.m */,
 				062DEEBB1C5002080048FB10 /* IOSArray_PackagePrivate.h */,
 				06619396155849BB0004DAFE /* IOSArray.h */,
 				06619397155849BB0004DAFE /* IOSArray.m */,
@@ -4144,13 +4232,33 @@
 				066193E7155849F80004DAFE /* NSString+JavaString.m */,
 				066B71F617B94DC100A4CBBD /* objc-sync.h */,
 				066B71F717B94DC100A4CBBD /* objc-sync.m */,
+				06C49CED1CA49C850018E08D /* Okio.h */,
+				06C49CEE1CA49C850018E08D /* Okio.m */,
 				06F6ECFE18AAABD500875541 /* Portability.h */,
+				06C49CEF1CA49C850018E08D /* RealBufferedSink.h */,
+				06C49CF01CA49C850018E08D /* RealBufferedSink.m */,
+				06C49CF11CA49C850018E08D /* RealBufferedSource.h */,
+				06C49CF21CA49C850018E08D /* RealBufferedSource.m */,
 				0667E21F1B866EE9007E0CC2 /* Resource.h */,
 				0667E2201B866EE9007E0CC2 /* Resource.m */,
+				06C49CF31CA49C850018E08D /* Segment.h */,
+				06C49CF41CA49C850018E08D /* Segment.m */,
+				06C49CF51CA49C850018E08D /* SegmentedByteString.h */,
+				06C49CF61CA49C850018E08D /* SegmentedByteString.m */,
+				06C49CF71CA49C850018E08D /* SegmentPool.h */,
+				06C49CF81CA49C850018E08D /* SegmentPool.m */,
+				06C49CF91CA49C850018E08D /* Sink.h */,
+				06C49CFA1CA49C850018E08D /* Sink.m */,
+				06C49CFB1CA49C850018E08D /* Source.h */,
+				06C49CFC1CA49C850018E08D /* Source.m */,
 				06734320171DF62600F26D4F /* TempFailureRetry.h */,
 				062DEEBE1C5056880048FB10 /* Throwable.h */,
+				06C49CFD1CA49C850018E08D /* Timeout.h */,
+				06C49CFE1CA49C850018E08D /* Timeout.m */,
 				06AFD3DD183E785D001C90C6 /* TypeVariableImpl.h */,
 				06AFD3DE183E785D001C90C6 /* TypeVariableImpl.m */,
+				06C49CFF1CA49C850018E08D /* Util.h */,
+				06C49D001CA49C850018E08D /* Util.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -6379,6 +6487,30 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				06C49CB91CA48F330018E08D /* AsyncTimeoutTest.h */,
+				06C49CBA1CA48F330018E08D /* AsyncTimeoutTest.m */,
+				06C49CBB1CA48F330018E08D /* BufferedSinkTest.h */,
+				06C49CBC1CA48F330018E08D /* BufferedSinkTest.m */,
+				06C49CBD1CA48F330018E08D /* BufferedSourceTest.h */,
+				06C49CBE1CA48F330018E08D /* BufferedSourceTest.m */,
+				06C49CBF1CA48F330018E08D /* BufferTest.h */,
+				06C49CC01CA48F330018E08D /* BufferTest.m */,
+				06C49CC11CA48F330018E08D /* ByteStringTest.h */,
+				06C49CC21CA48F330018E08D /* ByteStringTest.m */,
+				06C49CC31CA48F330018E08D /* MockSink.h */,
+				06C49CC41CA48F330018E08D /* MockSink.m */,
+				06C49CC51CA48F330018E08D /* OkioTest.h */,
+				06C49CC61CA48F330018E08D /* OkioTest.m */,
+				06C49CC71CA48F330018E08D /* RealBufferedSinkTest.h */,
+				06C49CC81CA48F330018E08D /* RealBufferedSinkTest.m */,
+				06C49CC91CA48F330018E08D /* RealBufferedSourceTest.h */,
+				06C49CCA1CA48F330018E08D /* RealBufferedSourceTest.m */,
+				06C49CCB1CA48F330018E08D /* SegmentSharingTest.h */,
+				06C49CCC1CA48F330018E08D /* SegmentSharingTest.m */,
+				06C49CCD1CA48F330018E08D /* TestUtil.h */,
+				06C49CCE1CA48F330018E08D /* TestUtil.m */,
+				06C49CCF1CA48F330018E08D /* Utf8Test.h */,
+				06C49CD01CA48F330018E08D /* Utf8Test.m */,
 				06E484571C99EE6B00ABD06B /* SimpleDateFormatTest.m */,
 				06E4E365197F1D46005DDE69 /* AbstractExecutorServiceTest.h */,
 				06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */,
@@ -8288,6 +8420,7 @@
 				06E484581C99EEAB00ABD06B /* SimpleDateFormatTest.m in Sources */,
 				06E484521C99EDF300ABD06B /* DefaultMethodsTest.m in Sources */,
 				06E484531C99EDF300ABD06B /* EnumTest.m in Sources */,
+				06C49CDB1CA48F330018E08D /* TestUtil.m in Sources */,
 				06CBF5351AFBED6500CA582D /* EnumTest.m in Sources */,
 				06C54ADB1A40C9F0004B3ACD /* AnnotationTypeMismatchExceptionTest.m in Sources */,
 				06E4E72F197F1D47005DDE69 /* ConstructorTest.m in Sources */,
@@ -8323,6 +8456,7 @@
 				06E4E7EC197F1D48005DDE69 /* ChoiceFormatTest.m in Sources */,
 				0615D3EF1BD83E7300132067 /* FakeFox01BeanInfo.m in Sources */,
 				06E4E7D8197F1D48005DDE69 /* SplitTest.m in Sources */,
+				06C49CDA1CA48F330018E08D /* SegmentSharingTest.m in Sources */,
 				06FADA871B3B2E4400A9579E /* LambdaTest.m in Sources */,
 				06E685DB1A2FC550006F8791 /* StringBuilderTest.m in Sources */,
 				061D761E1C6416430054D51B /* MockWebServer.m in Sources */,
@@ -8330,6 +8464,7 @@
 				06E4E7DB197F1D48005DDE69 /* ObjectStreamConstantsTest.m in Sources */,
 				06E4E6D6197F1D47005DDE69 /* PhantomReferenceTest.m in Sources */,
 				06E4E6B7197F1D47005DDE69 /* MoreAsserts.m in Sources */,
+				06C49CD31CA48F330018E08D /* BufferedSourceTest.m in Sources */,
 				06E4E768197F1D47005DDE69 /* ZipOutputStreamTest.m in Sources */,
 				06E4E6BA197F1D47005DDE69 /* SpannableTest.m in Sources */,
 				06E4E6D0197F1D47005DDE69 /* DelayQueueTest.m in Sources */,
@@ -8338,6 +8473,7 @@
 				06574A931A8EB150000A3616 /* RSAMultiPrimePrivateCrtKeySpecTest.m in Sources */,
 				06E4E6C9197F1D47005DDE69 /* ConcurrencyTests.m in Sources */,
 				06E4E725197F1D47005DDE69 /* OutputStreamWriterTest.m in Sources */,
+				06C49CD21CA48F330018E08D /* BufferedSinkTest.m in Sources */,
 				06CBF5711AFBEE2400CA582D /* BoundedGenericMethodsTests.m in Sources */,
 				0615D3FA1BD83E7300132067 /* MockFakeListener.m in Sources */,
 				510AF07D1BCD9D5A00C2AD84 /* JSR166TestCase.m in Sources */,
@@ -8364,6 +8500,7 @@
 				06E4E745197F1D47005DDE69 /* CharsetEncoderTest.m in Sources */,
 				06E4E711197F1D47005DDE69 /* OldInputStreamTest.m in Sources */,
 				06E4E7A3197F1D48005DDE69 /* ModifierTest.m in Sources */,
+				06C49CD91CA48F330018E08D /* RealBufferedSourceTest.m in Sources */,
 				06574A901A8EB150000A3616 /* PKCS8EncodedKeySpecTest.m in Sources */,
 				06574A3D1A8EB04A000A3616 /* AlgorithmParametersSpiTest.m in Sources */,
 				06E4E808197F1D48005DDE69 /* TimerTaskTest.m in Sources */,
@@ -8408,6 +8545,7 @@
 				06E4E757197F1D47005DDE69 /* TreeMapTest.m in Sources */,
 				06E4E736197F1D47005DDE69 /* NetworkInterfaceTest.m in Sources */,
 				06E4E7A4197F1D48005DDE69 /* RuntimeExceptionTest.m in Sources */,
+				06C49CD51CA48F330018E08D /* ByteStringTest.m in Sources */,
 				06574A401A8EB04A000A3616 /* KeyFactoryTest.m in Sources */,
 				06E4E7F3197F1D48005DDE69 /* JSONStringerTest.m in Sources */,
 				06574A461A8EB04A000A3616 /* MessageDigestSpiTest.m in Sources */,
@@ -8524,10 +8662,12 @@
 				06E4E6FF197F1D47005DDE69 /* OldBufferedReaderTest.m in Sources */,
 				06E4E719197F1D47005DDE69 /* OldPipedOutputStreamTest.m in Sources */,
 				06E4E753197F1D47005DDE69 /* OldAndroidArrayListTest.m in Sources */,
+				06C49CD71CA48F330018E08D /* OkioTest.m in Sources */,
 				06E4E7E8197F1D48005DDE69 /* BigIntegerMultiplyTest.m in Sources */,
 				06E4E780197F1D47005DDE69 /* ArithmeticExceptionTest.m in Sources */,
 				06E4E760197F1D47005DDE69 /* OldAndroidGZIPStreamTest.m in Sources */,
 				06E4E7AC197F1D48005DDE69 /* ThreadTest.m in Sources */,
+				06C49CD81CA48F330018E08D /* RealBufferedSinkTest.m in Sources */,
 				510AF07C1BCD9D5800C2AD84 /* BlockingQueueTest.m in Sources */,
 				06E4E7B2197F1D48005DDE69 /* AbstractMapTest.m in Sources */,
 				06574A411A8EB04A000A3616 /* KeyPairGeneratorSpiTest.m in Sources */,
@@ -8541,6 +8681,7 @@
 				06574A921A8EB150000A3616 /* RSAKeyGenParameterSpecTest.m in Sources */,
 				0615D3FC1BD83E7300132067 /* MockFooButton.m in Sources */,
 				06E4E77E197F1D47005DDE69 /* EnvironmentHelper.m in Sources */,
+				06C49CDC1CA48F330018E08D /* Utf8Test.m in Sources */,
 				06E4E6F8197F1D47005DDE69 /* OldAndroidPushbackReaderTest.m in Sources */,
 				06934A141A40CE8900D2CD07 /* TreeSetTest.m in Sources */,
 				06E4E74D197F1D47005DDE69 /* DecimalFormatTest.m in Sources */,
@@ -8566,6 +8707,7 @@
 				0615D4061BD83E7300132067 /* MockPropertyChangeValidListener.m in Sources */,
 				06574A891A8EB150000A3616 /* ECPointTest.m in Sources */,
 				06574A471A8EB04A000A3616 /* PrivateKeyTest.m in Sources */,
+				06C49CD61CA48F330018E08D /* MockSink.m in Sources */,
 				06E4E6B9197F1D47005DDE69 /* SpannableStringTest.m in Sources */,
 				069681021BA8DC38007AFADF /* Zip64FileTest.m in Sources */,
 				0615D3E91BD83E7300132067 /* SimpleBeanInfoTest.m in Sources */,
@@ -8739,6 +8881,7 @@
 				06E4E7FB197F1D48005DDE69 /* ReentrantReadWriteLockTest.m in Sources */,
 				06C54ACF1A40C67A004B3ACD /* Base64Test.m in Sources */,
 				06E4E78F197F1D48005DDE69 /* IllegalMonitorStateExceptionTest.m in Sources */,
+				06C49CD11CA48F330018E08D /* AsyncTimeoutTest.m in Sources */,
 				06E4E821197F1D48005DDE69 /* Support_TestResource_en.m in Sources */,
 				0615D3E41BD83E7300132067 /* IntrospectionExceptionTest.m in Sources */,
 				06E4E72D197F1D47005DDE69 /* AnnotationsTest.m in Sources */,
@@ -8805,6 +8948,7 @@
 				06E4E819197F1D48005DDE69 /* Support_Proxy_I1.m in Sources */,
 				069681011BA8DC38007AFADF /* AbstractZipFileTest.m in Sources */,
 				06E4E6E4197F1D47005DDE69 /* FileInputStreamTest.m in Sources */,
+				06C49CD41CA48F330018E08D /* BufferTest.m in Sources */,
 				06E4E7C6197F1D48005DDE69 /* PriorityQueueTest.m in Sources */,
 				06E4E731197F1D47005DDE69 /* ThrowableTest.m in Sources */,
 				06E4E807197F1D48005DDE69 /* ResourceBundleTest.m in Sources */,

@@ -62,8 +62,6 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/io/OptionalDataException.java \
   java/io/OutputStream.java \
   java/io/OutputStreamWriter.java \
-  java/io/PipedInputStream.java \
-  java/io/PipedOutputStream.java \
   java/io/PrintStream.java \
   java/io/PrintWriter.java \
   java/io/PushbackInputStream.java \
@@ -448,6 +446,8 @@ JAVA_PUBLIC_SOURCES_IO = \
   java/io/FilterWriter.java \
   java/io/LineNumberInputStream.java \
   java/io/LineNumberReader.java \
+  java/io/PipedInputStream.java \
+  java/io/PipedOutputStream.java \
   java/io/PipedReader.java \
   java/io/PipedWriter.java \
   java/io/PushbackReader.java \
@@ -540,7 +540,26 @@ JAVA_PRIVATE_SOURCES_NET = \
   libcore/net/UriCodec.java \
   libcore/net/http/HttpDate.java \
   libcore/net/url/FileHandler.java \
-  libcore/net/url/FileURLConnection.java
+  libcore/net/url/FileURLConnection.java \
+  okio/AsyncTimeout.java \
+  okio/Base64.java \
+  okio/Buffer.java \
+  okio/BufferedSink.java \
+  okio/BufferedSource.java \
+  okio/ByteString.java \
+  okio/ForwardingSink.java \
+  okio/ForwardingSource.java \
+  okio/MessageDigest.java \
+  okio/Okio.java \
+  okio/RealBufferedSink.java \
+  okio/RealBufferedSource.java \
+  okio/Segment.java \
+  okio/SegmentPool.java \
+  okio/SegmentedByteString.java \
+  okio/Sink.java \
+  okio/Source.java \
+  okio/Timeout.java \
+  okio/Util.java
 
 JAVA_PUBLIC_SOURCES_UTIL = \
   java/util/ArrayDeque.java \

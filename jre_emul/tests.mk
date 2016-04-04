@@ -53,6 +53,8 @@ SUPPORT_SOURCES = \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
     libcore/util/SerializationTester.java \
+    okio/MockSink.java \
+    okio/TestUtil.java \
     org/apache/harmony/beans/tests/support/MisprintBean.java \
     org/apache/harmony/beans/tests/support/MisprintEvent.java \
     org/apache/harmony/beans/tests/support/MisprintListenerr.java \
@@ -371,6 +373,16 @@ TEST_SOURCES := \
     libcore/java/util/zip/ZipOutputStreamTest.java \
     libcore/javax/xml/parsers/DocumentBuilderTest.java \
     libcore/net/url/UrlUtilsTest.java \
+    okio/AsyncTimeoutTest.java \
+    okio/BufferedSinkTest.java \
+    okio/BufferedSourceTest.java \
+    okio/BufferTest.java \
+    okio/ByteStringTest.java \
+    okio/OkioTest.java \
+    okio/RealBufferedSinkTest.java \
+    okio/RealBufferedSourceTest.java \
+    okio/SegmentSharingTest.java \
+    okio/Utf8Test.java \
     org/apache/harmony/archive/tests/java/util/zip/CRC32Test.java \
     org/apache/harmony/beans/tests/java/beans/BeanDescriptorTest.java \
     org/apache/harmony/beans/tests/java/beans/EventSetDescriptorTest.java \
@@ -757,7 +769,7 @@ endif
 SUPPORT_LIB = $(TESTS_DIR)/libtest-support.a
 TEST_BIN = $(TESTS_DIR)/jre_unit_tests
 
-TRANSLATE_ARGS = -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC):$(GEN_JAVA_DIR) \
+TRANSLATE_ARGS = -q -classpath $(JUNIT_DIST_JAR) -Werror -sourcepath $(TEST_SRC):$(GEN_JAVA_DIR) \
     --extract-unsequenced -encoding UTF-8 \
     --prefixes Tests/resources/prefixes.properties
 TRANSLATE_SOURCES = $(SUPPORT_SOURCES) $(TEST_SOURCES) $(SUITE_SOURCES) $(ALL_TESTS_CLASS).java
@@ -979,7 +991,7 @@ $(TESTS_DIR)/core_plus_concurrent:
 
 $(TESTS_DIR)/core_plus_channels:
 	@mkdir -p $(@D)
-	../dist/j2objcc -ljre_channels -ljre_net -ljre_util -o $@ -ObjC
+	../dist/j2objcc -ljre_channels -ljre_net -ljre_security -ljre_util -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_security:
 	@mkdir -p $(@D)
@@ -987,11 +999,11 @@ $(TESTS_DIR)/core_plus_security:
 
 $(TESTS_DIR)/core_plus_ssl:
 	@mkdir -p $(@D)
-	../dist/j2objcc -ljre_ssl -ljre_net -ljre_security -ljre_util -o $@ -ObjC
+	../dist/j2objcc -ljre_ssl -ljre_security -ljre_net -ljre_util -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_xml:
 	@mkdir -p $(@D)
-	../dist/j2objcc -ljre_xml -ljre_net -o $@ -ObjC
+	../dist/j2objcc -ljre_xml -ljre_net -ljre_security -o $@ -ObjC
 
 $(TESTS_DIR)/core_plus_zip:
 	@mkdir -p $(@D)
@@ -1007,4 +1019,4 @@ $(TESTS_DIR)/core_plus_beans:
 
 $(TESTS_DIR)/core_plus_android_util:
 	@mkdir -p $(@D)
-	../dist/j2objcc -landroid_util -ljre_net -ljre_util -ljre_concurrent -o $@ -ObjC
+	../dist/j2objcc -landroid_util -ljre_net -ljre_util -ljre_concurrent -ljre_security -o $@ -ObjC

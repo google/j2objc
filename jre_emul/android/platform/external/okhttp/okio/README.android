@@ -1,0 +1,12 @@
+URL: https://github.com/square/okio
+License: Apache 2
+Description: "A modern I/O API for Java"
+
+Local patches
+-------------
+
+All source changes (besides imports) marked with ANDROID-BEGIN and ANDROID-END:
+  - Removal of reference to a codehause annotation used in
+    okio/src/main/java/okio/DeflaterSink.java
+  - Commenting of code that references APIs not present on Android.
+  - Removal of test code that uses JUnit 4.11 features such as @Parameterized.Parameters
