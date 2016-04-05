@@ -224,4 +224,16 @@ public class ConstantBranchPrunerTest extends GenerationTest {
         "  }",
         "}");
   }
+
+  public void testConditionalExpressions() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { "
+        + "private static final boolean IS_RI = true; "
+        + "public static final int SIZE = IS_RI ? 1 : 10;"
+        + "public static final int LENGTH = !IS_RI ? 42 : 666; }", "Test", "Test.h");
+    // Verify true constant replaces the conditional with the then expression.
+    assertTranslation(translation, "Test_SIZE 1");
+    // Verify false constant replaces the conditional with the else expression.
+    assertTranslation(translation, "Test_LENGTH 666");
+  }
 }

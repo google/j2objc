@@ -21,7 +21,7 @@ import static java.lang.Boolean.FALSE;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CastExpression;
-import com.google.devtools.j2objc.ast.DoStatement;
+import com.google.devtools.j2objc.ast.ConditionalExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
 import com.google.devtools.j2objc.ast.IfStatement;
@@ -35,7 +35,6 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -66,6 +65,16 @@ public class ConstantBranchPruner extends TreeVisitor {
   @Override
   public void endVisit(Block node) {
     removeUnreachable(node);
+  }
+
+  @Override
+  public void endVisit(ConditionalExpression node) {
+    Expression expr = node.getExpression();
+    Boolean value = getReplaceableValue(expr);
+    if (value != null) {
+      Expression result = value ? node.getThenExpression() : node.getElseExpression();
+      node.replaceWith(result.copy());
+    }
   }
 
   @Override
