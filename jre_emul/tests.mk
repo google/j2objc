@@ -865,9 +865,6 @@ run-tests: link resources $(TEST_BIN) run-initialization-test run-core-size-test
 run-initialization-test: $(TESTS_DIR)/jreinitialization
 	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
 
-run-initialization-test: $(TESTS_DIR)/jreinitialization
-	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
-
 run-core-size-test: $(TESTS_DIR)/core_size \
   $(TESTS_DIR)/full_jre_size \
   $(TESTS_DIR)/core_plus_android_util \
