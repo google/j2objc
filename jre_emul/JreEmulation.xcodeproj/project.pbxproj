@@ -634,6 +634,7 @@
 		5110C62519AFCC2E00FA26E1 /* ProxyTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5110C62419AFCC2E00FA26E1 /* ProxyTest.m */; };
 		514171471BED5CAE0044F0FD /* MockHomonymySubjectBeanInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 514171461BED5CAE0044F0FD /* MockHomonymySubjectBeanInfo.m */; };
 		514171491BED5CD70044F0FD /* MockHomonymySubjectBeanInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 514171481BED5CD70044F0FD /* MockHomonymySubjectBeanInfo.m */; };
+		6AC258CB1CB4CE1F00AF82C9 /* LinkedListTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6AC258CA1CB4CDA200AF82C9 /* LinkedListTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -4032,6 +4033,7 @@
 		514171481BED5CD70044F0FD /* MockHomonymySubjectBeanInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = MockHomonymySubjectBeanInfo.m; path = beans/tests/support/mock/homonymy/mocksubject2/info/MockHomonymySubjectBeanInfo.m; sourceTree = "<group>"; };
 		51719E5318EEDDCE006DEEB7 /* IOSPrimitiveArray.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = IOSPrimitiveArray.h; sourceTree = "<group>"; };
 		51719E5418EEDDCE006DEEB7 /* IOSPrimitiveArray.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = IOSPrimitiveArray.m; sourceTree = "<group>"; };
+		6AC258CA1CB4CDA200AF82C9 /* LinkedListTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = LinkedListTest.m; path = com/google/j2objc/LinkedListTest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -6665,6 +6667,7 @@
 				06934A1A1A40D02B00D2CD07 /* LinkedHashMapTest.m */,
 				06E4E4F3197F1D46005DDE69 /* LinkedListTest.h */,
 				06E4E4F4197F1D46005DDE69 /* LinkedListTest.m */,
+				6AC258CA1CB4CDA200AF82C9 /* LinkedListTest.m */,
 				06E4E4F5197F1D46005DDE69 /* LockSupportTest.h */,
 				06E4E4F6197F1D46005DDE69 /* LockSupportTest.m */,
 				06C54AC71A40C0D8004B3ACD /* MathTest.h */,
@@ -8623,6 +8626,7 @@
 				061D761F1C6416430054D51B /* QueueDispatcher.m in Sources */,
 				06E4E7C8197F1D48005DDE69 /* SimpleTimeZoneTest.m in Sources */,
 				06574A551A8EB04A000A3616 /* DocumentBuilderFactoryTest.m in Sources */,
+				6AC258CB1CB4CE1F00AF82C9 /* LinkedListTest.m in Sources */,
 				06CBF57F1AFBEE2400CA582D /* MalformedParameterizedTypeExceptionTests.m in Sources */,
 				06E4E80F197F1D48005DDE69 /* Support_CollectionTest.m in Sources */,
 				06E4E831197F1D48005DDE69 /* TimeUnitTest.m in Sources */,

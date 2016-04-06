@@ -208,6 +208,7 @@ TEST_SOURCES := \
     com/google/j2objc/ArrayTest.java \
     com/google/j2objc/AssertTest.java \
     com/google/j2objc/ClassTest.java \
+    com/google/j2objc/LinkedListTest.java \
     com/google/j2objc/MemoryTest.java \
     com/google/j2objc/PackageTest.java \
     com/google/j2objc/ThrowableTest.java \
@@ -852,8 +853,17 @@ $(RESOURCES_DEST_DIR)/%: $(HARMONY_TEST_RESOURCES_ROOT)/%
 	@mkdir -p `dirname $@`
 	@cp $< $@
 
+# A bug in make 3.81 causes subprocesses to inherit a generous amount of stack.
+# This distorts the fact that the default stack size is 8 MB for a 64-bit OS X
+# binary. Work around with ulimit override.
+#
+# See http://stackoverflow.com/questions/16279867/gmake-change-the-stack-size-limit
+# and https://savannah.gnu.org/bugs/?22010
 run-tests: link resources $(TEST_BIN) run-initialization-test run-core-size-test
-	@$(TEST_BIN) org.junit.runner.JUnitCore $(ALL_TESTS_CLASS)
+	@ulimit -s 8192 && $(TEST_BIN) org.junit.runner.JUnitCore $(ALL_TESTS_CLASS)
+
+run-initialization-test: $(TESTS_DIR)/jreinitialization
+	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1
 
 run-initialization-test: $(TESTS_DIR)/jreinitialization
 	@$(TESTS_DIR)/jreinitialization > /dev/null 2>&1

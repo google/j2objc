@@ -153,6 +153,10 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
                 if (lastLink != null) {
                     Link<ET> next = lastLink.next;
                     Link<ET> previous = lastLink.previous;
+
+                    // j2objc: eagerly nullify next to break long dealloc chain.
+                    lastLink.next = null;
+
                     next.previous = previous;
                     previous.next = next;
                     if (lastLink == link) {
@@ -443,14 +447,31 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
      * @see #size
      */
     @Override
-    public void clear() {
-        if (size > 0) {
-            size = 0;
-            voidLink.next = voidLink;
-            voidLink.previous = voidLink;
-            modCount++;
+    public native void clear() /*-[
+      if (size_ > 0) {
+        JavaUtilLinkedList_Link *head = voidLink_->next_;
+        JavaUtilLinkedList_Link *next;
+
+        size_ = 0;
+        voidLink_->next_ = [voidLink_ retain];
+        voidLink_->previous_ = voidLink_;
+        modCount_++;
+
+        // Nullify each node's next pointer, and then eagerly release the node. This prevents the
+        // recursive dealloc (head's -dealloc releases next, causing next's -dealloc to be called,
+        // and so on) that led to stack overflow when the linked list was long.
+        while (head != voidLink_) {
+          next = head->next_;
+          head->next_ = nil;
+          [head autorelease];
+          head = next;
         }
-    }
+
+        // head is now voidLink_, but since this is referenced by the previous non-voidLink head's
+        // next, and that head->next is now nullified, we need to release it on that head's behalf.
+        [head autorelease];
+      }
+    ]-*/;
 
     /**
      * Returns a new {@code LinkedList} with the same elements and size as this
@@ -683,6 +704,10 @@ public class LinkedList<E> extends AbstractSequentialList<E> implements
         Link<E> first = voidLink.next;
         if (first != voidLink) {
             Link<E> next = first.next;
+
+            // j2objc: eagerly nullify next to break long dealloc chain.
+            first.next = null;
+
             voidLink.next = next;
             next.previous = voidLink;
             size--;
