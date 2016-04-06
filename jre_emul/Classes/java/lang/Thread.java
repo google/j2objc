@@ -461,21 +461,33 @@ public class Thread implements Runnable {
    * The arg parameter isn't used, but NSThread requires a message that
    * has an optional one.
    */
-  private void run0(Object arg) throws Throwable {
-    try {
-      run();
-    } catch (Throwable t) {
-      UncaughtExceptionHandler ueh = getUncaughtExceptionHandler();
-      if (ueh != null) {
-        ueh.uncaughtException(currentThread(), t);
-      } else {
-        throw(t);
-      }
-    } finally {
-      interruptActions.clear();
-      cancelNativeThread();
+  private native void run0(Object arg) throws Throwable /*-[
+    @try {
+      [self run];
     }
-  }
+    @catch (NSException *t) {
+      [self rethrowWithNSException:t];
+    }
+    @catch (id error) {
+      [self rethrowWithNSException:[NSException exceptionWithName:@"Unknown error"
+                                                           reason:[error description]
+                                                         userInfo:nil]];
+    }
+    @finally {
+      [interruptActions_ clear];
+      [self cancelNativeThread];
+    }
+  ]-*/;
+
+  private native void rethrow(Throwable t) /*-[
+    id<JavaLangThread_UncaughtExceptionHandler> ueh = [self getUncaughtExceptionHandler];
+    if (ueh != nil) {
+      [ueh uncaughtExceptionWithJavaLangThread:JavaLangThread_currentThread() withNSException:t];
+    }
+    else {
+      @throw (t);
+    }
+  ]-*/;
 
   private native void cancelNativeThread() /*-[
     // TODO(tball): replace with pthread_cancel (b/11536576)
