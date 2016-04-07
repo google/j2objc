@@ -23,7 +23,7 @@ FAT_LIB_WATCH_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --w
 FAT_LIB_TV_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --appletvos)
 FAT_LIB_TVSIMULATOR_SDK_DIR := $(shell bash $(J2OBJC_ROOT)/scripts/sysroot_path.sh --appletvsimulator)
 
-FAT_LIB_MACOSX_FLAGS = $(FAT_LIB_OSX_FLAGS) -DJ2OBJC_BUILD_ARCH=x86_64 \
+FAT_LIB_MACOSX_FLAGS = $(FAT_LIB_OSX_FLAGS) -DJ2OBJC_BUILD_ARCH=x86_64 -mmacosx-version-min=10.7 \
   -isysroot $(FAT_LIB_MACOSX_SDK_DIR)
 
 FAT_LIB_IPHONE_FLAGS = -arch armv7 -DJ2OBJC_BUILD_ARCH=armv7 -miphoneos-version-min=5.0 \
