@@ -380,7 +380,6 @@ public class IosHttpURLConnection extends HttpURLConnection {
       NSMutableURLRequest *request =
           [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[self->url_ toExternalForm]]];
       request.HTTPShouldHandleCookies = false;
-      request.HTTPMethod = self->method_;
       request.cachePolicy = self->useCaches_ ?
           NSURLRequestUseProtocolCachePolicy : NSURLRequestReloadIgnoringLocalCacheData;
       int readTimeout = [self getReadTimeout];
@@ -408,6 +407,7 @@ public class IosHttpURLConnection extends HttpURLConnection {
           request.HTTPBody = [(NSDataOutputStream *) self->nativeRequestData_ data];
         }
       }
+      request.HTTPMethod = self->method_;
 
       __block NSError *error;
       __block NSURLResponse *urlResponse;
