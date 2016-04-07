@@ -42,6 +42,11 @@ ARCH_BUILD_MACOSX_DIR = $(ARCH_BUILD_DIR)/macosx
 ARCH_LIB_MACOSX_DIR = $(ARCH_LIB_DIR)/macosx
 DIST_LIB_MACOSX_DIR = $(DIST_LIB_DIR)/macosx
 
+# Appletv library dirs.
+ARCH_BUILD_TV_DIR = $(ARCH_BUILD_DIR)/appletvos
+ARCH_LIB_TV_DIR = $(ARCH_LIB_DIR)/appletvos
+DIST_LIB_TV_DIR = $(DIST_LIB_DIR)/appletvos
+
 ifndef GEN_OBJC_DIR
 GEN_OBJC_DIR = $(BUILD_DIR)/objc
 endif
@@ -50,7 +55,7 @@ GEN_JAVA_DIR = $(BUILD_DIR)/java
 endif
 
 ifndef J2OBJC_ARCHS
-J2OBJC_ARCHS = macosx iphone iphone64 watchv7k simulator simulator64
+J2OBJC_ARCHS = macosx iphone iphone64 watchv7k simulator simulator64 appletvos appletvsimulator
 endif
 
 # xcrun finds a specified tool in the current SDK /usr/bin directory.
