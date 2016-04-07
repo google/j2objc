@@ -391,8 +391,8 @@ public final class NetworkOs {
       }
 
       // Convert each IP address into a Java byte array.
-      struct sockaddr_storage address = *(struct sockaddr_storage *) ai->ai_addr;
-      JavaNetInetAddress *inetAddress = sockaddrToInetAddress(&address, NULL);
+      struct sockaddr_storage *address = (struct sockaddr_storage *) ai->ai_addr;
+      JavaNetInetAddress *inetAddress = sockaddrToInetAddress(address, NULL);
       if (!inetAddress) {
         freeaddrinfo(addressList);
         return nil;
