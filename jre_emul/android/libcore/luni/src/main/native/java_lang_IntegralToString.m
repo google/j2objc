@@ -167,17 +167,16 @@ NSString *IntegralToString_convertInt(JreStringBuilder *sb, int i) {
   if (i < 0) {
     negative = YES;
     i = -i;
-    if (i < 100) {
-      if (i < 0) {
-        // If -n is still negative, n is Integer.MIN_VALUE
-        quickResult = @"-2147483648";
-      } else {
-        quickResult = IntegralToString_SMALL_NEGATIVE_VALUES[i];
-        if (!quickResult) {
-          IntegralToString_SMALL_NEGATIVE_VALUES[i] = quickResult =
-              i < 10 ? IntegralToString_stringOf2('-', IntegralToString_ONES[i])
-              : IntegralToString_stringOf3('-', IntegralToString_TENS[i], IntegralToString_ONES[i]);
-        }
+    if (i == -2147483648 || i < 0) {
+      // If -n is still negative, n is Integer.MIN_VALUE
+      quickResult = @"-2147483648";
+    }
+    else if (i < 100) {
+      quickResult = IntegralToString_SMALL_NEGATIVE_VALUES[i];
+      if (!quickResult) {
+        IntegralToString_SMALL_NEGATIVE_VALUES[i] = quickResult =
+             i < 10 ? IntegralToString_stringOf2('-', IntegralToString_ONES[i])
+             : IntegralToString_stringOf3('-', IntegralToString_TENS[i], IntegralToString_ONES[i]);
       }
     }
   } else {
