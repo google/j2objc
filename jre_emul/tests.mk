@@ -52,6 +52,7 @@ SUPPORT_SOURCES = \
     libcore/java/nio/charset/OldCharset_AbstractTest.java \
     libcore/java/util/ServiceLoaderTestInterface.java \
     libcore/java/util/zip/AbstractZipFileTest.java \
+    libcore/javax/net/ssl/TestSSLContext.java \
     libcore/util/SerializationTester.java \
     okio/MockSink.java \
     okio/TestUtil.java \
@@ -325,6 +326,7 @@ TEST_SOURCES := \
     libcore/java/net/ServerSocketTest.java \
     libcore/java/net/SocketTest.java \
     libcore/java/net/URITest.java \
+    libcore/java/net/URLConnectionTest.java \
     libcore/java/net/UrlEncodingTest.java \
     libcore/java/net/URLStreamHandlerFactoryTest.java \
     libcore/java/net/URLTest.java \

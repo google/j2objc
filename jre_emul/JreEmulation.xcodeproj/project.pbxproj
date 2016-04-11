@@ -181,6 +181,8 @@
 		06979BA61C220FFB00803967 /* MethodTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06979BA21C220A0C00803967 /* MethodTest.m */; };
 		06979BA71C220FFB00803967 /* NativeDecimalFormatTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06979BA31C220A0C00803967 /* NativeDecimalFormatTest.m */; };
 		069AA6B71B053B730068A39B /* ChannelsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 069AA6B61B053B730068A39B /* ChannelsTest.m */; };
+		06A9B1C21CB458B500691B59 /* URLConnectionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A9B1C11CB458B500691B59 /* URLConnectionTest.m */; };
+		06A9B1C51CB458D300691B59 /* TestSSLContext.m in Sources */ = {isa = PBXBuildFile; fileRef = 06A9B1C41CB458D300691B59 /* TestSSLContext.m */; };
 		06B390741BB32549004A4099 /* prefixes.properties in Resources */ = {isa = PBXBuildFile; fileRef = 06B390731BB32549004A4099 /* prefixes.properties */; };
 		06C49CD11CA48F330018E08D /* AsyncTimeoutTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CBA1CA48F330018E08D /* AsyncTimeoutTest.m */; };
 		06C49CD21CA48F330018E08D /* BufferedSinkTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06C49CBC1CA48F330018E08D /* BufferedSinkTest.m */; };
@@ -1874,6 +1876,10 @@
 		069FC49E1AF2A9770095A289 /* java_util_regex_Matcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Matcher.m; path = android/libcore/luni/src/main/native/java_util_regex_Matcher.m; sourceTree = SOURCE_ROOT; };
 		069FC49F1AF2A9770095A289 /* java_util_regex_Pattern.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = java_util_regex_Pattern.m; path = android/libcore/luni/src/main/native/java_util_regex_Pattern.m; sourceTree = SOURCE_ROOT; };
 		06A4CD131B8B9FEA0082FEB2 /* J2ObjC_common.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = J2ObjC_common.m; sourceTree = "<group>"; };
+		06A9B1C01CB458B500691B59 /* URLConnectionTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = URLConnectionTest.h; path = libcore/java/net/URLConnectionTest.h; sourceTree = "<group>"; };
+		06A9B1C11CB458B500691B59 /* URLConnectionTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = URLConnectionTest.m; path = libcore/java/net/URLConnectionTest.m; sourceTree = "<group>"; };
+		06A9B1C31CB458D300691B59 /* TestSSLContext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TestSSLContext.h; path = libcore/javax/net/ssl/TestSSLContext.h; sourceTree = "<group>"; };
+		06A9B1C41CB458D300691B59 /* TestSSLContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TestSSLContext.m; path = libcore/javax/net/ssl/TestSSLContext.m; sourceTree = "<group>"; };
 		06AA054817E110D00017C34A /* CharacterCodingException.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = CharacterCodingException.h; path = build_result/Classes/java/nio/charset/CharacterCodingException.h; sourceTree = "<group>"; };
 		06AA054917E110D00017C34A /* CharacterCodingException.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = CharacterCodingException.m; path = build_result/Classes/java/nio/charset/CharacterCodingException.m; sourceTree = "<group>"; };
 		06AA054A17E110D00017C34A /* Charset.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Charset.h; path = build_result/Classes/java/nio/charset/Charset.h; sourceTree = "<group>"; };
@@ -6489,6 +6495,10 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
+				06A9B1C31CB458D300691B59 /* TestSSLContext.h */,
+				06A9B1C41CB458D300691B59 /* TestSSLContext.m */,
+				06A9B1C01CB458B500691B59 /* URLConnectionTest.h */,
+				06A9B1C11CB458B500691B59 /* URLConnectionTest.m */,
 				06C49CB91CA48F330018E08D /* AsyncTimeoutTest.h */,
 				06C49CBA1CA48F330018E08D /* AsyncTimeoutTest.m */,
 				06C49CBB1CA48F330018E08D /* BufferedSinkTest.h */,
@@ -8498,6 +8508,7 @@
 				06E4E6C2197F1D47005DDE69 /* AtomicLongFieldUpdaterTest.m in Sources */,
 				06E4E7AA197F1D48005DDE69 /* StringTest.m in Sources */,
 				06E4E734197F1D47005DDE69 /* InetAddressTest.m in Sources */,
+				06A9B1C21CB458B500691B59 /* URLConnectionTest.m in Sources */,
 				0615D3F11BD83E7300132067 /* FakeFox02BeanInfo.m in Sources */,
 				06E4E7C4197F1D48005DDE69 /* LocaleTest.m in Sources */,
 				06E4E745197F1D47005DDE69 /* CharsetEncoderTest.m in Sources */,
@@ -8742,6 +8753,7 @@
 				06E4E6C6197F1D47005DDE69 /* AtomicReferenceFieldUpdaterTest.m in Sources */,
 				06E4E6F9197F1D47005DDE69 /* OldAndroidSerializationTest.m in Sources */,
 				06E4E80A197F1D48005DDE69 /* MessageDigestTest.m in Sources */,
+				06A9B1C51CB458D300691B59 /* TestSSLContext.m in Sources */,
 				06574A811A8EB150000A3616 /* RSAKeyTest.m in Sources */,
 				0696811D1BA8E3D3007AFADF /* Second.m in Sources */,
 				062463D41A000CE3006D52C9 /* JRETestsTableViewController.m in Sources */,

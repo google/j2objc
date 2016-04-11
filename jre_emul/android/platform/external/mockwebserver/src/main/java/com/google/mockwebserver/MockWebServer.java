@@ -612,13 +612,14 @@ public final class MockWebServer {
     private static Runnable namedRunnable(final String name, final Runnable runnable) {
         return new Runnable() {
             public void run() {
-                String originalName = Thread.currentThread().getName();
+                // TODO(tball): fix stack variable being released prematurely.
+                // String originalName = Thread.currentThread().getName();
                 Thread.currentThread().setName(name);
-                try {
+                // try {
                     runnable.run();
-                } finally {
-                    Thread.currentThread().setName(originalName);
-                }
+                // } finally {
+                //     Thread.currentThread().setName(originalName);
+                // }
             }
         };
     }
