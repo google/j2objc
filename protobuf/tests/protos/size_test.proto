@@ -14,6 +14,7 @@ syntax = "proto2";
 
 package protos;
 
+option java_package = "protos";
 option java_multiple_files = true;
 
 message NoFields {
