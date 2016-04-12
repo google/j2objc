@@ -21,6 +21,7 @@ import com.google.devtools.j2objc.ast.Annotation;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
+
 import org.eclipse.jdt.core.dom.IMethodBinding;
 
 import java.io.IOException;

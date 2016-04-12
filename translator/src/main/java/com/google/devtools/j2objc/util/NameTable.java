@@ -802,6 +802,8 @@ public class NameTable {
       } else {
         objCType = ID_TYPE;
       }
+    } else if (BindingUtil.isCompound(type)) {
+      objCType = constructObjCType(Arrays.asList(type.getInterfaces()));
     } else if (type.isPrimitive()) {
       objCType = getPrimitiveObjCType(type);
     } else {

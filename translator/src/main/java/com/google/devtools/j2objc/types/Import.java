@@ -134,6 +134,12 @@ public class Import implements Comparable<Import> {
     if (FOUNDATION_TYPES.contains(binding.getName()) || BindingUtil.isLambda(binding)) {
       return;
     }
-    imports.add(new Import(binding, unit.getNameTable()));
+    if (BindingUtil.isCompound(binding)) {
+      for (ITypeBinding t : binding.getInterfaces()) {
+        imports.add(new Import(t, unit.getNameTable()));
+      }
+    } else {
+      imports.add(new Import(binding, unit.getNameTable()));
+    }
   }
 }
