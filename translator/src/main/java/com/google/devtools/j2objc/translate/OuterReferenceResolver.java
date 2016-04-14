@@ -38,6 +38,7 @@ import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclaration;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
@@ -138,12 +139,20 @@ public class OuterReferenceResolver extends TreeVisitor {
     private boolean initializingContext = true;
     private Set<IVariableBinding> declaredVars = new HashSet<>();
 
-    private Scope(ITypeBinding type) {
+    private Scope(ITypeBinding type, Types typeEnv) {
       this.type = type;
       ImmutableSet.Builder<ITypeBinding> inheritedScopeBuilder = ImmutableSet.builder();
       for (ITypeBinding inheritedType : BindingUtil.getInheritedTypesInclusive(type)) {
         inheritedScopeBuilder.add(inheritedType.getTypeDeclaration());
       }
+
+      // If type is an interface, type.getSuperClass() returns null even though all interfaces
+      // "inherit" from Object. Therefore we add this manually to make the set complete. This is
+      // needed because Java 8 default methods can call methods in Object.
+      if (type.isInterface()) {
+        inheritedScopeBuilder.add(typeEnv.getJavaObject());
+      }
+
       this.inheritedScope = inheritedScopeBuilder.build();
     }
   }
@@ -318,7 +327,7 @@ public class OuterReferenceResolver extends TreeVisitor {
   }
 
   private void pushType(TreeNode node, ITypeBinding type) {
-    scopeStack.add(new Scope(type));
+    scopeStack.add(new Scope(type, typeEnv));
 
     ITypeBinding superclass = type.getSuperclass();
     if (superclass != null && BindingUtil.hasOuterContext(superclass)) {

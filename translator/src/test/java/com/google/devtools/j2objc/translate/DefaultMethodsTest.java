@@ -396,4 +396,10 @@ public class DefaultMethodsTest extends GenerationTest {
     assertTranslation(implC, ignoreProtocol);
     assertTranslation(implD, ignoreProtocol);
   }
+
+  public void testAccessingOuterType() throws IOException {
+    String source = "interface A { default Class<?> type() { return getClass(); } }";
+    String impl = translateSourceFile(source, "Test", "Test.m");
+    assertTranslatedLines(impl, "IOSClass *A_type(id<A> self) {", "return [self getClass];", "}");
+  }
 }
