@@ -125,7 +125,7 @@ public class DefaultMethodsTest extends GenerationTest {
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
 
-    assertOccurrences(header, "- (void)f;", 2); // Declared once by I and another by E.
+    assertOccurrences(header, "- (void)f;", 1); // Declared in I but not E.
     assertTranslatedLines(impl, "- (void)f {", "I_f(self);", "}");
   }
 
@@ -196,7 +196,7 @@ public class DefaultMethodsTest extends GenerationTest {
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
 
-    assertOccurrences(header, "- (void)f;", 3); // Declared once by A, once by B, and once by P.
+    assertOccurrences(header, "- (void)f;", 1); // Declared once by A.
     assertOccurrences(impl, "A_f(self);", 3); // Called by -[A f], -[B f], and -[P f].
     assertOccurrences(impl, "B_g(self);", 2); // Called by -[B g] and -[Q g].
   }
@@ -222,7 +222,7 @@ public class DefaultMethodsTest extends GenerationTest {
         + "  }"
         + "}";
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(impl, "- (NSString *)fWithNSString:(NSString *)arg0;");
+    assertTranslation(impl, "- (NSString *)fWithNSString:(NSString *)arg0 {");
     assertTranslation(impl, "return A_fWithNSString_(self, arg0);");
   }
 
@@ -264,7 +264,7 @@ public class DefaultMethodsTest extends GenerationTest {
         + "class C extends B implements P {}";
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl = getTranslatedFile("Test.m");
-    assertOccurrences(header, "- (void)f;", 2); // From P and A, but not C
+    assertOccurrences(header, "- (void)f;", 1); // From P, but not A and C
     assertOccurrences(impl, "P_f(self);", 2); // From -[P f] and -[A f], but not from B or C.
   }
 
@@ -302,7 +302,6 @@ public class DefaultMethodsTest extends GenerationTest {
     String impl = getTranslatedFile("Test.m");
     assertTranslation(header, "- (id)f");
     assertTranslation(header, "id A_f(id<A> self)");
-    assertTranslation(header, "- (NSString *)f"); // From P
     assertTranslation(header, "- (JavaLangInteger *)f;"); // From Q
 
     // From R; abstract method is still declared and will be implemented with throwing an exception.
@@ -339,7 +338,7 @@ public class DefaultMethodsTest extends GenerationTest {
 
     assertTranslation(header, "void B_fWithA_(id<B> self, id<A> x);");
     assertOccurrences(header, "- (void)fWithA:(id<A>)x;", 2); // From B and Q
-    assertTranslation(header, "- (void)fWithA:(id<A>)arg0;"); // From P
+    // From P
     assertTranslatedLines(impl, "- (void)fWithA:(id<A>)arg0 {", "B_fWithA_(self, arg0);", "}");
   }
 
