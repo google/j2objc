@@ -9,15 +9,13 @@
 #ifndef _NSDictionaryMap_H_
 #define _NSDictionaryMap_H_
 
-#import "java/util/Map.h"
+#import "java/util/AbstractMap.h"
 
 // An implementation of java.util.Map backed by an NSDictionary.
 // The entrySet, keySet and valueSet methods return sets not backed
 // by the Map, so modifications to the map won't be reflected in the
 // sets and vice-versa.
-// TODO(pankaj): Make this inherit from AbstractMap to get compliance
-// with spec.
-@interface NSDictionaryMap : NSObject<JavaUtilMap> {
+@interface NSDictionaryMap : JavaUtilAbstractMap {
 @private
   // The backing native map.
   NSMutableDictionary *dictionary_;
