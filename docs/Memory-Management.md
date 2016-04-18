@@ -7,7 +7,7 @@ layout: docs
 
 The first question most Java developers have is how is memory management implemented by J2ObjC, since Java has garbage collection and Objective-C doesn't by default.  What iOS does have are [two methods of memory management](http://developer.apple.com/library/mac/#documentation/Cocoa/Conceptual/MemoryMgmt/Articles/MemoryMgmt.html): reference counting, and Automatic Reference Counting (ARC).  
 
-J2ObjC generates different memory management code, depending on which method is chosen.  By default, it currently uses reference counting.  Translate with the `-use-arc` option to generate code which uses ARC (soon we plan on making that option the default).
+J2ObjC generates different memory management code, depending on which method is chosen.  By default it uses manual reference counting, which is the recommended method. Translate with the `-use-arc` option to generate code which uses ARC.
 
 ## Reference Counting
 
