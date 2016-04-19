@@ -38,7 +38,6 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -796,13 +795,12 @@ public class NameTable {
       objCType = objCType.endsWith("*") ? objCType + "*" : objCType + " *";
     } else if (type.isTypeVariable() || type.isCapture() || type.isWildcardType()) {
       if (expandBounds) {
-        List<ITypeBinding> bounds = new ArrayList<>();
-        collectBounds(type, bounds);
-        objCType = constructObjCType(bounds);
+        objCType = constructObjCType(BindingUtil.getTypeBounds(type));
       } else {
         objCType = ID_TYPE;
       }
     } else if (BindingUtil.isCompound(type)) {
+      // TODO(kstanger): Handle compound types in BindingUtil.getTypeBounds().
       objCType = constructObjCType(Arrays.asList(type.getInterfaces()));
     } else if (type.isPrimitive()) {
       objCType = getPrimitiveObjCType(type);
@@ -816,21 +814,6 @@ public class NameTable {
       }
     }
     return objCType;
-  }
-
-  private boolean collectBounds(ITypeBinding type, Collection<ITypeBinding> bounds) {
-    ITypeBinding[] boundsArr = type.getTypeBounds();
-    if (boundsArr.length == 0) {
-      if (type.isWildcardType()) {
-        bounds.addAll(Arrays.asList(type.getInterfaces()));
-      }
-      bounds.add(type.getErasure());
-    } else {
-      for (ITypeBinding bound : boundsArr) {
-        collectBounds(bound, bounds);
-      }
-    }
-    return true;
   }
 
   private String constructObjCType(Iterable<ITypeBinding> types) {
