@@ -33,8 +33,10 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
+
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Map;
 import java.util.Set;
@@ -137,7 +139,7 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
       GeneratedMethodBinding binding = new GeneratedMethodBinding(method);
 
       // Don't carry over the default method flag from the original binding.
-      binding.removeModifiers(BindingUtil.ACC_DEFAULT);
+      binding.removeModifiers(Modifier.DEFAULT);
       // Mark synthetic to avoid writing metadata.
       binding.addModifiers(BindingUtil.ACC_SYNTHETIC);
 
