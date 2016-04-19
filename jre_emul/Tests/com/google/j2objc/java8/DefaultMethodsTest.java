@@ -19,12 +19,17 @@ import static junit.framework.TestCase.assertTrue;
 
 import junit.framework.TestCase;
 
+import java.lang.reflect.Method;
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * Tests for default method support.
  *
  * @author Lukhnos Liu
  */
 public class DefaultMethodsTest extends TestCase {
+
   interface A {
     default boolean f() {
       return true;
@@ -122,5 +127,14 @@ public class DefaultMethodsTest extends TestCase {
 
     D d = (name) -> D.getDPrefix() + name;
     assertEquals("static-default", d.getDefaultTag());
+  }
+
+  public void testGetMethodsReturnsDefaultMethod() {
+    Set<String> methodNames = new HashSet<>();
+    for (Method m : AP.class.getMethods()) {
+      methodNames.add(m.getName());
+    }
+    assertTrue(methodNames.contains("f"));
+    assertTrue(methodNames.contains("notF"));
   }
 }

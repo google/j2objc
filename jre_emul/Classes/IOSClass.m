@@ -249,11 +249,10 @@ static JavaUtilProperties *prefixMapping;
 static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
   [cls collectMethods:methodMap publicOnly:true];
 
-  // getMethods() returns unimplemented interface methods if the class is abstract.
-  if (([cls getModifiers] & JavaLangReflectModifier_ABSTRACT) > 0) {
-    for (IOSClass *p in [cls getInterfacesInternal]) {
-      GetAllMethods(p, methodMap);
-    }
+  // getMethods() returns unimplemented interface methods if the class is
+  // abstract and default interface methods that aren't overridden.
+  for (IOSClass *p in [cls getInterfacesInternal]) {
+    GetAllMethods(p, methodMap);
   }
 
   while ((cls = [cls getSuperclass])) {
