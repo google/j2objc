@@ -21,8 +21,10 @@ import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeStatement;
+import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
+import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.TranslationUtil;
 
@@ -31,8 +33,10 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
@@ -106,6 +110,11 @@ public class AbstractMethodRewriter extends TreeVisitor {
   }
 
   private void visitType(AbstractTypeDeclaration node) {
+    checkForIncompleteProtocol(node);
+    addReturnTypeNarrowingDeclarations(node);
+  }
+
+  private void checkForIncompleteProtocol(AbstractTypeDeclaration node) {
     ITypeBinding typeBinding = node.getTypeBinding();
     if (typeBinding.isInterface() && BindingUtil.hasDefaultMethodsInFamily(typeBinding)) {
       // If there are default methods, then the interface's companion class will
@@ -119,8 +128,8 @@ public class AbstractMethodRewriter extends TreeVisitor {
     // Find any interface methods that aren't defined by this abstract type so
     // we can silence incomplete protocol errors.
     // Collect needed methods from this interface and all super-interfaces.
-    Queue<ITypeBinding> interfaceQueue = new LinkedList<ITypeBinding>();
-    Set<IMethodBinding> interfaceMethods = new LinkedHashSet<IMethodBinding>();
+    Queue<ITypeBinding> interfaceQueue = new LinkedList<>();
+    Set<IMethodBinding> interfaceMethods = new LinkedHashSet<>();
     interfaceQueue.addAll(Arrays.asList(typeBinding.getInterfaces()));
     ITypeBinding intrface;
     while ((intrface = interfaceQueue.poll()) != null) {
@@ -151,5 +160,57 @@ public class AbstractMethodRewriter extends TreeVisitor {
     }
 
     return isMethodImplemented(type.getSuperclass(), method);
+  }
+
+  // Adds declarations for any methods where the known return type is more
+  // specific than what is already declared in inherited types.
+  private void addReturnTypeNarrowingDeclarations(AbstractTypeDeclaration node) {
+    ITypeBinding type = node.getTypeBinding();
+    Map<String, IMethodBinding> newDeclarations = new HashMap<>();
+    Map<String, ITypeBinding> declaredReturnTypes = new HashMap<>();
+    for (ITypeBinding inheritedType : BindingUtil.getOrderedInheritedTypesInclusive(type)) {
+      for (IMethodBinding method : inheritedType.getDeclaredMethods()) {
+        ITypeBinding returnType = method.getReturnType().getErasure();
+        if (returnType.isPrimitive()) {
+          continue;  // Short circuit
+        }
+        String selector = nameTable.getMethodSelector(method);
+        ITypeBinding declaredReturnType = declaredReturnTypes.get(selector);
+        if (declaredReturnType == null) {
+          declaredReturnType = method.getMethodDeclaration().getReturnType().getErasure();
+          declaredReturnTypes.put(selector, declaredReturnType);
+        } else if (!returnType.isSubTypeCompatible(declaredReturnType)) {
+          continue;
+        }
+        if (declaredReturnType != returnType
+            && !nameTable.getObjCType(declaredReturnType).equals(
+                nameTable.getObjCType(returnType))) {
+          newDeclarations.put(selector, method);
+          declaredReturnTypes.put(selector, returnType);
+        }
+      }
+    }
+
+    boolean isInterface = type.isInterface();
+    for (IMethodBinding method : newDeclarations.values()) {
+      node.getBodyDeclarations().add(newReturnTypeNarrowingDeclaration(method, isInterface));
+    }
+  }
+
+  private MethodDeclaration newReturnTypeNarrowingDeclaration(
+      IMethodBinding method, boolean isInterface) {
+    MethodDeclaration decl = new MethodDeclaration(method);
+    // Remove all modifiers except the visibility.
+    decl.removeModifiers(~(Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE));
+    decl.addModifiers(Modifier.ABSTRACT | BindingUtil.ACC_SYNTHETIC);
+    if (!isInterface) {
+      unit.setHasIncompleteImplementation();
+    }
+    int argCount = 0;
+    for (ITypeBinding paramType : method.getParameterTypes()) {
+      decl.getParameters().add(new SingleVariableDeclaration(new GeneratedVariableBinding(
+          "arg" + argCount++, 0, paramType, false, true, null, method)));
+    }
+    return decl;
   }
 }

@@ -61,4 +61,32 @@ public class AbstractMethodRewriterTest extends GenerationTest {
     String translation = translateSourceFile("E", "E.m");
     assertTranslation(translation, "#pragma clang diagnostic ignored \"-Wprotocol\"");
   }
+
+  public void testMethodAddedForSpecifiedTypeArg() throws IOException {
+    addSourceFile("interface A<T> { T foo(); }", "A.java");
+    addSourceFile("interface B extends A<String> {}", "B.java");
+    addSourceFile("abstract class C implements A<String> {}", "C.java");
+    String aHeader = translateSourceFile("A", "A.h");
+    String bHeader = translateSourceFile("B", "B.h");
+    String bSource = getTranslatedFile("B.m");
+    String cHeader = translateSourceFile("C", "C.h");
+    String cSource = getTranslatedFile("C.m");
+    assertTranslation(aHeader, "- (id)foo;");
+    assertTranslation(bHeader, "- (NSString *)foo;");
+    // The added "foo" method should not appear in metadata.
+    assertNotInTranslation(bSource, "foo");
+    assertTranslation(cHeader, "- (NSString *)foo;");
+    // The added "foo" method should not appear in metadata or have an implementation.
+    assertNotInTranslation(cSource, "foo");
+  }
+
+  public void testMethodAddedForMethodInheritedFromMultipleInterfaces() throws IOException {
+    addSourceFile("interface A { java.io.Serializable foo(); }", "A.java");
+    addSourceFile("interface B { String foo(); }", "B.java");
+    addSourceFile("abstract class C implements A, B {}", "C.java");
+    String cHeader = translateSourceFile("C", "C.h");
+    String cSource = translateSourceFile("C", "C.m");
+    assertTranslation(cHeader, "- (NSString *)foo;");
+    assertNotInTranslation(cSource, "foo");
+  }
 }

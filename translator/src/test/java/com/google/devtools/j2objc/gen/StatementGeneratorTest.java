@@ -1615,10 +1615,12 @@ public class StatementGeneratorTest extends GenerationTest {
         + "B test(D d) { return d.foo(); } }", "Test", "Test.h");
     // Check that protocols are declared in the same order.
     assertTranslation(translation, "@interface Test_D : Test_C < Test_I1, Test_I2 >");
+    // A "foo" declaration is added to class "D" to override the less specific
+    // return type inherited from "I1".
+    assertOccurrences(translation, "- (Test_B *)foo;", 3);
     translation = getTranslatedFile("Test.m");
-    // Check that the result of d.foo() is cast because the compiler will think
-    // it returns a Test_A type.
-    assertTranslation(translation, "return ((Test_B *) [((Test_D *) nil_chk(d)) foo]);");
+    // Check that the result of d.foo() is not cast.
+    assertTranslation(translation, "return [((Test_D *) nil_chk(d)) foo];");
   }
 
   public void testStaticMethodCalledOnObject() throws IOException {

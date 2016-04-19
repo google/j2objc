@@ -26,7 +26,9 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashSet;
@@ -208,6 +210,49 @@ public final class BindingUtil {
       return ((IAnnotationBinding) binding).getAnnotationType();
     }
     return null;
+  }
+
+  /**
+   * Gets the list of types that would be included in a ObjC declaration for
+   * this type. For example, if the type would be declared as "Foo<Bar, Baz> *"
+   * then the returned bounds are the bindings for the class Foo, and interfaces
+   * Bar and Baz. If one of the bounds is a class type, then that type will be
+   * the first element in the list.
+   * TODO(kstanger): Use this method in NameTable.
+   */
+  public static List<ITypeBinding> getTypeBounds(ITypeBinding type) {
+    if (!(type.isTypeVariable() || type.isCapture() || type.isWildcardType())) {
+      return Collections.singletonList(type);
+    }
+    List<ITypeBinding> bounds = new ArrayList<>();
+    collectBounds(type, bounds);
+    // Look for a class type and move it to the front of the list.
+    boolean classTypeFound = false;
+    for (int i = 0; i < bounds.size(); i++) {
+      if (!bounds.get(i).isInterface()) {
+        assert !classTypeFound : "Type has multiple class type bounds";
+        classTypeFound = true;
+        if (i > 0) {
+          bounds.add(0, bounds.remove(i));
+        }
+      }
+    }
+    return bounds;
+  }
+
+  private static boolean collectBounds(ITypeBinding type, List<ITypeBinding> bounds) {
+    ITypeBinding[] boundsArr = type.getTypeBounds();
+    if (boundsArr.length == 0) {
+      if (type.isWildcardType()) {
+        bounds.addAll(Arrays.asList(type.getInterfaces()));
+      }
+      bounds.add(type.getErasure());
+    } else {
+      for (ITypeBinding bound : boundsArr) {
+        collectBounds(bound, bounds);
+      }
+    }
+    return true;
   }
 
   /**

@@ -14,7 +14,6 @@
 
 package com.google.devtools.j2objc.translate;
 
-import com.google.common.collect.Lists;
 import com.google.devtools.j2objc.Options;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
@@ -42,7 +41,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
-import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -209,7 +207,11 @@ public class CastResolver extends TreeVisitor {
           Expression receiver = invocation.getExpression();
           ITypeBinding receiverType = receiver != null ? receiver.getTypeBinding()
               : method.getDeclaringClass();
-          return getDeclaredReturnType(method, receiverType);
+          ITypeBinding returnType = getDeclaredReturnType(method, receiverType);
+          if (returnType.isTypeVariable()) {
+            return typeEnv.resolveIOSType("id");
+          }
+          return returnType;
         }
       case PARENTHESIZED_EXPRESSION:
         return getDeclaredType(((ParenthesizedExpression) expr).getExpression());
@@ -235,56 +237,38 @@ public class CastResolver extends TreeVisitor {
   }
 
   private ITypeBinding getDeclaredReturnType(IMethodBinding method, ITypeBinding receiverType) {
-    IMethodBinding actualDeclaration =
-        getFirstDeclaration(getObjCMethodSignature(method), receiverType);
-    if (actualDeclaration == null) {
-      actualDeclaration = method.getMethodDeclaration();
-    }
-    ITypeBinding returnType = actualDeclaration.getReturnType();
-    if (returnType.isTypeVariable()) {
-      return typeEnv.resolveIOSType("id");
-    }
-    return returnType.getErasure();
-  }
+    final IMethodBinding methodDecl = method.getMethodDeclaration();
 
-  /**
-   * Finds the declaration for a given method and receiver in the same way that
-   * the ObjC compiler will search for a declaration.
-   */
-  private IMethodBinding getFirstDeclaration(String methodSig, ITypeBinding type) {
-    if (type == null) {
-      return null;
+    // Check if the method is declared on the receiver type.
+    if (receiverType.getTypeDeclaration() == methodDecl.getDeclaringClass()) {
+      return methodDecl.getReturnType();
     }
-    type = type.getTypeDeclaration();
-    for (IMethodBinding declaredMethod : type.getDeclaredMethods()) {
-      if (methodSig.equals(getObjCMethodSignature(declaredMethod))) {
-        return declaredMethod;
-      }
-    }
-    List<ITypeBinding> supertypes = Lists.newArrayList();
-    supertypes.addAll(Arrays.asList(type.getInterfaces()));
-    supertypes.add(type.isTypeVariable() ? 0 : supertypes.size(), type.getSuperclass());
-    for (ITypeBinding supertype : supertypes) {
-      IMethodBinding result = getFirstDeclaration(methodSig, supertype);
-      if (result != null) {
-        return result;
-      }
-    }
-    return null;
-  }
 
-  private String getObjCMethodSignature(IMethodBinding method) {
-    StringBuilder sb = new StringBuilder(method.getName());
-    boolean first = true;
-    for (ITypeBinding paramType : method.getParameterTypes()) {
-      String keyword = nameTable.parameterKeyword(paramType);
-      if (first) {
-        first = false;
-        keyword = NameTable.capitalize(keyword);
+    // Search all inherited types for matching method declarations. Choose the
+    // most narrow return type, because AbstractMethodRewriter will ensure that
+    // a declaration exists with the most narrow return type.
+    String selector = nameTable.getMethodSelector(methodDecl);
+    for (ITypeBinding typeBound : BindingUtil.getTypeBounds(receiverType)) {
+      ITypeBinding returnType = null;
+      for (ITypeBinding inheritedType :
+           BindingUtil.getOrderedInheritedTypesInclusive(typeBound.getTypeDeclaration())) {
+        for (IMethodBinding declaredMethod : inheritedType.getDeclaredMethods()) {
+          if (methodDecl.isSubsignature(declaredMethod)
+              && nameTable.getMethodSelector(declaredMethod).equals(selector)) {
+            ITypeBinding newReturnType = declaredMethod.getReturnType().getErasure();
+            if (returnType == null || newReturnType.isSubTypeCompatible(returnType)) {
+              returnType = newReturnType;
+            }
+          }
+        }
       }
-      sb.append(keyword + ":");
+      if (returnType != null) {
+        return returnType;
+      }
     }
-    return sb.toString();
+
+    // Last resort. Might be a GeneratedMethodBinding.
+    return methodDecl.getReturnType();
   }
 
   // Some native objective-c methods are declared to return NSUInteger.

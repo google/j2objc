@@ -253,7 +253,7 @@ public class Functionizer extends TreeVisitor {
       return;
     }
     boolean isInstanceMethod = !BindingUtil.isStatic(binding) && !binding.isConstructor();
-    boolean isDefaultMethod = BindingUtil.isDefault(binding);
+    boolean isDefaultMethod = Modifier.isDefault(node.getModifiers());
     FunctionDeclaration function = null;
     List<BodyDeclaration> declarationList = TreeUtil.asDeclarationSublist(node);
     List<String> extraSelectors = nameTable.getExtraSelectors(binding);

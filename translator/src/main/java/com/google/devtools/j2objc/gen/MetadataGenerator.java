@@ -163,9 +163,9 @@ public class MetadataGenerator {
   private void generateMethodsMetadata() {
     List<String> methodMetadata = Lists.newArrayList();
     for (MethodDeclaration decl : TreeUtil.getMethodDeclarations(typeNode)) {
-      String metadata = getMethodMetadata(decl.getMethodBinding());
-      if (metadata != null) {
-        methodMetadata.add(metadata);
+      IMethodBinding binding = decl.getMethodBinding();
+      if (!BindingUtil.isSynthetic(decl.getModifiers()) && !binding.isSynthetic()) {
+        methodMetadata.add(getMethodMetadata(binding));
       }
     }
     if (typeNode instanceof AnnotationTypeDeclaration) {
@@ -258,9 +258,6 @@ public class MetadataGenerator {
   }
 
   private String getMethodMetadata(IMethodBinding method) {
-    if (method.isSynthetic()) {
-      return null;
-    }
     String methodName = method instanceof GeneratedMethodBinding
         ? ((GeneratedMethodBinding) method).getJavaName() : method.getName();
     String selector = nameTable.getMethodSelector(method);
