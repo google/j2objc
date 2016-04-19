@@ -82,8 +82,10 @@ mockito_manifest:
 protobuf_compiler_dist:
 	@$(MAKE) -C $(J2OBJC_ROOT)/protobuf/compiler dist
 
-protobuf_runtime_java: protobuf_compiler_dist
+protobuf_runtime_java:
 	@$(MAKE) -C $(J2OBJC_ROOT)/protobuf/runtime java
+
+protobuf_runtime_java: java_deps_dist
 
 protobuf_runtime_dist: jre_emul_dist protobuf_compiler_dist
 	@$(MAKE) -C $(J2OBJC_ROOT)/protobuf/runtime dist

@@ -31,7 +31,6 @@ import sys
 def GetPackage(data):
   package = data.package
 
-
   if data.java_package:
     package = data.java_package
   package = re.sub('\\.', '/', package)
