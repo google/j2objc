@@ -81,6 +81,7 @@ public class DestructorGenerator extends TreeVisitor {
     GeneratedMethodBinding deallocBinding = GeneratedMethodBinding.newMethod(
         NameTable.DEALLOC_METHOD, modifiers, voidType, type);
     MethodDeclaration deallocDecl = new MethodDeclaration(deallocBinding);
+    deallocDecl.setHasDeclaration(false);
     Block block = new Block();
     deallocDecl.setBody(block);
     List<Statement> stmts = block.getStatements();

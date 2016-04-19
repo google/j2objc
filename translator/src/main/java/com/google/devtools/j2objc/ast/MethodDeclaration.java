@@ -25,6 +25,7 @@ public class MethodDeclaration extends BodyDeclaration {
 
   private IMethodBinding methodBinding = null;
   private boolean isConstructor = false;
+  private boolean hasDeclaration = true;
   private ChildLink<Type> returnType = ChildLink.create(Type.class, this);
   private ChildLink<SimpleName> name = ChildLink.create(SimpleName.class, this);
   private ChildList<SingleVariableDeclaration> parameters =
@@ -47,6 +48,7 @@ public class MethodDeclaration extends BodyDeclaration {
     super(other);
     methodBinding = other.getMethodBinding();
     isConstructor = other.isConstructor();
+    hasDeclaration = other.hasDeclaration();
     returnType.copyFrom(other.getReturnType());
     name.copyFrom(other.getName());
     parameters.copyFrom(other.getParameters());
@@ -76,6 +78,14 @@ public class MethodDeclaration extends BodyDeclaration {
 
   public boolean isConstructor() {
     return isConstructor;
+  }
+
+  public boolean hasDeclaration() {
+    return hasDeclaration;
+  }
+
+  public void setHasDeclaration(boolean value) {
+    hasDeclaration = value;
   }
 
   public Type getReturnType() {

@@ -69,6 +69,7 @@ public class JavaCloneWriter extends TreeVisitor {
     methodBinding.addParameter(type);
 
     MethodDeclaration declaration = new MethodDeclaration(methodBinding);
+    declaration.setHasDeclaration(false);
     node.getBodyDeclarations().add(declaration);
     declaration.getParameters().add(new SingleVariableDeclaration(originalVar));
 

@@ -155,6 +155,7 @@ public class JavaToIOSMethodTranslator extends TreeVisitor {
     IOSMethodBinding binding = IOSMethodBinding.newMethod(
         "copyWithZone:", Modifier.PUBLIC | BindingUtil.ACC_SYNTHETIC, idType, type);
     MethodDeclaration cloneMethod = new MethodDeclaration(binding);
+    cloneMethod.setHasDeclaration(false);
 
     // Add NSZone *zone parameter.
     GeneratedVariableBinding zoneBinding = new GeneratedVariableBinding(

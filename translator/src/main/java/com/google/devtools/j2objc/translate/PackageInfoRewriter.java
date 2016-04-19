@@ -93,6 +93,7 @@ public class PackageInfoRewriter {
     GeneratedMethodBinding binding = GeneratedMethodBinding.newMethod(
         "__prefix", Modifier.STATIC | BindingUtil.ACC_SYNTHETIC, typeEnv.getNSString(), type);
     MethodDeclaration method = new MethodDeclaration(binding);
+    method.setHasDeclaration(false);
     Block body = new Block();
     method.setBody(body);
     body.getStatements().add(new ReturnStatement(new StringLiteral(prefix, typeEnv)));

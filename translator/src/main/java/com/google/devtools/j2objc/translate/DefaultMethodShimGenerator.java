@@ -137,12 +137,13 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
       GeneratedMethodBinding binding = new GeneratedMethodBinding(method);
 
       // Don't carry over the default method flag from the original binding.
-      binding.setModifiers(binding.getModifiers() & ~BindingUtil.ACC_DEFAULT);
+      binding.removeModifiers(BindingUtil.ACC_DEFAULT);
+      // Mark synthetic to avoid writing metadata.
+      binding.addModifiers(BindingUtil.ACC_SYNTHETIC);
 
       binding.setDeclaringClass(type);
       MethodDeclaration methodDecl = new MethodDeclaration(binding);
-      // Mark as synthetic to skip the header declaration.
-      methodDecl.addModifiers(BindingUtil.ACC_SYNTHETIC);
+      methodDecl.setHasDeclaration(false);
 
       // The shim's only purpose is to call the default method implementation and returns it value
       // if required.

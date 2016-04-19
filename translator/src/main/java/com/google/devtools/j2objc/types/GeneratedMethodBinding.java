@@ -36,6 +36,7 @@ import java.util.List;
  * @author Tom Ball
  */
 public class GeneratedMethodBinding extends AbstractBinding implements IMethodBinding {
+
   private final IMethodBinding delegate;
   private final String name;
   private int modifiers;
@@ -234,6 +235,14 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
 
   public void setModifiers(int modifiers) {
     this.modifiers = modifiers;
+  }
+
+  public void addModifiers(int modifiersToAdd) {
+    modifiers |= modifiersToAdd;
+  }
+
+  public void removeModifiers(int modifiersToRemove) {
+    modifiers &= ~modifiersToRemove;
   }
 
   @Override

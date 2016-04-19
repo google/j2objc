@@ -72,8 +72,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
 
   @Override
   protected boolean shouldPrintDeclaration(BodyDeclaration decl) {
-    // Don't print declarations for any synthetic methods.
-    if (decl instanceof MethodDeclaration && BindingUtil.isSynthetic(decl.getModifiers())) {
+    if (decl instanceof MethodDeclaration && !((MethodDeclaration) decl).hasDeclaration()) {
       return false;
     }
     return decl.hasPrivateDeclaration() == printPrivateDeclarations();

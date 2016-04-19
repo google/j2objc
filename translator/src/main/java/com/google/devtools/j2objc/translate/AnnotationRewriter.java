@@ -154,6 +154,7 @@ public class AnnotationRewriter extends TreeVisitor {
       GeneratedMethodBinding defaultGetterBinding = GeneratedMethodBinding.newMethod(
           propName + "Default", Modifier.STATIC | BindingUtil.ACC_SYNTHETIC, memberType, type);
       MethodDeclaration defaultGetter = new MethodDeclaration(defaultGetterBinding);
+      defaultGetter.setHasDeclaration(false);
       Block defaultGetterBody = new Block();
       defaultGetter.setBody(defaultGetterBody);
       defaultGetterBody.getStatements().add(new ReturnStatement(TreeUtil.remove(defaultExpr)));
@@ -193,6 +194,7 @@ public class AnnotationRewriter extends TreeVisitor {
     GeneratedMethodBinding annotationTypeBinding = GeneratedMethodBinding.newMethod(
         "annotationType", BindingUtil.ACC_SYNTHETIC, typeEnv.getIOSClass(), type);
     MethodDeclaration annotationTypeMethod = new MethodDeclaration(annotationTypeBinding);
+    annotationTypeMethod.setHasDeclaration(false);
     Block annotationTypeBody = new Block();
     annotationTypeMethod.setBody(annotationTypeBody);
     annotationTypeBody.getStatements().add(new ReturnStatement(new TypeLiteral(type, typeEnv)));
@@ -203,6 +205,7 @@ public class AnnotationRewriter extends TreeVisitor {
     GeneratedMethodBinding descriptionBinding = GeneratedMethodBinding.newMethod(
         "description", BindingUtil.ACC_SYNTHETIC, typeEnv.getNSString(), type);
     MethodDeclaration descriptionMethod = new MethodDeclaration(descriptionBinding);
+    descriptionMethod.setHasDeclaration(false);
     Block descriptionBody = new Block();
     descriptionMethod.setBody(descriptionBody);
     descriptionBody.getStatements().add(new ReturnStatement(
@@ -299,6 +302,7 @@ public class AnnotationRewriter extends TreeVisitor {
         name, Modifier.STATIC | BindingUtil.ACC_SYNTHETIC, result.getTypeBinding(),
         node.getTypeBinding());
     MethodDeclaration decl = new MethodDeclaration(binding);
+    decl.setHasDeclaration(false);
     Block body = new Block();
     decl.setBody(body);
     body.getStatements().add(new ReturnStatement(result));
