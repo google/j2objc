@@ -158,7 +158,7 @@ public class ObjectiveCSourceFileGeneratorTest extends GenerationTest {
   public void testTypeVariableReturnType() throws IOException {
     String translation = translateSourceFile(
         "interface I<T extends Runnable> { T test(); }", "Test", "Test.h");
-    assertTranslation(translation, "- (id)test;");
+    assertTranslation(translation, "- (id<JavaLangRunnable>)test;");
   }
 
   public void testOverriddenGenericConstructor() throws IOException {

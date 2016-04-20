@@ -171,15 +171,24 @@ public class CastResolver extends TreeVisitor {
         // In most cases we don't need to cast from an id type. However, if the
         // expression is being dereferenced then the compiler needs the type
         // info.
-        || (typeEnv.isIdType(declaredType) && !shouldCastFromId)
+        || (declaredAsId(declaredType) && !shouldCastFromId)
         // If the declared type can be assigned into the actual type, or the
         // expected type, then the compiler already has sufficient type info.
-        || typeEnv.isIdType(exprType) || typeEnv.isIdType(expectedType)
-        || declaredType.isAssignmentCompatible(exprType)
-        || declaredType.isAssignmentCompatible(expectedType)) {
+        || declaredAsId(exprType) || declaredType.isAssignmentCompatible(exprType)
+        || (expectedType != null && (declaredAsId(expectedType)
+            || declaredType.isAssignmentCompatible(expectedType)))) {
       return false;
     }
     return true;
+  }
+
+  // Determine if the declaration for this type would end up being "id".
+  private boolean declaredAsId(ITypeBinding type) {
+    if (typeEnv.isIdType(type)) {
+      return true;
+    }
+    List<ITypeBinding> bounds = BindingUtil.getTypeBounds(type);
+    return bounds.size() == 1 && typeEnv.isIdType(bounds.get(0));
   }
 
   private ITypeBinding getDeclaredType(Expression expr) {
@@ -191,46 +200,33 @@ public class CastResolver extends TreeVisitor {
       case CLASS_INSTANCE_CREATION:
         return typeEnv.resolveIOSType("id");
       case FUNCTION_INVOCATION:
-        {
-          ITypeBinding returnType =
-              ((FunctionInvocation) expr).getFunctionBinding().getReturnType();
-          if (returnType.isTypeVariable()) {
-            return typeEnv.resolveIOSType("id");
-          }
-          return returnType;
-        }
-      case METHOD_INVOCATION:
-        {
-          MethodInvocation invocation = (MethodInvocation) expr;
-          IMethodBinding method = invocation.getMethodBinding();
-          // Object receiving the message, or null if it's a method in this class.
-          Expression receiver = invocation.getExpression();
-          ITypeBinding receiverType = receiver != null ? receiver.getTypeBinding()
-              : method.getDeclaringClass();
-          ITypeBinding returnType = getDeclaredReturnType(method, receiverType);
-          if (returnType.isTypeVariable()) {
-            return typeEnv.resolveIOSType("id");
-          }
-          return returnType;
-        }
+        return ((FunctionInvocation) expr).getFunctionBinding().getReturnType();
+      case METHOD_INVOCATION: {
+        MethodInvocation invocation = (MethodInvocation) expr;
+        IMethodBinding method = invocation.getMethodBinding();
+        // Object receiving the message, or null if it's a method in this class.
+        Expression receiver = invocation.getExpression();
+        ITypeBinding receiverType = receiver != null ? receiver.getTypeBinding()
+            : method.getDeclaringClass();
+        return getDeclaredReturnType(method, receiverType);
+      }
       case PARENTHESIZED_EXPRESSION:
         return getDeclaredType(((ParenthesizedExpression) expr).getExpression());
-      case SUPER_METHOD_INVOCATION:
-        {
-          SuperMethodInvocation invocation = (SuperMethodInvocation) expr;
-          IMethodBinding method = invocation.getMethodBinding();
-          if (invocation.getQualifier() != null) {
-            // For a qualified super invocation, the statement generator will look
-            // up the IMP using instanceMethodForSelector.
-            if (!method.getReturnType().isPrimitive()) {
-              return typeEnv.resolveIOSType("id");
-            } else {
-              return null;
-            }
+      case SUPER_METHOD_INVOCATION: {
+        SuperMethodInvocation invocation = (SuperMethodInvocation) expr;
+        IMethodBinding method = invocation.getMethodBinding();
+        if (invocation.getQualifier() != null) {
+          // For a qualified super invocation, the statement generator will look
+          // up the IMP using instanceMethodForSelector.
+          if (!method.getReturnType().isPrimitive()) {
+            return typeEnv.resolveIOSType("id");
+          } else {
+            return null;
           }
-          return getDeclaredReturnType(
-              method, TreeUtil.getOwningType(invocation).getTypeBinding().getSuperclass());
         }
+        return getDeclaredReturnType(
+            method, TreeUtil.getOwningType(invocation).getTypeBinding().getSuperclass());
+      }
       default:
         return null;
     }

@@ -263,7 +263,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     StringBuilder sb = new StringBuilder();
     IMethodBinding binding = m.getMethodBinding();
     char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
-    String returnType = nameTable.getObjCType(binding.getReturnType());
+    String returnType = nameTable.getSpecificObjCType(binding.getReturnType());
     String selector = nameTable.getMethodSelector(binding);
     if (m.isConstructor()) {
       returnType = "instancetype";
@@ -383,7 +383,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   protected String getFunctionSignature(FunctionDeclaration function) {
     StringBuilder sb = new StringBuilder();
-    String returnType = nameTable.getObjCType(function.getReturnType().getTypeBinding());
+    String returnType = nameTable.getSpecificObjCType(function.getReturnType().getTypeBinding());
     returnType += returnType.endsWith("*") ? "" : " ";
     sb.append(returnType).append(function.getName()).append('(');
     for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
