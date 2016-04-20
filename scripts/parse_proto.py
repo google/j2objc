@@ -44,6 +44,7 @@ class ProtoMetadata:
   java_api_version = 2
   java_alt_api_package = ''
   outer_class = ''
+  optimize_for = 'SPEED'
 
   def __init__(self):
     self.messages = []
@@ -71,6 +72,10 @@ def MatchOptions(line, data):
   match = re.match(r'option\s+java_multiple_files\s*=\s*(\S+)\s*;', line)
   if match:
     data.multiple_files = True if match.group(1).lower() == 'true' else False
+
+  match = re.match(r'option\s+optimize_for\s*=\s*(\S+)\s*;', line)
+  if match:
+    data.optimize_for = match.group(1)
 
 
 def MatchTypes(line, data):
