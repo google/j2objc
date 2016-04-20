@@ -12,3 +12,6 @@ dist/
 **/project.xcworkspace/
 **/xcuserdata/
 **/Translated/
+
+# Mac System Files
+.DS_Store
