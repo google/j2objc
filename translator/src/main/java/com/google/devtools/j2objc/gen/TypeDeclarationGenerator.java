@@ -220,7 +220,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         IVariableBinding var = fragment.getVariableBinding();
         String accessorName = nameTable.getStaticAccessorName(var);
-        String objcType = nameTable.getObjCType(var.getType());
+        String objcType = nameTable.getSpecificObjCType(var.getType());
         printf("\n+ (%s)%s;\n", objcType, accessorName);
         if (!Modifier.isFinal(var.getModifiers())) {
           printf("\n+ (void)set%s:(%s)value;\n", NameTable.capitalize(accessorName), objcType);
@@ -401,7 +401,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     newline();
     for (VariableDeclarationFragment fragment : fields) {
       IVariableBinding var = fragment.getVariableBinding();
-      String typeStr = nameTable.getObjCType(var.getType());
+      String typeStr = nameTable.getSpecificObjCType(var.getType());
+      if (typeStr.contains(",")) {
+        typeStr = "J2OBJC_ARG(" + typeStr + ')';
+      }
       String fieldName = nameTable.getVariableShortName(var);
       String isVolatile = BindingUtil.isVolatile(var) ? "_VOLATILE" : "";
       println(UnicodeUtils.format("J2OBJC%s_FIELD_SETTER(%s, %s, %s)",

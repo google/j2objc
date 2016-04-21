@@ -113,6 +113,11 @@ __attribute__((always_inline)) inline id JreAutoreleasedAssign(
 }
 #endif
 
+/*!
+ * Utility macro for passing an argument that contains a comma.
+ */
+#define J2OBJC_ARG(...) __VA_ARGS__
+
 #define J2OBJC_VOLATILE_ACCESS_DEFN(NAME, TYPE) \
   __attribute__((always_inline)) inline TYPE JreLoadVolatile##NAME(volatile_##TYPE *pVar) { \
     return __c11_atomic_load(pVar, __ATOMIC_SEQ_CST); \

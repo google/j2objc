@@ -739,6 +739,7 @@ public class NameTable {
   /**
    * Convert a Java type to an equivalent Objective-C type with type variables
    * resolved to their bounds.
+   * TODO(kstanger): Rename to getObjCType and remove expandBounds paramter from getObjCTypeInner.
    */
   public String getSpecificObjCType(ITypeBinding type) {
     return getObjCTypeInner(type, null, true);
@@ -757,7 +758,7 @@ public class NameTable {
    */
   public String getJniType(ITypeBinding type) {
     if (type.isPrimitive()) {
-      return getObjCType(type);
+      return getPrimitiveObjCType(type);
     }
     if (type.isArray()) {
       return "jarray";
@@ -769,14 +770,6 @@ public class NameTable {
       return "jclass";
     }
     return "jobject";
-  }
-
-  /**
-   * Convert a Java type to an equivalent Objective-C type with type variables
-   * converted to "id" regardless of their bounds.
-   */
-  public String getObjCType(ITypeBinding type) {
-    return getObjCTypeInner(type, null, false);
   }
 
   private String getObjCTypeInner(ITypeBinding type, String qualifiers, boolean expandBounds) {

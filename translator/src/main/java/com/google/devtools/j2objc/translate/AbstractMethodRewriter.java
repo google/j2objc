@@ -183,8 +183,8 @@ public class AbstractMethodRewriter extends TreeVisitor {
           continue;
         }
         if (declaredReturnType != returnType
-            && !nameTable.getObjCType(declaredReturnType).equals(
-                nameTable.getObjCType(returnType))) {
+            && !nameTable.getSpecificObjCType(declaredReturnType).equals(
+                nameTable.getSpecificObjCType(returnType))) {
           newDeclarations.put(selector, method);
           declaredReturnTypes.put(selector, returnType);
         }
