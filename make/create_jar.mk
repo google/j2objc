@@ -22,6 +22,7 @@
 #
 # Author: Keith Stanger
 
+CREATE_JAR_ARGS_FILE = $(BUILD_DIR)/.$(CREATE_JAR_NAME)_javac_args
 CREATE_JAR_RESULT = $(BUILD_DIR)/$(CREATE_JAR_NAME).jar
 CREATE_JAR_STAGE_DIR := $(shell echo /tmp/j2objc_$(CREATE_JAR_NAME)_$$$$)
 
@@ -33,5 +34,6 @@ $(CREATE_JAR_RESULT): $(CREATE_JAR_SOURCES) | $(CREATE_JAR_DEPENDENCIES)
 	@echo "Building $(notdir $@)"
 	@rm -rf $(CREATE_JAR_STAGE_DIR)
 	@mkdir $(CREATE_JAR_STAGE_DIR)
-	@$(JAVAC) $(CREATE_JAR_JAVAC_ARGS) -d $(CREATE_JAR_STAGE_DIR) $^
+	$(call long_list_to_file,$(CREATE_JAR_ARGS_FILE),$^)
+	@$(JAVAC) $(CREATE_JAR_JAVAC_ARGS) -d $(CREATE_JAR_STAGE_DIR) @$(CREATE_JAR_ARGS_FILE)
 	@jar cf $@ -C $(CREATE_JAR_STAGE_DIR) .
