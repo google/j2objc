@@ -105,7 +105,7 @@ public class NameTableTest extends GenerationTest {
     });
     assertNotNull(methodBinding[0]);
     ITypeBinding paramType = methodBinding[0].getParameterTypes()[0];
-    assertEquals("id", nameTable.getSpecificObjCType(paramType));
+    assertEquals("id", nameTable.getObjCType(paramType));
   }
 
   public void testPrimitiveArrayParameterName() throws IOException {

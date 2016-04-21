@@ -122,7 +122,7 @@ public class AnnotationRewriter extends TreeVisitor {
       IMethodBinding memberBinding = member.getMethodBinding();
       ITypeBinding memberType = memberBinding.getReturnType();
       String propName = NameTable.getAnnotationPropertyName(memberBinding);
-      String memberTypeStr = nameTable.getSpecificObjCType(memberType);
+      String memberTypeStr = nameTable.getObjCType(memberType);
 
       String fieldName = nameTable.getVariableShortName(fieldBindings.get(memberBinding));
       propertyDecls.append(UnicodeUtils.format("@property (readonly) %s%s%s;\n",

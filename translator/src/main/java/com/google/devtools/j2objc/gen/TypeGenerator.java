@@ -252,7 +252,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     if (BindingUtil.isVolatile(var)) {
       return "volatile_" + NameTable.getPrimitiveObjCType(type);
     } else {
-      return nameTable.getSpecificObjCType(type);
+      return nameTable.getObjCType(type);
     }
   }
 
@@ -263,7 +263,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     StringBuilder sb = new StringBuilder();
     IMethodBinding binding = m.getMethodBinding();
     char prefix = Modifier.isStatic(m.getModifiers()) ? '+' : '-';
-    String returnType = nameTable.getSpecificObjCType(binding.getReturnType());
+    String returnType = nameTable.getObjCType(binding.getReturnType());
     String selector = nameTable.getMethodSelector(binding);
     if (m.isConstructor()) {
       returnType = "instancetype";
@@ -288,7 +288,7 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
           sb.append(pad(baseLength - selParts[i].length()));
         }
         IVariableBinding var = params.get(i).getVariableBinding();
-        String typeName = nameTable.getSpecificObjCType(var.getType());
+        String typeName = nameTable.getObjCType(var.getType());
         sb.append(UnicodeUtils.format("%s:(%s%s)%s", selParts[i], typeName, nullability(var, true),
             nameTable.getVariableShortName(var)));
       }
@@ -383,13 +383,13 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
 
   protected String getFunctionSignature(FunctionDeclaration function) {
     StringBuilder sb = new StringBuilder();
-    String returnType = nameTable.getSpecificObjCType(function.getReturnType().getTypeBinding());
+    String returnType = nameTable.getObjCType(function.getReturnType().getTypeBinding());
     returnType += returnType.endsWith("*") ? "" : " ";
     sb.append(returnType).append(function.getName()).append('(');
     for (Iterator<SingleVariableDeclaration> iter = function.getParameters().iterator();
          iter.hasNext(); ) {
       IVariableBinding var = iter.next().getVariableBinding();
-      String paramType = nameTable.getSpecificObjCType(var.getType());
+      String paramType = nameTable.getObjCType(var.getType());
       paramType += (paramType.endsWith("*") ? "" : " ");
       sb.append(paramType + nameTable.getVariableShortName(var));
       if (iter.hasNext()) {

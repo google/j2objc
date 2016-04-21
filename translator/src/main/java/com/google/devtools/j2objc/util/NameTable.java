@@ -739,18 +739,17 @@ public class NameTable {
   /**
    * Convert a Java type to an equivalent Objective-C type with type variables
    * resolved to their bounds.
-   * TODO(kstanger): Rename to getObjCType and remove expandBounds paramter from getObjCTypeInner.
    */
-  public String getSpecificObjCType(ITypeBinding type) {
-    return getObjCTypeInner(type, null, true);
+  public String getObjCType(ITypeBinding type) {
+    return getObjCTypeInner(type, null);
   }
 
-  public String getSpecificObjCType(IVariableBinding var) {
+  public String getObjCType(IVariableBinding var) {
     String qualifiers = null;
     if (var instanceof GeneratedVariableBinding) {
       qualifiers = ((GeneratedVariableBinding) var).getTypeQualifiers();
     }
-    return getObjCTypeInner(var.getType(), qualifiers, true);
+    return getObjCTypeInner(var.getType(), qualifiers);
   }
 
   /**
@@ -772,7 +771,7 @@ public class NameTable {
     return "jobject";
   }
 
-  private String getObjCTypeInner(ITypeBinding type, String qualifiers, boolean expandBounds) {
+  private String getObjCTypeInner(ITypeBinding type, String qualifiers) {
     String objCType;
     if (type instanceof PointerTypeBinding) {
       String pointeeQualifiers = null;
@@ -783,15 +782,10 @@ public class NameTable {
           qualifiers = qualifiers.substring(idx + 1);
         }
       }
-      objCType = getObjCTypeInner(
-          ((PointerTypeBinding) type).getPointeeType(), pointeeQualifiers, expandBounds);
+      objCType = getObjCTypeInner(((PointerTypeBinding) type).getPointeeType(), pointeeQualifiers);
       objCType = objCType.endsWith("*") ? objCType + "*" : objCType + " *";
     } else if (type.isTypeVariable() || type.isCapture() || type.isWildcardType()) {
-      if (expandBounds) {
-        objCType = constructObjCType(BindingUtil.getTypeBounds(type));
-      } else {
-        objCType = ID_TYPE;
-      }
+      objCType = constructObjCType(BindingUtil.getTypeBounds(type));
     } else if (BindingUtil.isCompound(type)) {
       // TODO(kstanger): Handle compound types in BindingUtil.getTypeBounds().
       objCType = constructObjCType(Arrays.asList(type.getInterfaces()));

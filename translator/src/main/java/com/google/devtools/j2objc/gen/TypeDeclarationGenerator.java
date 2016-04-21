@@ -220,7 +220,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       for (VariableDeclarationFragment fragment : getStaticFields()) {
         IVariableBinding var = fragment.getVariableBinding();
         String accessorName = nameTable.getStaticAccessorName(var);
-        String objcType = nameTable.getSpecificObjCType(var.getType());
+        String objcType = nameTable.getObjCType(var.getType());
         printf("\n+ (%s)%s;\n", objcType, accessorName);
         if (!Modifier.isFinal(var.getModifiers())) {
           printf("\n+ (void)set%s:(%s)value;\n", NameTable.capitalize(accessorName), objcType);
@@ -331,7 +331,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
             print(") ");
           }
 
-          String objcType = nameTable.getSpecificObjCType(varType);
+          String objcType = nameTable.getObjCType(varType);
           print(objcType);
           if (!objcType.endsWith("*")) {
             print(' ');
@@ -401,7 +401,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     newline();
     for (VariableDeclarationFragment fragment : fields) {
       IVariableBinding var = fragment.getVariableBinding();
-      String typeStr = nameTable.getSpecificObjCType(var.getType());
+      String typeStr = nameTable.getObjCType(var.getType());
       if (typeStr.contains(",")) {
         typeStr = "J2OBJC_ARG(" + typeStr + ')';
       }
@@ -428,7 +428,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
   private void printStaticFieldFullDeclaration(VariableDeclarationFragment fragment) {
     IVariableBinding var = fragment.getVariableBinding();
     boolean isVolatile = BindingUtil.isVolatile(var);
-    String objcType = nameTable.getSpecificObjCType(var.getType());
+    String objcType = nameTable.getObjCType(var.getType());
     String objcTypePadded = objcType + (objcType.endsWith("*") ? "" : " ");
     String declType = getDeclarationType(var);
     declType += (declType.endsWith("*") ? "" : " ");
@@ -725,7 +725,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
           sb.append('\n');
           sb.append(pad(baseLength - selParts[i].length()));
         }
-        String typeName = nameTable.getSpecificObjCType(params[i]);
+        String typeName = nameTable.getObjCType(params[i]);
         sb.append(UnicodeUtils.format("%s:(%s)arg%d", selParts[i], typeName, i));
       }
     }

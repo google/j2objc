@@ -179,7 +179,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
         boolean isPrimitive = type.isPrimitive();
         String accessorName = nameTable.getStaticAccessorName(varBinding);
         String varName = nameTable.getVariableQualifiedName(varBinding);
-        String objcType = nameTable.getSpecificObjCType(type);
+        String objcType = nameTable.getObjCType(type);
         String typeSuffix = isPrimitive ? NameTable.capitalize(type.getName()) : "Id";
         if (isVolatile) {
           printf("\n+ (%s)%s {\n  return JreLoadVolatile%s(&%s);\n}\n",
@@ -318,7 +318,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
       if (returnType.isPrimitive()) {
         print("return ");
       } else {
-        printf("return (%s) ", nameTable.getSpecificObjCType(returnType));
+        printf("return (%s) ", nameTable.getObjCType(returnType));
       }
     }
     print(function.getJniSignature());

@@ -93,7 +93,7 @@ public class CompoundTypeTest extends GenerationTest {
           // its return statement is.
           ReturnStatement stmt = (ReturnStatement) function.getBody().getStatements().get(0);
           ITypeBinding binding = stmt.getExpression().getTypeBinding();
-          String typeName = unit.getNameTable().getSpecificObjCType(binding);
+          String typeName = unit.getNameTable().getObjCType(binding);
           assertEquals("id<FooBarTest, JavaIoSerializable>", typeName);
           return;
         }

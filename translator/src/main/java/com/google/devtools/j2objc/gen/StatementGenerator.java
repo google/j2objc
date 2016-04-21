@@ -320,7 +320,7 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(CastExpression node) {
     ITypeBinding type = node.getType().getTypeBinding();
     buffer.append("(");
-    buffer.append(nameTable.getSpecificObjCType(type));
+    buffer.append(nameTable.getObjCType(type));
     buffer.append(") ");
     node.getExpression().accept(this);
     return false;
@@ -485,7 +485,7 @@ public class StatementGenerator extends TreeVisitor {
             delimiterFlag = true;
           }
           if (withTypes) {
-            buffer.append(nameTable.getSpecificObjCType(t));
+            buffer.append(nameTable.getObjCType(t));
             buffer.append(' ');
           }
           buffer.append(var);
@@ -500,7 +500,7 @@ public class StatementGenerator extends TreeVisitor {
             delimiterFlag = true;
           }
           if (withTypes) {
-            buffer.append(nameTable.getSpecificObjCType(t));
+            buffer.append(nameTable.getObjCType(t));
             buffer.append(' ');
           }
           buffer.append(var);
@@ -516,7 +516,7 @@ public class StatementGenerator extends TreeVisitor {
   private void printBlockPreExpression(IMethodBinding functionalInterface,
       ITypeBinding returnType) {
     buffer.append('^');
-    buffer.append(nameTable.getSpecificObjCType(returnType));
+    buffer.append(nameTable.getObjCType(returnType));
     // Required argument for imp_implementationWithBlock.
     buffer.append("(id _self");
     if (functionalInterface.getParameterTypes().length > 0) {
@@ -740,7 +740,7 @@ public class StatementGenerator extends TreeVisitor {
     boolean isSelector = false;
     ITypeBinding returnType = methodBinding.getReturnType();
     printBlockPreExpression(methodBinding, returnType);
-    buffer.append(nameTable.getSpecificObjCType(returnType));
+    buffer.append(nameTable.getObjCType(returnType));
     buffer.append(" (^block)");
     buffer.append(Options.getLanguage() == Options.OutputLanguageOption.OBJECTIVE_CPLUSPLUS
         ? "(...)" : "()");
@@ -835,13 +835,13 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append(",\n");
     }
     buffer.append('^');
-    buffer.append(nameTable.getSpecificObjCType(functionalInterface.getReturnType()));
+    buffer.append(nameTable.getObjCType(functionalInterface.getReturnType()));
     // Required argument for imp_implementationWithBlock.
     buffer.append("(id _self");
     for (VariableDeclaration x : parameters) {
       IVariableBinding variableBinding = x.getVariableBinding();
       buffer.append(", ");
-      buffer.append(nameTable.getSpecificObjCType(x.getVariableBinding().getType()));
+      buffer.append(nameTable.getObjCType(x.getVariableBinding().getType()));
       buffer.append(' ');
       buffer.append(nameTable.getVariableQualifiedName(variableBinding.getVariableDeclaration()));
     }
@@ -1072,7 +1072,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(SingleVariableDeclaration node) {
-    buffer.append(nameTable.getSpecificObjCType(node.getVariableBinding()));
+    buffer.append(nameTable.getObjCType(node.getVariableBinding()));
     if (node.isVarargs()) {
       buffer.append("...");
     }
@@ -1373,7 +1373,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(VariableDeclarationExpression node) {
-    String typeString = nameTable.getSpecificObjCType(node.getTypeBinding());
+    String typeString = nameTable.getObjCType(node.getTypeBinding());
     boolean needsAsterisk = typeString.endsWith("*");
     buffer.append(typeString);
     if (!needsAsterisk) {
@@ -1412,7 +1412,7 @@ public class StatementGenerator extends TreeVisitor {
     if (BindingUtil.suppressesWarning("unused", binding)) {
       buffer.append("__unused ");
     }
-    String objcType = nameTable.getSpecificObjCType(binding);
+    String objcType = nameTable.getObjCType(binding);
     String objcTypePointers = " ";
     int idx = objcType.indexOf(" *");
     if (idx != -1) {
