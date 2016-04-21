@@ -54,8 +54,15 @@ ifndef GEN_JAVA_DIR
 GEN_JAVA_DIR = $(BUILD_DIR)/java
 endif
 
+TVOS_AVAILABLE = \
+  $(shell if xcodebuild -version -sdk appletvos >/dev/null 2>&1; \
+  then echo "YES"; else echo "NO"; fi)
+
 ifndef J2OBJC_ARCHS
-J2OBJC_ARCHS = macosx iphone iphone64 watchv7k simulator simulator64 appletvos appletvsimulator
+J2OBJC_ARCHS = macosx iphone iphone64 watchv7k simulator simulator64
+ifeq ($(TVOS_AVAILABLE), YES)
+J2OBJC_ARCHS += appletvos appletvsimulator
+endif
 endif
 
 # xcrun finds a specified tool in the current SDK /usr/bin directory.
