@@ -36,7 +36,7 @@ import java.io.IOException;
  */
 public class CompoundTypeTest extends GenerationTest {
 
-  // Test BindingUtil.isCompound(ITypeBinding).
+  // Test BindingUtil.isIntersectionType(ITypeBinding).
   public void testIsCompound() throws Exception {
     Options.setSourceVersion(SourceVersion.JAVA_8);
     createParser();
@@ -54,7 +54,7 @@ public class CompoundTypeTest extends GenerationTest {
         // Verify a normal type isn't marked as compound.
         if (method.getName().getIdentifier().equals("reversed")) {
           ITypeBinding binding = method.getReturnType().getTypeBinding();
-          assertFalse(BindingUtil.isCompound(binding));
+          assertFalse(BindingUtil.isIntersectionType(binding));
           methodsFound++;
         }
       }
@@ -66,7 +66,7 @@ public class CompoundTypeTest extends GenerationTest {
           // its return statement is.
           ReturnStatement stmt = (ReturnStatement) function.getBody().getStatements().get(0);
           ITypeBinding binding = stmt.getExpression().getTypeBinding();
-          assertTrue(BindingUtil.isCompound(binding));
+          assertTrue(BindingUtil.isIntersectionType(binding));
           methodsFound++;
         }
       }

@@ -37,7 +37,6 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -784,15 +783,10 @@ public class NameTable {
       }
       objCType = getObjCTypeInner(((PointerTypeBinding) type).getPointeeType(), pointeeQualifiers);
       objCType = objCType.endsWith("*") ? objCType + "*" : objCType + " *";
-    } else if (type.isTypeVariable() || type.isCapture() || type.isWildcardType()) {
-      objCType = constructObjCType(BindingUtil.getTypeBounds(type));
-    } else if (BindingUtil.isCompound(type)) {
-      // TODO(kstanger): Handle compound types in BindingUtil.getTypeBounds().
-      objCType = constructObjCType(Arrays.asList(type.getInterfaces()));
     } else if (type.isPrimitive()) {
       objCType = getPrimitiveObjCType(type);
     } else {
-      objCType = constructObjCType(Collections.singletonList(type));
+      objCType = constructObjCType(BindingUtil.getTypeBounds(type));
     }
     if (qualifiers != null) {
       qualifiers = qualifiers.trim();

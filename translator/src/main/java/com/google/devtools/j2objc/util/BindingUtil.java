@@ -218,10 +218,11 @@ public final class BindingUtil {
    * then the returned bounds are the bindings for the class Foo, and interfaces
    * Bar and Baz. If one of the bounds is a class type, then that type will be
    * the first element in the list.
-   * TODO(kstanger): Use this method in NameTable.
    */
   public static List<ITypeBinding> getTypeBounds(ITypeBinding type) {
-    if (!(type.isTypeVariable() || type.isCapture() || type.isWildcardType())) {
+    if (isIntersectionType(type)) {
+      return Arrays.asList(type.getInterfaces());
+    } else if (!(type.isTypeVariable() || type.isCapture() || type.isWildcardType())) {
       return Collections.singletonList(type);
     }
     List<ITypeBinding> bounds = new ArrayList<>();
@@ -711,13 +712,13 @@ public final class BindingUtil {
   }
 
   /**
-   * Returns true if the binding is a Java 8 compound type. For example,
+   * Returns true if the binding is a Java 8 intersection type. For example,
    * Comparator.thenComparing() returns a lambda with a return type of
    * "Comparator<T> & Serializable". Since there's no ITypeBinding
-   * isCompound(), we rely on the JDT returning an empty string for the
+   * isIntersectionType(), we rely on the JDT returning an empty string for the
    * type's qualified name.
    */
-  public static boolean isCompound(ITypeBinding binding) {
+  public static boolean isIntersectionType(ITypeBinding binding) {
     return binding.isInterface() && binding.getQualifiedName().isEmpty();
   }
 

@@ -116,30 +116,18 @@ public class Import implements Comparable<Import> {
 
   public static void addImports(
       ITypeBinding binding, Collection<Import> imports, CompilationUnit unit) {
-    if (binding == null || binding.isPrimitive()) {
+    if (binding == null || binding.isPrimitive() || BindingUtil.isLambda(binding)) {
       return;
     }
     if (binding instanceof PointerTypeBinding) {
       addImports(((PointerTypeBinding) binding).getPointeeType(), imports, unit);
       return;
     }
-    if (binding.isTypeVariable()) {
-      for (ITypeBinding bound : binding.getTypeBounds()) {
-        addImports(bound, imports, unit);
+    for (ITypeBinding bound : BindingUtil.getTypeBounds(binding)) {
+      bound = unit.getTypeEnv().mapType(bound.getErasure());
+      if (!FOUNDATION_TYPES.contains(bound.getName())) {
+        imports.add(new Import(bound, unit.getNameTable()));
       }
-      return;
-    }
-    binding = unit.getTypeEnv().mapType(binding.getErasure());
-    // We don't need imports for foundation types or lambdas.
-    if (FOUNDATION_TYPES.contains(binding.getName()) || BindingUtil.isLambda(binding)) {
-      return;
-    }
-    if (BindingUtil.isCompound(binding)) {
-      for (ITypeBinding t : binding.getInterfaces()) {
-        imports.add(new Import(t, unit.getNameTable()));
-      }
-    } else {
-      imports.add(new Import(binding, unit.getNameTable()));
     }
   }
 }
