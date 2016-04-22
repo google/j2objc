@@ -37,6 +37,7 @@
 #import "NSNumber+JavaNumber.h"
 #import "NSObject+JavaObject.h"
 #import "NSString+JavaString.h"
+#import "com/google/j2objc/ReflectionStrippedError.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/ClassLoader.h"
@@ -939,10 +940,7 @@ JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, jboo
                                       withMetadata:fieldMeta];
       }
     } else {
-      Ivar ivar = FindIvar(iosClass, name);
-      if (ivar) {
-        return [JavaLangReflectField fieldWithIvar:ivar withClass:iosClass withMetadata:nil];
-      }
+      @throw create_ComGoogleJ2objcReflectionStrippedError_init();
     }
   }
   return nil;
