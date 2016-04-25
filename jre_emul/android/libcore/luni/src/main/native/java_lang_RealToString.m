@@ -515,10 +515,7 @@ void longDigitGenerator(
   } else {
     *firstK = k - 1;
     R = R * 10;
-    // The only effect M has is to stop computing further digits; it does not
-    // affect the actual digits computed or the exponent computed. Commenting
-    // out this line helps us match Java's behavior on the desktop.
-    // M = M * 10;
+    M = M * 10;
   }
 
   BOOL low, high;
