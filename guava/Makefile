@@ -21,7 +21,7 @@ default: dist
 include environment.mk
 
 JAVA_SOURCES_INCLUDE = $(BUILD_DIR)/java_sources.mk
-ifneq ($(findstring clean,$(notdir $(MAKECMDGOALS))),clean)
+ifndef IS_CLEAN_GOAL
 -include $(JAVA_SOURCES_INCLUDE)
 endif
 

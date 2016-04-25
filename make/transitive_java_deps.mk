@@ -41,7 +41,7 @@ TRANSITIVE_JAVA_DEPS_ROOT_LIST = $(BUILD_DIR)/$(TRANSITIVE_JAVA_DEPS_NAME)_root_
 
 TRANSITIVE_JAVA_DEPS_SOURCEPATH_LIST = $(subst :, ,$(TRANSITIVE_JAVA_DEPS_SOURCEPATH))
 
-ifneq ($(findstring clean,$(notdir $(MAKECMDGOALS))),clean)
+ifndef IS_CLEAN_GOAL
 ifeq ($(wildcard $(TRANSITIVE_JAVA_DEPS_INCLUDE)),)
 # Avoid a warning from the include directive that the file doesn't exist, then
 # immediately delete the file so that make rebuilds it correctly.

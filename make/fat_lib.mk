@@ -37,7 +37,7 @@ FAT_LIB_PLISTS = \
   $(foreach src,$(FAT_LIB_SOURCES_RELATIVE),$(FAT_LIB_PLIST_DIR)/$(basename $(src)).plist)
 FAT_LIB_OBJS = $(foreach file,$(FAT_LIB_SOURCES_RELATIVE),$(basename $(file)).o)
 
-ifneq ($(MAKECMDGOALS),clean)
+ifndef IS_CLEAN_GOAL
 
 $(call emit_compile_rules,$(FAT_LIB_SOURCE_DIRS),$(FAT_LIB_COMPILE),$(FAT_LIB_PRECOMPILED_HEADER))
 
@@ -52,4 +52,4 @@ $(ARCH_LIB_DIR)/%.a: $(ARCH_BUILD_DIR)/%.a
 analyze: $(FAT_LIB_PLISTS)
 	@:
 
-endif  # ifneq ($(MAKECMDGOALS),clean)
+endif  # ifndef IS_CLEAN_GOAL

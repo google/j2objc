@@ -44,7 +44,7 @@ DIST_JAR = $(DIST_JAR_DIR)/protobuf_runtime.jar
 OBJC_SOURCES_MANIFEST = $(BUILD_DIR)/objc_sources.mf
 
 ifndef PROTOBUF_ROOT_DIR
-ifneq "$(findstring clean,$(MAKECMDGOALS))" "clean"
+ifndef IS_CLEAN_GOAL
 $(error PROTOBUF_ROOT_DIR not defined)
 endif
 endif

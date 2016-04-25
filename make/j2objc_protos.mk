@@ -14,7 +14,7 @@
 # Author: Keith Stanger
 
 J2OBJC_PROTOS_GENERATED_FILES_INCLUDE = $(BUILD_DIR)/j2objc_protos_generated_files.mk
-ifneq ($(findstring clean,$(notdir $(MAKECMDGOALS))),clean)
+ifndef IS_CLEAN_GOAL
 ifeq ($(wildcard $(J2OBJC_PROTOS_GENERATED_FILES_INCLUDE)),)
 # Avoid a warning from the include directive that the file doesn't exist, then
 # immediately delete the file so that make rebuilds it correctly.

@@ -22,15 +22,15 @@ SUFFIXES:
 
 default: dist
 
-# Force test targets to be run sequentially to avoid interspersed output.
-ifeq "$(findstring test,$(MAKECMDGOALS))" "test"
-.NOTPARALLEL:
-endif
-
 J2OBJC_ROOT = .
 
 include make/common.mk
 include make/j2objc_deps.mk
+
+# Force test targets to be run sequentially to avoid interspersed output.
+ifdef IS_TEST_GOAL
+.NOTPARALLEL:
+endif
 
 MAN_DIR = doc/man
 MAN_PAGES = $(MAN_DIR)/j2objc.1 $(MAN_DIR)/j2objcc.1
