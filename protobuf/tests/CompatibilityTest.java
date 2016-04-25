@@ -100,6 +100,7 @@ public class CompatibilityTest extends ProtobufTest {
   }
 
   public void testObjcClassPrefix() throws Exception {
+    @SuppressWarnings("unused")
     PrefixDummy2 dummy2 = PrefixDummy2.newBuilder().build();
   }
 
@@ -346,6 +347,7 @@ public class CompatibilityTest extends ProtobufTest {
   public void testMergeFromInvalidProtocolBufferException() throws Exception {
     try {
       ByteArrayInputStream in = new ByteArrayInputStream(new byte[]{ 0x00 });
+      @SuppressWarnings("unused")
       TypicalData output = TypicalData.newBuilder()
           .mergeFrom(in, ExtensionRegistry.getEmptyRegistry())
           .build();
@@ -369,6 +371,7 @@ public class CompatibilityTest extends ProtobufTest {
 
   public void testParseFromInvalidProtocolBufferException() throws Exception {
     try {
+      @SuppressWarnings("unused")
       TypicalData output = TypicalData.parseFrom(new byte[]{ 0x08 });
       fail("Expected InvalidProtocolBufferException to be thrown.");
     } catch (InvalidProtocolBufferException e) {
@@ -379,6 +382,7 @@ public class CompatibilityTest extends ProtobufTest {
   public void testParseDelimitedFromInvalidProtocolBufferException() throws Exception {
     try {
       ByteArrayInputStream in = new ByteArrayInputStream(new byte[]{ 0x03, 0x01, 0x02 });
+      @SuppressWarnings("unused")
       TypicalData output = TypicalData.parseDelimitedFrom(in);
       fail("Expected InvalidProtocolBufferException to be thrown.");
     } catch (InvalidProtocolBufferException e) {
@@ -884,12 +888,16 @@ public class CompatibilityTest extends ProtobufTest {
   }
 
   public void testFunnyNames() throws Exception {
+    @SuppressWarnings("unused")
     Foo_bar msg1 = Foo_bar.newBuilder().build();
+    @SuppressWarnings("unused")
     Foo2bar msg2 = Foo2bar.newBuilder().build();
+    @SuppressWarnings("unused")
     fooBar msg3 = fooBar.newBuilder().build();
   }
 
   public void testPackagePrefix() throws Exception {
+    @SuppressWarnings("unused")
     PrefixDummy dummy = PrefixDummy.newBuilder().build();
   }
 
