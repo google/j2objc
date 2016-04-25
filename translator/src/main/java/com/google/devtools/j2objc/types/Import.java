@@ -124,7 +124,7 @@ public class Import implements Comparable<Import> {
       return;
     }
     for (ITypeBinding bound : BindingUtil.getTypeBounds(binding)) {
-      bound = unit.getTypeEnv().mapType(bound.getErasure());
+      bound = unit.getTypeEnv().mapType(bound);
       if (!FOUNDATION_TYPES.contains(bound.getName())) {
         imports.add(new Import(bound, unit.getNameTable()));
       }

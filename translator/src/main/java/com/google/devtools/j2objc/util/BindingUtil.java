@@ -213,47 +213,63 @@ public final class BindingUtil {
   }
 
   /**
-   * Gets the list of types that would be included in a ObjC declaration for
-   * this type. For example, if the type would be declared as "Foo<Bar, Baz> *"
-   * then the returned bounds are the bindings for the class Foo, and interfaces
-   * Bar and Baz. If one of the bounds is a class type, then that type will be
-   * the first element in the list.
+   * Gets the list of erased types that would be included in a ObjC declaration
+   * for this type. For example, if the type would be declared as
+   * "Foo<Bar, Baz> *" then the returned bounds are the bindings for the class
+   * Foo, and interfaces Bar and Baz. If one of the bounds is a class type, then
+   * that type will be the first element in the list.
    */
   public static List<ITypeBinding> getTypeBounds(ITypeBinding type) {
     if (isIntersectionType(type)) {
-      return Arrays.asList(type.getInterfaces());
+      return getIntersectionTypeBounds(type);
     } else if (!(type.isTypeVariable() || type.isCapture() || type.isWildcardType())) {
-      return Collections.singletonList(type);
+      return Collections.singletonList(type.getErasure());
     }
     List<ITypeBinding> bounds = new ArrayList<>();
+    // The first element of the list will be the class type. If it is still null
+    // after collecting the bounds then remove it.
+    bounds.add(null);
     collectBounds(type, bounds);
-    // Look for a class type and move it to the front of the list.
-    boolean classTypeFound = false;
-    for (int i = 0; i < bounds.size(); i++) {
-      if (!bounds.get(i).isInterface()) {
-        assert !classTypeFound : "Type has multiple class type bounds";
-        classTypeFound = true;
-        if (i > 0) {
-          bounds.add(0, bounds.remove(i));
-        }
-      }
+    if (bounds.get(0) == null) {
+      bounds.remove(0);
     }
     return bounds;
   }
 
-  private static boolean collectBounds(ITypeBinding type, List<ITypeBinding> bounds) {
+  private static List<ITypeBinding> getIntersectionTypeBounds(ITypeBinding type) {
+    ITypeBinding[] interfaces = type.getInterfaces();
+    List<ITypeBinding> bounds = new ArrayList<>(interfaces.length);
+    for (ITypeBinding bound : interfaces) {
+      bounds.add(bound.getErasure());
+    }
+    return bounds;
+  }
+
+  private static void collectBounds(ITypeBinding type, List<ITypeBinding> bounds) {
     ITypeBinding[] boundsArr = type.getTypeBounds();
     if (boundsArr.length == 0) {
       if (type.isWildcardType()) {
-        bounds.addAll(Arrays.asList(type.getInterfaces()));
+        for (ITypeBinding intrface : type.getInterfaces()) {
+          addBound(intrface, bounds);
+        }
       }
-      bounds.add(type.getErasure());
+      addBound(type, bounds);
     } else {
       for (ITypeBinding bound : boundsArr) {
         collectBounds(bound, bounds);
       }
     }
-    return true;
+  }
+
+  private static void addBound(ITypeBinding type, List<ITypeBinding> bounds) {
+    type = type.getErasure();
+    if (type.isInterface()) {
+      bounds.add(type);
+    } else if (bounds.get(0) != null) {
+      throw new AssertionError("Type has multiple class type bounds");
+    } else {
+      bounds.set(0, type);
+    }
   }
 
   /**
