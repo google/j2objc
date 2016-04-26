@@ -216,7 +216,7 @@ public class JUnitTestRunner {
     int classCount = objc_getClassList(NULL, 0);
     Class *classes = (Class *)malloc(classCount * sizeof(Class));
     objc_getClassList(classes, classCount);
-    id<JavaUtilSet> result = [ComGoogleCommonCollectSets newHashSet];
+    id<JavaUtilSet> result = AUTORELEASE([[JavaUtilHashSet alloc] init]);
     for (int i = 0; i < classCount; i++) {
       @try {
         Class cls = classes[i];
@@ -332,7 +332,6 @@ public class JUnitTestRunner {
     } catch (IOException e) {
       onError(e);
     }
-    ClassLoader classLoader = ClassLoader.getSystemClassLoader();
     Set<String> propertyNames = properties.stringPropertyNames();
     for (String key : propertyNames) {
       String value = properties.getProperty(key);
