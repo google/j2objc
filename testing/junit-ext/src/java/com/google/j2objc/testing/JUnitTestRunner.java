@@ -14,8 +14,6 @@
 
 package com.google.j2objc.testing;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.WeakOuter;
 
@@ -38,6 +36,8 @@ import java.io.PrintStream;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
@@ -91,10 +91,10 @@ public class JUnitTestRunner {
   }
 
   private final PrintStream out;
-  private final Set<String> includePatterns = Sets.newHashSet();
-  private final Set<String> excludePatterns = Sets.newHashSet();
-  private final Map<String, String> nameMappings = Maps.newHashMap();
-  private final Map<String, String> randomNames = Maps.newHashMap();
+  private final Set<String> includePatterns = new HashSet<>();
+  private final Set<String> excludePatterns = new HashSet<>();
+  private final Map<String, String> nameMappings = new HashMap<>();
+  private final Map<String, String> randomNames = new HashMap<>();
   private final Random random = new Random(System.currentTimeMillis());
   private OutputFormat outputFormat = OutputFormat.JUNIT;
   private SortOrder sortOrder = SortOrder.ALPHABETICAL;
@@ -289,7 +289,7 @@ public class JUnitTestRunner {
    */
   private Set<Class> getTestClasses() {
     Set<Class> allTestClasses = getAllTestClasses();
-    Set<Class> includedClasses = Sets.newHashSet();
+    Set<Class> includedClasses = new HashSet<>();
 
     if (includePatterns.isEmpty()) {
       // Include all tests if no include patterns specified.
