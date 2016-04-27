@@ -872,6 +872,12 @@ public class NameTable {
     }
 
     // Use camel-cased package+class name.
+    if (BindingUtil.isIntersectionType(binding)) {
+      ITypeBinding[] interfaces = binding.getInterfaces();
+      if (interfaces.length > 0) {
+        return getFullName(interfaces[0]);
+      }
+    }
     return getPrefix(binding.getPackage()) + binding.getName();
   }
 

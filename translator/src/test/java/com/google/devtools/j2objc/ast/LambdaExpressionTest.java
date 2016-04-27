@@ -168,4 +168,19 @@ public class LambdaExpressionTest extends GenerationTest {
         + "}", "Test", "Test.m");
     assertTranslation(translation, "#include \"java/util/Comparator.h\"");
   }
+
+  public void testClassLiteralNamesInLambda() throws IOException {
+    String translation = translateSourceFile("package foo.bar; import java.io.Serializable; "
+        + "interface Comparator<T> {"
+        + "  int compare(T o1, T o2);"
+        + "  default Comparator<T> thenComparing(Comparator<? super T> other) {"
+        + "    return (Comparator<T> & Serializable) (c1, c2) -> {"
+        + "      int res = compare(c1, c2);"
+        + "      return (res != 0) ? res : other.compare(c1, c2);"
+        + "    }; "
+        + "  }"
+        + "}", "Comparator", "foo/bar/Comparator.m");
+    assertTranslation(translation, "GetCapturingLambda([FooBarComparator class]");
+    assertTranslation(translation, "FooBarComparator_class_()");
+  }
 }
