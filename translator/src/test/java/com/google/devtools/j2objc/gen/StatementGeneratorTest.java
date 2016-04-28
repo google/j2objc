@@ -1399,6 +1399,7 @@ public class StatementGeneratorTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslation(translation, "@catch (Test_FirstException *e) {\n    @throw e;\n  }");
     assertTranslation(translation, "@catch (Test_SecondException *e) {\n    @throw e;\n  }");
+    assertNotInTranslation(translation, "@catch (JavaLangException *e) {\n    @throw e;\n  }");
   }
 
   public void testDifferentTypesInConditionalExpression() throws IOException {
