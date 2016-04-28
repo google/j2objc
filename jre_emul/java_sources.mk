@@ -350,8 +350,8 @@ JAVA_PUBLIC_SOURCES_CORE = \
   sun/misc/Unsafe.java
 
 JAVA_PRIVATE_SOURCES_CORE = \
-  com/google/j2objc/ReflectionStrippedError.java \
   com/google/j2objc/LibraryNotLinkedError.java \
+  com/google/j2objc/ReflectionStrippedError.java \
   com/google/j2objc/util/ScopedLocalRef.java \
   dalvik/system/BlockGuard.java \
   dalvik/system/CloseGuard.java \
