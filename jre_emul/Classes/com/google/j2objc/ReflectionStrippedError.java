@@ -23,15 +23,15 @@ package com.google.j2objc;
 public class ReflectionStrippedError extends Error {
 
   private static final String EXCEPTION_MESSAGE =
-      "Reflection is unavailable. Fix this by avoiding reflection or building without"
-          + " --strip-reflection.";
+      ": Reflection is unavailable. Fix this by avoiding reflection or building without"
+      + " --strip-reflection.";
 
   private static final long serialVersionUID = 1896945698960498962L;
 
   /**
    * Create a new ReflectionStrippedError.
    */
-  public ReflectionStrippedError() {
-    super(EXCEPTION_MESSAGE);
+  public ReflectionStrippedError(Class<?> cls) {
+    super(cls.getName() + EXCEPTION_MESSAGE);
   }
 }

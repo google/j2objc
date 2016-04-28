@@ -940,7 +940,7 @@ JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, jboo
                                       withMetadata:fieldMeta];
       }
     } else {
-      @throw create_ComGoogleJ2objcReflectionStrippedError_init();
+      @throw create_ComGoogleJ2objcReflectionStrippedError_initWithIOSClass_(iosClass);
     }
   }
   return nil;
