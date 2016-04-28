@@ -1279,12 +1279,13 @@ public class StatementGenerator extends TreeVisitor {
     for (CatchClause cc : node.getCatchClauses()) {
       if (cc.getException().getType() instanceof UnionType) {
         printMultiCatch(cc);
+      } else {
+        buffer.append("@catch (");
+        cc.getException().accept(this);
+        buffer.append(") {\n");
+        printStatements(cc.getBody().getStatements());
+        buffer.append("}\n");
       }
-      buffer.append("@catch (");
-      cc.getException().accept(this);
-      buffer.append(") {\n");
-      printStatements(cc.getBody().getStatements());
-      buffer.append("}\n");
     }
 
     if (node.getFinally() != null) {
