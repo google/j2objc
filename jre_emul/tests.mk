@@ -805,6 +805,9 @@ TRANSLATE_ARTIFACT_ARC := $(call emit_translate_rule,\
 
 TRANSLATE_ARTIFACTS = $(TRANSLATE_ARTIFACT) $(TRANSLATE_ARTIFACT_JAVA8) $(TRANSLATE_ARTIFACT_ARC)
 
+# Make sure any generated source files are generated prior to translation.
+translate_dependencies: $(COPIED_ARC_TEST_SOURCES:%=$(GEN_JAVA_DIR)/%)
+
 $(TRANSLATED_OBJC): $(TRANSLATE_ARTIFACT)
 	@:
 
