@@ -270,15 +270,4 @@ public abstract class AbstractTypeBinding extends AbstractBinding implements ITy
   public IBinding getDeclaringMember() {
     return null;
   }
-
-  // TODO(tball): enable once JDT 3.11 upgrade is finished.
-  // @Override
-  public boolean isIntersectionType() {
-    return false;
-  }
-
-  // @Override
-  public IAnnotationBinding[][] getTypeAnnotationsOnDimensions() {
-    return null;
-  }
 }
