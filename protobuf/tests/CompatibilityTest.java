@@ -1225,6 +1225,11 @@ public class CompatibilityTest extends ProtobufTest {
     assertNotNull(registryLite2);
   }
 
+  public void testExtensionRegistryGetEmpty() throws Exception {
+    assertNotNull(ExtensionRegistry.getEmptyRegistry());
+    assertNotNull(ExtensionRegistryLite.getEmptyRegistry());
+  }
+
   public void testMessageLiteToBuilderAndMergeFrom() throws Exception {
     TypicalData input = TypicalData.newBuilder().setMyInt(123).build();
     MessageLite msg = TypicalData.getDefaultInstance();

@@ -44,15 +44,19 @@ typedef ComGoogleProtobufExtensionRegistryLite CGPExtensionRegistryLite;
 
 @interface ComGoogleProtobufExtensionRegistryLite : NSObject
 
++ (ComGoogleProtobufExtensionRegistryLite *)getEmptyRegistry;
+
 - (ComGoogleProtobufExtensionRegistryLite *)getUnmodifiable;
 
 @end
 
-J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufExtensionRegistryLite)
+J2OBJC_STATIC_INIT(ComGoogleProtobufExtensionRegistryLite)
 
 CF_EXTERN_C_BEGIN
 
 ComGoogleProtobufExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_newInstance();
+
+ComGoogleProtobufExtensionRegistryLite *ComGoogleProtobufExtensionRegistryLite_getEmptyRegistry();
 
 void CGPExtensionRegistryAdd(
     CGPExtensionRegistryLite *registry, ComGoogleProtobufExtension *extension);
