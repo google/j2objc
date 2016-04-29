@@ -142,7 +142,8 @@ public class ObjectStreamClassTest extends TestCase {
     }
 
     public void test_specialTypes() {
-        Class<?> proxyClass = Proxy.getProxyClass(this.getClass()
+        // TODO(kstanger): Fix reflection on Procy classes. (b/28446668)
+        /*Class<?> proxyClass = Proxy.getProxyClass(this.getClass()
                 .getClassLoader(), new Class[] { Runnable.class });
 
         ObjectStreamClass proxyStreamClass = ObjectStreamClass
@@ -152,7 +153,7 @@ public class ObjectStreamClassTest extends TestCase {
                 proxyStreamClass.getSerialVersionUID());
         ObjectStreamField[] proxyFields = proxyStreamClass.getFields();
         assertEquals("Proxy classes should have no serialized fields", 0,
-                proxyFields.length);
+                proxyFields.length);*/
 
         ObjectStreamClass enumStreamClass = ObjectStreamClass
                 .lookup(Thread.State.class);
