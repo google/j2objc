@@ -524,12 +524,6 @@ public class NameTable {
   }
 
   public String getMethodSelector(IMethodBinding method) {
-    if (method instanceof IOSMethodBinding) {
-      return ((IOSMethodBinding) method).getSelector();
-    }
-    if (method.isConstructor() || BindingUtil.isStatic(method)) {
-      return selectorForOriginalBinding(method);
-    }
     return selectorForOriginalBinding(getOriginalMethodBindings(method).get(0));
   }
 
@@ -554,6 +548,9 @@ public class NameTable {
   }
 
   private String selectorForOriginalBinding(IMethodBinding method) {
+    if (method instanceof IOSMethodBinding) {
+      return ((IOSMethodBinding) method).getSelector();
+    }
     String selector = getRenamedMethodName(method);
     return selectorForMethodName(
         method, selector != null ? selector : getMethodName(method));
@@ -565,20 +562,19 @@ public class NameTable {
    * not returned by getMethodSelector().
    */
   public List<String> getExtraSelectors(IMethodBinding method) {
-    if (method instanceof IOSMethodBinding || method.isConstructor()
-        || BindingUtil.isStatic(method)) {
-      return Collections.emptyList();
-    }
-    List<IMethodBinding> originalMethods = getOriginalMethodBindings(method);
-    List<String> extraSelectors = new ArrayList<>();
-    String actualSelector = selectorForOriginalBinding(originalMethods.get(0));
-    for (int i = 1; i < originalMethods.size(); i++) {
-      String selector = selectorForOriginalBinding(originalMethods.get(i));
-      if (!selector.equals(actualSelector)) {
-        extraSelectors.add(selector);
+    List<String> allSelectors = getAllSelectors(method);
+    return allSelectors.subList(1, allSelectors.size());
+  }
+
+  public List<String> getAllSelectors(IMethodBinding method) {
+    List<String> selectors = new ArrayList<>();
+    for (IMethodBinding originalMethod : getOriginalMethodBindings(method)) {
+      String selector = selectorForOriginalBinding(originalMethod);
+      if (!selectors.contains(selector)) {
+        selectors.add(selector);
       }
     }
-    return extraSelectors;
+    return selectors;
   }
 
   /**
@@ -685,7 +681,8 @@ public class NameTable {
    */
   private List<IMethodBinding> getOriginalMethodBindings(IMethodBinding method) {
     method = method.getMethodDeclaration();
-    if (method.isConstructor() || BindingUtil.isStatic(method)) {
+    if (method.isConstructor() || BindingUtil.isStatic(method)
+        || method instanceof IOSMethodBinding) {
       return Collections.singletonList(method);
     }
     ITypeBinding declaringClass = method.getDeclaringClass();

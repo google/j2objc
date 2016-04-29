@@ -29,8 +29,8 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
 import com.google.devtools.j2objc.types.FunctionBinding;
-import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.types.IOSMethodBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
@@ -135,48 +135,55 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
         continue;
       }
 
-      // Create the method binding and declaration.
-      GeneratedMethodBinding binding = new GeneratedMethodBinding(method);
-
-      // Don't carry over the default method flag from the original binding.
-      binding.removeModifiers(Modifier.DEFAULT);
-      // Mark synthetic to avoid writing metadata.
-      binding.addModifiers(BindingUtil.ACC_SYNTHETIC);
-
-      binding.setDeclaringClass(type);
-      MethodDeclaration methodDecl = new MethodDeclaration(binding);
-      methodDecl.setHasDeclaration(false);
-
-      // The shim's only purpose is to call the default method implementation and returns it value
-      // if required.
-      String name = nameTable.getFullFunctionName(method);
-      FunctionBinding fb = new FunctionBinding(name, method.getReturnType(), type);
-      fb.addParameters(type);
-      fb.addParameters(method.getParameterTypes());
-      FunctionInvocation invocation = new FunctionInvocation(fb, method.getReturnType());
-
-      // All default method implementations require self as the first function call argument.
-      invocation.getArguments().add(new ThisExpression(type));
-
-      // For each parameter in the default method, assign a name, and use the name in both the
-      // method declaration and the function invocation.
-      for (int i = 0; i < method.getParameterTypes().length; i++) {
-        ITypeBinding paramType = method.getParameterTypes()[i];
-        String paramName = UnicodeUtils.format("arg%d", i);
-        GeneratedVariableBinding varBinding = new GeneratedVariableBinding(paramName, 0, paramType,
-            false, true, type, null);
-        methodDecl.getParameters().add(new SingleVariableDeclaration(varBinding));
-        invocation.getArguments().add(new SimpleName(varBinding));
+      for (String selector : nameTable.getAllSelectors(method)) {
+        node.getBodyDeclarations().add(createDefaultMethodShim(selector, method, type));
       }
-
-      Statement stmt = BindingUtil.isVoid(method.getReturnType())
-          ? new ExpressionStatement(invocation)
-          : new ReturnStatement(invocation);
-
-      Block block = new Block();
-      block.getStatements().add(stmt);
-      methodDecl.setBody(block);
-      node.getBodyDeclarations().add(methodDecl);
     }
+  }
+
+  private MethodDeclaration createDefaultMethodShim(
+      String selector, IMethodBinding method, ITypeBinding type) {
+    // Create the method binding and declaration.
+    IOSMethodBinding binding = IOSMethodBinding.newMappedMethod(selector, method);
+
+    // Don't carry over the default method flag from the original binding.
+    binding.removeModifiers(Modifier.DEFAULT);
+    // Mark synthetic to avoid writing metadata.
+    binding.addModifiers(BindingUtil.ACC_SYNTHETIC);
+
+    binding.setDeclaringClass(type);
+    MethodDeclaration methodDecl = new MethodDeclaration(binding);
+    methodDecl.setHasDeclaration(false);
+
+    // The shim's only purpose is to call the default method implementation and returns it value
+    // if required.
+    String name = nameTable.getFullFunctionName(method);
+    FunctionBinding fb = new FunctionBinding(name, method.getReturnType(), type);
+    fb.addParameters(type);
+    fb.addParameters(method.getParameterTypes());
+    FunctionInvocation invocation = new FunctionInvocation(fb, method.getReturnType());
+
+    // All default method implementations require self as the first function call argument.
+    invocation.getArguments().add(new ThisExpression(type));
+
+    // For each parameter in the default method, assign a name, and use the name in both the
+    // method declaration and the function invocation.
+    for (int i = 0; i < method.getParameterTypes().length; i++) {
+      ITypeBinding paramType = method.getParameterTypes()[i];
+      String paramName = UnicodeUtils.format("arg%d", i);
+      GeneratedVariableBinding varBinding = new GeneratedVariableBinding(paramName, 0, paramType,
+          false, true, type, null);
+      methodDecl.getParameters().add(new SingleVariableDeclaration(varBinding));
+      invocation.getArguments().add(new SimpleName(varBinding));
+    }
+
+    Statement stmt = BindingUtil.isVoid(method.getReturnType())
+        ? new ExpressionStatement(invocation)
+        : new ReturnStatement(invocation);
+
+    Block block = new Block();
+    block.getStatements().add(stmt);
+    methodDecl.setBody(block);
+    return methodDecl;
   }
 }

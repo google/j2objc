@@ -402,4 +402,19 @@ public class DefaultMethodsTest extends GenerationTest {
     String impl = translateSourceFile(source, "Test", "Test.m");
     assertTranslatedLines(impl, "IOSClass *A_type(id<A> self) {", "return [self getClass];", "}");
   }
+
+  public void testDefaultMethodWithMultipleSelectors() throws IOException {
+    addSourceFile("interface A <T> { void foo(T t); }", "A.java");
+    addSourceFile("interface B { void foo(String s); }", "B.java");
+    addSourceFile("interface C extends A<String>, B { default void foo(String s) {} }", "C.java");
+    addSourceFile("class D implements C {}", "D.java");
+    String headerC = translateSourceFile("C", "C.h");
+    String implD = translateSourceFile("D", "D.m");
+    assertTranslation(headerC, "- (void)fooWithId:(NSString *)s;");
+    assertTranslation(headerC, "- (void)fooWithNSString:(NSString *)s;");
+    assertTranslatedLines(implD,
+        "- (void)fooWithId:(NSString *)arg0 {", "C_fooWithNSString_(self, arg0);", "}");
+    assertTranslatedLines(implD,
+        "- (void)fooWithNSString:(NSString *)arg0 {", "C_fooWithNSString_(self, arg0);", "}");
+  }
 }
