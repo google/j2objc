@@ -610,6 +610,7 @@ TEST_SOURCES := \
 
 SUITE_SOURCES = \
     ConcurrencyTests.java \
+    com/google/j2objc/ReflectionTests.java \
     libcore/java/io/SmallTests.java \
     libcore/java/text/LargeTests.java \
     libcore/java/text/SmallTests.java \

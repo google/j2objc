@@ -54,7 +54,8 @@
     @"java.net Tests",           @"libcore.java.net.SmallTests",
     @"java.util.logging Tests",  @"org.apache.harmony.logging.tests.java.util.logging.AllTests",
     @"java.util.zip Tests",      @"libcore.java.util.zip.SmallTests",
-    @"JSON Tests",               @"org.json.SmallTests"
+    @"JSON Tests",               @"org.json.SmallTests",
+    @"Reflection Tests",         @"com.google.j2objc.ReflectionTests"
   ];
   self.testNames = [NSMutableArray array];
   self.testClasses = [NSMutableDictionary dictionary];

@@ -228,6 +228,7 @@
 		06CBF5891AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5651AFBEE2400CA582D /* UndeclaredThrowableExceptionTest.m */; };
 		06CBF58B1AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF5681AFBEE2400CA582D /* UndeclaredThrowableExceptionTests.m */; };
 		06CBF58D1AFBEE2400CA582D /* WildcardTypeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06CBF56B1AFBEE2400CA582D /* WildcardTypeTest.m */; };
+		06DCD8CA1CD7CAE100B855AF /* ReflectionTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DCD8C91CD7CAE100B855AF /* ReflectionTests.m */; };
 		06DCF2621BD008BA00615BD2 /* DatagramChannelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06DCF2611BD008BA00615BD2 /* DatagramChannelTest.m */; };
 		06E484521C99EDF300ABD06B /* DefaultMethodsTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4844C1C99EB1B00ABD06B /* DefaultMethodsTest.m */; };
 		06E484531C99EDF300ABD06B /* EnumTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 06E4844A1C99EAD600ABD06B /* EnumTest.m */; };
@@ -2547,6 +2548,8 @@
 		06D7BDF217DE685C00329964 /* WeakReference.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeakReference.m; path = build_result/Classes/java/lang/ref/WeakReference.m; sourceTree = "<group>"; };
 		06D7BDFD17DE687200329964 /* WeakHashMap.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WeakHashMap.h; path = build_result/Classes/java/util/WeakHashMap.h; sourceTree = "<group>"; };
 		06D7BDFE17DE687200329964 /* WeakHashMap.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WeakHashMap.m; path = build_result/Classes/java/util/WeakHashMap.m; sourceTree = "<group>"; };
+		06DCD8C81CD7CAE100B855AF /* ReflectionTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ReflectionTests.h; path = com/google/j2objc/ReflectionTests.h; sourceTree = "<group>"; };
+		06DCD8C91CD7CAE100B855AF /* ReflectionTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ReflectionTests.m; path = com/google/j2objc/ReflectionTests.m; sourceTree = "<group>"; };
 		06DCF2601BD006D700615BD2 /* J2ObjC_icu.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = J2ObjC_icu.h; sourceTree = "<group>"; };
 		06DCF2611BD008BA00615BD2 /* DatagramChannelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = DatagramChannelTest.m; path = libcore/java/nio/channels/DatagramChannelTest.m; sourceTree = "<group>"; };
 		06DCF2631BD04A7800615BD2 /* J2ObjC_icu.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = J2ObjC_icu.m; sourceTree = "<group>"; };
@@ -6495,35 +6498,6 @@
 		06E4E362197F1D46005DDE69 /* Translated Tests */ = {
 			isa = PBXGroup;
 			children = (
-				06A9B1C31CB458D300691B59 /* TestSSLContext.h */,
-				06A9B1C41CB458D300691B59 /* TestSSLContext.m */,
-				06A9B1C01CB458B500691B59 /* URLConnectionTest.h */,
-				06A9B1C11CB458B500691B59 /* URLConnectionTest.m */,
-				06C49CB91CA48F330018E08D /* AsyncTimeoutTest.h */,
-				06C49CBA1CA48F330018E08D /* AsyncTimeoutTest.m */,
-				06C49CBB1CA48F330018E08D /* BufferedSinkTest.h */,
-				06C49CBC1CA48F330018E08D /* BufferedSinkTest.m */,
-				06C49CBD1CA48F330018E08D /* BufferedSourceTest.h */,
-				06C49CBE1CA48F330018E08D /* BufferedSourceTest.m */,
-				06C49CBF1CA48F330018E08D /* BufferTest.h */,
-				06C49CC01CA48F330018E08D /* BufferTest.m */,
-				06C49CC11CA48F330018E08D /* ByteStringTest.h */,
-				06C49CC21CA48F330018E08D /* ByteStringTest.m */,
-				06C49CC31CA48F330018E08D /* MockSink.h */,
-				06C49CC41CA48F330018E08D /* MockSink.m */,
-				06C49CC51CA48F330018E08D /* OkioTest.h */,
-				06C49CC61CA48F330018E08D /* OkioTest.m */,
-				06C49CC71CA48F330018E08D /* RealBufferedSinkTest.h */,
-				06C49CC81CA48F330018E08D /* RealBufferedSinkTest.m */,
-				06C49CC91CA48F330018E08D /* RealBufferedSourceTest.h */,
-				06C49CCA1CA48F330018E08D /* RealBufferedSourceTest.m */,
-				06C49CCB1CA48F330018E08D /* SegmentSharingTest.h */,
-				06C49CCC1CA48F330018E08D /* SegmentSharingTest.m */,
-				06C49CCD1CA48F330018E08D /* TestUtil.h */,
-				06C49CCE1CA48F330018E08D /* TestUtil.m */,
-				06C49CCF1CA48F330018E08D /* Utf8Test.h */,
-				06C49CD01CA48F330018E08D /* Utf8Test.m */,
-				06E484571C99EE6B00ABD06B /* SimpleDateFormatTest.m */,
 				06E4E365197F1D46005DDE69 /* AbstractExecutorServiceTest.h */,
 				06E4E366197F1D46005DDE69 /* AbstractExecutorServiceTest.m */,
 				06E4E367197F1D46005DDE69 /* AbstractQueuedSynchronizerTest.h */,
@@ -6546,6 +6520,8 @@
 				06FADA801B3B2E1300A9579E /* ArrayTest.h */,
 				06FADA811B3B2E1300A9579E /* ArrayTest.m */,
 				069680F71BA8DC38007AFADF /* AssertTest.m */,
+				06C49CB91CA48F330018E08D /* AsyncTimeoutTest.h */,
+				06C49CBA1CA48F330018E08D /* AsyncTimeoutTest.m */,
 				06E4E37D197F1D46005DDE69 /* AtomicBooleanTest.h */,
 				06E4E37E197F1D46005DDE69 /* AtomicBooleanTest.m */,
 				06E4E37F197F1D46005DDE69 /* AtomicIntegerArrayTest.h */,
@@ -6575,6 +6551,14 @@
 				06C54ACD1A40C67A004B3ACD /* Base64Test.h */,
 				06C54ACE1A40C67A004B3ACD /* Base64Test.m */,
 				0615D3B21BD83E7300132067 /* BeanDescriptorTest.m */,
+				06C49CBB1CA48F330018E08D /* BufferedSinkTest.h */,
+				06C49CBC1CA48F330018E08D /* BufferedSinkTest.m */,
+				06C49CBD1CA48F330018E08D /* BufferedSourceTest.h */,
+				06C49CBE1CA48F330018E08D /* BufferedSourceTest.m */,
+				06C49CBF1CA48F330018E08D /* BufferTest.h */,
+				06C49CC01CA48F330018E08D /* BufferTest.m */,
+				06C49CC11CA48F330018E08D /* ByteStringTest.h */,
+				06C49CC21CA48F330018E08D /* ByteStringTest.m */,
 				069AA6B51B053B730068A39B /* ChannelsTest.h */,
 				069AA6B61B053B730068A39B /* ChannelsTest.m */,
 				5110C61E19AFCBAA00FA26E1 /* ClassTest.m */,
@@ -6722,6 +6706,8 @@
 				06574A3B1A8EB04A000A3616 /* MockResolver.m */,
 				061D76231C641C500054D51B /* MockResponse.h */,
 				061D76141C6416430054D51B /* MockResponse.m */,
+				06C49CC31CA48F330018E08D /* MockSink.h */,
+				06C49CC41CA48F330018E08D /* MockSink.m */,
 				0615D3D91BD83E7300132067 /* MockSubClass.m */,
 				0615D3DA1BD83E7300132067 /* MockSuperClass.m */,
 				061D76151C6416430054D51B /* MockWebServer.h */,
@@ -6737,6 +6723,8 @@
 				06FADA7D1B3B29B300A9579E /* NoPackageTest.m */,
 				06574A631A8EB150000A3616 /* NormalizerTest.m */,
 				064EDBEE1BF5577000D25A14 /* NSErrorExceptionTest.m */,
+				06C49CC51CA48F330018E08D /* OkioTest.h */,
+				06C49CC61CA48F330018E08D /* OkioTest.m */,
 				06E4E4F9197F1D46005DDE69 /* org */,
 				0615D3DB1BD83E7300132067 /* OtherBean.m */,
 				061AA0CC19FEF01800457D2B /* package-info.h */,
@@ -6766,6 +6754,10 @@
 				06574A291A8EB04A000A3616 /* PublicKeyTest.m */,
 				061D76171C6416430054D51B /* QueueDispatcher.h */,
 				061D76181C6416430054D51B /* QueueDispatcher.m */,
+				06C49CC71CA48F330018E08D /* RealBufferedSinkTest.h */,
+				06C49CC81CA48F330018E08D /* RealBufferedSinkTest.m */,
+				06C49CC91CA48F330018E08D /* RealBufferedSourceTest.h */,
+				06C49CCA1CA48F330018E08D /* RealBufferedSourceTest.m */,
 				061D76191C6416430054D51B /* RecordedRequest.h */,
 				061D761A1C6416430054D51B /* RecordedRequest.m */,
 				06E4E635197F1D47005DDE69 /* ReentrantLockTest.h */,
@@ -6774,6 +6766,8 @@
 				06E4E638197F1D47005DDE69 /* ReentrantReadWriteLockTest.m */,
 				06C54AD61A40C897004B3ACD /* ReflectionTest.h */,
 				06C54AD71A40C897004B3ACD /* ReflectionTest.m */,
+				06DCD8C81CD7CAE100B855AF /* ReflectionTests.h */,
+				06DCD8C91CD7CAE100B855AF /* ReflectionTests.m */,
 				06574A761A8EB150000A3616 /* RSAKeyGenParameterSpecTest.m */,
 				06574A651A8EB150000A3616 /* RSAKeyTest.m */,
 				06574A771A8EB150000A3616 /* RSAMultiPrimePrivateCrtKeySpecTest.m */,
@@ -6792,6 +6786,8 @@
 				069681191BA8E3D3007AFADF /* Second.m */,
 				06574A2A1A8EB04A000A3616 /* SecureRandom2Test.m */,
 				06574A2B1A8EB04A000A3616 /* SecureRandomSpiTest.m */,
+				06C49CCB1CA48F330018E08D /* SegmentSharingTest.h */,
+				06C49CCC1CA48F330018E08D /* SegmentSharingTest.m */,
 				061660891A40DD1400972BBD /* SerializationTest.h */,
 				06E4E63B197F1D47005DDE69 /* SerializationTest.h */,
 				0616608A1A40DD1400972BBD /* SerializationTest.m */,
@@ -6801,6 +6797,7 @@
 				06574A2C1A8EB04A000A3616 /* SignatureSpiTest.m */,
 				06574A2D1A8EB04A000A3616 /* SignatureTest.m */,
 				0615D3BB1BD83E7300132067 /* SimpleBeanInfoTest.m */,
+				06E484571C99EE6B00ABD06B /* SimpleDateFormatTest.m */,
 				0600C00C1B715CB4005FDEF9 /* SmallTests.h */,
 				0600C00D1B715CB4005FDEF9 /* SmallTests.m */,
 				061D761B1C6416430054D51B /* SocketPolicy.h */,
@@ -6822,6 +6819,10 @@
 				060C795C1C4056040073084C /* TestClass.m */,
 				06574A341A8EB04A000A3616 /* TestKeyPair.m */,
 				06E4E63F197F1D47005DDE69 /* tests */,
+				06A9B1C31CB458D300691B59 /* TestSSLContext.h */,
+				06A9B1C41CB458D300691B59 /* TestSSLContext.m */,
+				06C49CCD1CA48F330018E08D /* TestUtil.h */,
+				06C49CCE1CA48F330018E08D /* TestUtil.m */,
 				069680F81BA8DC38007AFADF /* TextAttributeTest.m */,
 				069681161BA8E3D3007AFADF /* Third.m */,
 				06E4E6AC197F1D47005DDE69 /* ThreadPoolExecutorTest.h */,
@@ -6833,6 +6834,10 @@
 				06934A131A40CE8900D2CD07 /* TreeSetTest.m */,
 				0600C0101B715CB4005FDEF9 /* TypeMethodReferenceTest.h */,
 				0600C0111B715CB4005FDEF9 /* TypeMethodReferenceTest.m */,
+				06A9B1C01CB458B500691B59 /* URLConnectionTest.h */,
+				06A9B1C11CB458B500691B59 /* URLConnectionTest.m */,
+				06C49CCF1CA48F330018E08D /* Utf8Test.h */,
+				06C49CD01CA48F330018E08D /* Utf8Test.m */,
 				0661AA4819F705E200EFD1F5 /* UTF16EncodingTest.h */,
 				0661AA4919F705E200EFD1F5 /* UTF16EncodingTest.m */,
 				06574A681A8EB150000A3616 /* Util.m */,
@@ -8884,6 +8889,7 @@
 				06E4E729197F1D47005DDE69 /* CharacterTest.m in Sources */,
 				06CBF5771AFBEE2400CA582D /* GenericArrayTypeTest.m in Sources */,
 				06E4E700197F1D47005DDE69 /* OldBufferedWriterTest.m in Sources */,
+				06DCD8CA1CD7CAE100B855AF /* ReflectionTests.m in Sources */,
 				06E4E75A197F1D47005DDE69 /* DeflaterTest.m in Sources */,
 				061D761D1C6416430054D51B /* MockResponse.m in Sources */,
 				06E4E820197F1D48005DDE69 /* Support_TestResource.m in Sources */,
