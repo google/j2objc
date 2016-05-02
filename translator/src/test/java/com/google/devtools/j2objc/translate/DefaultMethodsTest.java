@@ -81,10 +81,12 @@ public class DefaultMethodsTest extends GenerationTest {
     String translation = translateSourceFile(
         "interface Foo { default int f(int y) { return y + 1; } }"
         + "class Bar implements Foo {"
+        + "  public Bar(int x) { int i = Foo.super.f(x); }"
         + "  public int f(int y) { return Foo.super.f(y) + 1; }"
         + "}", "Test", "Test.m");
 
-    assertTranslatedLines(translation, "return Foo_fWithInt_(self, y) + 1;");
+    assertTranslation(translation, "jint i = Foo_fWithInt_(self, x);");
+    assertTranslation(translation, "return Foo_fWithInt_(self, y) + 1;");
   }
 
   public void testBasicDefaultMethodUsage() throws IOException {

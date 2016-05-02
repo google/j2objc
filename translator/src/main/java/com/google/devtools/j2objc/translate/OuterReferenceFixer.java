@@ -28,6 +28,7 @@ import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
+import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -133,6 +134,10 @@ public class OuterReferenceFixer extends TreeVisitor {
 
   @Override
   public void endVisit(SuperMethodInvocation node) {
+    // Ignore default methods, they do not have outer paths.
+    if (BindingUtil.isDefault(node.getMethodBinding())) {
+      return;
+    }
     List<IVariableBinding> path = outerResolver.getPath(node);
     if (path != null) {
       // We substitute the qualifying type name with the outer variable name.
