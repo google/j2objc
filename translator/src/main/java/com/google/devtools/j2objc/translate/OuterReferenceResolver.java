@@ -443,7 +443,9 @@ public class OuterReferenceResolver extends TreeVisitor {
     if (BindingUtil.isDefault(node.getMethodBinding())) {
       // Default methods can be invoked with a SuperMethodInvocation. In this
       // case the qualifier is not an enclosing class, but the interface that
-      // implements the default method.
+      // implements the default method. Since the default method is an instance
+      // method it implicitly captures self.
+      markImplicitCaptures();
       return;
     }
     Name qualifier = node.getQualifier();
