@@ -426,7 +426,8 @@ public class Rewriter extends TreeVisitor {
     MethodInvocation invocation = new MethodInvocation(methodBinding, expression);
     List<Expression> invocationArguments = invocation.getArguments();
     buildMethodReferenceInvocationArguments(invocationArguments, node, invocation);
-    if (BindingUtil.isVoid(methodBinding.getReturnType())) {
+    IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
+    if (BindingUtil.isVoid(functionalInterface.getReturnType())) {
       node.setInvocation(new ExpressionStatement(invocation));
     } else {
       node.setInvocation(new ReturnStatement(invocation));
@@ -442,7 +443,8 @@ public class Rewriter extends TreeVisitor {
     invocation.setQualifier(qualifier);
     List<Expression> invocationArguments = invocation.getArguments();
     buildMethodReferenceInvocationArguments(invocationArguments, node, null);
-    if (BindingUtil.isVoid(methodBinding.getReturnType())) {
+    IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
+    if (BindingUtil.isVoid(functionalInterface.getReturnType())) {
       node.setInvocation(new ExpressionStatement(invocation));
     } else {
       node.setInvocation(new ReturnStatement(invocation));
@@ -450,23 +452,42 @@ public class Rewriter extends TreeVisitor {
     return true;
   }
 
-  /**
-   * The signatures of TypeMethodReferences include the object parameter, which will be passed in
-   * our case as the first argument. We need to create a method binding without that first argument
-   * for the MethodInvocation, so we are duplicating code from
-   * buildMethodReferenceInvocationArguments.
-   */
   @Override
   public boolean visit(TypeMethodReference node) {
-    IMethodBinding oldMethodBinding = node.getMethodBinding();
+    IMethodBinding originalMethodBinding = node.getMethodBinding();
     GeneratedMethodBinding methodBinding = GeneratedMethodBinding.newNamedMethod(
-        node.getName().toString(), oldMethodBinding);
-    methodBinding.addParameters(oldMethodBinding);
+        node.getName().toString(), originalMethodBinding);
+    methodBinding.addParameters(originalMethodBinding);
     methodBinding.setModifiers(methodBinding.getModifiers() & ~Modifier.STATIC);
-    methodBinding.getParameters().remove(0);
     IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
-    ITypeBinding[] methodParams = methodBinding.getParameterTypes();
     ITypeBinding[] functionalParams = functionalInterface.getParameterTypes();
+
+    // When node is a TypedMethodReference, the first parameter in the functional interface method
+    // should always be the object. Because of this, we expect this invariant to be held:
+    //
+    //   functionalParams.length == originalMethodBinding.getParameterTypes().length + 1
+    //
+    // However, there are cases when JDT still puts one parameter in originalMethodBinding.
+    // Compare this:
+    //
+    //   /* functionalParams.length == 2, originalMethodBinding.getParameterTypes().length == 1 */
+    //   BiConsumer<Collection<T>, T> bc = Collection<T>::add;
+    //
+    // With this:
+    //
+    //   /* functionalParams.length == 1, originalMethodBinding.getParameterTypes().length == 1 */
+    //   interface H { Object copy(int[] i); }
+    //   H h = int[]::clone;
+    //
+    // In the second case, we have to remove the first parameter in the mutable methodBinding.
+    //
+    // TODO(user): This may be a JDT quirk. Need more test cases and further investigation.
+    // TODO(user): This very likely won't support varargs correctly.
+    if (functionalParams.length == originalMethodBinding.getParameterTypes().length) {
+      methodBinding.getParameters().remove(0);
+    }
+    ITypeBinding[] methodParams = methodBinding.getParameterTypes();
+
     char[] var = nameTable.incrementVariable(null);
     ITypeBinding functionalParam = functionalParams[0];
     IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
@@ -474,7 +495,7 @@ public class Rewriter extends TreeVisitor {
     SimpleName expression = new SimpleName(variableBinding);
     MethodInvocation invocation = new MethodInvocation(methodBinding, expression);
     List<Expression> invocationArguments = invocation.getArguments();
-    if (BindingUtil.isVoid(methodBinding.getReturnType())) {
+    if (BindingUtil.isVoid(functionalInterface.getReturnType())) {
       node.setInvocation(new ExpressionStatement(invocation));
     } else {
       node.setInvocation(new ReturnStatement(invocation));
