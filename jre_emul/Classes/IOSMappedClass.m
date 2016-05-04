@@ -19,7 +19,7 @@
 
 #import "IOSMappedClass.h"
 #import "IOSObjectArray.h"
-#import "JavaMetadata.h"
+#import "IOSReflection.h"
 #import "java/lang/Package.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
@@ -64,16 +64,15 @@ static void CollectMethodsOrConstructors(IOSMappedClass *self,
                                          NSMutableDictionary *methodMap,
                                          jboolean publicOnly,
                                          jboolean constructors) {
-  JavaClassMetadata *metadata = [self getMetadata];
-  IOSObjectArray *methodInfos = [metadata allMethods];
-  for (unsigned i = 0; i < metadata.methodCount; i++) {
-    JavaMethodMetadata *info = [methodInfos objectAtIndex:i];
-    if ([info isConstructor] == constructors) {
-      int mods = [info modifiers];
+  const J2ObjcClassInfo *metadata = [self getMetadata];
+  for (unsigned i = 0; i < metadata->methodCount; i++) {
+    const J2ObjcMethodInfo *info = &metadata->methods[i];
+    if (JreMethodIsConstructor(info) == constructors) {
+      int mods = JreMethodModifiers(info);
       if (publicOnly && !(mods & JavaLangReflectModifier_PUBLIC)) {
         continue;
       }
-      SEL sel = [info selector];
+      SEL sel = JreMethodSelector(info);
       jboolean isStatic = (mods & JavaLangReflectModifier_STATIC) != 0;
       NSMethodSignature *signature = nil;
       if (isStatic) {
@@ -87,7 +86,7 @@ static void CollectMethodsOrConstructors(IOSMappedClass *self,
                                                                                    class:self
                                                                                 isStatic:isStatic
                                                                                 metadata:info];
-        [methodMap setObject:method forKey:[info name]];
+        [methodMap setObject:method forKey:JreMethodName(info)];
       }
     }
   }

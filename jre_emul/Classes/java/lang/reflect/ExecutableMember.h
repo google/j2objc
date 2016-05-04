@@ -22,6 +22,7 @@
 #ifndef _ExecutableMember_H_
 #define _ExecutableMember_H_
 
+#import "IOSReflection.h"
 #import "java/lang/reflect/AccessibleObject.h"
 #import "java/lang/reflect/Member.h"
 
@@ -31,7 +32,6 @@
 
 @class IOSClass;
 @class IOSObjectArray;
-@class JavaMethodMetadata;
 
 // Common parent of Member and Constructor with their shared functionality.
 // This class isn't directly called from translated Java, since Java's
@@ -42,7 +42,7 @@
   IOSClass *class_;
   SEL selector_;
   NSMethodSignature *methodSignature_;
-  JavaMethodMetadata *metadata_;
+  const J2ObjcMethodInfo *metadata_;
   const char *binaryParameterTypes_;
 }
 
@@ -51,7 +51,7 @@
 - (instancetype)initWithMethodSignature:(NSMethodSignature *)methodSignature
                                selector:(SEL)selector
                                   class:(IOSClass *)aClass
-                               metadata:(JavaMethodMetadata *)metadata;
+                               metadata:(const J2ObjcMethodInfo *)metadata;
 
 - (NSString *)getName;
 

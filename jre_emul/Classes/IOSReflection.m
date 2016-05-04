@@ -96,3 +96,190 @@ NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc
     return nil;
   }
 }
+
+
+const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const char *fieldName) {
+  if (metadata) {
+    for (int i = 0; i < metadata->fieldCount; i++) {
+      const J2ObjcFieldInfo *fieldInfo = &metadata->fields[i];
+      if (fieldInfo->javaName && strcmp(fieldName, fieldInfo->javaName) == 0) {
+        return fieldInfo;
+      }
+      if (strcmp(fieldName, fieldInfo->name) == 0) {
+        return fieldInfo;
+      }
+      // See if field name has trailing underscore added.
+      size_t max  = strlen(fieldInfo->name) - 1;
+      if (fieldInfo->name[max] == '_' && strlen(fieldName) == max &&
+          strncmp(fieldName, fieldInfo->name, max) == 0) {
+        return fieldInfo;
+      }
+    }
+  }
+  return NULL;
+}
+
+NSString *JreClassTypeName(const J2ObjcClassInfo *metadata) {
+  return metadata ? [NSString stringWithUTF8String:metadata->typeName] : nil;
+}
+
+NSString *JreClassPackageName(const J2ObjcClassInfo *metadata) {
+  return metadata && metadata->packageName
+      ? [NSString stringWithUTF8String:metadata->packageName] : nil;
+}
+
+NSString *JreClassEnclosingName(const J2ObjcClassInfo *metadata) {
+  return metadata && metadata->enclosingName
+      ? [NSString stringWithUTF8String:metadata->enclosingName] : nil;
+}
+
+NSString *JreClassGenericString(const J2ObjcClassInfo *metadata) {
+  return metadata && metadata->genericSignature
+      ? [NSString stringWithUTF8String:metadata->genericSignature] : nil;
+}
+
+const J2ObjcMethodInfo *JreFindMethodInfo(const J2ObjcClassInfo *metadata, NSString *methodName) {
+  if (!metadata) {
+    return NULL;
+  }
+  const char *name = [methodName UTF8String];
+  for (int i = 0; i < metadata->methodCount; i++) {
+    if (strcmp(name, metadata->methods[i].selector) == 0) {
+      return &metadata->methods[i];
+    }
+  }
+  return nil;
+}
+
+IOSObjectArray *JreClassInnerClasses(const J2ObjcClassInfo *metadata) {
+  if (!metadata || metadata->innerClassCount == 0) {
+    return nil;
+  }
+  IOSObjectArray *result = [IOSObjectArray arrayWithLength:metadata->innerClassCount
+                                                      type:JavaLangReflectType_class_()];
+  for (int i = 0; i < metadata->innerClassCount; i++) {
+    IOSObjectArray_Set(result, i, JreTypeForString(metadata->innerClassnames[i]));
+  }
+  return result;
+}
+
+
+NSString *JreFieldName(const J2ObjcFieldInfo *metadata) {
+  if (!metadata) {
+    return nil;
+  }
+  return metadata->javaName ?
+      [NSString stringWithUTF8String:metadata->javaName] :
+      [NSString stringWithUTF8String:metadata->name];
+}
+
+NSString *JreFieldIosName(const J2ObjcFieldInfo *metadata) {
+  return metadata ? [NSString stringWithUTF8String:metadata->name] : nil;
+}
+
+NSString *JreFieldJavaName(const J2ObjcFieldInfo *metadata) {
+  return metadata && metadata->javaName ? [NSString stringWithUTF8String:metadata->javaName] : nil;
+}
+
+id<JavaLangReflectType> JreFieldType(const J2ObjcFieldInfo *metadata) {
+  return metadata ? JreTypeForString(metadata->type) : nil;
+}
+
+NSString *JreFieldGenericString(const J2ObjcFieldInfo *metadata) {
+  return metadata && metadata->genericSignature
+      ? [NSString stringWithUTF8String:metadata->genericSignature] : nil;
+}
+
+
+NSString *JreMethodName(const J2ObjcMethodInfo *metadata) {
+  return metadata ? (metadata->javaName ? [NSString stringWithUTF8String:metadata->javaName]
+                     : [NSString stringWithUTF8String:metadata->selector]) : nil;
+}
+
+NSString *JreMethodJavaName(const J2ObjcMethodInfo *metadata) {
+  return metadata && metadata->javaName ? [NSString stringWithUTF8String:metadata->javaName] : nil;
+}
+
+NSString *JreMethodObjcName(const J2ObjcMethodInfo *metadata) {
+  return metadata ? [NSString stringWithUTF8String:metadata->selector] : nil;
+}
+
+jboolean JreMethodIsConstructor(const J2ObjcMethodInfo *metadata) {
+  if (!metadata) {
+    return NO;
+  }
+  const char *name = metadata->selector;
+  return strcmp(name, "init") == 0 || strstr(name, "initWith") == name;
+}
+
+IOSObjectArray *JreMethodExceptionTypes(const J2ObjcMethodInfo *metadata) {
+  if (!metadata || !metadata->exceptions) {
+    return nil;
+  }
+
+  const char *p = metadata->exceptions;
+  int n = 0;
+  while (p != NULL) {
+    const char *semi = strchr(p, ';');
+    if (semi != NULL) {
+      ++n;
+      p = semi + 1;
+    } else {
+      p = NULL;
+    }
+  }
+  IOSObjectArray *result = [IOSObjectArray arrayWithLength:(jint)n
+                                                      type:JavaLangReflectType_class_()];
+  jint count = 0;
+  p = metadata->exceptions;
+  while (p != NULL) {
+    char *semi = strchr(p, ';');
+    if (semi != NULL) {
+      char *exc = strndup(p, semi - p + 1);  // Include trailing ';'.
+      IOSObjectArray_Set(result, count++, JreTypeForString(exc));
+      free(exc);
+      p = semi + 1;
+    } else {
+      p = NULL;
+    }
+  }
+  return result;
+}
+
+NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata) {
+  return metadata && metadata->genericSignature
+      ? [NSString stringWithUTF8String:metadata->genericSignature] : nil;
+}
+
+
+const J2ObjCEnclosingMethodInfo *JreEnclosingMethod(const J2ObjcClassInfo *metadata) {
+  return metadata ? metadata->enclosingMethod : NULL;
+}
+
+NSString *JreEnclosingMethodTypeName(const J2ObjCEnclosingMethodInfo *metadata) {
+  return metadata ? [NSString stringWithUTF8String:metadata->typeName] : nil;
+}
+
+NSString *JreEnclosingMethodSelector(const J2ObjCEnclosingMethodInfo *metadata) {
+  return metadata ? [NSString stringWithUTF8String:metadata->selector] : nil;
+}
+
+
+NSString *JreClassQualifiedName(const J2ObjcClassInfo *metadata) {
+  if (!metadata) {
+    return nil;
+  }
+  NSMutableString *qName = [NSMutableString string];
+  NSString *packageName = JreClassPackageName(metadata);
+  NSString *enclosingName = JreClassEnclosingName(metadata);
+  if ([packageName length] > 0) {
+    [qName appendString:packageName];
+    [qName appendString:@"."];
+  }
+  if (enclosingName) {
+    [qName appendString:enclosingName];
+    [qName appendString:@"$"];
+  }
+  [qName appendString:JreClassTypeName(metadata)];
+  return qName;
+}

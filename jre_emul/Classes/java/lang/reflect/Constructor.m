@@ -20,8 +20,8 @@
 //
 
 #import "Constructor.h"
+#import "IOSReflection.h"
 #import "J2ObjC_source.h"
-#import "JavaMetadata.h"
 #import "NSException+JavaThrowable.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ExceptionInInitializerError.h"
@@ -37,7 +37,7 @@
 + (instancetype)constructorWithMethodSignature:(NSMethodSignature *)methodSignature
                                       selector:(SEL)selector
                                          class:(IOSClass *)aClass
-                                      metadata:(JavaMethodMetadata *)metadata {
+                                      metadata:(const J2ObjcMethodInfo *)metadata {
   return [[[JavaLangReflectConstructor alloc] initWithMethodSignature:methodSignature
                                                              selector:selector
                                                                 class:aClass
@@ -120,7 +120,8 @@
 
 - (NSString *)description {
   NSMutableString *s = [NSMutableString string];
-  NSString *modifiers = JavaLangReflectModifier_toStringWithInt_([self getModifiers]);
+  NSString *modifiers =
+      JavaLangReflectModifier_toStringWithInt_(JreMethodModifiers(metadata_));
   NSString *type = [[self getDeclaringClass] getName];
   [s appendFormat:@"%@ %@(", modifiers, type];
   IOSObjectArray *params = [self getParameterTypes];

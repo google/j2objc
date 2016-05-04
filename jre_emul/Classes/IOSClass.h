@@ -36,7 +36,6 @@
 @class JavaLangReflectMethod;
 @protocol JavaLangAnnotationAnnotation;
 @class JavaIoInputStream;
-@class JavaClassMetadata;
 @class JavaNetURL;
 
 /**
@@ -200,7 +199,7 @@
 - (JavaLangReflectConstructor *)findConstructorWithTranslatedName:(NSString *)objcName;
 // Same as getInterfaces, but not a defensive copy.
 - (IOSObjectArray *)getInterfacesInternal;
-- (JavaClassMetadata *)getMetadata;
+- (const J2ObjcClassInfo *)getMetadata;
 - (NSString *)objcName;
 - (NSString *)binaryName;
 // Get the IOSArray subclass that would be used to hold this type.

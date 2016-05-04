@@ -18,7 +18,7 @@
 //
 
 #import "IOSProtocolClass.h"
-#import "JavaMetadata.h"
+#import "IOSReflection.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 #import "objc/runtime.h"
@@ -70,13 +70,13 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (NSString *)getName {
-  JavaClassMetadata *metadata = [self getMetadata];
-  return metadata ? [metadata qualifiedName] : NSStringFromProtocol(protocol_);
+  const J2ObjcClassInfo *metadata = [self getMetadata];
+  return metadata ? JreClassQualifiedName(metadata) : NSStringFromProtocol(protocol_);
 }
 
 - (NSString *)getSimpleName {
-  JavaClassMetadata *metadata = [self getMetadata];
-  return metadata ? RETAIN_(metadata.typeName) : NSStringFromProtocol(protocol_);
+  const J2ObjcClassInfo *metadata = [self getMetadata];
+  return metadata ? JreClassTypeName(metadata) : NSStringFromProtocol(protocol_);
 }
 
 - (NSString *)objcName {
@@ -89,9 +89,9 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 }
 
 - (int)getModifiers {
-  JavaClassMetadata *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = [self getMetadata];
   if (metadata) {
-    return metadata.modifiers
+    return metadata->modifiers
         & (JavaLangReflectModifier_INTERFACE | JavaLangReflectModifier_interfaceModifiers());
   }
   return JavaLangReflectModifier_PUBLIC | JavaLangReflectModifier_INTERFACE |
@@ -109,7 +109,7 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
 // All protocol methods are public, so publicOnly flag is ignored.
 - (void)collectMethods:(NSMutableDictionary *)methodMap
             publicOnly:(jboolean)publicOnly {
-  JavaClassMetadata *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = [self getMetadata];
   unsigned int count;
   struct objc_method_description *descriptions =
       protocol_copyMethodDescriptionList(protocol_, true, true, &count);
@@ -118,7 +118,7 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
     SEL sel = methodDesc->name;
     NSString *key = NSStringFromSelector(sel);
     if (![methodMap objectForKey:key]) {
-      JavaMethodMetadata *methodMetadata = [metadata findMethodMetadata:key];
+      const J2ObjcMethodInfo *methodMetadata = JreFindMethodInfo(metadata, key);
       if (metadata && !methodMetadata) {
         continue;  // Selector not in method list.
       }
@@ -150,7 +150,8 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
     if ([objcName isEqualToString:NSStringFromSelector(sel)]) {
       NSMethodSignature *signature = JreSignatureOrNull(methodDesc);
       if (signature) {
-        JavaMethodMetadata *methodMetadata = [[self getMetadata] findMethodMetadata:objcName];
+        const J2ObjcMethodInfo *methodMetadata =
+            JreFindMethodInfo([self getMetadata], objcName);
         result = [JavaLangReflectMethod methodWithMethodSignature:signature
                                                          selector:sel
                                                             class:self
@@ -170,8 +171,9 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
       if (method) {
         NSMethodSignature *signature = JreSignatureOrNull(method_getDescription(method));
         if (signature) {
-          JavaClassMetadata *metadata = [self getMetadata];
-          JavaMethodMetadata *methodData = [metadata findMethodMetadata:objcName];
+          const J2ObjcClassInfo *metadata = [self getMetadata];
+          const J2ObjcMethodInfo *methodData =
+              JreFindMethodInfo([self getMetadata], objcName);
           result = [JavaLangReflectMethod methodWithMethodSignature:signature
                                                            selector:method_getName(method)
                                                               class:self

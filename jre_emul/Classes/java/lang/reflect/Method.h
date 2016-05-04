@@ -22,6 +22,7 @@
 #ifndef _JavaLangReflectMethod_H_
 #define _JavaLangReflectMethod_H_
 
+#import "IOSReflection.h"
 #import "J2ObjC_common.h"
 #import "java/lang/reflect/ExecutableMember.h"
 #import "java/lang/reflect/GenericDeclaration.h"
@@ -29,7 +30,6 @@
 
 @class IOSClass;
 @class IOSObjectArray;
-@class JavaMethodMetadata;
 
 // A native implementation of java.lang.reflect.Method.  Its methods are
 // limited to those that can be derived from an Objective-C Method instance,
@@ -42,7 +42,7 @@
                                  selector:(SEL)selector
                                     class:(IOSClass *)aClass
                                  isStatic:(jboolean)isStatic
-                                 metadata:(JavaMethodMetadata *)metadata;
+                                 metadata:(const J2ObjcMethodInfo *)metadata;
 
 // iOS version of Method.getReturnType();
 - (IOSClass *)getReturnType;

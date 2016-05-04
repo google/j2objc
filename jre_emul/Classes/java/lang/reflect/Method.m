@@ -19,8 +19,8 @@
 //  Created by Tom Ball on 11/07/11.
 //
 
+#import "IOSReflection.h"
 #import "J2ObjC_source.h"
-#import "JavaMetadata.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassLoader.h"
 #import "java/lang/IllegalArgumentException.h"
@@ -39,7 +39,7 @@
                                selector:(SEL)selector
                                   class:(IOSClass *)aClass
                                isStatic:(jboolean)isStatic
-                               metadata:(JavaMethodMetadata *)metadata {
+                               metadata:(const J2ObjcMethodInfo *)metadata {
   if (self = [super initWithMethodSignature:methodSignature
                                    selector:selector
                                       class:aClass
@@ -53,7 +53,7 @@
                                  selector:(SEL)selector
                                     class:(IOSClass *)aClass
                                  isStatic:(jboolean)isStatic
-                                 metadata:(JavaMethodMetadata *)metadata {
+                                 metadata:(const J2ObjcMethodInfo *)metadata {
   return [[[JavaLangReflectMethod alloc] initWithMethodSignature:methodSignature
                                                         selector:selector
                                                            class:aClass
@@ -63,7 +63,7 @@
 
 // Returns method name.
 - (NSString *)getName {
-  NSString *javaName = [metadata_ javaName];
+  NSString *javaName = JreMethodJavaName(metadata_);
   if (javaName) {
     return javaName;
   }
@@ -85,7 +85,7 @@
 }
 
 - (int)getModifiers {
-  int mods = [super getModifiers];
+  int mods = JreMethodModifiers(metadata_);
   if (isStatic_) {
     mods |= JavaLangReflectModifier_STATIC;
   }
@@ -93,7 +93,7 @@
 }
 
 - (IOSClass *)getReturnType {
-  id<JavaLangReflectType> returnType = [metadata_ returnType];
+  id<JavaLangReflectType> returnType = JreMethodReturnType(metadata_);
   if (returnType) {
     if (![returnType isKindOfClass:[IOSClass class]]) {
       return NSObject_class_();
@@ -115,7 +115,7 @@
 }
 
 - (id<JavaLangReflectType>)getGenericReturnType {
-  NSString *genericSignature = [metadata_ genericSignature];
+  NSString *genericSignature = JreMethodGenericString(metadata_);
   if (genericSignature) {
     LibcoreReflectGenericSignatureParser *parser =
         [[LibcoreReflectGenericSignatureParser alloc]
@@ -129,7 +129,7 @@
     return result;
   }
 
-  id<JavaLangReflectType> returnType = [metadata_ returnType];
+  id<JavaLangReflectType> returnType = JreMethodReturnType(metadata_);
   if (returnType) {
     if (returnType && [returnType conformsToProtocol:@protocol(JavaLangReflectTypeVariable)]) {
       return returnType;
@@ -204,7 +204,7 @@
   IOSClass *declaringClass = [self getDeclaringClass];
   NSException *exception = nil;
   if (object &&
-      ([self getModifiers] & JavaLangReflectModifier_PRIVATE) > 0 &&
+      (JreMethodModifiers(metadata_) & JavaLangReflectModifier_PRIVATE) > 0 &&
       declaringClass != [object getClass]) {
     // A superclass's private instance method is invoked, so temporarily
     // change the object's type to the superclass.
@@ -232,7 +232,8 @@
 
 - (NSString *)description {
   NSMutableString *s = [NSMutableString string];
-  NSString *modifiers = JavaLangReflectModifier_toStringWithInt_([self getModifiers]);
+  NSString *modifiers =
+      JavaLangReflectModifier_toStringWithInt_(JreMethodModifiers(metadata_));
   NSString *returnType = [[self getReturnType] getName];
   NSString *declaringClass = [[self getDeclaringClass] getName];
   [s appendFormat:@"%@ %@ %@.%@(", modifiers, returnType, declaringClass, [self getName]];

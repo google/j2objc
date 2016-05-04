@@ -19,7 +19,6 @@
 
 #import "IOSConcreteClass.h"
 #import "IOSReflection.h"
-#import "JavaMetadata.h"
 #import "java/lang/ClassCastException.h"
 #import "java/lang/Enum.h"
 #import "java/lang/InstantiationException.h"
@@ -72,13 +71,13 @@
 }
 
 - (NSString *)getName {
-  JavaClassMetadata *metadata = [self getMetadata];
-  return metadata ? [metadata qualifiedName] : NSStringFromClass(class_);
+  const J2ObjcClassInfo *metadata = [self getMetadata];
+  return metadata ? JreClassQualifiedName(metadata) : NSStringFromClass(class_);
 }
 
 - (NSString *)getSimpleName {
-  JavaClassMetadata *metadata = [self getMetadata];
-  return metadata ? metadata.typeName : NSStringFromClass(class_);
+  const J2ObjcClassInfo *metadata = [self getMetadata];
+  return metadata ? JreClassTypeName(metadata) : NSStringFromClass(class_);
 }
 
 - (NSString *)objcName {
@@ -90,9 +89,9 @@
 }
 
 - (jboolean)isEnum {
-  JavaClassMetadata *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = [self getMetadata];
   if (metadata) {
-    return (metadata.modifiers & JavaLangReflectModifier_ENUM) > 0 &&
+    return (metadata->modifiers & JavaLangReflectModifier_ENUM) > 0 &&
         [self getSuperclass] == JavaLangEnum_class_();
   } else {
     return class_ != nil && strcmp(class_getName(class_getSuperclass(class_)), "JavaLangEnum") == 0;
@@ -100,9 +99,9 @@
 }
 
 - (jboolean)isAnonymousClass {
-  JavaClassMetadata *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = [self getMetadata];
   if (metadata) {
-    return (metadata.modifiers & 0x8000) > 0;
+    return (metadata->modifiers & 0x8000) > 0;
   }
   return false;
 }
@@ -176,12 +175,12 @@ static void CollectMethodsOrConstructors(
 
 - (void)collectMethods:(NSMutableDictionary *)methodMap
             publicOnly:(jboolean)publicOnly {
-  JavaClassMetadata *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = [self getMetadata];
   CollectMethodsOrConstructors(
       self, methodMap, publicOnly, ^ id (NSMethodSignature *signature, SEL sel, jboolean isStatic) {
     NSString *selStr = NSStringFromSelector(sel);
     if (!IsConstructor(selStr)) {
-      JavaMethodMetadata *methodMetadata = [metadata findMethodMetadata:selStr];
+      const J2ObjcMethodInfo *methodMetadata = JreFindMethodInfo(metadata, selStr);
       if (metadata && !methodMetadata) {
         return nil;  // Selector not in method list.
       }
@@ -196,14 +195,14 @@ static void CollectMethodsOrConstructors(
 }
 
 IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, jboolean publicOnly) {
-  JavaClassMetadata *metadata = [clazz getMetadata];
+  const J2ObjcClassInfo *metadata = [clazz getMetadata];
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
   CollectMethodsOrConstructors(
       clazz, methodMap, publicOnly,
       ^ id (NSMethodSignature *signature, SEL sel, jboolean isStatic) {
     if (IsConstructor(NSStringFromSelector(sel))) {
       NSString *selStr = NSStringFromSelector(sel);
-      JavaMethodMetadata *methodMetadata = [metadata findMethodMetadata:selStr];
+      const J2ObjcMethodInfo *methodMetadata = JreFindMethodInfo(metadata, selStr);
       if (metadata && !methodMetadata) {
         return nil;  // Selector not in method list.
       }
@@ -254,12 +253,12 @@ IOSObjectArray *getConstructorsImpl(IOSConcreteClass *clazz, jboolean publicOnly
   if (!signature) {
     return nil;
   }
-  JavaClassMetadata *metadata = [self getMetadata];
+  const J2ObjcClassInfo *metadata = [self getMetadata];
   return [JavaLangReflectMethod methodWithMethodSignature:signature
                                                  selector:method_getName(method)
                                                     class:self
                                                  isStatic:isStatic
-                                                 metadata:[metadata findMethodMetadata:objcName]];
+                                                 metadata:JreFindMethodInfo(metadata, objcName)];
 }
 
 static JavaLangReflectConstructor *GetConstructorImpl(
@@ -268,12 +267,12 @@ static JavaLangReflectConstructor *GetConstructorImpl(
   if (method) {
     NSMethodSignature *signature = JreSignatureOrNull(method_getDescription(method));
     if (signature) {
-      JavaClassMetadata *metadata = [iosClass getMetadata];
+      const J2ObjcClassInfo *metadata = [iosClass getMetadata];
       return [JavaLangReflectConstructor
           constructorWithMethodSignature:signature
                                 selector:method_getName(method)
                                    class:iosClass
-                                metadata:[metadata findMethodMetadata:name]];
+                                metadata:JreFindMethodInfo(metadata, name)];
     }
   }
   @throw AUTORELEASE([[JavaLangNoSuchMethodException alloc] init]);

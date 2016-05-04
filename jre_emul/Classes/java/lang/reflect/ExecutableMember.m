@@ -22,7 +22,7 @@
 #import "ExecutableMember.h"
 #import "IOSClass.h"
 #import "IOSObjectArray.h"
-#import "JavaMetadata.h"
+#import "IOSReflection.h"
 #import "java/lang/ClassLoader.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/StringBuilder.h"
@@ -40,7 +40,7 @@
 
 @interface ExecutableMember ()
 
-- (JavaMethodMetadata *)metadata;
+- (const J2ObjcMethodInfo *)metadata;
 
 @end
 
@@ -66,12 +66,12 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 - (instancetype)initWithMethodSignature:(NSMethodSignature *)methodSignature
                                selector:(SEL)selector
                                   class:(IOSClass *)aClass
-                               metadata:(JavaMethodMetadata *)metadata {
+                               metadata:(const J2ObjcMethodInfo *)metadata {
   if ((self = [super init])) {
     methodSignature_ = [methodSignature retain];
     selector_ = selector;
     class_ = aClass; // IOSClass types are never dealloced.
-    metadata_ = [metadata retain];
+    metadata_ = metadata;
   }
   return self;
 }
@@ -83,10 +83,7 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
 }
 
 - (int)getModifiers {
-  if (metadata_) {
-    return [metadata_ modifiers];
-  }
-  return JavaLangReflectModifier_PUBLIC;
+  return JreMethodModifiers(metadata_);
 }
 
 - (jint)getNumParams {
@@ -154,7 +151,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
   // If method has genericSignature with no generic types, it's a concrete implementation
   // of a generic method and its signature has the declared parameter types.
-  if ([metadata_ genericSignature]) {
+  if (metadata_ && metadata_->genericSignature) {
     IOSObjectArray *genericParameterTypes = [self getGenericParameterTypes];
     BOOL hasTypeParameter = NO;
     for (jint i = 0; i < nArgs; i++) {
@@ -234,13 +231,13 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
 - (jboolean)isSynthetic {
   if (metadata_) {
-    return ([metadata_ modifiers] & JavaLangReflectModifier_SYNTHETIC) > 0;
+    return (JreMethodModifiers(metadata_) & JavaLangReflectModifier_SYNTHETIC) > 0;
   }
   return false;
 }
 
 - (IOSObjectArray *)getExceptionTypes {
-  IOSObjectArray *result = [metadata_ exceptionTypes];
+  IOSObjectArray *result = JreMethodExceptionTypes(metadata_);
   if (!result) {
     result = [IOSObjectArray arrayWithLength:0 type:IOSClass_class_()];
   }
@@ -287,7 +284,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   // Code generated from Android's java.lang.reflect.AbstractMethod class.
   JavaLangStringBuilder *sb = [[JavaLangStringBuilder alloc] initWithInt:80];
   GenericInfo *info = getMethodOrConstructorGenericInfo(self);
-  jint modifiers = [self getModifiers];
+  jint modifiers = JreMethodModifiers(metadata_);
   if (modifiers != 0) {
     [[sb appendWithNSString:
         JavaLangReflectModifier_toStringWithInt_(modifiers & ~JavaLangReflectModifier_VARARGS)]
@@ -335,7 +332,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
 - (jboolean)isVarArgs {
   if (metadata_) {
-    return ([metadata_ modifiers] & JavaLangReflectModifier_VARARGS) > 0;
+    return (JreMethodModifiers(metadata_) & JavaLangReflectModifier_VARARGS) > 0;
   }
   return false;
 }
@@ -349,7 +346,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   return methodSignature_;
 }
 
-- (JavaMethodMetadata *)metadata {
+- (const J2ObjcMethodInfo *)metadata {
   return metadata_;
 }
 
@@ -370,7 +367,6 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   free((void *)binaryParameterTypes_);
 #if ! __has_feature(objc_arc)
   [methodSignature_ release];
-  [metadata_ release];
   [super dealloc];
 #endif
 }
@@ -379,13 +375,13 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
 // Function generated from Android's java.lang.reflect.AbstractMethod class.
 GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
-  JavaMethodMetadata *metadata = [self metadata];
+  const J2ObjcMethodInfo *metadata = [self metadata];
   if (!metadata) {
     return nil;
   }
-  NSString *signatureAttribute = [metadata genericSignature];
+  NSString *signatureAttribute = metadata ? JreMethodGenericString(metadata) : nil;
   jboolean isMethod = [self isKindOfClass:[JavaLangReflectMethod class]];
-  IOSObjectArray *exceptionTypes = [self getExceptionTypes];
+  IOSObjectArray *exceptionTypes = JreMethodExceptionTypes(metadata);
   LibcoreReflectGenericSignatureParser *parser =
       [[[LibcoreReflectGenericSignatureParser alloc]
         initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()] autorelease];
