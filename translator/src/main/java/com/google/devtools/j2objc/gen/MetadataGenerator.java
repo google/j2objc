@@ -217,9 +217,10 @@ public class MetadataGenerator {
       return null;
     }
     int modifiers = getFieldModifiers(var);
+    boolean isStatic = BindingUtil.isStatic(var);
     String javaName = name.getIdentifier();
     String objcName = nameTable.getVariableShortName(var);
-    if (objcName.equals(javaName + '_')) {
+    if ((isStatic && objcName.equals(javaName)) || (!isStatic && objcName.equals(javaName + '_'))) {
       // Don't print Java name if it matches the default pattern, to conserve space.
       javaName = null;
     }
@@ -231,7 +232,7 @@ public class MetadataGenerator {
     } else {
       // Explicit 0-initializer to avoid Clang warning.
       constantValue = ".constantValue.asLong = 0";
-      if (BindingUtil.isStatic(var)) {
+      if (isStatic) {
         staticRef = '&' + nameTable.getVariableQualifiedName(var);
       }
     }

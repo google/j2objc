@@ -61,17 +61,26 @@
 }
 
 - (NSString *)getName {
-  return [self propertyName];
+  if (metadata_->javaName) {
+    return [NSString stringWithUTF8String:metadata_->javaName];
+  } else if (IsStatic(self)) {
+    return [NSString stringWithUTF8String:metadata_->name];
+  } else {
+    // Remove the trailing "_" from instance fields.
+    return [[[NSString alloc] initWithBytes:metadata_->name
+                                     length:strlen(metadata_->name) - 1
+                                   encoding:NSUTF8StringEncoding] autorelease];
+  }
 }
 
 - (NSString *)description {
   NSString *mods = JavaLangReflectModifier_toStringWithInt_(metadata_->modifiers);
   if ([mods length] > 0) {
     return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, [self getType],
-            [[self getDeclaringClass] getName], [self propertyName]];
+            [[self getDeclaringClass] getName], [self getName]];
   }
   return [NSString stringWithFormat:@"%@ %@.%@", [self getType], [[self getDeclaringClass] getName],
-          [self propertyName]];
+          [self getName]];
 }
 
 static jboolean IsStatic(JavaLangReflectField *field) {
@@ -306,28 +315,6 @@ static void SetWithRawValue(
   return declaringClass_;
 }
 
-- (NSString *)propertyName {
-  NSString *name = metadata_->javaName ?
-      [NSString stringWithUTF8String:metadata_->javaName] :
-      [NSString stringWithUTF8String:metadata_->name];
-  return [JavaLangReflectField propertyName:name];
-}
-
-+ (NSString *)propertyName:(NSString *)name {
-  NSUInteger lastCharIndex = [name length] - 1;
-  if ([name characterAtIndex:lastCharIndex] == '_') {
-    return [name substringToIndex:lastCharIndex];
-  }
-  return name;
-}
-
-+ (NSString *)variableName:(NSString *)name {
-  if ([name characterAtIndex:[name length] - 1] != '_') {
-    return [name stringByAppendingString:@"_"];
-  }
-  return name;
-}
-
 - (jboolean)isSynthetic {
   return (metadata_->modifiers & JavaLangReflectModifier_SYNTHETIC) > 0;
 }
@@ -345,7 +332,7 @@ static void SetWithRawValue(
   NSString *typeString = [type conformsToProtocol:@protocol(JavaLangReflectTypeVariable)] ?
       [(id<JavaLangReflectTypeVariable>) type getName] : [type description];
   return [NSString stringWithFormat:@"%@%@ %@.%@", mods, typeString,
-          [[self getDeclaringClass] getName], [self propertyName]];
+          [[self getDeclaringClass] getName], [self getName]];
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
@@ -371,12 +358,11 @@ static void SetWithRawValue(
     return NO;
   }
   JavaLangReflectField *other = (JavaLangReflectField *) anObject;
-  return declaringClass_ == other->declaringClass_ &&
-      [[self propertyName] isEqual:[other propertyName]];
+  return declaringClass_ == other->declaringClass_ && [[self getName] isEqual:[other getName]];
 }
 
 - (NSUInteger)hash {
-  return [[declaringClass_ getName] hash] ^ [[self propertyName] hash];
+  return [[declaringClass_ getName] hash] ^ [[self getName] hash];
 }
 
 + (const J2ObjcClassInfo *)__metadata {

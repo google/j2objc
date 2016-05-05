@@ -81,11 +81,6 @@
 // Returns type.
 - (id<JavaLangReflectType>)getGenericType;
 
-// Convert between property and variable names.
-- (NSString *)propertyName;
-+ (NSString *)propertyName:(NSString *)name;
-+ (NSString *)variableName:(NSString *)name;
-
 // Should only be used by sun.misc.Unsafe.
 - (int)unsafeOffset;
 
