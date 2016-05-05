@@ -29,6 +29,7 @@
 #import "IOSPrimitiveArray.h"
 #import "IOSPrimitiveClass.h"
 #import "IOSProtocolClass.h"
+#import "IOSProxyClass.h"
 #import "IOSReflection.h"
 #import "J2ObjC_icu.h"
 #import "NSCopying+JavaCloneable.h"
@@ -982,14 +983,14 @@ JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, jboo
   return nil;
 }
 
-JavaLangReflectField *findField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {
+static JavaLangReflectField *findField(IOSClass *iosClass, NSString *name) {
   while (iosClass) {
-    JavaLangReflectField *field = findDeclaredField(iosClass, name, publicOnly);
+    JavaLangReflectField *field = findDeclaredField(iosClass, name, true);
     if (field) {
       return field;
     }
     for (IOSClass *p in [iosClass getInterfacesInternal]) {
-      JavaLangReflectField *field = findField(p, name, publicOnly);
+      JavaLangReflectField *field = findField(p, name);
       if (field) {
         return field;
       }
@@ -1010,7 +1011,7 @@ JavaLangReflectField *findField(IOSClass *iosClass, NSString *name, jboolean pub
 
 - (JavaLangReflectField *)getField:(NSString *)name {
   nil_chk(name);
-  JavaLangReflectField *field = findField(self, name, true);
+  JavaLangReflectField *field = findField(self, name);
   if (field) {
     return field;
   }
@@ -1266,6 +1267,16 @@ IOSClass *IOSClass_fromClass(Class cls) {
   // lookup because +initialize makes calls into IOSClass_fromClass().
   IOSClass_initialize();
   return (IOSClass *)FastPointerLookup(&classLookup, cls);
+}
+
+IOSClass *IOSClass_NewProxyClass(Class cls) {
+  IOSClass *result = [[IOSProxyClass alloc] initWithClass:cls];
+  if (!FastPointerLookupAddMapping(&classLookup, cls, result)) {
+    // This function should only be called by java.lang.reflect.Proxy
+    // immediately after creating a new proxy class.
+    @throw AUTORELEASE([[JavaLangAssertionError alloc] init]);
+  }
+  return result;
 }
 
 static void *ProtocolLookup(void *protocol) {

@@ -236,6 +236,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions);
 // Internal functions
 NSString *IOSClass_GetTranslatedMethodName(
     IOSClass *cls, NSString *name, IOSObjectArray *paramTypes);
+IOSClass *IOSClass_NewProxyClass(Class cls);
 
 // Return value is retained
 IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned int count);

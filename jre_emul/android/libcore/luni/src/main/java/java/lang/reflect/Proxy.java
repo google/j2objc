@@ -26,6 +26,7 @@ import java.util.WeakHashMap;
 /*-[
 #include "IOSClass.h"
 #include "IOSPrimitiveClass.h"
+#include "IOSProxyClass.h"
 #include "java/lang/IllegalArgumentException.h"
 #include "java/lang/reflect/Method.h"
 #include <objc/runtime.h>
@@ -46,9 +47,6 @@ public class Proxy implements Serializable {
     // maps class loaders to created classes by interface names
     private static final Map<ClassLoader, Map<String, WeakReference<Class<?>>>> loaderCache =
         new WeakHashMap<ClassLoader, Map<String, WeakReference<Class<?>>>>();
-
-    // to find previously created types
-    private static final Map<Class<?>, String> proxyCache = new WeakHashMap<Class<?>, String>();
 
     private static int NextClassNameIndex = 0;
 
@@ -174,16 +172,11 @@ public class Proxy implements Serializable {
                 // Need a weak reference to the class so it can
                 // be unloaded if the class loader is discarded
                 interfaceCache.put(interfaceKey, new WeakReference<Class<?>>(newClass));
-                synchronized (proxyCache) {
-                    // the value is unused
-                    proxyCache.put(newClass, "");
-                }
             } else {
                 newClass = ref.get();
                 assert newClass != null : "\ninterfaceKey=\"" + interfaceKey + "\""
                                         + "\nloaderCache=\"" + loaderCache + "\""
-                                        + "\nintfCache=\"" + interfaceCache + "\""
-                                        + "\nproxyCache=\"" + proxyCache + "\"";
+                                        + "\nintfCache=\"" + interfaceCache + "\"";
             }
             return newClass;
         }
@@ -248,14 +241,9 @@ public class Proxy implements Serializable {
      * @throws NullPointerException
      *                if the class is {@code null}
      */
-    public static boolean isProxyClass(Class<?> cl) {
-        if (cl == null) {
-            throw new NullPointerException("cl == null");
-        }
-        synchronized (proxyCache) {
-            return proxyCache.containsKey(cl);
-        }
-    }
+    public static native boolean isProxyClass(Class<?> cl) /*-[
+      return [nil_chk(cl) isKindOfClass:[IOSProxyClass class]];
+    ]-*/;
 
     /**
      * Returns the invocation handler of the specified proxy instance.
@@ -293,7 +281,7 @@ public class Proxy implements Serializable {
       Method constructor = class_getInstanceMethod([JavaLangReflectProxy class], sel);
       class_addMethod(proxyClass, sel, method_getImplementation(constructor),
           method_getTypeEncoding(constructor));
-      return IOSClass_fromClass(proxyClass);
+      return IOSClass_NewProxyClass(proxyClass);
     ]-*/;
 
     /*-[

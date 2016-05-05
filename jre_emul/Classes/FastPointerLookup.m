@@ -71,6 +71,18 @@ static Store *NewStore(FastPointerLookup_t *lookup, size_t newSize) {
   return store;
 }
 
+// Gets the Store, ensuring that it is created first. Caller must hold the
+// mutex.
+static Store *GetInitializedStore(FastPointerLookup_t *lookup) {
+  Store *store = __c11_atomic_load(&lookup->store, __ATOMIC_RELAXED);
+  if (!store) {
+    store = NewStore(lookup, INITIAL_CAPACITY);
+    // Atomic store with a barrier.
+    __c11_atomic_store(&lookup->store, store, __ATOMIC_RELEASE);
+  }
+  return store;
+}
+
 // Creates a new store with double the capacity as oldStore, copies all entry
 // data then swaps in the new store and frees oldStore when it is safe to do so.
 static Store *Resize(FastPointerLookup_t *lookup, Store *oldStore) {
@@ -109,14 +121,15 @@ static Store *Resize(FastPointerLookup_t *lookup, Store *oldStore) {
 
 // Adds a new entry to the store by calling the provided factory, resizing if
 // necessary.
-static Entry *Put(FastPointerLookup_t *lookup, Store *store, void *key, uint32_t hash) {
+static Entry *Put(
+    FastPointerLookup_t *lookup, Store *store, void *key, uint32_t hash, void *value) {
   if (store->nextEntry > store->lastEntry) {
     store = Resize(lookup, store);
   }
   size_t idx = hash & (store->size - 1);
   Entry *entry = store->nextEntry++;
   entry->key = key;
-  entry->value = lookup->create_func(key);
+  entry->value = value;
   entry->next = __c11_atomic_load(&store->table[idx], __ATOMIC_RELAXED);
   // Must be an atomic store with a barrier here so that the lock-free lookup
   // will read consistent data.
@@ -124,16 +137,8 @@ static Entry *Put(FastPointerLookup_t *lookup, Store *store, void *key, uint32_t
   return entry;
 }
 
-// Does a lookup under mutual exclusion. Lazily creates the initial store. Calls
-// Put() to add an entry if the key is not found.
-static void *LockedLookup(FastPointerLookup_t *lookup, void *key, uint32_t hash) {
-  pthread_mutex_lock(&lookup->mutex);
-  Store *store = __c11_atomic_load(&lookup->store, __ATOMIC_RELAXED);
-  if (!store) {
-    store = NewStore(lookup, INITIAL_CAPACITY);
-    // Atomic store with a barrier.
-    __c11_atomic_store(&lookup->store, store, __ATOMIC_RELEASE);
-  }
+// Returns the Entry for the key and hash, or NULL. Caller must hold the mutex.
+static Entry *FindEntryRelaxed(Store *store, void *key, uint32_t hash) {
   size_t idx = hash & (store->size - 1);
   Entry *entry = __c11_atomic_load(&store->table[idx], __ATOMIC_RELAXED);
   while (entry) {
@@ -142,8 +147,17 @@ static void *LockedLookup(FastPointerLookup_t *lookup, void *key, uint32_t hash)
     }
     entry = entry->next;
   }
+  return entry;
+}
+
+// Does a lookup under mutual exclusion. Lazily creates the initial store. Calls
+// Put() to add an entry if the key is not found.
+static void *LockedLookup(FastPointerLookup_t *lookup, void *key, uint32_t hash) {
+  pthread_mutex_lock(&lookup->mutex);
+  Store *store = GetInitializedStore(lookup);
+  Entry *entry = FindEntryRelaxed(store, key, hash);
   if (!entry) {
-    entry = Put(lookup, store, key, hash);
+    entry = Put(lookup, store, key, hash, lookup->create_func(key));
   }
   pthread_mutex_unlock(&lookup->mutex);
   return entry->value;
@@ -179,4 +193,18 @@ void *FastPointerLookup(FastPointerLookup_t *lookup, void *key) {
     return result;
   }
   return LockedLookup(lookup, key, hash);
+}
+
+bool FastPointerLookupAddMapping(FastPointerLookup_t *lookup, void *key, void *value) {
+  bool result = false;
+  pthread_mutex_lock(&lookup->mutex);
+  Store *store = GetInitializedStore(lookup);
+  uint32_t hash = Hash(key);
+  Entry *entry = FindEntryRelaxed(store, key, hash);
+  if (!entry) {
+    Put(lookup, store, key, hash, value);
+    result = true;
+  }
+  pthread_mutex_unlock(&lookup->mutex);
+  return result;
 }

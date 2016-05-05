@@ -10,7 +10,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#ifndef FastPointerLookup_H_
+#define FastPointerLookup_H_
+
 #import <pthread.h>
+#import <stdbool.h>
 
 struct FastPointerLookupStore;
 
@@ -33,5 +37,11 @@ typedef struct FastPointerLookup_t {
 #define FAST_POINTER_LOOKUP_INIT(create_func) \
   { PTHREAD_MUTEX_INITIALIZER, create_func, 0, NULL }
 
-// Looks up the value for a key. This is the only operation.
+// Looks up the value for a key.
 void *FastPointerLookup(FastPointerLookup_t *lookup, void *key);
+
+// Adds a key/value pair if the key is not already mapped. Returns true if the
+// new mapping was added, false if the key is already mapped.
+bool FastPointerLookupAddMapping(FastPointerLookup_t *lookup, void *key, void *value);
+
+#endif // FastPointerLookup_H_
