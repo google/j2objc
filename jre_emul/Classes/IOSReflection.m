@@ -163,34 +163,6 @@ IOSObjectArray *JreClassInnerClasses(const J2ObjcClassInfo *metadata) {
   return result;
 }
 
-
-NSString *JreFieldName(const J2ObjcFieldInfo *metadata) {
-  if (!metadata) {
-    return nil;
-  }
-  return metadata->javaName ?
-      [NSString stringWithUTF8String:metadata->javaName] :
-      [NSString stringWithUTF8String:metadata->name];
-}
-
-NSString *JreFieldIosName(const J2ObjcFieldInfo *metadata) {
-  return metadata ? [NSString stringWithUTF8String:metadata->name] : nil;
-}
-
-NSString *JreFieldJavaName(const J2ObjcFieldInfo *metadata) {
-  return metadata && metadata->javaName ? [NSString stringWithUTF8String:metadata->javaName] : nil;
-}
-
-id<JavaLangReflectType> JreFieldType(const J2ObjcFieldInfo *metadata) {
-  return metadata ? JreTypeForString(metadata->type) : nil;
-}
-
-NSString *JreFieldGenericString(const J2ObjcFieldInfo *metadata) {
-  return metadata && metadata->genericSignature
-      ? [NSString stringWithUTF8String:metadata->genericSignature] : nil;
-}
-
-
 NSString *JreMethodName(const J2ObjcMethodInfo *metadata) {
   return metadata ? (metadata->javaName ? [NSString stringWithUTF8String:metadata->javaName]
                      : [NSString stringWithUTF8String:metadata->selector]) : nil;

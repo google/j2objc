@@ -29,8 +29,10 @@
 #import "java/lang/Float.h"
 #import "java/lang/Integer.h"
 #import "java/lang/Long.h"
+#import "java/lang/NoSuchFieldException.h"
 #import "java/lang/NoSuchMethodException.h"
 #import "java/lang/Short.h"
+#import "java/lang/reflect/Field.h"
 #import "java/lang/reflect/Method.h"
 #import "java/lang/reflect/Modifier.h"
 
@@ -77,40 +79,42 @@
       JavaLangReflectModifier_ABSTRACT;
 }
 
+- (jboolean)isPrimitive {
+  return true;
+}
+
 - (IOSObjectArray *)getDeclaredMethods {
   return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectMethod_class_()];
 }
 
-- (JavaLangReflectMethod *)getMethod:(NSString *)name, ... {
-  id exception = [[JavaLangNoSuchMethodException alloc] init];
-#if ! __has_feature(objc_arc)
-  [exception autorelease];
-#endif
-  @throw exception;
-  return nil;
+- (IOSObjectArray *)getMethods {
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectMethod_class_()];
 }
 
-- (JavaLangReflectMethod *)getDeclaredMethod:(NSString *)name, ... {
-  id exception = [[JavaLangNoSuchMethodException alloc] init];
-#if ! __has_feature(objc_arc)
-  [exception autorelease];
-#endif
-  @throw exception;
-  return nil;
+- (JavaLangReflectMethod *)getMethod:(NSString *)name
+                      parameterTypes:(IOSObjectArray *)types {
+  @throw create_JavaLangNoSuchMethodException_initWithNSString_(name);
 }
 
-- (JavaLangReflectConstructor *)
-getConstructorWithClasses:(IOSClass *)firstClass, ... {
-  id exception = [[JavaLangNoSuchMethodException alloc] init];
-#if ! __has_feature(objc_arc)
-  [exception autorelease];
-#endif
-  @throw exception;
-  return nil;
+- (JavaLangReflectMethod *)getDeclaredMethod:(NSString *)name
+                              parameterTypes:(IOSObjectArray *)types {
+  @throw create_JavaLangNoSuchMethodException_initWithNSString_(name);
 }
 
-- (jboolean)isPrimitive {
-  return true;
+- (IOSObjectArray *)getDeclaredFields {
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectField_class_()];
+}
+
+- (IOSObjectArray *)getFields {
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectField_class_()];
+}
+
+- (JavaLangReflectField *)getDeclaredField:(NSString *)name {
+  @throw create_JavaLangNoSuchFieldException_initWithNSString_(name);
+}
+
+- (JavaLangReflectField *)getField:(NSString *)name {
+  @throw create_JavaLangNoSuchFieldException_initWithNSString_(name);
 }
 
 // isEqual and hash are uniquely identified by their name.

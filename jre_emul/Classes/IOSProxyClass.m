@@ -20,15 +20,24 @@
 #import "IOSProxyClass.h"
 
 #import "java/lang/NoSuchFieldException.h"
+#import "java/lang/reflect/Field.h"
 
 @implementation IOSProxyClass
 
+- (IOSObjectArray *)getDeclaredFields {
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectField_class_()];
+}
+
+- (IOSObjectArray *)getFields {
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectField_class_()];
+}
+
 - (JavaLangReflectField *)getDeclaredField:(NSString *)name {
-  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
+  @throw create_JavaLangNoSuchFieldException_initWithNSString_(name);
 }
 
 - (JavaLangReflectField *)getField:(NSString *)name {
-  @throw AUTORELEASE([[JavaLangNoSuchFieldException alloc] initWithNSString:name]);
+  @throw create_JavaLangNoSuchFieldException_initWithNSString_(name);
 }
 
 @end

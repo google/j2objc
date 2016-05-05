@@ -50,19 +50,6 @@ typedef union {
 // all information provided by the reflection API is discoverable via the
 // Objective-C runtime.
 
-// Use same data types that the translator generates.
-typedef union J2ObjcConstantValue {
-  jboolean boolean;
-  char byte;
-  unichar char_;
-  double double_;
-  float float_;
-  int int_;
-  long long long_;
-  short short_;
-  const char *string;
-} J2ObjcConstantValue;
-
 typedef struct J2ObjcMethodInfo {
   const char *selector;
   const char *javaName;
@@ -127,13 +114,6 @@ extern const J2ObjcFieldInfo *JreFindFieldInfo(
     const J2ObjcClassInfo *metadata, const char *fieldName);
 extern const J2ObjcMethodInfo *JreFindMethodInfo(
     const J2ObjcClassInfo *metadata, NSString *methodName);
-
-// J2ObjcFieldInfo accessor functions.
-extern NSString *JreFieldName(const J2ObjcFieldInfo *metadata);
-extern NSString *JreFieldIosName(const J2ObjcFieldInfo *metadata);
-extern NSString *JreFieldJavaName(const J2ObjcFieldInfo *metadata);
-extern id<JavaLangReflectType> JreFieldType(const J2ObjcFieldInfo *metadata);
-extern NSString *JreFieldGenericString(const J2ObjcFieldInfo *metadata);
 
 // J2ObjcMethodInfo accessor functions.
 extern NSString *JreMethodName(const J2ObjcMethodInfo *metadata);

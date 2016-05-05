@@ -65,8 +65,7 @@
 }
 
 - (NSString *)description {
-  NSString *mods =
-      metadata_ ? JavaLangReflectModifier_toStringWithInt_(metadata_->modifiers) : @"";
+  NSString *mods = JavaLangReflectModifier_toStringWithInt_(metadata_->modifiers);
   if ([mods length] > 0) {
     return [NSString stringWithFormat:@"%@ %@ %@.%@", mods, [self getType],
             [[self getDeclaringClass] getName], [self propertyName]];
@@ -83,9 +82,13 @@ static jboolean IsFinal(JavaLangReflectField *field) {
   return (field->metadata_->modifiers & JavaLangReflectModifier_FINAL) > 0;
 }
 
+static IOSClass *GetErasedFieldType(JavaLangReflectField *field) {
+  return TypeToClass(JreTypeForString(field->metadata_->type));
+}
+
 static void ReadRawValue(
     J2ObjcRawValue *rawValue, JavaLangReflectField *field, id object, IOSClass *toType) {
-  IOSClass *type = TypeToClass(JreFieldType(field->metadata_));
+  IOSClass *type = GetErasedFieldType(field);
   if (!type) {
     // Reflection stripped, assume the caller knows the correct type.
     type = toType;
@@ -121,7 +124,7 @@ static void ReadRawValue(
 
 static void SetWithRawValue(
     J2ObjcRawValue *rawValue, JavaLangReflectField *field, id object, IOSClass *fromType) {
-  IOSClass *type = TypeToClass(JreFieldType(field->metadata_));
+  IOSClass *type = GetErasedFieldType(field);
   if (!type) {
     // Reflection stripped, assume the caller knows the correct type.
     type = fromType;
@@ -272,44 +275,31 @@ static void SetWithRawValue(
 
 
 - (IOSClass *)getType {
-  if (metadata_) {
-    return TypeToClass(JreFieldType(metadata_));
-  }
-  if (!ivar_) {
-    // Static field, use accessor method's return type.
-    NSAssert(metadata_ != nil, @"malformed field instance");
-    JavaLangReflectMethod *accessor = [declaringClass_ getMethod:[self getName]
-                                                  parameterTypes:nil];
-    nil_chk(accessor);
-    return [accessor getReturnType];
-  }
-  return decodeTypeEncoding(ivar_getTypeEncoding(ivar_));
+  return GetErasedFieldType(self);
 }
 
 - (id<JavaLangReflectType>)getGenericType {
-  id<JavaLangReflectType> result = [self getType];
-  NSString *genericSignature = JreFieldGenericString(metadata_);
-  if (!genericSignature) {
-    return result;
+  if (!metadata_->genericSignature) {
+    return [self getType];
   }
+  NSString *genericSignature = [NSString stringWithUTF8String:metadata_->genericSignature];
   LibcoreReflectGenericSignatureParser *parser =
       [[LibcoreReflectGenericSignatureParser alloc]
        initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()];
   [parser parseForFieldWithJavaLangReflectGenericDeclaration:declaringClass_
                                                 withNSString:genericSignature];
-  if (parser->fieldType_) {
-    result = [[parser->fieldType_ retain] autorelease];
+  id<JavaLangReflectType> result = parser->fieldType_;
+  if (result) {
+    [[result retain] autorelease];
+  } else {
+    result = [self getType];
   }
   [parser release];
   return result;
 }
 
 - (int)getModifiers {
-  if (metadata_) {
-    return metadata_->modifiers;
-  }
-  // All Objective-C fields and methods are public at runtime.
-  return JavaLangReflectModifier_PUBLIC;
+  return metadata_->modifiers;
 }
 
 - (IOSClass *)getDeclaringClass {
@@ -317,8 +307,9 @@ static void SetWithRawValue(
 }
 
 - (NSString *)propertyName {
-  NSString *name = metadata_ ?
-      JreFieldName(metadata_) : [NSString stringWithUTF8String:ivar_getName(ivar_)];
+  NSString *name = metadata_->javaName ?
+      [NSString stringWithUTF8String:metadata_->javaName] :
+      [NSString stringWithUTF8String:metadata_->name];
   return [JavaLangReflectField propertyName:name];
 }
 
@@ -338,22 +329,15 @@ static void SetWithRawValue(
 }
 
 - (jboolean)isSynthetic {
-  if (metadata_) {
-    return (metadata_->modifiers & JavaLangReflectModifier_SYNTHETIC) > 0;
-  }
-  return false;
+  return (metadata_->modifiers & JavaLangReflectModifier_SYNTHETIC) > 0;
 }
 
 - (jboolean)isEnumConstant {
-  if (metadata_) {
-    return (metadata_->modifiers & JavaLangReflectModifier_ENUM) > 0;
-  }
-  return [declaringClass_ isEnum] && [[self getType] isEqual:declaringClass_];
+  return (metadata_->modifiers & JavaLangReflectModifier_ENUM) > 0;
 }
 
 - (NSString *)toGenericString {
-  NSString *mods =
-      metadata_ ? JavaLangReflectModifier_toStringWithInt_(metadata_->modifiers) : @"";
+  NSString *mods = JavaLangReflectModifier_toStringWithInt_(metadata_->modifiers);
   if ([mods length] > 0) { // Separate test, since Modifer.toString() might return empty string.
     mods = [mods stringByAppendingString:@" "];
   }

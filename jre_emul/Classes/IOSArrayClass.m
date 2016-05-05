@@ -25,6 +25,8 @@
 #import "NSCopying+JavaCloneable.h"
 #import "java/io/Serializable.h"
 #import "java/lang/InstantiationException.h"
+#import "java/lang/NoSuchFieldException.h"
+#import "java/lang/reflect/Field.h"
 #import "java/lang/reflect/Modifier.h"
 
 @implementation IOSArrayClass
@@ -98,6 +100,22 @@
 - (int)getModifiers {
   return JavaLangReflectModifier_PUBLIC | JavaLangReflectModifier_ABSTRACT
       | JavaLangReflectModifier_FINAL;
+}
+
+- (IOSObjectArray *)getDeclaredFields {
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectField_class_()];
+}
+
+- (IOSObjectArray *)getFields {
+  return [IOSObjectArray arrayWithLength:0 type:JavaLangReflectField_class_()];
+}
+
+- (JavaLangReflectField *)getDeclaredField:(NSString *)name {
+  @throw create_JavaLangNoSuchFieldException_initWithNSString_(name);
+}
+
+- (JavaLangReflectField *)getField:(NSString *)name {
+  @throw create_JavaLangNoSuchFieldException_initWithNSString_(name);
 }
 
 - (BOOL)isEqual:(id)anObject {

@@ -159,6 +159,14 @@ static JavaUtilProperties *prefixMapping;
   @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
 }
 
+const J2ObjcClassInfo *GetMetadataOrFail(IOSClass *iosClass) {
+  const J2ObjcClassInfo *metadata = iosClass->metadata_;
+  if (metadata) {
+    return metadata;
+  }
+  @throw create_ComGoogleJ2objcReflectionStrippedError_initWithIOSClass_(iosClass);
+}
+
 - (IOSClass *)getSuperclass {
   return nil;
 }
@@ -898,87 +906,34 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
   return JavaLangClassLoader_getSystemClassLoader();
 }
 
-static const char* GetFieldName(NSString *name, IOSClass *clazz) {
-  const char *cname = [name UTF8String];
-  if (clazz->metadata_) {
-    const J2ObjcFieldInfo *fieldMetadata = JreFindFieldInfo(clazz->metadata_, cname);
-    if (fieldMetadata) {
-      return fieldMetadata->name;
-    }
-  }
-  name = [JavaLangReflectField variableName:name];
-  return [name UTF8String];
-}
-
 // Adds all the fields for a specified class to a specified dictionary.
 static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
     jboolean publicOnly) {
-  const J2ObjcClassInfo *metadata = iosClass->metadata_;
-  if (metadata) {
-    for (int i = 0; i < metadata->fieldCount; i++) {
-      const J2ObjcFieldInfo *fieldInfo = &metadata->fields[i];
-      if (publicOnly && (fieldInfo->modifiers & JavaLangReflectModifier_PUBLIC) == 0) {
-        continue;
-      }
-      Ivar ivar = class_getInstanceVariable(iosClass.objcClass, fieldInfo->name);
-      JavaLangReflectField *field = [JavaLangReflectField fieldWithIvar:ivar
-                                                              withClass:iosClass
-                                                           withMetadata:fieldInfo];
-      NSString *name = [field getName];
-      if (![fields valueForKey:name]) {
-        [fields setObject:field forKey:name];
-      }
-    };
-  } else {
-    unsigned int count;
-    Ivar *ivars = class_copyIvarList(iosClass.objcClass, &count);
-    for (unsigned int i = 0; i < count; i++) {
-      JavaLangReflectField *field = [JavaLangReflectField fieldWithIvar:ivars[i]
-                                                              withClass:iosClass
-                                                           withMetadata:nil];
-      NSString *name = [field getName];
-      if (![fields valueForKey:name]) { // Don't add shadowed fields.
-        [fields setObject:field forKey:name];
-      }
+  const J2ObjcClassInfo *metadata = GetMetadataOrFail(iosClass);
+  for (int i = 0; i < metadata->fieldCount; i++) {
+    const J2ObjcFieldInfo *fieldInfo = &metadata->fields[i];
+    if (publicOnly && (fieldInfo->modifiers & JavaLangReflectModifier_PUBLIC) == 0) {
+      continue;
     }
-    free(ivars);
-  }
-}
-
-// Try to locate a native variable for a given class and name. Since the
-// translator may append underscores to differentiate reserved and method
-// names, try all possible names.
-Ivar FindIvar(IOSClass *cls, NSString *name) {
-  Ivar ivar = class_getInstanceVariable(cls.objcClass, GetFieldName(name, cls));
-  if (ivar) {
-    return ivar;
-  }
-  for (int i = 0; i < 3; i++) {  // Translator never appends more the 3 underscores.
-    name = [name stringByAppendingString:@"_"];
-    ivar = class_getInstanceVariable(cls.objcClass, GetFieldName(name, cls));
-    if (ivar) {
-      return ivar;
+    Ivar ivar = class_getInstanceVariable(iosClass.objcClass, fieldInfo->name);
+    JavaLangReflectField *field = [JavaLangReflectField fieldWithIvar:ivar
+                                                            withClass:iosClass
+                                                         withMetadata:fieldInfo];
+    NSString *name = [field getName];
+    if (![fields valueForKey:name]) {
+      [fields setObject:field forKey:name];
     }
-  }
-  return NULL;
+  };
 }
 
 JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {
-  Class cls = iosClass.objcClass;
-  if (cls) {
-    const J2ObjcClassInfo *metadata = iosClass->metadata_;
-    if (metadata) {
-      const J2ObjcFieldInfo *fieldMeta = JreFindFieldInfo(metadata, [name UTF8String]);
-      if (fieldMeta &&
-          (!publicOnly || (fieldMeta->modifiers & JavaLangReflectModifier_PUBLIC) != 0)) {
-        Ivar ivar = class_getInstanceVariable(cls, fieldMeta->name);
-        return [JavaLangReflectField fieldWithIvar:ivar
-                                         withClass:iosClass
-                                      withMetadata:fieldMeta];
-      }
-    } else {
-      @throw create_ComGoogleJ2objcReflectionStrippedError_initWithIOSClass_(iosClass);
-    }
+  const J2ObjcClassInfo *metadata = GetMetadataOrFail(iosClass);
+  const J2ObjcFieldInfo *fieldMeta = JreFindFieldInfo(metadata, [name UTF8String]);
+  if (fieldMeta && (!publicOnly || (fieldMeta->modifiers & JavaLangReflectModifier_PUBLIC) != 0)) {
+    Ivar ivar = class_getInstanceVariable(iosClass.objcClass, fieldMeta->name);
+    return [JavaLangReflectField fieldWithIvar:ivar
+                                     withClass:iosClass
+                                  withMetadata:fieldMeta];
   }
   return nil;
 }
