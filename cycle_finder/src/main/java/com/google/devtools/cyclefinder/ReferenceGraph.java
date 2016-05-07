@@ -25,17 +25,18 @@ import com.google.common.collect.Sets;
 import com.google.devtools.j2objc.jdt.BindingConverter;
 import com.google.devtools.j2objc.translate.OuterReferenceResolver;
 import com.google.devtools.j2objc.util.BindingUtil;
-
-import org.eclipse.jdt.core.dom.ITypeBinding;
-import org.eclipse.jdt.core.dom.IVariableBinding;
-import org.eclipse.jdt.core.dom.Modifier;
-
+import com.google.devtools.j2objc.util.ElementUtil;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import javax.lang.model.element.Element;
+import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
+import org.eclipse.jdt.core.dom.ITypeBinding;
+import org.eclipse.jdt.core.dom.IVariableBinding;
+import org.eclipse.jdt.core.dom.Modifier;
 
 /**
  * Builds the graph of possible references between types and searches for
@@ -159,7 +160,9 @@ public class ReferenceGraph {
 
   private void addOuterClassEdges() {
     for (ITypeBinding type : allTypes.values()) {
-      if (outerResolver.needsOuterReference(BindingConverter.getType(type.getTypeDeclaration()))
+      Element element = BindingConverter.getElement(type.getTypeDeclaration());
+      if (ElementUtil.isTypeElement(element)
+          && outerResolver.needsOuterReference((TypeElement) element)
           && !BindingUtil.hasNamedAnnotation(type, "WeakOuter")
           && !BindingUtil.isWeakOuterAnonymousClass(type)) {
         ITypeBinding declaringType = type.getDeclaringClass();
