@@ -796,12 +796,45 @@ static jboolean hasModifier(IOSClass *cls, int flag) {
   return result;
 }
 
+// Checks if a ObjC protocol is a translated Java interface.
+bool IsJavaInterface(Protocol *protocol) {
+  if (protocol == @protocol(NSCopying)) {
+    return true;
+  }
+  unsigned int count;
+  Protocol **protocolList = protocol_copyProtocolList(protocol, &count);
+  bool result = false;
+  if (count >= 2) {
+    // Every translated Java interface has NSObject and JavaObject as the last two inherited
+    // protocols.
+    bool foundNSObject = false;
+    bool foundJavaObject = false;
+    for (unsigned int i = 0; i < count; i++) {
+      if (protocolList[i] == @protocol(NSObject)) {
+        foundNSObject = true;
+      }
+      if (protocolList[i] == @protocol(JavaObject)) {
+        foundJavaObject = true;
+      }
+    }
+    result = foundNSObject && foundJavaObject;
+  } else {
+    // Every translated Java annotation has JavaLangAnnotationAnnotation as its only inherited
+    // protocol.
+    result = count == 1 && protocolList[0] == @protocol(JavaLangAnnotationAnnotation);
+  }
+  free(protocolList);
+  return result;
+}
+
 IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned int count) {
   IOSClass *buffer[count];
   unsigned int actualCount = 0;
   for (unsigned int i = 0; i < count; i++) {
     Protocol *protocol = list[i];
-    if (protocol != @protocol(NSObject) && protocol != @protocol(JavaObject)) {
+    // It is not uncommon for protocols to be added to classes like NSObject using categories. Here
+    // we filter out any protocols that aren't translated from Java interfaces.
+    if (IsJavaInterface(protocol)) {
       buffer[actualCount++] = IOSClass_fromProtocol(list[i]);
     }
   }
