@@ -74,7 +74,7 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufGeneratedMessage_Builder)
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufGeneratedMessage_Builder)
 
 @protocol ComGoogleProtobufGeneratedMessage_ExtendableMessageOrBuilder
-    <ComGoogleProtobufMessageOrBuilder>
+    <ComGoogleProtobufMessageOrBuilder, NSObject, JavaObject>
 
 - (BOOL)hasExtensionWithComGoogleProtobufExtensionLite:
     (ComGoogleProtobufExtensionLite *)extension;

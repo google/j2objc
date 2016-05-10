@@ -22,6 +22,7 @@ import com.google.protobuf.Descriptors.FieldDescriptor.Type;
 import com.google.protobuf.ExtensionRegistry;
 import com.google.protobuf.ExtensionRegistryLite;
 import com.google.protobuf.GeneratedMessage;
+import com.google.protobuf.GeneratedMessage.ExtendableMessageOrBuilder;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Message;
 import com.google.protobuf.MessageLite;
@@ -243,6 +244,10 @@ public class CompatibilityTest extends ProtobufTest {
         .build();
     ProtocolMessageEnum type = data.getMyEnumType();
     assertEquals(1, type.getNumber());
+
+    // Test casting to ProtocolMessageEnum.
+    Object value = TypicalData.EnumType.VALUE2;
+    type = (ProtocolMessageEnum) value;
   }
 
   public void testMergeFrom() throws Exception {
@@ -1310,5 +1315,14 @@ public class CompatibilityTest extends ProtobufTest {
     expectSubstringIndexOutOfBounds(bs1, -1, 1);
     expectSubstringIndexOutOfBounds(bs1, 0, 17);
     expectSubstringIndexOutOfBounds(bs1, 7, 6);
+  }
+
+  public void testExtendableMessageOrBuilder() throws Exception {
+    TypicalData.Builder builder = TypicalData.newBuilder().setMyInt(42);
+    TypicalData data = builder.build();
+    Object o = builder;
+    ExtendableMessageOrBuilder emob = (ExtendableMessageOrBuilder) o;
+    o = data;
+    emob = (ExtendableMessageOrBuilder) o;
   }
 }

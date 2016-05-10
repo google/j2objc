@@ -35,9 +35,11 @@
 #ifndef __ComGoogleProtobufProtocolMessageEnum_H__
 #define __ComGoogleProtobufProtocolMessageEnum_H__
 
+#import "JreEmulation.h"
+
 @class ComGoogleProtobufDescriptors_EnumValueDescriptor;
 
-@protocol ComGoogleProtobufProtocolMessageEnum
+@protocol ComGoogleProtobufProtocolMessageEnum <NSObject, JavaObject>
 
 - (int)getNumber;
 
