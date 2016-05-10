@@ -14,6 +14,7 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
+import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.IPackageBinding;
@@ -46,7 +47,7 @@ public class LambdaExpression extends Expression {
     body.set(TreeConverter.convert(jdtNode.getBody()));
     // Generate a type binding which is unique to the lambda, as resolveTypeBinding gives us a
     // generic raw type of the implemented class.
-    String name = jdtNode.resolveMethodBinding().getName();
+    String name = NameTable.extractLambdaNamefromKey(jdtNode.resolveMethodBinding());
     IPackageBinding packageBinding = methodBinding.getDeclaringClass().getPackage();
     this.generatedTypeBinding = new LambdaTypeBinding(name, packageBinding,
         resolvedTypeBinding.getFunctionalInterfaceMethod());

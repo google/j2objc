@@ -627,7 +627,18 @@ public class NameTable {
    * cannot be overloaded.
    */
   public String getFullLambdaName(IMethodBinding method) {
-    return getFullName(method.getDeclaringClass()) + '_' + method.getName();
+    return getFullName(method.getDeclaringClass()) + '_' + extractLambdaNamefromKey(method);
+  }
+
+  public static String extractLambdaNamefromKey(IMethodBinding binding) {
+    String key = binding.getKey();
+    // Key format is "L<classname>;.lambda$n(<arg_types>)<return type>;".
+    int iStart = key.indexOf("lambda");
+    int iEnd = key.indexOf('(');
+    if (iStart < 0 || iEnd < 0) {
+      return binding.getName();
+    }
+    return key.substring(iStart,  iEnd);
   }
 
   /**
