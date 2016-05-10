@@ -61,6 +61,12 @@ public abstract class MethodReference extends Expression {
   }
 
   public IMethodBinding getMethodBinding() {
+    // Workaround for a JDT 4.5.2 bug.
+    if (methodBinding == null) {
+      IMethodBinding[] methods = typeBinding.getDeclaredMethods();
+      assert methods.length == 1;
+      methodBinding = methods[0];
+    }
     return methodBinding;
   }
 

@@ -13,6 +13,11 @@
  */
 package com.google.devtools.j2objc.ast;
 
+import com.google.devtools.j2objc.types.GeneratedMethodBinding;
+import com.google.devtools.j2objc.util.NameTable;
+
+import org.eclipse.jdt.core.dom.IMethodBinding;
+
 /**
  * Creation reference expression AST node type (added in JLS8, section 15.13).
  */
@@ -52,5 +57,22 @@ public class CreationReference extends MethodReference {
   @Override
   public CreationReference copy() {
     return new CreationReference(this);
+  }
+
+  @Override
+  public IMethodBinding getMethodBinding() {
+    if (methodBinding == null) {
+      // Workaround for JDT 4.5.2 bug. A method reference's type binding has a
+      // single method, so generate an equivalent constructor as that binding.
+      IMethodBinding[] methods = typeBinding.getDeclaredMethods();
+      assert methods.length == 1;
+      IMethodBinding m = methods[0];
+      methodBinding = new GeneratedMethodBinding(null, NameTable.INIT_NAME, m.getModifiers(),
+          m.getReturnType(), null, m.getDeclaringClass(), true,
+          // References to array types are always vararg, as that's the only way to use them.
+          m.isVarargs() || m.getReturnType().isArray());
+      ((GeneratedMethodBinding) methodBinding).addParameter(m.getReturnType());
+    }
+    return methodBinding;
   }
 }
