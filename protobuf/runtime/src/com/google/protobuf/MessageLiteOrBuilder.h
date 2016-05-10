@@ -37,7 +37,7 @@
 
 #import "JreEmulation.h"
 
-@protocol ComGoogleProtobufMessageLiteOrBuilder<NSObject, JavaObject>
+@protocol ComGoogleProtobufMessageLiteOrBuilder <JavaObject>
 @end
 
 J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessageLiteOrBuilder)

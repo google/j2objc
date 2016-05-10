@@ -45,7 +45,7 @@
 @protocol ComGoogleProtobufMessage_Builder;
 
 @protocol ComGoogleProtobufMessage
-    <ComGoogleProtobufMessageLite, ComGoogleProtobufMessageOrBuilder, NSObject, JavaObject>
+    <ComGoogleProtobufMessageLite, ComGoogleProtobufMessageOrBuilder, JavaObject>
 
 - (id<ComGoogleProtobufMessage_Builder>)toBuilder;
 - (id<ComGoogleProtobufMessage_Builder>)newBuilderForType NS_RETURNS_NOT_RETAINED;
@@ -60,7 +60,7 @@ J2OBJC_EMPTY_STATIC_INIT(ComGoogleProtobufMessage)
 J2OBJC_TYPE_LITERAL_HEADER(ComGoogleProtobufMessage)
 
 @protocol ComGoogleProtobufMessage_Builder
-    <ComGoogleProtobufMessageLite_Builder, ComGoogleProtobufMessageOrBuilder, NSObject, JavaObject>
+    <ComGoogleProtobufMessageLite_Builder, ComGoogleProtobufMessageOrBuilder, JavaObject>
 
 - (id<ComGoogleProtobufMessage_Builder>)
     setRepeatedFieldWithComGoogleProtobufDescriptors_FieldDescriptor:(id)descriptor

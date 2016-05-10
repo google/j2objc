@@ -355,7 +355,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
         "package unit.test; public interface Example extends Bar {} interface Bar {}",
         "Example", "unit/test/Example.h");
     assertTranslation(translation,
-        "@protocol UnitTestExample < UnitTestBar, NSObject, JavaObject >");
+        "@protocol UnitTestExample < UnitTestBar, JavaObject >");
   }
 
   public void testConstTranslation() throws IOException {
@@ -859,7 +859,7 @@ public class ObjectiveCHeaderGeneratorTest extends GenerationTest {
     String header = translateSourceFile(source, "Test", "Test.h");
     String impl =  getTranslatedFile("Test.m");
 
-    assertTranslation(header, "@protocol Foo < NSObject, JavaObject >");
+    assertTranslation(header, "@protocol Foo < JavaObject >");
     assertTranslatedSegments(header, "@interface Foo : NSObject", "+ (void)f;", "@end");
     // Should only have one occurrence from the companion class.
     assertOccurrences(header, "+ (void)f;", 1);

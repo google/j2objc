@@ -182,7 +182,6 @@ public class TypeDeclarationGenerator extends TypeGenerator {
       names.remove("NSCopying");
       names.add(0, "NSCopying");
     } else if (isInterfaceType()) {
-      names.add("NSObject");
       names.add("JavaObject");
     }
     return names;

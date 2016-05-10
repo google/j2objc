@@ -39,7 +39,7 @@
 
 @class ComGoogleProtobufDescriptors_EnumValueDescriptor;
 
-@protocol ComGoogleProtobufProtocolMessageEnum <NSObject, JavaObject>
+@protocol ComGoogleProtobufProtocolMessageEnum <JavaObject>
 
 - (int)getNumber;
 

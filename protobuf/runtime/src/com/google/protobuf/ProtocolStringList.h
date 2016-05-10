@@ -38,7 +38,7 @@
 #include "J2ObjC_header.h"
 #include "java/util/List.h"
 
-@protocol ComGoogleProtobufProtocolStringList < JavaUtilList, NSObject, JavaObject >
+@protocol ComGoogleProtobufProtocolStringList < JavaUtilList, JavaObject >
 
 - (id<JavaUtilList>)asByteStringList;
 

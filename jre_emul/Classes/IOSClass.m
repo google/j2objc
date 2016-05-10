@@ -804,24 +804,15 @@ bool IsJavaInterface(Protocol *protocol) {
   unsigned int count;
   Protocol **protocolList = protocol_copyProtocolList(protocol, &count);
   bool result = false;
-  if (count >= 2) {
-    // Every translated Java interface has NSObject and JavaObject as the last two inherited
-    // protocols.
-    bool foundNSObject = false;
-    bool foundJavaObject = false;
-    for (unsigned int i = 0; i < count; i++) {
-      if (protocolList[i] == @protocol(NSObject)) {
-        foundNSObject = true;
-      }
-      if (protocolList[i] == @protocol(JavaObject)) {
-        foundJavaObject = true;
-      }
+  // Every translated Java interface has JavaObject as the last inherited protocol.
+  // Every translated Java annotation has JavaLangAnnotationAnnotation as its only inherited
+  // protocol.
+  for (unsigned int i = 0; i < count; i++) {
+    if (protocolList[i] == @protocol(JavaObject)
+        || protocolList[i] == @protocol(JavaLangAnnotationAnnotation)) {
+      result = true;
+      break;
     }
-    result = foundNSObject && foundJavaObject;
-  } else {
-    // Every translated Java annotation has JavaLangAnnotationAnnotation as its only inherited
-    // protocol.
-    result = count == 1 && protocolList[0] == @protocol(JavaLangAnnotationAnnotation);
   }
   free(protocolList);
   return result;

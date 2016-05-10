@@ -28,7 +28,7 @@
  * Instances of classes that implement this interface can be used with
  * the enhanced for loop.
  */
-@protocol JavaLangIterable < NSObject, JavaObject, NSFastEnumeration >
+@protocol JavaLangIterable <NSFastEnumeration, JavaObject>
 - (id<JavaUtilIterator>)iterator;
 @end
 

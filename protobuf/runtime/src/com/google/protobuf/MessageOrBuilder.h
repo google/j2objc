@@ -40,7 +40,7 @@
 @protocol ComGoogleProtobufMessage;
 @protocol JavaUtilMap;
 
-@protocol ComGoogleProtobufMessageOrBuilder <NSObject, JavaObject>
+@protocol ComGoogleProtobufMessageOrBuilder <JavaObject>
 
 - (id<ComGoogleProtobufMessage>)getDefaultInstanceForType;
 
