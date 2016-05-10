@@ -50,9 +50,6 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
 void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleObjectArray_withBoolean_(
     IOSObjectArray *objects, jboolean b);
 
-// Returns true if type can be mapped to a valid Java type.
-jboolean validTypeEncoding(const char *type);
-
 // Decodes an Objective-C type encoding, returning the associated iOS class.
 // For example, the type encoding 's' is decoded as JavaLangShort.
 IOSClass *decodeTypeEncoding(const char *type);

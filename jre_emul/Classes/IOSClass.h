@@ -192,8 +192,6 @@
 - (jboolean)__convertRawValue:(J2ObjcRawValue *)rawValue toType:(IOSClass *)type;
 
 // Internal methods
-- (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(jboolean)publicOnly;
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
                                         checkSupertypes:(jboolean)checkSupertypes;
 - (JavaLangReflectConstructor *)findConstructorWithTranslatedName:(NSString *)objcName;
@@ -234,6 +232,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions);
 #define IOSClass_booleanArray(DIM) IOSClass_arrayType([IOSClass booleanClass], DIM)
 
 // Internal functions
+const J2ObjcClassInfo *IOSClass_GetMetadataOrFail(IOSClass *iosClass);
 NSString *IOSClass_GetTranslatedMethodName(
     IOSClass *cls, NSString *name, IOSObjectArray *paramTypes);
 IOSClass *IOSClass_NewProxyClass(Class cls);

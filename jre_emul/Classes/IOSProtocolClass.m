@@ -106,38 +106,6 @@ static jboolean ConformsToProtocol(IOSClass *cls, IOSProtocolClass *protocol) {
   return true;
 }
 
-// All protocol methods are public, so publicOnly flag is ignored.
-- (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(jboolean)publicOnly {
-  const J2ObjcClassInfo *metadata = [self getMetadata];
-  unsigned int count;
-  struct objc_method_description *descriptions =
-      protocol_copyMethodDescriptionList(protocol_, true, true, &count);
-  for (unsigned int i = 0; i < count; i++) {
-    struct objc_method_description *methodDesc = &descriptions[i];
-    SEL sel = methodDesc->name;
-    NSString *key = NSStringFromSelector(sel);
-    if (![methodMap objectForKey:key]) {
-      const J2ObjcMethodInfo *methodMetadata = JreFindMethodInfo(metadata, key);
-      if (metadata && !methodMetadata) {
-        continue;  // Selector not in method list.
-      }
-      NSMethodSignature *signature = JreSignatureOrNull(methodDesc);
-      if (!signature) {
-        continue;
-      }
-      JavaLangReflectMethod *method =
-          [JavaLangReflectMethod methodWithMethodSignature:signature
-                                                  selector:sel
-                                                     class:self
-                                                  isStatic:false
-                                                  metadata:methodMetadata];
-      [methodMap setObject:method forKey:key];
-    }
-  }
-  free(descriptions);
-}
-
 - (JavaLangReflectMethod *)findMethodWithTranslatedName:(NSString *)objcName
                                         checkSupertypes:(jboolean)checkSupertypes {
   unsigned int count;

@@ -98,6 +98,10 @@ extern id<JavaLangReflectType> JreTypeForString(const char *typeStr);
 extern IOSClass *TypeToClass(id<JavaLangReflectType>);
 extern Method JreFindInstanceMethod(Class cls, const char *name);
 extern Method JreFindClassMethod(Class cls, const char *name);
+extern struct objc_method_description *JreFindMethodDescFromList(
+    SEL sel, struct objc_method_description *methods, unsigned int count);
+extern struct objc_method_description *JreFindMethodDescFromMethodList(
+    SEL sel, Method *methods, unsigned int count);
 extern NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc);
 
 // J2ObjcClassInfo accessor functions.
@@ -127,8 +131,9 @@ __attribute__((always_inline)) inline jint JreMethodModifiers(const J2ObjcMethod
   return metadata ? metadata->modifiers : JavaLangReflectModifier_PUBLIC;
 }
 
+// metadata must not be NULL.
 __attribute__((always_inline)) inline SEL JreMethodSelector(const J2ObjcMethodInfo *metadata) {
-  return metadata ? sel_registerName(metadata->selector) : NULL;
+  return sel_registerName(metadata->selector ? metadata->selector : metadata->javaName);
 }
 
 __attribute__((always_inline)) inline

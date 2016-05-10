@@ -80,6 +80,27 @@ Method JreFindClassMethod(Class cls, const char *name) {
   return JreFindInstanceMethod(object_getClass(cls), name);
 }
 
+struct objc_method_description *JreFindMethodDescFromList(
+    SEL sel, struct objc_method_description *methods, unsigned int count) {
+  for (unsigned int i = 0; i < count; i++) {
+    if (sel == methods[i].name) {
+      return &methods[i];
+    }
+  }
+  return NULL;
+}
+
+struct objc_method_description *JreFindMethodDescFromMethodList(
+    SEL sel, Method *methods, unsigned int count) {
+  for (unsigned int i = 0; i < count; i++) {
+    struct objc_method_description *desc = method_getDescription(methods[i]);
+    if (sel == desc->name) {
+      return desc;
+    }
+  }
+  return NULL;
+}
+
 NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc) {
   const char *types = methodDesc->types;
   // Some IOS devices crash instead of throwing an exception on struct type
@@ -96,7 +117,6 @@ NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc
     return nil;
   }
 }
-
 
 const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const char *fieldName) {
   if (metadata) {

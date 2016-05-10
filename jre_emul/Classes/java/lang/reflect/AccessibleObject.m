@@ -125,10 +125,6 @@ void JavaLangReflectAccessibleObject_setAccessibleWithJavaLangReflectAccessibleO
   }
 }
 
-jboolean validTypeEncoding(const char *type) {
-  return strlen(type) == 1 && strchr("@#cSsilLqQZfdBv", *type);
-}
-
 // TODO(tball): is there a reasonable way to make these methods table-driven?
 
 // Return a Obj-C type encoding as a Java type or wrapper type.

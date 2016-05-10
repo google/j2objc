@@ -30,6 +30,8 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Command-line tests for java.lang.Class support (IOSClass)
@@ -113,6 +115,18 @@ public class ClassTest extends TestCase {
     Method runMethod = runnableClass.getMethod("run", new Class<?>[0]);
     assertEquals("run", runMethod.getName());
     assertEquals(0, runMethod.getParameterTypes().length);
+  }
+
+  public void testGetArrayMethods() throws Exception {
+    Method[] methods = int[].class.getDeclaredMethods();
+    assertEquals(0, methods.length);
+    methods = int[].class.getMethods();
+    Set<String> methodNames = new HashSet<>();
+    for (Method m : methods) {
+      methodNames.add(m.getName());
+    }
+    assertTrue(methodNames.contains("equals"));
+    assertTrue(methodNames.contains("toString"));
   }
 
   public void testInterfaceMethodInvocation() throws Exception {

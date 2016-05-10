@@ -159,7 +159,7 @@ static JavaUtilProperties *prefixMapping;
   @throw AUTORELEASE([[JavaLangInstantiationException alloc] init]);
 }
 
-const J2ObjcClassInfo *GetMetadataOrFail(IOSClass *iosClass) {
+const J2ObjcClassInfo *IOSClass_GetMetadataOrFail(IOSClass *iosClass) {
   const J2ObjcClassInfo *metadata = iosClass->metadata_;
   if (metadata) {
     return metadata;
@@ -232,18 +232,70 @@ const J2ObjcClassInfo *GetMetadataOrFail(IOSClass *iosClass) {
   }
 }
 
-// Returns all methods defined in a class. Methods that aren't defined by the
-// original Java class are ignored.
-- (void)collectMethods:(NSMutableDictionary *)methodMap
-            publicOnly:(jboolean)publicOnly {
-  // Overridden by subclasses.
+static void GetMethodsFromClass(IOSClass *iosClass, NSMutableDictionary *methods, bool publicOnly) {
+  Class cls = iosClass.objcClass;
+  if (!cls) {
+    // Might be an array class.
+    return;
+  }
+  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
+  if (metadata->methodCount == 0) {
+    return;
+  }
+  Protocol *protocol = iosClass.objcProtocol;
+  unsigned int protocolMethodCount, instanceMethodCount, classMethodCount;
+  struct objc_method_description *protocolMethods = NULL;
+  Method *instanceMethods = NULL;
+  if (protocol) {
+    protocolMethods = protocol_copyMethodDescriptionList(protocol, YES, YES, &protocolMethodCount);
+  } else {
+    instanceMethods = class_copyMethodList(cls, &instanceMethodCount);
+  }
+  Method *classMethods = class_copyMethodList(object_getClass(cls), &classMethodCount);
+  for (int i = 0; i < metadata->methodCount; i++) {
+    const J2ObjcMethodInfo *methodInfo = &metadata->methods[i];
+    if (!methodInfo->returnType) {  // constructor.
+      continue;
+    }
+    if (publicOnly && (methodInfo->modifiers & JavaLangReflectModifier_PUBLIC) == 0) {
+      continue;
+    }
+    SEL sel = JreMethodSelector(methodInfo);
+    NSString *selector = NSStringFromSelector(sel);
+    if ([methods valueForKey:selector]) {
+      continue;
+    }
+    jboolean isStatic = (methodInfo->modifiers & JavaLangReflectModifier_STATIC) > 0;
+    struct objc_method_description *methodDesc;
+    if (isStatic) {
+      methodDesc = JreFindMethodDescFromMethodList(sel, classMethods, classMethodCount);
+    } else if (protocolMethods) {
+      methodDesc = JreFindMethodDescFromList(sel, protocolMethods, protocolMethodCount);
+    } else {
+      methodDesc = JreFindMethodDescFromMethodList(sel, instanceMethods, instanceMethodCount);
+    }
+    if (!methodDesc) {
+      continue;
+    }
+    NSMethodSignature *signature = [NSMethodSignature signatureWithObjCTypes:methodDesc->types];
+    JavaLangReflectMethod *method =
+        [JavaLangReflectMethod methodWithMethodSignature:signature
+                                                selector:sel
+                                                   class:iosClass
+                                                isStatic:isStatic
+                                                metadata:methodInfo];
+    [methods setObject:method forKey:selector];
+  }
+  free(protocolMethods);
+  free(instanceMethods);
+  free(classMethods);
 }
 
 // Return the class and instance methods declared by the Java class.  Superclass
 // methods are not included.
 - (IOSObjectArray *)getDeclaredMethods {
   NSMutableDictionary *methodMap = [NSMutableDictionary dictionary];
-  [self collectMethods:methodMap publicOnly:false];
+  GetMethodsFromClass(self, methodMap, false);
   return [IOSObjectArray arrayWithNSArray:[methodMap allValues]
       type:JavaLangReflectMethod_class_()];
 }
@@ -255,7 +307,7 @@ const J2ObjcClassInfo *GetMetadataOrFail(IOSClass *iosClass) {
 }
 
 static void GetAllMethods(IOSClass *cls, NSMutableDictionary *methodMap) {
-  [cls collectMethods:methodMap publicOnly:true];
+  GetMethodsFromClass(cls, methodMap, true);
 
   // getMethods() returns unimplemented interface methods if the class is
   // abstract and default interface methods that aren't overridden.
@@ -933,7 +985,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
 // Adds all the fields for a specified class to a specified dictionary.
 static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
     jboolean publicOnly) {
-  const J2ObjcClassInfo *metadata = GetMetadataOrFail(iosClass);
+  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
   for (int i = 0; i < metadata->fieldCount; i++) {
     const J2ObjcFieldInfo *fieldInfo = &metadata->fields[i];
     if (publicOnly && (fieldInfo->modifiers & JavaLangReflectModifier_PUBLIC) == 0) {
@@ -951,7 +1003,7 @@ static void GetFieldsFromClass(IOSClass *iosClass, NSMutableDictionary *fields,
 }
 
 JavaLangReflectField *findDeclaredField(IOSClass *iosClass, NSString *name, jboolean publicOnly) {
-  const J2ObjcClassInfo *metadata = GetMetadataOrFail(iosClass);
+  const J2ObjcClassInfo *metadata = IOSClass_GetMetadataOrFail(iosClass);
   const J2ObjcFieldInfo *fieldMeta = JreFindFieldInfo(metadata, [name UTF8String]);
   if (fieldMeta && (!publicOnly || (fieldMeta->modifiers & JavaLangReflectModifier_PUBLIC) != 0)) {
     Ivar ivar = class_getInstanceVariable(iosClass.objcClass, fieldMeta->name);
