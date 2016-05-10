@@ -125,7 +125,7 @@ public class LambdaExpressionTest extends GenerationTest {
         + "class Test { class Foo{ class Bar { Function f = x -> x; }}\n"
         + "Function f = x -> x;}",
         "Test", "Test.m");
-    assertTranslatedSegments(translation, "@\"Test_lambda$", "@\"Test_Foo_Bar_lambda");
+    assertTranslatedSegments(translation, "@\"Test_lambda$", "@\"Test_Foo_Bar_lambda$");
   }
 
   public void testLargeArgumentCount() throws IOException {

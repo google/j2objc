@@ -624,10 +624,19 @@ public class NameTable {
 
   /**
    * Similar to getFullFunctionName, but doesn't add the selector to the name, as lambda expressions
-   * cannot be overloaded.
+   * cannot be overloaded. The binding's key is used because as of JDT 3.11, the function and
+   * method names are from the functional method definition, not its implementation.
    */
   public String getFullLambdaName(IMethodBinding method) {
-    return getFullName(method.getDeclaringClass()) + '_' + extractLambdaNamefromKey(method);
+    String key = method.getKey();
+    String className;
+    if (key.startsWith("L")) {
+      int iEnd = key.indexOf(';');
+      className = key.substring(1,  iEnd).replace('$', '_');
+    } else {
+      className = getFullName(method.getDeclaringClass());
+    }
+    return className + '_' + extractLambdaNamefromKey(method);
   }
 
   public static String extractLambdaNamefromKey(IMethodBinding binding) {
