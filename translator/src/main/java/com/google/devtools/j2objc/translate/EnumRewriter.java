@@ -38,6 +38,7 @@ import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.FunctionBinding;
 import com.google.devtools.j2objc.types.GeneratedMethodBinding;
+import com.google.devtools.j2objc.types.GeneratedTypeBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.UnicodeUtils;
@@ -276,15 +277,9 @@ public class EnumRewriter extends TreeVisitor {
           + "    }\n"
           + "  }\n", numConstants, typeName, typeName));
     }
-    if (Options.useReferenceCounting()) {
-      outerImpl.append(
-          "  @throw [[[JavaLangIllegalArgumentException alloc] initWithNSString:name]"
-          + " autorelease];\n");
-    } else {
-      outerImpl.append(
-          "  @throw [[JavaLangIllegalArgumentException alloc] initWithNSString:name];\n");
-    }
-    outerImpl.append("  return nil;\n}\n\n");
+    outerImpl.append(
+        "  @throw create_JavaLangIllegalArgumentException_initWithNSString_(name);\n"
+        + "  return nil;\n}\n\n");
 
     outerImpl.append(UnicodeUtils.format(
         "%s *%s_fromOrdinal(NSUInteger ordinal) {\n", typeName, typeName));
@@ -303,7 +298,12 @@ public class EnumRewriter extends TreeVisitor {
           typeName, numConstants, typeName));
     }
 
-    node.getBodyDeclarations().add(NativeDeclaration.newOuterDeclaration(
-        outerHeader.toString(), outerImpl.toString()));
+    NativeDeclaration outerDecl =
+        NativeDeclaration.newOuterDeclaration(outerHeader.toString(), outerImpl.toString());
+    outerDecl.getImplementationImportTypes().add(
+        GeneratedTypeBinding.newTypeBinding(
+            "java.lang.IllegalArgumentException",
+            typeEnv.resolveJavaType("java.lang.RuntimeException"), false));
+    node.getBodyDeclarations().add(outerDecl);
   }
 }

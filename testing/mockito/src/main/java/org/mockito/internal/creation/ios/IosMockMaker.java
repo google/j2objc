@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.WeakHashMap;
 
 /*-[
+#include "java/lang/IllegalArgumentException.h"
 #include "java/lang/reflect/Method.h"
 ]-*/
 
@@ -140,8 +141,7 @@ public final class IosMockMaker implements MockMaker {
     for (jint i = 0; i < interfaceCount; i++) {
       IOSClass *intrface = (IOSClass *) [interfaces objectAtIndex:i];
       if (![intrface isInterface]) {
-        @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc]
-                            initWithNSString:[intrface description]]);
+        @throw create_JavaLangIllegalArgumentException_initWithNSString_([intrface description]);
       }
       class_addProtocol(proxyClass, intrface.objcProtocol);
     }

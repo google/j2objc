@@ -14,6 +14,11 @@
 
 package com.google.devtools.j2objc.ast;
 
+import org.eclipse.jdt.core.dom.ITypeBinding;
+
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * A native declaration. Contains string contents without any structural context
  * other than whether the content is for the header or implementation.
@@ -25,11 +30,13 @@ public class NativeDeclaration extends BodyDeclaration {
   private boolean isOuter = false;
   private String headerCode = null;
   private String implementationCode = null;
+  private List<ITypeBinding> implementationImportTypes = new ArrayList<>();
 
   public NativeDeclaration(NativeDeclaration other) {
     isOuter = other.isOuter();
     headerCode = other.getHeaderCode();
     implementationCode = other.getImplementationCode();
+    implementationImportTypes.addAll(other.getImplementationImportTypes());
   }
 
   /**
@@ -72,6 +79,10 @@ public class NativeDeclaration extends BodyDeclaration {
 
   public String getImplementationCode() {
     return implementationCode;
+  }
+
+  public List<ITypeBinding> getImplementationImportTypes() {
+    return implementationImportTypes;
   }
 
   @Override

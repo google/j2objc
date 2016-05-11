@@ -35,6 +35,7 @@ import java.util.Set;
 /*-[
 #include "NSDataInputStream.h"
 #include "java/lang/RuntimeException.h"
+#include "java/security/cert/CertificateExpiredException.h"
 #include "org/apache/harmony/security/asn1/ASN1Integer.h"
 #include "org/apache/harmony/security/asn1/BerInputStream.h"
 
@@ -85,7 +86,7 @@ public class IosX509Certificate extends X509Certificate {
     if (status != noErr) {
       NSString *errMsg =
           [NSString stringWithFormat:@"failed validating certificate, error: %d", (int) status];
-      @throw AUTORELEASE([[JavaLangRuntimeException alloc] initWithNSString:errMsg]);
+      @throw create_JavaLangRuntimeException_initWithNSString_(errMsg);
     }
 
     // Verify it is valid for the specified date.
@@ -99,10 +100,10 @@ public class IosX509Certificate extends X509Certificate {
     if (status != noErr) {
       NSString *errMsg =
           [NSString stringWithFormat:@"failed evaluating trust, error: %d", (int) status];
-      @throw AUTORELEASE([[JavaLangRuntimeException alloc] initWithNSString:errMsg]);
+      @throw create_JavaLangRuntimeException_initWithNSString_(errMsg);
     }
     if (trustResult != kSecTrustResultProceed && trustResult != kSecTrustResultUnspecified) {
-      @throw AUTORELEASE([[JavaSecurityCertCertificateExpiredException alloc] init]);
+      @throw create_JavaSecurityCertCertificateExpiredException_init();
     }
     // It's valid!
   ]-*/;

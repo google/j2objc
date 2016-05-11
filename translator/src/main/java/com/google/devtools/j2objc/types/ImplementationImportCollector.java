@@ -21,7 +21,6 @@ import com.google.devtools.j2objc.ast.AnnotationTypeDeclaration;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.CatchClause;
-import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
@@ -32,7 +31,7 @@ import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MarkerAnnotation;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.MethodInvocation;
-import com.google.devtools.j2objc.ast.Name;
+import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NormalAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
@@ -49,14 +48,13 @@ import com.google.devtools.j2objc.ast.TypeLiteral;
 import com.google.devtools.j2objc.ast.UnionType;
 import com.google.devtools.j2objc.ast.VariableDeclarationExpression;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
+import com.google.devtools.j2objc.util.BindingUtil;
 
-import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -97,6 +95,12 @@ public class ImplementationImportCollector extends TreeVisitor {
     Import.addImports(type, imports, unit);
   }
 
+  private void addImports(Iterable<ITypeBinding> types) {
+    for (ITypeBinding type : types) {
+      addImports(type);
+    }
+  }
+
   @Override
   public boolean visit(AnnotationTypeDeclaration node) {
     addImports(node.getTypeBinding());
@@ -116,45 +120,14 @@ public class ImplementationImportCollector extends TreeVisitor {
   }
 
   @Override
-  public boolean visit(ClassInstanceCreation node) {
-    addImports(node.getType());
-    IMethodBinding binding = node.getMethodBinding();
-    if (binding != null) {
-      ITypeBinding[] parameterTypes = binding.getParameterTypes();
-      List<Expression> arguments = node.getArguments();
-      for (int i = 0; i < arguments.size(); i++) {
-
-        ITypeBinding parameterType;
-        if (i < parameterTypes.length) {
-          parameterType = parameterTypes[i];
-        } else {
-          parameterType = parameterTypes[parameterTypes.length - 1];
-        }
-        ITypeBinding actualType = arguments.get(i).getTypeBinding();
-        if (!parameterType.equals(actualType)
-            && actualType.isAssignmentCompatible(parameterType)) {
-          addImports(actualType);
-        } else {
-          addImports(parameterType);
-        }
-      }
-    }
-    return true;
-  }
-
-  @Override
   public boolean visit(EnumDeclaration node) {
-    ITypeBinding type = node.getTypeBinding();
-    addImports(type);
-    addImports(typeEnv.resolveIOSType("IOSClass"));
-    addImports(GeneratedTypeBinding.newTypeBinding("java.lang.IllegalArgumentException",
-        typeEnv.resolveJavaType("java.lang.RuntimeException"), false));
+    addImports(node.getTypeBinding());
     return true;
   }
 
   @Override
   public boolean visit(FieldAccess node) {
-    addImports(node.getName().getTypeBinding());
+    addImports(node.getExpression().getTypeBinding());
     return true;
   }
 
@@ -165,10 +138,14 @@ public class ImplementationImportCollector extends TreeVisitor {
   }
 
   @Override
-  public void endVisit(FunctionInvocation node) {
-    // The return type is needed because the expression might need a cast.
-    addImports(node.getTypeBinding());
-    addImports(node.getFunctionBinding().getDeclaringClass());
+  public boolean visit(FunctionInvocation node) {
+    FunctionBinding binding = node.getFunctionBinding();
+    addImports(binding.getDeclaringClass());
+    for (Expression arg : node.getArguments()) {
+      addImports(arg.getTypeBinding());
+    }
+    addImports(binding.getReturnType());
+    return true;
   }
 
   @Override
@@ -198,11 +175,6 @@ public class ImplementationImportCollector extends TreeVisitor {
       return false;
     }
     addImports(node.getReturnType());
-    IMethodBinding binding = node.getMethodBinding();
-    for (ITypeBinding exceptionType : binding.getExceptionTypes()) {
-      addImports(exceptionType);
-      addImports(typeEnv.resolveIOSType("IOSClass"));
-    }
     return true;
   }
 
@@ -210,64 +182,25 @@ public class ImplementationImportCollector extends TreeVisitor {
   public boolean visit(MethodInvocation node) {
     IMethodBinding binding = node.getMethodBinding();
     addImports(binding.getReturnType());
-    // Check for vararg method
-    ITypeBinding[] parameterTypes = binding.getParameterTypes();
-    int nParameters = parameterTypes.length;
-    if (binding.isVarargs()) {
-      // Only check type for varargs parameters, since the actual
-      // number of arguments will vary.
-      addImports(parameterTypes[nParameters - 1]);
-      --nParameters;
+    Expression receiver = node.getExpression();
+    if (receiver != null) {
+      addImports(receiver.getTypeBinding());
     }
-    List<Expression> arguments = node.getArguments();
-    for (int i = 0; i < nParameters; i++) {
-      ITypeBinding parameterType = parameterTypes[i];
-      ITypeBinding actualType = arguments.get(i).getTypeBinding();
-      if (!parameterType.equals(actualType)
-          && actualType.isAssignmentCompatible(parameterType)) {
-        addImports(actualType);
-      }
+    for (Expression arg : node.getArguments()) {
+      addImports(arg.getTypeBinding());
     }
-    // Check for static method references.
-    Expression expr = node.getExpression();
-    if (expr == null) {
-      // check for method that's been statically imported
-      ITypeBinding typeBinding = binding.getDeclaringClass();
-      if (typeBinding != null) {
-        addImports(typeBinding);
-      }
-    } else {
-      addImports(expr.getTypeBinding());
-    }
-    while (expr != null && expr instanceof Name) {
-      ITypeBinding typeBinding = expr.getTypeBinding();
-      if (typeBinding != null && typeBinding.isClass()) { // if class literal
-        addImports(typeBinding);
-        break;
-      }
-      if (expr instanceof QualifiedName) {
-        expr = ((QualifiedName) expr).getQualifier();
-      } else {
-        break;
-      }
-    }
+    return true;
+  }
+
+  @Override
+  public boolean visit(NativeDeclaration node) {
+    addImports(node.getImplementationImportTypes());
     return true;
   }
 
   @Override
   public boolean visit(NativeExpression node) {
-    for (ITypeBinding importType : node.getImportTypes()) {
-      addImports(importType);
-    }
-    return true;
-  }
-
-  @Override
-  public boolean visit(FunctionInvocation node) {
-    for (Expression arg : node.getArguments()) {
-      addImports(arg.getTypeBinding());
-    }
-    addImports(node.getFunctionBinding().getReturnType());
+    addImports(node.getImportTypes());
     return true;
   }
 
@@ -278,9 +211,14 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public boolean visit(QualifiedName node) {
-    IBinding type = node.getTypeBinding();
-    if (type != null) {
-      addImports((ITypeBinding) type);
+    IVariableBinding var = TreeUtil.getVariableBinding(node);
+    if (var != null) {
+      if (BindingUtil.isGlobalVar(var)) {
+        addImports(var.getDeclaringClass());
+        return false;
+      } else {
+        addImports(node.getQualifier().getTypeBinding());
+      }
     }
     return true;
   }
@@ -288,9 +226,8 @@ public class ImplementationImportCollector extends TreeVisitor {
   @Override
   public boolean visit(SimpleName node) {
     IVariableBinding var = TreeUtil.getVariableBinding(node);
-    if (var != null && Modifier.isStatic(var.getModifiers())) {
-      ITypeBinding declaringClass = var.getDeclaringClass();
-      addImports(declaringClass);
+    if (var != null && BindingUtil.isGlobalVar(var)) {
+      addImports(var.getDeclaringClass());
     }
     return true;
   }
@@ -308,16 +245,15 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public boolean visit(TryStatement node) {
-    if (node.getResources().size() > 0) {
-      addImports(typeEnv.mapTypeName("java.lang.Throwable"));
+    if (!node.getResources().isEmpty()) {
+      addImports(typeEnv.resolveJavaType("java.lang.Throwable"));
     }
     return true;
   }
 
   @Override
   public boolean visit(TypeDeclaration node) {
-    ITypeBinding type = node.getTypeBinding();
-    addImports(type);
+    addImports(node.getTypeBinding());
     return true;
   }
 
@@ -337,8 +273,7 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public boolean visit(VariableDeclarationExpression node) {
-    Type type = node.getType();
-    addImports(type);
+    addImports(node.getType());
     return true;
   }
 

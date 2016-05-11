@@ -35,7 +35,9 @@ import java.nio.NioUtils;
 #include "java/net/InetAddress.h"
 #include "java/net/InetSocketAddress.h"
 #include "java/net/InetUnixAddress.h"
+#include "java/net/SocketException.h"
 #include "libcore/io/AsynchronousCloseMonitor.h"
+#include "libcore/io/GaiException.h"
 #include "libcore/io/Posix.h"
 
 #include <arpa/inet.h>
@@ -47,7 +49,7 @@ import java.nio.NioUtils;
 
 static inline BOOL throwIfClosed(JavaIoFileDescriptor *fd) {
   if ([fd getInt$] == -1) {
-    @throw AUTORELEASE([[JavaNetSocketException alloc] initWithNSString:@"Socket closed"]);
+    @throw create_JavaNetSocketException_initWithNSString_(@"Socket closed");
   }
   return YES;
 }
@@ -83,8 +85,7 @@ public final class NetworkOs {
     if (!inetAddress) {
       return nil;
     }
-    return AUTORELEASE([[JavaNetInetSocketAddress alloc]
-                        initWithJavaNetInetAddress:inetAddress withInt:port]);
+    return create_JavaNetInetSocketAddress_initWithJavaNetInetAddress_withInt_(inetAddress, port);
   }
 
   static BOOL fillIfreq(NSString *interfaceName, struct ifreq *req) {
@@ -170,7 +171,7 @@ public final class NetworkOs {
       NSString *errMsg =
           [NSString stringWithFormat:@"sockaddrToInetAddress unsupported ss_family: %i",
               ss->ss_family];
-      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:errMsg]);
+      @throw create_JavaLangIllegalArgumentException_initWithNSString_(errMsg);
     }
     if (port != NULL) {
       *port = sin_port;
@@ -183,7 +184,7 @@ public final class NetworkOs {
         // Note that we get here for AF_UNIX sockets on accept(2). The unix(7) man page claims
         // that the peer's sun_path will contain the path, but in practice it doesn't, and the
         // peer length is returned as 2 (meaning only the sun_family field was set).
-        return AUTORELEASE([[JavaNetInetUnixAddress alloc] initWithByteArray:byteArray]);
+        return create_JavaNetInetUnixAddress_initWithByteArray_(byteArray);
     }
     return JavaNetInetAddress_getByAddressWithNSString_withByteArray_withInt_(
         nil, byteArray, scope_id);
@@ -206,7 +207,7 @@ public final class NetworkOs {
     if (ss->ss_family != AF_INET && ss->ss_family != AF_INET6 && ss->ss_family != AF_UNIX) {
       NSString *errMsg =
           [NSString stringWithFormat:@"inetAddressToSockaddr bad family: %i", ss->ss_family];
-      @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:errMsg]);
+      @throw create_JavaLangIllegalArgumentException_initWithNSString_(errMsg);
     }
 
     // Handle the AF_UNIX special case.
@@ -218,7 +219,7 @@ public final class NetworkOs {
         NSString *errMsg =
             [NSString stringWithFormat:@"inetAddressToSockaddr path too long for AF_UNIX: %d",
                 path_length];
-        @throw AUTORELEASE([[JavaLangIllegalArgumentException alloc] initWithNSString:errMsg]);
+        @throw create_JavaLangIllegalArgumentException_initWithNSString_(errMsg);
       }
 
       // Copy the bytes...
@@ -293,7 +294,7 @@ public final class NetworkOs {
     if (clientFd == -1) {
       return nil;
     }
-    JavaIoFileDescriptor *newFd = AUTORELEASE([[JavaIoFileDescriptor alloc] init]);
+    JavaIoFileDescriptor *newFd = create_JavaIoFileDescriptor_init();
     [newFd setInt$WithInt:clientFd];
     return newFd;
   ]-*/;
@@ -355,8 +356,7 @@ public final class NetworkOs {
     errno = 0;
     int rc = getaddrinfo([node UTF8String], NULL, &hints, &addressList);
     if (rc != 0) {
-      @throw AUTORELEASE([[LibcoreIoGaiException alloc]
-                          initWithNSString:@"getaddrinfo" withInt:rc]);
+      @throw create_LibcoreIoGaiException_initWithNSString_withInt_(@"getaddrinfo", rc);
     }
 
     // Count results so we know how to size the output array.
@@ -414,8 +414,7 @@ public final class NetworkOs {
     errno = 0;
     int rc = getnameinfo((struct sockaddr *) &ss, sa_len, buf, sizeof(buf), NULL, 0, flags);
     if (rc != 0) {
-      @throw AUTORELEASE([[LibcoreIoGaiException alloc]
-                          initWithNSString:@"getnameinfo" withInt:rc]);
+      @throw create_LibcoreIoGaiException_initWithNSString_withInt_(@"getnameinfo", rc);
     }
     return [NSString stringWithUTF8String:buf];
   ]-*/;
@@ -469,7 +468,7 @@ public final class NetworkOs {
     if (rc == -1) {
       LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"getsockopt", rc);
     }
-    return AUTORELEASE([[LibcoreIoStructLinger alloc] initWithInt:l.l_onoff withInt:l.l_linger]);
+    return create_LibcoreIoStructLinger_initWithInt_withInt_(l.l_onoff, l.l_linger);
   ]-*/;
 
   public static native StructTimeval getsockoptTimeval(FileDescriptor fd, int level,
@@ -481,7 +480,7 @@ public final class NetworkOs {
     if (rc == -1) {
       LibcoreIoPosix_throwErrnoExceptionWithNSString_withInt_(@"getsockopt", rc);
     }
-    return AUTORELEASE([[LibcoreIoStructTimeval alloc] initWithLong:tv.tv_sec withLong:tv.tv_usec]);
+    return create_LibcoreIoStructTimeval_initWithLong_withLong_(tv.tv_sec, tv.tv_usec);
   ]-*/;
 
   public static native InetAddress inet_pton(int family, String address) /*-[

@@ -35,6 +35,10 @@ import java.util.Properties;
 import java.util.StringTokenizer;
 import libcore.io.IoUtils;
 
+/*-[
+#include "java/io/IOException.h"
+]-*/
+
 /**
  * {@code LogManager} is used to maintain configuration properties of the
  * logging framework, and to manage a hierarchical namespace of all named
