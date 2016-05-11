@@ -49,6 +49,8 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.UnknownHostException;
+import java.security.cert.Certificate;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -62,8 +64,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import javax.net.ssl.HttpsURLConnection;
+
 
 import junit.framework.TestCase;
+
 
 public final class URLConnectionTest extends TestCase {
 
@@ -2118,6 +2123,33 @@ public final class URLConnectionTest extends TestCase {
 //        } catch (UnknownHostException expected) {
 //        }
 //    }
+
+    /**
+     * Test that we can inspect the SSL session after connect().
+     * http://code.google.com/p/android/issues/detail?id=24431
+     */
+    public void testInspectSslAfterConnect() throws Exception {
+        HttpsURLConnection connection = (HttpsURLConnection) new URL("https://www.google.com").openConnection();
+        
+        connection.connect();
+        
+        InputStream is = connection.getInputStream();
+        
+        final Certificate[] certs = connection.getServerCertificates();
+        
+        assertNotNull(certs);
+
+        for (Certificate cert : certs)
+        {
+            System.out.println(cert.toString());
+            assertNotNull(cert.getPublicKey().getEncoded());
+        }
+
+//        assertNotNull(connection.getHostnameVerifier());
+//        assertNull(connection.getLocalCertificates());
+//        assertNotNull(connection.getCipherSuite());
+//        assertNotNull(connection.getPeerPrincipal());
+    }
 
     /**
      * Returns a gzipped copy of {@code bytes}.

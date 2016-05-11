@@ -61,8 +61,7 @@ public class IosCertificateFactory extends CertificateFactorySpi {
   private native Certificate iosGenerateCertificate(byte[] bytes) throws CertificateException /*-[
     NSData *data = [[NSData alloc] initWithBytesNoCopy:bytes->buffer_ length:bytes->size_];
     SecCertificateRef newCertificate =
-        SecCertificateCreateWithData(NULL, (ARCBRIDGE CFDataRef) data);
-    [data release];
+        SecCertificateCreateWithData(NULL, (__bridge CFDataRef) data);
     if (!newCertificate) {
       @throw AUTORELEASE([[JavaSecurityCertCertificateException alloc]
                           initWithNSString:@"not a valid DER-encoded X.509 certificate"]);
