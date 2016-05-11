@@ -19,6 +19,7 @@ package com.google.devtools.j2objc.translate;
 import com.google.common.collect.LinkedListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
@@ -406,12 +407,20 @@ public class Rewriter extends TreeVisitor {
     IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
     IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
     Type type = node.getType().copy();
-    ClassInstanceCreation invocation = new ClassInstanceCreation(methodBinding, type);
-    List<Expression> invocationArguments = invocation.getArguments();
+    Expression invocation;
+    List<Expression> invocationArguments;
+    ITypeBinding returnType = functionalInterface.getReturnType();
+    if (returnType.isArray()) {
+      invocation = new ArrayCreation(returnType, typeEnv);
+      invocationArguments = ((ArrayCreation) invocation).getDimensions();
+    } else {
+      invocation = new ClassInstanceCreation(methodBinding, type);
+      invocationArguments = ((ClassInstanceCreation) invocation).getArguments();
+    }
     buildMethodReferenceInvocationArguments(invocationArguments, node, null);
     // The functional interface may return void, in which case the initialization is only being used
     // for side effects, and we don't need a return.
-    if (BindingUtil.isVoid(functionalInterface.getReturnType())) {
+    if (BindingUtil.isVoid(returnType)) {
       node.setInvocation(new ExpressionStatement(invocation));
     } else {
       node.setInvocation(new ReturnStatement(invocation));

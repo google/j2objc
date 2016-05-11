@@ -211,4 +211,16 @@ public class MethodReferenceTest extends GenerationTest {
     assertTranslatedLines(translation, "^id(id _self) {", "return create_Test_init();");
   }
 
+  public void testArrayCreationReference() throws IOException {
+    String translation = translateSourceFile("import java.util.function.Supplier;"
+        + "interface IntFunction<R> {"
+        + "  R apply(int value);"
+        + "}"
+        + "class Test {"
+        + "  IntFunction<int[]> i = int[]::new;"
+        + "}", "Test", "Test.m");
+    assertNotInTranslation(translation, "return create_IntFunction_initWithIntArray_");
+    assertTranslatedLines(translation,
+        "^IOSIntArray *(id _self, jint a) {", "return [IOSIntArray arrayWithLength:a];");
+  }
 }
