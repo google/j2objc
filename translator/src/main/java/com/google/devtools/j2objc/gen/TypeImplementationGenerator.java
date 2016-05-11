@@ -89,7 +89,6 @@ public class TypeImplementationGenerator extends TypeGenerator {
       printStaticAccessors();
       printInnerDeclarations();
       printInitializeMethod();
-      printReflectionMethods();
       println("\n@end");
     }
 
@@ -134,6 +133,7 @@ public class TypeImplementationGenerator extends TypeGenerator {
 
   private static final Predicate<VariableDeclarationFragment> NEEDS_DEFINITION =
       new Predicate<VariableDeclarationFragment>() {
+    @Override
     public boolean apply(VariableDeclarationFragment fragment) {
       return !BindingUtil.isPrimitiveConstant(fragment.getVariableBinding())
           // Private static vars are defined in the private declaration.
@@ -355,16 +355,6 @@ public class TypeImplementationGenerator extends TypeGenerator {
     sb.append("J2OBJC_SET_INITIALIZED(" + typeName + ")\n");
     sb.append("}\n}");
     print("\n+ (void)initialize " + reindent(sb.toString()) + "\n");
-  }
-
-  private void printReflectionMethods() {
-    if (typeNeedsReflection) {
-      printMetadata();
-    }
-  }
-
-  protected void printMetadata() {
-    print(new MetadataGenerator(typeNode).getMetadataSource());
   }
 
   protected String generateStatement(Statement stmt) {

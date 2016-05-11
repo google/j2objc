@@ -173,7 +173,6 @@ JAVA_SOURCES = \
 	gen/GenerationUnit.java \
 	gen/JavadocGenerator.java \
 	gen/LiteralGenerator.java \
-	gen/MetadataGenerator.java \
 	gen/ObjectiveCHeaderGenerator.java \
 	gen/ObjectiveCImplementationGenerator.java \
 	gen/ObjectiveCSegmentedHeaderGenerator.java \
@@ -214,6 +213,7 @@ JAVA_SOURCES = \
 	translate/JavaCloneWriter.java \
 	translate/JavaToIOSMethodTranslator.java \
 	translate/LabelRewriter.java \
+	translate/MetadataWriter.java \
 	translate/NilCheckResolver.java \
 	translate/OcniExtractor.java \
 	translate/OperatorRewriter.java \
@@ -240,6 +240,7 @@ JAVA_SOURCES = \
 	types/ImplementationImportCollector.java \
 	types/Import.java \
 	types/LambdaTypeBinding.java \
+	types/NativeTypeBinding.java \
 	types/NullTypeBinding.java \
 	types/PointerTypeBinding.java \
 	types/Types.java \

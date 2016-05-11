@@ -27,6 +27,7 @@ import com.google.devtools.j2objc.ast.FunctionDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
+import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
@@ -35,7 +36,6 @@ import com.google.devtools.j2objc.types.Types;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.FileUtil;
 import com.google.devtools.j2objc.util.NameTable;
-import com.google.devtools.j2objc.util.TranslationUtil;
 import com.google.devtools.j2objc.util.UnicodeUtils;
 
 import org.eclipse.jdt.core.dom.IBinding;
@@ -70,7 +70,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   protected final Types typeEnv;
   protected final NameTable nameTable;
   protected final String typeName;
-  protected final boolean typeNeedsReflection;
   protected final boolean hasNullabilityAnnotations;
 
   private final List<BodyDeclaration> declarations;
@@ -84,7 +83,6 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
     typeEnv = compilationUnit.getTypeEnv();
     nameTable = compilationUnit.getNameTable();
     typeName = nameTable.getFullName(typeBinding);
-    typeNeedsReflection = TranslationUtil.needsReflection(typeBinding);
     declarations = filterDeclarations(node.getBodyDeclarations());
     parametersNonnullByDefault = Options.nullability()
         && areParametersNonnullByDefault();
@@ -149,6 +147,17 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
         default:
           return false;
       }
+    }
+  };
+
+  // This predicate returns true if the declaration generates implementation
+  // code inside a @implementation declaration.
+  private static final Predicate<BodyDeclaration> HAS_INNER_IMPL =
+      new Predicate<BodyDeclaration>() {
+    @Override
+    public boolean apply(BodyDeclaration decl) {
+      return decl.getKind() == TreeNode.Kind.METHOD_DECLARATION
+          && !Modifier.isAbstract(((MethodDeclaration) decl).getModifiers());
     }
   };
 
@@ -240,7 +249,8 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected boolean needsCompanionClass() {
-    return needsPublicCompanionClass() || typeNeedsReflection;
+    return needsPublicCompanionClass()
+        || !Iterables.isEmpty(Iterables.filter(typeNode.getBodyDeclarations(), HAS_INNER_IMPL));
   }
 
   protected boolean hasInitializeMethod() {

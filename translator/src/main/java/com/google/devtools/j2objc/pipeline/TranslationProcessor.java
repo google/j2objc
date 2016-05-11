@@ -42,6 +42,7 @@ import com.google.devtools.j2objc.translate.InnerClassExtractor;
 import com.google.devtools.j2objc.translate.JavaCloneWriter;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslator;
 import com.google.devtools.j2objc.translate.LabelRewriter;
+import com.google.devtools.j2objc.translate.MetadataWriter;
 import com.google.devtools.j2objc.translate.NilCheckResolver;
 import com.google.devtools.j2objc.translate.OcniExtractor;
 import com.google.devtools.j2objc.translate.OperatorRewriter;
@@ -275,6 +276,9 @@ public class TranslationProcessor extends FileProcessor {
     // added in other phases may need added casts.
     new CastResolver().run(unit);
     ticker.tick("CastResolver");
+
+    new MetadataWriter().run(unit);
+    ticker.tick("MetadataWriter");
 
     // After: InnerClassExtractor, Functionizer - Expects all types to be
     //   top-level and functionizing to have occured.
