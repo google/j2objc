@@ -10,15 +10,15 @@
 	<classpathentry kind="lib" path="../java_deps/build_result/jsr305.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/asm.jar"/>
 	<classpathentry kind="lib" path="../java_deps/build_result/guava-19.0.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.contenttype_3.4.200.v20140207-1251.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.jobs_3.6.1.v20141204-0235.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.resources_3.9.1.v20140825-1431.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.runtime_3.10.0.v20140318-2214.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.equinox.common_3.6.200.v20130402-1505.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.equinox.preferences_3.5.200.v20140224-1527.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.jdt.compiler.apt_1.1.0.v20140909-0014.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.jdt.core_3.10.2.v20141211-0121.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.osgi_3.10.2.v20141103-1919.jar"/>
-	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.text_3.5.300.v20130515-1451.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.contenttype_3.5.0.v20150421-2214.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.jobs_3.7.0.v20150330-2103.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.resources_3.10.1.v20150725-1910.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.core.runtime_3.11.1.v20150903-1804.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.equinox.common_3.7.0.v20160213-0253.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.equinox.preferences_3.5.300.v20150408-1437.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.jdt.compiler.apt_1.2.0.v20151121-0109.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.jdt.core_3.11.2.v20160213-0043.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.osgi_3.10.102.v20160118-1700.jar"/>
+	<classpathentry kind="lib" path="../java_deps/build_result/org.eclipse.text_3.5.400.v20150505-1044.jar"/>
 	<classpathentry kind="output" path="build_result/eclipse"/>
 </classpath>
