@@ -241,11 +241,14 @@ public abstract class TypeGenerator extends AbstractSourceGenerator {
   }
 
   protected boolean needsPublicCompanionClass() {
-    return BindingUtil.hasDefaultMethodsInFamily(typeBinding)
-        || BindingUtil.hasStaticInterfaceMethods(typeBinding)
-        || (!typeNode.hasPrivateDeclaration()
-            && (hasInitializeMethod() || BindingUtil.isRuntimeAnnotation(typeBinding)
-                || hasStaticAccessorMethods()));
+    if (typeNode.hasPrivateDeclaration()) {
+      return false;
+    }
+    return hasInitializeMethod()
+        || hasStaticAccessorMethods()
+        || BindingUtil.isRuntimeAnnotation(typeBinding)
+        || BindingUtil.hasDefaultMethodsInFamily(typeBinding)
+        || BindingUtil.hasStaticInterfaceMethods(typeBinding);
   }
 
   protected boolean needsCompanionClass() {
