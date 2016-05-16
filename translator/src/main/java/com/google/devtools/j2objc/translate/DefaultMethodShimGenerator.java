@@ -158,7 +158,8 @@ public class DefaultMethodShimGenerator extends TreeVisitor {
     // The shim's only purpose is to call the default method implementation and returns it value
     // if required.
     String name = nameTable.getFullFunctionName(method);
-    FunctionBinding fb = new FunctionBinding(name, method.getReturnType(), type);
+    FunctionBinding fb =
+        new FunctionBinding(name, method.getMethodDeclaration().getReturnType(), type);
     fb.addParameters(type);
     fb.addParameters(method.getParameterTypes());
     FunctionInvocation invocation = new FunctionInvocation(fb, method.getReturnType());
