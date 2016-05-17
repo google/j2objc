@@ -89,7 +89,10 @@
 - (NSString *)getCanonicalName;
 
 // Class.getModifiers()
-- (int)getModifiers;
+- (jint)getModifiers;
+
+// Class.getAccessFlags()
+- (jint)getAccessFlags;
 
 // Class.getDeclaredConstructors()
 - (IOSObjectArray *)getDeclaredConstructors;
@@ -153,11 +156,13 @@
 - (IOSObjectArray *)getGenericInterfaces;
 - (IOSObjectArray *)getTypeParameters;
 
-- (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass;
+- (id<JavaLangAnnotationAnnotation>)
+      getAnnotationWithIOSClass:(IOSClass *)annotationClass;
 - (jboolean)isAnnotationPresentWithIOSClass:(IOSClass *)annotationType;
 - (IOSObjectArray *)getAnnotations;
 - (IOSObjectArray *)getDeclaredAnnotations;
-
+- (id<JavaLangAnnotationAnnotation>)
+      getDeclaredAnnotationWithIOSClass:(IOSClass *)annotationClass;
 - (id)getPackage;
 - (id)getClassLoader;
 
@@ -203,6 +208,7 @@
 // Get the IOSArray subclass that would be used to hold this type.
 - (Class)objcArrayClass;
 - (size_t)getSizeof;
+- (IOSObjectArray *)getEnumConstantsShared;
 
 @end
 

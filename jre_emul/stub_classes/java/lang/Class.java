@@ -145,6 +145,10 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
     return null;
   }
 
+  T[] getEnumConstantsShared() {
+    return null;
+  }
+
   public Field getField(String name) throws NoSuchFieldException, SecurityException {
     return null;
   }
@@ -268,5 +272,31 @@ public final class Class<T> implements AnnotatedElement, GenericDeclaration, Ser
 
   public String toString() {
     return "";
+  }
+
+  /**
+   * @since 1.8
+   */
+  public <T extends Annotation> T[] getDeclaredAnnotationsByType(Class<T> annotationClass) {
+    return null;
+  }
+
+  /**
+   * @since 1.8
+   */
+  public <T extends Annotation> T[] getAnnotationsByType(Class<T> annotationClass) {
+    return null;
+  }
+
+  /**
+   * @since 1.8
+   */
+  public <T extends Annotation> T getDeclaredAnnotation(Class<T> annotationClass) {
+    return null;
+  }
+
+  // Android-specific
+  public int getAccessFlags() {
+    return 0;
   }
 }

@@ -422,6 +422,7 @@ JAVA_PRIVATE_SOURCES_CORE = \
   libcore/io/StructUtsname.java \
   libcore/net/MimeUtils.java \
   libcore/net/url/UrlUtils.java \
+  libcore/reflect/AnnotatedElements.java \
   libcore/reflect/GenericArrayTypeImpl.java \
   libcore/reflect/GenericSignatureParser.java \
   libcore/reflect/ListOfTypes.java \

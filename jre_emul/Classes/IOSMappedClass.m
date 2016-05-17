@@ -59,7 +59,8 @@
                                                   withNSString:nil
                                                   withNSString:nil
                                                   withNSString:nil
-                                                withJavaNetURL:nil]);
+                                                withJavaNetURL:nil
+                                       withJavaLangClassLoader:nil]);
 }
 
 - (jboolean)isEnum {

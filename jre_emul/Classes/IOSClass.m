@@ -20,6 +20,7 @@
 //
 
 #import "IOSClass.h"
+#import "J2ObjC_source.h"
 
 #import "FastPointerLookup.h"
 #import "IOSArrayClass.h"
@@ -57,8 +58,10 @@
 #import "java/lang/reflect/TypeVariable.h"
 #import "java/util/Enumeration.h"
 #import "java/util/Properties.h"
+#import "libcore/reflect/AnnotatedElements.h"
 #import "libcore/reflect/GenericSignatureParser.h"
 #import "libcore/reflect/Types.h"
+
 #import "objc/message.h"
 #import "objc/runtime.h"
 
@@ -223,13 +226,18 @@ const J2ObjcClassInfo *IOSClass_GetMetadataOrFail(IOSClass *iosClass) {
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:@"abstract method not overridden"]);
 }
 
-- (int)getModifiers {
+- (jint)getModifiers {
   if (metadata_) {
     return metadata_->modifiers & JavaLangReflectModifier_classModifiers();
   } else {
     // All Objective-C classes and protocols are public by default.
     return JavaLangReflectModifier_PUBLIC;
   }
+}
+
+// Same as getModifiers, but returns all modifiers bits defined by the class.
+- (jint)getAccessFlags {
+  return metadata_ ? metadata_->modifiers : JavaLangReflectModifier_PUBLIC;
 }
 
 static void GetMethodsFromClass(IOSClass *iosClass, NSMutableDictionary *methods, bool publicOnly) {
@@ -901,7 +909,7 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
   return result;
 }
 
-- (id)getAnnotationWithIOSClass:(IOSClass *)annotationClass {
+- (id<JavaLangAnnotationAnnotation>)getAnnotationWithIOSClass:(IOSClass *)annotationClass {
   nil_chk(annotationClass);
   IOSObjectArray *annotations = [self getAnnotations];
   jint n = annotations->size_;
@@ -959,6 +967,22 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
   return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
 }
 
+- (id<JavaLangAnnotationAnnotation>)getDeclaredAnnotationWithIOSClass:(IOSClass *)annotationClass {
+  return ((id<JavaLangAnnotationAnnotation>)
+      LibcoreReflectAnnotatedElements_getDeclaredAnnotationWithJavaLangReflectAnnotatedElement_withIOSClass_(
+          self, annotationClass));
+}
+
+- (IOSObjectArray *)getAnnotationsByTypeWithIOSClass:(IOSClass *)annotationClass {
+  return LibcoreReflectAnnotatedElements_getAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
+      self, annotationClass);
+}
+
+- (IOSObjectArray *)getDeclaredAnnotationsByTypeWithIOSClass:(IOSClass *)annotationClass {
+  return LibcoreReflectAnnotatedElements_getDeclaredAnnotationsByTypeWithJavaLangReflectAnnotatedElement_withIOSClass_(
+      self, annotationClass);
+}
+
 - (const J2ObjcClassInfo *)getMetadata {
   return metadata_;
 }
@@ -973,7 +997,8 @@ IOSObjectArray *IOSClass_NewInterfacesFromProtocolList(Protocol **list, unsigned
                                                     withNSString:nil
                                                     withNSString:nil
                                                     withNSString:nil
-                                                  withJavaNetURL:nil]);
+                                                  withJavaNetURL:nil
+                                         withJavaLangClassLoader:nil]);
   }
   return nil;
 }
@@ -1179,11 +1204,20 @@ static void GetInnerClasses(IOSClass *iosClass, NSMutableArray *classes,
   return false;
 }
 
+static IOSObjectArray *GetEnumConstants(IOSClass *cls) {
+  return [cls isEnum] ? JavaLangEnum_getSharedConstantsWithIOSClass_(cls) : nil;
+}
+
 - (IOSObjectArray *)getEnumConstants {
-  if ([self isEnum]) {
-    return JavaLangEnum_getSharedConstantsWithIOSClass_(self);
-  }
-  return nil;
+  return [GetEnumConstants(self) clone];
+}
+
+// Package private method. In OpenJDK it differentiated from the above because
+// a single constants array is cached and then cloned by getEnumConstants().
+// That's not necessary here, since the Enum.getSharedConstants() function
+// creates a new array.
+- (IOSObjectArray *)getEnumConstantsShared {
+  return GetEnumConstants(self);
 }
 
 - (Class)objcArrayClass {

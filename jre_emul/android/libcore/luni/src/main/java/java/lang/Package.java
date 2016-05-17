@@ -60,7 +60,8 @@ public class Package implements AnnotatedElement {
     private final URL sealBase;
 
     Package(String name, String specTitle, String specVersion, String specVendor,
-            String implTitle, String implVersion, String implVendor, URL sealBase) {
+            String implTitle, String implVersion, String implVendor, URL sealBase,
+            ClassLoader loader) {
         this.name = name;
         this.specTitle = specTitle;
         this.specVersion = specVersion;
