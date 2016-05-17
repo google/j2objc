@@ -91,23 +91,14 @@ public class OuterReferenceFixer extends TreeVisitor {
       captureParams.add(declaringClass);
     }
 
-    for (IVariableBinding capturedVar : getCapturedVariables(node)) {
-      captureArgs.add(new SimpleName(capturedVar));
-      captureParams.add(capturedVar.getType());
+    for (List<IVariableBinding> captureArgPath : outerResolver.getCaptureArgPaths(node)) {
+      captureArgPath = fixPath(captureArgPath);
+      captureArgs.add(Name.newName(captureArgPath));
+      captureParams.add(captureArgPath.get(captureArgPath.size() - 1).getType());
     }
 
     assert binding.isVarargs() || node.getArguments().size() == binding.getParameterTypes().length;
     return true;
-  }
-
-  private List<IVariableBinding> getCapturedVariables(ClassInstanceCreation node) {
-    ITypeBinding newType = node.getTypeBinding().getTypeDeclaration();
-    ITypeBinding owningType = TreeUtil.getOwningType(node).getTypeBinding().getTypeDeclaration();
-    // Test for the recursive construction of a local class.
-    if (owningType.isEqualTo(newType)) {
-      return outerResolver.getInnerFields(newType);
-    }
-    return outerResolver.getCapturedVars(newType);
   }
 
   private Expression getOuterArg(ClassInstanceCreation node, ITypeBinding declaringClass) {

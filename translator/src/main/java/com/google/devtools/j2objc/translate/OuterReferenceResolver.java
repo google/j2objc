@@ -47,6 +47,7 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -70,12 +71,16 @@ public class OuterReferenceResolver extends TreeVisitor {
   // parameter in a constructor.
   public static final IVariableBinding OUTER_PARAMETER = GeneratedVariableBinding.newPlaceholder();
 
+  private enum VisitingState { NEEDS_REVISIT, VISITED }
+
   private Map<ITypeBinding, IVariableBinding> outerVars = new HashMap<>();
   private Set<ITypeBinding> usesOuterParam = new HashSet<>();
   private Set<ITypeBinding> hasImplicitCaptures = new HashSet<>();
   private ListMultimap<ITypeBinding, Capture> captures = ArrayListMultimap.create();
   private Map<TreeNode.Key, List<IVariableBinding>> outerPaths = new HashMap<>();
+  private Map<TreeNode.Key, List<List<IVariableBinding>>> captureArgs = new HashMap<>();
   private ArrayList<Scope> scopeStack = new ArrayList<>();
+  private Map<ITypeBinding, VisitingState> visitingStates = new HashMap<>();
 
   @Override
   public void run(TreeNode node) {
@@ -99,15 +104,6 @@ public class OuterReferenceResolver extends TreeVisitor {
     return outerVars.get(type);
   }
 
-  public List<IVariableBinding> getCapturedVars(ITypeBinding type) {
-    List<Capture> capturesForType = captures.get(type);
-    List<IVariableBinding> capturedVars = new ArrayList<>(capturesForType.size());
-    for (Capture capture : capturesForType) {
-      capturedVars.add(capture.var);
-    }
-    return capturedVars;
-  }
-
   public List<IVariableBinding> getInnerFields(ITypeBinding type) {
     List<Capture> capturesForType = captures.get(type);
     List<IVariableBinding> innerFields = new ArrayList<>(capturesForType.size());
@@ -119,6 +115,14 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   public List<IVariableBinding> getPath(TreeNode node) {
     return outerPaths.get(node.getKey());
+  }
+
+  public List<List<IVariableBinding>> getCaptureArgPaths(ClassInstanceCreation node) {
+    List<List<IVariableBinding>> result = captureArgs.get(node.getKey());
+    if (result != null) {
+      return result;
+    }
+    return Collections.emptyList();
   }
 
   private static class Capture {
@@ -160,6 +164,21 @@ public class OuterReferenceResolver extends TreeVisitor {
   private Scope peekScope() {
     assert scopeStack.size() > 0;
     return scopeStack.get(scopeStack.size() - 1);
+  }
+
+  // Marks the given type to be revisited. Returns true if the type has been maked for a revisit,
+  // false if the type has already been visited.
+  private boolean revisitScope(ITypeBinding type) {
+    VisitingState state = visitingStates.get(type);
+    if (state == null) {
+      visitingStates.put(type, VisitingState.NEEDS_REVISIT);
+      return true;
+    }
+    switch (state) {
+      case NEEDS_REVISIT: return true;
+      case VISITED: return false;
+    }
+    throw new AssertionError("Invalid state");
   }
 
   private String getOuterFieldName(ITypeBinding type) {
@@ -335,8 +354,14 @@ public class OuterReferenceResolver extends TreeVisitor {
     }
   }
 
-  private void popType() {
-    scopeStack.remove(scopeStack.size() - 1);
+  private void popType(TreeNode node) {
+    Scope currentScope = scopeStack.remove(scopeStack.size() - 1);
+    VisitingState state = visitingStates.get(currentScope.type);
+    boolean revisit = state == VisitingState.NEEDS_REVISIT;
+    visitingStates.put(currentScope.type, VisitingState.VISITED);
+    if (revisit) {
+      node.accept(this);
+    }
   }
 
   @Override
@@ -347,7 +372,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(TypeDeclaration node) {
-    popType();
+    popType(node);
   }
 
   @Override
@@ -358,7 +383,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(AnonymousClassDeclaration node) {
-    popType();
+    popType(node);
   }
 
   @Override
@@ -369,7 +394,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(EnumDeclaration node) {
-    popType();
+    popType(node);
   }
 
   @Override
@@ -380,7 +405,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(AnnotationTypeDeclaration node) {
-    popType();
+    popType(node);
   }
 
   @Override
@@ -391,7 +416,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(LambdaExpression node) {
-    popType();
+    popType(node);
   }
 
   @Override
@@ -458,9 +483,21 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public void endVisit(ClassInstanceCreation node) {
-    ITypeBinding type = node.getTypeBinding();
+    ITypeBinding type = node.getTypeBinding().getTypeDeclaration();
     if (node.getExpression() == null && BindingUtil.hasOuterContext(type)) {
       addPath(node, getOuterPathInherited(type.getDeclaringClass()));
+    }
+    if (type.isLocal() && !revisitScope(type)) {
+      List<Capture> capturesForType = captures.get(type);
+      List<List<IVariableBinding>> capturePaths = new ArrayList<>(capturesForType.size());
+      for (Capture capture : capturesForType) {
+        List<IVariableBinding> path = getPathForLocalVar(capture.var);
+        if (path.isEmpty()) {
+          path = Collections.singletonList(capture.var);
+        }
+        capturePaths.add(path);
+      }
+      captureArgs.put(node.getKey(), capturePaths);
     }
   }
 

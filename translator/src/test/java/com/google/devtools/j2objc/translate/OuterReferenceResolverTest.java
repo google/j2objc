@@ -18,6 +18,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.google.devtools.j2objc.GenerationTest;
 import com.google.devtools.j2objc.ast.AnonymousClassDeclaration;
+import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CompilationUnit;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
@@ -105,12 +106,15 @@ public class OuterReferenceResolverTest extends GenerationTest {
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
     ITypeBinding runnableBinding = runnableNode.getTypeBinding();
     assertFalse(outerResolver.needsOuterReference(runnableBinding));
-    List<IVariableBinding> capturedVars = outerResolver.getCapturedVars(runnableBinding);
     List<IVariableBinding> innerFields = outerResolver.getInnerFields(runnableBinding);
-    assertEquals(1, capturedVars.size());
     assertEquals(1, innerFields.size());
-    assertEquals("i", capturedVars.get(0).getName());
     assertEquals("val$i", innerFields.get(0).getName());
+    ClassInstanceCreation creationNode =
+        (ClassInstanceCreation) nodesByType.get(Kind.CLASS_INSTANCE_CREATION).get(0);
+    List<List<IVariableBinding>> captureArgPaths = outerResolver.getCaptureArgPaths(creationNode);
+    assertEquals(1, captureArgPaths.size());
+    assertEquals(1, captureArgPaths.get(0).size());
+    assertEquals("i", captureArgPaths.get(0).get(0).getName());
 
     InfixExpression addition = (InfixExpression) nodesByType.get(Kind.INFIX_EXPRESSION).get(0);
     List<IVariableBinding> iPath = outerResolver.getPath(addition.getOperands().get(0));
@@ -141,6 +145,26 @@ public class OuterReferenceResolverTest extends GenerationTest {
         (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
     ITypeBinding type = decl.getTypeBinding();
     assertFalse(outerResolver.needsOuterParam(type));
+  }
+
+  public void testAnonymousClassCreatesLocalClassWithCaptures() {
+    resolveSource("Test",
+        "class Test { Runnable test(final Object o) { "
+        + "class Local { public void foo() { o.toString(); } } "
+        + "return new Runnable() { public void run() { new Local(); } }; } }");
+
+    AnonymousClassDeclaration runnableNode =
+        (AnonymousClassDeclaration) nodesByType.get(Kind.ANONYMOUS_CLASS_DECLARATION).get(0);
+    ITypeBinding runnableBinding = runnableNode.getTypeBinding();
+    List<IVariableBinding> innerFields = outerResolver.getInnerFields(runnableBinding);
+    assertEquals(1, innerFields.size());
+    assertEquals("val$o", innerFields.get(0).getName());
+    ClassInstanceCreation creationNode =
+        (ClassInstanceCreation) nodesByType.get(Kind.CLASS_INSTANCE_CREATION).get(1);
+    List<List<IVariableBinding>> captureArgPaths = outerResolver.getCaptureArgPaths(creationNode);
+    assertEquals(1, captureArgPaths.size());
+    assertEquals(1, captureArgPaths.get(0).size());
+    assertEquals("val$o", captureArgPaths.get(0).get(0).getName());
   }
 
   private void resolveSource(String name, String source) {
