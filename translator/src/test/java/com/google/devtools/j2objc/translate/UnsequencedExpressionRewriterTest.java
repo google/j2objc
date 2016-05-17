@@ -217,31 +217,39 @@ public class UnsequencedExpressionRewriterTest extends GenerationTest {
   }
 
   // Make sure that a conditional access remains conditional. Even if the access
-  // is not a modification, it might be a volatile load that should still be
-  // executed conditionally.
+  // is not a modification, it might have been modified by the condition.
   public void testConditionalAccess() throws IOException {
     String translation = translateSourceFile(
-        "class Test { volatile int i; boolean foo(int i, int j) { return i < j; }"
-        + " boolean test1(boolean b) { return b || foo(i, i++); }"
-        + " boolean test2(boolean b) { return b ? foo(i, i++) : false; } }", "Test", "Test.m");
+        "class Test { boolean foo(int i, int j) { return i < j; }"
+        + " boolean test1(boolean b, int i) { return b || foo(i, i++); }"
+        + " boolean test2(boolean b, int i) { return b ? foo(i, i++) : false; } }",
+        "Test", "Test.m");
     // test1
     assertTranslatedLines(translation,
         "jboolean unseq$1;",
         "if (!(unseq$1 = b)) {",
-        "  jint unseq$2 = JreLoadVolatileInt(&i_);",
-        "  unseq$1 = (unseq$1 || [self fooWithInt:unseq$2 withInt:i_++]);",
+        "  jint unseq$2 = i;",
+        "  unseq$1 = (unseq$1 || [self fooWithInt:unseq$2 withInt:i++]);",
         "}",
         "return unseq$1;");
     // test2
     assertTranslatedLines(translation,
         "jboolean unseq$1;",
         "if (b) {",
-        "  jint unseq$2 = JreLoadVolatileInt(&i_);",
-        "  unseq$1 = [self fooWithInt:unseq$2 withInt:i_++];",
+        "  jint unseq$2 = i;",
+        "  unseq$1 = [self fooWithInt:unseq$2 withInt:i++];",
         "}",
         "else {",
         "  unseq$1 = false;",
         "}",
         "return unseq$1;");
+  }
+
+  // Instance variables do not appear to produce any unsequenced errors.
+  // Regression test for Issue #748.
+  public void testInstanceVarIsNotUnsequenced() throws IOException {
+    String translation = translateSourceFile(
+        "class Test { int i; void test() { this.i = this.i + this.i++; } }", "Test", "Test.m");
+    assertTranslation(translation, "self->i_ = self->i_ + self->i_++;");
   }
 }

@@ -51,6 +51,7 @@ import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.ast.WhileStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
+import com.google.devtools.j2objc.util.BindingUtil;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
@@ -97,7 +98,7 @@ public class UnsequencedExpressionRewriter extends TreeVisitor {
   }
 
   private void addVariableAccess(IVariableBinding var, Expression node, boolean isModification) {
-    if (var != null) {
+    if (var != null && !BindingUtil.isInstanceVar(var)) {
       hasModification |= isModification;
       orderedAccesses.add(new VariableAccess(var, node, isModification));
     }
