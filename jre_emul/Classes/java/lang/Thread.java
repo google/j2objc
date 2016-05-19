@@ -55,8 +55,8 @@ public class Thread implements Runnable {
   boolean interrupted;
   private boolean running;
   private ClassLoader contextClassLoader;
-  ThreadLocal.Values localValues;
-  ThreadLocal.Values inheritableValues;
+  ThreadLocal.ThreadLocalMap threadLocals = null;
+  ThreadLocal.ThreadLocalMap inheritableThreadLocals = null;
 
   /** The object the thread is waiting on (normally null). */
   Object blocker;
@@ -793,7 +793,7 @@ public class Thread implements Runnable {
       // Thread finished, clean up.
       running_ = false;
       if (self->threadGroup_) {
-        [threadGroup_ removeWithJavaLangThread:self];
+        [threadGroup_ threadTerminatedWithJavaLangThread:self];
         AUTORELEASE(self->threadGroup_);
         self->threadGroup_ = nil;
       }
@@ -1137,5 +1137,30 @@ public class Thread implements Runnable {
   // TODO(user): Can we update this to return something useful?
   public static Map<Thread,StackTraceElement[]> getAllStackTraces() {
     return Collections.<Thread, StackTraceElement[]>emptyMap();
+  }
+
+  @Deprecated
+  public final void stop() {
+    stop(new ThreadDeath());
+  }
+
+  @Deprecated
+  public final void stop(Throwable obj) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Deprecated
+  public void destroy() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Deprecated
+  public final void suspend() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Deprecated
+  public final void resume() {
+    throw new UnsupportedOperationException();
   }
 }

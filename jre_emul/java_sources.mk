@@ -1288,8 +1288,12 @@ JAVA_PRIVATE_SOURCES_BEANS = \
 
 # These sources are not included in any sub-library, only the full jre_emul.
 # javax.lang.model.element.Modifier is required by mockito, so it is only needed
-# in a testing environment.
+# in a testing environment. The other classes are errors only thrown by a JVM.
 JAVA_PUBLIC_SOURCES_OTHER = \
+  java/lang/ClassCircularityError.java \
+  java/lang/InstantiationError.java \
+  java/lang/UnsatisfiedLinkError.java \
+  java/lang/UnsupportedClassVersionError.java \
   javax/lang/model/element/Modifier.java
 
 JAVA_PRIVATE_SOURCES_OTHER =
