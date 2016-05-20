@@ -198,9 +198,12 @@ public class CastResolver extends TreeVisitor {
     }
     switch (expr.getKind()) {
       case CLASS_INSTANCE_CREATION:
-        return typeEnv.resolveIOSType("id");
+        return typeEnv.getIdType();
       case FUNCTION_INVOCATION:
         return ((FunctionInvocation) expr).getFunctionBinding().getReturnType();
+      case LAMBDA_EXPRESSION:
+        // Lambda expressions are generated as function calls that return "id".
+        return typeEnv.getIdType();
       case METHOD_INVOCATION: {
         MethodInvocation invocation = (MethodInvocation) expr;
         IMethodBinding method = invocation.getMethodBinding();
@@ -219,7 +222,7 @@ public class CastResolver extends TreeVisitor {
           // For a qualified super invocation, the statement generator will look
           // up the IMP using instanceMethodForSelector.
           if (!method.getReturnType().isPrimitive()) {
-            return typeEnv.resolveIOSType("id");
+            return typeEnv.getIdType();
           } else {
             return null;
           }

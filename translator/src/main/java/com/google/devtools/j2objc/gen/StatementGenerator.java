@@ -761,7 +761,7 @@ public class StatementGenerator extends TreeVisitor {
    * calling portion sans blocks can be reused by method references.
    */
   private void printLambdaCall(LambdaExpression node) {
-    ITypeBinding functionalTypeBinding = node.functionalTypeBinding();
+    ITypeBinding functionalTypeBinding = node.getTypeBinding();
     IMethodBinding methodBinding = node.getMethodBinding();
     IMethodBinding functionalInterface = functionalTypeBinding.getFunctionalInterfaceMethod();
     List<VariableDeclaration> parameters = node.getParameters();

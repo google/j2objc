@@ -27,9 +27,9 @@ import java.util.List;
  */
 public class LambdaExpression extends Expression {
 
-  private final ITypeBinding resolvedTypeBinding;
+  private final ITypeBinding typeBinding;
   // Unique type binding that can be used as a key.
-  private final ITypeBinding generatedTypeBinding;
+  private final ITypeBinding lambdaTypeBinding;
   private final IMethodBinding methodBinding;
   private ChildList<VariableDeclaration> parameters = ChildList.create(VariableDeclaration.class,
       this);
@@ -38,7 +38,7 @@ public class LambdaExpression extends Expression {
 
   public LambdaExpression(org.eclipse.jdt.core.dom.LambdaExpression jdtNode) {
     super(jdtNode);
-    resolvedTypeBinding = jdtNode.resolveTypeBinding();
+    typeBinding = jdtNode.resolveTypeBinding();
     methodBinding = jdtNode.resolveMethodBinding();
     for (Object x : jdtNode.parameters()) {
       parameters.add((VariableDeclaration) TreeConverter.convert(x));
@@ -49,14 +49,13 @@ public class LambdaExpression extends Expression {
     // generic raw type of the implemented class.
     String name = NameTable.extractLambdaNamefromKey(jdtNode.resolveMethodBinding());
     IPackageBinding packageBinding = methodBinding.getDeclaringClass().getPackage();
-    this.generatedTypeBinding = new LambdaTypeBinding(name, packageBinding,
-        resolvedTypeBinding.getFunctionalInterfaceMethod());
+    lambdaTypeBinding = new LambdaTypeBinding(name, packageBinding);
   }
 
   public LambdaExpression(LambdaExpression other) {
     super(other);
-    generatedTypeBinding = other.getTypeBinding();
-    resolvedTypeBinding = other.functionalTypeBinding();
+    typeBinding = other.getTypeBinding();
+    lambdaTypeBinding = other.getLambdaTypeBinding();
     methodBinding = other.getMethodBinding();
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
@@ -68,13 +67,13 @@ public class LambdaExpression extends Expression {
     return Kind.LAMBDA_EXPRESSION;
   }
 
-  public ITypeBinding functionalTypeBinding() {
-    return resolvedTypeBinding;
-  }
-
   @Override
   public ITypeBinding getTypeBinding() {
-    return generatedTypeBinding;
+    return typeBinding;
+  }
+
+  public ITypeBinding getLambdaTypeBinding() {
+    return lambdaTypeBinding;
   }
 
   public IMethodBinding getMethodBinding() {

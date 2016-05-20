@@ -397,8 +397,7 @@ public class Rewriter extends TreeVisitor {
       node.setBody(block);
     }
     // Resolve whether a lambda captures variables from the enclosing scope.
-    ITypeBinding binding = node.getTypeBinding();
-    node.setIsCapturing(outerResolver.hasImplicitCaptures(binding));
+    node.setIsCapturing(outerResolver.hasImplicitCaptures(node.getLambdaTypeBinding()));
     return true;
   }
 

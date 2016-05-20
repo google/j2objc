@@ -103,13 +103,11 @@ public class LambdaExpressionTest extends GenerationTest {
         "^NSString *(id _self, NSString * y)", "return y;");
   }
 
-  // Test that we are properly adding protocols for casting.
-  public void testProtocolCast() throws IOException {
+  // There's no need for a cast_check call on a lambda whose type matches the assigned type.
+  public void testNoCastCheck() throws IOException {
     String translation = translateSourceFile(
         functionHeader + "class Test { Function f = (Function) (x) -> x;}", "Test", "Test.m");
-    assertTranslatedSegments(translation,
-        "(id<Function>) cast_check(GetNonCapturingLambda(NULL, @protocol(Function), ",
-        "Function_class_()");
+    assertNotInTranslation(translation, "cast_check");
   }
 
   // Test that we aren't trying to import lambda types.
@@ -181,6 +179,5 @@ public class LambdaExpressionTest extends GenerationTest {
         + "  }"
         + "}", "Comparator", "foo/bar/Comparator.m");
     assertTranslation(translation, "GetCapturingLambda([FooBarComparator class]");
-    assertTranslation(translation, "FooBarComparator_class_()");
   }
 }

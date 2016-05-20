@@ -410,7 +410,7 @@ public class OuterReferenceResolver extends TreeVisitor {
 
   @Override
   public boolean visit(LambdaExpression node) {
-    pushType(node, node.getTypeBinding());
+    pushType(node, node.getLambdaTypeBinding());
     return true;
   }
 

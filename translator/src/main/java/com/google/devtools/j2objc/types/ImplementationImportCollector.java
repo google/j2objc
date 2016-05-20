@@ -161,7 +161,7 @@ public class ImplementationImportCollector extends TreeVisitor {
 
   @Override
   public void endVisit(LambdaExpression node) {
-    addImports(node.functionalTypeBinding());
+    addImports(node.getTypeBinding());
   }
 
   @Override
