@@ -105,7 +105,14 @@ public class GeneratedMethodBinding extends AbstractBinding implements IMethodBi
 
   @Override
   public String getKey() {
-    throw new AssertionError("not implemented");
+    StringBuilder sb = new StringBuilder("GeneratedMethodBinding:");
+    sb.append(declaringClass == null ? "null" : declaringClass.getKey());
+    sb.append('.').append(name).append('(');
+    for (ITypeBinding paramType : parameters) {
+      sb.append(paramType.getKey());
+    }
+    sb.append(')').append(returnType.getKey());
+    return sb.toString();
   }
 
   @Override
