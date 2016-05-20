@@ -214,6 +214,7 @@ JAVA_SOURCES = \
 	translate/JavaToIOSMethodTranslator.java \
 	translate/LabelRewriter.java \
 	translate/MetadataWriter.java \
+	translate/MethodReferenceRewriter.java \
 	translate/NilCheckResolver.java \
 	translate/OcniExtractor.java \
 	translate/OperatorRewriter.java \

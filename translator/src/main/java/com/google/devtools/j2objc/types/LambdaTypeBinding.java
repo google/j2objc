@@ -14,7 +14,6 @@
 package com.google.devtools.j2objc.types;
 
 import org.eclipse.jdt.core.dom.IBinding;
-import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 /**
@@ -24,12 +23,11 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
  * @author Seth Kirby
  */
 public class LambdaTypeBinding extends AbstractTypeBinding {
-  protected final String name;
-  private final IPackageBinding packageBinding;
 
-  public LambdaTypeBinding(String name, IPackageBinding packageBinding) {
+  protected final String name;
+
+  public LambdaTypeBinding(String name) {
     this.name = name;
-    this.packageBinding = packageBinding;
   }
 
   @Override
@@ -39,13 +37,7 @@ public class LambdaTypeBinding extends AbstractTypeBinding {
 
   @Override
   public boolean isEqualTo(IBinding binding) {
-    if (binding == this) {
-      return true;
-    }
-    if (binding instanceof LambdaTypeBinding) {
-      return getQualifiedName().equals(((LambdaTypeBinding) binding).getQualifiedName());
-    }
-    return false;
+    return binding == this;
   }
 
   @Override
@@ -60,15 +52,7 @@ public class LambdaTypeBinding extends AbstractTypeBinding {
 
   @Override
   public String getQualifiedName() {
-    if (packageBinding != null) {
-      return packageBinding.getName() + "." + name;
-    }
     return name;
-  }
-
-  @Override
-  public IPackageBinding getPackage() {
-    return packageBinding;
   }
 
   @Override

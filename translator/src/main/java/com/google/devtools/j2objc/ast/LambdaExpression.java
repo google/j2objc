@@ -14,10 +14,8 @@
 package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
-import com.google.devtools.j2objc.util.NameTable;
 
 import org.eclipse.jdt.core.dom.IMethodBinding;
-import org.eclipse.jdt.core.dom.IPackageBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
@@ -34,6 +32,8 @@ public class LambdaExpression extends Expression {
   private ChildList<VariableDeclaration> parameters = ChildList.create(VariableDeclaration.class,
       this);
   protected ChildLink<TreeNode> body = ChildLink.create(TreeNode.class, this);
+  // The unique name that is used as a key when dynamically creating the lambda type.
+  private String uniqueName = null;
   private boolean isCapturing = false;
 
   public LambdaExpression(org.eclipse.jdt.core.dom.LambdaExpression jdtNode) {
@@ -47,9 +47,7 @@ public class LambdaExpression extends Expression {
     body.set(TreeConverter.convert(jdtNode.getBody()));
     // Generate a type binding which is unique to the lambda, as resolveTypeBinding gives us a
     // generic raw type of the implemented class.
-    String name = NameTable.extractLambdaNamefromKey(jdtNode.resolveMethodBinding());
-    IPackageBinding packageBinding = methodBinding.getDeclaringClass().getPackage();
-    lambdaTypeBinding = new LambdaTypeBinding(name, packageBinding);
+    lambdaTypeBinding = new LambdaTypeBinding("LambdaExpression:" + this.getLineNumber());
   }
 
   public LambdaExpression(LambdaExpression other) {
@@ -59,12 +57,27 @@ public class LambdaExpression extends Expression {
     methodBinding = other.getMethodBinding();
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
+    uniqueName = other.getUniqueName();
     isCapturing = other.isCapturing();
+  }
+
+  public LambdaExpression(String name, ITypeBinding typeBinding, IMethodBinding methodBinding) {
+    this.typeBinding = typeBinding;
+    this.methodBinding = methodBinding;
+    lambdaTypeBinding = new LambdaTypeBinding(name);
   }
 
   @Override
   public Kind getKind() {
     return Kind.LAMBDA_EXPRESSION;
+  }
+
+  public String getUniqueName() {
+    return uniqueName;
+  }
+
+  public void setUniqueName(String newUniqueName) {
+    uniqueName = newUniqueName;
   }
 
   @Override

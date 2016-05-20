@@ -17,15 +17,11 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.common.collect.LinkedListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.BodyDeclaration;
 import com.google.devtools.j2objc.ast.CastExpression;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
-import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.ExpressionStatement;
@@ -59,6 +55,7 @@ import com.google.devtools.j2objc.types.GeneratedMethodBinding;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
+import com.google.devtools.j2objc.util.NameTable;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.RetainedLocalRef;
 import com.google.j2objc.annotations.Weak;
@@ -69,6 +66,8 @@ import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 import org.eclipse.jdt.core.dom.Modifier;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -83,8 +82,9 @@ import java.util.Map;
  */
 public class Rewriter extends TreeVisitor {
 
-  private Map<IVariableBinding, IVariableBinding> localRefs = Maps.newHashMap();
+  private Map<IVariableBinding, IVariableBinding> localRefs = new HashMap<>();
   private final OuterReferenceResolver outerResolver;
+  private Map<ITypeBinding, Integer> lambdaCounts = new HashMap<>();
 
   public Rewriter(OuterReferenceResolver outerResolver) {
     this.outerResolver = outerResolver;
@@ -163,7 +163,7 @@ public class Rewriter extends TreeVisitor {
   private void rewriteStringConcat(InfixExpression node) {
     // Collect all non-string operands that precede the first string operand.
     // If there are multiple such operands, move them into a sub-expression.
-    List<Expression> nonStringOperands = Lists.newArrayList();
+    List<Expression> nonStringOperands = new ArrayList<>();
     ITypeBinding nonStringExprType = null;
     for (Expression operand : node.getOperands()) {
       ITypeBinding operandType = operand.getTypeBinding();
@@ -398,33 +398,19 @@ public class Rewriter extends TreeVisitor {
     }
     // Resolve whether a lambda captures variables from the enclosing scope.
     node.setIsCapturing(outerResolver.hasImplicitCaptures(node.getLambdaTypeBinding()));
+    // Assign a unique name to the lambda.
+    node.setUniqueName(getLambdaUniqueName(node));
     return true;
   }
 
-  @Override
-  public boolean visit(CreationReference node) {
-    IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
-    IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
-    Type type = node.getType().copy();
-    Expression invocation;
-    List<Expression> invocationArguments;
-    ITypeBinding returnType = functionalInterface.getReturnType();
-    if (returnType.isArray()) {
-      invocation = new ArrayCreation(returnType, typeEnv);
-      invocationArguments = ((ArrayCreation) invocation).getDimensions();
-    } else {
-      invocation = new ClassInstanceCreation(methodBinding, type);
-      invocationArguments = ((ClassInstanceCreation) invocation).getArguments();
+  private String getLambdaUniqueName(LambdaExpression node) {
+    ITypeBinding owningType = TreeUtil.getOwningType(node).getTypeBinding();
+    Integer count = lambdaCounts.get(owningType);
+    if (count == null) {
+      count = 0;
     }
-    buildMethodReferenceInvocationArguments(invocationArguments, node, null);
-    // The functional interface may return void, in which case the initialization is only being used
-    // for side effects, and we don't need a return.
-    if (BindingUtil.isVoid(returnType)) {
-      node.setInvocation(new ExpressionStatement(invocation));
-    } else {
-      node.setInvocation(new ReturnStatement(invocation));
-    }
-    return true;
+    lambdaCounts.put(owningType, ++count);
+    return nameTable.getFullName(owningType) + "$$Lambda$" + count;
   }
 
   @Override
@@ -496,7 +482,7 @@ public class Rewriter extends TreeVisitor {
     }
     ITypeBinding[] methodParams = methodBinding.getParameterTypes();
 
-    char[] var = nameTable.incrementVariable(null);
+    char[] var = NameTable.incrementVariable(null);
     ITypeBinding functionalParam = functionalParams[0];
     IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
         functionalParam, false, true, null, null);
@@ -515,7 +501,7 @@ public class Rewriter extends TreeVisitor {
       variableBinding = new GeneratedVariableBinding(new String(var), 0, functionalParam, false,
           true, null, null);
       invocationArguments.add(new SimpleName(variableBinding));
-      var = nameTable.incrementVariable(var);
+      var = NameTable.incrementVariable(var);
     }
     if (methodBinding.isVarargs()) {
       for (int i = methodParamStopIndex; i < functionalInterface.getParameterTypes().length; i++) {
@@ -523,7 +509,7 @@ public class Rewriter extends TreeVisitor {
         variableBinding = new GeneratedVariableBinding(new String(var), 0,
             functionalParam, false, true, null, null);
         invocationArguments.add(new SimpleName(variableBinding));
-        var = nameTable.incrementVariable(var);
+        var = NameTable.incrementVariable(var);
       }
     }
     return true;
@@ -546,7 +532,7 @@ public class Rewriter extends TreeVisitor {
     IMethodBinding methodBinding = node.getMethodBinding();
     IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
     ITypeBinding[] functionalParams = functionalInterface.getParameterTypes();
-    char[] var = nameTable.incrementVariable(null);
+    char[] var = NameTable.incrementVariable(null);
     int paramIdx = 0;
 
     // If this is an ExpressionMethodReference EXP::METHOD, and if EXP is a type binding and
@@ -568,7 +554,7 @@ public class Rewriter extends TreeVisitor {
             IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
                 functionalParam, false, true, null, null);
             invocation.setExpression(new SimpleName(variableBinding));
-            var = nameTable.incrementVariable(var);
+            var = NameTable.incrementVariable(var);
             paramIdx++;
           }
         }
@@ -581,7 +567,7 @@ public class Rewriter extends TreeVisitor {
       IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
           functionalParam, false, true, null, null);
       invocationArguments.add(new SimpleName(variableBinding));
-      var = nameTable.incrementVariable(var);
+      var = NameTable.incrementVariable(var);
     }
   }
 

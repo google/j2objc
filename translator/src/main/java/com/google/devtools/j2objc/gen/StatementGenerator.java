@@ -421,18 +421,9 @@ public class StatementGenerator extends TreeVisitor {
     return false;
   }
 
-  /**
-   * Generates a creation reference using a block wrapper surrounding a new_Type_init call. This
-   * block is used to create a new function class. Currently a seperate class will be created for
-   * each unique FullFunctionName of the creation reference method bindings. We could reduce the
-   * number of class types by using the capturing lambda construct and generating new class names
-   * based on return type and selector.
-   */
   @Override
   public boolean visit(CreationReference node) {
-    assert Options
-        .isJava8Translator() : "CreationReference in translator with -source less than 8.";
-    return printMethodReference(node);
+    throw new AssertionError("CreationReference nodes are rewritten by MethodReferenceRewriter.");
   }
 
   /**
@@ -456,7 +447,7 @@ public class StatementGenerator extends TreeVisitor {
 
   private void printGenericArgumentsInner(IMethodBinding methodBinding, boolean isSelector,
       boolean withTypes) {
-    char[] var = nameTable.incrementVariable(null);
+    char[] var = NameTable.incrementVariable(null);
     if (isSelector) {
       String fullSelector = nameTable.getMethodSelector(methodBinding);
       String[] selectors = fullSelector.split(":");
@@ -471,7 +462,7 @@ public class StatementGenerator extends TreeVisitor {
           buffer.append(selectors[i]);
           buffer.append(':');
           buffer.append(var);
-          var = nameTable.incrementVariable(var);
+          var = NameTable.incrementVariable(var);
         }
       }
     } else {
@@ -489,7 +480,7 @@ public class StatementGenerator extends TreeVisitor {
             buffer.append(' ');
           }
           buffer.append(var);
-          var = nameTable.incrementVariable(var);
+          var = NameTable.incrementVariable(var);
         }
       } else {
         boolean delimiterFlag = false;
@@ -504,7 +495,7 @@ public class StatementGenerator extends TreeVisitor {
             buffer.append(' ');
           }
           buffer.append(var);
-          var = nameTable.incrementVariable(var);
+          var = NameTable.incrementVariable(var);
         }
       }
     }
@@ -762,11 +753,10 @@ public class StatementGenerator extends TreeVisitor {
    */
   private void printLambdaCall(LambdaExpression node) {
     ITypeBinding functionalTypeBinding = node.getTypeBinding();
-    IMethodBinding methodBinding = node.getMethodBinding();
     IMethodBinding functionalInterface = functionalTypeBinding.getFunctionalInterfaceMethod();
     List<VariableDeclaration> parameters = node.getParameters();
     boolean isCapturing = node.isCapturing();
-    String newClassName = nameTable.getFullLambdaName(methodBinding);
+    String newClassName = node.getUniqueName();
     printLambdaCallWithoutBlocks(functionalTypeBinding, newClassName,
         isCapturing);
     printLambdaCallBlocks(functionalInterface, parameters, isCapturing);
@@ -845,7 +835,7 @@ public class StatementGenerator extends TreeVisitor {
       buffer.append(' ');
       buffer.append(nameTable.getVariableQualifiedName(variableBinding.getVariableDeclaration()));
     }
-    buffer.append(")");
+    buffer.append(") ");
   }
 
   @Override

@@ -607,7 +607,7 @@ public class NameTable {
    * variable names range from 'a' to 'zz'. This only supports 676 arguments, but this more than the
    * java limit of 255 / 254 parameters for static / non-static parameters, respectively.
    */
-  public char[] incrementVariable(char[] var) {
+  public static char[] incrementVariable(char[] var) {
     if (var == null) {
       return new char[] { 'a' };
     }
@@ -621,34 +621,6 @@ public class NameTable {
       var[1] = 'a';
     }
     return var;
-  }
-
-  /**
-   * Similar to getFullFunctionName, but doesn't add the selector to the name, as lambda expressions
-   * cannot be overloaded. The binding's key is used because as of JDT 3.11, the function and
-   * method names are from the functional method definition, not its implementation.
-   */
-  public String getFullLambdaName(IMethodBinding method) {
-    String key = method.getKey();
-    String className;
-    if (key.startsWith("L")) {
-      int iEnd = key.indexOf(';');
-      className = key.substring(1,  iEnd).replace('$', '_');
-    } else {
-      className = getFullName(method.getDeclaringClass());
-    }
-    return className + '_' + extractLambdaNamefromKey(method);
-  }
-
-  public static String extractLambdaNamefromKey(IMethodBinding binding) {
-    String key = binding.getKey();
-    // Key format is "L<classname>;.lambda$n(<arg_types>)<return type>;".
-    int iStart = key.indexOf("lambda");
-    int iEnd = key.indexOf('(');
-    if (iStart < 0 || iEnd < 0) {
-      return binding.getName();
-    }
-    return key.substring(iStart,  iEnd);
   }
 
   /**

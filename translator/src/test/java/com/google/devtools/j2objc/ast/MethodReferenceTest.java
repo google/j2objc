@@ -43,17 +43,17 @@ public class MethodReferenceTest extends GenerationTest {
         creationReferenceHeader + "class Test { Call<I> iInit = I::new; }",
         "Test", "Test.m");
     assertTranslatedSegments(noArgumentTranslation, "GetNonCapturingLambda(NULL, @protocol(Call)",
-        "@\"I_init\"", "^I *(id _self) {", "return create_I_init();");
+        "@\"Test$$Lambda$1\"", "^I *(id _self) {", "return create_I_init();");
     String oneArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt<I> iInit2 = I::new; }", "Test", "Test.m");
     assertTranslatedSegments(oneArgumentTranslation,
         "GetNonCapturingLambda(NULL, @protocol(FunInt)",
-        "@\"I_initWithInt_\"", "^I *(id _self, jint a) {", "return create_I_initWithInt_(a);");
+        "@\"Test$$Lambda$1\"", "^I *(id _self, jint a) {", "return create_I_initWithInt_(a);");
     String mixedArgumentTranslation = translateSourceFile(
         creationReferenceHeader + "class Test { FunInt4<I> iInit3 = I::new; }", "Test", "Test.m");
     assertTranslatedSegments(mixedArgumentTranslation,
         "GetNonCapturingLambda(NULL, @protocol(FunInt4)",
-        "@\"I_initWithInt_withI_withNSString_withId_\"",
+        "@\"Test$$Lambda$1\"",
         "^I *(id _self, jint a, I * b, NSString * c, id d) {",
         "return create_I_initWithInt_withI_withNSString_withId_(a, b, c, d);");
   }
@@ -222,5 +222,15 @@ public class MethodReferenceTest extends GenerationTest {
     assertNotInTranslation(translation, "return create_IntFunction_initWithIntArray_");
     assertTranslatedLines(translation,
         "^IOSIntArray *(id _self, jint a) {", "return [IOSIntArray arrayWithLength:a];");
+  }
+
+  public void testCreationReferenceOfLocalCapturingType() throws IOException {
+    String translation = translateSourceFile(
+        "interface Supplier<T> { T get(); }"
+        + "class Test { static Supplier<Runnable> test(Runnable r) {"
+        + "class Runner implements Runnable { public void run() { r.run(); } }"
+        + "return Runner::new; } }", "Test", "Test.m");
+    assertTranslatedSegments(translation,
+        "GetCapturingLambda", "return create_Test_1Runner_initWithJavaLangRunnable_(r);");
   }
 }
