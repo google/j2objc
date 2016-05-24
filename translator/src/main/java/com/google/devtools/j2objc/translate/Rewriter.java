@@ -30,9 +30,6 @@ import com.google.devtools.j2objc.ast.ForStatement;
 import com.google.devtools.j2objc.ast.InfixExpression;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
-import com.google.devtools.j2objc.ast.MethodInvocation;
-import com.google.devtools.j2objc.ast.MethodReference;
-import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.ParenthesizedExpression;
 import com.google.devtools.j2objc.ast.PropertyAnnotation;
 import com.google.devtools.j2objc.ast.QualifiedName;
@@ -40,8 +37,6 @@ import com.google.devtools.j2objc.ast.ReturnStatement;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SingleVariableDeclaration;
 import com.google.devtools.j2objc.ast.Statement;
-import com.google.devtools.j2objc.ast.SuperMethodInvocation;
-import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.SwitchStatement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -52,7 +47,6 @@ import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.ErrorUtil;
-import com.google.devtools.j2objc.util.NameTable;
 import com.google.j2objc.annotations.AutoreleasePool;
 import com.google.j2objc.annotations.RetainedLocalRef;
 import com.google.j2objc.annotations.Weak;
@@ -406,52 +400,6 @@ public class Rewriter extends TreeVisitor {
     }
     lambdaCounts.put(owningType, ++count);
     return nameTable.getFullName(owningType) + "$$Lambda$" + count;
-  }
-
-  @Override
-  public boolean visit(SuperMethodReference node) {
-    IMethodBinding methodBinding = node.getMethodBinding().getMethodDeclaration();
-    Name qualifier = node.getQualifier() == null ? null : node.getQualifier().copy();
-    SuperMethodInvocation invocation = new SuperMethodInvocation(methodBinding);
-    invocation.setQualifier(qualifier);
-    List<Expression> invocationArguments = invocation.getArguments();
-    buildMethodReferenceInvocationArguments(invocationArguments, node, null);
-    IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
-    if (BindingUtil.isVoid(functionalInterface.getReturnType())) {
-      node.setInvocation(new ExpressionStatement(invocation));
-    } else {
-      node.setInvocation(new ReturnStatement(invocation));
-    }
-    return true;
-  }
-
-  /**
-   * Fill in the arguments in a method reference invocation. The argument list must come from the
-   * functional interface's method, not the invoked method: this is because it is possible to
-   * make a reference to a method with varargs, but the actual number of arguments is determined
-   * during compile time by the matching functional interface's method.
-   */
-  // TODO(kirbs): In the case that we have a referenced method with an int arg, a functional
-  // interface method with an Integer arg, and an invocation with an int arg, we will end up
-  // immediately boxing and unboxing the value. We should solve this by making the types of the
-  // referenced method and the functional interface method the same, but this requires a rewrite of
-  // the selectors that target the method reference on invocation.
-  public void buildMethodReferenceInvocationArguments(List<Expression> invocationArguments,
-                                                      MethodReference node,
-                                                      MethodInvocation invocation) {
-    IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
-    ITypeBinding[] functionalParams = functionalInterface.getParameterTypes();
-    char[] var = NameTable.incrementVariable(null);
-    int paramIdx = 0;
-
-    // Fill in the invocation parameters.
-    for (; paramIdx < functionalParams.length; paramIdx++) {
-      ITypeBinding functionalParam = functionalParams[paramIdx];
-      IVariableBinding variableBinding = new GeneratedVariableBinding(new String(var), 0,
-          functionalParam, false, true, null, null);
-      invocationArguments.add(new SimpleName(variableBinding));
-      var = NameTable.incrementVariable(var);
-    }
   }
 
   /**

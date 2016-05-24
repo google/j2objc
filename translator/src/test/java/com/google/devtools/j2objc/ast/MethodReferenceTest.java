@@ -232,4 +232,16 @@ public class MethodReferenceTest extends GenerationTest {
     assertTranslatedSegments(translation,
         "GetCapturingLambda", "return create_Test_1Runner_initWithJavaLangRunnable_(r);");
   }
+
+  public void testQualifiedSuperMethodReference() throws IOException {
+    String translation = translateSourceFile(
+        "interface I { void bar(); }"
+        + "class Test { void foo() {} static class TestSub extends Test { void foo() {}"
+        + "class Inner { I test() { return TestSub.super::foo; } } } }",
+        "Test", "Test.m");
+    assertTranslatedSegments(translation,
+        "static void (*Test_TestSub_super$_foo)(id, SEL);",
+        "GetCapturingLambda(NULL, @protocol(I)",
+        "^void(id _self) {", "Test_TestSub_super$_foo(this$0_, @selector(foo));", "}");
+  }
 }

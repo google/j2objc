@@ -23,6 +23,8 @@ import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.SuperMethodReference;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
@@ -121,6 +123,18 @@ public class MethodReferenceRewriter extends TreeVisitor {
       throw new AssertionError("Can't find method finding for method: " + name);
     }
     return node.getMethodBinding();
+  }
+
+  @Override
+  public void endVisit(SuperMethodReference node) {
+    ITypeBinding exprBinding = node.getTypeBinding();
+    LambdaExpression lambda = new LambdaExpression(
+        "SuperMethodReference:" + node.getLineNumber(), exprBinding);
+    SuperMethodInvocation invocation = new SuperMethodInvocation(node.getMethodBinding());
+    invocation.setQualifier(TreeUtil.remove(node.getQualifier()));
+    lambda.setBody(invocation);
+    addParamsToInvocation(createParameters(lambda), invocation.getArguments());
+    node.replaceWith(lambda);
   }
 
   private Iterator<IVariableBinding> createParameters(LambdaExpression lambda) {
