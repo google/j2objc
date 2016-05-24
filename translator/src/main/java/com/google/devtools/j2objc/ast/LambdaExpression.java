@@ -15,7 +15,6 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
 
-import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 
 import java.util.List;
@@ -28,7 +27,6 @@ public class LambdaExpression extends Expression {
   private final ITypeBinding typeBinding;
   // Unique type binding that can be used as a key.
   private final ITypeBinding lambdaTypeBinding;
-  private final IMethodBinding methodBinding;
   private ChildList<VariableDeclaration> parameters = ChildList.create(VariableDeclaration.class,
       this);
   protected ChildLink<TreeNode> body = ChildLink.create(TreeNode.class, this);
@@ -39,7 +37,6 @@ public class LambdaExpression extends Expression {
   public LambdaExpression(org.eclipse.jdt.core.dom.LambdaExpression jdtNode) {
     super(jdtNode);
     typeBinding = jdtNode.resolveTypeBinding();
-    methodBinding = jdtNode.resolveMethodBinding();
     for (Object x : jdtNode.parameters()) {
       parameters.add((VariableDeclaration) TreeConverter.convert(x));
     }
@@ -54,16 +51,14 @@ public class LambdaExpression extends Expression {
     super(other);
     typeBinding = other.getTypeBinding();
     lambdaTypeBinding = other.getLambdaTypeBinding();
-    methodBinding = other.getMethodBinding();
     parameters.copyFrom(other.getParameters());
     body.copyFrom(other.getBody());
     uniqueName = other.getUniqueName();
     isCapturing = other.isCapturing();
   }
 
-  public LambdaExpression(String name, ITypeBinding typeBinding, IMethodBinding methodBinding) {
+  public LambdaExpression(String name, ITypeBinding typeBinding) {
     this.typeBinding = typeBinding;
-    this.methodBinding = methodBinding;
     lambdaTypeBinding = new LambdaTypeBinding(name);
   }
 
@@ -87,10 +82,6 @@ public class LambdaExpression extends Expression {
 
   public ITypeBinding getLambdaTypeBinding() {
     return lambdaTypeBinding;
-  }
-
-  public IMethodBinding getMethodBinding() {
-    return methodBinding;
   }
 
   public List<VariableDeclaration> getParameters() {

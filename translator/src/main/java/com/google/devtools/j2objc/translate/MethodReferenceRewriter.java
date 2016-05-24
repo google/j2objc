@@ -42,7 +42,6 @@ public class MethodReferenceRewriter extends TreeVisitor {
 
   @Override
   public void endVisit(CreationReference node) {
-    IMethodBinding methodBinding = node.getMethodBinding();
     ITypeBinding exprBinding = node.getTypeBinding();
     ITypeBinding creationType = node.getType().getTypeBinding();
     IMethodBinding functionalInterface = exprBinding.getFunctionalInterfaceMethod();
@@ -54,12 +53,12 @@ public class MethodReferenceRewriter extends TreeVisitor {
       invocationArguments = arrayCreation.getDimensions();
     } else {
       ClassInstanceCreation classCreation =
-          new ClassInstanceCreation(methodBinding, Type.newType(creationType));
+          new ClassInstanceCreation(node.getMethodBinding(), Type.newType(creationType));
       invocation = classCreation;
       invocationArguments = classCreation.getArguments();
     }
     LambdaExpression lambda = new LambdaExpression(
-        "CreationReference:" + node.getLineNumber(), exprBinding, methodBinding);
+        "CreationReference:" + node.getLineNumber(), exprBinding);
     lambda.setBody(invocation);
     addRemainingLambdaParams(
         Arrays.asList(functionalInterface.getParameterTypes()), invocationArguments, lambda, null);

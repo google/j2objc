@@ -1012,13 +1012,9 @@ public class StatementGenerator extends TreeVisitor {
   public boolean visit(ReturnStatement node) {
     buffer.append("return");
     Expression expr = node.getExpression();
-    IMethodBinding methodBinding = TreeUtil.getOwningMethodBinding(node);
     if (expr != null) {
       buffer.append(' ');
       expr.accept(this);
-    } else if (methodBinding != null && methodBinding.isConstructor()) {
-      // A return statement without any expression is allowed in constructors.
-      buffer.append(" self");
     }
     buffer.append(";\n");
     return false;

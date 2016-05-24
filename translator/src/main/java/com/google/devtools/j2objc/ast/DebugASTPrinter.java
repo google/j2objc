@@ -606,11 +606,7 @@ public class DebugASTPrinter extends TreeVisitor {
 
   @Override
   public boolean visit(LambdaExpression node) {
-    IMethodBinding methodBinding = node.getMethodBinding();
-    sb.print(methodBinding.getReturnType().getName());
-    sb.print(" ");
-    sb.print(methodBinding.getName());
-    sb.print(" (");
+    sb.print("(");
     boolean delimiterFlag = false;
     for (VariableDeclaration x : node.getParameters()) {
       IVariableBinding variableBinding = x.getVariableBinding();

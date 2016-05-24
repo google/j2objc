@@ -120,24 +120,6 @@ public class TreeUtil {
   }
 
   /**
-   * Returns the method binding which is the parent of the specified node, as a node may be parented
-   * by a lambda, method reference or a method.
-   */
-  public static IMethodBinding getOwningMethodBinding(TreeNode node) {
-    while (node != null) {
-      if (node instanceof MethodDeclaration) {
-        return ((MethodDeclaration) node).getMethodBinding();
-      } else if (node instanceof LambdaExpression) {
-        return ((LambdaExpression) node).getMethodBinding();
-      } else if (node instanceof MethodReference) {
-        return ((MethodReference) node).getMethodBinding();
-      }
-      node = node.getParent();
-    }
-    return null;
-  }
-
-  /**
    * With lambdas and methodbindings, the return type of the method binding does not necessarily
    * match the return type of the functional interface, which enforces the type contracts. To get
    * the return type of a lambda or method binding, we need the return type of the functional
