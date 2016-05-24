@@ -105,7 +105,12 @@ public class SystemTest extends TestCase {
   public void testGetEnv() {
     Map<String, String> variables = System.getenv();
     assertNotNull(variables);
-    assertFalse(variables.keySet().isEmpty());
+    if (onMac()) {
+      assertFalse(variables.keySet().isEmpty());
+    } else {
+      // iOS doesn't support environ or _NSGetEnviron().
+      assertTrue(variables.keySet().isEmpty());
+    }
 
     // Verify an immutable map was returned.
     try {
@@ -126,5 +131,9 @@ public class SystemTest extends TestCase {
     for (String key : NOT_EMPTY_PROPERTIES) {
       assertTrue("empty key returned: " + key, System.getProperty(key).length() > 0);
     }
+  }
+
+  private static boolean onMac() {
+    return System.getProperty("os.name").equals("Mac OS X");
   }
 }
