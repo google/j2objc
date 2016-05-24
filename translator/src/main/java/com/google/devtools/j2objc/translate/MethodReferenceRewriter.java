@@ -18,19 +18,26 @@ import com.google.devtools.j2objc.ast.ArrayCreation;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
 import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.Expression;
+import com.google.devtools.j2objc.ast.ExpressionMethodReference;
 import com.google.devtools.j2objc.ast.LambdaExpression;
+import com.google.devtools.j2objc.ast.MethodInvocation;
+import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.SimpleName;
+import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
+import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
-import com.google.devtools.j2objc.util.NameTable;
+import com.google.devtools.j2objc.util.BindingUtil;
 
+import org.eclipse.jdt.core.dom.IBinding;
 import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -44,7 +51,6 @@ public class MethodReferenceRewriter extends TreeVisitor {
   public void endVisit(CreationReference node) {
     ITypeBinding exprBinding = node.getTypeBinding();
     ITypeBinding creationType = node.getType().getTypeBinding();
-    IMethodBinding functionalInterface = exprBinding.getFunctionalInterfaceMethod();
     Expression invocation;
     List<Expression> invocationArguments;
     if (creationType.isArray()) {
@@ -60,20 +66,93 @@ public class MethodReferenceRewriter extends TreeVisitor {
     LambdaExpression lambda = new LambdaExpression(
         "CreationReference:" + node.getLineNumber(), exprBinding);
     lambda.setBody(invocation);
-    addRemainingLambdaParams(
-        Arrays.asList(functionalInterface.getParameterTypes()), invocationArguments, lambda, null);
+    addParamsToInvocation(createParameters(lambda), invocationArguments);
     node.replaceWith(lambda);
   }
 
-  private void addRemainingLambdaParams(
-      Iterable<ITypeBinding> paramTypes, List<Expression> invocationArguments,
-      LambdaExpression lambda, char[] lastVar) {
-    for (ITypeBinding paramType : paramTypes) {
-      lastVar = NameTable.incrementVariable(lastVar);
-      IVariableBinding variableBinding = new GeneratedVariableBinding(
-          new String(lastVar), 0, paramType, false, true, null, null);
-      lambda.getParameters().add(new VariableDeclarationFragment(variableBinding, null));
-      invocationArguments.add(new SimpleName(variableBinding));
+  @Override
+  public void endVisit(ExpressionMethodReference node) {
+    ITypeBinding exprBinding = node.getTypeBinding();
+    IMethodBinding methodBinding = node.getMethodBinding();
+    LambdaExpression lambda = new LambdaExpression(
+        "ExpressionMethodReference:" + node.getLineNumber(), exprBinding);
+    Iterator<IVariableBinding> params = createParameters(lambda);
+    Expression target = TreeUtil.remove(node.getExpression());
+    if (!BindingUtil.isStatic(methodBinding) && target instanceof Name
+        && ((Name) target).getBinding().getKind() == IBinding.TYPE) {
+      // The expression is actually a type name and doesn't evaluate to an invocable object.
+      target = new SimpleName(params.next());
     }
+    MethodInvocation invocation = new MethodInvocation(methodBinding, target);
+    lambda.setBody(invocation);
+    addParamsToInvocation(params, invocation.getArguments());
+    node.replaceWith(lambda);
+  }
+
+  @Override
+  public void endVisit(TypeMethodReference node) {
+    ITypeBinding exprBinding = node.getTypeBinding();
+    IMethodBinding methodBinding = getMethodBinding(node);
+    LambdaExpression lambda = new LambdaExpression(
+        "TypeMethodReference:" + node.getLineNumber(), exprBinding);
+    Iterator<IVariableBinding> params = createParameters(lambda);
+    Expression target = null;
+    if (!BindingUtil.isStatic(methodBinding)) {
+      target = new SimpleName(params.next());
+    }
+    MethodInvocation invocation = new MethodInvocation(methodBinding, target);
+    lambda.setBody(invocation);
+    addParamsToInvocation(params, invocation.getArguments());
+    node.replaceWith(lambda);
+  }
+
+  private IMethodBinding getMethodBinding(TypeMethodReference node) {
+    if (node.getType().getTypeBinding().isArray()) {
+      // JDT does not provide the correct method binding on array types, so we find it from
+      // java.lang.Object.
+      String name = node.getName().getIdentifier();
+      IMethodBinding functionalInterface = node.getTypeBinding().getFunctionalInterfaceMethod();
+      int numParams = functionalInterface.getParameterTypes().length - 1;
+      for (IMethodBinding method : typeEnv.getJavaObject().getDeclaredMethods()) {
+        if (method.getName().equals(name) && method.getParameterTypes().length == numParams) {
+          return method;
+        }
+      }
+      throw new AssertionError("Can't find method finding for method: " + name);
+    }
+    return node.getMethodBinding();
+  }
+
+  private Iterator<IVariableBinding> createParameters(LambdaExpression lambda) {
+    IMethodBinding functionalInterface = lambda.getTypeBinding().getFunctionalInterfaceMethod();
+    ITypeBinding[] paramTypes = functionalInterface.getParameterTypes();
+    List<IVariableBinding> params = new ArrayList<>(paramTypes.length);
+    for (int i = 0; i < paramTypes.length; i++) {
+      GeneratedVariableBinding param = new GeneratedVariableBinding(
+          getParamName(i), 0, paramTypes[i], false, true, null, null);
+      params.add(param);
+      lambda.getParameters().add(new VariableDeclarationFragment(param, null));
+    }
+    return params.iterator();
+  }
+
+  private void addParamsToInvocation(
+      Iterator<IVariableBinding> params, List<Expression> invocationArguments) {
+    while (params.hasNext()) {
+      invocationArguments.add(new SimpleName(params.next()));
+    }
+  }
+
+  private static String getParamName(int i) {
+    StringBuilder sb = new StringBuilder();
+    while (true) {
+      sb.append((char) ('a' + (i % 26)));
+      i = i / 26;
+      if (i == 0) {
+        break;
+      }
+      i--;
+    }
+    return sb.reverse().toString();
   }
 }

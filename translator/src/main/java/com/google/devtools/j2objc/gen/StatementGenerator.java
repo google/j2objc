@@ -560,9 +560,8 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(ExpressionMethodReference node) {
-    assert Options
-        .isJava8Translator() : "ExpressionMethodReference in translator with -source less than 8.";
-    return printMethodReference(node);
+    throw new AssertionError(
+        "ExpressionMethodReference nodes are rewritten by MethodReferenceRewriter.");
   }
 
   @Override
@@ -1353,9 +1352,7 @@ public class StatementGenerator extends TreeVisitor {
 
   @Override
   public boolean visit(TypeMethodReference node) {
-    assert Options
-        .isJava8Translator() : "TypeMethodReference in translator with -source less than 8.";
-    return printMethodReference(node);
+    throw new AssertionError("TypeMethodReference nodes are rewritten by MethodReferenceRewriter.");
   }
 
   @Override

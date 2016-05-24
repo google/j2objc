@@ -65,12 +65,12 @@ public class MethodReferenceTest extends GenerationTest {
     String staticTranslation = translateSourceFile(
         expressionReferenceHeader + "class Test { F fun = Q::o; }",
         "Test", "Test.m");
-    assertTranslatedSegments(staticTranslation, "GetNonCapturingLambda", "@\"Q_oWithId_\"",
+    assertTranslatedSegments(staticTranslation, "GetNonCapturingLambda", "@\"Test$$Lambda$1\"",
         "@selector(fWithId:)", "return Q_oWithId_(a);");
     String instanceTranslation = translateSourceFile(
         expressionReferenceHeader + "class Test { F fun = new Q()::o2; }",
         "Test", "Test.m");
-    assertTranslatedSegments(instanceTranslation, "GetNonCapturingLambda", "@\"Q_o2WithId_\"",
+    assertTranslatedSegments(instanceTranslation, "GetNonCapturingLambda", "@\"Test$$Lambda$1\"",
         "@selector(fWithId:)", "return [create_Q_init() o2WithId:a];");
   }
 
@@ -106,8 +106,8 @@ public class MethodReferenceTest extends GenerationTest {
         + "}";
 
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(impl, "[((id<Collection>) nil_chk(a)) addWithId:a];");
-    assertNotInTranslation(impl, "return [((id<Collection>) nil_chk(a)) addWithId:a];");
+    assertTranslation(impl, "[((id<Collection>) nil_chk(a)) addWithId:b];");
+    assertNotInTranslation(impl, "return [((id<Collection>) nil_chk(a)) addWithId:b];");
   }
 
   public void testReferenceToInstanceMethodOfGenericTypeWithReturnType() throws IOException {
@@ -120,7 +120,7 @@ public class MethodReferenceTest extends GenerationTest {
         + "}";
 
     String impl = translateSourceFile(source, "Test", "Test.m");
-    assertTranslation(impl, "return [((id<Collection>) nil_chk(a)) addWithId:a];");
+    assertTranslation(impl, "return [((id<Collection>) nil_chk(a)) addWithId:b];");
   }
 
   public void testVarArgs() throws IOException {
@@ -132,15 +132,14 @@ public class MethodReferenceTest extends GenerationTest {
         "Test", "Test.m");
     assertTranslatedLines(translation,
         "JreStrongAssign(&self->i_, GetNonCapturingLambda(NULL, @protocol(I), "
-        + "@\"Y_mWithInt_withNSString_withNSString_\", "
-        + "@selector(fooWithInt:withNSString:withNSString:),",
+        + "@\"Test$$Lambda$1\", @selector(fooWithInt:withNSString:withNSString:),",
         "^void(id _self, jint a, NSString * b, NSString * c) {",
         "Y_mWithInt_withNSStringArray_(a, [IOSObjectArray arrayWithObjects:(id[]){ b, c } "
         + "count:2 type:NSString_class_()]);",
-        "}));",
+        "}",
+        "));",
         "JreStrongAssign(&self->i2_, GetNonCapturingLambda(NULL, @protocol(I2), "
-        + "@\"Y_mWithInt_withNSString_withNSString_withNSString_\", "
-        + "@selector(fooWithInt:withNSString:withNSString:withNSString:),",
+        + "@\"Test$$Lambda$2\", @selector(fooWithInt:withNSString:withNSString:withNSString:),",
         "^void(id _self, jint a, NSString * b, NSString * c, NSString * d) {",
         "Y_mWithInt_withNSStringArray_(a, [IOSObjectArray arrayWithObjects:(id[]){ b, c, d } "
         + "count:3 type:NSString_class_()]);");
