@@ -29,6 +29,9 @@ public class TreeVisitorAssertionError extends AssertionError {
 
   private static String constructMessage(AssertionError original, TreeNode node) {
     CompilationUnit unit = TreeUtil.getCompilationUnit(node);
+    if (unit == null) {
+      return original.getMessage();
+    }
     return String.format(
         "%s:%s: %s", unit.getSourceFilePath(), node.getLineNumber(), original.getMessage());
   }
