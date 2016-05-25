@@ -386,6 +386,10 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     @Override
     public boolean apply(VariableDeclarationFragment fragment) {
       IVariableBinding var = fragment.getVariableBinding();
+      if (BindingUtil.isRetainedWithField(var)) {
+        assert !BindingUtil.isPublic(var) : "@RetainedWith fields cannot be public.";
+        return false;
+      }
       return !var.getType().isPrimitive() && !BindingUtil.isSynthetic(var)
           && !BindingUtil.isWeakReference(var);
     }

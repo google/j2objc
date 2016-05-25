@@ -16,6 +16,7 @@ package com.google.devtools.j2objc.util;
 
 import com.google.devtools.j2objc.types.LambdaTypeBinding;
 import com.google.j2objc.annotations.Property;
+import com.google.j2objc.annotations.RetainedWith;
 
 import org.eclipse.jdt.core.dom.IAnnotationBinding;
 import org.eclipse.jdt.core.dom.IBinding;
@@ -69,6 +70,10 @@ public final class BindingUtil {
 
   public static boolean isFinal(IBinding binding) {
     return Modifier.isFinal(binding.getModifiers());
+  }
+
+  public static boolean isPublic(IBinding binding) {
+    return Modifier.isPublic(binding.getModifiers());
   }
 
   public static boolean isPrivate(IBinding binding) {
@@ -566,6 +571,10 @@ public final class BindingUtil {
       return false;
     }
     return parseAttributeString(propertyAnnotation).contains("weak");
+  }
+
+  public static boolean isRetainedWithField(IVariableBinding var) {
+    return hasAnnotation(var, RetainedWith.class);
   }
 
   /**

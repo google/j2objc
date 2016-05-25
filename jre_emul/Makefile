@@ -30,6 +30,7 @@ IOS_PUBLIC_OBJS = \
 	IOSPrimitiveArray.o \
 	IOSReflection.o \
 	J2ObjC_common.o \
+	JreRetainedWith.o \
 	NSCopying+JavaCloneable.o \
 	NSDataInputStream.o \
 	NSDataOutputStream.o \

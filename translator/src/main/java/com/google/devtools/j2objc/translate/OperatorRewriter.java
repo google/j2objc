@@ -20,6 +20,7 @@ import com.google.devtools.j2objc.ast.Assignment;
 import com.google.devtools.j2objc.ast.BooleanLiteral;
 import com.google.devtools.j2objc.ast.CStringLiteral;
 import com.google.devtools.j2objc.ast.CharacterLiteral;
+import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.FieldAccess;
 import com.google.devtools.j2objc.ast.FunctionInvocation;
@@ -30,11 +31,14 @@ import com.google.devtools.j2objc.ast.QualifiedName;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.StringLiteral;
 import com.google.devtools.j2objc.ast.SuperFieldAccess;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeNode;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.FunctionBinding;
+import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 import com.google.devtools.j2objc.util.NameTable;
 import com.google.devtools.j2objc.util.TranslationUtil;
@@ -159,9 +163,9 @@ public class OperatorRewriter extends TreeVisitor {
     }
   }
 
-  private String getAssignmentFunctionName(Assignment node) {
-    IVariableBinding var = TreeUtil.getVariableBinding(node.getLeftHandSide());
-    if (var == null || !var.isField() || var.isEnumConstant()) {
+  private String getAssignmentFunctionName(
+      Assignment node, IVariableBinding var, boolean isRetainedWith) {
+    if (!var.isField() || var.isEnumConstant()) {
       return null;
     }
     ITypeBinding type = var.getType();
@@ -169,6 +173,9 @@ public class OperatorRewriter extends TreeVisitor {
     boolean isStrong = !isPrimitive && !BindingUtil.isWeakReference(var);
     boolean isVolatile = BindingUtil.isVolatile(var);
 
+    if (isRetainedWith) {
+      return isVolatile ? "JreVolatileRetainedWithAssign" : "JreRetainedWithAssign";
+    }
     if (isStrong) {
       String funcName = null;
       if (isVolatile) {
@@ -192,19 +199,52 @@ public class OperatorRewriter extends TreeVisitor {
     return null;
   }
 
+  // Counter to create unique local variables for the RetainedWith target.
+  private int rwCount = 0;
+
+  // Gets the target object for a call to the RetainedWith wrapper.
+  private Expression getRetainedWithTarget(Assignment node, IVariableBinding var) {
+    Expression lhs = node.getLeftHandSide();
+    if (!(lhs instanceof FieldAccess)) {
+      return new ThisExpression(var.getDeclaringClass());
+    }
+    // To avoid duplicating the target expression we must save the result to a local variable.
+    FieldAccess fieldAccess = (FieldAccess) lhs;
+    Expression target = fieldAccess.getExpression();
+    GeneratedVariableBinding targetVar = new GeneratedVariableBinding(
+        "__rw$" + rwCount++, 0, target.getTypeBinding(), false, false, null, null);
+    TreeUtil.asStatementList(TreeUtil.getOwningStatement(lhs))
+        .add(0, new VariableDeclarationStatement(targetVar, null));
+    fieldAccess.setExpression(new SimpleName(targetVar));
+    CommaExpression commaExpr = new CommaExpression(
+        new Assignment(new SimpleName(targetVar), target));
+    node.replaceWith(commaExpr);
+    commaExpr.getExpressions().add(node);
+    return new SimpleName(targetVar);
+  }
+
   private void rewriteRegularAssignment(Assignment node) {
-    String funcName = getAssignmentFunctionName(node);
+    IVariableBinding var = TreeUtil.getVariableBinding(node.getLeftHandSide());
+    if (var == null) {
+      return;
+    }
+    boolean isRetainedWith = BindingUtil.isRetainedWithField(var);
+    String funcName = getAssignmentFunctionName(node, var, isRetainedWith);
     if (funcName == null) {
       return;
     }
     ITypeBinding type = node.getTypeBinding();
-    ITypeBinding idType = typeEnv.resolveIOSType("id");
+    ITypeBinding idType = typeEnv.getIdType();
     ITypeBinding declaredType = type.isPrimitive() ? type : idType;
     Expression lhs = node.getLeftHandSide();
     FunctionBinding binding = new FunctionBinding(funcName, declaredType, null);
-    binding.addParameters(typeEnv.getPointerType(idType), idType);
     FunctionInvocation invocation = new FunctionInvocation(binding, type);
     List<Expression> args = invocation.getArguments();
+    if (isRetainedWith) {
+      binding.addParameter(idType);
+      args.add(getRetainedWithTarget(node, var));
+    }
+    binding.addParameters(typeEnv.getPointerType(idType), idType);
     args.add(new PrefixExpression(
         typeEnv.getPointerType(lhs.getTypeBinding()), PrefixExpression.Operator.ADDRESS_OF,
         TreeUtil.remove(lhs)));

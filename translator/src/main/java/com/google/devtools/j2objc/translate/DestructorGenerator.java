@@ -30,6 +30,7 @@ import com.google.devtools.j2objc.ast.PrefixExpression;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.TypeDeclaration;
@@ -113,29 +114,45 @@ public class DestructorGenerator extends TreeVisitor {
   private List<Statement> createReleaseStatements(AbstractTypeDeclaration node) {
     List<Statement> statements = Lists.newArrayList();
     for (VariableDeclarationFragment fragment : TreeUtil.getAllFields(node)) {
-      IVariableBinding var = fragment.getVariableBinding();
-      ITypeBinding type = var.getType();
-      if (BindingUtil.isStatic(var) || type.isPrimitive() || BindingUtil.isWeakReference(var)
-          || (Options.useARC() && !BindingUtil.isVolatile(var))) {
-        continue;
+      Statement releaseStmt = createRelease(fragment.getVariableBinding());
+      if (releaseStmt != null) {
+        statements.add(releaseStmt);
       }
-      statements.add(createRelease(var));
     }
     return statements;
   }
 
   private Statement createRelease(IVariableBinding var) {
-    ITypeBinding voidType = typeEnv.resolveJavaType("void");
-    ITypeBinding idType = typeEnv.resolveIOSType("id");
+    ITypeBinding varType = var.getType();
+    if (BindingUtil.isStatic(var) || varType.isPrimitive() || BindingUtil.isWeakReference(var)) {
+      return null;
+    }
     boolean isVolatile = BindingUtil.isVolatile(var);
-    FunctionBinding binding = new FunctionBinding(
-        isVolatile ? "JreReleaseVolatile" : "RELEASE_", voidType, null);
-    binding.addParameter(isVolatile ? typeEnv.getPointerType(idType) : idType);
+    boolean isRetainedWith = BindingUtil.isRetainedWithField(var);
+    String funcName = null;
+    if (isRetainedWith) {
+      funcName = isVolatile ? "JreVolatileRetainedWithRelease" : "JreRetainedWithRelease";
+    } else if (isVolatile) {
+      funcName = "JreReleaseVolatile";
+    } else if (Options.useReferenceCounting()) {
+      funcName = "RELEASE_";
+    }
+    if (funcName == null) {
+      return null;
+    }
+    ITypeBinding voidType = typeEnv.resolveJavaType("void");
+    ITypeBinding idType = typeEnv.getIdType();
+    FunctionBinding binding = new FunctionBinding(funcName, voidType, null);
     FunctionInvocation releaseInvocation = new FunctionInvocation(binding, voidType);
+    if (isRetainedWith) {
+      binding.addParameter(idType);
+      releaseInvocation.getArguments().add(new ThisExpression(var.getDeclaringClass()));
+    }
+    binding.addParameter(isVolatile ? typeEnv.getPointerType(idType) : idType);
     Expression arg = new SimpleName(var);
     if (isVolatile) {
       arg = new PrefixExpression(
-          typeEnv.getPointerType(var.getType()), PrefixExpression.Operator.ADDRESS_OF, arg);
+          typeEnv.getPointerType(varType), PrefixExpression.Operator.ADDRESS_OF, arg);
     }
     releaseInvocation.getArguments().add(arg);
     return new ExpressionStatement(releaseInvocation);

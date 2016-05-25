@@ -152,4 +152,25 @@ public class OperatorRewriterTest extends GenerationTest {
         + "String str = \"foo\"; str += \"bar\" + x; } }", "Test", "Test.m");
     assertTranslation(translation, "JreStrAppend(&str, \"$I\", @\"bar\", x);");
   }
+
+  public void testRetainedWithAnnotation() throws IOException {
+    String translation = translateSourceFile(
+        "import com.google.j2objc.annotations.RetainedWith;"
+        + "class Test { @RetainedWith Object rwo; @RetainedWith volatile Object rwvo;"
+        + "Test getTest() { return new Test(); }"
+        + "void test() { rwo = new Object(); rwvo = new Object(); }"
+        + "void test2() { getTest().rwo = new Object(); } }", "Test", "Test.m");
+    assertTranslation(translation, "JreRetainedWithAssign(self, &rwo_, create_NSObject_init());");
+    assertTranslation(translation,
+        "JreVolatileRetainedWithAssign(self, &rwvo_, create_NSObject_init());");
+    assertTranslatedLines(translation,
+        // The getTest() call must be extracted so that it can be passed as the parent ref without
+        // duplicating the expression.
+        "t *__rw$0;",
+        "(__rw$0 = nil_chk([self getTest]), "
+          + "JreRetainedWithAssign(__rw$0, &__rw$0->rwo_, create_NSObject_init()));");
+    // Test the dealloc calls too.
+    assertTranslation(translation, "JreRetainedWithRelease(self, rwo_);");
+    assertTranslation(translation, "JreVolatileRetainedWithRelease(self, &rwvo_);");
+  }
 }

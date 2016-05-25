@@ -82,6 +82,11 @@ void JreCloneVolatile(volatile_id *pVar, volatile_id *pOther);
 void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther);
 void JreReleaseVolatile(volatile_id *pVar);
 
+id JreRetainedWithAssign(id parent, __strong id *pIvar, id value);
+id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value);
+void JreRetainedWithRelease(id parent, id child);
+void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar);
+
 NSString *JreStrcat(const char *types, ...);
 
 #if defined(J2OBJC_COUNT_NIL_CHK) && !defined(J2OBJC_DISABLE_NIL_CHECKS)

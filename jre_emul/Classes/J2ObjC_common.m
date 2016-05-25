@@ -20,6 +20,7 @@
 
 #import "FastPointerLookup.h"
 #import "IOSClass.h"
+#import "JreRetainedWith.h"
 #import "java/lang/AbstractStringBuilder.h"
 #import "java/lang/AssertionError.h"
 #import "java/lang/ClassCastException.h"
@@ -180,6 +181,46 @@ void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther) {
   VOLATILE_LOCK(lock);
   *(id *)pVar = [*(id *)pOther retain];
   VOLATILE_UNLOCK(lock);
+}
+
+id JreRetainedWithAssign(id parent, __strong id *pIvar, id value) {
+  if (*pIvar) {
+    @throw create_JavaLangAssertionError_initWithId_(@"@RetainedWith field cannot be reassigned");
+  }
+  // This retain makes sure that the child object has a retain count of at
+  // least 2 which is required by JreRetainedWithInitialize.
+  [value retain];
+  JreRetainedWithInitialize(parent, value);
+  return *pIvar = value;
+}
+
+id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value) {
+  // This retain makes sure that the child object has a retain count of at
+  // least 2 which is required by JreRetainedWithInitialize.
+  [value retain];
+  JreRetainedWithInitialize(parent, value);
+  volatile_lock_t *lock = VOLATILE_GETLOCK(pIvar);
+  VOLATILE_LOCK(lock);
+  id oldValue = *(id *)pIvar;
+  *(id *)pIvar = value;
+  VOLATILE_UNLOCK(lock);
+  if (oldValue) {
+    @throw create_JavaLangAssertionError_initWithId_(@"@RetainedWith field cannot be reassigned");
+  }
+  return value;
+}
+
+void JreRetainedWithRelease(id parent, id value) {
+  JreRetainedWithHandleDealloc(parent, value);
+  [value release];
+}
+
+void JreVolatileRetainedWithRelease(id parent, volatile_id *pVar) {
+  JreRetainedWithHandleDealloc(parent, *(id *)pVar);
+  // This is only called from a dealloc method, so we can assume there are no
+  // concurrent threads with access to this address. Therefore, synchronization
+  // is unnecessary.
+  [*(id *)pVar release];
 }
 
 // Block flag position for copy dispose, (1 << 25).
