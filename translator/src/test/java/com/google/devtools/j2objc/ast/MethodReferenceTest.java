@@ -244,4 +244,13 @@ public class MethodReferenceTest extends GenerationTest {
         "GetCapturingLambda(NULL, @protocol(I)",
         "^void(id _self) {", "Test_TestSub_super$_foo(this$0_, @selector(foo));", "}");
   }
+
+  public void testMultipleMethodReferencesNilChecks() throws IOException {
+    String translation = translateSourceFile(
+        "interface Foo { void f(Test t); }"
+        + "class Test { void foo() {} void test() {"
+        + " Foo f1 = Test::foo; Foo f2 = Test::foo; } }", "Test", "Test.m");
+    // Both lambdas must perform a nil_chk on their local variable "a".
+    assertOccurrences(translation, "nil_chk(a)", 2);
+  }
 }

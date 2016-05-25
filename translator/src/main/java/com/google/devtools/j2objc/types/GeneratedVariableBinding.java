@@ -163,51 +163,6 @@ public class GeneratedVariableBinding extends AbstractBinding implements IVariab
   }
 
   @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((declaringClass == null) ? 0 : declaringClass.hashCode());
-    result = prime * result + ((declaringMethod == null)
-        ? 0 : declaringMethod.getName().hashCode());
-    result = prime * result + (isParameter ? 1231 : 1237);
-    result = prime * result + modifiers;
-    result = prime * result + ((name == null) ? 0 : name.hashCode());
-    return prime * result + ((type == null) ? 0 : type.hashCode());
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (!(obj instanceof GeneratedVariableBinding)) {
-      return false;
-    }
-    GeneratedVariableBinding other = (GeneratedVariableBinding) obj;
-    if (!name.equals(other.name)
-        || modifiers != other.modifiers
-        || isParameter != other.isParameter
-        || !type.equals(other.type)) {
-      return false;
-    }
-    if (declaringClass == null) {
-      if (other.declaringClass != null) {
-        return false;
-      }
-    } else if (!declaringClass.equals(other.declaringClass)) {
-      return false;
-    }
-    if (declaringMethod == null) {
-      if (other.declaringMethod != null) {
-        return false;
-      }
-    } else if (!declaringMethod.toString().equals(other.declaringMethod.toString())) {
-      return false;
-    }
-    return true;
-  }
-
-  @Override
   public String toString() {
     StringBuffer sb = new StringBuffer();
     ASTNode.printModifiers(modifiers, sb);
