@@ -40,6 +40,7 @@
 #import "java/util/Comparator.h"
 #import "java/util/Formatter.h"
 #import "java/util/Locale.h"
+#import "java/util/regex/Matcher.h"
 #import "java/util/regex/Pattern.h"
 #import "java/util/regex/PatternSyntaxException.h"
 #import "java_lang_IntegralToString.h"
@@ -459,24 +460,15 @@ destinationBegin:(int)destinationBegin {
 
 - (NSString *)replaceAll:(NSString *)regex
          withReplacement:(NSString *)replacement {
-  return
-      [self stringByReplacingOccurrencesOfString:regex
-                                      withString:replacement
-                                         options:NSRegularExpressionSearch
-                                           range:NSMakeRange(0, [self length])];
+  return [[JavaUtilRegexPattern_compileWithNSString_(regex) matcherWithJavaLangCharSequence:self]
+      replaceAllWithNSString:replacement];
 }
 
 
 - (NSString *)replaceFirst:(NSString *)regex
            withReplacement:(NSString *)replacement {
-  NSRange range = [self rangeOfString:regex options:NSRegularExpressionSearch];
-  if (range.location == NSNotFound) {
-    return self;
-  }
-  return [self stringByReplacingOccurrencesOfString:regex
-                                         withString:replacement
-                                            options:NSRegularExpressionSearch
-                                              range:range];
+  return [[JavaUtilRegexPattern_compileWithNSString_(regex) matcherWithJavaLangCharSequence:self]
+      replaceFirstWithNSString:replacement];
 }
 
 
