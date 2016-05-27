@@ -185,7 +185,8 @@ void JreCloneVolatileStrong(volatile_id *pVar, volatile_id *pOther) {
 
 id JreRetainedWithAssign(id parent, __strong id *pIvar, id value) {
   if (*pIvar) {
-    @throw create_JavaLangAssertionError_initWithId_(@"@RetainedWith field cannot be reassigned");
+    JreRetainedWithCheckPreviousValue(parent, *pIvar);
+    [*pIvar autorelease];
   }
   // This retain makes sure that the child object has a retain count of at
   // least 2 which is required by JreRetainedWithInitialize.
@@ -205,7 +206,8 @@ id JreVolatileRetainedWithAssign(id parent, volatile_id *pIvar, id value) {
   *(id *)pIvar = value;
   VOLATILE_UNLOCK(lock);
   if (oldValue) {
-    @throw create_JavaLangAssertionError_initWithId_(@"@RetainedWith field cannot be reassigned");
+    JreRetainedWithCheckPreviousValue(parent, oldValue);
+    [oldValue autorelease];
   }
   return value;
 }

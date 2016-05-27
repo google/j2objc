@@ -41,14 +41,17 @@
     @throw AUTORELEASE([[JavaLangCloneNotSupportedException alloc] init]);
   }
 
-  // Deliberately not calling "init" on the cloned object. To match Java's
-  // behavior we simply copy the data. However we must additionally retain all
-  // fields with object type.
-  Class cls = [self class];
+  // Use the Java getClass method because it returns the class we want in case
+  // self's class hass been swizzled by a WeakReference or RetainedWith field.
+  Class cls = [self getClass].objcClass;
   size_t instanceSize = class_getInstanceSize(cls);
   // We don't want to copy the NSObject portion of the object, in particular the
   // isa pointer, because it may contain the retain count.
   size_t nsObjectSize = class_getInstanceSize([NSObject class]);
+
+  // Deliberately not calling "init" on the cloned object. To match Java's
+  // behavior we simply copy the data. However we must additionally retain all
+  // fields with object type.
   id clone = AUTORELEASE([cls alloc]);
   memcpy((char *)clone + nsObjectSize, (char *)self + nsObjectSize, instanceSize - nsObjectSize);
 

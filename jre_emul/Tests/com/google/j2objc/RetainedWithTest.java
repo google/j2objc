@@ -45,14 +45,30 @@ public class RetainedWithTest extends TestCase {
     }
   }
 
-  static class A extends Base {
+  static class A extends Base implements Cloneable {
     @RetainedWith B b = new B(this);
+
+    public A clone() {
+      try {
+        return (A) super.clone();
+      } catch (CloneNotSupportedException e) {
+        throw new AssertionError(e);
+      }
+    }
   }
 
-  static class B extends Base {
+  static class B extends Base implements Cloneable {
     A a;
     B(A a) {
       this.a = a;
+    }
+
+    public B clone() {
+      try {
+        return (B) super.clone();
+      } catch (CloneNotSupportedException e) {
+        throw new AssertionError(e);
+      }
     }
   }
 
@@ -91,6 +107,46 @@ public class RetainedWithTest extends TestCase {
   public void testSymmetricObjectPairIsDeallocated() {
     List<Integer> objectCodes = new ArrayList<Integer>();
     newSymmetric(objectCodes);
+    for (Integer i : objectCodes) {
+      assertTrue(finalizedObjects.contains(i));
+    }
+  }
+
+  @AutoreleasePool
+  private void newAPlusClone(List<Integer> objectCodes) {
+    A a = new A();
+    A a2 = a.clone();
+    assertSame(a.b, a2.b);
+    // We allow this reassignment of a2.b because the child's return reference points at "a" not
+    // "a2". It is important to support setting the child reference to null after cloning the
+    // parent.
+    a2.b = null;
+    objectCodes.add(System.identityHashCode(a));
+    objectCodes.add(System.identityHashCode(a2));
+    objectCodes.add(System.identityHashCode(a.b));
+  }
+
+  public void testCloneParentObject() {
+    List<Integer> objectCodes = new ArrayList<Integer>();
+    newAPlusClone(objectCodes);
+    for (Integer i : objectCodes) {
+      assertTrue(finalizedObjects.contains(i));
+    }
+  }
+
+  @AutoreleasePool
+  private void newAPlusCloneChild(List<Integer> objectCodes) {
+    A a = new A();
+    B b = a.b.clone();
+    assertSame(a, b.a);
+    objectCodes.add(System.identityHashCode(a));
+    objectCodes.add(System.identityHashCode(a.b));
+    objectCodes.add(System.identityHashCode(b));
+  }
+
+  public void testCloneChildObject() {
+    List<Integer> objectCodes = new ArrayList<Integer>();
+    newAPlusCloneChild(objectCodes);
     for (Integer i : objectCodes) {
       assertTrue(finalizedObjects.contains(i));
     }

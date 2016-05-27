@@ -19,6 +19,7 @@
 
 #include "FastPointerLookup.h"
 #include "J2ObjC_source.h"
+#include "java/lang/AssertionError.h"
 
 // Associate the return reference so that it can be artificially weakened when
 // the child's retain count is 1.
@@ -139,5 +140,15 @@ void JreRetainedWithInitialize(id parent, id value) {
       [parent release];
     }
     ApplyRetainedWithSubclass(parent, value);
+  }
+}
+
+// Throws AssertionError if it is unsafe to reassign from the given value.
+// Normally any reassignment is unsafe, however if the parent has been cloned
+// then it will not form a cycle with it's initial @RetainedWith child.
+void JreRetainedWithCheckPreviousValue(id parent, id value) {
+  id returnRef = objc_getAssociatedObject(value, &returnRefKey);
+  if (returnRef == parent) {
+    @throw create_JavaLangAssertionError_initWithId_(@"@RetainedWith field cannot be reassigned");
   }
 }
