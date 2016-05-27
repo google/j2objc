@@ -17,7 +17,6 @@
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/beans/src/test/support/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/concurrent/src/test/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/logging/src/test/java"/>
-	<classpathentry kind="src" path="apache_harmony/classlib/modules/luni-kernel/src/main/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/luni/src/test/api/common"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/math/src/main/java"/>
 	<classpathentry kind="src" path="apache_harmony/classlib/modules/math/src/test/java"/>
@@ -32,8 +31,8 @@
 	<classpathentry kind="src" path="android/platform/external/okhttp/okio/okio/src/test/java"/>
 	<classpathentry kind="src" path="android/platform/libcore/luni/src/test/java"/>
 	<classpathentry kind="src" path="android/platform/libcore/ojluni/src/main/java"/>
+	<classpathentry kind="src" path="android/platform/libcore/ojluni/src/objc/java"/>
 	<classpathentry kind="src" path="android/platform/libcore/support/src/test/java"/>
-	<classpathentry kind="src" path="java"/>
 	<classpathentry kind="lib" path="build_result/jre_emul.jar" sourcepath="build_result/jre_emul-src.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="../dist/lib/j2objc_junit.jar"/>
