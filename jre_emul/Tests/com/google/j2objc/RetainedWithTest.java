@@ -20,9 +20,18 @@ import com.google.j2objc.annotations.RetainedWith;
 import junit.framework.TestCase;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Tests the {@link RetainedWith} annotation.
@@ -150,5 +159,112 @@ public class RetainedWithTest extends TestCase {
     for (Integer i : objectCodes) {
       assertTrue(finalizedObjects.contains(i));
     }
+  }
+
+  abstract class MapFactory {
+
+    final Object key;
+
+    MapFactory(Object key) {
+      this.key = key;
+    }
+
+    public abstract Map newMap();
+
+    public Object getKey() {
+      return key;
+    }
+  }
+
+  // We use this class as a value to insert in our maps so we can verity that the map has been
+  // deallocated.
+  static class ValueType {
+    protected void finalize() {
+      finalizedObjects.add(System.identityHashCode(this));
+    }
+  }
+
+  enum Color { RED, GREEN, BLUE }
+
+  Set keys;
+  Collection values;
+  Set<Map.Entry> entrySet;
+
+  @AutoreleasePool
+  private void createMapChildren(MapFactory factory, List<Integer> objectCodes) {
+    // Use separate maps for each of the views to ensure that each view type is strengthening its
+    // reference to the map.
+    Map m1 = factory.newMap();
+    Map m2 = factory.newMap();
+    Map m3 = factory.newMap();
+    ValueType v = new ValueType();
+    m1.put(factory.getKey(), v);
+    m2.put(factory.getKey(), v);
+    m3.put(factory.getKey(), v);
+    keys = m1.keySet();
+    values = m2.values();
+    entrySet = m3.entrySet();
+    objectCodes.add(System.identityHashCode(v));
+  }
+
+  @AutoreleasePool
+  private void checkMapChildren(MapFactory factory, List<Integer> objectCodes) {
+    createMapChildren(factory, objectCodes);
+    // Call some methods to make sure they still exist and can access the parent
+    assertEquals(1, keys.size());
+    assertEquals(1, values.size());
+    assertEquals(1, entrySet.size());
+    assertTrue(keys.contains(factory.getKey()));
+    assertFalse(values.contains(new Object()));
+    assertEquals(factory.getKey(), entrySet.iterator().next().getKey());
+    keys = null;
+    values = null;
+    entrySet = null;
+  }
+
+  public void runMapTest(MapFactory factory) {
+    List<Integer> objectCodes = new ArrayList<Integer>();
+    checkMapChildren(factory, objectCodes);
+    for (Integer i : objectCodes) {
+      assertTrue(finalizedObjects.contains(i));
+    }
+  }
+
+  public void testMapChildren() {
+    runMapTest(new MapFactory(new Object()) {
+      public Map newMap() {
+        return new IdentityHashMap();
+      }
+    });
+    runMapTest(new MapFactory(new Object()) {
+      public Map newMap() {
+        return new WeakHashMap();
+      }
+    });
+    runMapTest(new MapFactory(Color.RED) {
+      public Map newMap() {
+        return new EnumMap(Color.class);
+      }
+    });
+    runMapTest(new MapFactory(new Object()) {
+      public Map newMap() {
+        return new HashMap();
+      }
+    });
+    runMapTest(new MapFactory(5) {
+      public Map newMap() {
+        return new TreeMap();
+      }
+    });
+    runMapTest(new MapFactory(new Object()) {
+      public Map newMap() {
+        return new Hashtable();
+      }
+    });
+    runMapTest(new MapFactory(new Object()) {
+      public Map newMap() {
+        return new ConcurrentHashMap();
+      }
+    });
   }
 }

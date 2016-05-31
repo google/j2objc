@@ -34,4 +34,25 @@ FOUNDATION_EXPORT void JreRetainedWithCheckPreviousValue(id parent, id value);
 // Called during dealloc of the parent and before releasing the child.
 FOUNDATION_EXPORT void JreRetainedWithHandleDealloc(id parent, id child);
 
+// Internal only macro that hacks the @RetainedWith behavior to a child class
+// without needing to use class swizzling or associated objects. Must be
+// combined with @Weak or @WeakOuter on the parent reference.
+#define RETAINED_WITH_CHILD(PARENT_REF) \
+  - (id)retain { \
+    @synchronized (self) { \
+      if ([self retainCount] == 1) { \
+        [PARENT_REF retain]; \
+      } \
+      return [super retain]; \
+    } \
+  } \
+  - (oneway void)release { \
+    @synchronized (self) { \
+      if ([self retainCount] == 2) { \
+        [PARENT_REF autorelease]; \
+      } \
+      [super release]; \
+    } \
+  }
+
 #endif // JRE_RETAINED_WITH_H_

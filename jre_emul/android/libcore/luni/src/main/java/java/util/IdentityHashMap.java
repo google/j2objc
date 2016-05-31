@@ -24,6 +24,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+/*-[
+#include "JreRetainedWith.h"
+]-*/
+
 /**
  * IdentityHashMap is a variant on HashMap which tests equality by reference
  * instead of equality by value. Basically, keys and values are compared for
@@ -650,6 +654,8 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
                         }
                     }, IdentityHashMap.this);
         }
+
+        /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
     }
 
     /**
@@ -717,6 +723,8 @@ public class IdentityHashMap<K, V> extends AbstractMap<K, V> implements
             }
             return false;
         }
+
+        /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
     }
 
     /**

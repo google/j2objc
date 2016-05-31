@@ -12,6 +12,7 @@ FIELD java.net.NetworkInterface.children
 FIELD java.util.HashSet.backingMap
 FIELD java.util.TreeSet.backingMap
 
+FIELD java.util.concurrent.ConcurrentHashMap.CollectionView.map
 FIELD java.util.concurrent.ConcurrentSkipListSet.m
 FIELD java.util.concurrent.ForkJoinWorkerThread.pool
 FIELD java.util.concurrent.Phaser.QNode.phaser

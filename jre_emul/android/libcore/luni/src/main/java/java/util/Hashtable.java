@@ -26,6 +26,10 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamField;
 import java.io.Serializable;
 
+/*-[
+#include "JreRetainedWith.h"
+]-*/
+
 /**
  * Hashtable is a synchronized implementation of {@link Map}. All optional operations are supported.
  *
@@ -961,6 +965,8 @@ public class Hashtable<K, V> extends Dictionary<K, V>
                 return super.toArray(a);
             }
         }
+
+        /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
     }
 
     @WeakOuter
@@ -997,6 +1003,8 @@ public class Hashtable<K, V> extends Dictionary<K, V>
                 return super.toArray(a);
             }
         }
+
+        /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
     }
 
     @WeakOuter
@@ -1060,6 +1068,8 @@ public class Hashtable<K, V> extends Dictionary<K, V>
                 return super.toArray(a);
             }
         }
+
+        /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
     }
 
     private static final long serialVersionUID = 1421746759512286392L;

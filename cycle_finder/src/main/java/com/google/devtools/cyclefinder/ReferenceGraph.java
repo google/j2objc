@@ -90,7 +90,8 @@ public class ReferenceGraph {
             && !Modifier.isStatic(field.getModifiers())
             // Exclude self-referential fields. (likely linked DS or delegate pattern)
             && !type.isAssignmentCompatible(fieldType)
-            && !BindingUtil.isWeakReference(field)) {
+            && !BindingUtil.isWeakReference(field)
+            && !BindingUtil.isRetainedWithField(field)) {
           addEdge(Edge.newFieldEdge(type, field));
         }
       }

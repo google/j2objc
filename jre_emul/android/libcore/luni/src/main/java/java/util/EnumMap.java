@@ -24,6 +24,10 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.lang.reflect.Array;
 
+/*-[
+#include "JreRetainedWith.h"
+]-*/
+
 /**
  * An {@code Map} specialized for use with {@code Enum} types as keys.
  */
@@ -223,6 +227,8 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         public int size() {
             return enumMap.size();
         }
+
+        /*-[ RETAINED_WITH_CHILD(enumMap_) ]-*/
     }
 
     private static class EnumMapValueCollection<KT extends Enum<KT>, VT>
@@ -279,6 +285,8 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
         public int size() {
             return enumMap.size();
         }
+
+        /*-[ RETAINED_WITH_CHILD(enumMap_) ]-*/
     }
 
     private static class EnumMapEntryIterator<E, KT extends Enum<KT>, VT>
@@ -382,6 +390,8 @@ public class EnumMap<K extends Enum<K>, V> extends AbstractMap<K, V> implements
             }
             return entryArray;
         }
+
+        /*-[ RETAINED_WITH_CHILD(enumMap_) ]-*/
     }
 
     /**

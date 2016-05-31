@@ -29,6 +29,10 @@ import static java.util.TreeMap.Bound.*;
 import static java.util.TreeMap.Relation.*;
 import libcore.util.Objects;
 
+/*-[
+#include "JreRetainedWith.h"
+]-*/
+
 /**
  * A map whose entries are sorted by their keys. All optional operations such as
  * {@link #put} and {@link #remove} are supported.
@@ -973,6 +977,8 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
           SetEndpoints(this$0_, state);
           return EnumerateEntries(this$0_, state, stackbuf, len, 0, YES);
         }
+
+        RETAINED_WITH_CHILD(this$0_)
         ]-*/
     }
 
@@ -1091,6 +1097,8 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
           SetEndpoints(this$0_, state);
           return EnumerateEntries(this$0_, state, stackbuf, len, 1, YES);
         }
+
+        RETAINED_WITH_CHILD(this$0_)
         ]-*/
     }
 
@@ -1115,6 +1123,8 @@ public class TreeMap<K, V> extends AbstractMap<K, V>
           SetEndpoints(this$0_, state);
           return EnumerateEntries(this$0_, state, stackbuf, len, 2, YES);
         }
+
+        RETAINED_WITH_CHILD(this$0_)
         ]-*/
     }
 

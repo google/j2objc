@@ -6,7 +6,7 @@
 
 package java.util.concurrent;
 
-import com.google.j2objc.annotations.Weak;
+import com.google.j2objc.annotations.RetainedWith;
 
 import java.io.ObjectStreamField;
 import java.io.Serializable;
@@ -648,9 +648,9 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K, V>
     private transient volatile CounterCell[] counterCells;
 
     // views
-    private transient KeySetView<K,V> keySet;
-    private transient ValuesView<K,V> values;
-    private transient EntrySetView<K,V> entrySet;
+    @RetainedWith private transient KeySetView<K,V> keySet;
+    @RetainedWith private transient ValuesView<K,V> values;
+    @RetainedWith private transient EntrySetView<K,V> entrySet;
 
 
     /* ---------------- Public operations -------------- */
@@ -2779,7 +2779,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K, V>
     abstract static class CollectionView<K,V,E>
         implements Collection<E>, java.io.Serializable {
         private static final long serialVersionUID = 7249069246763182397L;
-        @Weak final ConcurrentHashMap<K,V> map;
+        final ConcurrentHashMap<K,V> map;
         CollectionView(ConcurrentHashMap<K,V> map)  { this.map = map; }
 
         /**

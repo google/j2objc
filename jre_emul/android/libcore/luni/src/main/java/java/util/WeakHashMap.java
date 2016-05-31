@@ -22,6 +22,10 @@ import com.google.j2objc.annotations.WeakOuter;
 import java.lang.ref.ReferenceQueue;
 import java.lang.ref.WeakReference;
 
+/*-[
+#include "JreRetainedWith.h"
+]-*/
+
 /**
  * WeakHashMap is an implementation of Map with keys which are WeakReferences. A
  * key/value mapping is removed when the key is no longer referenced. All
@@ -392,6 +396,8 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
                 }
             });
         }
+
+        /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
     }
 
     /**
@@ -447,6 +453,8 @@ public class WeakHashMap<K, V> extends AbstractMap<K, V> implements Map<K, V> {
                 }
             });
         }
+
+        /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
     };
 
     /**

@@ -73,6 +73,14 @@ public class CycleFinderTest extends TestCase {
     assertNoCycles();
   }
 
+  public void testRetainedWithField() throws Exception {
+    addSourceFile("A.java",
+        "import com.google.j2objc.annotations.RetainedWith; class A { @RetainedWith B b; }");
+    addSourceFile("B.java", "class B { A a; }");
+    findCycles();
+    assertNoCycles();
+  }
+
   public void testRecursiveWildcard() throws Exception {
     addSourceFile("A.java", "class A<T> { A<? extends T> a; }");
     addSourceFile("B.java", "class B<T> { B<? extends B<T>> b; }");

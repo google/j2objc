@@ -27,6 +27,10 @@ import java.io.ObjectStreamField;
 import java.io.Serializable;
 import libcore.util.Objects;
 
+/*-[
+#include "JreRetainedWith.h"
+]-*/
+
 /**
  * HashMap is an implementation of {@link Map}. All optional operations are supported.
  *
@@ -949,6 +953,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
           }
           return objCount;
         }
+
+        RETAINED_WITH_CHILD(this$0_)
         ]-*/
     }
 
@@ -981,6 +987,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
           }
           return objCount;
         }
+
+        RETAINED_WITH_CHILD(this$0_)
         ]-*/
     }
 
@@ -1017,6 +1025,8 @@ public class HashMap<K, V> extends AbstractMap<K, V> implements Cloneable, Seria
                                             count:(NSUInteger)len {
           return [this$0_ enumerateEntriesWithState:state objects:stackbuf count:len];
         }
+
+        RETAINED_WITH_CHILD(this$0_)
         ]-*/
     }
 

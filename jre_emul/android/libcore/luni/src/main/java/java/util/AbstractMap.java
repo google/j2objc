@@ -21,6 +21,10 @@ import com.google.j2objc.annotations.WeakOuter;
 
 import java.io.Serializable;
 
+/*-[
+#include "JreRetainedWith.h"
+]-*/
+
 /**
  * A base class for {@code Map} implementations.
  *
@@ -359,6 +363,8 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
                         }
                     };
                 }
+
+                /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
             }
             keySet = new AbstractMapKeySet();
         }
@@ -496,6 +502,8 @@ public abstract class AbstractMap<K, V> implements Map<K, V> {
                         }
                     };
                 }
+
+                /*-[ RETAINED_WITH_CHILD(this$0_) ]-*/
             }
             valuesCollection = new AbstractMapValuesCollection();
         }
