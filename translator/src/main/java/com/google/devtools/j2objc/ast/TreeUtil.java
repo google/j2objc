@@ -272,6 +272,18 @@ public class TreeUtil {
         return null;
     }
   }
+  
+  public static ITypeBinding getEnclosingTypeBinding(TreeNode node) {
+    TypeDeclaration enclosingType = TreeUtil.getNearestAncestorWithType(TypeDeclaration.class,
+        node);
+    return enclosingType == null ? null : enclosingType.getTypeBinding();
+  }
+  
+  public static IMethodBinding getEnclosingMethodBinding(TreeNode node) {
+    MethodDeclaration enclosingMethod = TreeUtil.getNearestAncestorWithType(
+        MethodDeclaration.class, node);
+    return enclosingMethod == null ? null : enclosingMethod.getMethodBinding();
+  }
 
   /**
    * Gets the fully qualified name of the main type in this compilation unit.

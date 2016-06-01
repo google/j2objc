@@ -16,6 +16,8 @@ package com.google.devtools.j2objc.ast;
 
 import com.google.common.base.Preconditions;
 
+import java.lang.reflect.Modifier;
+
 /**
  * Node type for an initializer block.
  */
@@ -31,6 +33,13 @@ public class Initializer extends BodyDeclaration {
   public Initializer(Initializer other) {
     super(other);
     body.copyFrom(other.getBody());
+  }
+
+  public Initializer(Block syntheticBlock, boolean isStatic) {
+    body.set(syntheticBlock);
+    if (isStatic) {
+      addModifiers(Modifier.STATIC);
+    }
   }
 
   @Override

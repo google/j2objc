@@ -70,8 +70,15 @@ public class MethodReferenceTest extends GenerationTest {
     String instanceTranslation = translateSourceFile(
         expressionReferenceHeader + "class Test { F fun = new Q()::o2; }",
         "Test", "Test.m");
-    assertTranslatedSegments(instanceTranslation, "GetNonCapturingLambda", "@\"Test$$Lambda$1\"",
-        "@selector(fWithId:)", "return [create_Q_init() o2WithId:a];");
+    assertTranslatedSegments(instanceTranslation, "GetCapturingLambda", "@\"Test$$Lambda$1\"",
+        "@selector(fWithId:)", "return [__emt$0 o2WithId:a];");
+    assertNotInTranslation(instanceTranslation, "return [create_Q_init() o2WithId:a];");
+    String staticInstanceTranslation = translateSourceFile(
+        expressionReferenceHeader + "class Test { static F fun = new Q()::o2; }",
+        "Test", "Test.m");
+    assertTranslatedSegments(staticInstanceTranslation, "+ (void)initialize {",
+        "self == [Test class])", "Q *__emt$0;", "J2OBJC_SET_INITIALIZED(Test)");
+    assertNotInTranslation(staticInstanceTranslation, "return [create_Q_init() o2WithId:a];");
   }
 
   public void testTypeReference() throws IOException {
@@ -252,5 +259,15 @@ public class MethodReferenceTest extends GenerationTest {
         + " Foo f1 = Test::foo; Foo f2 = Test::foo; } }", "Test", "Test.m");
     // Both lambdas must perform a nil_chk on their local variable "a".
     assertOccurrences(translation, "nil_chk(a)", 2);
+  }
+
+  public void testCapturingExpressionMethodReferences() throws IOException {
+    String translation = translateSourceFile(
+        "interface Supplier { int get(); }"
+        + "class Holder { private int num; public Holder(int i) {num = i;} int get() {return num;}}"
+        + "class Test { public void run() { Holder h = new Holder(1); Supplier s = h::get; } }",
+        "Test", "Test.m");
+    assertTranslation(translation, "GetCapturingLambda");
+    assertNotInTranslation(translation, "GetNonCapturingLambda");
   }
 }

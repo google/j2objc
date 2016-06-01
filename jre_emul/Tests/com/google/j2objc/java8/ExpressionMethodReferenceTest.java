@@ -176,4 +176,24 @@ public class ExpressionMethodReferenceTest extends TestCase {
     Fun2 f2 = this::size2;
     assertEquals(43, f2.apply());
   }
+
+  static class DataHolder {
+    private int innerNum;
+    public DataHolder(int i) {
+      innerNum = i;
+    }
+    int getData() {
+      return innerNum;
+    }
+  }
+
+  public void testCapturingExpressionMethodReferences() {
+    DataHolder data = new DataHolder(3);
+    Lambdas.Zero fun = data::getData;
+    assertEquals(3, fun.apply());
+    data = new DataHolder(6);
+    assertEquals(3, fun.apply());
+    fun = data::getData;
+    assertEquals(6, fun.apply());
+  }
 }

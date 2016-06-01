@@ -15,21 +15,29 @@
 package com.google.devtools.j2objc.translate;
 
 import com.google.devtools.j2objc.ast.ArrayCreation;
+import com.google.devtools.j2objc.ast.Assignment;
+import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.ClassInstanceCreation;
+import com.google.devtools.j2objc.ast.CommaExpression;
 import com.google.devtools.j2objc.ast.CreationReference;
 import com.google.devtools.j2objc.ast.Expression;
 import com.google.devtools.j2objc.ast.ExpressionMethodReference;
+import com.google.devtools.j2objc.ast.ExpressionStatement;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
+import com.google.devtools.j2objc.ast.Initializer;
 import com.google.devtools.j2objc.ast.LambdaExpression;
 import com.google.devtools.j2objc.ast.MethodInvocation;
 import com.google.devtools.j2objc.ast.Name;
 import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.SuperMethodInvocation;
 import com.google.devtools.j2objc.ast.SuperMethodReference;
+import com.google.devtools.j2objc.ast.ThisExpression;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
 import com.google.devtools.j2objc.ast.Type;
 import com.google.devtools.j2objc.ast.TypeMethodReference;
 import com.google.devtools.j2objc.ast.VariableDeclarationFragment;
+import com.google.devtools.j2objc.ast.VariableDeclarationStatement;
 import com.google.devtools.j2objc.types.GeneratedVariableBinding;
 import com.google.devtools.j2objc.util.BindingUtil;
 
@@ -38,6 +46,7 @@ import org.eclipse.jdt.core.dom.IMethodBinding;
 import org.eclipse.jdt.core.dom.ITypeBinding;
 import org.eclipse.jdt.core.dom.IVariableBinding;
 
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -72,6 +81,8 @@ public class MethodReferenceRewriter extends TreeVisitor {
     node.replaceWith(lambda);
   }
 
+  private int emtCount = 0;
+
   @Override
   public void endVisit(ExpressionMethodReference node) {
     ITypeBinding exprBinding = node.getTypeBinding();
@@ -80,15 +91,80 @@ public class MethodReferenceRewriter extends TreeVisitor {
         "ExpressionMethodReference:" + node.getLineNumber(), exprBinding);
     Iterator<IVariableBinding> params = createParameters(lambda);
     Expression target = TreeUtil.remove(node.getExpression());
+
+    // There are a couple of cases to deal with here. We need to make sure
+    // that we don't bring the target of the method into the lambda if that
+    // target has side effects, as those side effects should only happen at
+    // the location of the original method reference, not every time the lambda
+    // is run. To do this, we check to see if the expression is a Name or ThisExpression
+    // in which case we just pull it into the lambda. If not, we make a temporary
+    // variable for the result of evaluating the target, then evaluate the target and
+    // assign the result to a temporary in a CommaExpression that also contains the
+    // lambda. By doing it this way, the side effects should happen only right before
+    // lambda creation, fitting with expected behavior of the original method reference.
+
+    // This is slightly more complicated in the case where the lambda is part of the
+    // initializer of a field in a class (class T { F f = new Q::q; }). In this case
+    // we pull the creation of the temporary and lambda initialization out into an
+    // initializer block for that class and make it static if the member is static.
+    Expression callExpression = null;
+
     if (!BindingUtil.isStatic(methodBinding) && target instanceof Name
         && ((Name) target).getBinding().getKind() == IBinding.TYPE) {
       // The expression is actually a type name and doesn't evaluate to an invocable object.
       target = new SimpleName(params.next());
+      callExpression = lambda;
+    } else if (isFinalExpression(target)) {
+      callExpression = lambda;
+    } else {
+      // We check to see if the method reference is in a class member
+      // initialization. If it is we create a new Initializer and block to
+      // put the temporary in.
+      FieldDeclaration fieldDeclaration = TreeUtil.getNearestAncestorWithType(
+          FieldDeclaration.class, node);
+      // this is a class member declaration, we have to put everything into an
+      // Initializer instead
+      if (fieldDeclaration != null) {
+        extractFieldInitializers(fieldDeclaration);
+      }
+      GeneratedVariableBinding variableBinding = new GeneratedVariableBinding(
+          "__emt$" + emtCount++, 0, target.getTypeBinding(), false, false,
+          TreeUtil.getEnclosingTypeBinding(node), TreeUtil.getEnclosingMethodBinding(node));
+      VariableDeclarationStatement variableDeclaration = new VariableDeclarationStatement(
+          variableBinding, null);
+      TreeUtil.asStatementList(TreeUtil.getOwningStatement(node)).add(0, variableDeclaration);
+      Assignment assignment = new Assignment(new SimpleName(variableBinding), target);
+      target = new SimpleName(variableBinding);
+      callExpression = new CommaExpression(assignment, lambda);
     }
+
     MethodInvocation invocation = new MethodInvocation(methodBinding, target);
     lambda.setBody(invocation);
     addParamsToInvocation(params, invocation.getArguments());
-    node.replaceWith(lambda);
+    node.replaceWith(callExpression);
+  }
+  
+  private void extractFieldInitializers(FieldDeclaration decl) {
+    Initializer init = new Initializer(new Block(),
+        Modifier.isStatic(decl.getModifiers()));
+    TreeUtil.asDeclarationSublist(decl).add(init);
+    for (VariableDeclarationFragment memberDeclaration : decl.getFragments()) {
+      IVariableBinding memberVar = memberDeclaration.getVariableBinding();
+      Assignment assignment = new Assignment(new SimpleName(memberVar),
+          TreeUtil.remove(memberDeclaration.getInitializer()));
+      init.getBody().getStatements().add(new ExpressionStatement(assignment));
+    }
+  }
+  
+  private boolean isFinalExpression(Expression expr) {
+    if (expr instanceof ThisExpression) {
+      return true;
+    }
+    if (expr instanceof Name && ((Name) expr).getBinding().getKind() == IBinding.TYPE) {
+      return true;
+    }
+    IVariableBinding var = TreeUtil.getVariableBinding(expr);
+    return var != null && BindingUtil.isFinal(var);
   }
 
   @Override
