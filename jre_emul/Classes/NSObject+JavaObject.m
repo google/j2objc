@@ -184,10 +184,9 @@ static void doWait(id obj, long long timeout) {
     { "waitWithLong:withInt:", "wait", "V", 0x11, "Ljava.lang.InterruptedException;", NULL },
     { "wait", NULL, "V", 0x11, "Ljava.lang.InterruptedException;", NULL },
   };
-  static const J2ObjcClassInfo _JavaLangObject = {
-    2, "Object", "java.lang", NULL, 0x1, 12, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL
-  };
-  return &_JavaLangObject;
+  static const J2ObjcClassInfo _NSObject = {
+    2, "Object", "java.lang", NULL, 0x1, 12, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL };
+  return &_NSObject;
 }
 
 // Unimplemented private methods for java.lang.ref.Reference. The methods'

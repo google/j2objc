@@ -99,20 +99,19 @@ void JavaLangReflectAccessibleObject_init(JavaLangReflectAccessibleObject *self)
   static const J2ObjcMethodInfo methods[] = {
     { "isAccessible", NULL, "Z", 0x1, NULL, NULL },
     { "setAccessibleWithBoolean:", "setAccessible", "V", 0x1, NULL, NULL },
-    { "setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:",
-      "setAccessible", "V", 0x9, NULL, NULL },
+    { "setAccessibleWithJavaLangReflectAccessibleObjectArray:withBoolean:", "setAccessible", "V",
+      0x9, NULL, NULL },
     { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL,
       "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" },
     { "isAnnotationPresentWithIOSClass:", "isAnnotationPresent", "Z", 0x1, NULL,
       "(Ljava/lang/Class<+Ljava/lang/annotation/Annotation;>;)Z" },
     { "getAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL, NULL },
     { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL, NULL },
-    { "init", NULL, NULL, 0x1, NULL, NULL },
+    { "init", "AccessibleObject", NULL, 0x1, NULL, NULL },
   };
   static const J2ObjcClassInfo _JavaLangReflectAccessibleObject = {
-    2, "AccessibleObject", "java.lang.reflect", NULL, 0x1, 8, methods, 0, NULL, 0, NULL,
-    0, NULL, NULL, NULL
-  };
+    2, "AccessibleObject", "java.lang.reflect", NULL, 0x1, 8, methods, 0, NULL, 0, NULL, 0, NULL,
+    NULL, NULL };
   return &_JavaLangReflectAccessibleObject;
 }
 

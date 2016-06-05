@@ -24,7 +24,10 @@
 #include "java/util/Arrays.h"
 #include "libcore/util/EmptyArray.h"
 
-#define INITIAL_CAPACITY 16
+// Full name as expected by generated metadata.
+#define JavaLangAbstractStringBuilder_INITIAL_CAPACITY 16
+// Shorter alias for convenience.
+#define INITIAL_CAPACITY JavaLangAbstractStringBuilder_INITIAL_CAPACITY
 
 static void JreStringBuilder_move(JreStringBuilder *self, jint size, jint index);
 
@@ -676,8 +679,8 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     { "insert0WithInt:withCharArray:withInt:withInt:", "insert0", "V", 0x10, NULL, NULL },
     { "insert0WithInt:withChar:", "insert0", "V", 0x10, NULL, NULL },
     { "insert0WithInt:withNSString:", "insert0", "V", 0x10, NULL, NULL },
-    { "insert0WithInt:withJavaLangCharSequence:withInt:withInt:", "insert0", "V", 0x10, NULL,
-      NULL },
+    { "insert0WithInt:withJavaLangCharSequence:withInt:withInt:", "insert0", "V", 0x10, NULL, NULL
+    },
     { "length", NULL, "I", 0x1, NULL, NULL },
     { "replace0WithInt:withInt:withNSString:", "replace0", "V", 0x10, NULL, NULL },
     { "reverse0", NULL, "V", 0x10, NULL, NULL },
@@ -699,13 +702,12 @@ jint JavaLangCharacter_offsetByCodePointsRaw(
     { "offsetByCodePointsWithInt:withInt:", "offsetByCodePoints", "I", 0x1, NULL, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "INITIAL_CAPACITY", "INITIAL_CAPACITY", 0x18, "I", NULL, NULL,
-      .constantValue.asInt = INITIAL_CAPACITY },
+    { "INITIAL_CAPACITY", NULL, 0x18, "I", NULL, NULL,
+      .constantValue.asInt = JavaLangAbstractStringBuilder_INITIAL_CAPACITY },
   };
   static const J2ObjcClassInfo _JavaLangAbstractStringBuilder = {
-    2, "AbstractStringBuilder", "java.lang", NULL, 0x400, 42, methods, 1, fields, 0, NULL, 0,
-    NULL, NULL, NULL
-  };
+    2, "AbstractStringBuilder", "java.lang", NULL, 0x400, 42, methods, 1, fields, 0, NULL, 0, NULL,
+    NULL, NULL };
   return &_JavaLangAbstractStringBuilder;
 }
 

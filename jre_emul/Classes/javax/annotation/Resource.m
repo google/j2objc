@@ -94,24 +94,16 @@ static void JavaxAnnotationResource_AuthenticationType_initWithNSString_withInt_
   static const J2ObjcMethodInfo methods[] = {
     { "authenticationType", "authenticationType", "Ljavax.annotation.Resource$AuthenticationType;",
       0x401, NULL, NULL },
-    { "authenticationTypeDefault", "authenticationType",
-      "Ljavax.annotation.Resource$AuthenticationType;", 0x100a, NULL, NULL },
     { "description", "description", "Ljava.lang.String;", 0x401, NULL, NULL },
-    { "descriptionDefault", "description", "Ljava.lang.String;", 0x100a, NULL, NULL },
     { "mappedName", "mappedName", "Ljava.lang.String;", 0x401, NULL, NULL },
-    { "mappedNameDefault", "mappedName", "Ljava.lang.String;", 0x100a, NULL, NULL },
     { "name", "name", "Ljava.lang.String;", 0x401, NULL, NULL },
-    { "nameDefault", "name", "Ljava.lang.String;", 0x100a, NULL, NULL },
     { "shareable", "shareable", "Z", 0x401, NULL, NULL },
-    { "shareableDefault", "shareable", "Z", 0x100a, NULL, NULL },
     { "type", "type", "Ljava.lang.Class;", 0x401, NULL, NULL },
-    { "typeDefault", "type", "Ljava.lang.Class;", 0x100a, NULL, NULL },
   };
   static const char *inner_classes[] = {"Ljavax.annotation.Resource$AuthenticationType;"};
   static const J2ObjcClassInfo _JavaxAnnotationResource = {
-    2, "Resource", "javax.annotation", NULL, 0x2609, 12, methods, 0, NULL, 0, NULL,
-    1, inner_classes, NULL, NULL
-  };
+    2, "Resource", "javax.annotation", NULL, 0x2609, 6, methods, 0, NULL, 0, NULL, 1, inner_classes,
+    NULL, NULL };
   return &_JavaxAnnotationResource;
 }
 
@@ -157,10 +149,10 @@ JavaxAnnotationResource_AuthenticationType *JavaxAnnotationResource_Authenticati
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcFieldInfo fields[] = {
-    { "APPLICATION", "APPLICATION", 0x4019, "Ljavax.annotation.Resource$AuthenticationType;",
+    { "APPLICATION", NULL, 0x4019, "Ljavax.annotation.Resource$AuthenticationType;",
       &JreEnum(JavaxAnnotationResource_AuthenticationType, APPLICATION), NULL,
       .constantValue.asLong = 0 },
-    { "CONTAINER", "CONTAINER", 0x4019, "Ljavax.annotation.Resource$AuthenticationType;",
+    { "CONTAINER", NULL, 0x4019, "Ljavax.annotation.Resource$AuthenticationType;",
       &JreEnum(JavaxAnnotationResource_AuthenticationType, CONTAINER), NULL,
       .constantValue.asLong = 0 },
   };

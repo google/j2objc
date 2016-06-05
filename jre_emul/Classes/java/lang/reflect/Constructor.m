@@ -166,13 +166,12 @@
     { "toGenericString", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
     { "isBridge", NULL, "Z", 0x1, NULL, NULL },
     { "isVarArgs", NULL, "Z", 0x1, NULL, NULL },
-    { "init", NULL, NULL, 0x1, NULL, NULL },
+    { "init", "Constructor", NULL, 0x1, NULL, NULL },
   };
   static const J2ObjcClassInfo _JavaLangReflectConstructor = {
     2, "Constructor", "java.lang.reflect", NULL, 0x1, 17, methods, 0, NULL, 0, NULL, 0, NULL, NULL,
     "<T:Ljava/lang/Object;>Ljava/lang/reflect/AccessibleObject;"
-    "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;"
-  };
+    "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;" };
   return &_JavaLangReflectConstructor;
 }
 

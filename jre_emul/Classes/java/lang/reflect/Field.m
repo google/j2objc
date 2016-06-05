@@ -414,7 +414,7 @@ static void SetWithRawValue(
     { "isSynthetic", NULL, "Z", 0x1, NULL, NULL },
     { "isEnumConstant", NULL, "Z", 0x1, NULL, NULL },
     { "toGenericString", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
-    { "init", NULL, NULL, 0x1, NULL, NULL },
+    { "init", "Field", NULL, 0x1, NULL, NULL },
   };
   static const J2ObjcClassInfo _JavaLangReflectField = {
     2, "Field", "java.lang.reflect", NULL, 0x1, 29, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL

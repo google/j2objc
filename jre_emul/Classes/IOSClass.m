@@ -1450,8 +1450,8 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     { "getConstructors", NULL, "[Ljava.lang.reflect.Constructor;", 0x1,
       "Ljava.lang.SecurityException;", NULL },
     { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL, NULL },
-    { "getDeclaredClasses", NULL, "[Ljava.lang.Class;", 0x1, "Ljava.lang.SecurityException;",
-      NULL },
+    { "getDeclaredClasses", NULL, "[Ljava.lang.Class;", 0x1, "Ljava.lang.SecurityException;", NULL
+    },
     { "getDeclaredConstructor:", "getDeclaredConstructor", "Ljava.lang.reflect.Constructor;", 0x81,
       "Ljava.lang.NoSuchMethodException;Ljava.lang.SecurityException;",
       "([Ljava/lang/Class<*>;)Ljava/lang/reflect/Constructor<TT;>;" },
@@ -1459,8 +1459,8 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
       "Ljava.lang.SecurityException;", NULL },
     { "getDeclaredField:", "getDeclaredField", "Ljava.lang.reflect.Field;", 0x1,
       "Ljava.lang.NoSuchFieldException;Ljava.lang.SecurityException;", NULL },
-    { "getDeclaredFields", NULL, "[Ljava.lang.reflect.Field;", 0x1,
-      "Ljava.lang.SecurityException;", NULL },
+    { "getDeclaredFields", NULL, "[Ljava.lang.reflect.Field;", 0x1, "Ljava.lang.SecurityException;",
+      NULL },
     { "getDeclaredMethod:parameterTypes:", "getDeclaredMethod", "Ljava.lang.reflect.Method;", 0x81,
       "Ljava.lang.NoSuchMethodException;Ljava.lang.SecurityException;", NULL },
     { "getDeclaredMethods", NULL, "[Ljava.lang.reflect.Method;", 0x1,
@@ -1471,16 +1471,18 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
       "()Ljava/lang/reflect/Constructor<*>;" },
     { "getEnclosingMethod", NULL, "Ljava.lang.reflect.Method;", 0x1, NULL, NULL },
     { "getEnumConstants", NULL, "[Ljava.lang.Object;", 0x1, NULL, NULL },
+    { "getEnumConstantsShared", NULL, "[Ljava.lang.Object;", 0x0, NULL, NULL },
     { "getField:", "getField", "Ljava.lang.reflect.Field;", 0x1,
       "Ljava.lang.NoSuchFieldException;Ljava.lang.SecurityException;", NULL },
-    { "getFields", NULL, "[Ljava.lang.reflect.Field;", 0x1, "Ljava.lang.SecurityException;", NULL },
+    { "getFields", NULL, "[Ljava.lang.reflect.Field;", 0x1, "Ljava.lang.SecurityException;", NULL
+    },
     { "getGenericInterfaces", NULL, "[Ljava.lang.reflect.Type;", 0x1, NULL, NULL },
     { "getGenericSuperclass", NULL, "Ljava.lang.reflect.Type;", 0x1, NULL, NULL },
     { "getInterfaces", NULL, "[Ljava.lang.Class;", 0x1, NULL, NULL },
     { "getMethod:parameterTypes:", "getMethod", "Ljava.lang.reflect.Method;", 0x81,
       "Ljava.lang.NoSuchMethodException;Ljava.lang.SecurityException;", NULL },
-    { "getMethods", NULL, "[Ljava.lang.reflect.Method;", 0x1, "Ljava.lang.SecurityException;",
-      NULL },
+    { "getMethods", NULL, "[Ljava.lang.reflect.Method;", 0x1, "Ljava.lang.SecurityException;", NULL
+    },
     { "getModifiers", NULL, "I", 0x1, NULL, NULL },
     { "getName", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
     { "getPackage", NULL, "Ljava.lang.Package;", 0x1, NULL, NULL },
@@ -1507,14 +1509,23 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     { "newInstance", NULL, "TT;", 0x1,
       "Ljava.lang.InstantiationException;Ljava.lang.IllegalAccessException;", "()TT;" },
     { "description", "toString", "Ljava.lang.String;", 0x1, NULL, NULL },
-    { "init", NULL, NULL, 0x1, NULL, NULL },
+    { "getDeclaredAnnotationsByTypeWithIOSClass:", "getDeclaredAnnotationsByType",
+      "[Ljava.lang.annotation.Annotation;", 0x1, NULL,
+      "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)[TT;" },
+    { "getAnnotationsByTypeWithIOSClass:", "getAnnotationsByType",
+      "[Ljava.lang.annotation.Annotation;", 0x1, NULL,
+      "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)[TT;" },
+    { "getDeclaredAnnotationWithIOSClass:", "getDeclaredAnnotation", "TT;", 0x1, NULL,
+      "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" },
+    { "getAccessFlags", NULL, "I", 0x1, NULL, NULL },
+    { "init", "Class", NULL, 0x1, NULL, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "serialVersionUID", "serialVersionUID", 0x1a, "J", NULL, NULL,
+    { "serialVersionUID", NULL, 0x1a, "J", NULL, NULL,
       .constantValue.asLong = IOSClass_serialVersionUID },
   };
   static const J2ObjcClassInfo _IOSClass = {
-    2, "Class", "java.lang", NULL, 0x11, 58, methods, 1, fields, 0, NULL, 0, NULL, NULL,
+    2, "Class", "java.lang", NULL, 0x11, 63, methods, 1, fields, 0, NULL, 0, NULL, NULL,
     "<T:Ljava/lang/Object;>Ljava/lang/Object;Ljava/lang/reflect/AnnotatedElement;"
     "Ljava/lang/reflect/GenericDeclaration;Ljava/io/Serializable;Ljava/lang/reflect/Type;" };
   return &_IOSClass;

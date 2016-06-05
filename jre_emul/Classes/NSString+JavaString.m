@@ -996,8 +996,8 @@ jint javaStringHashCode(NSString *string) {
     { "length", NULL, "I", 0x1, NULL, NULL },
     { "matches:", "matches", "Z", 0x1, NULL, NULL },
     { "offsetByCodePoints:codePointOffset:", "offsetByCodePoints", "I", 0x1, NULL, NULL },
-    { "regionMatches:thisOffset:aString:otherOffset:count:", "regionMatches", "Z", 0x1, NULL,
-      NULL },
+    { "regionMatches:thisOffset:aString:otherOffset:count:", "regionMatches", "Z", 0x1, NULL, NULL
+    },
     { "regionMatches:aString:otherOffset:count:", "regionMatches", "Z", 0x1, NULL, NULL },
     { "replace:withChar:", "replace", "Ljava.lang.String;", 0x1, NULL, NULL },
     { "replace:withSequence:", "replace", "Ljava.lang.String;", 0x1, NULL, NULL },
@@ -1020,20 +1020,19 @@ jint javaStringHashCode(NSString *string) {
     { "contentEqualsStringBuffer:", "contentEquals", "Z", 0x1, NULL, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "CASE_INSENSITIVE_ORDER", "CASE_INSENSITIVE_ORDER", 0x19, "Ljava.util.Comparator;",
+    { "CASE_INSENSITIVE_ORDER", NULL, 0x19, "Ljava.util.Comparator;",
       &NSString_CASE_INSENSITIVE_ORDER, "Ljava/util/Comparator<Ljava/lang/String;>;",
       .constantValue.asLong = 0 },
-    { "serialVersionUID", "serialVersionUID", 0x1a, "J", NULL, NULL,
+    { "serialVersionUID", NULL, 0x1a, "J", NULL, NULL,
       .constantValue.asLong = NSString_serialVersionUID },
-    { "serialPersistentFields", "serialPersistentFields", 0x1a, "[Ljava.io.ObjectStreamField;",
+    { "serialPersistentFields", NULL, 0x1a, "[Ljava.io.ObjectStreamField;",
       &NSString_serialPersistentFields, NULL, .constantValue.asLong = 0 },
   };
   static const char *inner_classes[] = {"Ljava.lang.String$CaseInsensitiveComparator;"};
   static const J2ObjcClassInfo _NSString = {
     2, "String", "java.lang", NULL, 0x1, 78, methods, 3, fields, 0, NULL, 1, inner_classes, NULL,
-    "Ljava/lang/Object;Ljava/lang/CharSequence;"
-    "Ljava/lang/Comparable<Ljava/lang/String;>;Ljava/io/Serializable;"
-  };
+    "Ljava/lang/Object;Ljava/lang/CharSequence;Ljava/lang/Comparable<Ljava/lang/String;>;"
+    "Ljava/io/Serializable;" };
   return &_NSString;
 }
 

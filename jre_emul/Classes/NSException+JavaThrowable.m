@@ -413,8 +413,8 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
     { "initWithNSString:", "Throwable", NULL, 0x1, NULL, NULL },
     { "initWithNSString:withNSException:", "Throwable", NULL, 0x1, NULL, NULL },
     { "initWithNSException:", "Throwable", NULL, 0x1, NULL, NULL },
-    { "initWithNSString:withNSException:withBoolean:withBoolean:", "Throwable", NULL, 0x4,
-        NULL, NULL },
+    { "initWithNSString:withNSException:withBoolean:withBoolean:", "Throwable", NULL, 0x4, NULL,
+      NULL },
     { "fillInStackTrace", NULL, "Ljava.lang.Throwable;", 0x1, NULL, NULL },
     { "getCause", NULL, "Ljava.lang.Throwable;", 0x1, NULL, NULL },
     { "getLocalizedMessage", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
@@ -433,14 +433,14 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
     { "detailMessage_", NULL, 0x2, "Ljava.lang.String;", NULL, NULL, .constantValue.asLong = 0 },
     { "cause_", NULL, 0x2, "Ljava.lang.Throwable;", NULL, NULL, .constantValue.asLong = 0 },
     { "stackTrace_", NULL, 0x2, "[Ljava.lang.StackTraceElement;", NULL, NULL,
-        .constantValue.asLong = 0 },
+      .constantValue.asLong = 0 },
     { "suppressedExceptions_", NULL, 0x2, "Ljava.util.List;", NULL,
-        "Ljava/util/List<Ljava/lang/Throwable;>;", .constantValue.asLong = 0 },
-    { "serialVersionUID", "serialVersionUID", 0x1a, "J", NULL, NULL,
-        .constantValue.asLong = NSException_serialVersionUID },
+      "Ljava/util/List<Ljava/lang/Throwable;>;", .constantValue.asLong = 0 },
+    { "serialVersionUID", NULL, 0x1a, "J", NULL, NULL,
+      .constantValue.asLong = NSException_serialVersionUID },
   };
-  static const J2ObjcClassInfo _NSException = { 2, "Throwable", "java.lang", NULL, 0x1,
-      18, methods, 5, fields, 0, NULL, 0, NULL, NULL, NULL };
+  static const J2ObjcClassInfo _NSException = {
+    2, "Throwable", "java.lang", NULL, 0x1, 18, methods, 5, fields, 0, NULL, 0, NULL, NULL, NULL };
   return &_NSException;
 }
 

@@ -21,7 +21,7 @@
 
 #import "J2ObjC_source.h"
 
-#define JavaLangNumber_serialVersionUID -8742448824652078965LL
+#define NSNumber_serialVersionUID -8742448824652078965LL
 
 @implementation NSNumber (JavaNumber)
 
@@ -36,8 +36,8 @@
     { "shortValue", NULL, "S", 0x1, NULL, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "serialVersionUID", "serialVersionUID", 0x1a, "J", NULL, NULL,
-      .constantValue.asLong = JavaLangNumber_serialVersionUID },
+    { "serialVersionUID", NULL, 0x1a, "J", NULL, NULL,
+      .constantValue.asLong = NSNumber_serialVersionUID },
   };
   static const J2ObjcClassInfo _NSNumber = {
     2, "Number", "java.lang", NULL, 0x401, 7, methods, 1, fields, 0, NULL, 0, NULL, NULL, NULL };
