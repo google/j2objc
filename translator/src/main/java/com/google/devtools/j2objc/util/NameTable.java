@@ -870,7 +870,7 @@ public class NameTable {
         return getFullName(interfaces[0]);
       }
     }
-    return getPrefix(binding.getPackage()) + binding.getName();
+    return getPrefix(binding.getPackage()) + getTypeSubName(binding);
   }
 
   private static String getTypeSubName(ITypeBinding binding) {
@@ -885,7 +885,7 @@ public class NameTable {
       }
       return binaryName.substring(innerClassIndex);
     }
-    return binding.getName();
+    return binding.getName().replace('$', '_');
   }
 
   private static boolean isReservedName(String name) {
