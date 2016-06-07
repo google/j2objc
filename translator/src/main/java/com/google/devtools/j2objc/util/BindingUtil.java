@@ -513,6 +513,18 @@ public final class BindingUtil {
   }
 
   /**
+   * Like hasNamedAnnotation, but for TypeAnnotations.
+   */
+  public static boolean hasNamedTypeAnnotation(ITypeBinding binding, String annotationName) {
+    for (IAnnotationBinding annotation : binding.getTypeAnnotations()) {
+      if (annotation.getName().equals(annotationName)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
    * Return true if a binding has a named "Nullable" annotation. Package names aren't
    * checked because different nullable annotations are defined by several different
    * Java frameworks.
@@ -558,7 +570,34 @@ public final class BindingUtil {
     return null;
   }
 
+  /**
+   * Checks to see if this is an anonymous class annotated with @WeakOuter.
+   * Because this is an anonymous class, we can't annotate its declaration
+   * so we annotate the instantiation instead: (i.e. new @WeakOuter Interface() { ... },
+   * or new @WeakOuter SomeClass() { ... }).
+   * In order to detect if a particular anonymous class is annotated in this way, we
+   * check the type annotations of the interface it implements and its superclass.
+   */
+  public static boolean isWeakOuterAnonymousClass(ITypeBinding type) {
+    ITypeBinding[] interfaces = type.getInterfaces();
+    if (interfaces.length > 0) {
+      if (hasNamedTypeAnnotation(interfaces[0], "WeakOuter")) {
+        return true;
+      }
+    }
+    ITypeBinding superclass = type.getSuperclass();
+    if (superclass != null) {
+      if (hasNamedTypeAnnotation(superclass, "WeakOuter")) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   public static boolean isWeakReference(IVariableBinding var) {
+    if (var.getName().startsWith("this$") && isWeakOuterAnonymousClass(var.getDeclaringClass())) {
+      return true;
+    }
     return hasNamedAnnotation(var, "Weak")
         || hasWeakPropertyAttribute(var)
         || var.getName().startsWith("this$")

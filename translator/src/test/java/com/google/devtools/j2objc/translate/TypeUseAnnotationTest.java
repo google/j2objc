@@ -46,4 +46,56 @@ public class TypeUseAnnotationTest extends GenerationTest {
     assertNotInTranslation(translation, "java/lang/String.h");
     assertNotInTranslation(translation, "JavaLangString");
   }
+
+  // TODO(user): Use com.google.j2objc.annotations.WeakOuter when transitioned to Java 8
+  String testWeakOuterSetup = "import java.lang.annotation.*;\n"
+      + "@Target(ElementType.TYPE_USE) @interface WeakOuter {}"
+      + "interface Simple { public int run(); }"
+      + "class SimpleClass { public int run() {return 1;}; }"
+      + "abstract class SimpleAbstractClass { public int run(){return 2;}; }"
+      + "class Test { int member = 7; Object o;";
+
+  public void testWeakOuterInterface() throws IOException {
+    Options.setSourceVersion(SourceVersion.JAVA_8);
+    createParser();
+    String translationInterfaceWithWeak = translateSourceFile(testWeakOuterSetup
+        + "void f() { o = new @WeakOuter Simple() { public int run() { return member; } }; } }",
+        "Test", "Test.m");
+    assertTranslation(translationInterfaceWithWeak, "__unsafe_unretained Test *this$0_;");
+
+    String translationInterfaceWithoutWeak = translateSourceFile(testWeakOuterSetup
+        + "void f() { o = new Simple() { public int run() { return member; } }; } }",
+        "Test", "Test.m");
+    assertNotInTranslation(translationInterfaceWithoutWeak, "__unsafe_unretained Test *this$0_;");
+  }
+
+  public void testWeakOuterClass() throws IOException {
+    Options.setSourceVersion(SourceVersion.JAVA_8);
+    createParser();
+    String translationInterfaceWithWeak = translateSourceFile(testWeakOuterSetup
+        + "void f() { o = new @WeakOuter SimpleClass() {"
+        + "public int run() { return member; } }; } }",
+        "Test", "Test.m");
+    assertTranslation(translationInterfaceWithWeak, "__unsafe_unretained Test *this$0_;");
+
+    String translationInterfaceWithoutWeak = translateSourceFile(testWeakOuterSetup
+        + "void f() { o = new SimpleClass() { public int run() { return member; } }; } }",
+        "Test", "Test.m");
+    assertNotInTranslation(translationInterfaceWithoutWeak, "__unsafe_unretained Test *this$0_;");
+  }
+
+  public void testWeakOuterAbstractClass() throws IOException {
+    Options.setSourceVersion(SourceVersion.JAVA_8);
+    createParser();
+    String translationInterfaceWithWeak = translateSourceFile(testWeakOuterSetup
+        + "void f() { o = new @WeakOuter SimpleAbstractClass() {"
+        + "public int run() { return member; } }; } }",
+        "Test", "Test.m");
+    assertTranslation(translationInterfaceWithWeak, "__unsafe_unretained Test *this$0_;");
+
+    String translationInterfaceWithoutWeak = translateSourceFile(testWeakOuterSetup
+        + "void f() { o = new SimpleAbstractClass() { public int run() { return member; } }; } }",
+        "Test", "Test.m");
+    assertNotInTranslation(translationInterfaceWithoutWeak, "__unsafe_unretained Test *this$0_;");
+  }
 }

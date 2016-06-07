@@ -14,6 +14,7 @@
 
 package com.google.devtools.cyclefinder;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Preconditions;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
@@ -119,6 +120,11 @@ class Options {
 
   public SourceVersion sourceVersion() {
     return sourceVersion;
+  }
+
+  @VisibleForTesting
+  void setSourceVersion(SourceVersion sv) {
+      sourceVersion = sv;
   }
 
   public static void usage(String invalidUseMsg) {
