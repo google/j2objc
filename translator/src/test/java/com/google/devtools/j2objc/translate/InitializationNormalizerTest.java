@@ -170,21 +170,21 @@ public class InitializationNormalizerTest extends GenerationTest {
   }
 
   public void testStringWithInvalidCppCharacters() throws IOException {
-    String source = "class Test { static final String foo = \"\\uffff\"; }";
+    String source = "class Test { static final String foo = \"\\udfff\"; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "NSString *Test_foo;");
     assertTranslation(translation,
         "JreStrongAssign(&Test_foo, [NSString stringWithCharacters:(jchar[]) { "
-        + "(int) 0xffff } length:1]);");
+        + "(int) 0xdfff } length:1]);");
   }
 
   public void testStringConcatWithInvalidCppCharacters() throws IOException {
-    String source = "class Test { static final String foo = \"hello\" + \"\\uffff\"; }";
+    String source = "class Test { static final String foo = \"hello\" + \"\\udfff\"; }";
     String translation = translateSourceFile(source, "Test", "Test.m");
     assertTranslation(translation, "NSString *Test_foo;");
     assertTranslation(translation,
         "JreStrongAssign(&Test_foo, JreStrcat(\"$$\", @\"hello\", "
-        + "[NSString stringWithCharacters:(jchar[]) { (int) 0xffff } length:1]));");
+        + "[NSString stringWithCharacters:(jchar[]) { (int) 0xdfff } length:1]));");
   }
 
   public void testInitializersPlacedAfterOuterAssignments() throws IOException {

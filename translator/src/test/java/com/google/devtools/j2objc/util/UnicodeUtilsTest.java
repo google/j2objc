@@ -48,12 +48,12 @@ public class UnicodeUtilsTest extends GenerationTest {
     PrintStream savedErrStream = System.err;
     try {
       System.setErr(new PrintStream(new ByteArrayOutputStream()));
-      String fragment = "abc\uffff";
+      String fragment = "abc\udfff";
       String escaped = UnicodeUtils.escapeStringLiteral(fragment);
       assertErrorCount(1);
 
       // Verify the unicode is emitted anyways (it's useful as a diagnostic).
-      assertEquals("abc\\uffff", escaped);
+      assertEquals("abc\\udfff", escaped);
     } finally {
       System.setErr(savedErrStream);
     }
@@ -70,7 +70,7 @@ public class UnicodeUtilsTest extends GenerationTest {
     assertTrue(UnicodeUtils.hasValidCppCharacters(fragment));
     fragment = "abcd\n\f\r123";
     assertTrue(UnicodeUtils.hasValidCppCharacters(fragment));
-    fragment = "123\uffff";
+    fragment = "123\udfff";
     assertFalse(UnicodeUtils.hasValidCppCharacters(fragment));
   }
 

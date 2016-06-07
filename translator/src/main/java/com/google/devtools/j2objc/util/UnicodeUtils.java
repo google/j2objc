@@ -137,42 +137,13 @@ public final class UnicodeUtils {
 
   /**
    * Returns true if the specified character can be represented in a C string
-   * or character literal declaration.  Value ranges were determined from the
-   * <a href="http://www.unicode.org/charts/">Unicode 6.0 Character Code
-   * Charts</a>.
-   * <p>
-   * Note: these ranges include code points which Character.isDefined(ch)
-   * returns as false in Java 6.  OpenJDK 7 lists an update to Unicode 6.0
-   * as one of its features, so when Java 7 is widely available this method
-   * can be removed.
+   * or character literal declaration. This invalid character range is from
+   * section the <a
+   * href="http://www.open-std.org/jtc1/sc22/wg14/www/docs/n1124.pdf">C99
+   * specification</a>, section 6.4.3.
    */
   public static boolean isValidCppCharacter(char c) {
-    // This would be more efficiently implemented as a bitmap, but since it's
-    // not used in performance-critical code, this form is easier to inspect.
-    return c < 0xd800 ||
-        c >= 0xf900 && c <= 0xfad9 ||
-        c >= 0xfb50 && c <= 0xfbc1 ||
-        c >= 0xfbd3 && c <= 0xfd3f ||
-        c >= 0xfd5f && c <= 0xfd8f ||
-        c >= 0xfc92 && c <= 0xfdc7 ||
-        c >= 0xfdf0 && c <= 0xfdfd ||
-        c >= 0xfe10 && c <= 0xfe19 ||
-        c >= 0xfe20 && c <= 0xfe26 ||
-        c >= 0xfe30 && c <= 0xfe4f ||
-        c >= 0xfe50 && c <= 0xfe52 ||
-        c >= 0xfe54 && c <= 0xfe66 ||
-        c >= 0xfe68 && c <= 0xfe6b ||
-        c >= 0xfe70 && c <= 0xfe74 ||
-        c >= 0xfe76 && c <= 0xfefc ||
-        c == 0xfeff ||
-        c >= 0xff01 && c <= 0xffbe ||
-        c >= 0xffc2 && c <= 0xffc7 ||
-        c >= 0xffca && c <= 0xffcf ||
-        c >= 0xffd2 && c <= 0xffd7 ||
-        c >= 0xffda && c <= 0xffdc ||
-        c >= 0xffe0 && c <= 0xffe6 ||
-        c >= 0xffe8 && c <= 0xffee ||
-        c >= 0xfff9 && c <= 0xfffd;
+    return c < 0xd800 || c > 0xdfff;
   }
 
   /**
