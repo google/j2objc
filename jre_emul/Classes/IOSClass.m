@@ -689,67 +689,6 @@ IOSClass *IOSClass_forName_(NSString *className) {
   if (iosClass) {
     return iosClass;
   }
-  if ([className rangeOfString:@"$"].location != NSNotFound) {
-    // Scan classes to see if a class exists with a mixture of '_' and '$' characters.
-    // This can happen with inner classes that have '$' in their names.
-    NSString *iosName = IOSClass_JavaToIOSName(className);
-    NSRange range = NSMakeRange(0, [iosName length]);
-    NSString *s = [iosName stringByReplacingOccurrencesOfString:@"[_$]"
-                                                     withString:@"[_$]+"
-                                                        options:NSRegularExpressionSearch
-                                                          range:range];
-    NSString *regex = [NSString stringWithFormat:@"^%@$", s];
-    UErrorCode status = U_ZERO_ERROR;
-    UParseError error;
-    error.offset = -1;
-    jint patLen = (jint)[regex length];
-    jchar *patternBuf = (jchar *)malloc(patLen * sizeof(unichar));
-    [regex getCharacters:patternBuf range:NSMakeRange(0, patLen)];
-    URegularExpression *pattern =
-        uregex_open(patternBuf, patLen, UREGEX_ERROR_ON_UNKNOWN_ESCAPES, &error, &status);
-    if (!U_SUCCESS(status)) {
-      @throw [[[JavaLangAssertionError alloc] init] autorelease];
-    }
-
-    int classCount = objc_getClassList(NULL, 0);
-    Class *classes = (Class *)malloc(classCount * sizeof(Class));
-    objc_getClassList(classes, classCount);
-    size_t bufsize = 256; // Expands below if necessary.
-    unichar *nameBuf = (unichar *)malloc(bufsize * sizeof(unichar));
-    for (int i = 0; i < classCount; i++) {
-      Class cls = classes[i];
-      NSString *cls_name = [[NSString alloc] initWithUTF8String:class_getName(cls)];
-      NSUInteger name_len = cls_name.length;
-      if (name_len > bufsize) {
-        nameBuf = (unichar *)realloc(nameBuf, name_len);
-        bufsize = name_len;
-      }
-      [cls_name getCharacters:nameBuf range:NSMakeRange(0, name_len)];
-      [cls_name release];
-
-      UErrorCode status = U_ZERO_ERROR;
-      uregex_setText(pattern, nameBuf, (int32_t)name_len, &status);
-      if (!U_SUCCESS(status)) {
-        continue;
-      }
-      uregex_setRegion(pattern, 0, (int32_t)name_len, &status);
-      if (!U_SUCCESS(status)) {
-        continue;
-      }
-      jboolean matches = uregex_matches(pattern, -1, &status);
-      if (matches && U_SUCCESS(status)) {
-        iosClass = IOSClass_fromClass(cls);
-        break;
-      }
-    }
-    free(classes);
-    free(nameBuf);
-    free(patternBuf);
-    uregex_close(pattern);
-    if (iosClass) {
-      return iosClass;
-    }
-  }
   @throw AUTORELEASE([[JavaLangClassNotFoundException alloc] initWithNSString:className]);
 }
 
