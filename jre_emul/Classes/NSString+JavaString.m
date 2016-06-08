@@ -1038,13 +1038,13 @@ jint javaStringHashCode(NSString *string) {
 
 @end
 
-#define CaseInsensitiveComparator_serialVersionUID 8575799808933029326LL
+#define NSString_CaseInsensitiveComparator_serialVersionUID 8575799808933029326LL
 
-@interface JavaLangString_CaseInsensitiveComparator : NSObject
+@interface NSString_CaseInsensitiveComparator : NSObject
     < JavaUtilComparator, JavaIoSerializable >
 @end
 
-@implementation JavaLangString_CaseInsensitiveComparator
+@implementation NSString_CaseInsensitiveComparator
 
 - (int)compareWithId:(NSString *)o1
               withId:(NSString *)o2 {
@@ -1057,17 +1057,17 @@ jint javaStringHashCode(NSString *string) {
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "compareWithId:withId:", "compare", "I", 0x1, NULL, NULL },
-    { "init", NULL, NULL, 0x2, NULL, NULL },
+    { "init", "CaseInsensitiveComparator", NULL, 0x2, NULL, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "serialVersionUID", "serialVersionUID", 0x1a, "J", NULL, NULL,
-      .constantValue.asLong = CaseInsensitiveComparator_serialVersionUID },
+    { "serialVersionUID", NULL, 0x1a, "J", NULL, NULL,
+      .constantValue.asLong = NSString_CaseInsensitiveComparator_serialVersionUID },
   };
-  static const J2ObjcClassInfo _NSString$CaseInsensitiveComparator = {
-    2, "CaseInsensitiveComparator", "java.lang", "String", 0xa, 2, methods,
-    1, fields, 0, NULL, 0, NULL, NULL,
-    "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;" };
-  return &_NSString$CaseInsensitiveComparator;
+  static const J2ObjcClassInfo _NSString_CaseInsensitiveComparator = {
+    2, "CaseInsensitiveComparator", "java.lang", "String", 0xa, 2, methods, 1, fields, 0, NULL, 0,
+    NULL, NULL, "Ljava/lang/Object;Ljava/util/Comparator<Ljava/lang/String;>;Ljava/io/Serializable;"
+  };
+  return &_NSString_CaseInsensitiveComparator;
 }
 
 @end
@@ -1082,7 +1082,7 @@ IOSObjectArray *NSString_serialPersistentFields;
 + (void)initialize {
   if (self == [JreStringCategoryDummy class]) {
     JreStrongAssignAndConsume(&NSString_CASE_INSENSITIVE_ORDER,
-        [[JavaLangString_CaseInsensitiveComparator alloc] init]);
+        [[NSString_CaseInsensitiveComparator alloc] init]);
     JreStrongAssignAndConsume(&NSString_serialPersistentFields,
         [IOSObjectArray newArrayWithLength:0 type:JavaIoObjectStreamField_class_()]);
     J2OBJC_SET_INITIALIZED(NSString)

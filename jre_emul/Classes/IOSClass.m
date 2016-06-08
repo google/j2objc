@@ -96,7 +96,7 @@ static IOSObjectArray *IOSClass_emptyClassArray;
 
 #define PREFIX_MAPPING_RESOURCE @"/prefixes.properties"
 
-// Package to prefix mappings, initialized in FindMappedClass().
+// Package to prefix mappings, initialized in FindRenamedPackagePrefix().
 static JavaUtilProperties *prefixMapping;
 
 - (Class)objcClass {
@@ -507,26 +507,13 @@ NSString *IOSClass_GetTranslatedMethodName(IOSClass *cls, NSString *name,
   return [NSString stringWithFormat:@"L%@;", name];
 }
 
-// Convert Java class name to camelcased iOS name.
-static NSString *IOSClass_JavaToIOSName(NSString *javaName) {
-  NSString *mappedName = [IOSClass_mappedClasses objectForKey:javaName];
-  if (mappedName) {
-    return mappedName;
+static NSString *CamelCasePackage(NSString *package) {
+  NSArray *parts = [package componentsSeparatedByString:@"."];
+  NSMutableString *result = [NSMutableString string];
+  for (NSString *part in parts) {
+    [result appendString:Capitalize(part)];
   }
-  NSArray *parts = [javaName componentsSeparatedByString:@"."];
-  NSMutableString *iosName = [NSMutableString string];
-  if ([parts count] == 1) {
-    [iosName appendString:[parts objectAtIndex:0]];
-  } else {
-    id lastPart = [parts lastObject];
-    for (NSString *part in parts) {
-      if (part != lastPart) {
-        part = Capitalize(part);
-      }
-      [iosName appendString:part];
-    }
-  }
-  return iosName;
+  return result;
 }
 
 static IOSClass *ClassForIosName(NSString *iosName) {
@@ -550,17 +537,11 @@ static IOSClass *ClassForIosName(NSString *iosName) {
   return nil;
 }
 
-static IOSClass *FindMappedClass(NSString *name) {
-  NSRange lastDot = [name rangeOfString:@"." options:NSBackwardsSearch];
-  if (lastDot.location == NSNotFound) {
-    return nil;   // No package in class name.
-  }
-  NSString *package = [name substringToIndex:lastDot.location];
+static NSString *FindRenamedPackagePrefix(NSString *package) {
   NSString *prefix = nil;
 
   // Check for a package-info class that has a __prefix method.
-  NSString *pkgInfoName =
-      IOSClass_JavaToIOSName([package stringByAppendingString:@".package_info"]);
+  NSString *pkgInfoName = [CamelCasePackage(package) stringByAppendingString:@"package_info"];
   Class pkgInfoCls = NSClassFromString(pkgInfoName);
   Method prefixMethod = JreFindClassMethod(pkgInfoCls, "__prefix");
   if (prefixMethod) {
@@ -600,17 +581,7 @@ static IOSClass *FindMappedClass(NSString *name) {
       }
     }
   }
-  if (!prefix) {
-    return nil;   // No prefix for package.
-  }
-  NSString *mappedName =
-      [prefix stringByAppendingString:[name substringFromIndex:lastDot.location + 1]];
-  IOSClass *result = ClassForIosName(mappedName);
-  if (result) {
-    return result;
-  }
-  mappedName = [mappedName stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
-  return ClassForIosName(mappedName);
+  return prefix;
 }
 
 + (IOSClass *)classForIosName:(NSString *)iosName {
@@ -618,15 +589,50 @@ static IOSClass *FindMappedClass(NSString *name) {
 }
 
 static IOSClass *ClassForJavaName(NSString *name) {
-  IOSClass *cls = ClassForIosName(IOSClass_JavaToIOSName(name));
-  if (!cls && [name indexOf:'$'] >= 0) {
-    NSString *fixedName = [name stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
-    cls = ClassForIosName(IOSClass_JavaToIOSName(fixedName));
+  // First check if this is a mapped name.
+  NSString *mappedName = [IOSClass_mappedClasses objectForKey:name];
+  if (mappedName) {
+    return ClassForIosName(mappedName);
   }
-  if (!cls) {
-    cls = FindMappedClass(name);
+  // Then check if any outer class is a mapped name.
+  NSUInteger lastDollar = name.length;
+  while (true) {
+    lastDollar = [name rangeOfString:@"$"
+                             options:NSBackwardsSearch
+                               range:NSMakeRange(0, lastDollar)].location;
+    if (lastDollar == NSNotFound) {
+      break;
+    }
+    NSString *prefix = [name substringToIndex:lastDollar];
+    NSString *mappedName = [IOSClass_mappedClasses objectForKey:prefix];
+    if (mappedName) {
+      NSString *suffix = [name substringFromIndex:lastDollar];
+      suffix = [suffix stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
+      return ClassForIosName([mappedName stringByAppendingString:suffix]);
+    }
   }
-  return cls;
+
+  // Separate package from class names.
+  NSUInteger lastDot = [name rangeOfString:@"." options:NSBackwardsSearch].location;
+  if (lastDot == NSNotFound) {
+    // Empty package.
+    return ClassForIosName([name stringByReplacingOccurrencesOfString:@"$" withString:@"_"]);
+  }
+  NSString *package = [name substringToIndex:lastDot];
+  NSString *suffix = [[name substringFromIndex:lastDot + 1]
+      stringByReplacingOccurrencesOfString:@"$" withString:@"_"];
+  // First check if the class can be found with the default camel case package. This avoids the
+  // expensive FindRenamedPackagePrefix if possible.
+  IOSClass *cls = ClassForIosName([CamelCasePackage(package) stringByAppendingString:suffix]);
+  if (cls) {
+    return cls;
+  }
+  // Check if the package has a renamed prefix.
+  NSString *renamedPackage = FindRenamedPackagePrefix(package);
+  if (renamedPackage) {
+    return ClassForIosName([renamedPackage stringByAppendingString:suffix]);
+  }
+  return nil;
 }
 
 static IOSClass *IOSClass_PrimitiveClassForChar(unichar c) {
