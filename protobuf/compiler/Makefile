@@ -26,8 +26,6 @@ SRCS = \
   google/protobuf/compiler/j2objc/j2objc_message.cc \
   google/protobuf/stubs/strutil.cc
 
-COMPILER_SRC_PATH = google/protobuf/compiler/j2objc
-
 OBJS = $(SRCS:%.cc=$(BUILD_DIR)/%.o)
 
 MAIN_OBJ = $(BUILD_DIR)/google/protobuf/compiler/j2objc/main.o
