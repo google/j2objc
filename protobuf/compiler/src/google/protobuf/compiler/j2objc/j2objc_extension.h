@@ -38,16 +38,9 @@
 #include <set>
 #include <string>
 
-#include <google/protobuf/stubs/common.h>
+#include "google/protobuf/compiler/j2objc/common.h"
 
 namespace google {
-namespace protobuf {
-  class FieldDescriptor;       // descriptor.h
-  namespace io {
-    class Printer;             // printer.h
-  }
-}
-
 namespace protobuf {
 namespace compiler {
 namespace j2objc {

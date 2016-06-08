@@ -34,10 +34,7 @@
 
 #include <google/protobuf/compiler/j2objc/j2objc_field.h>
 
-#include <google/protobuf/stubs/common.h>
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
-#include <google/protobuf/io/printer.h>
-#include <google/protobuf/stubs/strutil.h>
 
 namespace google {
 namespace protobuf {

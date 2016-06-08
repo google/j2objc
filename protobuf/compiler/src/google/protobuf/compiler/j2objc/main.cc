@@ -33,9 +33,9 @@
 #include "j2objc_generator.h"
 
 int main(int argc, const char* const argv[]) {
-  google::protobuf::compiler::CommandLineInterface cli;
+  CommandLineInterface cli;
 
-  google::protobuf::compiler::java::JavaGenerator java_generator;
+  ::java::JavaGenerator java_generator;
   cli.RegisterGenerator("--java_out", &java_generator, "");
 
   google::protobuf::compiler::j2objc::J2ObjCGenerator j2objc_generator;

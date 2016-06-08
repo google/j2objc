@@ -37,7 +37,7 @@
 
 #include <string>
 
-#include <google/protobuf/descriptor.h>
+#include "google/protobuf/compiler/j2objc/common.h"
 
 namespace google {
 namespace protobuf {

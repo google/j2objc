@@ -39,10 +39,6 @@
 #include <set>
 #include <sstream>
 
-#include <google/protobuf/stubs/common.h>
-#include <google/protobuf/descriptor.pb.h>
-#include <google/protobuf/stubs/strutil.h>
-
 namespace google {
 namespace protobuf {
 namespace compiler {
@@ -55,6 +51,7 @@ const char* kDefaultPackage = "";
 // The field number of the "j2objc_package_prefix" file option defined in
 // j2objc-descriptor.proto.
 const int kPackagePrefixFieldNumber = 102687446;
+
 
 static map<string, string> prefixes;
 
@@ -148,18 +145,28 @@ string CapitalizeJavaPackage(const string input) {
   return result;
 }
 
-string GetPackagePrefix(const FileDescriptor *file) {
-  // Check for the "j2objc_package_prefix" option using unknown fields so we
-  // don't have to pre-build j2objc-descriptor.pb.[h|cc].
+const UnknownField *FindUnknownField(const FileDescriptor *file, int field_num) {
   const Reflection *reflection = file->options().GetReflection();
-  const UnknownFieldSet& unknown_fields = reflection->GetUnknownFields(file->options());
+  const UnknownFieldSet& unknown_fields =
+      reflection->GetUnknownFields(file->options());
   if (!unknown_fields.empty()) {
     for (int i = 0; i < unknown_fields.field_count(); i++) {
       const UnknownField& field = unknown_fields.field(i);
-      if (field.number() == kPackagePrefixFieldNumber) {
-        return field.length_delimited();
+      if (field.number() == field_num) {
+        return &field;
       }
     }
+  }
+  return NULL;
+}
+
+string GetPackagePrefix(const FileDescriptor *file) {
+  // Check for the "j2objc_package_prefix" option using unknown fields so we
+  // don't have to pre-build j2objc-descriptor.pb.[h|cc].
+  const UnknownField *package_prefix_field =
+      FindUnknownField(file, kPackagePrefixFieldNumber);
+  if (package_prefix_field) {
+    return package_prefix_field->length_delimited();
   }
 
   string java_package = FileJavaPackage(file);

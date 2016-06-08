@@ -30,41 +30,26 @@
 
 // Author: kstanger@google.com (Keith Stanger)
 //  Based on original Protocol Buffers design by
-//  Sanjay Ghemawat, Jeff Dean, and others.
-//
-// Generates Objective-C code for a given .proto file, that is compatible
-// with client code that expects a transpiled Java API.
+//  Sanjay Ghemawat, Jeff Dean, Kenton Varda, and others.
 
-#ifndef GOOGLE_PROTOBUF_COMPILER_J2OBJC_GENERATOR_H__
-#define GOOGLE_PROTOBUF_COMPILER_J2OBJC_GENERATOR_H__
+// We include all protobuf dependencies here because the required headers are
+// different when building against google internal protocol buffers than
+// opensource protocol buffers. Additional macros are provided to help resolve
+// other differences.
 
-#include <string>
+#ifndef GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__
+#define GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__
 
-#include "google/protobuf/compiler/j2objc/common.h"
 
-namespace google {
-namespace protobuf {
-namespace compiler {
-namespace j2objc {
+#include <google/protobuf/compiler/code_generator.h>
+#include <google/protobuf/descriptor.h>
+#include <google/protobuf/descriptor.pb.h>
+#include <google/protobuf/io/printer.h>
+#include <google/protobuf/io/zero_copy_stream.h>
+#include <google/protobuf/stubs/common.h>
+#include <google/protobuf/stubs/strutil.h>
 
-class J2ObjCGenerator : public CodeGenerator {
- public:
-  J2ObjCGenerator();
-  ~J2ObjCGenerator();
+using namespace google::protobuf::compiler;
 
-  // implements CodeGenerator ----------------------------------------
-  bool Generate(const FileDescriptor* file,
-                const string& parameter,
-                GeneratorContext* context,
-                string* error) const;
 
- private:
-  GOOGLE_DISALLOW_EVIL_CONSTRUCTORS(J2ObjCGenerator);
-};
-
-}  // namespace j2objc
-}  // namespace compiler
-}  // namespace protobuf
-}  // namespace google
-
-#endif  // GOOGLE_PROTOBUF_COMPILER_J2OBJC_GENERATOR_H__
+#endif  // GOOGLE_PROTOBUF_COMPILER_J2OBJC_COMMON_H__

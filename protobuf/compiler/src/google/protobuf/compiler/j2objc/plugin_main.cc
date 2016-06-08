@@ -29,9 +29,10 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #include <google/protobuf/compiler/plugin.h>
-#include "j2objc_generator.h"
+#include "google/protobuf/compiler/j2objc/common.h"
+#include "google/protobuf/compiler/j2objc/j2objc_generator.h"
 
 int main(int argc, char* argv[]) {
   google::protobuf::compiler::j2objc::J2ObjCGenerator j2objc_generator;
-  return google::protobuf::compiler::PluginMain(argc, argv, &j2objc_generator);
+  return PluginMain(argc, argv, &j2objc_generator);
 }

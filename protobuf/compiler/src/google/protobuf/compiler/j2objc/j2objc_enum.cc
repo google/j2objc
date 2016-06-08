@@ -36,9 +36,6 @@
 
 #include <string>
 
-#include <google/protobuf/io/printer.h>
-#include <google/protobuf/descriptor.h>
-#include <google/protobuf/stubs/strutil.h>
 #include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
 
 namespace google {
