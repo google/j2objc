@@ -17,7 +17,9 @@
 
 package java.net;
 
+import java.io.File;
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -433,6 +435,7 @@ public final class NetworkInterface extends Object {
         boolean[] done = new boolean[interfaces.length];
         for (int i = 0; i < interfaceNames.length; ++i) {
             interfaces[i] = NetworkInterface.getByName(interfaceNames[i]);
+            // http://b/5833739: getByName can return null if the interface went away between our
             // readdir(2) and our stat(2), so mark interfaces that disappeared as 'done'.
             if (interfaces[i] == null) {
                 done[i] = true;

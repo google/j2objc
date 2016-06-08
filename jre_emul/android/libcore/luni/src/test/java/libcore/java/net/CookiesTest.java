@@ -622,6 +622,23 @@ public class CookiesTest extends TestCase {
     }
 
  // TODO(tball): enable when libcore is updated with latest fixes.
+    /**
+     * Regression test for http://b/25682357 /
+     * https://code.google.com/p/android/issues/detail?id=193475
+     * CookieStoreImpl.get(URI) not handling ports properly in the absence of an explicit cookie
+     * Domain.
+     *
+    public void testCookieStoreGetWithPort() throws Exception {
+        CookieStore cookieStore = new CookieManager().getCookieStore();
+        HttpCookie cookie = new HttpCookie("theme", "light");
+        // Deliberately not setting the cookie domain or path.
+        cookieStore.add(new URI("http://a.com:12345"), cookie);
+
+        // CookieStoreImpl must ignore the port during retrieval when domain is not set.
+        assertEquals(1, cookieStore.get(new URI("http://a.com:12345/path1")).size());
+        assertEquals(1, cookieStore.get(new URI("http://a.com/path1")).size());
+    }
+    */
 
     public void testCookieStoreGetWithSecure() throws Exception {
         CookieStore cookieStore = new CookieManager().getCookieStore();

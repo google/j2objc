@@ -197,6 +197,7 @@ public class InetAddressTest extends junit.framework.TestCase {
 
         assertTrue(Inet4Address.LOOPBACK.equals(Inet4Address.LOOPBACK));
 
+        // http://b/4328294 - the scope id isn't included when comparing Inet6Address instances.
         byte[] bs = new byte[16];
         assertEquals(Inet6Address.getByAddress("1", bs, 1), Inet6Address.getByAddress("2", bs, 2));
     }

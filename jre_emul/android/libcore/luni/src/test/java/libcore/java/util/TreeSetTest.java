@@ -99,6 +99,10 @@ public final class TreeSetTest extends TestCase {
         }
     }
 
+    /**
+     * Test that TreeSet never attempts to serialize a non-serializable
+     * comparator. http://b/5552608
+     */
     public void testDescendingSetSerialization() {
         String s = "aced0005737200116a6176612e7574696c2e54726565536574dd98509395ed87"
                 + "5b0300007870737200276a6176612e7574696c2e436f6c6c656374696f6e73245"

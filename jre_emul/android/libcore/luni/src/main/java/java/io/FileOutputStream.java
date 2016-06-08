@@ -20,6 +20,7 @@ package java.io;
 import dalvik.system.CloseGuard;
 import java.nio.NioUtils;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
 import libcore.io.IoBridge;
 import libcore.io.IoUtils;
 import static libcore.io.OsConstants.*;
@@ -138,6 +139,7 @@ public class FileOutputStream extends OutputStream {
                 IoUtils.close(fd);
             } else {
                 // An owned fd has been invalidated by IoUtils.close, but
+                // we need to explicitly stop using an unowned fd (http://b/4361076).
                 fd = new FileDescriptor();
             }
         }

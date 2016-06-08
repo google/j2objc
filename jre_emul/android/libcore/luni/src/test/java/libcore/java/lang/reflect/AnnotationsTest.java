@@ -134,6 +134,7 @@ public final class AnnotationsTest extends TestCase {
 
     public void testStaticFieldAnonymousClass() {
         // The class declared in the <clinit> is enclosed by the <clinit>'s class.
+        // http://b/11245138
         assertEquals(AnnotationsTest.class, staticAnonymous.getClass().getEnclosingClass());
         // However, because it is anonymous, it has no declaring class.
         // https://code.google.com/p/android/issues/detail?id=61003

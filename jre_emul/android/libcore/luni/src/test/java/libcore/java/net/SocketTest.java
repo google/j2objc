@@ -37,6 +37,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 public class SocketTest extends junit.framework.TestCase {
+    // See http://b/2980559.
     public void test_close() throws Exception {
         Socket s = new Socket();
         s.close();
@@ -266,6 +267,7 @@ public class SocketTest extends junit.framework.TestCase {
         server.shutdown();
     }
 
+    // http://b/5534202
     public void testAvailable() throws Exception {
         for (int i = 0; i < 100; i++) {
             assertAvailableReturnsZeroAfterSocketReadsAllData();

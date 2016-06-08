@@ -179,6 +179,7 @@ public abstract class OldCharset_AbstractTest extends TestCase {
         CharBuffer inputCB = CharBuffer.allocate(65536);
         for (int code = 32; code <= 65533; ++code) {
             // icu4c seems to accept any surrogate as a sign that "more is coming",
+            // even for charsets like US-ASCII. http://b/10310751
             if (code >= 0xd800 && code <= 0xdfff) {
                 continue;
             }

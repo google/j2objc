@@ -65,6 +65,7 @@ public final class RandomAccessFileTest extends TestCase {
       }
     }
 
+    // http://b/3015023
     /* No finalization in iOS.
     public void testRandomAccessFileHasCleanupFinalizer() throws Exception {
         // TODO: this always succeeds on the host because our default open file limit is 32Ki.
@@ -79,6 +80,7 @@ public final class RandomAccessFileTest extends TestCase {
     */
     private void createRandomAccessFile(File file) throws Exception {
         // TODO: fix our register maps and remove this otherwise unnecessary
+        // indirection! (http://b/5412580)
         new RandomAccessFile(file, "rw");
     }
 

@@ -111,6 +111,7 @@ public final class URLConnectionTest extends TestCase {
 //        assertEquals("", setAndReturnRequestHeaderValue(""));
 //        assertForbiddenRequestHeaderValue("\u0000");
 //
+//        // Workaround for http://b/26422335 , http://b/26889631 , http://b/27606665 :
 //        // allow (but strip) trailing \n, \r and \r\n
 //        // assertForbiddenRequestHeaderValue("\r");
 //        // End of workaround
@@ -120,6 +121,7 @@ public final class URLConnectionTest extends TestCase {
 //        assertForbiddenRequestHeaderValue("\u0080");
 //        assertForbiddenRequestHeaderValue("\ud83c\udf69");
 //
+//        // Workaround for http://b/26422335 , http://b/26889631 , http://b/27606665 :
 //        // allow (but strip) trailing \n, \r and \r\n
 //        assertEquals("", setAndReturnRequestHeaderValue("\n"));
 //        assertEquals("a", setAndReturnRequestHeaderValue("a\n"));
@@ -1264,6 +1266,7 @@ public final class URLConnectionTest extends TestCase {
     }
 
     // TODO(tball): b/28067294
+//    // http://b/27590872 - assert we do not throw a runtime exception if a server responds with
 //    // a location that cannot be represented directly by URI.
 //    public void testRedirectWithInvalidRedirectUrl() throws Exception {
 //        // The first server hosts a redirect to a second. We need two so that the ProxySelector
@@ -1566,6 +1569,11 @@ public final class URLConnectionTest extends TestCase {
 //        testFlushAfterStreamTransmitted(TransferKind.END_OF_STREAM);
 //    }
 
+    /**
+     * We explicitly permit apps to close the upload stream even after it has
+     * been transmitted.  We also permit flush so that buffered streams can
+     * do a no-op flush when they are closed. http://b/3038470
+     */
     private void testFlushAfterStreamTransmitted(TransferKind transferKind) throws IOException {
         server.enqueue(new MockResponse().setBody("abc"));
         server.play();
@@ -1637,6 +1645,7 @@ public final class URLConnectionTest extends TestCase {
 //    /**
 //     * This test goes through the exhaustive set of interesting ASCII characters
 //     * because most of those characters are interesting in some way according to
+//     * RFC 2396 and RFC 2732. http://b/1158780
 //     * After M, Android's HttpURLConnection started canonicalizing hostnames to lower case, IDN
 //     * encoding and being more strict about invalid characters.
 //     */
@@ -1869,6 +1878,9 @@ public final class URLConnectionTest extends TestCase {
 //        }
 //    }
 
+    /**
+     * Don't explode if the cache returns a null body. http://b/3373699
+     */
     public void testResponseCacheReturnsNullOutputStream() throws Exception {
         final AtomicBoolean aborted = new AtomicBoolean();
         ResponseCache.setDefault(new ResponseCache() {
@@ -2043,6 +2055,7 @@ public final class URLConnectionTest extends TestCase {
         connection.disconnect();
     }
 
+    // http://b/4361656
     public void testUrlContainsQueryButNoPath() throws Exception {
         server.enqueue(new MockResponse().setBody("A"));
         server.play();

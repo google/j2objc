@@ -698,6 +698,7 @@ public final class URLTest extends TestCase {
         assertEquals("a_b.c.d.net", url.getHost());
     }
 
+    // http://b/7369778
     public void testToURILeniantThrowsURISyntaxExceptionWithPartialTrailingEscape()
             throws Exception {
         // make sure if there a partial trailing escape that we don't throw the wrong exception

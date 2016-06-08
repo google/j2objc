@@ -16,6 +16,7 @@
 
 package libcore.java.io;
 
+import java.io.IOException;
 import java.io.InvalidClassException;
 import java.io.ObjectStreamClass;
 import java.io.ObjectStreamField;
@@ -25,6 +26,7 @@ import libcore.util.SerializationTester;
 
 public final class SerializationTest extends TestCase {
 
+    // http://b/4471249
     public void testSerializeFieldMadeTransient() throws Exception {
         // Does ObjectStreamClass have the right idea?
         ObjectStreamClass osc = ObjectStreamClass.lookup(FieldMadeTransient.class);

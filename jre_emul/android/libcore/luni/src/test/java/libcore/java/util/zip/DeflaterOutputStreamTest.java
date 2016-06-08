@@ -101,6 +101,12 @@ public class DeflaterOutputStreamTest extends TestCase {
         }
     }
 
+    /**
+     * Confirm that a DeflaterOutputStream constructed with Deflater
+     * with flushParm == SYNC_FLUSH does not need to to be flushed.
+     *
+     * http://b/4005091
+     */
     public void testSyncFlushDeflater() throws Exception {
         Deflater def = new Deflater();
         Field f = def.getClass().getDeclaredField("flushParm");

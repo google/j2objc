@@ -20,6 +20,7 @@ import junit.framework.TestCase;
 
 public class DoubleTest extends TestCase {
     public void testDoubleToStringUnsignedDivide() throws Exception {
+        // http://b/3238333
         assertEquals("0.008", Double.toString(0.008));
         assertEquals("0.008366", Double.toString(0.008366));
         // http://code.google.com/p/android/issues/detail?id=14033

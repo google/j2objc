@@ -16,9 +16,11 @@
 
 package libcore.java.io;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.util.UUID;
 import libcore.io.Libcore;
@@ -109,6 +111,7 @@ public class FileTest extends junit.framework.TestCase {
         //assertEquals(cwd, f.getCanonicalPath());
     }
 
+    // http://b/2486943 - between eclair and froyo, we added a call to
     // isAbsolute from the File constructor, potentially breaking subclasses.
     public void test_subclassing() throws Exception {
         class MyFile extends File {
@@ -125,6 +128,7 @@ public class FileTest extends junit.framework.TestCase {
         new MyFile("");
     }
 
+    // http://b/3047893 - getCanonicalPath wasn't actually resolving symbolic links.
     public void test_getCanonicalPath() throws Exception {
         // This assumes you can create symbolic links in the temporary directory. This isn't
         // true on Android if you're using /sdcard. It will work in /data/local though.

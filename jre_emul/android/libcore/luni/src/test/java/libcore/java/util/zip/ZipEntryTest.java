@@ -81,6 +81,7 @@ public class ZipEntryTest extends junit.framework.TestCase {
   }
 
   // TODO(tball): enable when java.util.jar is supported.
+//  // http://b/2099615
 //  public void testClone() {
 //    byte[] extra = { 5, 7, 9 };
 //    JarEntry jarEntry = new JarEntry("foo");

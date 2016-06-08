@@ -193,6 +193,7 @@ public class CharacterTest extends junit.framework.TestCase {
     assertFalse(Character.isIdeographic(0x2f99)); // Kangxi radical shell
   }
 
+  // http://b/9690863
   public void test_isDigit_against_icu4c() throws Exception {
     Method m = Character.class.getDeclaredMethod("isDigit", int.class);
     m.setAccessible(true);
@@ -201,6 +202,7 @@ public class CharacterTest extends junit.framework.TestCase {
     }
   }
 
+  // http://b/9690863
   public void test_isIdentifierIgnorable_against_icu4c() throws Exception {
     Method m = Character.class.getDeclaredMethod("isIdentifierIgnorable", int.class);
     m.setAccessible(true);
@@ -209,6 +211,7 @@ public class CharacterTest extends junit.framework.TestCase {
     }
   }
 
+  // http://b/9690863
   public void test_isSpaceChar_against_icu4c() throws Exception {
     Method m = Character.class.getDeclaredMethod("isSpaceChar", int.class);
     m.setAccessible(true);
@@ -217,6 +220,7 @@ public class CharacterTest extends junit.framework.TestCase {
     }
   }
 
+  // http://b/9690863
   public void test_isWhitespace_against_icu4c() throws Exception {
     Method m = Character.class.getDeclaredMethod("isWhitespace", int.class);
     m.setAccessible(true);

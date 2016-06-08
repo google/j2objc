@@ -196,6 +196,10 @@ public final class UrlEncodingTest extends TestCase {
         }
     }
 
+    /**
+     * Android's URLEncoder.encode() failed for surrogate pairs, encoding them
+     * as two replacement characters ("??"). http://b/3436051
+     */
     public void testUrlEncoderEncodesNonPrintableNonAsciiCharacters() throws Exception {
         if (!oniOS()) {
           // Clang 7.0.2 bug generates a single NUL character string as 3 NUL characters.

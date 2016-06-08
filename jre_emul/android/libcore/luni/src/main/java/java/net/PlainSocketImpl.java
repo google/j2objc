@@ -22,6 +22,7 @@ import java.io.FileDescriptor;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -99,6 +100,7 @@ public class PlainSocketImpl extends SocketImpl {
             FileDescriptor clientFd = NetworkOs.accept(fd, peerAddress);
 
             // TODO: we can't just set newImpl.fd to clientFd because a nio SocketChannel may
+            // be sharing the FileDescriptor. http://b//4452981.
             newImpl.fd.setInt$(clientFd.getInt$());
 
             newImpl.address = peerAddress.getAddress();

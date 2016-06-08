@@ -75,6 +75,14 @@ public class ZipFile implements Closeable, ZipConstants {
      */
     static final int GPBF_UTF8_FLAG = 1 << 11;
 
+    /**
+     * Supported General Purpose Bit Flags Mask.
+     * Bit mask of bits not supported.
+     * Note: The only bit that we will enforce at this time
+     * is the encrypted bit. Although other bits are not supported,
+     * we must not enforce them as this could break some legitimate
+     * use cases (See http://b/8617715).
+     */
     static final int GPBF_UNSUPPORTED_MASK = GPBF_ENCRYPTED_FLAG;
 
     /**

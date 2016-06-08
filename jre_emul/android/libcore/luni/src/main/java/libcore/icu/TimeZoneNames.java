@@ -16,6 +16,7 @@
 
 package libcore.icu;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -52,6 +53,7 @@ public final class TimeZoneNames {
     }
 
     public static class ZoneStringsCache extends BasicLruCache<Locale, String[][]> {
+        // De-duplicate the strings (http://b/2672057).
         private final HashMap<String, String> internTable = new HashMap<String, String>();
 
         public ZoneStringsCache() {
@@ -152,11 +154,11 @@ public final class TimeZoneNames {
       NSTimeZone *tz = [NSTimeZone timeZoneWithName:[result objectAtIndex:0]];
       [result replaceObjectAtIndex:1
           withObject:[tz localizedName:NSTimeZoneNameStyleStandard locale:locale]];
-      [result replaceObjectAtIndex:2
+      [result replaceObjectAtIndex:2 
           withObject:[tz localizedName:NSTimeZoneNameStyleShortStandard locale:locale]];
-      [result replaceObjectAtIndex:3
+      [result replaceObjectAtIndex:3 
           withObject:[tz localizedName:NSTimeZoneNameStyleDaylightSaving locale:locale]];
-      [result replaceObjectAtIndex:3
+      [result replaceObjectAtIndex:3 
           withObject:[tz localizedName:NSTimeZoneNameStyleShortDaylightSaving locale:locale]];
     ]-*/;
 }

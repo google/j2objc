@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.RandomAccess;
 import java.util.Set;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 public final class ReflectionTest extends TestCase {
@@ -282,6 +283,10 @@ public final class ReflectionTest extends TestCase {
         assertEquals(1, count(names(fields), "field"));
     }
 
+    /**
+     * Class.isEnum() erroneously returned true for indirect descendants of
+     * Enum. http://b/1062200.
+     */
     public void testClassIsEnum() {
         Class<?> trafficClass = TrafficLights.class;
         Class<?> redClass = TrafficLights.RED.getClass();

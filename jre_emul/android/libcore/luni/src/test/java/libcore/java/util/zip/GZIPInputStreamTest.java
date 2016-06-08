@@ -81,6 +81,7 @@ public final class GZIPInputStreamTest extends TestCase {
         assertTrue(Arrays.equals(data, gunzip(GZIPOutputStreamTest.gzip(data))));
     }
 
+    /** http://b/3042574 GzipInputStream.skip() causing CRC failures */
     public void testSkip() throws IOException {
         byte[] data = new byte[1024 * 1024];
         byte[] gzipped = GZIPOutputStreamTest.gzip(data);

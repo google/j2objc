@@ -518,6 +518,7 @@ public class BufferTest extends TestCase {
         testRelativePositions(allocateMapped(10));
     }
 
+    // http://b/3291927 - ensure that the relative get and put methods advance 'position'.
     private void testRelativePositions(ByteBuffer b) throws Exception {
         // gets
         b.position(0);
@@ -596,6 +597,7 @@ public class BufferTest extends TestCase {
     }
 
     // This test will fail on the RI. Our direct buffers are cooler than theirs.
+    // http://b/3384431
     public void testDirectByteBufferHasArray() throws Exception {
         ByteBuffer b = ByteBuffer.allocateDirect(10);
         assertTrue(b.isDirect());

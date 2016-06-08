@@ -204,8 +204,10 @@ public class SimpleDateFormat extends DateFormat {
     private static final int RFC_822_TIMEZONE_FIELD = 18;
 
     // The index of 'L' (cf. 'M') in the PATTERN_CHARS string. This is an ICU-compatible extension
+    // necessary for correct localization in various languages (http://b/2633414).
     private static final int STAND_ALONE_MONTH_FIELD = 19;
     // The index of 'c' (cf. 'E') in the PATTERN_CHARS string. This is an ICU-compatible extension
+    // necessary for correct localization in various languages (http://b/2633414).
     private static final int STAND_ALONE_DAY_OF_WEEK_FIELD = 20;
 
     private String pattern;
@@ -1214,6 +1216,7 @@ public class SimpleDateFormat extends DateFormat {
                 if (row[i] == null) {
                     // If icu4c doesn't have a name, our array contains a null. Normally we'd
                     // work out the correct GMT offset, but we already handled parsing GMT offsets
+                    // above, so we can just ignore these cases. http://b/8128460.
                     continue;
                 }
                 if (string.regionMatches(true, offset, row[i], 0, row[i].length())) {

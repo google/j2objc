@@ -1150,6 +1150,7 @@ public final class Locale implements Cloneable, Serializable {
             return languageCode;
         }
 
+        // TODO: We need a new hack or a complete fix for http://b/8049507 --- We would
         // cover the frameworks' tracks when they were using "tl" instead of "fil".
         String result = ICU.getDisplayLanguage(this, locale);
         if (result == null) { // TODO: do we need to do this, or does ICU do it for us?

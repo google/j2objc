@@ -480,6 +480,7 @@ public abstract class AbstractZipFileTest extends TestCase {
         }
     }
 
+    // Demonstrates http://b/18644314 : Zip entry names are relative to the point of
     // extraction and can contain relative paths "../" and "./".
     //
     // It is left to callers of the API to perform any validation / santization to

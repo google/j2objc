@@ -322,6 +322,7 @@ public class DateFormatSymbols implements Serializable, Cloneable {
     public String[][] getZoneStrings() {
         String[][] result = clone2dStringArray(internalZoneStrings());
         // If icu4c doesn't have a name, our array contains a null. TimeZone.getDisplayName
+        // knows how to format GMT offsets (and, unlike icu4c, has accurate data). http://b/8128460.
         for (String[] zone : result) {
             String id = zone[0];
             if (zone[1] == null) {

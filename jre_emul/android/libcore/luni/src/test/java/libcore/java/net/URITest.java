@@ -492,6 +492,9 @@ public final class URITest extends TestCase {
         assertNull(url.getPath());
     }
 
+    /**
+     * Regression test for http://b/issue?id=2604061
+     */
     public void testParsingDotAsHostname() throws Exception {
         assertEquals(null, new URI("http://./").getHost());
     }

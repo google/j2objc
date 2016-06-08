@@ -155,6 +155,7 @@ public final class IoUtils {
      */
     public static boolean canOpenReadOnly(String path) {
         try {
+            // Use open(2) rather than stat(2) so we require fewer permissions. http://b/6485312.
             FileDescriptor fd = Libcore.os.open(path, O_RDONLY, 0);
             Libcore.os.close(fd);
             return true;
