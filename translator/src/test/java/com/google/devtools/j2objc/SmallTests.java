@@ -55,6 +55,7 @@ import com.google.devtools.j2objc.translate.InitializationNormalizerTest;
 import com.google.devtools.j2objc.translate.InnerClassExtractorTest;
 import com.google.devtools.j2objc.translate.JavaCloneWriterTest;
 import com.google.devtools.j2objc.translate.JavaToIOSMethodTranslatorTest;
+import com.google.devtools.j2objc.translate.MetadataWriterTest;
 import com.google.devtools.j2objc.translate.NilCheckResolverTest;
 import com.google.devtools.j2objc.translate.OcniExtractorTest;
 import com.google.devtools.j2objc.translate.OperatorRewriterTest;
@@ -120,6 +121,7 @@ public class SmallTests {
     JavaToIOSMethodTranslatorTest.class,
     LineDirectivesTest.class,
     LiteralGeneratorTest.class,
+    MetadataWriterTest.class,
     NameTableTest.class,
     NilCheckResolverTest.class,
     ObjectiveCHeaderGeneratorTest.class,

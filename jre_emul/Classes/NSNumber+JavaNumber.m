@@ -27,7 +27,7 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "init", "Number", NULL, 0x1, NULL, NULL },
+    { "init", NULL, NULL, 0x1, NULL, NULL },
     { "charValue", "byteValue", "B", 0x1, NULL, NULL },
     { "doubleValue", NULL, "D", 0x401, NULL, NULL },
     { "floatValue", NULL, "F", 0x401, NULL, NULL },

@@ -1463,7 +1463,7 @@ IOSClass *IOSClass_arrayType(IOSClass *componentType, jint dimensions) {
     { "getDeclaredAnnotationWithIOSClass:", "getDeclaredAnnotation", "TT;", 0x1, NULL,
       "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" },
     { "getAccessFlags", NULL, "I", 0x1, NULL, NULL },
-    { "init", "Class", NULL, 0x1, NULL, NULL },
+    { "init", NULL, NULL, 0x1, NULL, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "serialVersionUID", NULL, 0x1a, "J", NULL, NULL,

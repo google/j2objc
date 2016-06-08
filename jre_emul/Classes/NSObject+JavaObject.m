@@ -171,7 +171,7 @@ static void doWait(id obj, long long timeout) {
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "init", "Object", NULL, 0x1, NULL, NULL },
+    { "init", NULL, NULL, 0x1, NULL, NULL },
     { "getClass", NULL, "Ljava.lang.Class;", 0x11, NULL, "()Ljava/lang/Class<*>;" },
     { "hash", "hashCode", "I", 0x1, NULL, NULL },
     { "isEqual:", "equals", "Z", 0x1, NULL, NULL },

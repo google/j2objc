@@ -186,7 +186,7 @@ public class MetadataWriter extends TreeVisitor {
     String methodName = method instanceof GeneratedMethodBinding
         ? ((GeneratedMethodBinding) method).getJavaName() : method.getName();
     String selector = nameTable.getMethodSelector(method);
-    if (selector.equals(methodName)) {
+    if (selector.equals(methodName) || method.isConstructor()) {
       methodName = null;  // Reduce redundant data.
     }
 

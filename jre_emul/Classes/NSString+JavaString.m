@@ -934,25 +934,25 @@ jint javaStringHashCode(NSString *string) {
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "init", "String", NULL, 0x1, NULL, NULL },
-    { "initWithByteArray:", "String", NULL, 0x1, NULL, NULL },
-    { "initWithByteArray:withInt:", "String", NULL, 0x1, NULL, NULL },
-    { "initWithByteArray:withInt:withInt:", "String", NULL, 0x1, NULL, NULL },
-    { "initWithByteArray:withInt:withInt:withInt:", "String", NULL, 0x1, NULL, NULL },
-    { "initWithByteArray:withInt:withInt:withNSString:", "String", NULL, 0x1,
+    { "init", NULL, NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:", NULL, NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:withInt:", NULL, NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:withInt:withInt:", NULL, NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:withInt:withInt:withInt:", NULL, NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:withInt:withInt:withNSString:", NULL, NULL, 0x1,
       "Ljava.io.UnsupportedEncodingException;", NULL },
-    { "initWithByteArray:withInt:withInt:withJavaNioCharsetCharset:", "String", NULL, 0x1, NULL,
+    { "initWithByteArray:withInt:withInt:withJavaNioCharsetCharset:", NULL, NULL, 0x1, NULL, NULL
+    },
+    { "initWithByteArray:withJavaNioCharsetCharset:", NULL, NULL, 0x1, NULL, NULL },
+    { "initWithByteArray:withNSString:", NULL, NULL, 0x1, "Ljava.io.UnsupportedEncodingException;",
       NULL },
-    { "initWithByteArray:withJavaNioCharsetCharset:", "String", NULL, 0x1, NULL, NULL },
-    { "initWithByteArray:withNSString:", "String", NULL, 0x1,
-      "Ljava.io.UnsupportedEncodingException;", NULL },
-    { "initWithCharArray:", "String", NULL, 0x1, NULL, NULL },
-    { "initWithCharArray:withInt:withInt:", "String", NULL, 0x1, NULL, NULL },
-    { "initWithIntArray:withInt:withInt:", "String", NULL, 0x1, NULL, NULL },
-    { "initWithInt:withInt:withCharArray:", "String", NULL, 0x0, NULL, NULL },
-    { "initWithNSString:", "String", NULL, 0x1, NULL, NULL },
-    { "initWithJavaLangStringBuffer:", "String", NULL, 0x1, NULL, NULL },
-    { "initWithJavaLangStringBuilder:", "String", NULL, 0x1, NULL, NULL },
+    { "initWithCharArray:", NULL, NULL, 0x1, NULL, NULL },
+    { "initWithCharArray:withInt:withInt:", NULL, NULL, 0x1, NULL, NULL },
+    { "initWithIntArray:withInt:withInt:", NULL, NULL, 0x1, NULL, NULL },
+    { "initWithInt:withInt:withCharArray:", NULL, NULL, 0x0, NULL, NULL },
+    { "initWithNSString:", NULL, NULL, 0x1, NULL, NULL },
+    { "initWithJavaLangStringBuffer:", NULL, NULL, 0x1, NULL, NULL },
+    { "initWithJavaLangStringBuilder:", NULL, NULL, 0x1, NULL, NULL },
     { "valueOfChars:", "copyValueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
     { "valueOfChars:offset:count:", "copyValueOf", "Ljava.lang.String;", 0x9, NULL, NULL },
     { "formatWithJavaUtilLocale:withNSString:withNSObjectArray:", "format", "Ljava.lang.String;",
@@ -1057,7 +1057,7 @@ jint javaStringHashCode(NSString *string) {
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
     { "compareWithId:withId:", "compare", "I", 0x1, NULL, NULL },
-    { "init", "CaseInsensitiveComparator", NULL, 0x2, NULL, NULL },
+    { "init", NULL, NULL, 0x2, NULL, NULL },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "serialVersionUID", NULL, 0x1a, "J", NULL, NULL,

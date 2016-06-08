@@ -307,7 +307,7 @@
     { "isBridge", NULL, "Z", 0x1, NULL, NULL },
     { "isVarArgs", NULL, "Z", 0x1, NULL, NULL },
     { "getDefaultValue", NULL, "Ljava.lang.Object;", 0x1, NULL, NULL },
-    { "init", "Method", NULL, 0x1, NULL, NULL },
+    { "init", NULL, NULL, 0x1, NULL, NULL },
   };
   static const J2ObjcClassInfo _JavaLangReflectMethod = {
     2, "Method", "java.lang.reflect", NULL, 0x1, 20, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL
