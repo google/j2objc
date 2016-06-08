@@ -17,15 +17,12 @@
 
 package java.util;
 
+import com.google.j2objc.util.NativeTimeZone;
+
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-/*-[
-#import "IOSClass.h"
-#import "java/util/SimpleTimeZone.h"
-]-*/
 
 /**
  * {@code TimeZone} represents a time zone, primarily used for configuring a {@link Calendar} or
@@ -94,13 +91,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
 
     private String ID;
 
-    private Object nativeTimeZone;
-
     public TimeZone() {}
-
-    private TimeZone(Object nativeTimeZone) {
-      this.nativeTimeZone = nativeTimeZone;
-    }
 
     /**
      * Returns a new time zone with the same ID, raw offset, and daylight
@@ -119,10 +110,9 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * passed to {@link #getTimeZone} to lookup the corresponding time zone
      * instance.
      */
-    public static synchronized native String[] getAvailableIDs() /*-[
-      NSArray *timeZones = [NSTimeZone knownTimeZoneNames];
-      return [IOSObjectArray arrayWithNSArray:timeZones type:NSString_class_()];
-    ]-*/;
+    public static synchronized String[] getAvailableIDs() {
+        return NativeTimeZone.getAvailableNativeTimeZoneNames();
+    }
 
     /**
      * Returns the IDs of the time zones whose offset from UTC is {@code
@@ -131,18 +121,16 @@ public abstract class TimeZone implements Serializable, Cloneable {
      *
      * @return a possibly-empty array.
      */
-    public static synchronized native String[] getAvailableIDs(int offsetMillis) /*-[
-      NSInteger secondsOffset = offsetMillis / 1000;
-      NSArray *timeZones = [NSTimeZone knownTimeZoneNames];
-      NSMutableArray *results = [NSMutableArray array];
-      for (NSString *id in timeZones) {
-        NSTimeZone *tz = [NSTimeZone timeZoneWithName:id];
-        if ([tz secondsFromGMT] == secondsOffset) {
-          [results addObject:id];
+    public static synchronized String[] getAvailableIDs(int offsetMillis) {
+        List<String> ids = new ArrayList<>();
+        for (String id : getAvailableIDs()) {
+            TimeZone tz = NativeTimeZone.get(id);
+            if (tz.getRawOffset() == offsetMillis) {
+                ids.add(id);
+            }
         }
-      }
-      return [IOSObjectArray arrayWithNSArray:results type:NSString_class_()];
-    ]-*/;
+        return ids.toArray(new String[0]);
+    }
 
     /**
      * Returns the user's preferred time zone. This may have been overridden for
@@ -153,18 +141,15 @@ public abstract class TimeZone implements Serializable, Cloneable {
      */
     public static synchronized TimeZone getDefault() {
         if (defaultTimeZone == null) {
-            defaultTimeZone = getDefaultNativeTimeZone();
+            defaultTimeZone = NativeTimeZone.getDefaultNativeTimeZone();
         }
+
+        if (defaultTimeZone == null) {
+            defaultTimeZone = GMT;
+        }
+
         return (TimeZone) defaultTimeZone.clone();
     }
-
-    private static native TimeZone getDefaultNativeTimeZone() /*-[
-      NSTimeZone *tz = [NSTimeZone defaultTimeZone];
-      int offsetMillis = (int) ([tz secondsFromGMT] * 1000);
-      JavaUtilTimeZone *result = [[JavaUtilSimpleTimeZone alloc] initWithInt:offsetMillis
-                                                                withNSString:[tz name]];
-      return AUTORELEASE(result);
-    ]-*/;
 
     /**
      * Equivalent to {@code getDisplayName(false, TimeZone.LONG, Locale.getDefault())}.
@@ -201,62 +186,16 @@ public abstract class TimeZone implements Serializable, Cloneable {
      */
     public String getDisplayName(boolean daylightTime, int style, Locale locale) {
         if (style != SHORT && style != LONG) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("Bad style: " + style);
         }
 
-        boolean useDaylight = daylightTime && useDaylightTime();
-
-        String result = displayName(useDaylight, style == SHORT, locale);
-        if (result != null) {
-            return result;
+        int offsetMillis = getRawOffset();
+        if (daylightTime) {
+            offsetMillis += getDSTSavings();
         }
-
-        // TODO: do we ever get here?
-
-        int offset = getRawOffset();
-        if (useDaylight) {
-            offset += getDSTSavings();
-        }
-        offset /= 60000;
-        char sign = '+';
-        if (offset < 0) {
-            sign = '-';
-            offset = -offset;
-        }
-        StringBuilder builder = new StringBuilder(9);
-        builder.append("GMT");
-        builder.append(sign);
-        appendNumber(builder, 2, offset / 60);
-        builder.append(':');
-        appendNumber(builder, 2, offset % 60);
-        return builder.toString();
+        return createGmtOffsetString(true /* includeGmt */, true /* includeMinuteSeparator */,
+            offsetMillis);
     }
-
-    private native String displayName(boolean daylightTime, boolean shortName, Locale locale) /*-[
-      NSTimeZoneNameStyle zoneStyle;
-      if (daylightTime) {
-        zoneStyle = shortName ?
-            NSTimeZoneNameStyleShortDaylightSaving : NSTimeZoneNameStyleDaylightSaving;
-      } else {
-        zoneStyle = shortName ?
-            NSTimeZoneNameStyleShortStandard : NSTimeZoneNameStyleStandard;
-      }
-
-      // Find native locale.
-      NSLocale *nativeLocale;
-      if (locale) {
-        NSMutableDictionary *components = [NSMutableDictionary dictionary];
-        [components setObject:[locale getLanguage] forKey:NSLocaleLanguageCode];
-        [components setObject:[locale getCountry]  forKey:NSLocaleCountryCode];
-        [components setObject:[locale getVariant]  forKey:NSLocaleVariantCode];
-        NSString *localeId = [NSLocale localeIdentifierFromComponents:components];
-        nativeLocale = AUTORELEASE([[NSLocale alloc] initWithLocaleIdentifier:localeId]);
-      } else {
-        nativeLocale = [NSLocale currentLocale];
-      }
-
-      return [(NSTimeZone *) self->nativeTimeZone_ localizedName:zoneStyle locale:nativeLocale];
-    ]-*/;
 
     /**
      * Returns a string representation of an offset from UTC.
@@ -367,9 +306,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * Returns the offset in milliseconds from UTC of this time zone's standard
      * time.
      */
-    public native int getRawOffset() /*-[
-      return (int) [(NSTimeZone *) self->nativeTimeZone_ secondsFromGMT] * 1000;
-    ]-*/;
+    public abstract int getRawOffset();
 
     /**
      * Returns a {@code TimeZone} corresponding to the given {@code id}, or {@code GMT}
@@ -396,7 +333,6 @@ public abstract class TimeZone implements Serializable, Cloneable {
         }
 
         // Special cases? These can clone an existing instance.
-        // TODO: should we just add a cache to ZoneInfoDB instead?
         if (id.length() == 3) {
             if (id.equals("GMT")) {
                 return (TimeZone) GMT.clone();
@@ -413,7 +349,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
         }
 
         // Native time zone?
-        zone = getNativeTimeZone(id);
+        zone = NativeTimeZone.get(id);
 
         // Custom time zone?
         if (zone == null && id.length() > 3 && id.startsWith("GMT")) {
@@ -428,79 +364,13 @@ public abstract class TimeZone implements Serializable, Cloneable {
         return (zone != null) ? zone : (TimeZone) GMT.clone();
     }
 
-    private static native TimeZone getNativeTimeZone(String id) /*-[
-      NSTimeZone *tz = [NSTimeZone timeZoneWithAbbreviation:id_];
-      if (!tz) {
-        tz = [NSTimeZone timeZoneWithName:id_];
-      }
-      if (!tz) {
-        return nil;
-      }
-      int offset = (int) [tz secondsFromGMT] * 1000; // convert to milliseconds
-
-      // Figure out the dates that daylight savings time starts and ends.
-      NSDate *toDaylightSaving, *toStandard;
-      if ([tz isDaylightSavingTime]) {
-        toStandard = [tz nextDaylightSavingTimeTransition];
-        toDaylightSaving =
-            [tz nextDaylightSavingTimeTransitionAfterDate:toStandard];
-      } else {
-        toDaylightSaving = [tz nextDaylightSavingTimeTransition];
-        toStandard = [tz nextDaylightSavingTimeTransitionAfterDate:toDaylightSaving];
-      }
-      if (toStandard && toDaylightSaving) {
-        NSUInteger savingsOffset =
-            [tz daylightSavingTimeOffsetForDate:toDaylightSaving] * 1000;
-        if ([tz isDaylightSavingTime]) {
-          // iOS returns current seconds, not the zone difference.
-          offset -= savingsOffset;
-        }
-
-        // Fetch each date's components.
-        NSCalendar *calendar = [NSCalendar currentCalendar];
-        NSUInteger units = NSCalendarUnitMonth | NSCalendarUnitDay |
-            NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond;
-        NSDateComponents *daylight = [calendar components:units
-                                                 fromDate:toDaylightSaving];
-        NSDateComponents *standard = [calendar components:units
-                                                 fromDate:toStandard];
-
-        // Convert each day's date components to milliseconds since midnight.
-        int daylightTime = (int) (([daylight hour] * 60 * 60) +
-                                 ([daylight minute] * 60) +
-                                  [daylight second]) * 1000;
-        int standardTime = (int) (([standard hour] * 60 * 60) +
-                                 ([standard minute] * 60) +
-                                  [standard second]) * 1000;
-
-        return AUTORELEASE([[JavaUtilSimpleTimeZone alloc]
-                            initWithInt:offset
-                           withNSString:[tz name]
-                                withInt:(int) [daylight month] - 1
-                                withInt:(int) [daylight day]
-                                withInt:0
-                                withInt:daylightTime
-                                withInt:(int) [standard month] - 1
-                                withInt:(int) [standard day]
-                                withInt:0
-                                withInt:standardTime
-                                withInt:(int) savingsOffset]);
-      } else {
-        return AUTORELEASE([[JavaUtilSimpleTimeZone alloc]
-                           initWithInt:offset withNSString:[tz name]]);
-      }
-    ]-*/;
-
     /**
      * Returns a new SimpleTimeZone for an ID of the form "GMT[+|-]hh[[:]mm]", or null.
      */
     private static TimeZone getCustomTimeZone(String id) {
         Matcher m = CUSTOM_ZONE_ID_PATTERN.matcher(id);
         if (!m.matches()) {
-            return GMT;  // Expected result for invalid format.
-        }
-        if (id.equals("GMT-00")) {
-            return GMT;
+            return null;
         }
 
         int hour;
@@ -548,9 +418,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
      * Returns true if {@code time} is in a daylight savings time period for
      * this time zone.
      */
-    public native boolean inDaylightTime(Date time) /*-[
-      return [(NSTimeZone *) self->nativeTimeZone_ isDaylightSavingTime];
-    ]-*/;
+    public abstract boolean inDaylightTime(Date time);
 
     /**
      * Overrides the default time zone for the current process only.
@@ -570,28 +438,18 @@ public abstract class TimeZone implements Serializable, Cloneable {
     /**
      * Sets the ID of this {@code TimeZone}.
      */
-    public native void setID(String id) /*-[
-      if (!id_) {
-        JavaLangNullPointerException *npe = [[JavaLangNullPointerException alloc] init];
-        @throw AUTORELEASE(npe);
-      }
-      JavaUtilTimeZone_set_ID_(self, id_);
-      NSTimeZone *tz = [NSTimeZone timeZoneWithAbbreviation:id_];
-      if (!tz) {
-        tz = [NSTimeZone timeZoneWithName:id_];
-      }
-      if (tz) {
-        JavaUtilTimeZone_set_nativeTimeZone_(self, tz);
-      }
-    ]-*/;
+    public void setID(String id) {
+        if (id == null) {
+            throw new NullPointerException("id == null");
+        }
+        ID = id;
+    }
 
     /**
      * Sets the offset in milliseconds from UTC of this time zone's standard
      * time.
      */
-    public void setRawOffset(int offsetMillis) {
-      // Ignore for iOS.
-    }
+    public abstract void setRawOffset(int offsetMillis);
 
     /**
      * Returns true if this time zone has a future transition to or from
@@ -610,9 +468,7 @@ public abstract class TimeZone implements Serializable, Cloneable {
      *
      * <p>Most applications should not use this method.
      */
-    public native boolean useDaylightTime() /*-[
-      return [(NSTimeZone *) self->nativeTimeZone_ nextDaylightSavingTimeTransition] != nil;
-    ]-*/;
+    public abstract boolean useDaylightTime();
 
     /**
      * Local LRU cache class, used to remove dependency on android.util.LruCache.
