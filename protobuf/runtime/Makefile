@@ -51,6 +51,7 @@ endif
 
 PROTO_PATH = $(PROTOBUF_ROOT_DIR)/src
 DESCRIPTOR_PROTO_RELATIVE = google/protobuf/descriptor.proto
+PROTOC = protoc
 DESCRIPTOR_PROTO = $(PROTO_PATH)/$(DESCRIPTOR_PROTO_RELATIVE)
 DESCRIPTOR_PROTO_M = $(GEN_OBJC_DIR)/com/google/protobuf/DescriptorProtos.m
 DESCRIPTOR_PROTO_H = $(DESCRIPTOR_PROTO_M:.m=.h)
@@ -87,8 +88,8 @@ fat_lib_dependencies: jre_emul_dist $(DESCRIPTOR_PROTO_H)
 PROTOBUF_LICENSE = ../LICENSE
 PROTOBUF_LICENSE_DIST = $(DIST_LICENSE_DIR)/protobuf_license.txt
 
-PROTOC = $(DIST_DIR)/j2objc_protoc
-$(PROTOC): protobuf_compiler_dist
+PROTOC_PLUGIN = $(DIST_DIR)/j2objc_protoc_plugin
+$(PROTOC_PLUGIN): protobuf_compiler_dist
 	@:
 
 dist: $(DIST_JAR) $(FAT_LIBS_DIST) $(ARCH_BUILD_DIR)/.dist_headers $(PROTOBUF_LICENSE_DIST)
@@ -119,10 +120,11 @@ clean:
 	@rm -rf $(PROTOBUF_LICENSE_DIST)
 	@rm -rf $(STATIC_FRAMEWORK_DIR)
 
-DESCRIPTOR_PROTO_M_CMD = $(PROTOC) --proto_path=$(PROTO_PATH) --j2objc_out=$(GEN_OBJC_DIR)
+DESCRIPTOR_PROTO_M_CMD = $(PROTOC) --plugin=protoc-gen-j2objc=$(PROTOC_PLUGIN) \
+  --proto_path=$(PROTO_PATH) --j2objc_out=$(GEN_OBJC_DIR)
 DESCRIPTOR_PROTO_M_CMD += $(DESCRIPTOR_PROTO)
 
-$(DESCRIPTOR_PROTO_M): $(DESCRIPTOR_PROTO) $(PROTOC)
+$(DESCRIPTOR_PROTO_M): $(DESCRIPTOR_PROTO) $(PROTOC_PLUGIN)
 	@mkdir -p $(@D)
 	$(DESCRIPTOR_PROTO_M_CMD)
 
