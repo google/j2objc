@@ -346,6 +346,7 @@ JAVA_PUBLIC_SOURCES_CORE = \
   java/util/regex/Splitter.java \
   javax/annotation/PostConstruct.java \
   javax/annotation/PreDestroy.java \
+  javax/annotation/Resource.java \
   javax/annotation/Resources.java \
   sun/misc/Unsafe.java
 

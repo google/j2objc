@@ -77,8 +77,7 @@ IOS_JAVA_OBJS = \
 	java/lang/reflect/AccessibleObject.o \
 	java/lang/reflect/Constructor.o \
 	java/lang/reflect/Field.o \
-	java/lang/reflect/Method.o \
-	javax/annotation/Resource.o
+	java/lang/reflect/Method.o
 
 # Java sources that should not be translated but should be included in the jar.
 JAR_ONLY_SOURCES = \

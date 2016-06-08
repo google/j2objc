@@ -37,6 +37,5 @@ update_file Classes/java/lang/reflect/AccessibleObject.m java/lang/reflect/Acces
 update_file Classes/java/lang/reflect/Constructor.m java/lang/reflect/Constructor.java
 update_file Classes/java/lang/reflect/Field.m java/lang/reflect/Field.java
 update_file Classes/java/lang/reflect/Method.m java/lang/reflect/Method.java
-update_file Classes/javax/annotation/Resource.m javax/annotation/Resource.java
 
 rm -rf $TEMP_DIR $TRANSLATION_DIR
