@@ -127,7 +127,7 @@ class FieldGeneratorMap {
 
  private:
   const Descriptor* descriptor_;
-  scoped_array<scoped_ptr<FieldGenerator> > field_generators_;
+  std::unique_ptr<std::unique_ptr<FieldGenerator> []> field_generators_;
 
   static FieldGenerator* MakeGenerator(const FieldDescriptor* field);
 

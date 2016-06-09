@@ -32,12 +32,14 @@
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, and others.
 
-#include <google/protobuf/compiler/j2objc/j2objc_file.h>
+#include "google/protobuf/compiler/j2objc/j2objc_file.h"
 
-#include <google/protobuf/compiler/j2objc/j2objc_enum.h>
-#include <google/protobuf/compiler/j2objc/j2objc_extension.h>
-#include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
-#include <google/protobuf/compiler/j2objc/j2objc_message.h>
+#include <memory>
+
+#include "google/protobuf/compiler/j2objc/j2objc_enum.h"
+#include "google/protobuf/compiler/j2objc/j2objc_extension.h"
+#include "google/protobuf/compiler/j2objc/j2objc_helpers.h"
+#include "google/protobuf/compiler/j2objc/j2objc_message.h"
 
 namespace google {
 namespace protobuf {
@@ -161,7 +163,7 @@ void FileGenerator::GenerateHeader(GeneratorContext* context,
   string filename = GetFileName(".h");
   file_list->push_back(filename);
 
-  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
   GenerateHeaderBoilerplate(&printer);
@@ -237,7 +239,7 @@ void FileGenerator::GenerateSource(GeneratorContext* context,
   string filename = GetFileName(".m");
   file_list->push_back(filename);
 
-  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
   GenerateSourceBoilerplate(&printer);
@@ -352,7 +354,7 @@ void FileGenerator::GenerateEnumHeader(GeneratorContext* context,
                                        const EnumDescriptor* descriptor) {
   string filename = output_dir_ + descriptor->name() + ".h";
   file_list->push_back(filename);
-  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
   GenerateBoilerplate(&printer);
@@ -369,7 +371,7 @@ void FileGenerator::GenerateEnumSource(GeneratorContext* context,
                                        const EnumDescriptor* descriptor) {
   string filename = output_dir_ + descriptor->name() + ".m";
   file_list->push_back(filename);
-  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
   GenerateBoilerplate(&printer);
@@ -388,7 +390,7 @@ void FileGenerator::GenerateMessageHeader(GeneratorContext* context,
                                           const Descriptor* descriptor) {
   string filename = output_dir_ + descriptor->name() + ".h";
   file_list->push_back(filename);
-  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
   GenerateBoilerplate(&printer);
@@ -409,7 +411,7 @@ void FileGenerator::GenerateMessageSource(GeneratorContext* context,
                                           const Descriptor* descriptor) {
   string filename = output_dir_ + descriptor->name() + ".m";
   file_list->push_back(filename);
-  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
   GenerateBoilerplate(&printer);
@@ -429,7 +431,7 @@ void FileGenerator::GenerateMessageOrBuilder(GeneratorContext* context,
                                              const Descriptor* descriptor) {
   string filename = output_dir_ + descriptor->name() + "OrBuilder.h";
   file_list->push_back(filename);
-  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
 
   GenerateBoilerplate(&printer);
@@ -470,7 +472,7 @@ void PrintProperty(io::Printer* printer, const string& key, const string& value)
 
 void FileGenerator::GenerateHeaderMappings(GeneratorContext* context) {
   string headerFile = StaticOutputFileName(file_, ".h");
-  scoped_ptr<io::ZeroCopyOutputStream> output(
+  std::unique_ptr<io::ZeroCopyOutputStream> output(
       context->Open(FileDirMappingOutputName(file_)));
   io::Printer printer(output.get(), '$');
 
@@ -496,7 +498,7 @@ void PrintClassMappings(const Descriptor* descriptor, io::Printer* printer) {
 
 void FileGenerator::GenerateClassMappings(GeneratorContext* context) {
   string filename = MappedInputName(file_) + ".clsmap.properties";
-  scoped_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
+  std::unique_ptr<io::ZeroCopyOutputStream> output(context->Open(filename));
   io::Printer printer(output.get(), '$');
   PrintProperty(&printer, JavaClassName(file_), ClassName(file_));
   for (int i = 0; i < file_->enum_type_count(); i++) {

@@ -32,12 +32,14 @@
 //  Based on original Protocol Buffers design by
 //  Sanjay Ghemawat, Jeff Dean, Cyrus Najmabadi, and others.
 
-#include <google/protobuf/compiler/j2objc/j2objc_message.h>
+#include "google/protobuf/compiler/j2objc/j2objc_message.h"
 
 #include <algorithm>
-#include <google/protobuf/compiler/j2objc/j2objc_enum.h>
-#include <google/protobuf/compiler/j2objc/j2objc_extension.h>
-#include <google/protobuf/compiler/j2objc/j2objc_helpers.h>
+#include <memory>
+
+#include "google/protobuf/compiler/j2objc/j2objc_enum.h"
+#include "google/protobuf/compiler/j2objc/j2objc_extension.h"
+#include "google/protobuf/compiler/j2objc/j2objc_helpers.h"
 
 namespace google {
 namespace protobuf {
@@ -266,7 +268,7 @@ void MessageGenerator::GenerateHeader(io::Printer* printer) {
 }
 
 void MessageGenerator::GenerateSource(io::Printer* printer) {
-  scoped_array<const FieldDescriptor *> sorted_fields(
+  std::unique_ptr<const FieldDescriptor * []> sorted_fields(
       SortFieldsByNumber(descriptor_));
   uint32_t singularFieldCount = 0;
   for (int i = 0; i < descriptor_->field_count(); i++) {
