@@ -74,7 +74,7 @@ public class MetadataWriter extends TreeVisitor {
 
   private void visitType(AbstractTypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
-    if (BindingUtil.isSynthetic(type) || !TranslationUtil.needsReflection(type)) {
+    if (BindingUtil.isPackageInfo(type) || !TranslationUtil.needsReflection(type)) {
       return;
     }
 

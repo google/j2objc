@@ -111,8 +111,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     printDisallowedConstructors();
     println("\n@end");
 
-    // Package-info type, skip all outer declarations.
-    if (BindingUtil.isSynthetic(typeBinding)) {
+    if (BindingUtil.isPackageInfo(typeBinding)) {
       return;
     }
     printCompanionClassDeclaration();

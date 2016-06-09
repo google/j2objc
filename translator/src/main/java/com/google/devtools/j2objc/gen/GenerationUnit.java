@@ -24,7 +24,6 @@ import com.google.devtools.j2objc.ast.NativeDeclaration;
 import com.google.devtools.j2objc.ast.PackageDeclaration;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.file.InputFile;
-import com.google.devtools.j2objc.util.NameTable;
 
 import java.io.File;
 import java.util.Collection;
@@ -213,9 +212,6 @@ public class GenerationUnit {
    */
   private static String getDefaultOutputPath(CompilationUnit unit) {
     String path = unit.getMainTypeName();
-    if (path.equals(NameTable.PACKAGE_INFO_MAIN_TYPE)) {
-      path = NameTable.PACKAGE_INFO_FILE_NAME;
-    }
     PackageDeclaration pkg = unit.getPackage();
     if (Options.usePackageDirectories() && !pkg.isDefaultPackage()) {
       path = pkg.getName().getFullyQualifiedName().replace('.', File.separatorChar)

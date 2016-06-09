@@ -44,7 +44,7 @@ public class PackageInfoRewriter {
   private final Types typeEnv;
 
   public static void run(CompilationUnit unit) {
-    if (unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_MAIN_TYPE)) {
+    if (unit.getMainTypeName().endsWith(NameTable.PACKAGE_INFO_CLASS_NAME)) {
       new PackageInfoRewriter(unit).run();
     }
   }
@@ -63,14 +63,10 @@ public class PackageInfoRewriter {
       return;
     }
 
-    // The package prefix does not get renamed for the package_info type, so we
-    // generate the camel-cased name here so that NameTable doesn't rename it
-    // later.
-    String typeName = NameTable.camelCaseQualifiedName(pkg.getPackageBinding().getName())
-        + NameTable.PACKAGE_INFO_MAIN_TYPE;
-    GeneratedTypeBinding typeBinding = GeneratedTypeBinding.newTypeBinding(
-        typeName, typeEnv.getNSObject(), false);
-    typeBinding.setModifiers(BindingUtil.ACC_SYNTHETIC | Modifier.PRIVATE);
+    GeneratedTypeBinding typeBinding = new GeneratedTypeBinding(
+        NameTable.PACKAGE_INFO_CLASS_NAME, pkg.getPackageBinding(), typeEnv.getNSObject(), false,
+        null);
+    typeBinding.setModifiers(Modifier.PRIVATE);
     TypeDeclaration typeDecl = new TypeDeclaration(typeBinding);
     TreeUtil.moveList(pkg.getAnnotations(), typeDecl.getAnnotations());
 

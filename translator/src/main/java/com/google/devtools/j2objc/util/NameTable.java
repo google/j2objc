@@ -68,8 +68,8 @@ public class NameTable {
 
   // The JDT compiler requires package-info files be named as "package-info",
   // but that's an illegal type to generate.
-  public static final String PACKAGE_INFO_FILE_NAME = "package-info";
-  public static final String PACKAGE_INFO_MAIN_TYPE = "package_info";
+  public static final String PACKAGE_INFO_CLASS_NAME = "package-info";
+  private static final String PACKAGE_INFO_OBJC_NAME = "package_info";
 
   // The self name in Java is reserved in Objective-C, but functionized methods
   // actually want the first parameter to be self. This is an internal name,
@@ -846,7 +846,13 @@ public class NameTable {
   public String getFullName(ITypeBinding binding) {
     binding = typeEnv.mapType(binding.getErasure());  // Make sure type variables aren't included.
 
-    // Use ObjectiveCType annotation, if it exists.
+    // Avoid package prefix renaming for package-info types, and use a valid ObjC name that doesn't
+    // have a dash character.
+    if (BindingUtil.isPackageInfo(binding)) {
+      return camelCaseQualifiedName(binding.getPackage().getName()) + PACKAGE_INFO_OBJC_NAME;
+    }
+
+    // Use ObjectiveCName annotation, if it exists.
     IAnnotationBinding annotation = BindingUtil.getAnnotation(binding, ObjectiveCName.class);
     if (annotation != null) {
       return (String) BindingUtil.getAnnotationValue(annotation, "value");

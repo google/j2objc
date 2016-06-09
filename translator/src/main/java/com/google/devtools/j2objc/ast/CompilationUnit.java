@@ -51,12 +51,7 @@ public class CompilationUnit extends TreeNode {
     typeEnv = new Types(jdtNode.getAST());
     nameTable = nameTableFactory == null ? null : nameTableFactory.newNameTable(typeEnv);
     this.sourceFilePath = Preconditions.checkNotNull(sourceFilePath);
-    Preconditions.checkNotNull(mainTypeName);
-    if (mainTypeName.endsWith(NameTable.PACKAGE_INFO_FILE_NAME)) {
-      mainTypeName =
-          mainTypeName.replace(NameTable.PACKAGE_INFO_FILE_NAME, NameTable.PACKAGE_INFO_MAIN_TYPE);
-    }
-    this.mainTypeName = mainTypeName;
+    this.mainTypeName = Preconditions.checkNotNull(mainTypeName);
     this.source = Preconditions.checkNotNull(source);
     newlines = findNewlines(source);
     if (jdtNode.getPackage() == null) {

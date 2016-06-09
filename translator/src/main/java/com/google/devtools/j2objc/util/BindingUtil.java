@@ -168,6 +168,10 @@ public final class BindingUtil {
     return type instanceof LambdaTypeBinding;
   }
 
+  public static boolean isPackageInfo(ITypeBinding type) {
+    return type.getName().equals(NameTable.PACKAGE_INFO_CLASS_NAME);
+  }
+
   /**
    * Tests if this type is private to it's source file. A public type declared
    * within a private type is considered private.
