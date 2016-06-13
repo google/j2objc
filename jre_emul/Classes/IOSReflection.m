@@ -122,7 +122,8 @@ const J2ObjcFieldInfo *JreFindFieldInfo(const J2ObjcClassInfo *metadata, const c
   if (metadata) {
     for (int i = 0; i < metadata->fieldCount; i++) {
       const J2ObjcFieldInfo *fieldInfo = &metadata->fields[i];
-      if (fieldInfo->javaName && strcmp(fieldName, fieldInfo->javaName) == 0) {
+      const char *javaName = JrePtrAtIndex(metadata->ptrTable, fieldInfo->javaNameIdx);
+      if (javaName && strcmp(fieldName, javaName) == 0) {
         return fieldInfo;
       }
       if (strcmp(fieldName, fieldInfo->name) == 0) {
@@ -183,13 +184,9 @@ IOSObjectArray *JreClassInnerClasses(const J2ObjcClassInfo *metadata) {
   return result;
 }
 
-NSString *JreMethodName(const J2ObjcMethodInfo *metadata) {
-  return metadata ? (metadata->javaName ? [NSString stringWithUTF8String:metadata->javaName]
-                     : [NSString stringWithUTF8String:metadata->selector]) : nil;
-}
-
-NSString *JreMethodJavaName(const J2ObjcMethodInfo *metadata) {
-  return metadata && metadata->javaName ? [NSString stringWithUTF8String:metadata->javaName] : nil;
+NSString *JreMethodJavaName(const J2ObjcMethodInfo *metadata, const void **ptrTable) {
+  const char *javaName = metadata ? JrePtrAtIndex(ptrTable, metadata->javaNameIdx) : NULL;
+  return javaName ? [NSString stringWithUTF8String:javaName] : nil;
 }
 
 NSString *JreMethodObjcName(const J2ObjcMethodInfo *metadata) {
@@ -204,12 +201,13 @@ jboolean JreMethodIsConstructor(const J2ObjcMethodInfo *metadata) {
   return strcmp(name, "init") == 0 || strstr(name, "initWith") == name;
 }
 
-IOSObjectArray *JreMethodExceptionTypes(const J2ObjcMethodInfo *metadata) {
-  if (!metadata || !metadata->exceptions) {
+IOSObjectArray *JreMethodExceptionTypes(const J2ObjcMethodInfo *metadata, const void **ptrTable) {
+  const char *exceptions = metadata ? JrePtrAtIndex(ptrTable, metadata->exceptionsIdx) : NULL;
+  if (!exceptions) {
     return nil;
   }
 
-  const char *p = metadata->exceptions;
+  const char *p = exceptions;
   int n = 0;
   while (p != NULL) {
     const char *semi = strchr(p, ';');
@@ -223,7 +221,7 @@ IOSObjectArray *JreMethodExceptionTypes(const J2ObjcMethodInfo *metadata) {
   IOSObjectArray *result = [IOSObjectArray arrayWithLength:(jint)n
                                                       type:JavaLangReflectType_class_()];
   jint count = 0;
-  p = metadata->exceptions;
+  p = exceptions;
   while (p != NULL) {
     char *semi = strchr(p, ';');
     if (semi != NULL) {
@@ -238,9 +236,9 @@ IOSObjectArray *JreMethodExceptionTypes(const J2ObjcMethodInfo *metadata) {
   return result;
 }
 
-NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata) {
-  return metadata && metadata->genericSignature
-      ? [NSString stringWithUTF8String:metadata->genericSignature] : nil;
+NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable) {
+  const char *genericSig = metadata ? JrePtrAtIndex(ptrTable, metadata->genericSignatureIdx) : NULL;
+  return genericSig ? [NSString stringWithUTF8String:genericSig] : nil;
 }
 
 

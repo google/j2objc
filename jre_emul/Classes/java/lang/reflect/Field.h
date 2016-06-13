@@ -39,6 +39,7 @@
   Ivar ivar_;
   IOSClass *declaringClass_;
   const J2ObjcFieldInfo *metadata_;
+  const void **ptrTable_;
 }
 
 - (instancetype)initWithIvar:(Ivar)ivar

@@ -30,7 +30,7 @@
 @class IOSClass;
 
 // Current metadata structure version
-#define J2OBJC_METADATA_VERSION 2
+#define J2OBJC_METADATA_VERSION 3
 
 // A raw value is the union of all possible native types.
 typedef union {
@@ -50,23 +50,25 @@ typedef union {
 // all information provided by the reflection API is discoverable via the
 // Objective-C runtime.
 
+typedef int16_t ptr_idx;
+
 typedef struct J2ObjcMethodInfo {
   const char *selector;
-  const char *javaName;
   const char *returnType;
   uint16_t modifiers;
-  const char *exceptions;
-  const char *genericSignature;
+  ptr_idx javaNameIdx;
+  ptr_idx exceptionsIdx;
+  ptr_idx genericSignatureIdx;
 } J2ObjcMethodInfo;
 
 typedef struct J2ObjcFieldInfo {
   const char *name;
-  const char *javaName;
-  uint16_t modifiers;
   const char *type;
-  const void *staticRef;
-  const char *genericSignature;
   J2ObjcRawValue constantValue;
+  uint16_t modifiers;
+  ptr_idx javaNameIdx;
+  ptr_idx staticRefIdx;
+  ptr_idx genericSignatureIdx;
 } J2ObjcFieldInfo;
 
 typedef struct J2ObjCEnclosingMethodInfo {
@@ -74,6 +76,8 @@ typedef struct J2ObjCEnclosingMethodInfo {
   const char *selector;
 } J2ObjCEnclosingMethodInfo;
 
+// TODO(kstanger): Optimize the size of this struct by using the pointer table
+// and rearranging the fields for better packing.
 typedef struct J2ObjcClassInfo {
   const unsigned version;
   const char *typeName;
@@ -90,6 +94,7 @@ typedef struct J2ObjcClassInfo {
   const char **innerClassnames;
   const J2ObjCEnclosingMethodInfo *enclosingMethod;
   const char *genericSignature;
+  const void **ptrTable;
 } J2ObjcClassInfo;
 
 // Autoboxing support.
@@ -103,6 +108,10 @@ extern struct objc_method_description *JreFindMethodDescFromList(
 extern struct objc_method_description *JreFindMethodDescFromMethodList(
     SEL sel, Method *methods, unsigned int count);
 extern NSMethodSignature *JreSignatureOrNull(struct objc_method_description *methodDesc);
+
+__attribute__((always_inline)) inline const void *JrePtrAtIndex(const void **ptrTable, ptr_idx i) {
+  return i < 0 ? NULL : ptrTable[i];
+}
 
 // J2ObjcClassInfo accessor functions.
 extern NSString *JreClassTypeName(const J2ObjcClassInfo *metadata);
@@ -120,12 +129,12 @@ extern const J2ObjcMethodInfo *JreFindMethodInfo(
     const J2ObjcClassInfo *metadata, NSString *methodName);
 
 // J2ObjcMethodInfo accessor functions.
-extern NSString *JreMethodName(const J2ObjcMethodInfo *metadata);
-extern NSString *JreMethodJavaName(const J2ObjcMethodInfo *metadata);
+extern NSString *JreMethodJavaName(const J2ObjcMethodInfo *metadata, const void **ptrTable);
 extern NSString *JreMethodObjcName(const J2ObjcMethodInfo *metadata);
-extern IOSObjectArray *JreMethodExceptionTypes(const J2ObjcMethodInfo *metadata);
+extern IOSObjectArray *JreMethodExceptionTypes(
+    const J2ObjcMethodInfo *metadata, const void **ptrTable);
 extern jboolean JreMethodIsConstructor(const J2ObjcMethodInfo *metadata);
-extern NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata);
+extern NSString *JreMethodGenericString(const J2ObjcMethodInfo *metadata, const void **ptrTable);
 
 __attribute__((always_inline)) inline jint JreMethodModifiers(const J2ObjcMethodInfo *metadata) {
   return metadata ? metadata->modifiers : JavaLangReflectModifier_PUBLIC;
@@ -133,7 +142,7 @@ __attribute__((always_inline)) inline jint JreMethodModifiers(const J2ObjcMethod
 
 // metadata must not be NULL.
 __attribute__((always_inline)) inline SEL JreMethodSelector(const J2ObjcMethodInfo *metadata) {
-  return sel_registerName(metadata->selector ? metadata->selector : metadata->javaName);
+  return sel_registerName(metadata->selector);
 }
 
 __attribute__((always_inline)) inline

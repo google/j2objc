@@ -21,6 +21,7 @@
 
 #import "java/lang/reflect/Field.h"
 
+#import "IOSClass.h"
 #import "IOSReflection.h"
 #import "J2ObjC_source.h"
 #import "java/lang/AssertionError.h"
@@ -45,6 +46,7 @@
     ivar_ = ivar;
     declaringClass_ = aClass;
     metadata_ = metadata;
+    ptrTable_ = IOSClass_GetMetadataOrFail(aClass)->ptrTable;
   }
   return self;
 }
@@ -52,17 +54,15 @@
 + (instancetype)fieldWithIvar:(Ivar)ivar
                     withClass:(IOSClass *)aClass
                  withMetadata:(const J2ObjcFieldInfo *)metadata {
-  JavaLangReflectField *field =
-      [[JavaLangReflectField alloc] initWithIvar:ivar withClass:aClass withMetadata:metadata];
-#if ! __has_feature(objc_arc)
-  [field autorelease];
-#endif
-  return field;
+  return [[[JavaLangReflectField alloc] initWithIvar:ivar
+                                           withClass:aClass
+                                        withMetadata:metadata] autorelease];
 }
 
 - (NSString *)getName {
-  if (metadata_->javaName) {
-    return [NSString stringWithUTF8String:metadata_->javaName];
+  const char *javaName = JrePtrAtIndex(ptrTable_, metadata_->javaNameIdx);
+  if (javaName) {
+    return [NSString stringWithUTF8String:javaName];
   } else if (IsStatic(self)) {
     return [NSString stringWithUTF8String:metadata_->name];
   } else {
@@ -103,7 +103,7 @@ static void ReadRawValue(
     type = toType;
   }
   if (IsStatic(field)) {
-    const void *addr = field->metadata_->staticRef;
+    const void *addr = JrePtrAtIndex(field->ptrTable_, field->metadata_->staticRefIdx);
     if (addr) {
       [type __readRawValue:rawValue fromAddress:addr];
     } else {
@@ -147,8 +147,7 @@ static void SetWithRawValue(
       @throw AUTORELEASE([[JavaLangIllegalAccessException alloc] initWithNSString:
           @"Cannot set static final field"]);
     }
-    const void *addr = field->metadata_->staticRef;
-    [type __writeRawValue:rawValue toAddress:addr];
+    [type __writeRawValue:rawValue toAddress:field->ptrTable_[field->metadata_->staticRefIdx]];
   } else {
     nil_chk(object);
     if (IsFinal(field) && !field->accessible_) {
@@ -288,10 +287,11 @@ static void SetWithRawValue(
 }
 
 - (id<JavaLangReflectType>)getGenericType {
-  if (!metadata_->genericSignature) {
+  const char *genericSig = JrePtrAtIndex(ptrTable_, metadata_->genericSignatureIdx);
+  if (!genericSig) {
     return [self getType];
   }
-  NSString *genericSignature = [NSString stringWithUTF8String:metadata_->genericSignature];
+  NSString *genericSignature = [NSString stringWithUTF8String:genericSig];
   LibcoreReflectGenericSignatureParser *parser =
       [[LibcoreReflectGenericSignatureParser alloc]
        initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()];
@@ -367,58 +367,45 @@ static void SetWithRawValue(
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "getName", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
-    { "getModifiers", NULL, "I", 0x1, NULL, NULL },
-    { "getType", NULL, "Ljava.lang.Class;", 0x1, NULL, "()Ljava/lang/Class<*>;" },
-    { "getGenericType", NULL, "Ljava.lang.reflect.Type;", 0x1, NULL, NULL },
-    { "getDeclaringClass", NULL, "Ljava.lang.Class;", 0x1, NULL, "()Ljava/lang/Class<*>;" },
-    { "getWithId:", "get", "Ljava.lang.Object;", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "getBooleanWithId:", "getBoolean", "Z", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "getByteWithId:", "getByte", "B", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "getCharWithId:", "getChar", "C", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "getDoubleWithId:", "getDouble", "D", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "getFloatWithId:", "getFloat", "F", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "getIntWithId:", "getInt", "I", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "getLongWithId:", "getLong", "J", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "getShortWithId:", "getShort", "S", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "setWithId:withId:", "set", "V", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "setBooleanWithId:withBoolean:", "setBoolean", "V", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "setByteWithId:withByte:", "setByte", "V", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "setCharWithId:withChar:", "setChar", "V", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "setDoubleWithId:withDouble:", "setDouble", "V", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "setFloatWithId:withFloat:", "setFloat", "V", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "setIntWithId:withInt:", "setInt", "V", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "setLongWithId:withLong:", "setLong", "V", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "setShortWithId:withShort:", "setShort", "V", 0x1,
-      "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", NULL },
-    { "getAnnotationWithIOSClass:", "getAnnotation", "TT;", 0x1, NULL,
-      "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" },
-    { "getDeclaredAnnotations", NULL, "[Ljava.lang.annotation.Annotation;", 0x1, NULL, NULL },
-    { "isSynthetic", NULL, "Z", 0x1, NULL, NULL },
-    { "isEnumConstant", NULL, "Z", 0x1, NULL, NULL },
-    { "toGenericString", NULL, "Ljava.lang.String;", 0x1, NULL, NULL },
-    { "init", NULL, NULL, 0x1, NULL, NULL },
+    { "getName", "Ljava.lang.String;", 0x1, -1, -1, -1 },
+    { "getModifiers", "I", 0x1, -1, -1, -1 },
+    { "getType", "Ljava.lang.Class;", 0x1, -1, -1, 0 },
+    { "getGenericType", "Ljava.lang.reflect.Type;", 0x1, -1, -1, -1 },
+    { "getDeclaringClass", "Ljava.lang.Class;", 0x1, -1, -1, 0 },
+    { "getWithId:", "Ljava.lang.Object;", 0x1, 1, 2, -1 },
+    { "getBooleanWithId:", "Z", 0x1, 3, 2, -1 },
+    { "getByteWithId:", "B", 0x1, 4, 2, -1 },
+    { "getCharWithId:", "C", 0x1, 5, 2, -1 },
+    { "getDoubleWithId:", "D", 0x1, 6, 2, -1 },
+    { "getFloatWithId:", "F", 0x1, 7, 2, -1 },
+    { "getIntWithId:", "I", 0x1, 8, 2, -1 },
+    { "getLongWithId:", "J", 0x1, 9, 2, -1 },
+    { "getShortWithId:", "S", 0x1, 10, 2, -1 },
+    { "setWithId:withId:", "V", 0x1, 11, 2, -1 },
+    { "setBooleanWithId:withBoolean:", "V", 0x1, 12, 2, -1 },
+    { "setByteWithId:withByte:", "V", 0x1, 13, 2, -1 },
+    { "setCharWithId:withChar:", "V", 0x1, 14, 2, -1 },
+    { "setDoubleWithId:withDouble:", "V", 0x1, 15, 2, -1 },
+    { "setFloatWithId:withFloat:", "V", 0x1, 16, 2, -1 },
+    { "setIntWithId:withInt:", "V", 0x1, 17, 2, -1 },
+    { "setLongWithId:withLong:", "V", 0x1, 18, 2, -1 },
+    { "setShortWithId:withShort:", "V", 0x1, 19, 2, -1 },
+    { "getAnnotationWithIOSClass:", "TT;", 0x1, 20, -1, 21 },
+    { "getDeclaredAnnotations", "[Ljava.lang.annotation.Annotation;", 0x1, -1, -1, -1 },
+    { "isSynthetic", "Z", 0x1, -1, -1, -1 },
+    { "isEnumConstant", "Z", 0x1, -1, -1, -1 },
+    { "toGenericString", "Ljava.lang.String;", 0x1, -1, -1, -1 },
+    { "init", NULL, 0x1, -1, -1, -1 },
   };
+  static const void *ptrTable[] = {
+    "()Ljava/lang/Class<*>;", "get",
+    "Ljava.lang.IllegalArgumentException;Ljava.lang.IllegalAccessException;", "getBoolean",
+    "getByte", "getChar", "getDouble", "getFloat", "getInt", "getLong", "getShort", "set",
+    "setBoolean", "setByte", "setChar", "setDouble", "setFloat", "setInt", "setLong", "setShort",
+    "getAnnotation", "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectField = {
-    2, "Field", "java.lang.reflect", NULL, 0x1, 29, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL
-  };
+    3, "Field", "java.lang.reflect", NULL, 0x1, 29, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL,
+    ptrTable };
   return &_JavaLangReflectField;
 }
 

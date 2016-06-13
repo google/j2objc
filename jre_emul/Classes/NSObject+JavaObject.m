@@ -171,21 +171,25 @@ static void doWait(id obj, long long timeout) {
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL, NULL },
-    { "getClass", NULL, "Ljava.lang.Class;", 0x11, NULL, "()Ljava/lang/Class<*>;" },
-    { "hash", "hashCode", "I", 0x1, NULL, NULL },
-    { "isEqual:", "equals", "Z", 0x1, NULL, NULL },
-    { "clone", NULL, "Ljava.lang.Object;", 0x4, "Ljava.lang.CloneNotSupportedException;", NULL },
-    { "description", "toString", "Ljava.lang.String;", 0x1, NULL, NULL },
-    { "javaFinalize", "finalize", "V", 0x4, "Ljava.lang.Throwable;", NULL },
-    { "notify", NULL, "V", 0x11, NULL, NULL },
-    { "notifyAll", NULL, "V", 0x11, NULL, NULL },
-    { "waitWithLong:", "wait", "V", 0x11, "Ljava.lang.InterruptedException;", NULL },
-    { "waitWithLong:withInt:", "wait", "V", 0x11, "Ljava.lang.InterruptedException;", NULL },
-    { "wait", NULL, "V", 0x11, "Ljava.lang.InterruptedException;", NULL },
+    { "init", NULL, 0x1, -1, -1, -1 },
+    { "getClass", "Ljava.lang.Class;", 0x11, -1, -1, 0 },
+    { "hash", "I", 0x1, 1, -1, -1 },
+    { "isEqual:", "Z", 0x1, 2, -1, -1 },
+    { "clone", "Ljava.lang.Object;", 0x4, -1, 3, -1 },
+    { "description", "Ljava.lang.String;", 0x1, 4, -1, -1 },
+    { "javaFinalize", "V", 0x4, 5, 6, -1 },
+    { "notify", "V", 0x11, -1, -1, -1 },
+    { "notifyAll", "V", 0x11, -1, -1, -1 },
+    { "waitWithLong:", "V", 0x11, 7, 8, -1 },
+    { "waitWithLong:withInt:", "V", 0x11, 7, 8, -1 },
+    { "wait", "V", 0x11, -1, 8, -1 },
   };
+  static const void *ptrTable[] = {
+    "()Ljava/lang/Class<*>;", "hashCode", "equals", "Ljava.lang.CloneNotSupportedException;",
+    "toString", "finalize", "Ljava.lang.Throwable;", "wait", "Ljava.lang.InterruptedException;" };
   static const J2ObjcClassInfo _NSObject = {
-    2, "Object", "java.lang", NULL, 0x1, 12, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL };
+    3, "Object", "java.lang", NULL, 0x1, 12, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL,
+    ptrTable };
   return &_NSObject;
 }
 

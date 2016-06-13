@@ -43,6 +43,7 @@
   SEL selector_;
   NSMethodSignature *methodSignature_;
   const J2ObjcMethodInfo *metadata_;
+  const void **ptrTable_;
   const char *binaryParameterTypes_;
 }
 

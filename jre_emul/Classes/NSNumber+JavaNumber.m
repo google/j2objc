@@ -27,20 +27,22 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, NULL, 0x1, NULL, NULL },
-    { "charValue", "byteValue", "B", 0x1, NULL, NULL },
-    { "doubleValue", NULL, "D", 0x401, NULL, NULL },
-    { "floatValue", NULL, "F", 0x401, NULL, NULL },
-    { "intValue", NULL, "I", 0x401, NULL, NULL },
-    { "longLongValue", "longValue", "J", 0x401, NULL, NULL },
-    { "shortValue", NULL, "S", 0x1, NULL, NULL },
+    { "init", NULL, 0x1, -1, -1, -1 },
+    { "charValue", "B", 0x1, 0, -1, -1 },
+    { "doubleValue", "D", 0x401, -1, -1, -1 },
+    { "floatValue", "F", 0x401, -1, -1, -1 },
+    { "intValue", "I", 0x401, -1, -1, -1 },
+    { "longLongValue", "J", 0x401, 1, -1, -1 },
+    { "shortValue", "S", 0x1, -1, -1, -1 },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "serialVersionUID", NULL, 0x1a, "J", NULL, NULL,
-      .constantValue.asLong = NSNumber_serialVersionUID },
+    { "serialVersionUID", "J", .constantValue.asLong = NSNumber_serialVersionUID, 0x1a, -1, -1, -1
+    },
   };
+  static const void *ptrTable[] = { "byteValue", "longValue" };
   static const J2ObjcClassInfo _NSNumber = {
-    2, "Number", "java.lang", NULL, 0x401, 7, methods, 1, fields, 0, NULL, 0, NULL, NULL, NULL };
+    3, "Number", "java.lang", NULL, 0x401, 7, methods, 1, fields, 0, NULL, 0, NULL, NULL, NULL,
+    ptrTable };
   return &_NSNumber;
 }
 

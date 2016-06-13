@@ -71,7 +71,10 @@ static GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self);
     methodSignature_ = [methodSignature retain];
     selector_ = selector;
     class_ = aClass; // IOSClass types are never dealloced.
-    metadata_ = metadata;
+    if (metadata) {
+      metadata_ = metadata;
+      ptrTable_ = IOSClass_GetMetadataOrFail(aClass)->ptrTable;
+    }
   }
   return self;
 }
@@ -151,7 +154,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 
   // If method has genericSignature with no generic types, it's a concrete implementation
   // of a generic method and its signature has the declared parameter types.
-  if (metadata_ && metadata_->genericSignature) {
+  if (metadata_ && metadata_->genericSignatureIdx >= 0) {
     IOSObjectArray *genericParameterTypes = [self getGenericParameterTypes];
     BOOL hasTypeParameter = NO;
     for (jint i = 0; i < nArgs; i++) {
@@ -237,7 +240,7 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 }
 
 - (IOSObjectArray *)getExceptionTypes {
-  IOSObjectArray *result = JreMethodExceptionTypes(metadata_);
+  IOSObjectArray *result = JreMethodExceptionTypes(metadata_, ptrTable_);
   if (!result) {
     result = [IOSObjectArray arrayWithLength:0 type:IOSClass_class_()];
   }
@@ -371,17 +374,15 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
 #endif
 }
 
-@end
-
 // Function generated from Android's java.lang.reflect.AbstractMethod class.
 GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
   const J2ObjcMethodInfo *metadata = [self metadata];
   if (!metadata) {
     return nil;
   }
-  NSString *signatureAttribute = metadata ? JreMethodGenericString(metadata) : nil;
+  NSString *signatureAttribute = JreMethodGenericString(metadata, self->ptrTable_);
   jboolean isMethod = [self isKindOfClass:[JavaLangReflectMethod class]];
-  IOSObjectArray *exceptionTypes = JreMethodExceptionTypes(metadata);
+  IOSObjectArray *exceptionTypes = JreMethodExceptionTypes(metadata, self->ptrTable_);
   LibcoreReflectGenericSignatureParser *parser =
       [[[LibcoreReflectGenericSignatureParser alloc]
         initWithJavaLangClassLoader:JavaLangClassLoader_getSystemClassLoader()] autorelease];
@@ -400,6 +401,8 @@ GenericInfo *getMethodOrConstructorGenericInfo(ExecutableMember *self) {
                         returnType:parser->returnType_
                     typeParameters:parser->formalTypeParameters_];
 }
+
+@end
 
 @implementation GenericInfo
 
