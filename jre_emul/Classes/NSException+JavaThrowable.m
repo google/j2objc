@@ -429,11 +429,10 @@ IOSObjectArray *InternalGetStackTrace(NSException *self) {
     { "description", "Ljava.lang.String;", 0x1, 4, -1, -1 },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "detailMessage_", "Ljava.lang.String;", .constantValue.asLong = 0, 0x2, -1, -1, -1 },
-    { "cause_", "Ljava.lang.Throwable;", .constantValue.asLong = 0, 0x2, -1, -1, -1 },
-    { "stackTrace_", "[Ljava.lang.StackTraceElement;", .constantValue.asLong = 0, 0x2, -1, -1, -1
-    },
-    { "suppressedExceptions_", "Ljava.util.List;", .constantValue.asLong = 0, 0x2, -1, -1, 5 },
+    { "detailMessage_", "LNSString", .constantValue.asLong = 0, 0x2, -1, -1, -1 },
+    { "cause_", "LNSException", .constantValue.asLong = 0, 0x2, -1, -1, -1 },
+    { "stackTrace_", "[LJavaLangStackTraceElement", .constantValue.asLong = 0, 0x2, -1, -1, -1 },
+    { "suppressedExceptions_", "LJavaUtilList", .constantValue.asLong = 0, 0x2, -1, -1, 5 },
     { "serialVersionUID", "J", .constantValue.asLong = NSException_serialVersionUID, 0x1a, -1, -1,
       -1 },
   };

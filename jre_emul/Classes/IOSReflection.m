@@ -23,6 +23,7 @@
 #import "java/lang/AssertionError.h"
 #import "java/lang/reflect/TypeVariableImpl.h"
 
+// TODO(kstanger): Replace usage of this function with JreClassForString.
 id<JavaLangReflectType> JreTypeForString(const char *typeStr) {
   if (strlen(typeStr) == 1) {
     IOSClass *primitiveType = [IOSClass primitiveClassForChar:*typeStr];
@@ -49,6 +50,20 @@ id<JavaLangReflectType> JreTypeForString(const char *typeStr) {
     }
   }
   NSString *msg = [NSString stringWithFormat:@"invalid type from metadata %s", typeStr];
+  @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:msg]);
+}
+
+extern IOSClass *JreClassForString(const char *str) {
+  if (*str == '[') {
+    return IOSClass_arrayOf(JreClassForString(str + 1));
+  } else if (*str == 'L') {
+    return [IOSClass classForIosName:[NSString stringWithUTF8String:str + 1]];
+  }
+  IOSClass *primitiveType = [IOSClass primitiveClassForChar:*str];
+  if (primitiveType) {
+    return primitiveType;
+  }
+  NSString *msg = [NSString stringWithFormat:@"invalid type from metadata %s", str];
   @throw AUTORELEASE([[JavaLangAssertionError alloc] initWithId:msg]);
 }
 

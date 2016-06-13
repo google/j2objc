@@ -92,7 +92,7 @@ static jboolean IsFinal(JavaLangReflectField *field) {
 }
 
 static IOSClass *GetErasedFieldType(JavaLangReflectField *field) {
-  return TypeToClass(JreTypeForString(field->metadata_->type));
+  return JreClassForString(field->metadata_->type);
 }
 
 static void ReadRawValue(

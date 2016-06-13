@@ -298,7 +298,7 @@ public class MetadataWriter extends TreeVisitor {
       }
       return UnicodeUtils.format(
           "    { %s, %s, %s, 0x%x, %s, %s, %s },\n",
-          cStr(objcName), cStr(getTypeName(var.getType())), constantValue, modifiers,
+          cStr(objcName), cStr(getTypeName2(var.getType())), constantValue, modifiers,
           cStrIdx(javaName), addressOfIdx(staticRef),
           cStrIdx(SignatureGenerator.createFieldTypeSignature(var)));
     }
@@ -399,6 +399,7 @@ public class MetadataWriter extends TreeVisitor {
     throw new AssertionError();
   }
 
+  // TODO(kstanger): Replace usages of this method with getTypeName2.
   private static String getTypeName(ITypeBinding type) {
     if (type.isTypeVariable()) {
       return "T" + type.getName() + ";";
@@ -407,6 +408,18 @@ public class MetadataWriter extends TreeVisitor {
       return type.getBinaryName();
     }
     return "L" + type.getBinaryName() + ";";
+  }
+
+  // TODO(kstanger): Rename to getTypeName when the original getTypeName is removed.
+  private String getTypeName2(ITypeBinding type) {
+    type = type.getErasure();
+    if (type.isPrimitive()) {
+      return type.getBinaryName();
+    } else if (type.isArray()) {
+      return "[" + getTypeName2(type.getComponentType());
+    } else {
+      return "L" + nameTable.getFullName(type);
+    }
   }
 
   /**

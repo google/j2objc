@@ -209,6 +209,7 @@ TEST_SOURCES := \
     com/google/j2objc/ArrayTest.java \
     com/google/j2objc/AssertTest.java \
     com/google/j2objc/ClassTest.java \
+    com/google/j2objc/FieldTest.java \
     com/google/j2objc/LinkedListTest.java \
     com/google/j2objc/MemoryTest.java \
     com/google/j2objc/PackageTest.java \

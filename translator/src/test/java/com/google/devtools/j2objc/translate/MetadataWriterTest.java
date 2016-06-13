@@ -68,6 +68,22 @@ public class MetadataWriterTest extends GenerationTest {
         + "\"(ITT;)V\", \"test11\", \"<V:Ljava/lang/Object;X:Ljava/lang/Object;>(TV;TX;TT;)V\" };");
   }
 
+  public void testFieldMetadata() throws IOException {
+    String translation = translateSourceFile(
+        "class Test<T extends Runnable> {"
+        + "byte field1;"
+        + "Object field2;"
+        + "T field3;"
+        + "}", "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "static const J2ObjcFieldInfo fields[] = {",
+        "  { \"field1_\", \"B\", .constantValue.asLong = 0, 0x0, -1, -1, -1 },",
+        "  { \"field2_\", \"LNSObject\", .constantValue.asLong = 0, 0x0, -1, -1, -1 },",
+        "  { \"field3_\", \"LJavaLangRunnable\", .constantValue.asLong = 0, 0x0, -1, -1, 0 },",
+        "};");
+    assertTranslation(translation, "static const void *ptrTable[] = { \"TT;\" };");
+  }
+
   public void testAnnotationMetadata() throws IOException {
     String translation = translateSourceFile(
         "import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) @interface Test { "

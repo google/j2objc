@@ -1015,11 +1015,11 @@ jint javaStringHashCode(NSString *string) {
     { "contentEqualsStringBuffer:", "Z", 0x1, 30, -1, -1 },
   };
   static const J2ObjcFieldInfo fields[] = {
-    { "CASE_INSENSITIVE_ORDER", "Ljava.util.Comparator;", .constantValue.asLong = 0, 0x19, -1, 31,
-      32 },
+    { "CASE_INSENSITIVE_ORDER", "LJavaUtilComparator", .constantValue.asLong = 0, 0x19, -1, 31, 32
+    },
     { "serialVersionUID", "J", .constantValue.asLong = NSString_serialVersionUID, 0x1a, -1, -1, -1
     },
-    { "serialPersistentFields", "[Ljava.io.ObjectStreamField;", .constantValue.asLong = 0, 0x1a, -1,
+    { "serialPersistentFields", "[LJavaIoObjectStreamField", .constantValue.asLong = 0, 0x1a, -1,
       33, -1 },
   };
   static const char *inner_classes[] = {"Ljava.lang.String$CaseInsensitiveComparator;"};
