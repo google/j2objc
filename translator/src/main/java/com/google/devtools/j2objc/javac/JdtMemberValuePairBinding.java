@@ -20,14 +20,17 @@ import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
  * Wrapper class around IMemberValuePairBinding.
  */
 public class JdtMemberValuePairBinding extends JdtBinding implements IMemberValuePairBinding {
-  private final JdtMethodBinding methodBinding;
+  private JdtMethodBinding methodBinding;
 
   JdtMemberValuePairBinding(IMemberValuePairBinding binding) {
     super(binding);
-    methodBinding = BindingConverter.wrapBinding(binding.getMethodBinding());
   }
 
   public JdtMethodBinding getMethodBinding() {
+    if (methodBinding == null) {
+      methodBinding =
+          BindingConverter.wrapBinding(((IMemberValuePairBinding) binding).getMethodBinding());
+    }
     return methodBinding;
   }
 

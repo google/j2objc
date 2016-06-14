@@ -21,13 +21,12 @@ import org.eclipse.jdt.core.dom.IMemberValuePairBinding;
  * Wrapper class around IAnnotationBinding.
  */
 public class JdtAnnotationBinding extends JdtBinding implements IAnnotationBinding {
-  private final JdtTypeBinding annotationType;
+  private JdtTypeBinding annotationType;
   private JdtMemberValuePairBinding[] allValuePairs;
   private JdtMemberValuePairBinding[] declaredValuePairs;
 
   JdtAnnotationBinding(IAnnotationBinding binding) {
     super(binding);
-    this.annotationType = BindingConverter.wrapBinding(binding.getAnnotationType());
   }
 
   public JdtMemberValuePairBinding[] getAllMemberValuePairs() {
@@ -38,6 +37,10 @@ public class JdtAnnotationBinding extends JdtBinding implements IAnnotationBindi
   }
 
   public JdtTypeBinding getAnnotationType() {
+    if (annotationType == null) {
+      annotationType =
+          BindingConverter.wrapBinding(((IAnnotationBinding) binding).getAnnotationType());
+    }
     return annotationType;
   }
 

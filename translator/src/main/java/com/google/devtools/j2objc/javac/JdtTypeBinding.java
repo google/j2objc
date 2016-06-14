@@ -40,24 +40,31 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   private JdtTypeBinding typeDeclaration;
   private JdtTypeBinding[] typeParameters;
   private JdtTypeBinding wildcard;
+  protected boolean initialized = false;
 
   JdtTypeBinding(ITypeBinding binding) {
     super(binding);
-    this.bound = BindingConverter.wrapBinding(binding.getBound());
-    this.componentType = BindingConverter.wrapBinding(binding.getComponentType());
-    this.declaringClass = BindingConverter.wrapBinding(binding.getDeclaringClass());
-    this.declaringMethod = BindingConverter.wrapBinding(binding.getDeclaringMethod());
-    this.elementType = BindingConverter.wrapBinding(binding.getElementType());
-    ITypeBinding erase = binding.getErasure();
-    this.erasure = erase != binding ? BindingConverter.wrapBinding(erase) : this;
-    this.functionalInterfaceMethod = BindingConverter
-        .wrapBinding(binding.getFunctionalInterfaceMethod());
-    this.genericWildcardType = BindingConverter.wrapBinding(binding.getGenericTypeOfWildcardType());
-    this.pkg = BindingConverter.wrapBinding(binding.getPackage());
-    this.superclass = BindingConverter.wrapBinding(binding.getSuperclass());
-    ITypeBinding decl = binding.getTypeDeclaration();
-    this.typeDeclaration = decl != binding ? BindingConverter.wrapBinding(decl) : this;
-    this.wildcard = BindingConverter.wrapBinding(binding.getWildcard());
+  }
+
+  private void maybeInitialize() {
+    if (!initialized) {
+      ITypeBinding typeBinding = (ITypeBinding) binding;
+      this.bound = BindingConverter.wrapBinding(typeBinding.getBound());
+      this.componentType = BindingConverter.wrapBinding(typeBinding.getComponentType());
+      this.declaringClass = BindingConverter.wrapBinding(typeBinding.getDeclaringClass());
+      this.declaringMethod = BindingConverter.wrapBinding(typeBinding.getDeclaringMethod());
+      this.elementType = BindingConverter.wrapBinding(typeBinding.getElementType());
+      this.erasure = BindingConverter.wrapBinding(typeBinding.getErasure());
+      this.functionalInterfaceMethod =
+          BindingConverter.wrapBinding(typeBinding.getFunctionalInterfaceMethod());
+      this.genericWildcardType =
+          BindingConverter.wrapBinding(typeBinding.getGenericTypeOfWildcardType());
+      this.pkg = BindingConverter.wrapBinding(typeBinding.getPackage());
+      this.superclass = BindingConverter.wrapBinding(typeBinding.getSuperclass());
+      this.typeDeclaration = BindingConverter.wrapBinding(typeBinding.getTypeDeclaration());
+      this.wildcard = BindingConverter.wrapBinding(typeBinding.getWildcard());
+      initialized = true;
+    }
   }
 
   public JdtTypeBinding createArrayType(int arg0) {
@@ -69,10 +76,12 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   }
 
   public JdtTypeBinding getBound() {
+    maybeInitialize();
     return bound;
   }
 
   public JdtTypeBinding getComponentType() {
+    maybeInitialize();
     return componentType;
   }
 
@@ -104,6 +113,7 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   }
 
   public JdtTypeBinding getDeclaringClass() {
+    maybeInitialize();
     return declaringClass;
   }
 
@@ -112,6 +122,7 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   }
 
   public JdtMethodBinding getDeclaringMethod() {
+    maybeInitialize();
     return declaringMethod;
   }
 
@@ -120,18 +131,22 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   }
 
   public JdtTypeBinding getElementType() {
+    maybeInitialize();
     return elementType;
   }
 
   public JdtTypeBinding getErasure() {
+    maybeInitialize();
     return erasure;
   }
 
   public JdtMethodBinding getFunctionalInterfaceMethod() {
+    maybeInitialize();
     return functionalInterfaceMethod;
   }
 
   public JdtTypeBinding getGenericTypeOfWildcardType() {
+    maybeInitialize();
     return genericWildcardType;
   }
 
@@ -143,6 +158,7 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   }
 
   public JdtPackageBinding getPackage() {
+    maybeInitialize();
     return pkg;
   }
 
@@ -155,6 +171,7 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   }
 
   public JdtTypeBinding getSuperclass() {
+    maybeInitialize();
     return superclass;
   }
 
@@ -181,6 +198,7 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   }
 
   public JdtTypeBinding getTypeDeclaration() {
+    maybeInitialize();
     return typeDeclaration;
   }
 
@@ -192,6 +210,7 @@ public class JdtTypeBinding extends JdtBinding implements ITypeBinding {
   }
 
   public JdtTypeBinding getWildcard() {
+    maybeInitialize();
     return wildcard;
   }
 

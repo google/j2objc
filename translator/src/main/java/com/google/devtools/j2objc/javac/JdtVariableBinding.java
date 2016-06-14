@@ -20,18 +20,25 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
  * Wrapper class around IVariableBinding.
  */
 public class JdtVariableBinding extends JdtBinding implements IVariableBinding {
-  private final JdtVariableBinding declaration;
-  private final JdtTypeBinding type;
-  private final JdtTypeBinding declaringClass;
-  private final JdtMethodBinding declaringMethod;
+  private JdtVariableBinding declaration;
+  private JdtTypeBinding type;
+  private JdtTypeBinding declaringClass;
+  private JdtMethodBinding declaringMethod;
+  private boolean initialized = false;
 
   JdtVariableBinding(IVariableBinding binding) {
     super(binding);
-    IVariableBinding decl = binding.getVariableDeclaration();
-    this.declaration = decl != binding ? BindingConverter.wrapBinding(decl) : this;
-    this.type = BindingConverter.wrapBinding(binding.getType());
-    this.declaringClass = BindingConverter.wrapBinding(binding.getDeclaringClass());
-    this.declaringMethod = BindingConverter.wrapBinding(binding.getDeclaringMethod());
+  }
+
+  private void maybeInitialize() {
+    if (!initialized) {
+      IVariableBinding varBinding = (IVariableBinding) binding;
+      this.declaration = BindingConverter.wrapBinding(varBinding.getVariableDeclaration());
+      this.type = BindingConverter.wrapBinding(varBinding.getType());
+      this.declaringClass = BindingConverter.wrapBinding(varBinding.getDeclaringClass());
+      this.declaringMethod = BindingConverter.wrapBinding(varBinding.getDeclaringMethod());
+      initialized = true;
+    }
   }
 
   public Object getConstantValue() {
@@ -39,18 +46,22 @@ public class JdtVariableBinding extends JdtBinding implements IVariableBinding {
   }
 
   public JdtTypeBinding getDeclaringClass() {
+    maybeInitialize();
     return declaringClass;
   }
 
   public JdtMethodBinding getDeclaringMethod() {
+    maybeInitialize();
     return declaringMethod;
   }
 
   public JdtTypeBinding getType() {
+    maybeInitialize();
     return type;
   }
 
   public JdtVariableBinding getVariableDeclaration() {
+    maybeInitialize();
     return declaration;
   }
 

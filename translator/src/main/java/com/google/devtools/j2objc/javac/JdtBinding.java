@@ -82,7 +82,7 @@ public abstract class JdtBinding implements IBinding {
   }
 
   public boolean equals(Object obj) {
-    return obj instanceof IBinding && this.equals((IBinding) obj);
+    return obj instanceof JdtBinding && this.binding.equals(((JdtBinding) obj).binding);
   }
 
   public int hashCode() {

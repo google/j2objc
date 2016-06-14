@@ -30,21 +30,31 @@ public class JdtMethodBinding extends JdtBinding implements IMethodBinding {
   private JdtTypeBinding returnType;
   private JdtTypeBinding[] typeArguments;
   private JdtTypeBinding[] typeParameters;
+  private boolean initialized = false;
 
   JdtMethodBinding(IMethodBinding binding) {
     super(binding);
-    this.declaredReceiverType = BindingConverter.wrapBinding(binding.getDeclaredReceiverType());
-    this.declaringClass = BindingConverter.wrapBinding(binding.getDeclaringClass());
-    IMethodBinding decl = binding.getMethodDeclaration();
-    this.methodDeclaration = decl != binding ? BindingConverter.wrapBinding(decl) : this;
-    this.returnType = BindingConverter.wrapBinding(binding.getReturnType());
+  }
+
+  private void maybeInitialize() {
+    if (!initialized) {
+      IMethodBinding methodBinding = (IMethodBinding) binding;
+      this.declaredReceiverType =
+          BindingConverter.wrapBinding(methodBinding.getDeclaredReceiverType());
+      this.declaringClass = BindingConverter.wrapBinding(methodBinding.getDeclaringClass());
+      this.methodDeclaration = BindingConverter.wrapBinding(methodBinding.getMethodDeclaration());
+      this.returnType = BindingConverter.wrapBinding(methodBinding.getReturnType());
+      initialized = true;
+    }
   }
 
   public JdtTypeBinding getDeclaredReceiverType() {
+    maybeInitialize();
     return declaredReceiverType;
   }
 
   public JdtTypeBinding getDeclaringClass() {
+    maybeInitialize();
     return declaringClass;
   }
 
@@ -65,6 +75,7 @@ public class JdtMethodBinding extends JdtBinding implements IMethodBinding {
   }
 
   public JdtMethodBinding getMethodDeclaration() {
+    maybeInitialize();
     return methodDeclaration;
   }
 
@@ -85,6 +96,7 @@ public class JdtMethodBinding extends JdtBinding implements IMethodBinding {
   }
 
   public JdtTypeBinding getReturnType() {
+    maybeInitialize();
     return returnType;
   }
 

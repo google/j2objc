@@ -30,7 +30,14 @@ import org.eclipse.jdt.core.dom.IVariableBinding;
 public final class BindingConverter {
 
   public static JdtAnnotationBinding wrapBinding(IAnnotationBinding binding) {
-    return binding != null ? new JdtAnnotationBinding(binding) : null;
+    if (binding == null) {
+      return null;
+    }
+    if (binding instanceof JdtAnnotationBinding) {
+      return (JdtAnnotationBinding) binding;
+    }
+    JdtAnnotationBinding result = new JdtAnnotationBinding(binding);
+    return result;
   }
 
   public static JdtAnnotationBinding[] wrapBindings(IAnnotationBinding[] bindings) {
@@ -42,11 +49,24 @@ public final class BindingConverter {
   }
 
   public static JdtExtendedModifier wrapExtendedModifier(IExtendedModifier modifier) {
-    return modifier != null ? new JdtExtendedModifier(modifier) : null;
+    if (modifier == null) {
+      return null;
+    }
+    if (modifier instanceof JdtExtendedModifier) {
+      return (JdtExtendedModifier) modifier;
+    }
+    return new JdtExtendedModifier(modifier);
   }
 
   public static JdtMemberValuePairBinding wrapBinding(IMemberValuePairBinding binding) {
-    return binding != null ? new JdtMemberValuePairBinding(binding) : null;
+    if (binding == null) {
+      return null;
+    }
+    if (binding instanceof JdtMemberValuePairBinding) {
+      return (JdtMemberValuePairBinding) binding;
+    }
+    JdtMemberValuePairBinding result = new JdtMemberValuePairBinding(binding);
+    return result;
   }
 
   public static JdtMemberValuePairBinding[] wrapBindings(IMemberValuePairBinding[] bindings) {
@@ -58,7 +78,14 @@ public final class BindingConverter {
   }
 
   public static JdtMethodBinding wrapBinding(IMethodBinding binding) {
-    return binding != null ? new JdtMethodBinding(binding) : null;
+    if (binding == null) {
+      return null;
+    }
+    if (binding instanceof JdtMethodBinding) {
+      return (JdtMethodBinding) binding;
+    }
+    JdtMethodBinding result = new JdtMethodBinding(binding);
+    return result;
   }
 
   public static JdtMethodBinding[] wrapBindings(IMethodBinding[] bindings) {
@@ -70,11 +97,25 @@ public final class BindingConverter {
   }
 
   public static JdtPackageBinding wrapBinding(IPackageBinding binding) {
-    return binding != null ? new JdtPackageBinding(binding) : null;
+    if (binding == null) {
+      return null;
+    }
+    if (binding instanceof JdtPackageBinding) {
+      return (JdtPackageBinding) binding;
+    }
+    JdtPackageBinding result = new JdtPackageBinding(binding);
+    return result;
   }
 
   public static JdtTypeBinding wrapBinding(ITypeBinding binding) {
-    return binding != null ? new JdtTypeBinding(binding) : null;
+    if (binding == null) {
+      return null;
+    }
+    if (binding instanceof JdtTypeBinding) {
+      return (JdtTypeBinding) binding;
+    }
+    JdtTypeBinding result = new JdtTypeBinding(binding);
+    return result;
   }
 
   public static JdtTypeBinding[] wrapBindings(ITypeBinding[] bindings) {
@@ -86,7 +127,14 @@ public final class BindingConverter {
   }
 
   public static JdtVariableBinding wrapBinding(IVariableBinding binding) {
-    return binding != null ? new JdtVariableBinding(binding) : null;
+    if (binding == null) {
+      return null;
+    }
+    if (binding instanceof JdtVariableBinding) {
+      return (JdtVariableBinding) binding;
+    }
+    JdtVariableBinding result = new JdtVariableBinding(binding);
+    return result;
   }
 
   public static JdtVariableBinding[] wrapBindings(IVariableBinding[] bindings) {
