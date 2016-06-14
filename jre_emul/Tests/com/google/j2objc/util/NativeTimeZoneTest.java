@@ -326,16 +326,12 @@ public class NativeTimeZoneTest extends TestCase {
         tz.getDisplayName(false, TimeZone.LONG, Locale.ENGLISH).startsWith("Central European"));
     assertFalse(tz.getDisplayName(false, TimeZone.LONG, Locale.ENGLISH).startsWith("Summer"));
 
-    // French time zone names change across environment and OS versions, and so we only test common
-    // substrings here.
-    final String ete = "été"; // French for "summer"
-    final String avancee = "avancée"; // French for "forward"
-    String frStdName = tz.getDisplayName(false, TimeZone.LONG, Locale.FRANCE);
-    String frDstName = tz.getDisplayName(true, TimeZone.LONG, Locale.FRANCE);
-    assertTrue(frStdName.contains("Europe central"));
-    assertFalse(frStdName.contains(ete) || frStdName.contains(avancee));
-    assertTrue(frDstName.contains("Europe central"));
-    assertTrue(frDstName.contains(ete) || frDstName.contains(avancee));
+    // JVM says Heure (d'été) d'Europe central, OS X/iOS uses heure normal/d’été d’Europe central
+    // (note the case difference in the first letter h and the Unicode apostrophe).
+    assertTrue(tz.getDisplayName(true, TimeZone.LONG, Locale.FRENCH).contains("Europe central"));
+    assertTrue(tz.getDisplayName(true, TimeZone.LONG, Locale.FRENCH).contains("été"));
+    assertTrue(tz.getDisplayName(false, TimeZone.LONG, Locale.FRENCH).contains("Europe central"));
+    assertFalse(tz.getDisplayName(false, TimeZone.LONG, Locale.FRENCH).startsWith("été"));
 
     // Similarly for German, though they finally agree on the DST name.
     assertTrue(

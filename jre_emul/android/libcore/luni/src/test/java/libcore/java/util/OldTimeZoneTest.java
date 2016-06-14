@@ -106,24 +106,10 @@ public class OldTimeZoneTest extends TestCase {
         TimeZone tz = TimeZone.getTimeZone("America/Los_Angeles");
         assertEquals("Pacific Daylight Time", tz.getDisplayName(true,  TimeZone.LONG, Locale.US));
         assertEquals("Pacific Standard Time", tz.getDisplayName(false, TimeZone.LONG, Locale.UK));
-
-        // j2objc: edited; French time zone names change over different OS X/iOS versions, so we
-        // only test common substrings.
-        //
-        // assertEquals("heure d’été du Pacifique",
-        //         tz.getDisplayName(true,  TimeZone.LONG, Locale.FRANCE));
-        // assertEquals("heure normale du Pacifique nord-américain",
-        //         tz.getDisplayName(false, TimeZone.LONG, Locale.FRANCE));
-        final String ete = "été"; // French for "summer"
-        final String avancee = "avancée"; // French for "forward"
-        String frStdName = tz.getDisplayName(false, TimeZone.LONG, Locale.FRANCE);
-        String frDstName = tz.getDisplayName(true, TimeZone.LONG, Locale.FRANCE);
-        assertTrue(frStdName.contains("heure"));
-        assertTrue(frStdName.contains("normal"));
-        assertFalse(frStdName.contains(ete) || frStdName.contains(avancee));
-        assertTrue(frDstName.contains("heure"));
-        assertFalse(frDstName.contains("normal"));
-        assertTrue(frDstName.contains(ete) || frDstName.contains(avancee));
+        assertEquals("heure d’été du Pacifique",
+                tz.getDisplayName(true,  TimeZone.LONG, Locale.FRANCE));
+        assertEquals("heure normale du Pacifique nord-américain",
+                tz.getDisplayName(false, TimeZone.LONG, Locale.FRANCE));
 
         assertEquals("PDT", tz.getDisplayName(true, TimeZone.SHORT, Locale.US));
         assertEquals("PST", tz.getDisplayName(false, TimeZone.SHORT, Locale.US));
