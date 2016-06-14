@@ -30,7 +30,7 @@ public class MetadataWriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "static const J2ObjcMethodInfo methods[] = {",
         // The fourth field, "javaNameIdx", should be -1.
-        "{ \"init\", NULL, 0x0, -1, -1, -1 },");
+        "{ \"init\", NULL, 0x0, -1, -1, -1, -1, -1 },");
   }
 
   public void testMethodMetadata() throws IOException {
@@ -50,18 +50,22 @@ public class MetadataWriterTest extends GenerationTest {
         + " abstract <V,X> void test11(V one, X two, T three);"
         + "}",
         "Test", "Test.m");
-    assertTranslation(translation, "{ \"test1\", \"Ljava.lang.Object;\", 0x0, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test2\", \"C\", 0x2, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test3\", \"V\", 0x4, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test4\", \"J\", 0x10, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test5\", \"Z\", 0x20, -1, -1, -1 },");
     assertTranslation(translation,
-        "{ \"test6WithNSString:withNSObjectArray:\", \"Ljava.lang.String;\", 0x80, 0, -1, -1 }");
-    assertTranslation(translation, "{ \"test7\", \"V\", 0x100, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"test8\", \"V\", 0x400, -1, 1, -1 },");
-    assertTranslation(translation, "{ \"test9\", \"TT;\", 0x400, -1, -1, 2 },");
-    assertTranslation(translation, "{ \"test10WithInt:withId:\", \"V\", 0x400, 3, -1, 4 },");
-    assertTranslation(translation, "{ \"test11WithId:withId:withId:\", \"V\", 0x400, 5, -1, 6 },");
+        "{ \"test1\", \"Ljava.lang.Object;\", 0x0, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test2\", \"C\", 0x2, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test3\", \"V\", 0x4, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test4\", \"J\", 0x10, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test5\", \"Z\", 0x20, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation,
+        "{ \"test6WithNSString:withNSObjectArray:\", \"Ljava.lang.String;\", 0x80, 0, -1, -1, -1,"
+        + " -1 }");
+    assertTranslation(translation, "{ \"test7\", \"V\", 0x100, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test8\", \"V\", 0x400, -1, 1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"test9\", \"TT;\", 0x400, -1, -1, 2, -1, -1 },");
+    assertTranslation(translation,
+        "{ \"test10WithInt:withId:\", \"V\", 0x400, 3, -1, 4, -1, -1 },");
+    assertTranslation(translation,
+        "{ \"test11WithId:withId:withId:\", \"V\", 0x400, 5, -1, 6, -1, -1 },");
     assertTranslation(translation,
         "static const void *ptrTable[] = { \"test6\", "
         + "\"Ljava.lang.InterruptedException;Ljava.lang.Error;\", \"()TT;\", \"test10\", "
@@ -77,9 +81,9 @@ public class MetadataWriterTest extends GenerationTest {
         + "}", "Test", "Test.m");
     assertTranslatedLines(translation,
         "static const J2ObjcFieldInfo fields[] = {",
-        "  { \"field1_\", \"B\", .constantValue.asLong = 0, 0x0, -1, -1, -1 },",
-        "  { \"field2_\", \"LNSObject\", .constantValue.asLong = 0, 0x0, -1, -1, -1 },",
-        "  { \"field3_\", \"LJavaLangRunnable\", .constantValue.asLong = 0, 0x0, -1, -1, 0 },",
+        "  { \"field1_\", \"B\", .constantValue.asLong = 0, 0x0, -1, -1, -1, -1 },",
+        "  { \"field2_\", \"LNSObject\", .constantValue.asLong = 0, 0x0, -1, -1, -1, -1 },",
+        "  { \"field3_\", \"LJavaLangRunnable\", .constantValue.asLong = 0, 0x0, -1, -1, 0, -1 },",
         "};");
     assertTranslation(translation, "static const void *ptrTable[] = { \"TT;\" };");
   }
@@ -92,8 +96,8 @@ public class MetadataWriterTest extends GenerationTest {
         + "}",
         "Test", "Test.m");
     assertTranslation(translation,
-        "{ \"foo\", \"Ljava.lang.String;\", 0x401, -1, -1, -1 },");
-    assertTranslation(translation, "{ \"num\", \"I\", 0x401, -1, -1, -1 },");
+        "{ \"foo\", \"Ljava.lang.String;\", 0x401, -1, -1, -1, -1, -1 },");
+    assertTranslation(translation, "{ \"num\", \"I\", 0x401, -1, -1, -1, -1, -1 },");
   }
 
   public void testInnerClassesMetadata() throws IOException {
@@ -111,8 +115,8 @@ public class MetadataWriterTest extends GenerationTest {
     assertTranslation(translation,
         "static const char *inner_classes[] = {\"LA$B;\", \"LA$C;\", \"LA$D;\", \"LA$E;\"};");
     assertTranslation(translation,
-        "static const J2ObjcClassInfo _A = { 3, \"A\", NULL, NULL, 0x0, 1, methods, "
-        + "0, NULL, 0, NULL, 4, inner_classes, NULL, NULL, NULL };");
+        "static const J2ObjcClassInfo _A = { 4, \"A\", NULL, NULL, 0x0, 1, methods, "
+        + "0, NULL, 0, NULL, 4, inner_classes, NULL, NULL, -1, NULL };");
   }
 
   public void testEnclosingMethodAndConstructor() throws IOException {
@@ -122,17 +126,97 @@ public class MetadataWriterTest extends GenerationTest {
     assertTranslatedLines(translation,
         "static const J2ObjCEnclosingMethodInfo "
         + "enclosing_method = { \"A\", \"initWithNSString:\" };",
-        "static const J2ObjcClassInfo _A_1B = { 3, \"B\", NULL, \"A\", 0x0, 1, methods, "
-        + "0, NULL, 0, NULL, 0, NULL, &enclosing_method, NULL, NULL };");
+        "static const J2ObjcClassInfo _A_1B = { 4, \"B\", NULL, \"A\", 0x0, 1, methods, "
+        + "0, NULL, 0, NULL, 0, NULL, &enclosing_method, NULL, -1, NULL };");
     assertTranslatedLines(translation,
         "static const J2ObjCEnclosingMethodInfo "
         + "enclosing_method = { \"A\", \"testWithInt:withLong:\" };",
-        "static const J2ObjcClassInfo _A_1C = { 3, \"C\", NULL, \"A\", 0x0, 1, methods, "
-        + "0, NULL, 0, NULL, 1, inner_classes, &enclosing_method, NULL, NULL };");
+        "static const J2ObjcClassInfo _A_1C = { 4, \"C\", NULL, \"A\", 0x0, 1, methods, "
+        + "0, NULL, 0, NULL, 1, inner_classes, &enclosing_method, NULL, -1, NULL };");
 
     // Verify D is not enclosed by test(), as it's enclosed by C.
     assertTranslation(translation,
-        "J2ObjcClassInfo _A_1C_D = { 3, \"D\", NULL, \"A$C\", 0x0, 1, methods, "
-        + "0, NULL, 0, NULL, 0, NULL, NULL, NULL, NULL }");
+        "J2ObjcClassInfo _A_1C_D = { 4, \"D\", NULL, \"A$C\", 0x0, 1, methods, "
+        + "0, NULL, 0, NULL, 0, NULL, NULL, NULL, -1, NULL }");
+  }
+
+  public void testMethodAnnotationNoParameters() throws IOException {
+    String translation = translateSourceFile(
+        "import org.junit.*;"
+        + "public class Test { @After void foo() {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "IOSObjectArray *Test__Annotations$0() {",
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_OrgJunitAfter() } "
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
+  }
+
+  public void testMethodAnnotationWithParameter() throws IOException {
+    String translation = translateSourceFile(
+        "import org.junit.*;"
+        + "public class Test { @After void foo(int i) {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "IOSObjectArray *Test__Annotations$0() {",
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_OrgJunitAfter() } "
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
+  }
+
+  public void testConstructorAnnotationNoParameters() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { @Deprecated Test() {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "IOSObjectArray *Test__Annotations$0() {",
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_JavaLangDeprecated() } "
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
+  }
+
+  public void testConstructorAnnotationWithParameter() throws IOException {
+    String translation = translateSourceFile(
+        "public class Test { @Deprecated Test(int i) {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "IOSObjectArray *Test__Annotations$0() {",
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_JavaLangDeprecated() } "
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
+  }
+
+  public void testTypeAnnotationDefaultParameter() throws IOException {
+    String translation = translateSourceFile(
+        "import org.junit.*;"
+        + "@Ignore public class Test { void test() {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "IOSObjectArray *Test__Annotations$0() {",
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_OrgJunitIgnore(@\"\") } "
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
+  }
+
+  public void testTypeAnnotationWithParameter() throws IOException {
+    String translation = translateSourceFile(
+        "import org.junit.*;"
+        + "@Ignore(\"some \\\"escaped\\n comment\") public class Test { void test() {} }",
+        "Test", "Test.m");
+    assertTranslatedLines(translation,
+        "IOSObjectArray *Test__Annotations$0() {",
+        "return [IOSObjectArray arrayWithObjects:(id[])"
+        + "{ create_OrgJunitIgnore(@\"some \\\"escaped\\n comment\") } "
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
+  }
+
+  // Verify that a class with an annotation with a reserved name property is
+  // created in the __annotations support method with that reserved name in the
+  // constructor.
+  public void testReservedWordAsAnnotationConstructorParameter() throws IOException {
+    String translation = translateSourceFile(
+        "package foo; import java.lang.annotation.*; @Retention(RetentionPolicy.RUNTIME) "
+        + "public @interface Bar { String namespace() default \"\"; } "
+        + "@Bar(namespace=\"mynames\") class Test {}",
+        "Bar", "foo/Bar.m");
+    assertTranslatedLines(translation,
+        "IOSObjectArray *FooTest__Annotations$0() {",
+        "return [IOSObjectArray arrayWithObjects:(id[]){ create_FooBar(@\"mynames\") } "
+        + "count:1 type:JavaLangAnnotationAnnotation_class_()];");
   }
 }

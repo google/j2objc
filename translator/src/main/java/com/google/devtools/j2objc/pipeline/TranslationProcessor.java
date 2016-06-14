@@ -223,7 +223,6 @@ public class TranslationProcessor extends FileProcessor {
     PackageInfoRewriter.run(unit);
     ticker.tick("PackageInfoRewriter");
 
-    // Before: StaticVarRewriter - Generates static variable access expressions.
     // Before: DestructorGenerator - Annotation types need a destructor to
     //   release the added fields.
     new AnnotationRewriter().run(unit);
@@ -239,6 +238,10 @@ public class TranslationProcessor extends FileProcessor {
     // only its own instance variables.
     new DestructorGenerator().run(unit);
     ticker.tick("DestructorGenerator");
+
+    // Before: StaticVarRewriter - Generates static variable access expressions.
+    new MetadataWriter().run(unit);
+    ticker.tick("MetadataWriter");
 
     // Before: Functionizer - Needs to rewrite some ClassInstanceCreation nodes
     //   before Functionizer does.
@@ -280,9 +283,6 @@ public class TranslationProcessor extends FileProcessor {
     // added in other phases may need added casts.
     new CastResolver().run(unit);
     ticker.tick("CastResolver");
-
-    new MetadataWriter().run(unit);
-    ticker.tick("MetadataWriter");
 
     // After: InnerClassExtractor, Functionizer - Expects all types to be
     //   top-level and functionizing to have occured.

@@ -336,14 +336,9 @@ static void SetWithRawValue(
 }
 
 - (IOSObjectArray *)getDeclaredAnnotations {
-  Class cls = declaringClass_.objcClass;
-  if (cls) {
-    NSString *annotationsMethodName =
-        [NSString stringWithFormat:@"__annotations_%@_", [self getName]];
-    Method annotationsMethod = JreFindClassMethod(cls, [annotationsMethodName UTF8String]);
-    if (annotationsMethod) {
-      return method_invoke(cls, annotationsMethod);
-    }
+  id (*annotations)() = JrePtrAtIndex(ptrTable_, metadata_->annotationsIdx);
+  if (annotations) {
+    return annotations();
   }
   return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
 }
@@ -367,35 +362,35 @@ static void SetWithRawValue(
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "getName", "Ljava.lang.String;", 0x1, -1, -1, -1 },
-    { "getModifiers", "I", 0x1, -1, -1, -1 },
-    { "getType", "Ljava.lang.Class;", 0x1, -1, -1, 0 },
-    { "getGenericType", "Ljava.lang.reflect.Type;", 0x1, -1, -1, -1 },
-    { "getDeclaringClass", "Ljava.lang.Class;", 0x1, -1, -1, 0 },
-    { "getWithId:", "Ljava.lang.Object;", 0x1, 1, 2, -1 },
-    { "getBooleanWithId:", "Z", 0x1, 3, 2, -1 },
-    { "getByteWithId:", "B", 0x1, 4, 2, -1 },
-    { "getCharWithId:", "C", 0x1, 5, 2, -1 },
-    { "getDoubleWithId:", "D", 0x1, 6, 2, -1 },
-    { "getFloatWithId:", "F", 0x1, 7, 2, -1 },
-    { "getIntWithId:", "I", 0x1, 8, 2, -1 },
-    { "getLongWithId:", "J", 0x1, 9, 2, -1 },
-    { "getShortWithId:", "S", 0x1, 10, 2, -1 },
-    { "setWithId:withId:", "V", 0x1, 11, 2, -1 },
-    { "setBooleanWithId:withBoolean:", "V", 0x1, 12, 2, -1 },
-    { "setByteWithId:withByte:", "V", 0x1, 13, 2, -1 },
-    { "setCharWithId:withChar:", "V", 0x1, 14, 2, -1 },
-    { "setDoubleWithId:withDouble:", "V", 0x1, 15, 2, -1 },
-    { "setFloatWithId:withFloat:", "V", 0x1, 16, 2, -1 },
-    { "setIntWithId:withInt:", "V", 0x1, 17, 2, -1 },
-    { "setLongWithId:withLong:", "V", 0x1, 18, 2, -1 },
-    { "setShortWithId:withShort:", "V", 0x1, 19, 2, -1 },
-    { "getAnnotationWithIOSClass:", "TT;", 0x1, 20, -1, 21 },
-    { "getDeclaredAnnotations", "[Ljava.lang.annotation.Annotation;", 0x1, -1, -1, -1 },
-    { "isSynthetic", "Z", 0x1, -1, -1, -1 },
-    { "isEnumConstant", "Z", 0x1, -1, -1, -1 },
-    { "toGenericString", "Ljava.lang.String;", 0x1, -1, -1, -1 },
-    { "init", NULL, 0x1, -1, -1, -1 },
+    { "getName", "Ljava.lang.String;", 0x1, -1, -1, -1, -1, -1 },
+    { "getModifiers", "I", 0x1, -1, -1, -1, -1, -1 },
+    { "getType", "Ljava.lang.Class;", 0x1, -1, -1, 0, -1, -1 },
+    { "getGenericType", "Ljava.lang.reflect.Type;", 0x1, -1, -1, -1, -1, -1 },
+    { "getDeclaringClass", "Ljava.lang.Class;", 0x1, -1, -1, 0, -1, -1 },
+    { "getWithId:", "Ljava.lang.Object;", 0x1, 1, 2, -1, -1, -1 },
+    { "getBooleanWithId:", "Z", 0x1, 3, 2, -1, -1, -1 },
+    { "getByteWithId:", "B", 0x1, 4, 2, -1, -1, -1 },
+    { "getCharWithId:", "C", 0x1, 5, 2, -1, -1, -1 },
+    { "getDoubleWithId:", "D", 0x1, 6, 2, -1, -1, -1 },
+    { "getFloatWithId:", "F", 0x1, 7, 2, -1, -1, -1 },
+    { "getIntWithId:", "I", 0x1, 8, 2, -1, -1, -1 },
+    { "getLongWithId:", "J", 0x1, 9, 2, -1, -1, -1 },
+    { "getShortWithId:", "S", 0x1, 10, 2, -1, -1, -1 },
+    { "setWithId:withId:", "V", 0x1, 11, 2, -1, -1, -1 },
+    { "setBooleanWithId:withBoolean:", "V", 0x1, 12, 2, -1, -1, -1 },
+    { "setByteWithId:withByte:", "V", 0x1, 13, 2, -1, -1, -1 },
+    { "setCharWithId:withChar:", "V", 0x1, 14, 2, -1, -1, -1 },
+    { "setDoubleWithId:withDouble:", "V", 0x1, 15, 2, -1, -1, -1 },
+    { "setFloatWithId:withFloat:", "V", 0x1, 16, 2, -1, -1, -1 },
+    { "setIntWithId:withInt:", "V", 0x1, 17, 2, -1, -1, -1 },
+    { "setLongWithId:withLong:", "V", 0x1, 18, 2, -1, -1, -1 },
+    { "setShortWithId:withShort:", "V", 0x1, 19, 2, -1, -1, -1 },
+    { "getAnnotationWithIOSClass:", "TT;", 0x1, 20, -1, 21, -1, -1 },
+    { "getDeclaredAnnotations", "[Ljava.lang.annotation.Annotation;", 0x1, -1, -1, -1, -1, -1 },
+    { "isSynthetic", "Z", 0x1, -1, -1, -1, -1, -1 },
+    { "isEnumConstant", "Z", 0x1, -1, -1, -1, -1, -1 },
+    { "toGenericString", "Ljava.lang.String;", 0x1, -1, -1, -1, -1, -1 },
+    { "init", NULL, 0x1, -1, -1, -1, -1, -1 },
   };
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "get",
@@ -404,8 +399,8 @@ static void SetWithRawValue(
     "setBoolean", "setByte", "setChar", "setDouble", "setFloat", "setInt", "setLong", "setShort",
     "getAnnotation", "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectField = {
-    3, "Field", "java.lang.reflect", NULL, 0x1, 29, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL,
-    ptrTable };
+    4, "Field", "java.lang.reflect", NULL, 0x1, 29, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL,
+    -1, ptrTable };
   return &_JavaLangReflectField;
 }
 

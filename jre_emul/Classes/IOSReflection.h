@@ -30,7 +30,7 @@
 @class IOSClass;
 
 // Current metadata structure version
-#define J2OBJC_METADATA_VERSION 3
+#define J2OBJC_METADATA_VERSION 4
 
 // A raw value is the union of all possible native types.
 typedef union {
@@ -59,6 +59,8 @@ typedef struct J2ObjcMethodInfo {
   ptr_idx javaNameIdx;
   ptr_idx exceptionsIdx;
   ptr_idx genericSignatureIdx;
+  ptr_idx annotationsIdx;
+  ptr_idx paramAnnotationsIdx;
 } J2ObjcMethodInfo;
 
 typedef struct J2ObjcFieldInfo {
@@ -69,6 +71,7 @@ typedef struct J2ObjcFieldInfo {
   ptr_idx javaNameIdx;
   ptr_idx staticRefIdx;
   ptr_idx genericSignatureIdx;
+  ptr_idx annotationsIdx;
 } J2ObjcFieldInfo;
 
 typedef struct J2ObjCEnclosingMethodInfo {
@@ -94,6 +97,7 @@ typedef struct J2ObjcClassInfo {
   const char **innerClassnames;
   const J2ObjCEnclosingMethodInfo *enclosingMethod;
   const char *genericSignature;
+  ptr_idx annotationsIdx;
   const void **ptrTable;
 } J2ObjcClassInfo;
 

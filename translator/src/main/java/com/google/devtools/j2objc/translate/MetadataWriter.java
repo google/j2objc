@@ -22,11 +22,11 @@ import com.google.devtools.j2objc.ast.AnnotationTypeMemberDeclaration;
 import com.google.devtools.j2objc.ast.Block;
 import com.google.devtools.j2objc.ast.EnumConstantDeclaration;
 import com.google.devtools.j2objc.ast.EnumDeclaration;
+import com.google.devtools.j2objc.ast.FieldDeclaration;
 import com.google.devtools.j2objc.ast.MethodDeclaration;
 import com.google.devtools.j2objc.ast.NativeExpression;
 import com.google.devtools.j2objc.ast.NativeStatement;
 import com.google.devtools.j2objc.ast.ReturnStatement;
-import com.google.devtools.j2objc.ast.SimpleName;
 import com.google.devtools.j2objc.ast.Statement;
 import com.google.devtools.j2objc.ast.TreeUtil;
 import com.google.devtools.j2objc.ast.TreeVisitor;
@@ -55,7 +55,7 @@ import java.util.List;
 public class MetadataWriter extends TreeVisitor {
 
   // Metadata structure version. Increment it when any structure changes are made.
-  public static final int METADATA_VERSION = 3;
+  public static final int METADATA_VERSION = 4;
 
   private static final NativeTypeBinding CLASS_INFO_TYPE =
       new NativeTypeBinding("const J2ObjcClassInfo *");
@@ -77,7 +77,7 @@ public class MetadataWriter extends TreeVisitor {
 
   private void visitType(AbstractTypeDeclaration node) {
     ITypeBinding type = node.getTypeBinding();
-    if (BindingUtil.isPackageInfo(type) || !TranslationUtil.needsReflection(type)) {
+    if (!TranslationUtil.needsReflection(type)) {
       return;
     }
 
@@ -105,11 +105,13 @@ public class MetadataWriter extends TreeVisitor {
     private final List<Statement> stmts;
     // Use a LinkedHashMap so that we can de-dupe values that are added to the pointer table.
     private final LinkedHashMap<String, Integer> pointers = new LinkedHashMap<>();
+    private final RuntimeAnnotationGenerator annotationGenerator;
 
     private MetadataGenerator(AbstractTypeDeclaration typeNode, List<Statement> stmts) {
       this.typeNode = typeNode;
       type = typeNode.getTypeBinding();
       this.stmts = stmts;
+      annotationGenerator = new RuntimeAnnotationGenerator(typeNode);
     }
 
     private void generateClassMetadata() {
@@ -126,22 +128,7 @@ public class MetadataWriter extends TreeVisitor {
         simpleName = "";  // Anonymous classes have an empty simple name.
       }
       String pkgName = Strings.emptyToNull(type.getPackage().getName());
-      String pointerTable = "NULL";
-      if (!pointers.isEmpty()) {
-        if (pointers.size() > Short.MAX_VALUE) {
-          // Note that values greater that 2^15 and less than 2^16 will not result in a compile
-          // error even though the index type is declared as signed.
-          // This limit is more restrictive than existing limits on number of methods and fields
-          // imposed by the JVM class file format, which allows up to 2^16 each of methods and
-          // fields. Our limit is a few times smaller than Java's since we use a signed index, share
-          // the table between methods and fields, and have multiple entries for each method or
-          // field that can index into the table. See JVMS-4.11.
-          ErrorUtil.error(typeNode, "Too many metadata entries causing overflow.");
-        }
-        sb.append("static const void *ptrTable[] = { ");
-        sb.append(Joiner.on(", ").join(pointers.keySet())).append(" };\n");
-        pointerTable = "ptrTable";
-      }
+      String annotationsFunc = annotationGenerator.createFunction(typeNode);
       sb.append("static const J2ObjcClassInfo _").append(fullName).append(" = { ");
       sb.append(METADATA_VERSION).append(", ");
       sb.append(cStr(simpleName)).append(", ");
@@ -162,10 +149,30 @@ public class MetadataWriter extends TreeVisitor {
         sb.append("NULL, ");
       }
       sb.append(cStr(SignatureGenerator.createClassSignature(type))).append(", ");
-      sb.append(pointerTable);
+      sb.append(funcPtrIdx(annotationsFunc)).append(", ");
+      sb.append(getPtrTableEntry());
       sb.append(" };");
       stmts.add(new NativeStatement(sb.toString()));
       stmts.add(new ReturnStatement(new NativeExpression("&_" + fullName, CLASS_INFO_TYPE)));
+    }
+
+    private String getPtrTableEntry() {
+      if (pointers.isEmpty()) {
+        return "NULL";
+      }
+      if (pointers.size() > Short.MAX_VALUE) {
+        // Note that values greater that 2^15 and less than 2^16 will not result in a compile
+        // error even though the index type is declared as signed.
+        // This limit is more restrictive than existing limits on number of methods and fields
+        // imposed by the JVM class file format, which allows up to 2^16 each of methods and
+        // fields. Our limit is a few times smaller than Java's since we use a signed index, share
+        // the table between methods and fields, and have multiple entries for each method or
+        // field that can index into the table. See JVMS-4.11.
+        ErrorUtil.error(typeNode, "Too many metadata entries causing overflow.");
+      }
+      stmts.add(new NativeStatement(
+          "static const void *ptrTable[] = { " + Joiner.on(", ").join(pointers.keySet()) + " };"));
+      return "ptrTable";
     }
 
     private String getEnclosingName(ITypeBinding type) {
@@ -193,16 +200,22 @@ public class MetadataWriter extends TreeVisitor {
       List<String> methodMetadata = new ArrayList<>();
       for (MethodDeclaration decl : TreeUtil.getMethodDeclarations(typeNode)) {
         IMethodBinding binding = decl.getMethodBinding();
-        if (!BindingUtil.isSynthetic(decl.getModifiers()) && !binding.isSynthetic()) {
-          methodMetadata.add(getMethodMetadata(binding));
+        // Skip synthetic methods
+        if (BindingUtil.isSynthetic(decl.getModifiers()) || binding.isSynthetic()
+            // Skip enum constructors.
+            || (type.isEnum() && binding.isConstructor())) {
+          continue;
         }
+        String annotationsFunc = annotationGenerator.createFunction(decl);
+        String paramAnnotationsFunc = annotationGenerator.createParamsFunction(decl);
+        methodMetadata.add(getMethodMetadata(binding, annotationsFunc, paramAnnotationsFunc));
       }
       if (typeNode instanceof AnnotationTypeDeclaration) {
         // Add property accessor and static default methods.
         for (AnnotationTypeMemberDeclaration decl : TreeUtil.getAnnotationMembers(typeNode)) {
           String name = decl.getName().getIdentifier();
           String returnType = getTypeName(decl.getMethodBinding().getReturnType());
-          String metadata = UnicodeUtils.format("    { %s, %s, 0x%x, -1, -1, -1 },\n",
+          String metadata = UnicodeUtils.format("    { %s, %s, 0x%x, -1, -1, -1, -1, -1 },\n",
               cStr(name), cStr(returnType),
               java.lang.reflect.Modifier.PUBLIC | java.lang.reflect.Modifier.ABSTRACT);
           methodMetadata.add(metadata);
@@ -219,7 +232,8 @@ public class MetadataWriter extends TreeVisitor {
       return methodMetadata.size();
     }
 
-    private String getMethodMetadata(IMethodBinding method) {
+    private String getMethodMetadata(
+        IMethodBinding method, String annotationsFunc, String paramAnnotationsFunc) {
       String methodName = method instanceof GeneratedMethodBinding
           ? ((GeneratedMethodBinding) method).getJavaName() : method.getName();
       String selector = nameTable.getMethodSelector(method);
@@ -229,10 +243,11 @@ public class MetadataWriter extends TreeVisitor {
 
       int modifiers = getMethodModifiers(method) & BindingUtil.ACC_FLAG_MASK;
       String returnTypeStr = method.isConstructor() ? null : getTypeName(method.getReturnType());
-      return UnicodeUtils.format("    { \"%s\", %s, 0x%x, %s, %s, %s },\n",
+      return UnicodeUtils.format("    { \"%s\", %s, 0x%x, %s, %s, %s, %s, %s },\n",
           selector, cStr(returnTypeStr), modifiers, cStrIdx(methodName),
           cStrIdx(getThrownExceptions(method)),
-          cStrIdx(SignatureGenerator.createMethodTypeSignature(method)));
+          cStrIdx(SignatureGenerator.createMethodTypeSignature(method)),
+          funcPtrIdx(annotationsFunc), funcPtrIdx(paramAnnotationsFunc));
     }
 
     private String getThrownExceptions(IMethodBinding method) {
@@ -251,13 +266,17 @@ public class MetadataWriter extends TreeVisitor {
       List<String> fieldMetadata = new ArrayList<>();
       if (typeNode instanceof EnumDeclaration) {
         for (EnumConstantDeclaration decl : ((EnumDeclaration) typeNode).getEnumConstants()) {
-          fieldMetadata.add(generateFieldMetadata(decl.getVariableBinding(), decl.getName()));
+          fieldMetadata.add(generateFieldMetadata(decl.getVariableBinding(), null));
         }
       }
-      for (VariableDeclarationFragment f : TreeUtil.getAllFields(typeNode)) {
-        String metadata = generateFieldMetadata(f.getVariableBinding(), f.getName());
-        if (metadata != null) {
-          fieldMetadata.add(metadata);
+      for (FieldDeclaration decl : TreeUtil.getFieldDeclarations(typeNode)) {
+        // Fields that share a declaration can share an annotations function.
+        String annotationsFunc = annotationGenerator.createFunction(decl);
+        for (VariableDeclarationFragment f : decl.getFragments()) {
+          String metadata = generateFieldMetadata(f.getVariableBinding(), annotationsFunc);
+          if (metadata != null) {
+            fieldMetadata.add(metadata);
+          }
         }
       }
       if (fieldMetadata.size() > 0) {
@@ -271,13 +290,13 @@ public class MetadataWriter extends TreeVisitor {
       return fieldMetadata.size();
     }
 
-    private String generateFieldMetadata(IVariableBinding var, SimpleName name) {
+    private String generateFieldMetadata(IVariableBinding var, String annotationsFunc) {
       if (BindingUtil.isSynthetic(var)) {
         return null;
       }
       int modifiers = getFieldModifiers(var);
       boolean isStatic = BindingUtil.isStatic(var);
-      String javaName = name.getIdentifier();
+      String javaName = var.getName();
       String objcName = nameTable.getVariableShortName(var);
       if ((isStatic && objcName.equals(javaName))
           || (!isStatic && objcName.equals(javaName + '_'))) {
@@ -297,10 +316,10 @@ public class MetadataWriter extends TreeVisitor {
         }
       }
       return UnicodeUtils.format(
-          "    { %s, %s, %s, 0x%x, %s, %s, %s },\n",
+          "    { %s, %s, %s, 0x%x, %s, %s, %s, %s },\n",
           cStr(objcName), cStr(getTypeName2(var.getType())), constantValue, modifiers,
           cStrIdx(javaName), addressOfIdx(staticRef),
-          cStrIdx(SignatureGenerator.createFieldTypeSignature(var)));
+          cStrIdx(SignatureGenerator.createFieldTypeSignature(var)), funcPtrIdx(annotationsFunc));
     }
 
     private int generateSuperclassTypeArguments() {
@@ -368,6 +387,11 @@ public class MetadataWriter extends TreeVisitor {
 
     private String addressOfIdx(String name) {
       return getPointerIdx(name != null ? "&" + name : null);
+    }
+
+    // Same as addressOfIdx, but adds a (void *) cast to satisfy c++ compilers.
+    private String funcPtrIdx(String name) {
+      return getPointerIdx(name != null ? "(void *)&" + name : null);
     }
 
     private String getPointerIdx(String ptr) {

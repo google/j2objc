@@ -92,11 +92,10 @@ public class TypeImplementationGenerator extends TypeGenerator {
       println("\n@end");
     }
 
-    if (BindingUtil.isPackageInfo(typeBinding)) {
-      return;
-    }
     printOuterDeclarations();
-    printTypeLiteralImplementation();
+    if (!BindingUtil.isPackageInfo(typeBinding)) {
+      printTypeLiteralImplementation();
+    }
   }
 
   private void printInitFlagDefinition() {

@@ -171,24 +171,24 @@ static void doWait(id obj, long long timeout) {
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "init", NULL, 0x1, -1, -1, -1 },
-    { "getClass", "Ljava.lang.Class;", 0x11, -1, -1, 0 },
-    { "hash", "I", 0x1, 1, -1, -1 },
-    { "isEqual:", "Z", 0x1, 2, -1, -1 },
-    { "clone", "Ljava.lang.Object;", 0x4, -1, 3, -1 },
-    { "description", "Ljava.lang.String;", 0x1, 4, -1, -1 },
-    { "javaFinalize", "V", 0x4, 5, 6, -1 },
-    { "notify", "V", 0x11, -1, -1, -1 },
-    { "notifyAll", "V", 0x11, -1, -1, -1 },
-    { "waitWithLong:", "V", 0x11, 7, 8, -1 },
-    { "waitWithLong:withInt:", "V", 0x11, 7, 8, -1 },
-    { "wait", "V", 0x11, -1, 8, -1 },
+    { "init", NULL, 0x1, -1, -1, -1, -1, -1 },
+    { "getClass", "Ljava.lang.Class;", 0x11, -1, -1, 0, -1, -1 },
+    { "hash", "I", 0x1, 1, -1, -1, -1, -1 },
+    { "isEqual:", "Z", 0x1, 2, -1, -1, -1, -1 },
+    { "clone", "Ljava.lang.Object;", 0x4, -1, 3, -1, -1, -1 },
+    { "description", "Ljava.lang.String;", 0x1, 4, -1, -1, -1, -1 },
+    { "javaFinalize", "V", 0x4, 5, 6, -1, -1, -1 },
+    { "notify", "V", 0x11, -1, -1, -1, -1, -1 },
+    { "notifyAll", "V", 0x11, -1, -1, -1, -1, -1 },
+    { "waitWithLong:", "V", 0x11, 7, 8, -1, -1, -1 },
+    { "waitWithLong:withInt:", "V", 0x11, 7, 8, -1, -1, -1 },
+    { "wait", "V", 0x11, -1, 8, -1, -1, -1 },
   };
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<*>;", "hashCode", "equals", "Ljava.lang.CloneNotSupportedException;",
     "toString", "finalize", "Ljava.lang.Throwable;", "wait", "Ljava.lang.InterruptedException;" };
   static const J2ObjcClassInfo _NSObject = {
-    3, "Object", "java.lang", NULL, 0x1, 12, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL,
+    4, "Object", "java.lang", NULL, 0x1, 12, methods, 0, NULL, 0, NULL, 0, NULL, NULL, NULL, -1,
     ptrTable };
   return &_NSObject;
 }

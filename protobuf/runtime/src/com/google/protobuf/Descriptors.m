@@ -489,52 +489,52 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "toProto", "Lcom.google.protobuf.DescriptorProtos$FieldDescriptorProto$Type;", 0x1, -1, -1, -1
-    },
-    { "getJavaType", "Lcom.google.protobuf.Descriptors$FieldDescriptor$JavaType;", 0x1, -1, -1, -1
-    },
+    { "toProto", "Lcom.google.protobuf.DescriptorProtos$FieldDescriptorProto$Type;", 0x1, -1, -1,
+      -1, -1, -1 },
+    { "getJavaType", "Lcom.google.protobuf.Descriptors$FieldDescriptor$JavaType;", 0x1, -1, -1, -1,
+      -1, -1 },
     { "valueOfWithComGoogleProtobufDescriptorProtos_FieldDescriptorProto_Type:",
-      "Lcom.google.protobuf.Descriptors$FieldDescriptor$Type;", 0x9, 0, -1, -1 },
+      "Lcom.google.protobuf.Descriptors$FieldDescriptor$Type;", 0x9, 0, -1, -1, -1, -1 },
   };
   static const J2ObjcFieldInfo fields[] = {
     { "DOUBLE", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 1, -1 },
+      0x4019, -1, 1, -1, -1 },
     { "FLOAT", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 2, -1 },
+      0x4019, -1, 2, -1, -1 },
     { "INT64", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 3, -1 },
+      0x4019, -1, 3, -1, -1 },
     { "UINT64", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 4, -1 },
+      0x4019, -1, 4, -1, -1 },
     { "INT32", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 5, -1 },
+      0x4019, -1, 5, -1, -1 },
     { "FIXED64", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 6, -1 },
+      0x4019, -1, 6, -1, -1 },
     { "FIXED32", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 7, -1 },
+      0x4019, -1, 7, -1, -1 },
     { "BOOL", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 8, -1 },
+      0x4019, -1, 8, -1, -1 },
     { "STRING", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 9, -1 },
+      0x4019, -1, 9, -1, -1 },
     { "GROUP", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 10, -1 },
+      0x4019, -1, 10, -1, -1 },
     { "MESSAGE", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 11, -1 },
+      0x4019, -1, 11, -1, -1 },
     { "BYTES", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 12, -1 },
+      0x4019, -1, 12, -1, -1 },
     { "UINT32", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 13, -1 },
+      0x4019, -1, 13, -1, -1 },
     { "ENUM", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 14, -1 },
+      0x4019, -1, 14, -1, -1 },
     { "SFIXED32", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 15, -1 },
+      0x4019, -1, 15, -1, -1 },
     { "SFIXED64", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 16, -1 },
+      0x4019, -1, 16, -1, -1 },
     { "SINT32", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 17, -1 },
+      0x4019, -1, 17, -1, -1 },
     { "SINT64", "LComGoogleProtobufDescriptors_FieldDescriptor_Type", .constantValue.asLong = 0,
-      0x4019, -1, 18, -1 },
+      0x4019, -1, 18, -1, -1 },
     { "javaType_", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType",
-      .constantValue.asLong = 0, 0x2, -1, -1, -1 },
+      .constantValue.asLong = 0, 0x2, -1, -1, -1, -1 },
   };
   static const char *superclass_type_args[] = {
     "Lcom.google.protobuf.Descriptors$FieldDescriptor$Type;"};
@@ -558,9 +558,9 @@ ComGoogleProtobufDescriptors_FieldDescriptor_Type *ComGoogleProtobufDescriptors_
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SINT32),
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_Type, SINT64) };
   static const J2ObjcClassInfo _ComGoogleProtobufDescriptors_FieldDescriptor_Type = {
-    3, "Type", "com.google.protobuf", "Descriptors$FieldDescriptor", 0x4019, 3, methods, 19, fields,
+    4, "Type", "com.google.protobuf", "Descriptors$FieldDescriptor", 0x4019, 3, methods, 19, fields,
     1, superclass_type_args, 0, NULL, NULL,
-    "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$Type;>;", ptrTable };
+    "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$Type;>;", -1, ptrTable };
   return &_ComGoogleProtobufDescriptors_FieldDescriptor_Type;
 }
 
@@ -652,24 +652,24 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcFieldInfo fields[] = {
     { "INT", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType", .constantValue.asLong = 0,
-      0x4019, -1, 0, -1 },
+      0x4019, -1, 0, -1, -1 },
     { "LONG", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType", .constantValue.asLong = 0,
-      0x4019, -1, 1, -1 },
+      0x4019, -1, 1, -1, -1 },
     { "FLOAT", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType", .constantValue.asLong = 0,
-      0x4019, -1, 2, -1 },
+      0x4019, -1, 2, -1, -1 },
     { "DOUBLE", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType", .constantValue.asLong = 0,
-      0x4019, -1, 3, -1 },
+      0x4019, -1, 3, -1, -1 },
     { "BOOLEAN", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType",
-      .constantValue.asLong = 0, 0x4019, -1, 4, -1 },
+      .constantValue.asLong = 0, 0x4019, -1, 4, -1, -1 },
     { "STRING", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType", .constantValue.asLong = 0,
-      0x4019, -1, 5, -1 },
+      0x4019, -1, 5, -1, -1 },
     { "BYTE_STRING", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType",
-      .constantValue.asLong = 0, 0x4019, -1, 6, -1 },
+      .constantValue.asLong = 0, 0x4019, -1, 6, -1, -1 },
     { "ENUM", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType", .constantValue.asLong = 0,
-      0x4019, -1, 7, -1 },
+      0x4019, -1, 7, -1, -1 },
     { "MESSAGE", "LComGoogleProtobufDescriptors_FieldDescriptor_JavaType",
-      .constantValue.asLong = 0, 0x4019, -1, 8, -1 },
-    { "defaultDefault_", "LNSObject", .constantValue.asLong = 0, 0x12, -1, -1, -1 },
+      .constantValue.asLong = 0, 0x4019, -1, 8, -1, -1 },
+    { "defaultDefault_", "LNSObject", .constantValue.asLong = 0, 0x12, -1, -1, -1, -1 },
   };
   static const char *superclass_type_args[] = {
     "Lcom.google.protobuf.Descriptors$FieldDescriptor$JavaType;"};
@@ -684,9 +684,9 @@ ComGoogleProtobufDescriptors_FieldDescriptor_JavaType *ComGoogleProtobufDescript
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, ENUM),
     &JreEnum(ComGoogleProtobufDescriptors_FieldDescriptor_JavaType, MESSAGE) };
   static const J2ObjcClassInfo _ComGoogleProtobufDescriptors_FieldDescriptor_JavaType = {
-    3, "JavaType", "com.google.protobuf", "Descriptors$FieldDescriptor", 0x4019, 0, NULL, 10,
+    4, "JavaType", "com.google.protobuf", "Descriptors$FieldDescriptor", 0x4019, 0, NULL, 10,
     fields, 1, superclass_type_args, 0, NULL, NULL,
-    "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$JavaType;>;", ptrTable };
+    "Ljava/lang/Enum<Lcom/google/protobuf/Descriptors$FieldDescriptor$JavaType;>;", -1, ptrTable };
   return &_ComGoogleProtobufDescriptors_FieldDescriptor_JavaType;
 }
 

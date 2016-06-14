@@ -251,30 +251,21 @@ static IOSClass *ResolveParameterType(const char *objcType, NSString *paramKeywo
   return NSStringFromSelector(selector_);
 }
 
-#define SANITIZED_METHOD_NAME \
-  [[self internalName] stringByReplacingOccurrencesOfString:@":" withString:@"_"]
-
 - (IOSObjectArray *)getDeclaredAnnotations {
-  Class cls = class_.objcClass;
-  if (cls) {
-    NSString *annotationsMethodName =
-        [NSString stringWithFormat:@"__annotations_%@", SANITIZED_METHOD_NAME];
-    Method annotationsMethod = JreFindClassMethod(cls, [annotationsMethodName UTF8String]);
-    if (annotationsMethod) {
-      return method_invoke(cls, annotationsMethod);
+  if (metadata_) {
+    id (*annotations)() = JrePtrAtIndex(ptrTable_, metadata_->annotationsIdx);
+    if (annotations) {
+      return annotations();
     }
   }
   return [IOSObjectArray arrayWithLength:0 type:JavaLangAnnotationAnnotation_class_()];
 }
 
 - (IOSObjectArray *)getParameterAnnotations {
-  Class cls = class_.objcClass;
-  if (cls) {
-    NSString *annotationsMethodName =
-        [NSString stringWithFormat:@"__annotations_%@_params", SANITIZED_METHOD_NAME];
-    Method annotationsMethod = JreFindClassMethod(cls, [annotationsMethodName UTF8String]);
-    if (annotationsMethod) {
-      return method_invoke(cls, annotationsMethod);
+  if (metadata_) {
+    id (*paramAnnotations)() = JrePtrAtIndex(ptrTable_, metadata_->paramAnnotationsIdx);
+    if (paramAnnotations) {
+      return paramAnnotations();
     }
   }
   // No parameter annotations, so return an array of empty arrays, one for each parameter.

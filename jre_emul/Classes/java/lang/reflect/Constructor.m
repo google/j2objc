@@ -146,23 +146,23 @@
 
 + (const J2ObjcClassInfo *)__metadata {
   static const J2ObjcMethodInfo methods[] = {
-    { "getName", "Ljava.lang.String;", 0x1, -1, -1, -1 },
-    { "getModifiers", "I", 0x1, -1, -1, -1 },
-    { "getDeclaringClass", "Ljava.lang.Class;", 0x1, -1, -1, 0 },
-    { "getParameterTypes", "[Ljava.lang.Class;", 0x1, -1, -1, -1 },
-    { "getGenericParameterTypes", "[Ljava.lang.reflect.Type;", 0x1, -1, -1, -1 },
-    { "newInstanceWithNSObjectArray:", "TT;", 0x81, 1, 2, 3 },
-    { "getAnnotationWithIOSClass:", "TT;", 0x1, 4, -1, 5 },
-    { "getDeclaredAnnotations", "[Ljava.lang.annotation.Annotation;", 0x1, -1, -1, -1 },
-    { "getParameterAnnotations", "[[Ljava.lang.annotation.Annotation;", 0x1, -1, -1, -1 },
-    { "getTypeParameters", "[Ljava.lang.reflect.TypeVariable;", 0x1, -1, -1, -1 },
-    { "isSynthetic", "Z", 0x1, -1, -1, -1 },
-    { "getExceptionTypes", "[Ljava.lang.Class;", 0x1, -1, -1, -1 },
-    { "getGenericExceptionTypes", "[Ljava.lang.reflect.Type;", 0x1, -1, -1, -1 },
-    { "toGenericString", "Ljava.lang.String;", 0x1, -1, -1, -1 },
-    { "isBridge", "Z", 0x1, -1, -1, -1 },
-    { "isVarArgs", "Z", 0x1, -1, -1, -1 },
-    { "init", NULL, 0x1, -1, -1, -1 },
+    { "getName", "Ljava.lang.String;", 0x1, -1, -1, -1, -1, -1 },
+    { "getModifiers", "I", 0x1, -1, -1, -1, -1, -1 },
+    { "getDeclaringClass", "Ljava.lang.Class;", 0x1, -1, -1, 0, -1, -1 },
+    { "getParameterTypes", "[Ljava.lang.Class;", 0x1, -1, -1, -1, -1, -1 },
+    { "getGenericParameterTypes", "[Ljava.lang.reflect.Type;", 0x1, -1, -1, -1, -1, -1 },
+    { "newInstanceWithNSObjectArray:", "TT;", 0x81, 1, 2, 3, -1, -1 },
+    { "getAnnotationWithIOSClass:", "TT;", 0x1, 4, -1, 5, -1, -1 },
+    { "getDeclaredAnnotations", "[Ljava.lang.annotation.Annotation;", 0x1, -1, -1, -1, -1, -1 },
+    { "getParameterAnnotations", "[[Ljava.lang.annotation.Annotation;", 0x1, -1, -1, -1, -1, -1 },
+    { "getTypeParameters", "[Ljava.lang.reflect.TypeVariable;", 0x1, -1, -1, -1, -1, -1 },
+    { "isSynthetic", "Z", 0x1, -1, -1, -1, -1, -1 },
+    { "getExceptionTypes", "[Ljava.lang.Class;", 0x1, -1, -1, -1, -1, -1 },
+    { "getGenericExceptionTypes", "[Ljava.lang.reflect.Type;", 0x1, -1, -1, -1, -1, -1 },
+    { "toGenericString", "Ljava.lang.String;", 0x1, -1, -1, -1, -1, -1 },
+    { "isBridge", "Z", 0x1, -1, -1, -1, -1, -1 },
+    { "isVarArgs", "Z", 0x1, -1, -1, -1, -1, -1 },
+    { "init", NULL, 0x1, -1, -1, -1, -1, -1 },
   };
   static const void *ptrTable[] = {
     "()Ljava/lang/Class<TT;>;", "newInstance",
@@ -171,9 +171,9 @@
     "([Ljava/lang/Object;)TT;", "getAnnotation",
     "<T::Ljava/lang/annotation/Annotation;>(Ljava/lang/Class<TT;>;)TT;" };
   static const J2ObjcClassInfo _JavaLangReflectConstructor = {
-    3, "Constructor", "java.lang.reflect", NULL, 0x1, 17, methods, 0, NULL, 0, NULL, 0, NULL, NULL,
+    4, "Constructor", "java.lang.reflect", NULL, 0x1, 17, methods, 0, NULL, 0, NULL, 0, NULL, NULL,
     "<T:Ljava/lang/Object;>Ljava/lang/reflect/AccessibleObject;"
-    "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;", ptrTable };
+    "Ljava/lang/reflect/GenericDeclaration;Ljava/lang/reflect/Member;", -1, ptrTable };
   return &_JavaLangReflectConstructor;
 }
 

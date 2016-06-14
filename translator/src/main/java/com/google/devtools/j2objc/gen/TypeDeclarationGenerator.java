@@ -112,6 +112,7 @@ public class TypeDeclarationGenerator extends TypeGenerator {
     println("\n@end");
 
     if (BindingUtil.isPackageInfo(typeBinding)) {
+      printOuterDeclarations();
       return;
     }
     printCompanionClassDeclaration();
