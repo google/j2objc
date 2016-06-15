@@ -76,6 +76,8 @@ public class GenerationTest extends TestCase {
   static {
     // Prevents errors and warnings from being printed to the console.
     ErrorUtil.setTestMode();
+    ClassLoader cl = GenerationTest.class.getClassLoader();
+    cl.setPackageAssertionStatus("com.google.devtools.j2objc", true);
   }
 
   @Override
