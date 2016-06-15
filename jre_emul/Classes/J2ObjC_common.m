@@ -314,10 +314,10 @@ id GetCapturingLambda(Class clazz, Protocol *protocol, NSString *blockClassName,
           initWithId:@"Unable to add method to capturing lambda class."]);
       }
       objc_registerClassPair(lambdaClass);
-      lambdaHolder->id = (void*)[lambdaClass class];
+      lambdaHolder->id = (void*)lambdaClass;
     }
   }
-  id instance = [[(id) lambdaHolder->id alloc] init];
+  id instance = [[[(id) lambdaHolder->id alloc] init] autorelease];
   objc_setAssociatedObject(instance, (void*) 0, block, OBJC_ASSOCIATION_COPY_NONATOMIC);
   return instance;
 }
